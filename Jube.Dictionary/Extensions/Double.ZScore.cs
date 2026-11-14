@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double ZScore(this double @this, double mean, double standardDeviation)
+        [Description("Returns the number of standard deviations this value is from the mean.")]
+        public static double ZScore(this double @this,
+            [Description("The mean of the population.")] double mean,
+            [Description("The standard deviation of the population.")] double standardDeviation)
         {
             return (@this - mean) / standardDeviation;
         }

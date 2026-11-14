@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchRelativeChangeFromAbove(double previous, double bound)
+            [Description("True when: the change from the previous value as a fraction of it is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRelativeChangeFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleRelativeChangeFromAbove(flow.Value, previous, bound));
             }
 
-            public Flow<double> RejectRelativeChangeFromAbove(double previous, double bound)
+            [Description("True when: the change from the previous value as a fraction of it is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRelativeChangeFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleRelativeChangeFromAbove(flow.Value, previous, bound));
             }
 
-            public Flow<double> BreakRelativeChangeFromAbove(double previous, double bound)
+            [Description("True when: the change from the previous value as a fraction of it is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRelativeChangeFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleRelativeChangeFromAbove(flow.Value, previous, bound));
             }
 
-            public Flow<double> RequireRelativeChangeFromAbove(double previous, double bound)
+            [Description("True when: the change from the previous value as a fraction of it is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRelativeChangeFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleRelativeChangeFromAbove(flow.Value, previous, bound));
             }
 
-            public Flow<double> EnsureRelativeChangeFromAbove(double previous, double bound)
+            [Description("True when: the change from the previous value as a fraction of it is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRelativeChangeFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchRelativeChangeFromAbove(double previous, double bound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value as a fraction of it is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRelativeChangeFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchRelativeChangeFromAbove(previous, bound);
             }
 
-            public Flow<double> RejectRelativeChangeFromAbove(double previous, double bound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value as a fraction of it is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRelativeChangeFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectRelativeChangeFromAbove(previous, bound);
             }
 
-            public Flow<double> BreakRelativeChangeFromAbove(double previous, double bound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value as a fraction of it is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRelativeChangeFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakRelativeChangeFromAbove(previous, bound);
             }
 
-            public Flow<double> RequireRelativeChangeFromAbove(double previous, double bound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value as a fraction of it is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRelativeChangeFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireRelativeChangeFromAbove(previous, bound);
             }
 
-            public Flow<double> EnsureRelativeChangeFromAbove(double previous, double bound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value as a fraction of it is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRelativeChangeFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureRelativeChangeFromAbove(previous, bound);
             }

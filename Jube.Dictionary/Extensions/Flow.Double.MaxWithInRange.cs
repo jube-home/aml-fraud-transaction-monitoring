@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchMaxWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the largest of the value and the others is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMaxWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleMaxWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RejectMaxWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the largest of the value and the others is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMaxWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleMaxWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> BreakMaxWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the largest of the value and the others is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMaxWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleMaxWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RequireMaxWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the largest of the value and the others is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMaxWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleMaxWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> EnsureMaxWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the largest of the value and the others is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMaxWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchMaxWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the largest of the value and the others is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMaxWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().MatchMaxWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RejectMaxWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the largest of the value and the others is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMaxWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RejectMaxWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> BreakMaxWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the largest of the value and the others is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMaxWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().BreakMaxWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RequireMaxWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the largest of the value and the others is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMaxWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RequireMaxWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> EnsureMaxWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the largest of the value and the others is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMaxWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().EnsureMaxWithInRange(lowerBound, upperBound, others);
             }

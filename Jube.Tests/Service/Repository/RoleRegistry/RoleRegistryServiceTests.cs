@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Jube.Data.Concurrency;
 using Jube.Data.Context;
 using Jube.Dto.Repository.RoleRegistry;
 using Jube.Service.Agent.ServiceToolCatalogue;
@@ -29,6 +30,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -302,12 +304,36 @@ namespace Jube.Test.Service.Repository.RoleRegistry
 
             created.Guid = Guid.NewGuid();
             created.CreatedUser = "tampered";
-            created.Version = 999;
             var updated = await service.UpdateAsync(created);
 
             updated.Guid.Should().NotBe(created.Guid);
             updated.CreatedUser.Should().NotBe("tampered");
             updated.Version.Should().Be(2);
+        }
+
+        [Fact]
+        public async Task UpdateWithAStaleVersionIsRefusedAndAZeroVersionSkipsTheCheckAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var privilegedUser = await CreateUserWithRoleRegistryPermissionAsync(dbContext);
+            var service = await BuildServiceAsync(dbContext, privilegedUser);
+            var created = await service.InsertAsync(ValidDto());
+            createdRoleIds.Add(created.Id);
+
+            created.Name += "-newer";
+            await service.UpdateAsync(created);
+
+            created.Name += "-stale";
+            var ex = await Assert.ThrowsAsync<VersionConflictException>(() => service.UpdateAsync(created));
+            ex.SuppliedVersion.Should().Be(1);
+            ex.CurrentVersion.Should().Be(2);
+
+            var stored = await dbContext.RoleRegistry.FirstAsync(w => w.Id == created.Id);
+            stored.Name.Should().EndWith("-newer");
+            stored.Version.Should().Be(2);
+
+            created.Version = 0;
+            (await service.UpdateAsync(created)).Version.Should().Be(3);
         }
 
         [Fact]

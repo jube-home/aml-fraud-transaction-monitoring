@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double GeometricMeanWith(this double @this, double other)
+        [Description("The geometric mean of the value and another, for growth factors and multiples.")]
+        public static double GeometricMeanWith(this double @this, [Description("The other number.")] double other)
         {
             return CalculationSupport.Finite(Math.Sqrt(@this * other));
         }

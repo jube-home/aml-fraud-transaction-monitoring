@@ -6,6 +6,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Converts the character to lowercase using invariant culture rules.")]
         public static Char ToLowerInvariant(this Char c)
         {
             return char.ToLowerInvariant(c);

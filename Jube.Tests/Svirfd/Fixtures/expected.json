@@ -1,0 +1,2022 @@
+{
+  "37.30.56.54": {
+    "ip": "37.30.56.54",
+    "hostname": "37.30.32.1.Mobile.internet.t-mobile.pl",
+    "city": "Warsaw",
+    "region": null,
+    "country": "PL",
+    "loc": "52.2300,21.0100",
+    "hostnameSampledFrom": "37.30.32.1",
+    "location": {
+      "country": "PL",
+      "city": "Warsaw",
+      "citySource": "asnHubFrequencyPrior",
+      "cityConfidence": "low",
+      "lat": 52.23,
+      "lon": 21.01,
+      "hub": null,
+      "measured": null,
+      "kind": "asnMultiHub",
+      "ptrInference": false,
+      "prior": null,
+      "corroboration": null,
+      "evidence": [
+        {
+          "source": "registry",
+          "detail": "ripencc lists 37.30.0.0/15 for a holder in PL"
+        },
+        {
+          "source": "asn",
+          "detail": "AS12912 is registered in PL"
+        },
+        {
+          "source": "default",
+          "detail": "Warsaw is where most of the operator\u0027s routers were seen: a default, not a finding"
+        }
+      ],
+      "snap": null
+    },
+    "org": "AS12912 T-Mobile Polska S.A.",
+    "asn": {
+      "asn": "AS12912",
+      "name": "T-Mobile Polska S.A.",
+      "handle": "TMPL",
+      "domain": "t-mobile.pl",
+      "country": "PL",
+      "route": "37.30.32.0/19",
+      "type": "isp",
+      "domainMatchesOperator": true
+    },
+    "carrier": {
+      "name": "T-Mobile Polska S.A.",
+      "asn": "AS12912"
+    },
+    "connection": {
+      "type": "isp",
+      "mobile": true,
+      "hosting": false,
+      "networkType": "mobile",
+      "sampleHostname": "37.30.32.1.Mobile.internet.t-mobile.pl",
+      "shared": false,
+      "sampleHostnameAt": null,
+      "satellite": null
+    },
+    "accuracyRadiusKm": 284,
+    "registry": {
+      "rir": "ripencc",
+      "status": "allocated",
+      "country": "PL",
+      "range": "37.30.0.0/15",
+      "allocated": "2011-12-30"
+    },
+    "routing": {
+      "prefix": "37.30.32.0/19",
+      "origins": [
+        {
+          "asn": 12912,
+          "name": "T-Mobile Polska S.A.",
+          "peers": 16,
+          "upstream": 3320,
+          "upstreamName": "Deutsche Telekom AG",
+          "rpki": "valid",
+          "streaming": false
+        }
+      ],
+      "moas": false,
+      "firstSeen": "2026-09-25T12:00:00Z",
+      "lastSeen": "2026-10-25T12:00:00Z"
+    },
+    "privacy": {
+      "vpn": false,
+      "proxy": null,
+      "tor": false,
+      "relay": false,
+      "hosting": false,
+      "service": null,
+      "listsChecked": [
+        "Apple iCloud Private Relay",
+        "Tor Project",
+        "community aggregate (X4BNet)"
+      ]
+    },
+    "cloud": null,
+    "lists": [],
+    "observed": {
+      "prefix": "37.30.32.0/19",
+      "countries": [],
+      "routerAddresses": 0,
+      "probes": 0,
+      "anycast": false,
+      "registryCountry": null,
+      "registryContradiction": false,
+      "asnHubs": [
+        {
+          "city": "Warsaw",
+          "country": "PL",
+          "lat": 52.23,
+          "lon": 21.01,
+          "routers": 4,
+          "minRtt": 1.1,
+          "weight": 0.4,
+          "named": false
+        },
+        {
+          "city": "Krak\u00F3w",
+          "country": "PL",
+          "lat": 50.06,
+          "lon": 19.94,
+          "routers": 3,
+          "minRtt": 2,
+          "weight": 0.35,
+          "named": false
+        },
+        {
+          "city": "Gda\u0144sk",
+          "country": "PL",
+          "lat": 54.35,
+          "lon": 18.65,
+          "routers": 3,
+          "minRtt": 2,
+          "weight": 0.25,
+          "named": false
+        }
+      ]
+    },
+    "bogon": false,
+    "special": null,
+    "asOf": {
+      "routing": "2026-10-25T11:00:00Z",
+      "registry": "2026-10-24T12:00:00Z",
+      "indexLoaded": "2026-10-25T12:00:00Z"
+    },
+    "servedFrom": null,
+    "timezone": {
+      "id": "Europe/Warsaw",
+      "basis": "country"
+    },
+    "density": {
+      "prefix": "37.30.32.0/19",
+      "sampled": 16,
+      "answered": 0,
+      "fraction": 0,
+      "reading": "dark",
+      "ttl": {
+        "t64": 0,
+        "t128": 0,
+        "t255": 0,
+        "other": 0
+      },
+      "ttlReading": null,
+      "minRttMs": null,
+      "medianRttMs": null,
+      "withinKm": null,
+      "vantage": {
+        "site": "do-mkc1",
+        "location": "Kansas City, US",
+        "lat": 39.1,
+        "lon": -94.58
+      },
+      "cityConsistent": null,
+      "sampledAt": "2026-10-25T09:13:00Z"
+    }
+  },
+  "80.1.0.9": {
+    "ip": "80.1.0.9",
+    "hostname": "cpe.ae1.dk.ip.example.net",
+    "city": "Copenhagen",
+    "region": null,
+    "country": "DK",
+    "loc": "55.6800,12.5700",
+    "hostnameSampledFrom": "80.1.0.1",
+    "location": {
+      "country": "DK",
+      "city": "Copenhagen",
+      "citySource": "nameCountryPrior",
+      "cityConfidence": "low",
+      "lat": 55.68,
+      "lon": 12.57,
+      "hub": null,
+      "measured": null,
+      "kind": "nameCountry",
+      "ptrInference": false,
+      "prior": null,
+      "corroboration": null,
+      "evidence": [
+        {
+          "source": "registry",
+          "detail": "ripencc lists 80.0.0.0/8 for a holder in SE"
+        },
+        {
+          "source": "name",
+          "detail": "the block\u0027s reverse-DNS names state DK, where the registry lists SE"
+        },
+        {
+          "source": "default",
+          "detail": "Copenhagen is the most populous city of the country the block\u0027s names state: a default, not a finding"
+        }
+      ],
+      "snap": null
+    },
+    "org": "AS3292",
+    "asn": {
+      "asn": "AS3292",
+      "name": null,
+      "handle": null,
+      "domain": "example.net",
+      "country": null,
+      "route": "80.1.0.0/20",
+      "type": "isp",
+      "domainMatchesOperator": false
+    },
+    "carrier": null,
+    "connection": {
+      "type": "isp",
+      "mobile": false,
+      "hosting": false,
+      "networkType": "residential",
+      "sampleHostname": "cpe.ae1.dk.ip.example.net",
+      "shared": false,
+      "sampleHostnameAt": null,
+      "satellite": null
+    },
+    "accuracyRadiusKm": 300,
+    "registry": {
+      "rir": "ripencc",
+      "status": "allocated",
+      "country": "SE",
+      "range": "80.0.0.0/8",
+      "allocated": "2011-12-30"
+    },
+    "routing": {
+      "prefix": "80.1.0.0/20",
+      "origins": [
+        {
+          "asn": 3292,
+          "name": null,
+          "peers": 16,
+          "upstream": 3320,
+          "upstreamName": "Deutsche Telekom AG",
+          "rpki": "notFound",
+          "streaming": false
+        }
+      ],
+      "moas": false,
+      "firstSeen": "2026-09-25T12:00:00Z",
+      "lastSeen": "2026-10-25T12:00:00Z"
+    },
+    "privacy": {
+      "vpn": false,
+      "proxy": null,
+      "tor": false,
+      "relay": false,
+      "hosting": false,
+      "service": null,
+      "listsChecked": [
+        "Apple iCloud Private Relay",
+        "Tor Project",
+        "community aggregate (X4BNet)"
+      ]
+    },
+    "cloud": null,
+    "lists": [],
+    "observed": null,
+    "bogon": false,
+    "special": null,
+    "asOf": {
+      "routing": "2026-10-25T11:00:00Z",
+      "registry": "2026-10-24T12:00:00Z",
+      "indexLoaded": "2026-10-25T12:00:00Z"
+    },
+    "servedFrom": null,
+    "timezone": {
+      "id": "Europe/Copenhagen",
+      "basis": "country"
+    },
+    "density": null
+  },
+  "103.123.242.9": {
+    "ip": "103.123.242.9",
+    "hostname": "1-2-3-4.static.ip.net.tw",
+    "city": "Taipei",
+    "region": null,
+    "country": "TW",
+    "loc": "25.0300,121.5600",
+    "hostnameSampledFrom": "103.123.242.1",
+    "location": {
+      "country": "TW",
+      "city": "Taipei",
+      "citySource": "countryPrior",
+      "cityConfidence": "low",
+      "lat": 25.03,
+      "lon": 121.56,
+      "hub": null,
+      "measured": null,
+      "kind": "registryCountry",
+      "ptrInference": false,
+      "prior": null,
+      "corroboration": null,
+      "evidence": [
+        {
+          "source": "registry",
+          "detail": "apnic lists 103.123.0.0/16 for a holder in TW"
+        },
+        {
+          "source": "default",
+          "detail": "Taipei is the most populous city of the country: a default, not a finding"
+        }
+      ],
+      "snap": null
+    },
+    "org": "AS9924",
+    "asn": {
+      "asn": "AS9924",
+      "name": null,
+      "handle": null,
+      "domain": "ip.net.tw",
+      "country": null,
+      "route": "103.123.242.0/23",
+      "type": "isp",
+      "domainMatchesOperator": false
+    },
+    "carrier": null,
+    "connection": {
+      "type": "isp",
+      "mobile": false,
+      "hosting": false,
+      "networkType": "residential",
+      "sampleHostname": "1-2-3-4.static.ip.net.tw",
+      "shared": false,
+      "sampleHostnameAt": null,
+      "satellite": null
+    },
+    "accuracyRadiusKm": 300,
+    "registry": {
+      "rir": "apnic",
+      "status": "allocated",
+      "country": "TW",
+      "range": "103.123.0.0/16",
+      "allocated": "2011-12-30"
+    },
+    "routing": {
+      "prefix": "103.123.242.0/23",
+      "origins": [
+        {
+          "asn": 9924,
+          "name": null,
+          "peers": 18,
+          "upstream": 1299,
+          "upstreamName": "Arelion Sweden AB",
+          "rpki": "notFound",
+          "streaming": false
+        }
+      ],
+      "moas": false,
+      "firstSeen": "2026-09-25T12:00:00Z",
+      "lastSeen": "2026-10-25T12:00:00Z"
+    },
+    "privacy": {
+      "vpn": false,
+      "proxy": null,
+      "tor": false,
+      "relay": false,
+      "hosting": false,
+      "service": null,
+      "listsChecked": [
+        "Apple iCloud Private Relay",
+        "Tor Project",
+        "community aggregate (X4BNet)"
+      ]
+    },
+    "cloud": null,
+    "lists": [],
+    "observed": {
+      "prefix": "103.123.242.0/23",
+      "countries": [],
+      "routerAddresses": 0,
+      "probes": 0,
+      "anycast": false,
+      "registryCountry": null,
+      "registryContradiction": false,
+      "asnHubs": [
+        {
+          "city": "Manila",
+          "country": "PH",
+          "lat": 14.6,
+          "lon": 120.98,
+          "routers": 8,
+          "minRtt": 1.2,
+          "weight": 3,
+          "named": false
+        }
+      ]
+    },
+    "bogon": false,
+    "special": null,
+    "asOf": {
+      "routing": "2026-10-25T11:00:00Z",
+      "registry": "2026-10-24T12:00:00Z",
+      "indexLoaded": "2026-10-25T12:00:00Z"
+    },
+    "servedFrom": null,
+    "timezone": {
+      "id": "Asia/Taipei",
+      "basis": "country"
+    },
+    "density": null
+  },
+  "1.0.0.1": {
+    "ip": "1.0.0.1",
+    "hostname": null,
+    "city": null,
+    "region": null,
+    "country": "AU",
+    "loc": null,
+    "hostnameSampledFrom": null,
+    "location": {
+      "country": "AU",
+      "city": null,
+      "citySource": "anycast",
+      "cityConfidence": "none",
+      "lat": null,
+      "lon": null,
+      "hub": null,
+      "measured": null,
+      "kind": "anycast",
+      "ptrInference": false,
+      "prior": null,
+      "corroboration": null,
+      "evidence": [
+        {
+          "source": "registry",
+          "detail": "apnic lists 1.0.0.0/8 for a holder in AU"
+        },
+        {
+          "source": "asn",
+          "detail": "AS13335 is registered in US"
+        }
+      ],
+      "snap": null
+    },
+    "org": "AS13335 Cloudflare, Inc.",
+    "asn": {
+      "asn": "AS13335",
+      "name": "Cloudflare, Inc.",
+      "handle": "CLOUDFLARENET",
+      "domain": null,
+      "country": "US",
+      "route": "1.0.0.0/24",
+      "type": "hosting",
+      "domainMatchesOperator": null
+    },
+    "carrier": null,
+    "connection": {
+      "type": "hosting",
+      "mobile": null,
+      "hosting": true,
+      "networkType": null,
+      "sampleHostname": null,
+      "shared": false,
+      "sampleHostnameAt": null,
+      "satellite": null
+    },
+    "accuracyRadiusKm": null,
+    "registry": {
+      "rir": "apnic",
+      "status": "allocated",
+      "country": "AU",
+      "range": "1.0.0.0/8",
+      "allocated": "2011-12-30"
+    },
+    "routing": {
+      "prefix": "1.0.0.0/24",
+      "origins": [
+        {
+          "asn": 13335,
+          "name": "Cloudflare, Inc.",
+          "peers": 40,
+          "upstream": 174,
+          "upstreamName": null,
+          "rpki": "notFound",
+          "streaming": false
+        }
+      ],
+      "moas": false,
+      "firstSeen": "2026-09-25T12:00:00Z",
+      "lastSeen": "2026-10-25T12:00:00Z"
+    },
+    "privacy": {
+      "vpn": false,
+      "proxy": null,
+      "tor": false,
+      "relay": false,
+      "hosting": true,
+      "service": null,
+      "listsChecked": [
+        "Apple iCloud Private Relay",
+        "Tor Project",
+        "community aggregate (X4BNet)"
+      ]
+    },
+    "cloud": null,
+    "lists": [],
+    "observed": null,
+    "bogon": false,
+    "special": null,
+    "asOf": {
+      "routing": "2026-10-25T11:00:00Z",
+      "registry": "2026-10-24T12:00:00Z",
+      "indexLoaded": "2026-10-25T12:00:00Z"
+    },
+    "servedFrom": null,
+    "timezone": null,
+    "density": null
+  },
+  "185.25.165.9": {
+    "ip": "185.25.165.9",
+    "hostname": "r1-2-3-4.systemec.at",
+    "city": "Vienna",
+    "region": null,
+    "country": "AT",
+    "loc": "48.2100,16.3700",
+    "hostnameSampledFrom": "185.25.164.1",
+    "location": {
+      "country": "AT",
+      "city": "Vienna",
+      "citySource": "countryPrior",
+      "cityConfidence": "low",
+      "lat": 48.21,
+      "lon": 16.37,
+      "hub": null,
+      "measured": null,
+      "kind": "registryCountry",
+      "ptrInference": false,
+      "prior": null,
+      "corroboration": null,
+      "evidence": [
+        {
+          "source": "registry",
+          "detail": "ripencc lists 185.25.0.0/16 for a holder in AT"
+        },
+        {
+          "source": "default",
+          "detail": "Vienna is the most populous city of the country: a default, not a finding"
+        }
+      ],
+      "snap": null
+    },
+    "org": "AS64500",
+    "asn": {
+      "asn": "AS64500",
+      "name": null,
+      "handle": null,
+      "domain": "systemec.at",
+      "country": null,
+      "route": "185.25.164.0/22",
+      "type": "isp",
+      "domainMatchesOperator": false
+    },
+    "carrier": null,
+    "connection": {
+      "type": "isp",
+      "mobile": false,
+      "hosting": false,
+      "networkType": "residential",
+      "sampleHostname": "r1-2-3-4.systemec.at",
+      "shared": false,
+      "sampleHostnameAt": null,
+      "satellite": null
+    },
+    "accuracyRadiusKm": 300,
+    "registry": {
+      "rir": "ripencc",
+      "status": "allocated",
+      "country": "AT",
+      "range": "185.25.0.0/16",
+      "allocated": "2011-12-30"
+    },
+    "routing": {
+      "prefix": "185.25.164.0/22",
+      "origins": [
+        {
+          "asn": 64500,
+          "name": null,
+          "peers": 18,
+          "upstream": 64501,
+          "upstreamName": "Example Carrier",
+          "rpki": "notFound",
+          "streaming": false
+        }
+      ],
+      "moas": false,
+      "firstSeen": "2026-09-25T12:00:00Z",
+      "lastSeen": "2026-10-25T12:00:00Z"
+    },
+    "privacy": {
+      "vpn": false,
+      "proxy": null,
+      "tor": false,
+      "relay": false,
+      "hosting": false,
+      "service": null,
+      "listsChecked": [
+        "Apple iCloud Private Relay",
+        "Tor Project",
+        "community aggregate (X4BNet)"
+      ]
+    },
+    "cloud": null,
+    "lists": [],
+    "observed": null,
+    "bogon": false,
+    "special": null,
+    "asOf": {
+      "routing": "2026-10-25T11:00:00Z",
+      "registry": "2026-10-24T12:00:00Z",
+      "indexLoaded": "2026-10-25T12:00:00Z"
+    },
+    "servedFrom": null,
+    "timezone": {
+      "id": "Europe/Vienna",
+      "basis": "country"
+    },
+    "density": null
+  },
+  "8.8.8.8": {
+    "ip": "8.8.8.8",
+    "hostname": "dns.google",
+    "city": "New York City",
+    "region": null,
+    "country": "US",
+    "loc": "40.7100,-74.0100",
+    "hostnameSampledFrom": "8.8.8.8",
+    "location": {
+      "country": "US",
+      "city": "New York City",
+      "citySource": "countryPrior",
+      "cityConfidence": "low",
+      "lat": 40.71,
+      "lon": -74.01,
+      "hub": null,
+      "measured": null,
+      "kind": "registryCountry",
+      "ptrInference": false,
+      "prior": null,
+      "corroboration": null,
+      "evidence": [
+        {
+          "source": "registry",
+          "detail": "arin lists 8.8.8.0/24 for a holder in US"
+        },
+        {
+          "source": "default",
+          "detail": "New York City is the most populous city of the country: a default, not a finding"
+        }
+      ],
+      "snap": null
+    },
+    "org": null,
+    "asn": null,
+    "carrier": null,
+    "connection": {
+      "type": "hosting",
+      "mobile": false,
+      "hosting": true,
+      "networkType": "hosting",
+      "sampleHostname": "dns.google",
+      "shared": false,
+      "sampleHostnameAt": null,
+      "satellite": null
+    },
+    "accuracyRadiusKm": null,
+    "registry": {
+      "rir": "arin",
+      "status": "allocated",
+      "country": "US",
+      "range": "8.8.8.0/24",
+      "allocated": "2011-12-30"
+    },
+    "routing": null,
+    "privacy": {
+      "vpn": false,
+      "proxy": null,
+      "tor": false,
+      "relay": false,
+      "hosting": true,
+      "service": null,
+      "listsChecked": [
+        "Apple iCloud Private Relay",
+        "Tor Project",
+        "community aggregate (X4BNet)"
+      ]
+    },
+    "cloud": null,
+    "lists": [],
+    "observed": null,
+    "bogon": false,
+    "special": null,
+    "asOf": {
+      "routing": "2026-10-25T11:00:00Z",
+      "registry": "2026-10-24T12:00:00Z",
+      "indexLoaded": "2026-10-25T12:00:00Z"
+    },
+    "servedFrom": null,
+    "timezone": {
+      "id": "America/New_York",
+      "basis": "nearestZone"
+    },
+    "density": null
+  },
+  "9.9.9.9": {
+    "ip": "9.9.9.9",
+    "hostname": null,
+    "city": null,
+    "region": null,
+    "country": null,
+    "loc": null,
+    "hostnameSampledFrom": null,
+    "location": {
+      "country": null,
+      "city": null,
+      "citySource": "anycast",
+      "cityConfidence": "none",
+      "lat": null,
+      "lon": null,
+      "hub": null,
+      "measured": null,
+      "kind": "anycast",
+      "ptrInference": false,
+      "prior": null,
+      "corroboration": null,
+      "evidence": [
+        {
+          "source": "asn",
+          "detail": "AS19281 is registered in US"
+        }
+      ],
+      "snap": null
+    },
+    "org": "AS19281 Quad9",
+    "asn": {
+      "asn": "AS19281",
+      "name": "Quad9",
+      "handle": "QUAD9-AS-1",
+      "domain": null,
+      "country": "US",
+      "route": "9.9.9.0/24",
+      "type": null,
+      "domainMatchesOperator": null
+    },
+    "carrier": null,
+    "connection": {
+      "type": null,
+      "mobile": null,
+      "hosting": null,
+      "networkType": null,
+      "sampleHostname": null,
+      "shared": false,
+      "sampleHostnameAt": null,
+      "satellite": null
+    },
+    "accuracyRadiusKm": null,
+    "registry": null,
+    "routing": {
+      "prefix": "9.9.9.0/24",
+      "origins": [
+        {
+          "asn": 19281,
+          "name": "Quad9",
+          "peers": 16,
+          "upstream": 3320,
+          "upstreamName": "Deutsche Telekom AG",
+          "rpki": "notFound",
+          "streaming": false
+        }
+      ],
+      "moas": false,
+      "firstSeen": "2026-09-25T12:00:00Z",
+      "lastSeen": "2026-10-25T12:00:00Z"
+    },
+    "privacy": {
+      "vpn": false,
+      "proxy": null,
+      "tor": false,
+      "relay": false,
+      "hosting": null,
+      "service": null,
+      "listsChecked": [
+        "Apple iCloud Private Relay",
+        "Tor Project",
+        "community aggregate (X4BNet)"
+      ]
+    },
+    "cloud": null,
+    "lists": [],
+    "observed": null,
+    "bogon": false,
+    "special": null,
+    "asOf": {
+      "routing": "2026-10-25T11:00:00Z",
+      "registry": "2026-10-24T12:00:00Z",
+      "indexLoaded": "2026-10-25T12:00:00Z"
+    },
+    "servedFrom": null,
+    "timezone": null,
+    "density": null
+  },
+  "2a00:1450:4001:80e::200e": {
+    "ip": "2a00:1450:4001:80e::200e",
+    "hostname": null,
+    "city": null,
+    "region": null,
+    "country": "IE",
+    "loc": null,
+    "hostnameSampledFrom": null,
+    "location": {
+      "country": "IE",
+      "city": null,
+      "citySource": null,
+      "cityConfidence": "none",
+      "lat": null,
+      "lon": null,
+      "hub": null,
+      "measured": null,
+      "kind": "registryCountry",
+      "ptrInference": false,
+      "prior": null,
+      "corroboration": null,
+      "evidence": [
+        {
+          "source": "registry",
+          "detail": "ripencc lists 2a00:1450::/29 for a holder in IE"
+        },
+        {
+          "source": "asn",
+          "detail": "AS15169 is registered in US"
+        }
+      ],
+      "snap": null
+    },
+    "org": "AS15169 Google LLC",
+    "asn": {
+      "asn": "AS15169",
+      "name": "Google LLC",
+      "handle": "GOOGLE",
+      "domain": null,
+      "country": "US",
+      "route": "2a00:1450:4001::/48",
+      "type": null,
+      "domainMatchesOperator": null
+    },
+    "carrier": null,
+    "connection": {
+      "type": null,
+      "mobile": null,
+      "hosting": null,
+      "networkType": null,
+      "sampleHostname": null,
+      "shared": false,
+      "sampleHostnameAt": null,
+      "satellite": null
+    },
+    "accuracyRadiusKm": null,
+    "registry": {
+      "rir": "ripencc",
+      "status": "allocated",
+      "country": "IE",
+      "range": "2a00:1450::/29",
+      "allocated": "2011-12-30"
+    },
+    "routing": {
+      "prefix": "2a00:1450:4001::/48",
+      "origins": [
+        {
+          "asn": 15169,
+          "name": "Google LLC",
+          "peers": 19,
+          "upstream": 3356,
+          "upstreamName": "Level 3 Parent, LLC",
+          "rpki": "notFound",
+          "streaming": false
+        }
+      ],
+      "moas": false,
+      "firstSeen": "2026-09-25T12:00:00Z",
+      "lastSeen": "2026-10-25T12:00:00Z"
+    },
+    "privacy": {
+      "vpn": false,
+      "proxy": null,
+      "tor": false,
+      "relay": false,
+      "hosting": null,
+      "service": null,
+      "listsChecked": [
+        "Apple iCloud Private Relay",
+        "Tor Project",
+        "community aggregate (X4BNet)"
+      ]
+    },
+    "cloud": {
+      "provider": "Google Cloud",
+      "region": null,
+      "service": null,
+      "range": "2a00:1450:4001::/48",
+      "basis": "asn"
+    },
+    "lists": [],
+    "observed": null,
+    "bogon": false,
+    "special": null,
+    "asOf": {
+      "routing": "2026-10-25T11:00:00Z",
+      "registry": "2026-10-24T12:00:00Z",
+      "indexLoaded": "2026-10-25T12:00:00Z"
+    },
+    "servedFrom": null,
+    "timezone": {
+      "id": "Europe/Dublin",
+      "basis": "country"
+    },
+    "density": null
+  },
+  "185.220.101.151": {
+    "ip": "185.220.101.151",
+    "hostname": null,
+    "city": null,
+    "region": null,
+    "country": "DE",
+    "loc": null,
+    "hostnameSampledFrom": null,
+    "location": {
+      "country": "DE",
+      "city": null,
+      "citySource": null,
+      "cityConfidence": "none",
+      "lat": null,
+      "lon": null,
+      "hub": null,
+      "measured": null,
+      "kind": "registryCountry",
+      "ptrInference": false,
+      "prior": null,
+      "corroboration": null,
+      "evidence": [
+        {
+          "source": "registry",
+          "detail": "ripencc lists 185.220.100.0/22 for a holder in DE"
+        },
+        {
+          "source": "asn",
+          "detail": "AS60729 is registered in DE"
+        }
+      ],
+      "snap": null
+    },
+    "org": "AS60729 Stiftung Erneuerbare Freiheit",
+    "asn": {
+      "asn": "AS60729",
+      "name": "Stiftung Erneuerbare Freiheit",
+      "handle": "ZWIEBELFREUNDE",
+      "domain": null,
+      "country": "DE",
+      "route": "185.220.101.0/24",
+      "type": null,
+      "domainMatchesOperator": null
+    },
+    "carrier": null,
+    "connection": {
+      "type": null,
+      "mobile": null,
+      "hosting": null,
+      "networkType": null,
+      "sampleHostname": null,
+      "shared": false,
+      "sampleHostnameAt": null,
+      "satellite": null
+    },
+    "accuracyRadiusKm": null,
+    "registry": {
+      "rir": "ripencc",
+      "status": "allocated",
+      "country": "DE",
+      "range": "185.220.100.0/22",
+      "allocated": "2011-12-30"
+    },
+    "routing": {
+      "prefix": "185.220.101.0/24",
+      "origins": [
+        {
+          "asn": 60729,
+          "name": "Stiftung Erneuerbare Freiheit",
+          "peers": 16,
+          "upstream": 3320,
+          "upstreamName": "Deutsche Telekom AG",
+          "rpki": "notFound",
+          "streaming": false
+        }
+      ],
+      "moas": false,
+      "firstSeen": "2026-09-25T12:00:00Z",
+      "lastSeen": "2026-10-25T12:00:00Z"
+    },
+    "privacy": {
+      "vpn": false,
+      "proxy": null,
+      "tor": true,
+      "relay": false,
+      "hosting": null,
+      "service": "Tor",
+      "listsChecked": [
+        "Apple iCloud Private Relay",
+        "Tor Project",
+        "community aggregate (X4BNet)"
+      ]
+    },
+    "cloud": null,
+    "lists": [
+      {
+        "provider": "Tor Project",
+        "category": "tor",
+        "range": "185.220.101.151/32",
+        "region": null,
+        "service": null
+      },
+      {
+        "provider": "community aggregate (X4BNet)",
+        "category": "vpn",
+        "range": "185.220.101.151/32",
+        "region": null,
+        "service": null
+      }
+    ],
+    "observed": null,
+    "bogon": false,
+    "special": null,
+    "asOf": {
+      "routing": "2026-10-25T11:00:00Z",
+      "registry": "2026-10-24T12:00:00Z",
+      "indexLoaded": "2026-10-25T12:00:00Z"
+    },
+    "servedFrom": null,
+    "timezone": {
+      "id": "Europe/Berlin",
+      "basis": "country"
+    },
+    "density": null
+  },
+  "104.28.28.4": {
+    "ip": "104.28.28.4",
+    "hostname": null,
+    "city": "Sydney",
+    "region": null,
+    "country": "AU",
+    "loc": null,
+    "hostnameSampledFrom": null,
+    "location": {
+      "country": "AU",
+      "city": "Sydney",
+      "citySource": "icloudRelayFeed",
+      "cityConfidence": "high",
+      "lat": null,
+      "lon": null,
+      "hub": null,
+      "measured": null,
+      "kind": "registryCountry",
+      "ptrInference": false,
+      "prior": null,
+      "corroboration": null,
+      "evidence": [
+        {
+          "source": "registry",
+          "detail": "arin lists 104.16.0.0/12 for a holder in US"
+        },
+        {
+          "source": "asn",
+          "detail": "AS13335 is registered in US"
+        },
+        {
+          "source": "feed",
+          "detail": "Apple\u0027s iCloud Private Relay list places the range in Sydney"
+        }
+      ],
+      "snap": null
+    },
+    "org": "AS13335 Cloudflare, Inc.",
+    "asn": {
+      "asn": "AS13335",
+      "name": "Cloudflare, Inc.",
+      "handle": "CLOUDFLARENET",
+      "domain": null,
+      "country": "US",
+      "route": "104.28.28.0/24",
+      "type": "hosting",
+      "domainMatchesOperator": null
+    },
+    "carrier": null,
+    "connection": {
+      "type": "hosting",
+      "mobile": null,
+      "hosting": true,
+      "networkType": null,
+      "sampleHostname": null,
+      "shared": false,
+      "sampleHostnameAt": null,
+      "satellite": null
+    },
+    "accuracyRadiusKm": 50,
+    "registry": {
+      "rir": "arin",
+      "status": "allocated",
+      "country": "US",
+      "range": "104.16.0.0/12",
+      "allocated": "2011-12-30"
+    },
+    "routing": {
+      "prefix": "104.28.28.0/24",
+      "origins": [
+        {
+          "asn": 13335,
+          "name": "Cloudflare, Inc.",
+          "peers": 16,
+          "upstream": 3320,
+          "upstreamName": "Deutsche Telekom AG",
+          "rpki": "notFound",
+          "streaming": false
+        }
+      ],
+      "moas": false,
+      "firstSeen": "2026-09-25T12:00:00Z",
+      "lastSeen": "2026-10-25T12:00:00Z"
+    },
+    "privacy": {
+      "vpn": false,
+      "proxy": null,
+      "tor": false,
+      "relay": true,
+      "hosting": true,
+      "service": "Apple iCloud Private Relay",
+      "listsChecked": [
+        "Apple iCloud Private Relay",
+        "Tor Project",
+        "community aggregate (X4BNet)"
+      ]
+    },
+    "cloud": null,
+    "lists": [
+      {
+        "provider": "Apple iCloud Private Relay",
+        "category": "relay",
+        "range": "104.28.28.4/32",
+        "region": "AU/NSW/Sydney",
+        "service": null
+      }
+    ],
+    "observed": null,
+    "bogon": false,
+    "special": null,
+    "asOf": {
+      "routing": "2026-10-25T11:00:00Z",
+      "registry": "2026-10-24T12:00:00Z",
+      "indexLoaded": "2026-10-25T12:00:00Z"
+    },
+    "servedFrom": null,
+    "timezone": null,
+    "density": null
+  },
+  "52.95.110.1": {
+    "ip": "52.95.110.1",
+    "hostname": null,
+    "city": "Dublin",
+    "region": null,
+    "country": "IE",
+    "loc": "53.3500,-6.2600",
+    "hostnameSampledFrom": null,
+    "location": {
+      "country": "IE",
+      "city": "Dublin",
+      "citySource": "awsRegion",
+      "cityConfidence": "high",
+      "lat": 53.35,
+      "lon": -6.26,
+      "hub": null,
+      "measured": null,
+      "kind": "registryCountry",
+      "ptrInference": false,
+      "prior": null,
+      "corroboration": null,
+      "evidence": [
+        {
+          "source": "registry",
+          "detail": "arin lists 52.88.0.0/13 for a holder in US"
+        },
+        {
+          "source": "asn",
+          "detail": "AS16509 is registered in US"
+        },
+        {
+          "source": "cloud",
+          "detail": "AWS publishes the range for eu-west-1, Dublin"
+        }
+      ],
+      "snap": null
+    },
+    "org": "AS16509 Amazon.com, Inc.",
+    "asn": {
+      "asn": "AS16509",
+      "name": "Amazon.com, Inc.",
+      "handle": "AMAZON-02",
+      "domain": null,
+      "country": "US",
+      "route": "52.88.0.0/13",
+      "type": null,
+      "domainMatchesOperator": null
+    },
+    "carrier": null,
+    "connection": {
+      "type": null,
+      "mobile": null,
+      "hosting": true,
+      "networkType": null,
+      "sampleHostname": null,
+      "shared": false,
+      "sampleHostnameAt": null,
+      "satellite": null
+    },
+    "accuracyRadiusKm": 50,
+    "registry": {
+      "rir": "arin",
+      "status": "allocated",
+      "country": "US",
+      "range": "52.88.0.0/13",
+      "allocated": "2011-12-30"
+    },
+    "routing": {
+      "prefix": "52.88.0.0/13",
+      "origins": [
+        {
+          "asn": 16509,
+          "name": "Amazon.com, Inc.",
+          "peers": 15,
+          "upstream": 1299,
+          "upstreamName": "Arelion Sweden AB",
+          "rpki": "notFound",
+          "streaming": false
+        }
+      ],
+      "moas": false,
+      "firstSeen": "2026-09-25T12:00:00Z",
+      "lastSeen": "2026-10-25T12:00:00Z"
+    },
+    "privacy": {
+      "vpn": false,
+      "proxy": null,
+      "tor": false,
+      "relay": false,
+      "hosting": true,
+      "service": null,
+      "listsChecked": [
+        "Apple iCloud Private Relay",
+        "Tor Project",
+        "community aggregate (X4BNet)"
+      ]
+    },
+    "cloud": {
+      "provider": "AWS",
+      "region": "eu-west-1",
+      "service": "EC2",
+      "range": "52.88.0.0/13",
+      "basis": "list"
+    },
+    "lists": [
+      {
+        "provider": "AWS",
+        "category": "cloud",
+        "range": "52.88.0.0/13",
+        "region": "eu-west-1",
+        "service": "EC2"
+      }
+    ],
+    "observed": null,
+    "bogon": false,
+    "special": null,
+    "asOf": {
+      "routing": "2026-10-25T11:00:00Z",
+      "registry": "2026-10-24T12:00:00Z",
+      "indexLoaded": "2026-10-25T12:00:00Z"
+    },
+    "servedFrom": null,
+    "timezone": {
+      "id": "Europe/Dublin",
+      "basis": "country"
+    },
+    "density": null
+  },
+  "5.187.55.1": {
+    "ip": "5.187.55.1",
+    "hostname": null,
+    "city": "Gda\u0144sk",
+    "region": null,
+    "country": "PL",
+    "loc": "54.3500,18.6500",
+    "hostnameSampledFrom": null,
+    "location": {
+      "country": "PL",
+      "city": "Gda\u0144sk",
+      "citySource": "traceroutePrefixHub",
+      "cityConfidence": "medium",
+      "lat": 54.35,
+      "lon": 18.65,
+      "hub": {
+        "city": "Gda\u0144sk",
+        "country": "PL",
+        "lat": 54.35,
+        "lon": 18.65,
+        "radiusKm": 50,
+        "rttMs": 0.34,
+        "source": "traceroutePrefix"
+      },
+      "measured": null,
+      "kind": "infrastructureHub",
+      "ptrInference": false,
+      "prior": null,
+      "corroboration": null,
+      "evidence": [
+        {
+          "source": "registry",
+          "detail": "ripencc lists 5.187.48.0/21 for a holder in PL"
+        },
+        {
+          "source": "asn",
+          "detail": "AS197155 is registered in PL"
+        },
+        {
+          "source": "traceroute",
+          "detail": "routers inside this prefix were seen in Gda\u0144sk"
+        }
+      ],
+      "snap": null
+    },
+    "org": "AS197155 Artnet Sp. z o.o.",
+    "asn": {
+      "asn": "AS197155",
+      "name": "Artnet Sp. z o.o.",
+      "handle": "ARTNET-AS",
+      "domain": null,
+      "country": "PL",
+      "route": "5.187.55.0/24",
+      "type": null,
+      "domainMatchesOperator": null
+    },
+    "carrier": null,
+    "connection": {
+      "type": null,
+      "mobile": null,
+      "hosting": null,
+      "networkType": null,
+      "sampleHostname": null,
+      "shared": false,
+      "sampleHostnameAt": null,
+      "satellite": null
+    },
+    "accuracyRadiusKm": 50,
+    "registry": {
+      "rir": "ripencc",
+      "status": "allocated",
+      "country": "PL",
+      "range": "5.187.48.0/21",
+      "allocated": "2011-12-30"
+    },
+    "routing": {
+      "prefix": "5.187.55.0/24",
+      "origins": [
+        {
+          "asn": 197155,
+          "name": "Artnet Sp. z o.o.",
+          "peers": 16,
+          "upstream": 3320,
+          "upstreamName": "Deutsche Telekom AG",
+          "rpki": "notFound",
+          "streaming": false
+        }
+      ],
+      "moas": false,
+      "firstSeen": "2026-09-25T12:00:00Z",
+      "lastSeen": "2026-10-25T12:00:00Z"
+    },
+    "privacy": {
+      "vpn": false,
+      "proxy": null,
+      "tor": false,
+      "relay": false,
+      "hosting": null,
+      "service": null,
+      "listsChecked": [
+        "Apple iCloud Private Relay",
+        "Tor Project",
+        "community aggregate (X4BNet)"
+      ]
+    },
+    "cloud": null,
+    "lists": [],
+    "observed": {
+      "prefix": "5.187.55.0/24",
+      "countries": [
+        {
+          "country": "PL",
+          "routers": 1,
+          "minRtt": 0.34
+        }
+      ],
+      "routerAddresses": 1,
+      "probes": 1,
+      "anycast": false,
+      "registryCountry": "PL",
+      "registryContradiction": false,
+      "asnHubs": null
+    },
+    "bogon": false,
+    "special": null,
+    "asOf": {
+      "routing": "2026-10-25T11:00:00Z",
+      "registry": "2026-10-24T12:00:00Z",
+      "indexLoaded": "2026-10-25T12:00:00Z"
+    },
+    "servedFrom": null,
+    "timezone": {
+      "id": "Europe/Warsaw",
+      "basis": "country"
+    },
+    "density": {
+      "prefix": "5.187.55.0/24",
+      "sampled": 8,
+      "answered": 6,
+      "fraction": 0.75,
+      "reading": "dense",
+      "ttl": {
+        "t64": 1,
+        "t128": 5,
+        "t255": 0,
+        "other": 0
+      },
+      "ttlReading": "windows",
+      "minRttMs": 118.25,
+      "medianRttMs": 124.6,
+      "withinKm": 11855,
+      "vantage": {
+        "site": "do-mkc1",
+        "location": "Kansas City, US",
+        "lat": 39.1,
+        "lon": -94.58
+      },
+      "cityConsistent": true,
+      "sampledAt": "2026-10-25T09:12:00Z"
+    }
+  },
+  "31.6.176.1": {
+    "ip": "31.6.176.1",
+    "hostname": "host-31-6-128-1.dynamic.mm.pl",
+    "city": "Warsaw",
+    "region": null,
+    "country": "PL",
+    "loc": "52.2300,21.0100",
+    "hostnameSampledFrom": "31.6.128.1",
+    "location": {
+      "country": "PL",
+      "city": "Warsaw",
+      "citySource": "tracerouteMeasured",
+      "cityConfidence": "medium",
+      "lat": 52.23,
+      "lon": 21.01,
+      "hub": null,
+      "measured": {
+        "prefix": "31.6.176.0/24",
+        "city": "Warsaw",
+        "rttMs": 0.83,
+        "probes": 5,
+        "targetAnswered": true,
+        "edgeOnly": false,
+        "depth": 3,
+        "method": "traceroute",
+        "probesByRtt": [
+          {
+            "city": "Warsaw",
+            "country": "PL",
+            "rtt": 0.83,
+            "reached": true,
+            "depth": 3,
+            "lastHop": "1.2.3.4",
+            "lastHopAsn": 21021,
+            "lat": 52.23,
+            "lon": 21.01
+          },
+          {
+            "city": "Gdansk",
+            "country": "PL",
+            "rtt": 8.1,
+            "reached": false,
+            "depth": 0,
+            "lastHop": "5.6.7.8",
+            "lastHopAsn": null,
+            "lat": 54.35,
+            "lon": 18.65
+          }
+        ],
+        "measuredAt": "2026-10-25T12:00:00Z",
+        "estimate": {
+          "city": "Warsaw",
+          "country": "PL",
+          "lat": 52.21,
+          "lon": 20.98,
+          "radiusKm": 83,
+          "probes": 2,
+          "cities": null
+        }
+      },
+      "kind": "measured",
+      "ptrInference": false,
+      "prior": null,
+      "corroboration": null,
+      "evidence": [
+        {
+          "source": "registry",
+          "detail": "ripencc lists 31.6.128.0/17 for a holder in PL"
+        },
+        {
+          "source": "asn",
+          "detail": "AS21021 is registered in PL"
+        },
+        {
+          "source": "traceroute",
+          "detail": "a probe in Warsaw reached the block in 0.83 ms"
+        }
+      ],
+      "snap": null
+    },
+    "org": "AS21021 Multimedia Polska Sp. z o.o.",
+    "asn": {
+      "asn": "AS21021",
+      "name": "Multimedia Polska Sp. z o.o.",
+      "handle": "MULTIMEDIA-AS",
+      "domain": "mm.pl",
+      "country": "PL",
+      "route": "31.6.128.0/18",
+      "type": "isp",
+      "domainMatchesOperator": false
+    },
+    "carrier": null,
+    "connection": {
+      "type": "isp",
+      "mobile": false,
+      "hosting": false,
+      "networkType": "residential",
+      "sampleHostname": "host-31-6-128-1.dynamic.mm.pl",
+      "shared": false,
+      "sampleHostnameAt": null,
+      "satellite": null
+    },
+    "accuracyRadiusKm": 113,
+    "registry": {
+      "rir": "ripencc",
+      "status": "allocated",
+      "country": "PL",
+      "range": "31.6.128.0/17",
+      "allocated": "2011-12-30"
+    },
+    "routing": {
+      "prefix": "31.6.128.0/18",
+      "origins": [
+        {
+          "asn": 21021,
+          "name": "Multimedia Polska Sp. z o.o.",
+          "peers": 16,
+          "upstream": 3320,
+          "upstreamName": "Deutsche Telekom AG",
+          "rpki": "invalid",
+          "streaming": false
+        }
+      ],
+      "moas": false,
+      "firstSeen": "2026-09-25T12:00:00Z",
+      "lastSeen": "2026-10-25T12:00:00Z"
+    },
+    "privacy": {
+      "vpn": false,
+      "proxy": null,
+      "tor": false,
+      "relay": false,
+      "hosting": false,
+      "service": null,
+      "listsChecked": [
+        "Apple iCloud Private Relay",
+        "Tor Project",
+        "community aggregate (X4BNet)"
+      ]
+    },
+    "cloud": null,
+    "lists": [],
+    "observed": null,
+    "bogon": false,
+    "special": null,
+    "asOf": {
+      "routing": "2026-10-25T11:00:00Z",
+      "registry": "2026-10-24T12:00:00Z",
+      "indexLoaded": "2026-10-25T12:00:00Z"
+    },
+    "servedFrom": null,
+    "timezone": {
+      "id": "Europe/Warsaw",
+      "basis": "country"
+    },
+    "density": null
+  },
+  "10.0.0.1": {
+    "ip": "10.0.0.1",
+    "hostname": null,
+    "city": null,
+    "region": null,
+    "country": null,
+    "loc": null,
+    "hostnameSampledFrom": null,
+    "location": {
+      "country": null,
+      "city": null,
+      "citySource": null,
+      "cityConfidence": "none",
+      "lat": null,
+      "lon": null,
+      "hub": null,
+      "measured": null,
+      "kind": "registryCountry",
+      "ptrInference": false,
+      "prior": null,
+      "corroboration": null,
+      "evidence": [],
+      "snap": null
+    },
+    "org": null,
+    "asn": null,
+    "carrier": null,
+    "connection": {
+      "type": null,
+      "mobile": null,
+      "hosting": null,
+      "networkType": null,
+      "sampleHostname": null,
+      "shared": false,
+      "sampleHostnameAt": null,
+      "satellite": null
+    },
+    "accuracyRadiusKm": null,
+    "registry": null,
+    "routing": null,
+    "privacy": {
+      "vpn": false,
+      "proxy": null,
+      "tor": false,
+      "relay": false,
+      "hosting": null,
+      "service": null,
+      "listsChecked": [
+        "Apple iCloud Private Relay",
+        "Tor Project",
+        "community aggregate (X4BNet)"
+      ]
+    },
+    "cloud": null,
+    "lists": [],
+    "observed": null,
+    "bogon": true,
+    "special": null,
+    "asOf": {
+      "routing": "2026-10-25T11:00:00Z",
+      "registry": "2026-10-24T12:00:00Z",
+      "indexLoaded": "2026-10-25T12:00:00Z"
+    },
+    "servedFrom": null,
+    "timezone": null,
+    "density": null
+  },
+  "100.64.1.1": {
+    "ip": "100.64.1.1",
+    "hostname": null,
+    "city": null,
+    "region": null,
+    "country": null,
+    "loc": null,
+    "hostnameSampledFrom": null,
+    "location": {
+      "country": null,
+      "city": null,
+      "citySource": null,
+      "cityConfidence": "none",
+      "lat": null,
+      "lon": null,
+      "hub": null,
+      "measured": null,
+      "kind": "registryCountry",
+      "ptrInference": false,
+      "prior": null,
+      "corroboration": null,
+      "evidence": [],
+      "snap": null
+    },
+    "org": null,
+    "asn": null,
+    "carrier": null,
+    "connection": {
+      "type": null,
+      "mobile": null,
+      "hosting": null,
+      "networkType": null,
+      "sampleHostname": null,
+      "shared": false,
+      "sampleHostnameAt": null,
+      "satellite": null
+    },
+    "accuracyRadiusKm": null,
+    "registry": null,
+    "routing": null,
+    "privacy": {
+      "vpn": false,
+      "proxy": null,
+      "tor": false,
+      "relay": false,
+      "hosting": null,
+      "service": null,
+      "listsChecked": [
+        "Apple iCloud Private Relay",
+        "Tor Project",
+        "community aggregate (X4BNet)"
+      ]
+    },
+    "cloud": null,
+    "lists": [
+      {
+        "provider": "IANA special-purpose registry",
+        "category": "special",
+        "range": "100.64.0.0/10",
+        "region": null,
+        "service": "Shared Address Space"
+      }
+    ],
+    "observed": null,
+    "bogon": true,
+    "special": "Shared Address Space",
+    "asOf": {
+      "routing": "2026-10-25T11:00:00Z",
+      "registry": "2026-10-24T12:00:00Z",
+      "indexLoaded": "2026-10-25T12:00:00Z"
+    },
+    "servedFrom": null,
+    "timezone": null,
+    "density": null
+  },
+  "203.0.114.1": {
+    "ip": "203.0.114.1",
+    "hostname": null,
+    "city": null,
+    "region": null,
+    "country": null,
+    "loc": null,
+    "hostnameSampledFrom": null,
+    "location": {
+      "country": null,
+      "city": null,
+      "citySource": null,
+      "cityConfidence": "none",
+      "lat": null,
+      "lon": null,
+      "hub": null,
+      "measured": null,
+      "kind": "registryCountry",
+      "ptrInference": false,
+      "prior": null,
+      "corroboration": null,
+      "evidence": [],
+      "snap": null
+    },
+    "org": null,
+    "asn": null,
+    "carrier": null,
+    "connection": {
+      "type": null,
+      "mobile": null,
+      "hosting": null,
+      "networkType": null,
+      "sampleHostname": null,
+      "shared": false,
+      "sampleHostnameAt": null,
+      "satellite": null
+    },
+    "accuracyRadiusKm": null,
+    "registry": null,
+    "routing": null,
+    "privacy": {
+      "vpn": false,
+      "proxy": null,
+      "tor": false,
+      "relay": false,
+      "hosting": null,
+      "service": null,
+      "listsChecked": [
+        "Apple iCloud Private Relay",
+        "Tor Project",
+        "community aggregate (X4BNet)"
+      ]
+    },
+    "cloud": null,
+    "lists": [],
+    "observed": null,
+    "bogon": false,
+    "special": null,
+    "asOf": {
+      "routing": "2026-10-25T11:00:00Z",
+      "registry": "2026-10-24T12:00:00Z",
+      "indexLoaded": "2026-10-25T12:00:00Z"
+    },
+    "servedFrom": null,
+    "timezone": null,
+    "density": null
+  },
+  "::ffff:37.30.56.54": {
+    "ip": "37.30.56.54",
+    "hostname": "37.30.32.1.Mobile.internet.t-mobile.pl",
+    "city": "Warsaw",
+    "region": null,
+    "country": "PL",
+    "loc": "52.2300,21.0100",
+    "hostnameSampledFrom": "37.30.32.1",
+    "location": {
+      "country": "PL",
+      "city": "Warsaw",
+      "citySource": "asnHubFrequencyPrior",
+      "cityConfidence": "low",
+      "lat": 52.23,
+      "lon": 21.01,
+      "hub": null,
+      "measured": null,
+      "kind": "asnMultiHub",
+      "ptrInference": false,
+      "prior": null,
+      "corroboration": null,
+      "evidence": [
+        {
+          "source": "registry",
+          "detail": "ripencc lists 37.30.0.0/15 for a holder in PL"
+        },
+        {
+          "source": "asn",
+          "detail": "AS12912 is registered in PL"
+        },
+        {
+          "source": "default",
+          "detail": "Warsaw is where most of the operator\u0027s routers were seen: a default, not a finding"
+        }
+      ],
+      "snap": null
+    },
+    "org": "AS12912 T-Mobile Polska S.A.",
+    "asn": {
+      "asn": "AS12912",
+      "name": "T-Mobile Polska S.A.",
+      "handle": "TMPL",
+      "domain": "t-mobile.pl",
+      "country": "PL",
+      "route": "37.30.32.0/19",
+      "type": "isp",
+      "domainMatchesOperator": true
+    },
+    "carrier": {
+      "name": "T-Mobile Polska S.A.",
+      "asn": "AS12912"
+    },
+    "connection": {
+      "type": "isp",
+      "mobile": true,
+      "hosting": false,
+      "networkType": "mobile",
+      "sampleHostname": "37.30.32.1.Mobile.internet.t-mobile.pl",
+      "shared": false,
+      "sampleHostnameAt": null,
+      "satellite": null
+    },
+    "accuracyRadiusKm": 284,
+    "registry": {
+      "rir": "ripencc",
+      "status": "allocated",
+      "country": "PL",
+      "range": "37.30.0.0/15",
+      "allocated": "2011-12-30"
+    },
+    "routing": {
+      "prefix": "37.30.32.0/19",
+      "origins": [
+        {
+          "asn": 12912,
+          "name": "T-Mobile Polska S.A.",
+          "peers": 16,
+          "upstream": 3320,
+          "upstreamName": "Deutsche Telekom AG",
+          "rpki": "valid",
+          "streaming": false
+        }
+      ],
+      "moas": false,
+      "firstSeen": "2026-09-25T12:00:00Z",
+      "lastSeen": "2026-10-25T12:00:00Z"
+    },
+    "privacy": {
+      "vpn": false,
+      "proxy": null,
+      "tor": false,
+      "relay": false,
+      "hosting": false,
+      "service": null,
+      "listsChecked": [
+        "Apple iCloud Private Relay",
+        "Tor Project",
+        "community aggregate (X4BNet)"
+      ]
+    },
+    "cloud": null,
+    "lists": [],
+    "observed": {
+      "prefix": "37.30.32.0/19",
+      "countries": [],
+      "routerAddresses": 0,
+      "probes": 0,
+      "anycast": false,
+      "registryCountry": null,
+      "registryContradiction": false,
+      "asnHubs": [
+        {
+          "city": "Warsaw",
+          "country": "PL",
+          "lat": 52.23,
+          "lon": 21.01,
+          "routers": 4,
+          "minRtt": 1.1,
+          "weight": 0.4,
+          "named": false
+        },
+        {
+          "city": "Krak\u00F3w",
+          "country": "PL",
+          "lat": 50.06,
+          "lon": 19.94,
+          "routers": 3,
+          "minRtt": 2,
+          "weight": 0.35,
+          "named": false
+        },
+        {
+          "city": "Gda\u0144sk",
+          "country": "PL",
+          "lat": 54.35,
+          "lon": 18.65,
+          "routers": 3,
+          "minRtt": 2,
+          "weight": 0.25,
+          "named": false
+        }
+      ]
+    },
+    "bogon": false,
+    "special": null,
+    "asOf": {
+      "routing": "2026-10-25T11:00:00Z",
+      "registry": "2026-10-24T12:00:00Z",
+      "indexLoaded": "2026-10-25T12:00:00Z"
+    },
+    "servedFrom": null,
+    "timezone": {
+      "id": "Europe/Warsaw",
+      "basis": "country"
+    },
+    "density": {
+      "prefix": "37.30.32.0/19",
+      "sampled": 16,
+      "answered": 0,
+      "fraction": 0,
+      "reading": "dark",
+      "ttl": {
+        "t64": 0,
+        "t128": 0,
+        "t255": 0,
+        "other": 0
+      },
+      "ttlReading": null,
+      "minRttMs": null,
+      "medianRttMs": null,
+      "withinKm": null,
+      "vantage": {
+        "site": "do-mkc1",
+        "location": "Kansas City, US",
+        "lat": 39.1,
+        "lon": -94.58
+      },
+      "cityConsistent": null,
+      "sampledAt": "2026-10-25T09:13:00Z"
+    }
+  }
+}

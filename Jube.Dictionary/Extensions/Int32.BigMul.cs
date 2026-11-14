@@ -7,7 +7,8 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static long BigMul(this Int32 a, Int32 b)
+        [Description("Produces the full product of two numbers.")]
+        public static long BigMul(this Int32 a, [Description("The second number to multiply.")] Int32 b)
         {
             return Math.BigMul(a, b);
         }

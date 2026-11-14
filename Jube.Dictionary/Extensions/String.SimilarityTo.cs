@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double SimilarityTo(this string? @this, string? other)
+        [Description("Returns a 0-1 similarity score derived from the normalized Levenshtein distance.")]
+        public static double SimilarityTo(this string? @this,
+            [Description("The string to compare with.")] string? other)
         {
             var source = @this ?? "";
             var target = other ?? "";

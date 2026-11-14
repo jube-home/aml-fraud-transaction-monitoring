@@ -14,6 +14,7 @@
 using System.ComponentModel;
 using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -27,22 +28,26 @@ namespace Jube.Dto.Repository.RoleRegistryPermission
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
+    [MessagePackObject]
     public class RoleRegistryPermissionDto : IUpdated, IActivatable, ILockable, ITreeChild
     {
         [Description("Identifier of the Role Registry this permission grant belongs to. Set from the parent " +
                      "Role Registry context; not user-editable.")]
+        [Key(0)]
         public int RoleRegistryId { get; set; }
 
         [Description("Identifier of the Permission Specification being granted to the Role -- the same " +
                      "integer literal every service's own permission check is hardcoded against. Must reference " +
                      "an existing row in the Permission Specification catalogue.")]
-        [FormField(Group = "Identity", Order = 10, Widget = "dropdown")]
-        [Lookup("PermissionSpecification", TextField = "name", ValueField = "id")]
+        [FormField(Group = "Identity", Order = 10, Widget = "select")]
+        [Lookup("/api/PermissionSpecification", TextField = "name", ValueField = "id")]
         [ListColumn(Order = 10, Title = "Permission")]
+        [Key(1)]
         public int PermissionSpecificationId { get; set; }
 
         [Description("Globally-addressable identifier for this row, stable across environments and the form "
                      + "in which every other area refers to it. Server-assigned. Read-only.")]
+        [Key(2)]
         public Guid Guid { get; set; }
 
         [Description("When true, this permission grant is enforced. When false, it is ignored and the Role " +
@@ -50,40 +55,50 @@ namespace Jube.Dto.Repository.RoleRegistryPermission
         [FormField(Group = "Identity", Order = 20, Widget = "switch")]
         [NewDefault(false)]
         [ListColumn(Order = 20, Title = "Active")]
+        [Key(3)]
         public bool Active { get; set; }
 
         [Description("When true, this grant is locked and cannot be edited or deleted.")]
         [FormField(Group = "Identity", Order = 30, Widget = "switch")]
         [NewDefault(false)]
+        [Key(4)]
         public bool Locked { get; set; }
 
         [Description("Server-assigned row identifier. Read-only.")]
+        [Key(5)]
         public int Id { get; set; }
 
         [Description("User who created this row. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 10)]
+        [Key(6)]
         public string? CreatedUser { get; set; }
 
         [Description("Timestamp (UTC) this row was created. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 20)]
+        [Key(7)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("User who last updated this row. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 30)]
+        [Key(8)]
         public string? UpdatedUser { get; set; }
 
         [Description("Timestamp (UTC) this row was last updated. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 40)]
+        [Key(9)]
         public DateTimeOffset? UpdatedDate { get; set; }
 
         [Description("Server-assigned optimistic-concurrency version number. Read-only.")]
         [FormField(Group = "Audit", Order = 50)]
+        [Key(10)]
         public int Version { get; set; }
 
         [Description("User who removed this row, if soft-deleted. Server-assigned. Read-only.")]
+        [Key(11)]
         public string? DeletedUser { get; set; }
 
         [Description("Timestamp (UTC) this row was removed, if applicable. Server-assigned. Read-only.")]
+        [Key(12)]
         public DateTimeOffset? DeletedDate { get; set; }
     }
 }

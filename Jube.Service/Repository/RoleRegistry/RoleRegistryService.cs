@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
@@ -40,6 +41,7 @@ namespace Jube.Service.Repository.RoleRegistry
 
         private readonly ILog auditLog;
         private readonly ILog log;
+        private readonly PrivilegeEscalationGuard guard;
         private readonly PermissionValidation permissionValidation;
         private readonly RuleRepository repository;
         private readonly IServiceChangeBus serviceChangeBus;
@@ -60,6 +62,7 @@ namespace Jube.Service.Repository.RoleRegistry
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             repository = new RuleRepository(dbContext, userName);
+            guard = new PrivilegeEscalationGuard(dbContext, tenantRegistryId, permissionValidation);
             validator = new RoleRegistryDtoValidator(repository, strings);
         }
 
@@ -582,6 +585,8 @@ namespace Jube.Service.Repository.RoleRegistry
                     throw new DtoValidationException(results);
                 }
 
+                await EnsureMayEditRoleAsync("RoleRegistry.Update", model.Id, token).ConfigureAwait(false);
+
                 var saved = await repository.UpdateAsync(RoleRegistryMapper.ToPoco(model), token)
                     .ConfigureAwait(false);
                 op.Entity(saved.Id);
@@ -617,6 +622,12 @@ namespace Jube.Service.Repository.RoleRegistry
 
                 throw new NotFoundException(strings[RoleRegistryResources.NotFound]);
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
@@ -649,6 +660,7 @@ namespace Jube.Service.Repository.RoleRegistry
             try
             {
                 EnsurePermitted("RoleRegistry.Delete", permissions);
+                await EnsureMayEditRoleAsync("RoleRegistry.Delete", id, token).ConfigureAwait(false);
                 await repository.DeleteAsync(id, token).ConfigureAwait(false);
                 op.Entity(id);
                 op.Deleted();
@@ -685,6 +697,21 @@ namespace Jube.Service.Repository.RoleRegistry
                 log.Error($"RoleRegistry.Delete: unexpected failure id={id} user={userName}", ex);
                 throw;
             }
+        }
+
+        private async Task EnsureMayEditRoleAsync(string op, int roleRegistryId, CancellationToken token)
+        {
+            if (await guard.MayEditRoleAsync(roleRegistryId, token).ConfigureAwait(false))
+            {
+                return;
+            }
+
+            if (log.IsWarnEnabled)
+            {
+                log.Warn($"{op}: privilege escalation refused user={userName}");
+            }
+
+            throw new ForbiddenException(strings[RoleRegistryResources.InsufficientPrivilege], permissions);
         }
 
         private void EnsurePermitted(string op, int[] specs)

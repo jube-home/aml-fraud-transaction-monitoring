@@ -17,35 +17,55 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchPercentOfRangeOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (100) is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentOfRangeOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoublePercentOfRangeOutsideRange(flow.Value, minimum, maximum, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectPercentOfRangeOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (100) is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentOfRangeOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoublePercentOfRangeOutsideRange(flow.Value, minimum, maximum, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakPercentOfRangeOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (100) is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentOfRangeOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoublePercentOfRangeOutsideRange(flow.Value, minimum, maximum, lowerBound, upperBound));
             }
 
-            public Flow<double> RequirePercentOfRangeOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (100) is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentOfRangeOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoublePercentOfRangeOutsideRange(flow.Value, minimum, maximum, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsurePercentOfRangeOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (100) is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentOfRangeOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +75,47 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchPercentOfRangeOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (100) is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentOfRangeOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchPercentOfRangeOutsideRange(minimum, maximum, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectPercentOfRangeOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (100) is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentOfRangeOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectPercentOfRangeOutsideRange(minimum, maximum, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakPercentOfRangeOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (100) is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentOfRangeOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakPercentOfRangeOutsideRange(minimum, maximum, lowerBound, upperBound);
             }
 
-            public Flow<double> RequirePercentOfRangeOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (100) is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentOfRangeOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequirePercentOfRangeOutsideRange(minimum, maximum, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsurePercentOfRangeOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (100) is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentOfRangeOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsurePercentOfRangeOutsideRange(minimum, maximum, lowerBound, upperBound);
             }

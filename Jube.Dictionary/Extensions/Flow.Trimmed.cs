@@ -15,11 +15,13 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Replaces the value being tested with the text with white space trimmed; null stays null.")]
         public static Flow<string?> Trimmed(this Flow<string?> flow)
         {
             return flow.Carry(flow.Value?.Trim());
         }
 
+        [Description("Begins a pipeline from the value. Replaces the value being tested with the text with white space trimmed; null stays null.")]
         public static Flow<string?> Trimmed(this string? value)
         {
             return value.Start().Trimmed();

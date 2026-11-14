@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,16 +22,20 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.EntityAnalysisModelBacktest
 {
     [Description("A backtest to submit, optionally over a calendar window ending now instead of an explicit range.")]
+    [MessagePackObject]
     public class BacktestSubmitRequestDto
     {
         [Description("The backtest request: the filter, rule, class, range and limit.")]
+        [Key(0)]
         public BacktestRequestDto? Request { get; set; } = new();
 
         [Description("The calendar interval of a window ending now, e.g. d for days or m for months; with " +
                      "WindowValue it replaces From and To.")]
+        [Key(1)]
         public string? WindowInterval { get; set; }
 
         [Description("How many WindowInterval units the window covers.")]
+        [Key(2)]
         public int? WindowValue { get; set; }
     }
 }

@@ -18,6 +18,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Security.PenTest;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit.Abstractions;
 using Jube.Test.Security.DynamicSql.Models;
 

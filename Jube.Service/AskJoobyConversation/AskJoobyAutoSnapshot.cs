@@ -27,9 +27,7 @@ namespace Jube.Service.AskJoobyConversation
         string userName,
         ILog log,
         IStringLocalizerFactory stringLocalizerFactory,
-        IServiceChangeBus serviceChangeBus,
-        string? preservationSalt,
-        bool legacyEncryptionFallback)
+        IServiceChangeBus serviceChangeBus)
         : IAutoSnapshot
     {
         private readonly SemaphoreSlim gate = new(1, 1);
@@ -56,15 +54,13 @@ namespace Jube.Service.AskJoobyConversation
                     .GetResilientDbContextDataConnection(connectionString, log);
 
                 var service = await PreservationSnapshotService
-                    .CreateAsync(dbContext, userName, log, stringLocalizerFactory, serviceChangeBus,
-                        preservationSalt, legacyEncryptionFallback, token)
+                    .CreateAsync(dbContext, userName, log, stringLocalizerFactory, serviceChangeBus, token)
                     .ConfigureAwait(false);
 
                 var snapshot = await service.CreateForProcessAsync(new PreservationSnapshotRequestDto
                 {
                     Name = $"Before {toolName}",
                     SnapshotSourceId = PreservationSnapshotSource.AskJooby,
-                    Exhaustive = true,
                     Lists = true,
                     Dictionaries = true,
                     Visualisations = true,

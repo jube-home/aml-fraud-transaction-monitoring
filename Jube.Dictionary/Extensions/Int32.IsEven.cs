@@ -6,6 +6,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Checks if the number is even.")]
         public static bool IsEven(this Int32 @this)
         {
             return @this % 2 == 0;

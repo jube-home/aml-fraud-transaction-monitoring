@@ -23,14 +23,27 @@ namespace Jube.Service.EntityApproval
     using Data.Context;
     using Data.Poco;
     using LinqToDB;
+    using LinqToDB.Async;
 
     public static class EntityApprovalChangeSources
     {
+        public static IReadOnlySet<string> IgnoredFieldsFor(EntityApprovalKind kind)
+        {
+            return kind is EntityApprovalKind.EntityAnalysisModelOverride
+                or EntityApprovalKind.EntityAnalysisModelActivationRuleOverride
+                ? overrideReviewIgnoredFields
+                : ReviewIgnoredFields;
+        }
+
         public static readonly IReadOnlySet<string> ReviewIgnoredFields = new HashSet<string>(
             [
                 "Id", "Version", "CreatedUser", "CreatedDate", "UpdatedUser", "UpdatedDate", "DeletedUser",
                 "DeletedDate", "Deleted", "Guid", "DeleteExpiryDate", "ImportId", "InheritedId"
             ],
+            StringComparer.OrdinalIgnoreCase);
+
+        private static readonly IReadOnlySet<string> overrideReviewIgnoredFields = new HashSet<string>(
+            ReviewIgnoredFields.Where(w => !string.Equals(w, "DeleteExpiryDate", StringComparison.OrdinalIgnoreCase)),
             StringComparer.OrdinalIgnoreCase);
 
         private static readonly IReadOnlyDictionary<EntityApprovalKind, Func<DbContext, int, int, CancellationToken,
@@ -119,6 +132,18 @@ namespace Jube.Service.EntityApproval
                     (rows, id, version) => rows
                         .Where(r => r.EntityAnalysisModelHttpAdaptationId == id && r.Version < version)
                         .OrderByDescending(r => r.Version)),
+                [EntityApprovalKind.EntityAnalysisModelGraphRecall] = Source<EntityAnalysisModelGraphRecall,
+                    EntityAnalysisModelGraphRecallVersion>(
+                    (rows, id) => rows.Where(r => r.Id == id),
+                    (rows, id, version) => rows
+                        .Where(r => r.EntityAnalysisModelGraphRecallId == id && r.Version < version)
+                        .OrderByDescending(r => r.Version)),
+                [EntityApprovalKind.EntityAnalysisModelSvirfd] = Source<EntityAnalysisModelSvirfd,
+                    EntityAnalysisModelSvirfdVersion>(
+                    (rows, id) => rows.Where(r => r.Id == id),
+                    (rows, id, version) => rows
+                        .Where(r => r.EntityAnalysisModelSvirfdId == id && r.Version < version)
+                        .OrderByDescending(r => r.Version)),
                 [EntityApprovalKind.ExhaustiveSearchInstance] = Source<ExhaustiveSearchInstance,
                     ExhaustiveSearchInstanceVersion>(
                     (rows, id) => rows.Where(r => r.Id == id),
@@ -130,16 +155,35 @@ namespace Jube.Service.EntityApproval
                     (rows, id, version) => rows
                         .Where(r => r.EntityAnalysisModelActivationRuleId == id && r.Version < version)
                         .OrderByDescending(r => r.Version)),
+                [EntityApprovalKind.EntityAnalysisModelOverride] = Source<Data.Poco.EntityAnalysisModelOverride,
+                    EntityAnalysisModelOverrideVersion>(
+                    (rows, id) => rows.Where(r => r.Id == id),
+                    (rows, id, version) => rows
+                        .Where(r => r.EntityAnalysisModelOverrideId == id && r.Version < version)
+                        .OrderByDescending(r => r.Version)),
+                [EntityApprovalKind.EntityAnalysisModelActivationRuleOverride] =
+                    Source<Data.Poco.EntityAnalysisModelActivationRuleOverride,
+                        EntityAnalysisModelActivationRuleOverrideVersion>(
+                        (rows, id) => rows.Where(r => r.Id == id),
+                        (rows, id, version) => rows
+                            .Where(r => r.EntityAnalysisModelActivationRuleOverrideId == id && r.Version < version)
+                            .OrderByDescending(r => r.Version)),
                 [EntityApprovalKind.EntityAnalysisModelTag] =
                     Source<EntityAnalysisModelTag, EntityAnalysisModelTagVersion>(
                         (rows, id) => rows.Where(r => r.Id == id),
                         (rows, id, version) => rows.Where(r => r.EntityAnalysisModelTagId == id && r.Version < version)
                             .OrderByDescending(r => r.Version)),
-                [EntityApprovalKind.AdvancedAnalyticsInstance] = Source<AdvancedAnalyticsInstance,
-                    AdvancedAnalyticsInstanceVersion>(
+                [EntityApprovalKind.EntityAnalysisModelResponseElevationRange] =
+                    Source<EntityAnalysisModelResponseElevationRange, EntityAnalysisModelResponseElevationRangeVersion>(
+                        (rows, id) => rows.Where(r => r.Id == id),
+                        (rows, id, version) => rows
+                            .Where(r => r.EntityAnalysisModelResponseElevationRangeId == id && r.Version < version)
+                            .OrderByDescending(r => r.Version)),
+                [EntityApprovalKind.AskJoobyAnalyticsInstance] = Source<AskJoobyAnalyticsInstance,
+                    AskJoobyAnalyticsInstanceVersion>(
                     (rows, id) => rows.Where(r => r.Id == id),
                     (rows, id, version) => rows
-                        .Where(r => r.AdvancedAnalyticsInstanceId == id && r.Version < version)
+                        .Where(r => r.AskJoobyAnalyticsInstanceId == id && r.Version < version)
                         .OrderByDescending(r => r.Version))
             };
 

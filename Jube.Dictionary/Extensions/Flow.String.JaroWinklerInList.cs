@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchJaroWinklerInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the Jaro-Winkler similarity to an entry is at least the threshold. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchJaroWinklerInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringJaroWinklerInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> RejectJaroWinklerInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the Jaro-Winkler similarity to an entry is at least the threshold. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectJaroWinklerInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringJaroWinklerInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> BreakJaroWinklerInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the Jaro-Winkler similarity to an entry is at least the threshold. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakJaroWinklerInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringJaroWinklerInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> RequireJaroWinklerInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the Jaro-Winkler similarity to an entry is at least the threshold. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireJaroWinklerInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringJaroWinklerInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> EnsureJaroWinklerInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the Jaro-Winkler similarity to an entry is at least the threshold. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureJaroWinklerInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchJaroWinklerInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the Jaro-Winkler similarity to an entry is at least the threshold. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchJaroWinklerInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().MatchJaroWinklerInList(list, threshold);
             }
 
-            public Flow<string?> RejectJaroWinklerInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the Jaro-Winkler similarity to an entry is at least the threshold. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectJaroWinklerInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().RejectJaroWinklerInList(list, threshold);
             }
 
-            public Flow<string?> BreakJaroWinklerInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the Jaro-Winkler similarity to an entry is at least the threshold. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakJaroWinklerInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().BreakJaroWinklerInList(list, threshold);
             }
 
-            public Flow<string?> RequireJaroWinklerInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the Jaro-Winkler similarity to an entry is at least the threshold. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireJaroWinklerInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().RequireJaroWinklerInList(list, threshold);
             }
 
-            public Flow<string?> EnsureJaroWinklerInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the Jaro-Winkler similarity to an entry is at least the threshold. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureJaroWinklerInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().EnsureJaroWinklerInList(list, threshold);
             }

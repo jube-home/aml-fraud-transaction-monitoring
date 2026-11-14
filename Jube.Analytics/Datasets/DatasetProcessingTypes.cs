@@ -21,10 +21,13 @@ namespace Jube.Analytics.Datasets
         public const int Sanction = 4;
         public const int Abstraction = 5;
         public const int AbstractionCalculation = 6;
+        public const int Graph = 8;
+        public const int Svirfd = 9;
 
         public static bool IsKnown(int value)
         {
-            return value is Payload or Dictionary or TtlCounter or Sanction or Abstraction or AbstractionCalculation;
+            return value is Payload or Dictionary or TtlCounter or Sanction or Abstraction or AbstractionCalculation
+                or Graph or Svirfd;
         }
 
         public static string Prefix(int value)
@@ -36,6 +39,8 @@ namespace Jube.Analytics.Datasets
                 TtlCounter => "TtlCounter",
                 Sanction => "Sanction",
                 AbstractionCalculation => "AbstractionCalculation",
+                Graph => "Graph",
+                Svirfd => "Svirfd",
                 _ => "Abstraction"
             };
         }

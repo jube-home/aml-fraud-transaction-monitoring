@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static Flow<T> RequireScoreAtLeast<T>(this Flow<T> flow, double threshold)
+        [Description("Continues when the accumulated score is at least the threshold; otherwise decides rejected.")]
+        public static Flow<T> RequireScoreAtLeast<T>(this Flow<T> flow,
+            [Description("The score the pipeline must have reached.")] double threshold)
         {
             return flow.Apply(FlowKind.Require, flow.Score >= threshold);
         }

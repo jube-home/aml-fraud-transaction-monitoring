@@ -122,6 +122,22 @@ namespace Jube.Test.RuleParser
         }
 
         [Fact]
+        public void ALineOfManyStringLiteralsStillParsesAndAHostileTokenAfterThemIsStillLocated()
+        {
+            var literals = string.Join(" & ", Enumerable.Repeat("\"a\"", 5000));
+
+            var valid = RuleParse.Execute($"If (Payload.Country = ({literals})) Then\n   Return True\nEnd If",
+                RuleParse.GatewayRule, Environment(), TestLog.NoOp, null);
+
+            valid.ErrorSpans.Should().BeEmpty();
+
+            var hostile = RuleParse.Execute($"Return (({literals}) & Process) = \"\"", RuleParse.GatewayRule,
+                Environment(), TestLog.NoOp, null);
+
+            hostile.ErrorSpans.Should().Contain(e => e.Message.Contains("'Process'"));
+        }
+
+        [Fact]
         public void WithoutReferencesTheRuleParsesButIsNotMarkedCompiled()
         {
             var result = RuleParse.Execute(ValidGatewayRule, RuleParse.GatewayRule, Environment(), TestLog.NoOp,

@@ -42,8 +42,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(16)] public byte? ReportTable { get; set; }
         [Column] [Nullable] [Key(17)] public string FunctionScript { get; set; }
 
-        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true)]
         [Key(18)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
 

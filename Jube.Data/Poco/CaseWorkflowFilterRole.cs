@@ -38,13 +38,11 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(9)] public int? Version { get; set; }
         [Column] [Nullable] [Key(10)] public int? ImportId { get; set; }
 
-        [Association(ThisKey = "CaseWorkflowFilterGuid", OtherKey = "Guid", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "CaseWorkflowFilterGuid", OtherKey = "Guid", CanBeNull = true)]
         [Key(11)]
         public CaseWorkflowFilter CaseWorkflowFilter { get; set; }
 
-        [Association(ThisKey = "RoleRegistryGuid", OtherKey = "Guid", CanBeNull = false,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "RoleRegistryGuid", OtherKey = "Guid", CanBeNull = false)]
         [Key(13)]
         public RoleRegistry RoleRegistry { get; set; }
     }

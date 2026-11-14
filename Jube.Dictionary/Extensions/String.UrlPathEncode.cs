@@ -9,6 +9,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("URL path encodes a string.")]
         public static String UrlPathEncode(this String str)
         {
             return HttpUtility.UrlPathEncode(str);

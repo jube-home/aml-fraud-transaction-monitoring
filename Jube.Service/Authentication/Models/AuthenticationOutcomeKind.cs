@@ -23,6 +23,7 @@ namespace Jube.Service.Authentication.Models
         ValidationFailed,
         PasswordStrength,
         BadRequestMessage,
-        BadRequest
+        BadRequest,
+        Enrolment
     }
 }

@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 
 namespace Jube.Test.AdvancedAnalytics.Repository

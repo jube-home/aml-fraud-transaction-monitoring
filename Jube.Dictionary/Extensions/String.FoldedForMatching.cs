@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The text folded for matching: case, accents and punctuation removed and white space collapsed.")]
         public static string FoldedForMatching(this string? @this)
         {
             return TransliterationSupport.Fold(@this ?? string.Empty);

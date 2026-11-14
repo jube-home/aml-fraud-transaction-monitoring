@@ -22,6 +22,7 @@ using Jube.Extensions;
 using Jube.TaskCancellation;
 using Jube.Test.Infrastructure;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 using Context = Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.Context.Context;
 using EntityAnalysisModelDomain = Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel;
@@ -100,7 +101,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
                 }
             }
 
-            var cacheService = TestCacheService.Create(out var redis, TestLog.NoOp, ConnectionString);
+            var cacheService = TestCacheService.Create(out var resp, TestLog.NoOp, ConnectionString);
             var tenant = 4321;
             modelGuid = Guid.NewGuid();
 
@@ -114,14 +115,14 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
             var payloadReferenceDateKey = $"ReferenceDate:{tenant}:{modelGuid:N}";
             var payloadHashKey = $"Payload:{tenant}:{modelGuid:N}";
 
-            await redis.SortedSetAddAsync(payloadReferenceDateKey, expiredInstanceGuid.ToString("N"),
+            await resp.SortedSetAddAsync(payloadReferenceDateKey, expiredInstanceGuid.ToString("N"),
                 expiredTimestamp.ToUnixTimeMilliSeconds());
 
-            await redis.SortedSetAddAsync(payloadReferenceDateKey, survivingInstanceGuid.ToString("N"),
+            await resp.SortedSetAddAsync(payloadReferenceDateKey, survivingInstanceGuid.ToString("N"),
                 survivingTimestamp.ToUnixTimeMilliSeconds());
 
-            await redis.HashSetAsync(payloadHashKey, expiredInstanceGuid.ToString("N"), new byte[] { 1, 2, 3 });
-            await redis.HashSetAsync(payloadHashKey, survivingInstanceGuid.ToString("N"), new byte[] { 4, 5, 6 });
+            await resp.HashSetAsync(payloadHashKey, expiredInstanceGuid.ToString("N"), new byte[] { 1, 2, 3 });
+            await resp.HashSetAsync(payloadHashKey, survivingInstanceGuid.ToString("N"), new byte[] { 4, 5, 6 });
 
             const string searchKeyName = "AccountId";
             const string expiredSearchKeyValue = "expired-account";
@@ -131,17 +132,17 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
             var latestReferenceDateSortedSetKey = $"ReferenceDateLatest:{tenant}:{modelGuid:N}:{searchKeyName}";
             var latestPayloadHashKey = $"PayloadLatest:{tenant}:{modelGuid:N}:{searchKeyName}";
 
-            await redis.HashSetAsync(latestReferenceDateHashKey, searchKeyName,
+            await resp.HashSetAsync(latestReferenceDateHashKey, searchKeyName,
                 expiredTimestamp.ToUnixTimeMilliSeconds());
 
-            await redis.SortedSetAddAsync(latestReferenceDateSortedSetKey, expiredSearchKeyValue,
+            await resp.SortedSetAddAsync(latestReferenceDateSortedSetKey, expiredSearchKeyValue,
                 expiredTimestamp.ToUnixTimeMilliSeconds());
 
-            await redis.SortedSetAddAsync(latestReferenceDateSortedSetKey, survivingSearchKeyValue,
+            await resp.SortedSetAddAsync(latestReferenceDateSortedSetKey, survivingSearchKeyValue,
                 survivingTimestamp.ToUnixTimeMilliSeconds());
 
-            await redis.HashSetAsync(latestPayloadHashKey, expiredSearchKeyValue, new byte[] { 7, 8, 9 });
-            await redis.HashSetAsync(latestPayloadHashKey, survivingSearchKeyValue, new byte[] { 10, 11, 12 });
+            await resp.HashSetAsync(latestPayloadHashKey, expiredSearchKeyValue, new byte[] { 7, 8, 9 });
+            await resp.HashSetAsync(latestPayloadHashKey, survivingSearchKeyValue, new byte[] { 10, 11, 12 });
 
             await cacheService.CacheReferenceDateRepository.UpsertReferenceDateAsync(tenant, modelGuid, referenceDate);
 
@@ -175,26 +176,26 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
             await starter.PruneModelAsync(model, 1000);
 
             var remainingPayloadReferenceDates =
-                await redis.SortedSetRangeByScoreWithScoresAsync(payloadReferenceDateKey);
+                await resp.SortedSetRangeByScoreWithScoresAsync(payloadReferenceDateKey);
 
             remainingPayloadReferenceDates.Select(s => s.Element.ToString()).Should()
                 .NotContain(expiredInstanceGuid.ToString("N"))
                 .And.Contain(survivingInstanceGuid.ToString("N"));
 
-            (await redis.HashGetAsync(payloadHashKey, expiredInstanceGuid.ToString("N"))).HasValue.Should()
+            (await resp.HashGetAsync(payloadHashKey, expiredInstanceGuid.ToString("N"))).HasValue.Should()
                 .BeFalse("the expired payload entry must be deleted from the hash too, not just the index");
-            (await redis.HashGetAsync(payloadHashKey, survivingInstanceGuid.ToString("N"))).HasValue.Should()
+            (await resp.HashGetAsync(payloadHashKey, survivingInstanceGuid.ToString("N"))).HasValue.Should()
                 .BeTrue("the surviving payload entry must not be touched");
 
-            var remainingLatest = await redis.SortedSetRangeByScoreWithScoresAsync(latestReferenceDateSortedSetKey);
+            var remainingLatest = await resp.SortedSetRangeByScoreWithScoresAsync(latestReferenceDateSortedSetKey);
 
             remainingLatest.Select(s => s.Element.ToString()).Should()
                 .NotContain(expiredSearchKeyValue)
                 .And.Contain(survivingSearchKeyValue);
 
-            (await redis.HashGetAsync(latestPayloadHashKey, expiredSearchKeyValue)).HasValue.Should().BeFalse(
+            (await resp.HashGetAsync(latestPayloadHashKey, expiredSearchKeyValue)).HasValue.Should().BeFalse(
                 "the expired PayloadLatest entry must be deleted from the hash too, not just the index");
-            (await redis.HashGetAsync(latestPayloadHashKey, survivingSearchKeyValue)).HasValue.Should()
+            (await resp.HashGetAsync(latestPayloadHashKey, survivingSearchKeyValue)).HasValue.Should()
                 .BeTrue("the surviving PayloadLatest entry must not be touched");
 
             await using var assertDbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(

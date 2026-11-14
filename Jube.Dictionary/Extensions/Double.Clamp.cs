@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double Clamp(this double @this, double minValue, double maxValue)
+        [Description("Restricts the value to lie within the given range.")]
+        public static double Clamp(this double @this,
+            [Description("The minimum value.")] double minValue,
+            [Description("The maximum value.")] double maxValue)
         {
             if (@this < minValue)
             {

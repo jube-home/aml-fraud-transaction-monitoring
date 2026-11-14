@@ -15,6 +15,7 @@ using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Jube.App.Code;
 using Jube.Data.Context;
 using Jube.Dto.Repository.CaseNote;
 using Jube.Service.Repository.CaseNote;
@@ -32,6 +33,7 @@ namespace Jube.App.Endpoints.Repository
     public static class CaseNoteEndpoints
     {
         private const string Base = "/api/CaseNote";
+        private const long MaxJsonBodyBytes = 1024 * 1024;
 
         public static void MapCaseNoteEndpoints(this IEndpointRouteBuilder endpoints)
         {
@@ -40,10 +42,19 @@ namespace Jube.App.Endpoints.Repository
                 .WithTags("CaseNote");
 
             group.MapPost("", InsertAsync)
+                .ValidateAntiforgeryForCookieSessions()
+                .WithMetadata(new RequestSizeLimitAttribute(MaxJsonBodyBytes))
                 .Produces<CaseNoteDto>()
                 .Produces((int)HttpStatusCode.BadRequest)
                 .Produces((int)HttpStatusCode.Forbidden)
                 .WithName("CaseNoteCreate");
+
+            group.MapPost("Finding", SetFindingAsync)
+                .ValidateAntiforgeryForCookieSessions()
+                .Produces<CaseNoteDto>()
+                .Produces((int)HttpStatusCode.BadRequest)
+                .Produces((int)HttpStatusCode.Forbidden)
+                .WithName("CaseNoteSetFinding");
 
             group.MapGet("ByCaseKeyValue", GetByCaseKeyValueAsync)
                 .Produces<System.Collections.Generic.List<CaseNoteDto>>()
@@ -103,6 +114,15 @@ namespace Jube.App.Endpoints.Repository
 
                 return TypedResults.BadRequest(ex.Result);
             }
+            catch (CaseLockedException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}: 409 (case locked) user={user}");
+                }
+
+                return TypedResults.Conflict(new { code = ex.Code, message = ex.Message });
+            }
             catch (NotFoundException ex)
             {
                 if (log.IsWarnEnabled)
@@ -124,6 +144,61 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"POST {Base}: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        private static async Task<IResult> SetFindingAsync([FromBody] CaseNoteFindingRequestDto model,
+            HttpContext httpContext, ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            Engine.Helpers.JsonSerializationHelper jsonSerializationHelper, CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var service = await CaseNoteService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
+                    serviceChangeBus, dynamicEnvironment, jsonSerializationHelper, token);
+
+                return TypedResults.Ok(await service.SetFindingAsync(model, token));
+            }
+            catch (Exception e) when (e is NotAuthenticatedException or ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/Finding: 403 user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (CaseLockedException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/Finding: 409 (case locked) user={user}");
+                }
+
+                return TypedResults.Conflict(new { code = ex.Code, message = ex.Message });
+            }
+            catch (NotFoundException ex)
+            {
+                return TypedResults.BadRequest(ex.Message);
+            }
+            catch (ArgumentNullException)
+            {
+                return TypedResults.BadRequest();
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {Base}/Finding: 500 user={user}", e);
 
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }

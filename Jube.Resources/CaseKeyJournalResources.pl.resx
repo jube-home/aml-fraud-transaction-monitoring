@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Nie masz uprawnień do wykonania tej czynności.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Aby wykonać tę czynność, musisz być zalogowany do tenanta.</value>
+  </data>
+    <data name="WorkflowNotFound" xml:space="preserve">
+    <value>Nie znaleziono przepływu pracy sprawy lub nie masz do niego dostępu.</value>
+  </data>
+    <data name="KeyRequired" xml:space="preserve">
+    <value>Dziennik wymaga nazwy pola ładunku do dopasowania.</value>
+  </data>
+    <data name="ValueRequired" xml:space="preserve">
+    <value>Dziennik wymaga wartości do dopasowania.</value>
+  </data>
+    <data name="KeyInvalid" xml:space="preserve">
+    <value>Nazwa pola ładunku może mieć co najwyżej 256 znaków i nie może zawierać znaków sterujących.</value>
+  </data>
+    <data name="LensInvalid" xml:space="preserve">
+    <value>Soczewka musi mieć wartość payload, rules, features, models lub sanctions.</value>
+  </data>
+    <data name="LimitInvalid" xml:space="preserve">
+    <value>Limit musi mieścić się w zakresie od 1 do 5000.</value>
+  </data>
+    <data name="PeriodInvalid" xml:space="preserve">
+    <value>Wartość „Od” musi być wcześniejsza niż „Do”, a okno nie może przekraczać 3660 dni.</value>
+  </data>
+    <data name="SectionInvalid" xml:space="preserve">
+    <value>Sekcja musi być jedną z: summary, notable, progression, distributions, velocity, gaps, novelty, counterparties, correlation, drift lub peers.</value>
+  </data>
+    <data name="TransactionNotFound" xml:space="preserve">
+    <value>Nie znaleziono transakcji dla tego przepływu pracy sprawy.</value>
+  </data>
+    <data name="TransactionIdInvalid" xml:space="preserve">
+    <value>Identyfikator transakcji musi być większy od zera.</value>
+  </data>
+    <data name="TagTransactionsInvalid" xml:space="preserve">
+    <value>Wymagana jest liczba transakcji od jednej do 500, bez powtórzeń.</value>
+  </data>
+    <data name="TagChangeRequired" xml:space="preserve">
+    <value>Wymagany jest co najmniej jeden Tag do dodania lub usunięcia.</value>
+  </data>
+    <data name="TagNameInvalid" xml:space="preserve">
+    <value>Nazwa Tagu musi zawierać tekst i mieć co najwyżej 256 znaków.</value>
+  </data>
+    <data name="TagUnknown" xml:space="preserve">
+    <value>Każdy dodawany Tag musi być aktywnym Tagiem modelu przepływu pracy.</value>
+  </data>
+    <data name="TagLimitInvalid" xml:space="preserve">
+    <value>Jednocześnie można dodać, usunąć lub zachować nie więcej niż 20 Tagów.</value>
+  </data>
+    <data name="PinTransactionsInvalid" xml:space="preserve">
+    <value>Wymagana jest liczba transakcji od jednej do 50, bez powtórzeń.</value>
+  </data>
+    <data name="TravelLimitInvalid" xml:space="preserve">
+    <value>Limit prędkości musi mieścić się między 1 a 10 000 kilometrów na godzinę, a najkrótszy odcinek między 0 a 20 000 kilometrów.</value>
+  </data>
+    <data name="ReplayNotFound" xml:space="preserve">
+    <value>Nie znaleziono zapisanego odtworzenia w tej sprawie.</value>
+  </data>
+    <data name="ReplayNameInvalid" xml:space="preserve">
+    <value>Odtworzenie wymaga nazwy o długości od 1 do 100 znaków.</value>
+  </data>
+    <data name="ReplayWindowInvalid" xml:space="preserve">
+    <value>Odtworzenie sięga wstecz o 7, 30, 90 lub 365 dni.</value>
+  </data>
+    <data name="ReplayLimitInvalid" xml:space="preserve">
+    <value>Sprawa może mieć co najwyżej 10 zapisanych odtworzeń.</value>
+  </data>
+    <data name="PinLimitInvalid" xml:space="preserve">
+    <value>Sprawa może mieć co najwyżej 50 przypiętych transakcji.</value>
+  </data>
+    <data name="CaseNotFound" xml:space="preserve">
+    <value>Nie znaleziono sprawy.</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>Sprawa jest zablokowana dla innego użytkownika.</value>
+  </data>
+    <data name="FilterInvalid" xml:space="preserve">
+    <value>Filtr jest nieprawidłowy. Wymaga grupy reguł, z których każda ma pole modelu, operator pasujący do pola i wartość typu pola.</value>
+  </data>
+    <data name="FilterUnreadable" xml:space="preserve">
+    <value>Nie można zastosować filtra, ponieważ zapisanej wartości nie można odczytać jako typu pola, z którym była porównywana.</value>
+  </data>
+    <data name="MergeInvalid" xml:space="preserve">
+    <value>Scalanie wymaga tablicy JSON z co najwyżej trzema obiektami, każdy z kluczem i wartością, poza kluczem sprawy.</value>
+  </data>
+    <data name="TagJobTooManyMatches" xml:space="preserve">
+    <value>Zbyt wiele transakcji pasuje, aby oznaczyć je w jednym zadaniu. Zawęź widok i spróbuj ponownie.</value>
+  </data>
+    <data name="TagJobNoMatches" xml:space="preserve">
+    <value>Żadna transakcja nie pasuje do widoku.</value>
+  </data>
+    <data name="TagJobNotFound" xml:space="preserve">
+    <value>Nie znaleziono zadania tagowania.</value>
+  </data>
+    <data name="TagJobNotUndoable" xml:space="preserve">
+    <value>Cofnąć można tylko zakończone tagowanie, które coś zmieniło i nie zostało jeszcze cofnięte.</value>
+  </data>
+    <data name="TagJobActiveLimit" xml:space="preserve">
+    <value>Zbyt wiele zadań zbiorczego tagowania jest już w kolejce lub trwa. Poczekaj na zakończenie jednego lub anuluj jedno i spróbuj ponownie.</value>
+  </data>
+    <data name="KeyNotArchiveKey" xml:space="preserve">
+    <value>Klucz nie jest polem oznaczonym jako Archive Key w modelu przepływu pracy, więc nie można wyszukać jego transakcji. Oznacz pole jako Archive Key w request XPath modelu lub wybierz inny klucz.</value>
+  </data>
+    <data name="KeyValueInvalid" xml:space="preserve">
+    <value>Wartości nie można odczytać jako typu danych pola klucza.</value>
+  </data>
+    <data name="KeyNotLookupable" xml:space="preserve">
+    <value>Pole klucza jest zaszyfrowane losowym wektorem, więc jego wartości nie można wyszukiwać.</value>
+  </data>
+    <data name="LaneOperatorNotAllowed" xml:space="preserve">
+    <value>Operator zakresu jest dozwolony tylko dla klucza liczbowego lub daty; klucz tekstowy lub logiczny pasuje wyłącznie przez równość.</value>
+  </data>
+    <data name="CaseKeyNotArchiveKey" xml:space="preserve">
+    <value>Klucz sprawy nie jest polem oznaczonym jako Archive Key w modelu przepływu pracy, więc nie można odczytać dziennika tej sprawy. Oznacz pole jako Archive Key w request XPath modelu i uruchom skrypt migracji archive key dla historii.</value>
+  </data>
+</root>

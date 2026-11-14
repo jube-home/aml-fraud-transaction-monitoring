@@ -21,6 +21,7 @@ namespace Jube.Data.Query.GetDockerHostMetricStatisticsQuery
     using Context;
     using Helpers;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
     using Dto.Payload;
 

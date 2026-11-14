@@ -44,16 +44,14 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(15)] public string DefaultValue { get; set; }
         [Column] [Nullable] [Key(16)] public byte? Required { get; set; }
 
-        [Association(ThisKey = "VisualisationRegistryId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "VisualisationRegistryId", OtherKey = "Id", CanBeNull = true)]
         [Key(17)]
         public VisualisationRegistry VisualisationRegistry { get; set; }
 
         [Column] [Nullable] [Key(18)] public Guid Guid { get; set; }
         [Column] [Nullable] [Key(19)] public int? ImportId { get; set; }
 
-        [Association(ThisKey = "Guid", OtherKey = "VisualisationRegistryParameterGuid", CanBeNull = false,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Guid", OtherKey = "VisualisationRegistryParameterGuid", CanBeNull = false)]
         [Key(25)]
         public VisualisationRegistryParameterRole VisualisationRegistryParameterRole { get; set; }
     }

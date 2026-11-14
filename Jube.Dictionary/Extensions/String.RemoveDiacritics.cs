@@ -8,6 +8,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Removes diacritics from the string.")]
         public static string RemoveDiacritics(this string @this)
         {
             var normalizedString = @this.Normalize(NormalizationForm.FormD);

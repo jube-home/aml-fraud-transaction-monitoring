@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string CardIssuerPrefix(this string? @this, int length)
+        [Description("The first n digits (1 to 11) of a card number, ignoring spaces and hyphens, otherwise empty.")]
+        public static string CardIssuerPrefix(this string? @this,
+            [Description("How many leading digits to take.")] int length)
         {
             var digits = new string((@this ?? "").Where(c => c is not (' ' or '-')).ToArray());
 

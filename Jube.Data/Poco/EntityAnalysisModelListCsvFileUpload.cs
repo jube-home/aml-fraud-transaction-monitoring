@@ -45,8 +45,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(11)] public string DeletedUser { get; set; }
         [Column] [Nullable] [Key(12)] public DateTime? DeletedDate { get; set; }
 
-        [Association(ThisKey = "EntityAnalysisModelListId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "EntityAnalysisModelListId", OtherKey = "Id", CanBeNull = true)]
         [Key(13)]
         public EntityAnalysisModelList EntityAnalysisModelList { get; set; }
     }

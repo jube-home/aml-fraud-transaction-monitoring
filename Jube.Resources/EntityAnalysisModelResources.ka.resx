@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>თქვენ არ გაქვთ ამ მოქმედების შესრულების უფლება.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>ამ მოქმედების შესასრულებლად უნდა იყოთ შესული ტენანტში.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>სახელი სავალდებულოა.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>სახელი არ უნდა აღემატებოდეს {0} სიმბოლოს.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>ეს სახელი უკვე არსებობს.</value>
+  </data>
+    <!-- ReSharper disable once NotOverriddenInSpecificCulture -->
+    <data name="EntryXPathRequired" xml:space="preserve">
+    <value>შესვლის XPath (JSONPath) სავალდებულოა.</value>
+  </data>
+    <data name="EntryXPathMaxLength" xml:space="preserve">
+    <value>შესვლის XPath არ უნდა აღემატებოდეს {0} სიმბოლოს.</value>
+  </data>
+    <data name="ReferenceDateXPathRequired" xml:space="preserve">
+    <value>საცნობარო თარიღის XPath (JSONPath) სავალდებულოა, თუ საცნობარო თარიღის მონაცემთა მდებარეობა არ არის „ახლა“.</value>
+  </data>
+    <data name="ReferenceDateXPathMaxLength" xml:space="preserve">
+    <value>საცნობარო თარიღის XPath არ უნდა აღემატებოდეს {0} სიმბოლოს.</value>
+  </data>
+    <data name="EntryNameRequired" xml:space="preserve">
+    <value>შესვლის სახელი სავალდებულოა.</value>
+  </data>
+    <data name="EntryNameMaxLength" xml:space="preserve">
+    <value>შესვლის სახელი არ უნდა აღემატებოდეს {0} სიმბოლოს.</value>
+  </data>
+    <data name="ReferenceDateNameRequired" xml:space="preserve">
+    <value>საცნობარო თარიღის სახელი სავალდებულოა.</value>
+  </data>
+    <data name="ReferenceDateNameMaxLength" xml:space="preserve">
+    <value>საცნობარო თარიღის სახელი არ უნდა აღემატებოდეს {0} სიმბოლოს.</value>
+  </data>
+    <data name="ReferenceDatePayloadLocationTypeIdInvalid" xml:space="preserve">
+    <value>საცნობარო თარიღის მონაცემთა მდებარეობა უნდა იყოს „ტანი“ ან „ახლა“.</value>
+  </data>
+    <data name="CacheFetchLimitRange" xml:space="preserve">
+    <value>ქეშის ამოღების ლიმიტი უნდა იყოს ნული ან მეტი.</value>
+  </data>
+    <data name="CacheTtlIntervalInvalid" xml:space="preserve">
+    <value>ქეშის TTL ინტერვალი უნდა იყოს წამები, წუთები, საათები ან დღეები.</value>
+  </data>
+    <data name="CacheTtlIntervalValueRange" xml:space="preserve">
+    <value>ქეშის TTL ინტერვალის მნიშვნელობა უნდა იყოს ნული ან მეტი.</value>
+  </data>
+    <data name="MaxResponseElevationRange" xml:space="preserve">
+    <value>პასუხის მაქსიმალური ამაღლება უნდა იყოს ნული ან მეტი.</value>
+  </data>
+    <data name="MaxResponseElevationIntervalInvalid" xml:space="preserve">
+    <value>პასუხის ამაღლების ლიმიტის ინტერვალი უნდა იყოს წამები, წუთები, საათები ან დღეები.</value>
+  </data>
+    <data name="MaxResponseElevationValueRange" xml:space="preserve">
+    <value>პასუხის ამაღლების ლიმიტის მნიშვნელობა უნდა იყოს ნული ან მეტი.</value>
+  </data>
+    <data name="MaxResponseElevationThresholdRange" xml:space="preserve">
+    <value>პასუხის ამაღლების ლიმიტის ზღვარი უნდა იყოს ნული ან მეტი.</value>
+  </data>
+    <data name="MaxActivationWatcherIntervalInvalid" xml:space="preserve">
+    <value>Activation Watcher-ის ლიმიტის ინტერვალი უნდა იყოს წამები, წუთები, საათები ან დღეები.</value>
+  </data>
+    <data name="MaxActivationWatcherValueRange" xml:space="preserve">
+    <value>Activation Watcher-ის ლიმიტის მნიშვნელობა უნდა იყოს ნული ან მეტი.</value>
+  </data>
+    <data name="MaxActivationWatcherThresholdRange" xml:space="preserve">
+    <value>Activation Watcher-ის ლიმიტის ზღვარი უნდა იყოს ნული ან მეტი.</value>
+  </data>
+    <data name="ActivationWatcherSampleRange" xml:space="preserve">
+    <value>Activation Watcher-ის შერჩევის სიხშირე უნდა იყოს 0-სა და 1-ს შორის.</value>
+  </data>
+    <data name="ImplicitAsyncTimeoutMillisecondsRange" xml:space="preserve">
+    <value>Implicit Async-ის ტაიმაუტი უნდა იყოს ნულზე მეტი მილიწამი.</value>
+  </data>
+    <data name="LogsWarnThresholdMillisecondsRange" xml:space="preserve">
+    <value>Logs Warn-ის ზღვარი უნდა იყოს ნულზე მეტი მილიწამი.</value>
+  </data>
+    <data name="SamplePercentageRange" xml:space="preserve">
+    <value>Sample Percentage უნდა იყოს 0-ზე მეტი და არაუმეტეს 100-ისა.</value>
+  </data>
+    <data name="ModelNotFound" xml:space="preserve">
+    <value>მოდელი ვერ მოიძებნა.</value>
+  </data>
+    <data name="XPathRegexNotPermitted" xml:space="preserve">
+    <value>XPath არ უნდა იყენებდეს რეგულარული გამოსახულების ოპერატორს (=~).</value>
+  </data>
+</root>

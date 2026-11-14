@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
+            [Description("True when: a card expiry that has not elapsed. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsValidCardExpiry()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringIsValidCardExpiry(flow.Value));
             }
 
+            [Description("True when: a card expiry that has not elapsed. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsValidCardExpiry()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringIsValidCardExpiry(flow.Value));
             }
 
+            [Description("True when: a card expiry that has not elapsed. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsValidCardExpiry()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringIsValidCardExpiry(flow.Value));
             }
 
+            [Description("True when: a card expiry that has not elapsed. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsValidCardExpiry()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringIsValidCardExpiry(flow.Value));
             }
 
+            [Description("True when: a card expiry that has not elapsed. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsValidCardExpiry()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
+            [Description("Begins a pipeline from the value. True when: a card expiry that has not elapsed. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsValidCardExpiry()
             {
                 return value.Start().MatchIsValidCardExpiry();
             }
 
+            [Description("Begins a pipeline from the value. True when: a card expiry that has not elapsed. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsValidCardExpiry()
             {
                 return value.Start().RejectIsValidCardExpiry();
             }
 
+            [Description("Begins a pipeline from the value. True when: a card expiry that has not elapsed. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsValidCardExpiry()
             {
                 return value.Start().BreakIsValidCardExpiry();
             }
 
+            [Description("Begins a pipeline from the value. True when: a card expiry that has not elapsed. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsValidCardExpiry()
             {
                 return value.Start().RequireIsValidCardExpiry();
             }
 
+            [Description("Begins a pipeline from the value. True when: a card expiry that has not elapsed. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsValidCardExpiry()
             {
                 return value.Start().EnsureIsValidCardExpiry();

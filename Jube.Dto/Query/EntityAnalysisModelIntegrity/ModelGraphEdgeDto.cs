@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,18 +22,23 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.EntityAnalysisModelIntegrity
 {
     [Description("One use of an entity by another, drawn from the user to the used.")]
+    [MessagePackObject]
     public class ModelGraphEdgeDto
     {
         [Description("The id of the node that uses the other.")]
+        [Key(0)]
         public string From { get; set; } = string.Empty;
 
         [Description("The id of the node that is used.")]
+        [Key(1)]
         public string To { get; set; } = string.Empty;
 
         [Description("How it is used: the name in rule text, or the setting.")]
+        [Key(2)]
         public string Label { get; set; } = string.Empty;
 
         [Description("True for a use through a setting rather than rule text.")]
+        [Key(3)]
         public bool Dashed { get; set; }
     }
 }

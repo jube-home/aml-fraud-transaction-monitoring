@@ -11,9 +11,17 @@ grand_parent: Configuration
 Under the form on the **Activation Rules** page are three sections that open when clicked. Each is shown only to users
 with the permission it needs.
 
+<!-- TODO(screenshot): file=rule-authoring-backtest-panel.png route=/models/activation-rules state="Activation rule open, the three sections collapsed under the form" -->
+
 ## Backtest
 
-Needs the **Run Backtest** permission. A backtest runs the rule, as it is in the editor (saved or not), over archived
+<!-- TODO(screenshot): file=rule-authoring-backtest-form.png route=/models/activation-rules state="Backtest section open: both builders, window, limit, examples, Run backtest" -->
+<!-- TODO(screenshot): file=rule-authoring-backtest-instances.png route=/models/activation-rules state="Table of backtests with a Running row (progress, Stop) and a Succeeded row" -->
+<!-- TODO(screenshot): file=rule-authoring-backtest-result.png route=/models/activation-rules state="Result of a Succeeded backtest: funnel, confusion matrix, rates, tags, examples" -->
+<!-- TODO(screenshot): file=rule-authoring-backtest-explain.png route=/models/activation-rules state="Explain this transaction open on a false positive" -->
+
+Needs the **Run Backtest** permission (permission 61). A backtest runs the rule, as it is in the editor (saved or not),
+over archived
 transactions and shows how it would have done.
 
 1. **Which transactions**: the same query builder as the reprocessing page. Leave it empty to use every transaction.
@@ -80,6 +88,33 @@ them is not valid, each problem is reported against the part it is in, and nothi
 | `RuleScriptInvalid`                                            | The rule text, or the filter, does not parse or compile. The message gives the line and position.                                                  |
 | `FieldUnknown`, `OperatorInvalid`, `ValueInvalid` and the like | A condition in the filter or in what counts as positive names a field that is not available, or an operator or value that does not suit the field. |
 
+### Tuning a threshold from outcomes
+
+A backtest answers "how does this rule do?". Tuning answers "which threshold does best?". Write the rule text with a
+placeholder where the number goes, for example `If (Payload.Amount > {{threshold}}) Then`, set the class to a confirmed
+outcome (a tag such as `Tag.Fraud = True`, which closed cases write back), and give up to twelve candidate numbers. The
+sweep runs the same backtest once for each candidate, in turn, and returns for each the four confusion matrix cells
+together with precision (the share of firings that were positive) and recall (the share of positives that fired).
+Precision is empty when the rule never fired and recall is empty when there were no positives.
+
+Nothing is stored and nothing is changed: the rule on the model is untouched. To act on a result, save the chosen
+variant as a new activation rule marked **Shadow** (see Shadow Mode in the Basic Activation Rules page), watch it
+against live traffic, and promote it through approval. AskJooby can run the sweep through the same permission (61) and
+propose a variant, but it cannot apply one.
+
+On the rule page, the Backtest tab has a Tune a threshold section under the filter and positive-class builders. When the
+rule text contains a placeholder such as `{{threshold}}` it shows the placeholder, takes up to twelve comma-separated
+numbers, runs the sweep over the chosen window and shows each candidate's firings, precision, recall and four matrix
+cells. **Save as shadow rule** on a row calls `POST /api/EntityAnalysisModelActivationRule/SaveShadowVariant`, which
+creates a new activation rule named `<rule> shadow <value>` as a hand-written (Coder) rule with the number filled in and
+the **Shadow** switch on, copying the other settings from the rule you are on. Like any new rule it has no effect until
+a checker approves it, and a shadow rule has none even then; promote it by switching Shadow off through approval. A rule
+built in the visual builder is copied as hand-written text, because the sweep works on text. At most two sweeps run at
+once for a tenant; a further request is refused with a busy message until one finishes.
+
+<!-- TODO(docs): the sweep replaces one placeholder with plain numbers only; sweeping several thresholds together and the analyst-hours cost per variant are not built. -->
+<!-- TODO(screenshot): The rule page showing a threshold sweep as a table of candidates with precision and recall. -->
+
 ### Backtest instances
 
 A backtest runs on the backtest threads of whichever engine node claims it first, so any number of threads and nodes
@@ -88,14 +123,14 @@ backtests run at once. While a backtest runs, it sends a heartbeat on a timer, a
 `BacktestStaleIntervalValue` and at most every 10 seconds, however long a page takes. Each heartbeat records progress
 and checks for a stop.
 
-| Status     | Meaning                                                                                                                                                                                             |
-|------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Pending    | Waiting for a backtest thread. **Stop** cancels it at once.                                                                                                                                       |
-| Running    | Being run. **Stop** stops it after the current page.                                                                                                                                              |
-| Succeeded  | Finished; click it to see the results.                                                                                                                                                            |
+| Status     | Meaning                                                                                                                                                                                                                            |
+|------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Pending    | Waiting for a backtest thread. **Stop** cancels it at once.                                                                                                                                                                        |
+| Running    | Being run. **Stop** stops it after the current page.                                                                                                                                                                               |
+| Succeeded  | Finished; click it to see the results.                                                                                                                                                                                             |
 | Failed     | Could not run, ran longer than `BacktestMaxRunInterval`/`BacktestMaxRunIntervalValue`, or stopped reporting progress for longer than `BacktestStaleInterval`/`BacktestStaleIntervalValue`, for example because its engine stopped. |
-| Cancelling | A stop was requested and the instance is finishing its current page.                                                                                                  |
-| Cancelled  | Stopped, or its engine shut down while it ran.                                                                                                                        |
+| Cancelling | A stop was requested and the instance is finishing its current page.                                                                                                                                                               |
+| Cancelled  | Stopped, or its engine shut down while it ran.                                                                                                                                                                                     |
 
 A failed or cancelled backtest is never started again automatically; run it again.
 
@@ -115,3 +150,35 @@ rule, such as a rule the engine could not compile or has not loaded.
 
 The three sections read and submit through `/api/EntityAnalysisModelBacktest`, `/api/EntityAnalysisModelDependency` and
 `/api/EntityAnalysisModelIntegrity`, which call the same services the agent tools use and apply the same permissions.
+
+## Limits and who can see what
+
+<!-- TODO(docs): the owner should confirm every sentence in this section against a running system. -->
+
+- **Tenant.** A backtest only ever reads the archive of a model in the caller's own tenant, and the instance, the result
+  and the Stop request are looked up by tenant. Another tenant's model, instance or archived transaction behaves as if
+  it
+  did not exist (404).
+- **The rule text is checked as the engine checks it.** The rule, the filter and the Explain request are compiled with
+  the same allowed words as a saved rule (the rule script token list), so a rule the engine would refuse to load cannot
+  be backtested; the compiled rule then runs in the same sandbox, with a time limit of five seconds per transaction. A
+  rule that exceeds it stops the backtest, with the reason recorded.
+- **Volume.** A submitted backtest reads at most `BacktestMaxRows` transactions (one million by default), a page at a
+  time (`BacktestPageSize`), for at most `BacktestMaxRunInterval`. Each tenant's backtests run one at a time by default
+  (`BacktestMaxConcurrentRunsPerTenant`). An immediate backtest (used by the agent tools) reads at most
+  `BacktestOnlineMaxRows` transactions and stops after `BacktestOnlineMaxSeconds` seconds.
+- **Messages.** The refusal messages for the window, the rule type, the missing rule text, the unknown transaction and
+  an
+  over-large immediate limit are translated into the language of the request. Messages from the rule compiler are
+  English.
+- **Examples** show an entry key and a reference date. **Explain** shows the values the rule read from the archived
+  transaction, so it needs the same permission as the backtest.
+
+- **Queue.** At most `BacktestMaxPendingPerModel` (5) backtests of a model and `BacktestMaxPendingPerTenant` (20) of a
+  tenant may be Pending, Running or Cancelling at once. A further submit is refused with the message
+  `PendingLimitModel` or `PendingLimitTenant`, in the language of the request, and nothing is stored; stop or wait for
+  one to finish.
+
+<!-- TODO(docs): confirm the queue limits and their defaults with the owner. -->
+<!-- TODO(docs): the statuses (Pending, Running, Succeeded and so on) are shown translated in the table; confirm the wording in each language. -->
+<!-- TODO(docs): the page describes Activation Rules only; the same panel is offered for other rule types if the page passes them. Confirm where else it appears. -->

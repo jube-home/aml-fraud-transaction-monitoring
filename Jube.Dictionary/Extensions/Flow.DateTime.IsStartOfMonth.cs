@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
+            [Description("True when: the first day of the month. Decides matched if so; otherwise continues.")]
             public Flow<DateTime> MatchIsStartOfMonth()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeIsStartOfMonth(flow.Value));
             }
 
+            [Description("True when: the first day of the month. Decides rejected if so; otherwise continues.")]
             public Flow<DateTime> RejectIsStartOfMonth()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeIsStartOfMonth(flow.Value));
             }
 
+            [Description("True when: the first day of the month. Decides broken if so; otherwise continues.")]
             public Flow<DateTime> BreakIsStartOfMonth()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeIsStartOfMonth(flow.Value));
             }
 
+            [Description("True when: the first day of the month. Continues if so; otherwise decides rejected.")]
             public Flow<DateTime> RequireIsStartOfMonth()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeIsStartOfMonth(flow.Value));
             }
 
+            [Description("True when: the first day of the month. Continues if so; otherwise decides broken.")]
             public Flow<DateTime> EnsureIsStartOfMonth()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
+            [Description("Begins a pipeline from the value. True when: the first day of the month. Decides matched if so; otherwise continues.")]
             public Flow<DateTime> MatchIsStartOfMonth()
             {
                 return value.Start().MatchIsStartOfMonth();
             }
 
+            [Description("Begins a pipeline from the value. True when: the first day of the month. Decides rejected if so; otherwise continues.")]
             public Flow<DateTime> RejectIsStartOfMonth()
             {
                 return value.Start().RejectIsStartOfMonth();
             }
 
+            [Description("Begins a pipeline from the value. True when: the first day of the month. Decides broken if so; otherwise continues.")]
             public Flow<DateTime> BreakIsStartOfMonth()
             {
                 return value.Start().BreakIsStartOfMonth();
             }
 
+            [Description("Begins a pipeline from the value. True when: the first day of the month. Continues if so; otherwise decides rejected.")]
             public Flow<DateTime> RequireIsStartOfMonth()
             {
                 return value.Start().RequireIsStartOfMonth();
             }
 
+            [Description("Begins a pipeline from the value. True when: the first day of the month. Continues if so; otherwise decides broken.")]
             public Flow<DateTime> EnsureIsStartOfMonth()
             {
                 return value.Start().EnsureIsStartOfMonth();

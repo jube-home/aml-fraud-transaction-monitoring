@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchMeanWithAbove(double bound, params double[] others)
+            [Description("True when: the average of the value and the others is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMeanWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleMeanWithAbove(flow.Value, bound, others));
             }
 
-            public Flow<double> RejectMeanWithAbove(double bound, params double[] others)
+            [Description("True when: the average of the value and the others is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMeanWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleMeanWithAbove(flow.Value, bound, others));
             }
 
-            public Flow<double> BreakMeanWithAbove(double bound, params double[] others)
+            [Description("True when: the average of the value and the others is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMeanWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleMeanWithAbove(flow.Value, bound, others));
             }
 
-            public Flow<double> RequireMeanWithAbove(double bound, params double[] others)
+            [Description("True when: the average of the value and the others is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMeanWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleMeanWithAbove(flow.Value, bound, others));
             }
 
-            public Flow<double> EnsureMeanWithAbove(double bound, params double[] others)
+            [Description("True when: the average of the value and the others is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMeanWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchMeanWithAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the average of the value and the others is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMeanWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().MatchMeanWithAbove(bound, others);
             }
 
-            public Flow<double> RejectMeanWithAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the average of the value and the others is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMeanWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RejectMeanWithAbove(bound, others);
             }
 
-            public Flow<double> BreakMeanWithAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the average of the value and the others is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMeanWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().BreakMeanWithAbove(bound, others);
             }
 
-            public Flow<double> RequireMeanWithAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the average of the value and the others is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMeanWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RequireMeanWithAbove(bound, others);
             }
 
-            public Flow<double> EnsureMeanWithAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the average of the value and the others is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMeanWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().EnsureMeanWithAbove(bound, others);
             }

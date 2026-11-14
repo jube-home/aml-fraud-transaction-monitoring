@@ -9,13 +9,15 @@ namespace Jube.Dictionary.Extensions
     {
         extension(DateTime dateTime)
         {
-            public DateTime ConvertTime(TimeZoneInfo destinationTimeZone)
+            [Description("Converts the time to a different time zone.")]
+            public DateTime ConvertTime([Description("The time zone to convert to.")] TimeZoneInfo destinationTimeZone)
             {
                 return TimeZoneInfo.ConvertTime(dateTime, destinationTimeZone);
             }
 
-            public DateTime ConvertTime(TimeZoneInfo sourceTimeZone,
-                TimeZoneInfo destinationTimeZone)
+            [Description("Converts the time from one time zone to another.")]
+            public DateTime ConvertTime([Description("The time zone of the dateTime.")] TimeZoneInfo sourceTimeZone,
+                [Description("The time zone to convert to.")] TimeZoneInfo destinationTimeZone)
             {
                 return TimeZoneInfo.ConvertTime(dateTime, sourceTimeZone, destinationTimeZone);
             }

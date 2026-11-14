@@ -21,12 +21,14 @@ using Jube.App.Code.Watcher;
 using Jube.Data.Context;
 using Jube.Data.Security;
 using Jube.Dto.Authentication;
+using Jube.Resources;
 using Jube.Service.Authentication;
 using Jube.Service.Authentication.Interfaces;
 using Jube.Service.Authentication.Models;
 using Jube.Service.UserLogout;
 using Jube.Service.UserLogout.Models;
 using log4net;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -34,6 +36,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 
 namespace Jube.App.Endpoints
 {
@@ -52,6 +55,15 @@ namespace Jube.App.Endpoints
                 .Produces<PasswordSchemeDto>()
                 .WithName("AuthenticationWirePasswordHash");
 
+            group.MapGet("Methods", Methods)
+                .AllowAnonymous()
+                .Produces<AuthenticationMethodsDto>()
+                .WithName("AuthenticationMethods");
+
+            group.MapGet("OAuth", OAuthChallenge)
+                .AllowAnonymous()
+                .WithName("AuthenticationOAuth");
+
             group.MapGet("ByNegotiate", ByNegotiateAsync)
                 .RequireAuthorization(new AuthorizeAttribute
                     { AuthenticationSchemes = NegotiateDefaults.AuthenticationScheme })
@@ -68,6 +80,11 @@ namespace Jube.App.Endpoints
                 .AllowAnonymous()
                 .Produces<AuthenticationResponseDto>()
                 .WithName("AuthenticationByUserNamePassword");
+
+            group.MapPost("TotpEnrolment", TotpEnrolmentAsync)
+                .AllowAnonymous()
+                .Produces<TotpEnrolmentDto>()
+                .WithName("AuthenticationTotpEnrolment");
 
             group.MapPost("ChangePassword", ChangePasswordAsync)
                 .RequireAuthorization()
@@ -143,6 +160,57 @@ namespace Jube.App.Endpoints
                 (service, context) => service.WirePasswordHashAsync(request, context.Identity, token));
         }
 
+        private static Task<IResult> TotpEnrolmentAsync(AuthenticationRequestDto model, HttpContext httpContext,
+            ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment, CancellationToken token)
+        {
+            return RunAsync("TotpEnrolment", httpContext, log, dynamicEnvironment,
+                (service, context) => service.BeginTotpEnrolmentAsync(model, context, token));
+        }
+
+        private static IResult Methods(DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
+        {
+            return TypedResults.Ok(new AuthenticationMethodsDto
+            {
+                Negotiate = Enabled(dynamicEnvironment, "NegotiateAuthentication"),
+                OAuth = Enabled(dynamicEnvironment, "OAuthAuthentication"),
+                Totp = Enabled(dynamicEnvironment, "EnableMultifactorAuthentication")
+                       && "Totp".Equals(dynamicEnvironment.AppSettings("MultifactorAuthenticationProvider"),
+                           StringComparison.OrdinalIgnoreCase)
+                       && !Enabled(dynamicEnvironment, "NegotiateAuthentication")
+                       && !Enabled(dynamicEnvironment, "OAuthAuthentication")
+            });
+        }
+
+        private static IResult OAuthChallenge(string redirectUrl, HttpContext httpContext,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
+        {
+            if (!Enabled(dynamicEnvironment, "OAuthAuthentication"))
+            {
+                return TypedResults.NotFound();
+            }
+
+            if (Enabled(dynamicEnvironment, "NegotiateAuthentication"))
+            {
+                return TypedResults.Problem(
+                    "OAuthAuthentication and NegotiateAuthentication are mutually exclusive and cannot both be enabled.",
+                    statusCode: StatusCodes.Status409Conflict);
+            }
+
+            var target = LocalReturnUrl.Sanitise(redirectUrl);
+
+            if (httpContext.User.Identity?.IsAuthenticated == true)
+            {
+                return TypedResults.LocalRedirect(target);
+            }
+
+            return TypedResults.Challenge(new AuthenticationProperties { RedirectUri = target }, ["OAuth"]);
+        }
+
+        private static bool Enabled(DynamicEnvironment.DynamicEnvironment dynamicEnvironment, string name)
+        {
+            return dynamicEnvironment.AppSettings(name)?.Equals("True", StringComparison.OrdinalIgnoreCase) ?? false;
+        }
+
         private static Task<IResult> ByNegotiateAsync(HttpContext httpContext, ILog log,
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment, CancellationToken token)
         {
@@ -207,9 +275,11 @@ namespace Jube.App.Endpoints
 
                 var service = new AuthenticationLoginService(dbContext, dynamicEnvironment, log,
                     new HttpAuthenticationCookieIssuer(httpContext.Response, dynamicEnvironment, timeProvider),
-                    services.GetService<IMfaVerifier>() ?? new RsaMfaVerifier(dynamicEnvironment, log),
+                    services.GetService<IMfaVerifier>() ?? SelectVerifier(dynamicEnvironment, log),
                     services.GetService<IPasswordHashScheme>(), timeProvider,
-                    loginSourceIpThrottle: services.GetRequiredService<LoginSourceIpThrottle>());
+                    loginSourceIpThrottle: services.GetRequiredService<LoginSourceIpThrottle>(),
+                    localiser: services.GetService<IStringLocalizerFactory>()
+                        ?.Create(typeof(AuthenticationResources)));
 
                 var identity = httpContext.User.Identity;
                 var callerIdentityApplies = operation is "ByNegotiate" or "ByNegotiateMfa" or "ChangePassword";
@@ -280,6 +350,14 @@ namespace Jube.App.Endpoints
                 httpContext.Request.Headers["User-Agent"].ToString()));
         }
 
+        private static IMfaVerifier SelectVerifier(DynamicEnvironment.DynamicEnvironment dynamicEnvironment, ILog log)
+        {
+            return "Totp".Equals(dynamicEnvironment.AppSettings("MultifactorAuthenticationProvider"),
+                StringComparison.OrdinalIgnoreCase)
+                ? new TotpMfaVerifier(dynamicEnvironment, log)
+                : new RsaMfaVerifier(dynamicEnvironment, log);
+        }
+
         private static IResult ToResult(AuthenticationOutcome outcome)
         {
             return outcome.Kind switch
@@ -288,6 +366,7 @@ namespace Jube.App.Endpoints
                     TypedResults.Ok(new PasswordSchemeDto { WirePasswordHash = outcome.WirePasswordHash.Value }),
                 AuthenticationOutcomeKind.Ok when outcome.Response != null => TypedResults.Ok(outcome.Response),
                 AuthenticationOutcomeKind.Ok => TypedResults.Ok(),
+                AuthenticationOutcomeKind.Enrolment when outcome.Enrolment != null => TypedResults.Ok(outcome.Enrolment),
                 AuthenticationOutcomeKind.Accepted => TypedResults.StatusCode(StatusCodes.Status202Accepted),
                 AuthenticationOutcomeKind.Unauthorized => TypedResults.Unauthorized(),
                 AuthenticationOutcomeKind.Forbidden => TypedResults.Forbid(),

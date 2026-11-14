@@ -24,9 +24,9 @@ namespace Jube.Preservation.Models
     [MessagePackObject]
     public class AdvancedAnalyticsPayload
     {
-        [Key(0)] public IEnumerable<AdvancedAnalyticsInstance>? Instances { get; set; }
-        [Key(1)] public IEnumerable<AdvancedAnalyticsTrainedModel>? TrainedModels { get; set; }
-        [Key(2)] public IEnumerable<AdvancedAnalyticsTrainedModelVersion>? TrainedModelVersions { get; set; }
+        [Key(0)] public IEnumerable<AskJoobyAnalyticsInstance>? Instances { get; set; }
+        [Key(1)] public IEnumerable<AskJoobyAnalyticsTrainedModel>? TrainedModels { get; set; }
+        [Key(2)] public IEnumerable<AskJoobyAnalyticsTrainedModelVersion>? TrainedModelVersions { get; set; }
         [Key(3)] public IEnumerable<AdvancedAnalyticsTrainingRun>? TrainingRuns { get; set; }
         [Key(4)] public IEnumerable<AdvancedAnalyticsTrainingRunStep>? TrainingRunSteps { get; set; }
         [Key(5)] public IEnumerable<AdvancedAnalyticsTrainingRunTrial>? TrainingRunTrials { get; set; }

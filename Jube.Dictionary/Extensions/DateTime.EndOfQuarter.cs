@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The last tick of the calendar quarter.")]
         public static DateTime EndOfQuarter(this DateTime @this)
         {
             return @this.StartOfQuarter().AddMonths(3).AddTicks(-1);

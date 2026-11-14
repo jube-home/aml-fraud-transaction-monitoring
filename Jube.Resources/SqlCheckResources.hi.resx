@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="SqlSyntaxError" xml:space="preserve">
+        <value>SQL को "{0}" के पास पढ़ा नहीं जा सका।</value>
+    </data>
+    <data name="SqlUnknownTable" xml:space="preserve">
+        <value>तालिका "{0}" मौजूद नहीं है या आपको उससे क्वेरी करने की अनुमति नहीं है।</value>
+    </data>
+    <data name="SqlUnknownTableSuggest" xml:space="preserve">
+        <value>तालिका "{0}" मौजूद नहीं है या आपको उससे क्वेरी करने की अनुमति नहीं है। क्या आपका मतलब "{1}" था?</value>
+    </data>
+    <data name="SqlUnknownColumn" xml:space="preserve">
+        <value>कॉलम "{0}" मौजूद नहीं है।</value>
+    </data>
+    <data name="SqlUnknownColumnSuggest" xml:space="preserve">
+        <value>कॉलम "{0}" मौजूद नहीं है। क्या आपका मतलब "{1}" था? बड़े अक्षरों वाले नाम दोहरे उद्धरण चिह्नों में होने चाहिए।</value>
+    </data>
+    <data name="SqlUnknownAlias" xml:space="preserve">
+        <value>इस क्वेरी में "{0}" नाम की कोई तालिका या उपनाम नहीं है।</value>
+    </data>
+    <data name="SqlUnknownAliasSuggest" xml:space="preserve">
+        <value>इस क्वेरी में "{0}" नाम की कोई तालिका या उपनाम नहीं है। क्या आपका मतलब "{1}" था?</value>
+    </data>
+    <data name="SqlAmbiguousColumn" xml:space="preserve">
+        <value>कॉलम "{0}" अस्पष्ट है। इसके आगे तालिका का नाम या उपनाम लगाएँ।</value>
+    </data>
+    <data name="SqlUnknownFunction" xml:space="preserve">
+        <value>फ़ंक्शन "{0}" मौजूद नहीं है।</value>
+    </data>
+    <data name="SqlUnknownFunctionSuggest" xml:space="preserve">
+        <value>फ़ंक्शन "{0}" मौजूद नहीं है। क्या आपका मतलब "{1}" था?</value>
+    </data>
+    <data name="SqlFunctionArity" xml:space="preserve">
+        <value>फ़ंक्शन "{0}" को {1} तर्क नहीं दिए जा सकते। यह {2} लेता है।</value>
+    </data>
+    <data name="SqlOverNotWindow" xml:space="preserve">
+        <value>OVER का उपयोग "{0}" के साथ नहीं किया जा सकता क्योंकि यह न तो एग्रीगेट फ़ंक्शन है और न विंडो फ़ंक्शन।</value>
+    </data>
+    <data name="SqlWindowNeedsOver" xml:space="preserve">
+        <value>विंडो फ़ंक्शन "{0}" को OVER क्लॉज़ चाहिए।</value>
+    </data>
+    <data name="SqlWindowNotAllowed" xml:space="preserve">
+        <value>विंडो फ़ंक्शन "{0}" क्वेरी के इस भाग में अनुमत नहीं है।</value>
+    </data>
+    <data name="SqlAggregateInWhere" xml:space="preserve">
+        <value>एग्रीगेट फ़ंक्शन "{0}" WHERE में अनुमत नहीं है। एग्रीगेट पर फ़िल्टर के लिए HAVING का उपयोग करें।</value>
+    </data>
+    <data name="SqlAggregateInJoin" xml:space="preserve">
+        <value>एग्रीगेट फ़ंक्शन "{0}" JOIN शर्त में अनुमत नहीं है।</value>
+    </data>
+    <data name="SqlAggregateInGroupBy" xml:space="preserve">
+        <value>एग्रीगेट फ़ंक्शन "{0}" GROUP BY में अनुमत नहीं है।</value>
+    </data>
+    <data name="SqlAggregateNested" xml:space="preserve">
+        <value>एग्रीगेट फ़ंक्शन एक-दूसरे के अंदर नहीं रखे जा सकते। "{0}" किसी दूसरे एग्रीगेट के अंदर उपयोग हुआ है।</value>
+    </data>
+    <data name="SqlColumnNotGrouped" xml:space="preserve">
+        <value>कॉलम "{0}" GROUP BY में होना चाहिए या किसी एग्रीगेट फ़ंक्शन के अंदर उपयोग होना चाहिए।</value>
+    </data>
+    <data name="SqlTypeMismatch" xml:space="preserve">
+        <value>प्रकार {0} के मान की तुलना या संयोजन प्रकार {1} के मान के साथ नहीं हो सकता।</value>
+    </data>
+    <data name="SqlLiteralInvalid" xml:space="preserve">
+        <value>मान '{0}' प्रकार {1} के लिए मान्य नहीं है।</value>
+    </data>
+    <data name="SqlFunctionArgumentType" xml:space="preserve">
+        <value>फ़ंक्शन "{0}" प्रकार {1} का मान स्वीकार नहीं करता।</value>
+    </data>
+    <data name="SqlAggregateArgumentType" xml:space="preserve">
+        <value>एग्रीगेट फ़ंक्शन "{0}" प्रकार {1} का मान स्वीकार नहीं करता।</value>
+    </data>
+    <data name="SqlOperatorType" xml:space="preserve">
+        <value>ऑपरेटर {0} का उपयोग प्रकार {1} के मान के साथ नहीं हो सकता।</value>
+    </data>
+    <data name="SqlConditionType" xml:space="preserve">
+        <value>शर्त सही या गलत होनी चाहिए, प्रकार {0} का मान नहीं।</value>
+    </data>
+    <data name="SqlTypesUnmatched" xml:space="preserve">
+        <value>प्रकार {0} और {1} के मान एक परिणाम में संयोजित नहीं हो सकते।</value>
+    </data>
+    <data name="SqlLimitNegative" xml:space="preserve">
+        <value>{0} ऋणात्मक नहीं हो सकता।</value>
+    </data>
+    <data name="SqlLimitType" xml:space="preserve">
+        <value>{0} को पूर्ण संख्या चाहिए, प्रकार {1} का मान नहीं।</value>
+    </data>
+    <data name="SqlLimitVariables" xml:space="preserve">
+        <value>{0} कॉलम का संदर्भ नहीं दे सकता।</value>
+    </data>
+    <data name="SqlOrdinalOutOfRange" xml:space="preserve">
+        <value>{0} में स्थिति {1} चयन सूची में नहीं है।</value>
+    </data>
+    <data name="SqlSetOperationColumns" xml:space="preserve">
+        <value>UNION, INTERSECT या EXCEPT की हर क्वेरी को कॉलमों की समान संख्या लौटानी चाहिए, लेकिन ये {0} और {1} लौटाती हैं।</value>
+    </data>
+    <data name="SqlSubqueryColumns" xml:space="preserve">
+        <value>मान के रूप में उपयोग की गई उप-क्वेरी को ठीक एक कॉलम लौटाना चाहिए।</value>
+    </data>
+    <data name="SqlUnknownType" xml:space="preserve">
+        <value>डेटा प्रकार "{0}" मौजूद नहीं है।</value>
+    </data>
+    <data name="SqlParameterUnknown" xml:space="preserve">
+        <value>पैरामीटर @{0} यहाँ उपलब्ध नहीं है।</value>
+    </data>
+    <data name="SqlParameterType" xml:space="preserve">
+        <value>पैरामीटर @{0} में प्रकार {1} का मान है लेकिन उसकी तुलना प्रकार {2} के कॉलम से हो रही है।</value>
+    </data>
+</root>

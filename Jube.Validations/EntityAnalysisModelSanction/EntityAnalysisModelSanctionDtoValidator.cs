@@ -14,6 +14,7 @@
 using FluentValidation;
 using Jube.Data.Repository;
 using Jube.Dto.EntityAnalysisModelSanction;
+using Jube.Dto.Options;
 using Jube.Resources;
 using Microsoft.Extensions.Localization;
 
@@ -99,6 +100,17 @@ namespace Jube.Validations.EntityAnalysisModelSanction
                 .WithMessage(_ => localiser[EntityAnalysisModelSanctionResources.MaxCoverageRatioRange])
                 .WithErrorCode("MaxCoverageRatioRange")
                 .When(p => p.MaxCoverageRatio.HasValue);
+
+            RuleFor(p => p.MatchAlgorithmId)
+                .Must(m => !m.HasValue || Enum.IsDefined((SanctionMatchAlgorithm)m.Value))
+                .WithMessage(_ => localiser[EntityAnalysisModelSanctionResources.MatchAlgorithmInvalid])
+                .WithErrorCode("MatchAlgorithmInvalid");
+
+            RuleFor(p => p.MinimumSimilarity)
+                .InclusiveBetween(0, 1)
+                .WithMessage(_ => localiser[EntityAnalysisModelSanctionResources.MinimumSimilarityRange])
+                .WithErrorCode("MinimumSimilarityRange")
+                .When(p => p.MinimumSimilarity.HasValue);
         }
     }
 }

@@ -12,14 +12,18 @@
  */
 
 using Jube.Data.Context;
+using Jube.Data.Repository;
+using Jube.Mfa.Totp;
 using Jube.Dto.Authentication;
 using Jube.Service.Authentication.Interfaces;
 using Jube.Service.Authentication.Models;
 using Jube.Service.Exceptions.Authentication;
 using Jube.Service.Observability;
+using Jube.Resources;
 using Jube.Service.Reactivity;
 using Jube.Validations.Authentication;
 using log4net;
+using Microsoft.Extensions.Localization;
 
 namespace Jube.Service.Authentication
 {
@@ -32,7 +36,8 @@ namespace Jube.Service.Authentication
         IPasswordHashScheme? passwordHashScheme = null,
         TimeProvider? timeProvider = null,
         ILog? auditLog = null,
-        LoginSourceIpThrottle? loginSourceIpThrottle = null)
+        LoginSourceIpThrottle? loginSourceIpThrottle = null,
+        IStringLocalizer? localiser = null)
     {
         private const string Area = "Authentication";
         private readonly ILog auditLog = auditLog ?? LogManager.GetLogger("Jube.Audit");
@@ -45,11 +50,14 @@ namespace Jube.Service.Authentication
             dynamicEnvironment.AppSettings("PasswordAsymmetricEncryption")
                 .Equals("True", StringComparison.OrdinalIgnoreCase),
             dynamicEnvironment.AppSettings("PasswordAsymmetricEncryptionPrivateKey"),
-            passwordHashScheme, timeProvider);
+            passwordHashScheme, timeProvider, localiser);
 
         private bool OAuth => Setting("OAuthAuthentication");
         private bool Negotiate => Setting("NegotiateAuthentication");
         private bool MfaEnabled => Setting("EnableMultifactorAuthentication");
+
+        private bool TotpProvider => "Totp".Equals(dynamicEnvironment.AppSettings("MultifactorAuthenticationProvider"),
+            StringComparison.OrdinalIgnoreCase);
 
         private bool Setting(string key)
         {
@@ -284,7 +292,7 @@ namespace Jube.Service.Authentication
                 return AuthenticationOutcome.BadRequest();
             }
 
-            var validator = new AuthenticationRequestDtoValidator(dynamicEnvironment);
+            var validator = new AuthenticationRequestDtoValidator(dynamicEnvironment, localiser);
             var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
 
             if (!results.IsValid)
@@ -374,6 +382,96 @@ namespace Jube.Service.Authentication
             return Succeeded(op, AuthenticationOutcome.Ok(cookieIssuer.Issue(authenticatedUserName)));
         }
 
+        public async Task<AuthenticationOutcome> BeginTotpEnrolmentAsync(AuthenticationRequestDto? model,
+            AuthenticationRequestContext context, CancellationToken token = default)
+        {
+            using var op = Start("TotpEnrolment", null);
+
+            if (OAuth || Negotiate || !MfaEnabled || !TotpProvider)
+            {
+                op.Outcome("not-found");
+
+                return AuthenticationOutcome.NotFound();
+            }
+
+            var window = ComputeWindow(dynamicEnvironment.AppSettings("LoginIpRateLimitInterval"),
+                dynamicEnvironment.AppSettings("LoginIpRateLimitIntervalValue"));
+
+            if (loginSourceIpThrottle.IsExceeded(context.RemoteIp,
+                    int.Parse(dynamicEnvironment.AppSettings("LoginIpRateLimitAttempts")), window, clock))
+            {
+                op.Outcome("rate-limited");
+
+                return AuthenticationOutcome.Unauthorized();
+            }
+
+            if (model == null || string.IsNullOrWhiteSpace(model.UserName) || string.IsNullOrEmpty(model.Password))
+            {
+                op.Outcome("bad-request");
+
+                return AuthenticationOutcome.BadRequest();
+            }
+
+            try
+            {
+                model.UserAgent = context.UserAgent;
+                model.LocalIp = context.LocalIp;
+                model.RemoteIp = context.RemoteIp;
+
+                await service.AuthenticateByUserNamePasswordAsync(model,
+                        dynamicEnvironment.AppSettings("PasswordHashingKey"),
+                        int.Parse(dynamicEnvironment.AppSettings("PasswordAttempts")), token, true,
+                        ComputeWindow(dynamicEnvironment.AppSettings("PasswordLockoutInterval"),
+                            dynamicEnvironment.AppSettings("PasswordLockoutIntervalValue")),
+                        dynamicEnvironment.AppSettings("EnablePasswordLockoutReset")
+                            .Equals("True", StringComparison.OrdinalIgnoreCase))
+                    .ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is PasswordExpiredException or PasswordNewMustChangeException)
+            {
+                op.Outcome("forbidden");
+
+                return AuthenticationOutcome.Forbidden();
+            }
+            catch (Exception)
+            {
+                loginSourceIpThrottle.RecordFailedAttempt(context.RemoteIp, window, clock);
+                op.Outcome("unauthorized");
+
+                return AuthenticationOutcome.Unauthorized();
+            }
+
+            var repository = new UserRegistryTotpRepository(dbContext);
+            var state = await repository.GetAsync(model.UserName, token).ConfigureAwait(false);
+
+            if (state?.EnrolledDate != null)
+            {
+                op.Outcome("already-enrolled");
+
+                return AuthenticationOutcome.BadRequestMessage("An authenticator has already been set up.");
+            }
+
+            var secret = TotpAuthenticator.GenerateSecret();
+
+            var stored = await repository.SetPendingAsync(model.UserName,
+                TotpSecretProtector.Protect(secret, dynamicEnvironment.AppSettings("MfaSecretEncryptionKey")),
+                token).ConfigureAwait(false);
+
+            if (stored == 0)
+            {
+                op.Outcome("unauthorized");
+
+                return AuthenticationOutcome.Unauthorized();
+            }
+
+            return Succeeded(op, AuthenticationOutcome.TotpEnrolment(new TotpEnrolmentDto
+            {
+                ProvisioningUri = TotpAuthenticator.ProvisioningUri(dynamicEnvironment.AppSettings("MfaTotpIssuer"),
+                    model.UserName, secret),
+                Secret = TotpAuthenticator.ToBase32(secret)
+            }));
+        }
+
         public async Task<AuthenticationOutcome> ChangePasswordAsync(ChangePasswordRequestDto? model,
             NegotiateIdentity identity, CancellationToken token = default)
         {
@@ -397,7 +495,9 @@ namespace Jube.Service.Authentication
             {
                 op.Outcome("bad-request");
 
-                return AuthenticationOutcome.BadRequestMessage("Authorized but the username is null.");
+                return AuthenticationOutcome.BadRequestMessage(localiser == null
+                    ? "Authorized but the username is null."
+                    : localiser[AuthenticationResources.AuthorizedUserNameNull].Value);
             }
 
             try

@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
-            public Flow<DateTime> MatchBetween(DateTime rangeStart, DateTime rangeEnd)
+            [Description("True when: strictly between the two dates. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchBetween([Description("The start of the range.")] DateTime rangeStart,
+                [Description("The end of the range.")] DateTime rangeEnd)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeBetween(flow.Value, rangeStart, rangeEnd));
             }
 
-            public Flow<DateTime> RejectBetween(DateTime rangeStart, DateTime rangeEnd)
+            [Description("True when: strictly between the two dates. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectBetween([Description("The start of the range.")] DateTime rangeStart,
+                [Description("The end of the range.")] DateTime rangeEnd)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeBetween(flow.Value, rangeStart, rangeEnd));
             }
 
-            public Flow<DateTime> BreakBetween(DateTime rangeStart, DateTime rangeEnd)
+            [Description("True when: strictly between the two dates. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakBetween([Description("The start of the range.")] DateTime rangeStart,
+                [Description("The end of the range.")] DateTime rangeEnd)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeBetween(flow.Value, rangeStart, rangeEnd));
             }
 
-            public Flow<DateTime> RequireBetween(DateTime rangeStart, DateTime rangeEnd)
+            [Description("True when: strictly between the two dates. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireBetween([Description("The start of the range.")] DateTime rangeStart,
+                [Description("The end of the range.")] DateTime rangeEnd)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeBetween(flow.Value, rangeStart, rangeEnd));
             }
 
-            public Flow<DateTime> EnsureBetween(DateTime rangeStart, DateTime rangeEnd)
+            [Description("True when: strictly between the two dates. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureBetween([Description("The start of the range.")] DateTime rangeStart,
+                [Description("The end of the range.")] DateTime rangeEnd)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
-            public Flow<DateTime> MatchBetween(DateTime rangeStart, DateTime rangeEnd)
+            [Description("Begins a pipeline from the value. True when: strictly between the two dates. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchBetween([Description("The start of the range.")] DateTime rangeStart,
+                [Description("The end of the range.")] DateTime rangeEnd)
             {
                 return value.Start().MatchBetween(rangeStart, rangeEnd);
             }
 
-            public Flow<DateTime> RejectBetween(DateTime rangeStart, DateTime rangeEnd)
+            [Description("Begins a pipeline from the value. True when: strictly between the two dates. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectBetween([Description("The start of the range.")] DateTime rangeStart,
+                [Description("The end of the range.")] DateTime rangeEnd)
             {
                 return value.Start().RejectBetween(rangeStart, rangeEnd);
             }
 
-            public Flow<DateTime> BreakBetween(DateTime rangeStart, DateTime rangeEnd)
+            [Description("Begins a pipeline from the value. True when: strictly between the two dates. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakBetween([Description("The start of the range.")] DateTime rangeStart,
+                [Description("The end of the range.")] DateTime rangeEnd)
             {
                 return value.Start().BreakBetween(rangeStart, rangeEnd);
             }
 
-            public Flow<DateTime> RequireBetween(DateTime rangeStart, DateTime rangeEnd)
+            [Description("Begins a pipeline from the value. True when: strictly between the two dates. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireBetween([Description("The start of the range.")] DateTime rangeStart,
+                [Description("The end of the range.")] DateTime rangeEnd)
             {
                 return value.Start().RequireBetween(rangeStart, rangeEnd);
             }
 
-            public Flow<DateTime> EnsureBetween(DateTime rangeStart, DateTime rangeEnd)
+            [Description("Begins a pipeline from the value. True when: strictly between the two dates. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureBetween([Description("The start of the range.")] DateTime rangeStart,
+                [Description("The end of the range.")] DateTime rangeEnd)
             {
                 return value.Start().EnsureBetween(rangeStart, rangeEnd);
             }

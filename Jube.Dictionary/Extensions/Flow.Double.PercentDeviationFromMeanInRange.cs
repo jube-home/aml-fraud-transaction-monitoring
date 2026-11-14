@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchPercentDeviationFromMeanInRange(double mean, double lowerBound, double upperBound)
+            [Description("True when: the percentage the value sits above or below the mean is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentDeviationFromMeanInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoublePercentDeviationFromMeanInRange(flow.Value, mean, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectPercentDeviationFromMeanInRange(double mean, double lowerBound, double upperBound)
+            [Description("True when: the percentage the value sits above or below the mean is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentDeviationFromMeanInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoublePercentDeviationFromMeanInRange(flow.Value, mean, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakPercentDeviationFromMeanInRange(double mean, double lowerBound, double upperBound)
+            [Description("True when: the percentage the value sits above or below the mean is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentDeviationFromMeanInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoublePercentDeviationFromMeanInRange(flow.Value, mean, lowerBound, upperBound));
             }
 
-            public Flow<double> RequirePercentDeviationFromMeanInRange(double mean, double lowerBound, double upperBound)
+            [Description("True when: the percentage the value sits above or below the mean is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentDeviationFromMeanInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoublePercentDeviationFromMeanInRange(flow.Value, mean, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsurePercentDeviationFromMeanInRange(double mean, double lowerBound, double upperBound)
+            [Description("True when: the percentage the value sits above or below the mean is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentDeviationFromMeanInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchPercentDeviationFromMeanInRange(double mean, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the percentage the value sits above or below the mean is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentDeviationFromMeanInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchPercentDeviationFromMeanInRange(mean, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectPercentDeviationFromMeanInRange(double mean, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the percentage the value sits above or below the mean is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentDeviationFromMeanInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectPercentDeviationFromMeanInRange(mean, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakPercentDeviationFromMeanInRange(double mean, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the percentage the value sits above or below the mean is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentDeviationFromMeanInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakPercentDeviationFromMeanInRange(mean, lowerBound, upperBound);
             }
 
-            public Flow<double> RequirePercentDeviationFromMeanInRange(double mean, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the percentage the value sits above or below the mean is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentDeviationFromMeanInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequirePercentDeviationFromMeanInRange(mean, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsurePercentDeviationFromMeanInRange(double mean, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the percentage the value sits above or below the mean is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentDeviationFromMeanInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsurePercentDeviationFromMeanInRange(mean, lowerBound, upperBound);
             }

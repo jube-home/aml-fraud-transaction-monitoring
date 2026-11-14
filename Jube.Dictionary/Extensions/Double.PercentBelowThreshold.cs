@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double PercentBelowThreshold(this double @this, double threshold)
+        [Description("How far under the threshold the value is as a percentage of it, negative when over.")]
+        public static double PercentBelowThreshold(this double @this,
+            [Description("The threshold the value is tested against.")] double threshold)
         {
             return CalculationSupport.Finite((threshold - @this) / threshold * 100.0);
         }

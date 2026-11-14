@@ -22,20 +22,23 @@ using Microsoft.Extensions.Localization;
 
 namespace Jube.Validations.EntityAnalysisModelActivationRule
 {
-    public sealed partial class
+    public sealed class
         EntityAnalysisModelActivationRuleDtoValidator : AbstractValidator<EntityAnalysisModelActivationRuleDto>
     {
+        private static readonly Regex HexColor = new(@"^#[0-9A-Fa-f]{6}\z", RegexOptions.Compiled | RegexOptions.CultureInvariant,
+            TimeSpan.FromSeconds(1));
+
         private const int MaxNameLength = 256;
         private const int MaxRuleScriptLength = 65536;
         private const int MaxFreeTextLength = 65536;
         private const int MaxShortTextLength = 512;
         private static readonly int[] allowedRuleScriptTypeIds = [1, 2];
-        private static readonly int[] allowedNotificationTypeIds = [1, 2];
         private static readonly char[] allowedBypassSuspendIntervals = ['n', 'h', 'd', 'm'];
 
         public EntityAnalysisModelActivationRuleDtoValidator(EntityAnalysisModelActivationRuleRepository repository,
             IStringLocalizer localiser,
-            RuleScriptParser? ruleScriptParser = null)
+            RuleScriptParser? ruleScriptParser = null,
+            EntityAnalysisModelResponseElevationRangeRepository? responseElevationRangeRepository = null)
         {
             Include(new FiniteNumberValidator<EntityAnalysisModelActivationRuleDto>());
 
@@ -133,6 +136,17 @@ namespace Jube.Validations.EntityAnalysisModelActivationRule
                 .WithErrorCode("CaseWorkflowStatusGuidNotEmpty")
                 .When(w => w.EnableCaseWorkflow);
 
+            RuleFor(p => p.CaseWorkflowStatusGuid)
+                .MustAsync((dto, statusGuid, cancellation) =>
+                    repository.CaseWorkflowStatusVisibleAsync(dto.EntityAnalysisModelId, dto.CaseWorkflowGuid,
+                        statusGuid, cancellation))
+                .WithMessage(_ =>
+                    localiser[EntityAnalysisModelActivationRuleResources.CaseWorkflowStatusGuidNotFound])
+                .WithErrorCode("CaseWorkflowStatusGuidNotFound")
+                .When(w => w.EnableCaseWorkflow && w.EntityAnalysisModelId > 0
+                                                 && w.CaseWorkflowGuid != Guid.Empty
+                                                 && w.CaseWorkflowStatusGuid != Guid.Empty);
+
             RuleFor(p => p.CaseKey)
                 .NotEmpty()
                 .WithMessage(_ => localiser[EntityAnalysisModelActivationRuleResources.CaseKeyRequired])
@@ -168,6 +182,16 @@ namespace Jube.Validations.EntityAnalysisModelActivationRule
                 .WithErrorCode("ResponseElevationRange")
                 .When(w => w.EnableResponseElevation);
 
+            RuleFor(p => p.ResponseElevation)
+                .MustAsync(async (dto, level, cancellation) =>
+                    await responseElevationRangeRepository!.GetActiveContainingAsync(dto.EntityAnalysisModelId, level,
+                        cancellation) != null)
+                .WithMessage(_ =>
+                    localiser[EntityAnalysisModelActivationRuleResources.ResponseElevationRangeNotFound])
+                .WithErrorCode("ResponseElevationRangeNotFound")
+                .When(w => w.EnableResponseElevation && w.ResponseElevation >= 0 && w.EntityAnalysisModelId > 0
+                           && responseElevationRangeRepository != null);
+
             RuleFor(p => p.ResponseElevationContent)
                 .MaximumLength(MaxFreeTextLength)
                 .WithMessage(_ =>
@@ -195,7 +219,7 @@ namespace Jube.Validations.EntityAnalysisModelActivationRule
                 .WithMessage(_ =>
                     localiser[EntityAnalysisModelActivationRuleResources.ResponseElevationForeColorRequired])
                 .WithErrorCode("ResponseElevationForeColorNotEmpty")
-                .Must(m => string.IsNullOrEmpty(m) || HexColor().IsMatch(m))
+                .Must(m => string.IsNullOrEmpty(m) || HexColor.IsMatch(m))
                 .WithMessage(_ =>
                     localiser[EntityAnalysisModelActivationRuleResources.ResponseElevationForeColorInvalid])
                 .WithErrorCode("ResponseElevationForeColorInvalid")
@@ -206,44 +230,11 @@ namespace Jube.Validations.EntityAnalysisModelActivationRule
                 .WithMessage(_ =>
                     localiser[EntityAnalysisModelActivationRuleResources.ResponseElevationBackColorRequired])
                 .WithErrorCode("ResponseElevationBackColorNotEmpty")
-                .Must(m => string.IsNullOrEmpty(m) || HexColor().IsMatch(m))
+                .Must(m => string.IsNullOrEmpty(m) || HexColor.IsMatch(m))
                 .WithMessage(_ =>
                     localiser[EntityAnalysisModelActivationRuleResources.ResponseElevationBackColorInvalid])
                 .WithErrorCode("ResponseElevationBackColorInvalid")
                 .When(w => w.EnableResponseElevation && w.SendToActivationWatcher);
-
-            RuleFor(p => p.NotificationTypeId)
-                .Must(m => allowedNotificationTypeIds.Contains(m))
-                .WithMessage(_ => localiser[EntityAnalysisModelActivationRuleResources.NotificationTypeIdInvalid])
-                .WithErrorCode("NotificationTypeIdInvalid")
-                .When(w => w.EnableNotification);
-
-            RuleFor(p => p.NotificationDestination)
-                .NotEmpty()
-                .WithMessage(_ =>
-                    localiser[EntityAnalysisModelActivationRuleResources.NotificationDestinationRequired])
-                .WithErrorCode("NotificationDestinationNotEmpty")
-                .MaximumLength(MaxShortTextLength)
-                .WithMessage(_ =>
-                    string.Format(
-                        localiser[EntityAnalysisModelActivationRuleResources.NotificationDestinationMaxLength],
-                        MaxShortTextLength))
-                .WithErrorCode("NotificationDestinationMaximumLength")
-                .When(w => w.EnableNotification);
-
-            RuleFor(p => p.NotificationSubject)
-                .MaximumLength(MaxShortTextLength)
-                .WithMessage(_ =>
-                    string.Format(localiser[EntityAnalysisModelActivationRuleResources.NotificationSubjectMaxLength],
-                        MaxShortTextLength))
-                .WithErrorCode("NotificationSubjectMaximumLength");
-
-            RuleFor(p => p.NotificationBody)
-                .MaximumLength(MaxFreeTextLength)
-                .WithMessage(_ =>
-                    string.Format(localiser[EntityAnalysisModelActivationRuleResources.NotificationBodyMaxLength],
-                        MaxFreeTextLength))
-                .WithErrorCode("NotificationBodyMaximumLength");
 
             RuleFor(p => p.EntityAnalysisModelGuidTtlCounter)
                 .NotEmpty()
@@ -258,6 +249,16 @@ namespace Jube.Validations.EntityAnalysisModelActivationRule
                     localiser[EntityAnalysisModelActivationRuleResources.EntityAnalysisModelTtlCounterGuidRequired])
                 .WithErrorCode("EntityAnalysisModelTtlCounterGuidNotEmpty")
                 .When(w => w.EnableTtlCounter);
+
+            RuleFor(p => p.EntityAnalysisModelTtlCounterGuid)
+                .MustAsync((dto, counterGuid, cancellation) =>
+                    repository.TtlCounterVisibleAsync(dto.EntityAnalysisModelGuidTtlCounter, counterGuid,
+                        cancellation))
+                .WithMessage(_ =>
+                    localiser[EntityAnalysisModelActivationRuleResources.EntityAnalysisModelTtlCounterGuidNotFound])
+                .WithErrorCode("EntityAnalysisModelTtlCounterGuidNotFound")
+                .When(w => w.EnableTtlCounter && w.EntityAnalysisModelGuidTtlCounter != Guid.Empty
+                                              && w.EntityAnalysisModelTtlCounterGuid != Guid.Empty);
 
             RuleFor(p => p.ActivationSample)
                 .InclusiveBetween(0d, 1d)
@@ -281,8 +282,5 @@ namespace Jube.Validations.EntityAnalysisModelActivationRule
                 });
             }
         }
-
-        [GeneratedRegex("^#[0-9A-Fa-f]{6}$")]
-        private static partial Regex HexColor();
     }
 }

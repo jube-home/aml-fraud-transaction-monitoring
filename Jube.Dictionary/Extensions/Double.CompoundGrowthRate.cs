@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double CompoundGrowthRate(this double @this, double previous, double periods)
+        [Description("The steady growth rate per period that takes the previous value to this one.")]
+        public static double CompoundGrowthRate(this double @this,
+            [Description("The earlier value the change is measured from.")] double previous,
+            [Description("The number of periods between the previous value and this one.")] double periods)
         {
             return previous > 0 && periods > 0 && @this > 0 ? CalculationSupport.Finite(Math.Pow(@this / previous, 1.0 / periods) - 1) : double.NaN;
         }

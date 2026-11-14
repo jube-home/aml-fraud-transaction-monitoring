@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
+            [Description("True when: Monday to Friday. Decides matched if so; otherwise continues.")]
             public Flow<DateTime> MatchIsWeekday()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeIsWeekday(flow.Value));
             }
 
+            [Description("True when: Monday to Friday. Decides rejected if so; otherwise continues.")]
             public Flow<DateTime> RejectIsWeekday()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeIsWeekday(flow.Value));
             }
 
+            [Description("True when: Monday to Friday. Decides broken if so; otherwise continues.")]
             public Flow<DateTime> BreakIsWeekday()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeIsWeekday(flow.Value));
             }
 
+            [Description("True when: Monday to Friday. Continues if so; otherwise decides rejected.")]
             public Flow<DateTime> RequireIsWeekday()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeIsWeekday(flow.Value));
             }
 
+            [Description("True when: Monday to Friday. Continues if so; otherwise decides broken.")]
             public Flow<DateTime> EnsureIsWeekday()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
+            [Description("Begins a pipeline from the value. True when: Monday to Friday. Decides matched if so; otherwise continues.")]
             public Flow<DateTime> MatchIsWeekday()
             {
                 return value.Start().MatchIsWeekday();
             }
 
+            [Description("Begins a pipeline from the value. True when: Monday to Friday. Decides rejected if so; otherwise continues.")]
             public Flow<DateTime> RejectIsWeekday()
             {
                 return value.Start().RejectIsWeekday();
             }
 
+            [Description("Begins a pipeline from the value. True when: Monday to Friday. Decides broken if so; otherwise continues.")]
             public Flow<DateTime> BreakIsWeekday()
             {
                 return value.Start().BreakIsWeekday();
             }
 
+            [Description("Begins a pipeline from the value. True when: Monday to Friday. Continues if so; otherwise decides rejected.")]
             public Flow<DateTime> RequireIsWeekday()
             {
                 return value.Start().RequireIsWeekday();
             }
 
+            [Description("Begins a pipeline from the value. True when: Monday to Friday. Continues if so; otherwise decides broken.")]
             public Flow<DateTime> EnsureIsWeekday()
             {
                 return value.Start().EnsureIsWeekday();

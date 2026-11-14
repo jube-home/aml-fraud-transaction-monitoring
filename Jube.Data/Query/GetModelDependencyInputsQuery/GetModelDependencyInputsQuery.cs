@@ -41,6 +41,8 @@ namespace Jube.Data.Query.GetModelDependencyInputsQuery
             ["List"] = EntityApprovalKind.EntityAnalysisModelList,
             ["Dictionary"] = EntityApprovalKind.EntityAnalysisModelDictionary,
             ["HttpAdaptation"] = EntityApprovalKind.EntityAnalysisModelHttpAdaptation,
+            ["GraphRecall"] = EntityApprovalKind.EntityAnalysisModelGraphRecall,
+            ["Svirfd"] = EntityApprovalKind.EntityAnalysisModelSvirfd,
             ["ExhaustiveAdaptation"] = EntityApprovalKind.ExhaustiveSearchInstance
         };
 
@@ -187,6 +189,18 @@ namespace Jube.Data.Query.GetModelDependencyInputsQuery
                          .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false))
             {
                 dto.Add("HttpAdaptation", h.Id, h.Name, h.Active, h.Version);
+            }
+
+            foreach (var g in await new EntityAnalysisModelGraphRecallRepository(dbContext, tenantRegistryId)
+                         .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false))
+            {
+                dto.Add("GraphRecall", g.Id, g.Name, g.Active, g.Version);
+            }
+
+            foreach (var s in await new EntityAnalysisModelSvirfdRepository(dbContext, tenantRegistryId)
+                         .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false))
+            {
+                dto.Add("Svirfd", s.Id, s.Name, s.Active, s.Version);
             }
 
             foreach (var e in await new ExhaustiveSearchInstanceRepository(dbContext, tenantRegistryId)

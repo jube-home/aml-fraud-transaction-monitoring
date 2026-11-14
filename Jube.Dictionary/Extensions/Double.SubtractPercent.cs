@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double SubtractPercent(this double @this, double percent)
+        [Description("The value decreased by a percentage.")]
+        public static double SubtractPercent(this double @this,
+            [Description("The percentage to subtract.")] double percent)
         {
             return CalculationSupport.Finite(@this * (1d - percent / 100d));
         }

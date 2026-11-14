@@ -14,6 +14,7 @@
 using System.ComponentModel;
 using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,77 +24,93 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.EntityAnalysisModelInlineScript
 {
     [FormEndpoint("EntityAnalysisModelInlineScript")]
+    [FormApproval]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
     [FormGroup("Script", Order = 20)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
+    [MessagePackObject]
     public class EntityAnalysisModelInlineScriptDto : IUpdated, IActivatable, ILockable, ITreeChild
     {
         [Description("Identifier of the Model this Inline Script is registered against. Set from the parent Model " +
                      "context; not user-editable.")]
+        [Key(0)]
         public int EntityAnalysisModelId { get; set; }
 
         [Description("Display name of this Inline Script registration. Unique within the Model (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Enrich with customer segment")]
         [ListColumn(Order = 10, Title = "Name")]
+        [Key(1)]
         public string? Name { get; set; }
 
         [Description("The registered Inline Script (a compiled class implementing IInlineScript, stored in " +
                      "EntityAnalysisInlineScript) to invoke for this Model.")]
         [FormField(Group = "Script", Order = 10, Widget = "select")]
         [Lookup("/api/EntityAnalysisInlineScript", TextField = "name", ValueField = "id")]
+        [Key(2)]
         public int EntityAnalysisInlineScriptId { get; set; }
 
         [Description("Globally-addressable identifier for this row, stable across environments and the form "
                      + "in which every other area refers to it. Server-assigned. Read-only.")]
+        [Key(3)]
         public Guid Guid { get; set; }
 
         [Description("When true, this Inline Script participates in evaluation on transaction invocation.")]
         [FormField(Group = "Identity", Order = 20, Widget = "switch")]
         [NewDefault(false)]
+        [Key(4)]
         public bool Active { get; set; }
 
         [Description("When true, this Inline Script registration is locked and cannot be edited or deleted.")]
         [FormField(Group = "Identity", Order = 30, Widget = "switch")]
         [NewDefault(false)]
+        [Key(5)]
         public bool Locked { get; set; }
 
         [Description("Server-assigned row identifier. Read-only.")]
         [FormField(Group = "Audit", Order = 10, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(6)]
         public int Id { get; set; }
 
         [Description("User who created this Inline Script registration. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 20, ReadOnly = true)]
+        [Key(7)]
         public string? CreatedUser { get; set; }
 
         [Description("Timestamp (UTC) this Inline Script registration was created. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 30, ReadOnly = true, Widget = "date")]
+        [Key(8)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("User who last updated this Inline Script registration. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 40, ReadOnly = true)]
+        [Key(9)]
         public string? UpdatedUser { get; set; }
 
         [Description("Timestamp (UTC) this Inline Script registration was last updated. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 50, ReadOnly = true, Widget = "date")]
+        [Key(10)]
         public DateTimeOffset? UpdatedDate { get; set; }
 
         [Description("Server-assigned optimistic-concurrency version number, incremented on every update. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 60, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(11)]
         public int Version { get; set; }
 
         [Description("User who deleted this Inline Script registration, if soft-deleted. Server-assigned. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 70, ReadOnly = true)]
+        [Key(12)]
         public string? DeletedUser { get; set; }
 
         [Description("Timestamp (UTC) this Inline Script registration was soft-deleted, if applicable. " +
                      "Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 80, ReadOnly = true, Widget = "date")]
+        [Key(13)]
         public DateTimeOffset? DeletedDate { get; set; }
     }
 }

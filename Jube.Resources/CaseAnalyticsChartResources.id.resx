@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="WeekdayMon" xml:space="preserve">
+        <value>Sen</value>
+    </data>
+    <data name="WeekdayTue" xml:space="preserve">
+        <value>Sel</value>
+    </data>
+    <data name="WeekdayWed" xml:space="preserve">
+        <value>Rab</value>
+    </data>
+    <data name="WeekdayThu" xml:space="preserve">
+        <value>Kam</value>
+    </data>
+    <data name="WeekdayFri" xml:space="preserve">
+        <value>Jum</value>
+    </data>
+    <data name="WeekdaySat" xml:space="preserve">
+        <value>Sab</value>
+    </data>
+    <data name="WeekdaySun" xml:space="preserve">
+        <value>Min</value>
+    </data>
+    <data name="ImpactMinimal" xml:space="preserve">
+        <value>Minimal</value>
+    </data>
+    <data name="ImpactLow" xml:space="preserve">
+        <value>Rendah</value>
+    </data>
+    <data name="ImpactModerate" xml:space="preserve">
+        <value>Sedang</value>
+    </data>
+    <data name="ImpactHigh" xml:space="preserve">
+        <value>Tinggi</value>
+    </data>
+    <data name="ImpactSevere" xml:space="preserve">
+        <value>Parah</value>
+    </data>
+    <data name="LikelihoodVeryLikely" xml:space="preserve">
+        <value>Sangat mungkin</value>
+    </data>
+    <data name="LikelihoodLikely" xml:space="preserve">
+        <value>Mungkin</value>
+    </data>
+    <data name="LikelihoodPossible" xml:space="preserve">
+        <value>Bisa terjadi</value>
+    </data>
+    <data name="LikelihoodUnlikely" xml:space="preserve">
+        <value>Tidak mungkin</value>
+    </data>
+    <data name="RiskMatrixTitle" xml:space="preserve">
+        <value>Matriks risiko</value>
+    </data>
+    <data name="RiskMatrixAssessed" xml:space="preserve">
+        <value>{0} kasus dinilai; {1} belum dinilai</value>
+    </data>
+    <data name="RiskMatrixCases" xml:space="preserve">
+        <value>{0} kasus</value>
+    </data>
+    <data name="Impact" xml:space="preserve">
+        <value>Dampak</value>
+    </data>
+    <data name="Likelihood" xml:space="preserve">
+        <value>Kemungkinan</value>
+    </data>
+    <data name="Cases" xml:space="preserve">
+        <value>Kasus</value>
+    </data>
+    <data name="FlowTitle" xml:space="preserve">
+        <value>Dibuka, ditutup, dan tunggakan</value>
+    </data>
+    <data name="FlowSubtitle" xml:space="preserve">
+        <value>Kasus yang dibuka dan ditutup setiap hari, dan kasus yang masih terbuka di akhir hari</value>
+    </data>
+    <data name="Opened" xml:space="preserve">
+        <value>Dibuka</value>
+    </data>
+    <data name="Closed" xml:space="preserve">
+        <value>Ditutup</value>
+    </data>
+    <data name="Backlog" xml:space="preserve">
+        <value>Tunggakan</value>
+    </data>
+    <data name="FirstViewTitle" xml:space="preserve">
+        <value>Waktu hingga dilihat pertama kali</value>
+    </data>
+    <data name="FirstViewSubtitle" xml:space="preserve">
+        <value>Kasus berdasarkan lama menunggu</value>
+    </data>
+    <data name="ResolutionTitle" xml:space="preserve">
+        <value>Waktu hingga penyelesaian</value>
+    </data>
+    <data name="ResolutionSubtitle" xml:space="preserve">
+        <value>Kasus tertutup berdasarkan lama pengerjaannya</value>
+    </data>
+    <data name="AgingTitle" xml:space="preserve">
+        <value>Kasus terbuka menurut usia</value>
+    </data>
+    <data name="AgingSubtitle" xml:space="preserve">
+        <value>Sudah berapa lama kasus terbuka menunggu, menurut jalur urgensi</value>
+    </data>
+    <data name="LaneLiveMoney" xml:space="preserve">
+        <value>Uang aktif</value>
+    </data>
+    <data name="LaneMandatory" xml:space="preserve">
+        <value>Wajib</value>
+    </data>
+    <data name="LaneDeadlineNear" xml:space="preserve">
+        <value>Tenggat dekat</value>
+    </data>
+    <data name="LaneStandard" xml:space="preserve">
+        <value>Standar</value>
+    </data>
+    <data name="StatusDwellTitle" xml:space="preserve">
+        <value>Waktu di setiap status</value>
+    </data>
+    <data name="StatusDwellSubtitle" xml:space="preserve">
+        <value>Median dan sepersepuluh terlambat dari masa tinggal yang selesai, dalam jam</value>
+    </data>
+    <data name="Unknown" xml:space="preserve">
+        <value>Tidak diketahui</value>
+    </data>
+    <data name="Hours" xml:space="preserve">
+        <value>Jam</value>
+    </data>
+    <data name="Median" xml:space="preserve">
+        <value>Median</value>
+    </data>
+    <data name="SlowestTenth" xml:space="preserve">
+        <value>Sepersepuluh terlambat</value>
+    </data>
+    <data name="RuleEffortTitle" xml:space="preserve">
+        <value>Waktu analis yang hilang untuk positif palsu</value>
+    </data>
+    <data name="RuleEffortSubtitle" xml:space="preserve">
+        <value>Jam yang dihabiskan pada kasus yang diangkat aturan dan ternyata tidak nyata</value>
+    </data>
+    <data name="RulePrecisionTitle" xml:space="preserve">
+        <value>Presisi aturan</value>
+    </data>
+    <data name="RulePrecisionSubtitle" xml:space="preserve">
+        <value>Bagian kasus terputus yang diangkat aturan dan terkonfirmasi</value>
+    </data>
+    <data name="Percent" xml:space="preserve">
+        <value>Persen</value>
+    </data>
+    <data name="Precision" xml:space="preserve">
+        <value>Presisi</value>
+    </data>
+    <data name="GainsTitle" xml:space="preserve">
+        <value>Kasus terkonfirmasi yang ditemukan seiring kasus dikerjakan</value>
+    </data>
+    <data name="DecidedCases" xml:space="preserve">
+        <value>{0} kasus diputuskan</value>
+    </data>
+    <data name="FewDecidedCases" xml:space="preserve">
+        <value>Hanya {0} kasus diputuskan, terlalu sedikit untuk diandalkan</value>
+    </data>
+    <data name="CasesWorkedPercent" xml:space="preserve">
+        <value>Kasus dikerjakan (%)</value>
+    </data>
+    <data name="ConfirmedFoundPercent" xml:space="preserve">
+        <value>Terkonfirmasi ditemukan (%)</value>
+    </data>
+    <data name="PriorityOrder" xml:space="preserve">
+        <value>Urutan prioritas</value>
+    </data>
+    <data name="LikelihoodOrder" xml:space="preserve">
+        <value>Urutan kemungkinan</value>
+    </data>
+    <data name="OldestFirst" xml:space="preserve">
+        <value>Terlama dulu</value>
+    </data>
+    <data name="Random" xml:space="preserve">
+        <value>Acak</value>
+    </data>
+    <data name="CalibrationTitle" xml:space="preserve">
+        <value>Kemungkinan yang diprediksi dibanding yang terjadi</value>
+    </data>
+    <data name="ArrivalsTitle" xml:space="preserve">
+        <value>Kapan kasus masuk</value>
+    </data>
+    <data name="ArrivalsSubtitle" xml:space="preserve">
+        <value>Kasus dibuat menurut hari dan jam (UTC)</value>
+    </data>
+    <data name="Hour" xml:space="preserve">
+        <value>Jam</value>
+    </data>
+    <data name="Weekday" xml:space="preserve">
+        <value>Hari dalam seminggu</value>
+    </data>
+    <data name="FirstViewByHourTitle" xml:space="preserve">
+        <value>Median waktu hingga dilihat pertama kali menurut jam kedatangan</value>
+    </data>
+    <data name="FirstViewByHourSubtitle" xml:space="preserve">
+        <value>Menit kasus menunggu sebelum ada yang melihatnya, menurut jam kedatangan (UTC)</value>
+    </data>
+    <data name="Minutes" xml:space="preserve">
+        <value>Menit</value>
+    </data>
+    <data name="MedianMinutes" xml:space="preserve">
+        <value>Median menit</value>
+    </data>
+    <data name="ServiceLevelTitle" xml:space="preserve">
+        <value>Pencapaian tingkat layanan per minggu</value>
+    </data>
+    <data name="ServiceLevelSubtitle" xml:space="preserve">
+        <value>Bagian kasus yang dibuat minggu itu yang memenuhi setiap target</value>
+    </data>
+    <data name="MetPercent" xml:space="preserve">
+        <value>Terpenuhi (%)</value>
+    </data>
+    <data name="ServiceLevelFirstView" xml:space="preserve">
+        <value>Dilihat pertama kali</value>
+    </data>
+    <data name="ServiceLevelOwnership" xml:space="preserve">
+        <value>Kepemilikan</value>
+    </data>
+    <data name="ServiceLevelResolution" xml:space="preserve">
+        <value>Penyelesaian</value>
+    </data>
+    <data name="ServiceLevelTimeInStatus" xml:space="preserve">
+        <value>Waktu dalam status</value>
+    </data>
+    <data name="HandoffsTitle" xml:space="preserve">
+        <value>Seberapa sering kasus berpindah tangan</value>
+    </data>
+    <data name="HandoffsSubtitle" xml:space="preserve">
+        <value>{0} kasus dibuka kembali setelah ditutup</value>
+    </data>
+    <data name="ChangesOfOwner" xml:space="preserve">
+        <value>Pergantian pemilik</value>
+    </data>
+</root>

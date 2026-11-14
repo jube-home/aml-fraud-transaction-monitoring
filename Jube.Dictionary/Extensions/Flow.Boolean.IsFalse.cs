@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<bool> flow)
         {
+            [Description("True when: the value is false. Decides matched if so; otherwise continues.")]
             public Flow<bool> MatchIsFalse()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.BooleanIsFalse(flow.Value));
             }
 
+            [Description("True when: the value is false. Decides rejected if so; otherwise continues.")]
             public Flow<bool> RejectIsFalse()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.BooleanIsFalse(flow.Value));
             }
 
+            [Description("True when: the value is false. Decides broken if so; otherwise continues.")]
             public Flow<bool> BreakIsFalse()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.BooleanIsFalse(flow.Value));
             }
 
+            [Description("True when: the value is false. Continues if so; otherwise decides rejected.")]
             public Flow<bool> RequireIsFalse()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.BooleanIsFalse(flow.Value));
             }
 
+            [Description("True when: the value is false. Continues if so; otherwise decides broken.")]
             public Flow<bool> EnsureIsFalse()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(bool value)
         {
+            [Description("Begins a pipeline from the value. True when: the value is false. Decides matched if so; otherwise continues.")]
             public Flow<bool> MatchIsFalse()
             {
                 return value.Start().MatchIsFalse();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is false. Decides rejected if so; otherwise continues.")]
             public Flow<bool> RejectIsFalse()
             {
                 return value.Start().RejectIsFalse();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is false. Decides broken if so; otherwise continues.")]
             public Flow<bool> BreakIsFalse()
             {
                 return value.Start().BreakIsFalse();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is false. Continues if so; otherwise decides rejected.")]
             public Flow<bool> RequireIsFalse()
             {
                 return value.Start().RequireIsFalse();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is false. Continues if so; otherwise decides broken.")]
             public Flow<bool> EnsureIsFalse()
             {
                 return value.Start().EnsureIsFalse();

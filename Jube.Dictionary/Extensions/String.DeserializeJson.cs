@@ -10,6 +10,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(string? json)
         {
+            [Description("Deserializes a JSON string to an object.")]
             public T? DeserializeJson<T>()
             {
                 if (string.IsNullOrWhiteSpace(json))
@@ -32,7 +33,8 @@ namespace Jube.Dictionary.Extensions
                 }
             }
 
-            public T? DeserializeJson<T>(Encoding? encoding)
+            [Description("Deserializes a JSON string using specified encoding.")]
+            public T? DeserializeJson<T>([Description("The text encoding to use.")] Encoding? encoding)
             {
                 if (string.IsNullOrWhiteSpace(json))
                 {

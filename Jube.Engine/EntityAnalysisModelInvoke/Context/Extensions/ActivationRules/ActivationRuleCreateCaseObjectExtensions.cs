@@ -45,8 +45,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                 if (!await cacheService.CacheActivationCaseIdempotencyRepository.CheckAndClaimIdempotencyAsync(
                         context.EntityAnalysisModel.Instance.TenantRegistryId,
                         context.EntityAnalysisModel.Instance.Guid,
-                        context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid,
-                        evaluateActivationRule.Guid))
+                        evaluateActivationRule.Guid,
+                        context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid))
                 {
                     context.TraceLog(
                         $"activation rule guid {evaluateActivationRule.Guid} has failed case idempotency check.");
@@ -77,7 +77,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                 EntityAnalysisModelInstanceEntryGuid = context.EntityAnalysisModelInstanceEntryPayload
                     .EntityAnalysisModelInstanceEntryGuid,
                 CaseWorkflowGuid = evaluateActivationRule.CaseWorkflowGuid,
-                CaseWorkflowStatusGuid = evaluateActivationRule.CaseWorkflowStatusGuid
+                CaseWorkflowStatusGuid = evaluateActivationRule.CaseWorkflowStatusGuid,
+                EntityAnalysisModelActivationRuleGuid = evaluateActivationRule.Guid
             };
 
             ApplySuspendBypass(context, evaluateActivationRule, createCase);

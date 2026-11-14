@@ -6,6 +6,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Checks if the string contains only numbers.")]
         public static bool IsNumeric(this string @this)
         {
             return !Regex.IsMatch(@this, "[^0-9]");

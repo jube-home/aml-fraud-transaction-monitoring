@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchMeanWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the average of the value and the others is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMeanWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleMeanWithOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RejectMeanWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the average of the value and the others is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMeanWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleMeanWithOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> BreakMeanWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the average of the value and the others is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMeanWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleMeanWithOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RequireMeanWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the average of the value and the others is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMeanWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleMeanWithOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> EnsureMeanWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the average of the value and the others is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMeanWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchMeanWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the average of the value and the others is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMeanWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().MatchMeanWithOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RejectMeanWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the average of the value and the others is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMeanWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RejectMeanWithOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> BreakMeanWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the average of the value and the others is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMeanWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().BreakMeanWithOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RequireMeanWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the average of the value and the others is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMeanWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RequireMeanWithOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> EnsureMeanWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the average of the value and the others is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMeanWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().EnsureMeanWithOutsideRange(lowerBound, upperBound, others);
             }

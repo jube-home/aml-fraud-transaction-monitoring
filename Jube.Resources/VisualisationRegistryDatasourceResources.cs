@@ -27,8 +27,12 @@ namespace Jube.Resources
         public const string PriorityRange = nameof(PriorityRange);
         public const string ColumnSpanRange = nameof(ColumnSpanRange);
         public const string RowSpanRange = nameof(RowSpanRange);
-        public const string VisualisationTypeIdInvalid = nameof(VisualisationTypeIdInvalid);
-        public const string VisualisationTextRequired = nameof(VisualisationTextRequired);
-        public const string VisualisationTextMaxLength = nameof(VisualisationTextMaxLength);
+        public const string DisplayRequired = nameof(DisplayRequired);
+        public const string DisplayKindIdInvalid = nameof(DisplayKindIdInvalid);
+        public const string TemplateTextMaxLength = nameof(TemplateTextMaxLength);
+        public const string MappingRoleInvalid = nameof(MappingRoleInvalid);
+        public const string MappingRoleDuplicate = nameof(MappingRoleDuplicate);
+        public const string MappingColumnInvalid = nameof(MappingColumnInvalid);
+        public const string MappingColumnDuplicate = nameof(MappingColumnDuplicate);
     }
 }

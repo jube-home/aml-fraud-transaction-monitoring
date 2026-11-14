@@ -27,6 +27,8 @@ using Jube.TaskCancellation.Interfaces;
 using log4net;
 using RabbitMQ.Client;
 using Jube.Analytics;
+using Jube.Svirfd;
+using Jube.Svirfd.Interfaces;
 
 namespace Jube.Engine
 {
@@ -42,7 +44,8 @@ namespace Jube.Engine
         IImplicitAsyncInvocationTracker implicitAsyncInvocationTracker,
         string reportConnectionString = null,
         OpenTelemetryExcludeCache openTelemetryExcludeCache = null,
-        LogCounterRuleCache logCounterRuleCache = null)
+        LogCounterRuleCache logCounterRuleCache = null,
+        ISvirfdLookup svirfdLookup = null)
     {
         public readonly Context Context = new()
         {
@@ -57,7 +60,8 @@ namespace Jube.Engine
                 ImplicitAsyncInvocationTracker = implicitAsyncInvocationTracker,
                 ReportConnectionString = reportConnectionString,
                 OpenTelemetryExcludeCache = openTelemetryExcludeCache,
-                LogCounterRuleCache = logCounterRuleCache
+                LogCounterRuleCache = logCounterRuleCache,
+                Svirfd = svirfdLookup ?? new SvirfdNullLookup()
             }
         };
 
@@ -69,6 +73,7 @@ namespace Jube.Engine
                     .ConfigureAwait(false);
 
                 await StartSanctionsTaskAsync().ConfigureAwait(false);
+                StartGraphRecallTask();
                 await StartEntityModelServerAsync().ConfigureAwait(false);
 
                 await Task.WhenAll(
@@ -80,13 +85,24 @@ namespace Jube.Engine
                 {
                     StartAmqp();
                     StartNotificationsViaAmqp();
+                    StartWebhooksViaAmqp();
                 }
                 else
                 {
                     StartNotificationsViaConcurrentQueue();
+                    StartWebhooksViaConcurrentQueue();
                 }
 
+                StartInboundQueue();
+
                 StartCaseAutomationServer();
+                StartCaseRiskWorker();
+                StartCaseChecklistSlaSweepWorker();
+                StartCaseServiceLevelSweepWorker();
+                StartRetentionPurgeWorker();
+                StartErasureExecutionWorker();
+                StartCaseDigestWorker();
+                StartCaseEscalationWorker();
                 StartAsyncEntityThreadsInLoop();
                 StartManageCounters();
                 StartApplicationLogEntry();
@@ -177,14 +193,21 @@ namespace Jube.Engine
             }
         }
 
-        private void StartAmqp()
+        private void StartInboundQueue()
         {
-            if (!Context.Services.DynamicEnvironment.AppSettings("EnableCallback")
+            if (!Context.Services.DynamicEnvironment.AppSettings("EnableInboundQueue")
                     .Equals("True", StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
 
+            var starter = new InboundQueueTaskStarter(Context);
+
+            Context.Services.TaskCoordinator.RunAsync("InboundQueueTask", _ => starter.StartAsync());
+        }
+
+        private void StartAmqp()
+        {
             var amqpTaskStarter = new AmqpTaskStarter(Context);
 
             Context.Tasks.AmqpTask =
@@ -203,6 +226,20 @@ namespace Jube.Engine
 
             Context.Tasks.NotificationsViaAmqp = Context.Services.TaskCoordinator.RunAsync("NotificationsViaAmqpTask",
                 _ => notificationsViaAmqpStarter.StartAsync());
+        }
+
+        private void StartWebhooksViaAmqp()
+        {
+            if (!Context.Services.DynamicEnvironment.AppSettings("EnableCallback")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            var webhooksViaAmqpStarter = new WebhooksViaAmqpStarter(Context);
+
+            Context.Tasks.WebhooksViaAmqp = Context.Services.TaskCoordinator.RunAsync("WebhooksViaAmqpTask",
+                _ => webhooksViaAmqpStarter.StartAsync());
         }
 
         private Task StartSanctionsTaskAsync()
@@ -229,6 +266,30 @@ namespace Jube.Engine
             }
 
             return Task.CompletedTask;
+        }
+
+        private void StartGraphRecallTask()
+        {
+            if (!Context.Services.DynamicEnvironment.AppSettings("EnableGraphRecall")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            if (Context.Services.Log.IsDebugEnabled)
+            {
+                Context.Services.Log.Debug("Start: Starting Graph Recall routine.");
+            }
+
+            var graphRecallTaskStarter = new GraphRecallTaskStarter(Context);
+
+            Context.Tasks.GraphRecallTask = Context.Services.TaskCoordinator.RunAsync("GraphRecallTask",
+                _ => graphRecallTaskStarter.StartAsync());
+
+            if (Context.Services.Log.IsInfoEnabled)
+            {
+                Context.Services.Log.Info("Start: Starting Graph Recall routine.");
+            }
         }
 
         private void StartExhaustiveTrainingServer()
@@ -427,6 +488,143 @@ namespace Jube.Engine
             {
                 Context.Services.Log.Debug("Entity Start: Started the Cases Automation Thread.");
             }
+        }
+
+        private void StartCaseEscalationWorker()
+        {
+            if (!Context.Services.DynamicEnvironment.AppSettings("EnableCaseEscalation")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            if (Context.Services.Log.IsDebugEnabled)
+            {
+                Context.Services.Log.Debug("Entity Start: Starting the Case Escalation Thread.");
+            }
+
+            var caseEscalationStarter = new CaseEscalationStarter(Context);
+
+            Context.Tasks.CaseEscalationTask = Context.Services.TaskCoordinator.RunAsync("CaseEscalationTask",
+                _ => caseEscalationStarter.StartAsync());
+        }
+
+        private void StartCaseRiskWorker()
+        {
+            if (!Context.Services.DynamicEnvironment.AppSettings("EnableCaseRisk")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            if (Context.Services.Log.IsDebugEnabled)
+            {
+                Context.Services.Log.Debug("Entity Start: Starting the Case Risk Thread.");
+            }
+
+            var caseRiskStarter = new CaseRiskStarter(Context);
+
+            Context.Tasks.CaseRiskTask =
+                Context.Services.TaskCoordinator.RunAsync("CaseRiskTask", _ => caseRiskStarter.StartAsync());
+
+            if (Context.Services.Log.IsDebugEnabled)
+            {
+                Context.Services.Log.Debug("Entity Start: Started the Case Risk Thread.");
+            }
+        }
+
+        private void StartCaseChecklistSlaSweepWorker()
+        {
+            if (!CaseChecklistSlaSweepStarter.IsEnabled(Context.Services.DynamicEnvironment))
+            {
+                return;
+            }
+
+            if (Context.Services.Log.IsDebugEnabled)
+            {
+                Context.Services.Log.Debug("Entity Start: Starting the Case Checklist SLA Sweep Thread.");
+            }
+
+            var caseChecklistSlaSweepStarter = new CaseChecklistSlaSweepStarter(Context);
+
+            Context.Tasks.CaseChecklistSlaSweepTask = Context.Services.TaskCoordinator.RunAsync(
+                "CaseChecklistSlaSweepTask", _ => caseChecklistSlaSweepStarter.StartAsync());
+        }
+
+        private void StartCaseServiceLevelSweepWorker()
+        {
+            if (!CaseServiceLevelSweepStarter.IsEnabled(Context.Services.DynamicEnvironment))
+            {
+                return;
+            }
+
+            if (Context.Services.Log.IsDebugEnabled)
+            {
+                Context.Services.Log.Debug("Entity Start: Starting the Case Service Level Sweep Thread.");
+            }
+
+            var caseServiceLevelSweepStarter = new CaseServiceLevelSweepStarter(Context);
+
+            Context.Tasks.CaseServiceLevelSweepTask = Context.Services.TaskCoordinator.RunAsync(
+                "CaseServiceLevelSweepTask", _ => caseServiceLevelSweepStarter.StartAsync());
+        }
+
+        private void StartCaseDigestWorker()
+        {
+            if (!CaseDigestStarter.IsEnabled(Context.Services.DynamicEnvironment))
+            {
+                return;
+            }
+
+            var caseDigestStarter = new CaseDigestStarter(Context);
+
+            Context.Tasks.CaseDigestTask = Context.Services.TaskCoordinator.RunAsync("CaseDigestTask",
+                _ => caseDigestStarter.StartAsync());
+        }
+
+        private void StartErasureExecutionWorker()
+        {
+            if (!ErasureExecutionStarter.IsEnabled(Context.Services.DynamicEnvironment))
+            {
+                return;
+            }
+
+            var erasureExecutionStarter = new ErasureExecutionStarter(Context);
+
+            Context.Tasks.ErasureExecutionTask = Context.Services.TaskCoordinator.RunAsync("ErasureExecutionTask",
+                _ => erasureExecutionStarter.StartAsync());
+        }
+
+        private void StartRetentionPurgeWorker()
+        {
+            if (!RetentionPurgeStarter.IsEnabled(Context.Services.DynamicEnvironment))
+            {
+                return;
+            }
+
+            var retentionPurgeStarter = new RetentionPurgeStarter(Context);
+
+            Context.Tasks.RetentionPurgeTask = Context.Services.TaskCoordinator.RunAsync("RetentionPurgeTask",
+                _ => retentionPurgeStarter.StartAsync());
+        }
+
+        private void StartWebhooksViaConcurrentQueue()
+        {
+            if (!Context.Services.DynamicEnvironment.AppSettings("EnableNotification")
+                    .Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            if (Context.Services.Log.IsDebugEnabled)
+            {
+                Context.Services.Log.Debug("Entity Start: Starting the Webhooks Thread.");
+            }
+
+            var webhooksViaConcurrentQueueStarter = new WebhooksViaConcurrentQueueStarter(Context);
+
+            Context.Tasks.WebhooksViaConcurrentQueueTask = Context.Services.TaskCoordinator.RunAsync(
+                "WebhookRelayFromConcurrentQueueTask", _ => webhooksViaConcurrentQueueStarter.StartAsync());
         }
 
         private void StartNotificationsViaConcurrentQueue()

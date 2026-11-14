@@ -18,7 +18,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsNormalisedInList(this string? @this, IEnumerable<string>? list)
+        [Description("True when: equal to an entry after folding case, accents and punctuation.")]
+        public static bool IsNormalisedInList(this string? @this,
+            [Description("The List token whose entries are compared.")] IEnumerable<string>? list)
         {
             return FuzzyListMatcher.Any(@this, list, FuzzyOptions.For(FuzzyAlgorithm.Exact, 1));
         }

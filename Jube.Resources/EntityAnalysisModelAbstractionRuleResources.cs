@@ -35,5 +35,7 @@ namespace Jube.Resources
         public const string OffsetTypeIdInvalid = nameof(OffsetTypeIdInvalid);
         public const string OffsetValueRange = nameof(OffsetValueRange);
         public const string JsonInvalid = nameof(JsonInvalid);
+        public const string IterationOrderIdInvalid = nameof(IterationOrderIdInvalid);
+        public const string SearchFunctionParametersInvalid = nameof(SearchFunctionParametersInvalid);
     }
 }

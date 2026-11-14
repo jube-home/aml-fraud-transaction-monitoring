@@ -13,7 +13,9 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,111 +25,150 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.Repository.CaseWorkflowAction
 {
     [FormEndpoint("CaseWorkflowAction")]
+    [CaseSqlEditor(Sql = nameof(Sql))]
+    [FormRoles]
     [FormKeys(Id = nameof(Id), Parent = nameof(CaseWorkflowId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
     [FormGroup("HttpEndpoint", Order = 20, Collapsed = true)]
     [FormGroup("Notification", Order = 30, Collapsed = true)]
+    [FormGroup("Sql", Order = 5, Collapsed = true)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
+    [MessagePackObject]
     public class CaseWorkflowActionDto : IUpdated, IActivatable, ILockable
     {
         [Description("Identifier of the Case Workflow this Action belongs to. Set from the parent Case " +
                      "Workflow context; not user-editable.")]
+        [Key(0)]
         public int CaseWorkflowId { get; set; }
 
         [Description("Display name of the Action, shown to investigators when filing a Case Note. Unique " +
                      "within the Case Workflow (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Escalate to team leader")]
         [ListColumn(Order = 10, Title = "Name")]
+        [Key(1)]
         public string? Name { get; set; }
 
         [Description("Present on the API contract for backward compatibility, but not backed by any column -- " +
                      "the server never persists a submitted value and always returns null.")]
+        [Key(2)]
         public string? Description { get; set; }
 
         [Description("When true, the Action is available for selection when filing a Case Note.")]
         [FormField(Group = "Identity", Order = 20, Widget = "switch")]
         [ListColumn(Order = 20, Title = "Active")]
+        [Key(3)]
         public bool Active { get; set; }
 
         [Description("When true, the Action is locked to read-only and cannot be edited or deleted.")]
         [FormField(Group = "Identity", Order = 30, Widget = "switch")]
+        [Key(4)]
         public bool Locked { get; set; }
 
         [Description("When true, filing a Case Note against this Action dispatches a webhook.")]
         [FormField(Group = "HttpEndpoint", Order = 10, Widget = "switch")]
+        [Key(5)]
         public bool EnableHttpEndpoint { get; set; }
 
         [Description("Webhook URL to call. Required when EnableHttpEndpoint is true.")]
-        [FormField(Group = "HttpEndpoint", Order = 20)]
+        [FormField(Group = "HttpEndpoint", Order = 20, Placeholder = "https://example.com/hooks/case")]
         [VisibleWhen(nameof(EnableHttpEndpoint), true)]
         [RequiredWhen(nameof(EnableHttpEndpoint), true)]
+        [Key(6)]
         public string? HttpEndpoint { get; set; }
 
         [Description("HTTP method used for the webhook call: 1 = POST, 2 = GET. Required when " +
                      "EnableHttpEndpoint is true.")]
         [FormField(Group = "HttpEndpoint", Order = 30, Widget = "radio")]
         [VisibleWhen(nameof(EnableHttpEndpoint), true)]
+        [Options(typeof(HttpEndpointType))]
+        [NewDefault(1)]
+        [Key(7)]
         public int HttpEndpointTypeId { get; set; }
 
         [Description("When true, filing a Case Note against this Action dispatches a notification.")]
         [FormField(Group = "Notification", Order = 10, Widget = "switch")]
+        [Key(8)]
         public bool EnableNotification { get; set; }
 
         [Description("Notification channel type. Required when EnableNotification is true.")]
         [FormField(Group = "Notification", Order = 20, Widget = "radio")]
         [VisibleWhen(nameof(EnableNotification), true)]
+        [Options(typeof(NotificationType))]
+        [NewDefault(1)]
+        [Key(9)]
         public int NotificationTypeId { get; set; }
 
         [Description("Notification destination (e.g. an email address). Required when EnableNotification is " +
                      "true.")]
-        [FormField(Group = "Notification", Order = 30)]
+        [FormField(Group = "Notification", Order = 30, Placeholder = "name@example.com")]
         [VisibleWhen(nameof(EnableNotification), true)]
         [RequiredWhen(nameof(EnableNotification), true)]
+        [Key(10)]
         public string? NotificationDestination { get; set; }
 
         [Description("Notification subject line.")]
-        [FormField(Group = "Notification", Order = 40)]
+        [FormField(Group = "Notification", Order = 40, Placeholder = "Case [@CaseKey] needs review")]
         [VisibleWhen(nameof(EnableNotification), true)]
+        [Key(11)]
         public string? NotificationSubject { get; set; }
 
         [Description("Notification body. Supports token substitution from the filed Case Note and its Case.")]
-        [FormField(Group = "Notification", Order = 50, Widget = "textarea")]
+        [FormField(Group = "Notification", Order = 50, Widget = "textarea", Placeholder = "Please review the case for [@AccountId].")]
         [VisibleWhen(nameof(EnableNotification), true)]
+        [Key(12)]
         public string? NotificationBody { get; set; }
+
+        [Description("Optional. A single SELECT run for a case, read only against the tenant's own rows, whose rows " +
+                     "the layout and the notification and HTTP templates are drawn from, as rows, with tokens such " +
+                     "as [@ rows[0].Name @]. It may use the bound parameters @Id, the id of the case, and " +
+                     "@CaseKeyValue. When empty, the earlier behaviour of drawing from the case's stored payload " +
+                     "applies. Authoring SQL needs its own permission.")]
+        [FormField(Group = "Sql", Order = 10, Widget = "code")]
+        [Key(13)]
+        public string? Sql { get; set; }
 
         [Description("Server-assigned globally-unique identifier of this Action, referenced by Case Workflow " +
                      "Action Roles. Read-only.")]
+        [Key(14)]
         public Guid Guid { get; set; }
 
         [Description("Server-assigned identifier. Read-only; required when updating an existing Action.")]
+        [Key(15)]
         public int Id { get; set; }
 
         [Description("Server-assigned creation timestamp. Read-only.")]
         [FormField(Group = "Audit", Order = 10, ReadOnly = true)]
+        [Key(16)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("Server-assigned user who created this Action. Read-only.")]
         [FormField(Group = "Audit", Order = 20, ReadOnly = true)]
+        [Key(17)]
         public string? CreatedUser { get; set; }
 
         [Description("Server-assigned user who most recently updated this Action. Read-only.")]
         [FormField(Group = "Audit", Order = 30, ReadOnly = true)]
+        [Key(18)]
         public string? UpdatedUser { get; set; }
 
         [Description("Server-assigned timestamp of the most recent update. Read-only.")]
         [FormField(Group = "Audit", Order = 40, ReadOnly = true)]
+        [Key(19)]
         public DateTimeOffset? UpdatedDate { get; set; }
 
         [Description("Server-assigned version number, incremented on every update. Read-only.")]
         [FormField(Group = "Audit", Order = 50, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(20)]
         public int Version { get; set; }
 
         [Description("Server-assigned user who soft-deleted this Action, if any. Read-only.")]
+        [Key(21)]
         public string? DeletedUser { get; set; }
 
         [Description("Server-assigned timestamp this Action was soft-deleted, if any. Read-only.")]
+        [Key(22)]
         public DateTimeOffset? DeletedDate { get; set; }
     }
 }

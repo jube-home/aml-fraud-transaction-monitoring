@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>ليست لديك الصلاحية لتنفيذ هذا الإجراء.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>يجب تسجيل الدخول إلى مستأجر لتنفيذ هذا الإجراء.</value>
+  </data>
+    <data name="CaseNotFound" xml:space="preserve">
+    <value>لم يتم العثور على القضية.</value>
+  </data>
+    <data name="CaseWorkflowStatusNotFound" xml:space="preserve">
+    <value>لم يتم العثور على حالة سير عمل القضية.</value>
+  </data>
+    <data name="CaseWorkflowFormNotFound" xml:space="preserve">
+    <value>لم يتم العثور على نموذج سير عمل القضية.</value>
+  </data>
+    <data name="CaseWorkflowFormIdRequired" xml:space="preserve">
+    <value>نموذج سير عمل القضية مطلوب.</value>
+  </data>
+    <data name="CaseKeyRequired" xml:space="preserve">
+    <value>مفتاح القضية مطلوب.</value>
+  </data>
+    <data name="CaseKeyValueRequired" xml:space="preserve">
+    <value>قيمة مفتاح القضية مطلوبة.</value>
+  </data>
+    <data name="CaseIdRequired" xml:space="preserve">
+    <value>معرّف القضية مطلوب.</value>
+  </data>
+    <data name="PayloadRequired" xml:space="preserve">
+    <value>حمولة النموذج مطلوبة.</value>
+  </data>
+    <data name="PayloadTooLarge" xml:space="preserve">
+    <value>تتجاوز حمولة النموذج الحجم المسموح به: بحد أقصى {0} حقل، وأسماء حقول حتى {1} حرفًا، وقيم حتى {2} حرفًا.</value>
+  </data>
+    <data name="FieldUnknown" xml:space="preserve">
+    <value>هذا الحقل ليس جزءًا من النموذج.</value>
+  </data>
+    <data name="FieldType" xml:space="preserve">
+    <value>هذه القيمة غير صالحة لنوع الحقل.</value>
+  </data>
+    <data name="FieldOption" xml:space="preserve">
+    <value>هذه القيمة ليست من الخيارات المعروضة.</value>
+  </data>
+    <data name="FieldLength" xml:space="preserve">
+    <value>هذه القيمة أطول مما يسمح به الحقل.</value>
+  </data>
+    <data name="FieldRequired" xml:space="preserve">
+    <value>القيمة مطلوبة.</value>
+  </data>
+    <data name="FieldRange" xml:space="preserve">
+    <value>القيمة خارج النطاق المسموح به.</value>
+  </data>
+    <data name="FieldPattern" xml:space="preserve">
+    <value>القيمة لا تطابق النمط المطلوب.</value>
+  </data>
+    <data name="FieldCompare" xml:space="preserve">
+    <value>القيمة لا تتفق مع الحقل الذي تُقارن به.</value>
+  </data>
+    <data name="FieldList" xml:space="preserve">
+    <value>القيمة ليست ضمن القائمة.</value>
+  </data>
+    <data name="FieldDictionary" xml:space="preserve">
+    <value>القيمة ليست مفتاحًا معروفًا.</value>
+  </data>
+    <data name="FieldSql" xml:space="preserve">
+    <value>لم تجتز القيمة عملية التحقق.</value>
+  </data>
+    <data name="FieldSqlFailed" xml:space="preserve">
+    <value>تعذر تشغيل عملية التحقق.</value>
+  </data>
+    <data name="FormSqlFailed" xml:space="preserve">
+    <value>تعذر تحميل البيانات التي يستمد منها هذا النموذج، لذا لا يمكن إرساله.</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>القضية مقفلة من قبل مستخدم آخر.</value>
+  </data>
+</root>

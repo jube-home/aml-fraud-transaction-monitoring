@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double BaseBeforePercentAdded(this double @this, double percent)
+        [Description("Recovers the amount before a percentage was added, such as net from gross.")]
+        public static double BaseBeforePercentAdded(this double @this,
+            [Description("The percentage that was added.")] double percent)
         {
             var factor = 1d + percent / 100d;
 

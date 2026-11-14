@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,7 @@ using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Security;
 using LinqToDB;
+using LinqToDB.Async;
 using LinqToDB.Data;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -170,6 +172,8 @@ namespace Jube.Data.Repository
                 throw new KeyNotFoundException();
             }
 
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
+
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
             model.CreatedUser = existing.CreatedUser;
@@ -185,6 +189,14 @@ namespace Jube.Data.Repository
             model.PasswordLockedDate = model.PasswordLocked == 1 ? existing.PasswordLockedDate : null;
 
             await dbContext.UpdateAsync(model, token: token);
+
+            if (!string.Equals(existing.Name, model.Name, StringComparison.Ordinal))
+            {
+                await dbContext.UserInTenant
+                    .Where(w => w.User == existing.Name)
+                    .Set(s => s.User, model.Name)
+                    .UpdateAsync(token);
+            }
 
             var mapper =
                 new Mapper(new MapperConfiguration(cfg => { cfg.CreateMap<UserRegistry, UserRegistryVersion>(); },
@@ -252,7 +264,7 @@ namespace Jube.Data.Repository
 
         public async Task<int?> ReserveLoginAttemptAsync(int id, CancellationToken token = default)
         {
-            var counts = await DataConnectionExtensions.QueryToListAsync<int>(dbContext,
+            var counts = await DataContextExtensions.QueryToListAsync<int>(dbContext,
                 "UPDATE \"UserRegistry\" SET \"FailedPasswordCount\" = COALESCE(\"FailedPasswordCount\", 0) + 1 " +
                 "WHERE \"Id\" = @id AND (\"Deleted\" = 0 OR \"Deleted\" IS NULL) " +
                 "AND COALESCE(\"PasswordLocked\", 0) <> 1 RETURNING \"FailedPasswordCount\"",

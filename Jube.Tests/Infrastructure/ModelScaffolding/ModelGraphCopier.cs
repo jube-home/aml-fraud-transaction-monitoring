@@ -405,10 +405,22 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         public static async Task CascadeDeleteAsync(NpgsqlConnection connection, string table, string whereSql,
             params (string Name, object Value)[] parameters)
         {
-            await CascadeChildrenAsync(connection, table, whereSql, parameters, 0).ConfigureAwait(false);
+            for (var attempt = 1; ; attempt++)
+            {
+                try
+                {
+                    await CascadeChildrenAsync(connection, table, whereSql, parameters, 0).ConfigureAwait(false);
 
-            await ExecuteAsync(connection, $"DELETE FROM \"{table}\" WHERE {whereSql}", parameters)
-                .ConfigureAwait(false);
+                    await ExecuteAsync(connection, $"DELETE FROM \"{table}\" WHERE {whereSql}", parameters)
+                        .ConfigureAwait(false);
+
+                    return;
+                }
+                catch (PostgresException e) when (e.SqlState == PostgresErrorCodes.ForeignKeyViolation && attempt < 5)
+                {
+                    await Task.Delay(TimeSpan.FromMilliseconds(250 * attempt)).ConfigureAwait(false);
+                }
+            }
         }
 
         private static async Task CascadeChildrenAsync(NpgsqlConnection connection, string table, string whereSql,

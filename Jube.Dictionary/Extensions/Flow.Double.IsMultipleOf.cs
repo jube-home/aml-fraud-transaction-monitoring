@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchIsMultipleOf(double divisor)
+            [Description("True when: the value is an exact multiple of the divisor. A zero divisor is false. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchIsMultipleOf([Description("The number the value must divide by exactly.")] double divisor)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleIsMultipleOf(flow.Value, divisor));
             }
 
-            public Flow<double> RejectIsMultipleOf(double divisor)
+            [Description("True when: the value is an exact multiple of the divisor. A zero divisor is false. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectIsMultipleOf([Description("The number the value must divide by exactly.")] double divisor)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleIsMultipleOf(flow.Value, divisor));
             }
 
-            public Flow<double> BreakIsMultipleOf(double divisor)
+            [Description("True when: the value is an exact multiple of the divisor. A zero divisor is false. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakIsMultipleOf([Description("The number the value must divide by exactly.")] double divisor)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleIsMultipleOf(flow.Value, divisor));
             }
 
-            public Flow<double> RequireIsMultipleOf(double divisor)
+            [Description("True when: the value is an exact multiple of the divisor. A zero divisor is false. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireIsMultipleOf([Description("The number the value must divide by exactly.")] double divisor)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleIsMultipleOf(flow.Value, divisor));
             }
 
-            public Flow<double> EnsureIsMultipleOf(double divisor)
+            [Description("True when: the value is an exact multiple of the divisor. A zero divisor is false. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureIsMultipleOf([Description("The number the value must divide by exactly.")] double divisor)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchIsMultipleOf(double divisor)
+            [Description("Begins a pipeline from the value. True when: the value is an exact multiple of the divisor. A zero divisor is false. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchIsMultipleOf([Description("The number the value must divide by exactly.")] double divisor)
             {
                 return value.Start().MatchIsMultipleOf(divisor);
             }
 
-            public Flow<double> RejectIsMultipleOf(double divisor)
+            [Description("Begins a pipeline from the value. True when: the value is an exact multiple of the divisor. A zero divisor is false. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectIsMultipleOf([Description("The number the value must divide by exactly.")] double divisor)
             {
                 return value.Start().RejectIsMultipleOf(divisor);
             }
 
-            public Flow<double> BreakIsMultipleOf(double divisor)
+            [Description("Begins a pipeline from the value. True when: the value is an exact multiple of the divisor. A zero divisor is false. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakIsMultipleOf([Description("The number the value must divide by exactly.")] double divisor)
             {
                 return value.Start().BreakIsMultipleOf(divisor);
             }
 
-            public Flow<double> RequireIsMultipleOf(double divisor)
+            [Description("Begins a pipeline from the value. True when: the value is an exact multiple of the divisor. A zero divisor is false. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireIsMultipleOf([Description("The number the value must divide by exactly.")] double divisor)
             {
                 return value.Start().RequireIsMultipleOf(divisor);
             }
 
-            public Flow<double> EnsureIsMultipleOf(double divisor)
+            [Description("Begins a pipeline from the value. True when: the value is an exact multiple of the divisor. A zero divisor is false. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureIsMultipleOf([Description("The number the value must divide by exactly.")] double divisor)
             {
                 return value.Start().EnsureIsMultipleOf(divisor);
             }

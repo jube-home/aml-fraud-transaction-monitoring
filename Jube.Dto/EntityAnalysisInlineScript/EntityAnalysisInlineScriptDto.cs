@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,13 +23,16 @@ namespace Jube.Dto.EntityAnalysisInlineScript
 {
     [Description("A registered, compiled Inline Script available system-wide for any Model to invoke. Read-only " +
                  "-- rows are created and compiled outside the API.")]
+    [MessagePackObject]
     public class EntityAnalysisInlineScriptDto
     {
         [Description("Server-assigned row identifier.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("Display name of the Inline Script, shown in the selection dropdown when registering it " +
                      "against a Model.")]
+        [Key(1)]
         public string? Name { get; set; }
     }
 }

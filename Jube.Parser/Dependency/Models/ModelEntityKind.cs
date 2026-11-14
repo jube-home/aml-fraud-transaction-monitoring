@@ -27,6 +27,8 @@ namespace Jube.Parser.Dependency.Models
         List,
         Dictionary,
         HttpAdaptation,
+        GraphRecall,
+        Svirfd,
         ExhaustiveAdaptation,
         ReprocessingRule,
         InlineScript,

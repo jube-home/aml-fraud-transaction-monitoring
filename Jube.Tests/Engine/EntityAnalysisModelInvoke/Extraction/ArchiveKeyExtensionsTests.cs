@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using FluentAssertions;
 using Jube.Data.Poco;
+using Jube.Dictionary;
 using Jube.Engine.EntityAnalysisModelInvoke.Extraction.Extensions.YourNamespace.Extensions;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
@@ -47,15 +48,36 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Extraction
         }
 
         [Fact]
-        public void WhenIsReprocessIsTrueNoArchiveKeyIsAddedEvenIfReportTableIsSet()
+        public void EveryArchiveKeyStartsAtVersionOne()
         {
             var reportDatabaseValues = new List<ArchiveKey>();
             var xPath = XPath("AccountId", true);
 
-            reportDatabaseValues.AddArchiveKey(xPath, NewPayload(Guid.NewGuid()), "Test1",
-                isReprocess: true);
+            reportDatabaseValues.AddArchiveKey(xPath, NewPayload(Guid.NewGuid()), "Test1");
 
-            reportDatabaseValues.Should().BeEmpty();
+            reportDatabaseValues.Should().ContainSingle().Which.Version.Should().Be(1);
+        }
+
+        [Fact]
+        public void ATypedPayloadValueIsFiledUnderTheColumnOfItsType()
+        {
+            var reportDatabaseValues = new List<ArchiveKey>();
+            var payload = NewPayload(Guid.NewGuid());
+            var date = new DateTime(2019, 04, 17, 01, 18, 15, DateTimeKind.Utc);
+
+            reportDatabaseValues.AddArchiveKey(XPath("S", true), payload, new InternalValue("text"));
+            reportDatabaseValues.AddArchiveKey(XPath("I", true), payload, new InternalValue(7));
+            reportDatabaseValues.AddArchiveKey(XPath("F", true), payload, new InternalValue(1.5));
+            reportDatabaseValues.AddArchiveKey(XPath("B", true), payload, new InternalValue(true));
+            reportDatabaseValues.AddArchiveKey(XPath("D", true), payload, new InternalValue(date));
+            reportDatabaseValues.AddArchiveKey(XPath("Off", false), payload, new InternalValue("skipped"));
+
+            reportDatabaseValues.Should().HaveCount(5);
+            reportDatabaseValues[0].KeyValueString.Should().Be("text");
+            reportDatabaseValues[1].KeyValueInteger.Should().Be(7);
+            reportDatabaseValues[2].KeyValueFloat.Should().Be(1.5);
+            reportDatabaseValues[3].KeyValueBoolean.Should().Be(1);
+            reportDatabaseValues[4].KeyValueDate.Should().Be(date);
         }
 
         [Fact]

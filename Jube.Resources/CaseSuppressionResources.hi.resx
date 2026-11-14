@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>अनुमति अस्वीकृत।</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>प्रमाणित नहीं है।</value>
+  </data>
+    <data name="CaseNotFound" xml:space="preserve">
+    <value>केस नहीं मिला या दिखाई नहीं देता।</value>
+  </data>
+    <data name="SuppressionNotFound" xml:space="preserve">
+    <value>दमन का अनुरोध नहीं मिला या दिखाई नहीं देता।</value>
+  </data>
+    <data name="CaseIdRequired" xml:space="preserve">
+    <value>केस आवश्यक है।</value>
+  </data>
+    <data name="IdRequired" xml:space="preserve">
+    <value>अनुरोध आवश्यक है।</value>
+  </data>
+    <data name="PathInvalid" xml:space="preserve">
+    <value>पथ 1 (केस कुंजी) या 2 (लेन-देन) होना चाहिए।</value>
+  </data>
+    <data name="OverrideKeyRequired" xml:space="preserve">
+    <value>ओवरराइड कुंजी आवश्यक है।</value>
+  </data>
+    <data name="OverrideKeyMaxLength" xml:space="preserve">
+    <value>ओवरराइड कुंजी अधिकतम {0} वर्णों की हो सकती है।</value>
+  </data>
+    <data name="OverrideKeyValueRequired" xml:space="preserve">
+    <value>लेन-देन पथ पर मान आवश्यक है।</value>
+  </data>
+    <data name="OverrideKeyValueMaxLength" xml:space="preserve">
+    <value>मान अधिकतम {0} वर्णों का हो सकता है।</value>
+  </data>
+    <data name="ReasonRequired" xml:space="preserve">
+    <value>कारण आवश्यक है।</value>
+  </data>
+    <data name="ReasonMaxLength" xml:space="preserve">
+    <value>कारण अधिकतम {0} वर्णों का हो सकता है।</value>
+  </data>
+    <data name="ExpiryRequired" xml:space="preserve">
+    <value>भविष्य की समाप्ति तिथि आवश्यक है।</value>
+  </data>
+    <data name="TargetsRequired" xml:space="preserve">
+    <value>कम से कम एक मॉडल या नियम चुनें।</value>
+  </data>
+    <data name="TargetsTooMany" xml:space="preserve">
+    <value>एक अनुरोध में अधिकतम {0} मॉडल और नियम नामित किए जा सकते हैं।</value>
+  </data>
+    <data name="TargetModelRequired" xml:space="preserve">
+    <value>प्रत्येक मॉडल या नियम को उसका मॉडल चाहिए।</value>
+  </data>
+    <data name="RuleNameMaxLength" xml:space="preserve">
+    <value>नियम का नाम अधिकतम {0} वर्णों का हो सकता है।</value>
+  </data>
+    <data name="OverrideKindInvalid" xml:space="preserve">
+    <value>ओवरराइड का प्रकार 0 (दबाना) या 1 (बाध्य करना) होना चाहिए।</value>
+  </data>
+    <data name="ArchiveIdsTooMany" xml:space="preserve">
+    <value>साक्ष्य के रूप में अधिकतम {0} लेन-देन चिह्नित किए जा सकते हैं।</value>
+  </data>
+    <data name="ArchiveIdInvalid" xml:space="preserve">
+    <value>चिह्नित लेन-देन मान्य नहीं है।</value>
+  </data>
+    <data name="MergeInvalid" xml:space="preserve">
+    <value>मर्ज की गई जर्नल कुंजियाँ मान्य नहीं हैं।</value>
+  </data>
+    <data name="NoteMaxLength" xml:space="preserve">
+    <value>टिप्पणी अधिकतम {0} वर्णों की हो सकती है।</value>
+  </data>
+    <data name="KeyNotOverrideEnabled" xml:space="preserve">
+    <value>कुंजी अनुरोध XPath पर Enable Override से चिह्नित नहीं है, इसलिए उसे दबाया नहीं जा सकता।</value>
+  </data>
+    <data name="KeyNotInJournal" xml:space="preserve">
+    <value>यह मान इस केस की जर्नल में नहीं है।</value>
+  </data>
+    <data name="EvidenceRequired" xml:space="preserve">
+    <value>कम से कम एक ऐसा लेन-देन चिह्नित करें जिसमें यह मान हो।</value>
+  </data>
+    <data name="EvidenceNotInScope" xml:space="preserve">
+    <value>चिह्नित लेन-देन इस केस की जर्नल में नहीं है या उसमें यह मान नहीं है।</value>
+  </data>
+    <data name="CaseKeyValueTooLong" xml:space="preserve">
+    <value>केस कुंजी का मान दबाने के लिए बहुत लंबा है।</value>
+  </data>
+    <data name="ForcePermissionRequired" xml:space="preserve">
+    <value>बाध्य करने के लिए Apply Force Override अनुमति चाहिए।</value>
+  </data>
+    <data name="OverridePermissionRequired" xml:space="preserve">
+    <value>दबाने के लिए Override अनुमति चाहिए।</value>
+  </data>
+    <data name="TargetInvalid" xml:space="preserve">
+    <value>मॉडल या नियम इस कुंजी के लिए मान्य नहीं है: {0}</value>
+  </data>
+    <data name="NotPending" xml:space="preserve">
+    <value>केवल लंबित अनुरोध पर निर्णय लिया जा सकता है।</value>
+  </data>
+    <data name="OwnRequest" xml:space="preserve">
+    <value>आप अपने ही अनुरोध पर निर्णय नहीं ले सकते। इसके बजाय उसे वापस लें।</value>
+  </data>
+    <data name="AlreadyApproved" xml:space="preserve">
+    <value>आप इस संस्करण को पहले ही स्वीकृत कर चुके हैं।</value>
+  </data>
+    <data name="NotMaker" xml:space="preserve">
+    <value>यह केवल वही व्यक्ति कर सकता है जिसने अनुरोध किया था।</value>
+  </data>
+    <data name="NotRetractable" xml:space="preserve">
+    <value>केवल लंबित अनुरोध वापस लिया जा सकता है।</value>
+  </data>
+    <data name="NotResubmittable" xml:space="preserve">
+    <value>केवल अस्वीकृत या वापस लिया गया अनुरोध दोबारा जमा किया जा सकता है।</value>
+  </data>
+    <data name="ExpiryPassed" xml:space="preserve">
+    <value>समाप्ति तिथि बीत चुकी है।</value>
+  </data>
+    <data name="ExpiryTooFar" xml:space="preserve">
+    <value>समाप्ति तिथि अभी से अधिकतम {0} दिन आगे हो सकती है।</value>
+  </data>
+    <data name="RequestLapsed" xml:space="preserve">
+    <value>अनुरोध बिना निर्णय के समाप्त हो गया। अनुरोध करने वाले से इसे वापस लेकर दोबारा जमा करने को कहें।</value>
+  </data>
+    <data name="MakerNoLongerPermitted" xml:space="preserve">
+    <value>जिस व्यक्ति ने अनुरोध किया था उसके पास उसे लागू करने के लिए आवश्यक अनुमति अब नहीं है।</value>
+  </data>
+    <data name="OverrideKindConflict" xml:space="preserve">
+    <value>{0} के लिए एक अलग ओवरराइड पहले से लागू है; पहले उसे हटाएँ।</value>
+  </data>
+    <data name="ApplyFailed" xml:space="preserve">
+    <value>अनुरोध लागू नहीं किया जा सका: {0}</value>
+  </data>
+    <data name="KeyNotArchiveKey" xml:space="preserve">
+    <value>कुंजी वर्कफ़्लो के मॉडल पर Archive Key से चिह्नित फ़ील्ड नहीं है, इसलिए उसके लेन-देन खोजे नहीं जा सकते।</value>
+  </data>
+    <data name="KeyValueInvalid" xml:space="preserve">
+    <value>मान को कुंजी के फ़ील्ड के डेटा प्रकार के रूप में पढ़ा नहीं जा सकता।</value>
+  </data>
+    <data name="CaseKeyNotArchiveKey" xml:space="preserve">
+    <value>केस कुंजी वर्कफ़्लो के मॉडल पर Archive Key से चिह्नित फ़ील्ड नहीं है, इसलिए इस केस के लेन-देन पढ़े नहीं जा सकते।</value>
+  </data>
+    <data name="KeyNotLookupable" xml:space="preserve">
+    <value>कुंजी का फ़ील्ड यादृच्छिक वेक्टर से एन्क्रिप्ट किया गया है, इसलिए उसके मान खोजे नहीं जा सकते।</value>
+  </data>
+    <data name="LaneOperatorNotAllowed" xml:space="preserve">
+    <value>रेंज ऑपरेटर केवल संख्यात्मक या तिथि कुंजी पर मान्य है; पाठ या बूलियन कुंजी केवल समानता से मेल खाती है।</value>
+  </data>
+</root>

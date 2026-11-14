@@ -25,6 +25,7 @@ namespace Jube.Dto.Forms
         public int Order { get; init; }
         public string? Label { get; init; }
         public string Widget { get; init; } = "default";
+        public int Span { get; init; } = 1;
         public bool ReadOnly { get; init; }
         public string? Placeholder { get; init; }
         public string? Help { get; init; }

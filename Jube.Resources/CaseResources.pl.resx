@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Nie masz uprawnień do wykonania tej czynności.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Musisz być zalogowany do dzierżawy, aby wykonać tę czynność.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>Nie znaleziono sprawy.</value>
+  </data>
+    <data name="CaseWorkflowNotFound" xml:space="preserve">
+    <value>Nie znaleziono przepływu pracy spraw.</value>
+  </data>
+    <data name="ArchiveNotFound" xml:space="preserve">
+    <value>Nie znaleziono transakcji dla tej kombinacji klucza i wartości sprawy.</value>
+  </data>
+    <data name="InvalidCaseWorkflowStatus" xml:space="preserve">
+    <value>Żądany status przepływu pracy spraw nie należy do tego przepływu pracy.</value>
+  </data>
+    <data name="CaseAlreadyExists" xml:space="preserve">
+    <value>Sprawa dla tej kombinacji klucza i wartości sprawy już istnieje.</value>
+  </data>
+    <data name="CaseCreationFailed" xml:space="preserve">
+    <value>Tworzenie sprawy nie zostało ukończone. Spróbuj ponownie.</value>
+  </data>
+    <data name="IdRequired" xml:space="preserve">
+    <value>Identyfikator sprawy jest wymagany.</value>
+  </data>
+    <data name="LockedUserRequired" xml:space="preserve">
+    <value>Gdy ustawiono blokadę, wymagany jest użytkownik, do którego sprawa jest zablokowana.</value>
+  </data>
+    <data name="CaseWorkflowStatusGuidRequired" xml:space="preserve">
+    <value>Status przepływu pracy spraw jest wymagany.</value>
+  </data>
+    <data name="DiaryDateRequired" xml:space="preserve">
+    <value>Gdy ustawiono terminarz, wymagana jest data terminarza.</value>
+  </data>
+    <data name="RatingRequired" xml:space="preserve">
+    <value>Wymagana jest ocena od 0 (jeszcze nieoceniona) do 5.</value>
+  </data>
+    <data name="PayloadRequired" xml:space="preserve">
+    <value>Dane formularza są wymagane.</value>
+  </data>
+    <data name="CaseWorkflowGuidRequired" xml:space="preserve">
+    <value>Przepływ pracy spraw jest wymagany.</value>
+  </data>
+    <data name="CaseKeyRequired" xml:space="preserve">
+    <value>Klucz sprawy jest wymagany.</value>
+  </data>
+    <data name="CaseKeyValueRequired" xml:space="preserve">
+    <value>Wartość klucza sprawy jest wymagana.</value>
+  </data>
+    <data name="LockedUserInvalid" xml:space="preserve">
+    <value>Zablokowany użytkownik musi być użytkownikiem tej samej dzierżawy, który widzi tę sprawę.</value>
+  </data>
+    <data name="LockedByAnotherUser" xml:space="preserve">
+    <value>Sprawa jest zablokowana przez innego użytkownika.</value>
+  </data>
+    <data name="ChecklistIncomplete" xml:space="preserve">
+    <value>Przed opuszczeniem tego statusu lub zamknięciem sprawy należy ukończyć następującą liczbę pozycji listy kontrolnej: {0}: {1}.</value>
+  </data>
+    <data name="CaseKeyNotArchiveKey" xml:space="preserve">
+    <value>Klucz sprawy nie jest polem oznaczonym jako Archive Key w modelu przepływu pracy, więc nie można znaleźć ostatniej transakcji dla tego klucza.</value>
+  </data>
+</root>

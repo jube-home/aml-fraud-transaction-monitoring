@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,12 +22,15 @@ using System.ComponentModel;
 namespace Jube.Dto.Repository.CaseWorkflowPriority
 {
     [Description("A fixed Case priority level (High, Medium or Low) available when filing a Case Note.")]
+    [MessagePackObject]
     public sealed class CaseWorkflowPriorityDto
     {
         [Description("Fixed identifier of the priority level: 1 High, 2 Medium, 3 Low.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("Display name of the priority level.")]
+        [Key(1)]
         public string Name { get; set; } = string.Empty;
     }
 }

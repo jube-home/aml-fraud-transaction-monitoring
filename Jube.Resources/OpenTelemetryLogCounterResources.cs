@@ -20,6 +20,7 @@ namespace Jube.Resources
         public const string NameRequired = nameof(NameRequired);
         public const string NameMaxLength = nameof(NameMaxLength);
         public const string NameInvalidCharacters = nameof(NameInvalidCharacters);
+        public const string NameDuplicate = nameof(NameDuplicate);
         public const string RegexRequired = nameof(RegexRequired);
         public const string RegexInvalid = nameof(RegexInvalid);
         public const string RegexTooLong = nameof(RegexTooLong);

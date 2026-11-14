@@ -39,4 +39,40 @@
     <data name="NameRequired" xml:space="preserve">
     <value>Un nom est requis.</value>
   </data>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>Un modèle valide est requis.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Le nom doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Ce nom existe déjà.</value>
+  </data>
+    <data name="TtlCounterDataNameRequired" xml:space="preserve">
+    <value>Un nom de données est requis pour regrouper le compteur.</value>
+  </data>
+    <data name="TtlCounterDataNameMaxLength" xml:space="preserve">
+    <value>Le nom des données doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="TtlCounterIntervalInvalid" xml:space="preserve">
+    <value>Le type d'intervalle doit être l'un des suivants : Secondes, Minutes, Heures, Jours, Mois ou Années.</value>
+  </data>
+    <data name="TtlCounterValueRange" xml:space="preserve">
+    <value>La valeur de l'intervalle ne peut pas être négative ni dépasser la limite du type d'intervalle choisi.</value>
+  </data>
+    <data name="ResolutionIntervalInvalid" xml:space="preserve">
+    <value>L'intervalle de résolution doit être l'un des suivants : Minutes, Heures ou Jours.</value>
+  </data>
+    <data name="TtlCounterDataValueRequired" xml:space="preserve">
+    <value>Une valeur de données est requise lorsque Sum est activé.</value>
+  </data>
+    <data name="TtlCounterDataValueMaxLength" xml:space="preserve">
+    <value>La valeur des données doit comporter {0} caractères au maximum.</value>
+  </data>
 </root>

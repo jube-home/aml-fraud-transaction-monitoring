@@ -5,6 +5,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Converts the string to an enum value.")]
         public static T ToEnum<T>(this string @this)
         {
             var enumType = typeof(T);

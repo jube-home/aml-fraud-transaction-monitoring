@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,26 +23,32 @@ namespace Jube.Dto.Query.EntityAnalysisModelIntegrity
 {
     [Description("The basic integrity of a model: every finding of the dependency, compilation, configuration and " +
                  "engine checks.")]
+    [MessagePackObject]
     public class ModelIntegrityReportDto
     {
-        [Description("The model checked.")] public int EntityAnalysisModelId { get; set; }
-        [Description("The model's name.")] public string? ModelName { get; set; }
-        [Description("When the checks ran.")] public DateTime CheckedDate { get; set; }
+        [Description("The model checked.")] [Key(0)] public int EntityAnalysisModelId { get; set; }
+        [Description("The model's name.")] [Key(1)] public string? ModelName { get; set; }
+        [Description("When the checks ran.")] [Key(2)] public DateTime CheckedDate { get; set; }
 
         [Description("Where the engine's state came from: InProcess (the engine in this process), Snapshot (what " +
                      "engines recorded at their last synchronisation) or Unavailable.")]
+        [Key(3)]
         public string EngineSource { get; set; } = string.Empty;
 
         [Description("How many findings are errors.")]
+        [Key(4)]
         public int Errors { get; set; }
 
         [Description("How many findings are warnings.")]
+        [Key(5)]
         public int Warnings { get; set; }
 
         [Description("How many findings are information.")]
+        [Key(6)]
         public int Infos { get; set; }
 
         [Description("Every finding, errors first.")]
+        [Key(7)]
         public List<IntegrityCheckDto> Checks { get; set; } = [];
     }
 }

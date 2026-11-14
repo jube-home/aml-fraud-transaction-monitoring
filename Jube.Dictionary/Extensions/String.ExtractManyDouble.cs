@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Extracts all doubles from the string, reading . as the decimal point whatever the server culture.")]
         public static double[] ExtractManyDouble(this string @this)
         {
             return Regex.Matches(@this, @"[-]?\d+(\.\d+)?")

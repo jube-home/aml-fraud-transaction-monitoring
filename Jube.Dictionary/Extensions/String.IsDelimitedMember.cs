@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsDelimitedMember(this string? @this, string? delimitedList, string? separator)
+        [Description("True when: equal, after trimming, to one of the entries of the delimited list split on the separator.")]
+        public static bool IsDelimitedMember(this string? @this,
+            [Description("The delimited text whose entries are searched.")] string? delimitedList,
+            [Description("The text that separates the entries.")] string? separator)
         {
             if (@this is null || delimitedList is null || string.IsNullOrEmpty(separator))
             {

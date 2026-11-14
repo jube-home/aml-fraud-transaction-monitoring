@@ -9,7 +9,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static UnicodeCategory GetUnicodeCategory(this String s, Int32 index)
+        [Description("Gets the Unicode category of a character at a position.")]
+        public static UnicodeCategory GetUnicodeCategory(this String s,
+            [Description("The character position in the string.")] Int32 index)
         {
             return char.GetUnicodeCategory(s, index);
         }

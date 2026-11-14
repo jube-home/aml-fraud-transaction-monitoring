@@ -39,4 +39,82 @@
     <data name="NameRequired" xml:space="preserve">
     <value>Un nom est requis.</value>
   </data>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>Un modèle valide est requis.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Le nom doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Ce nom existe déjà.</value>
+  </data>
+    <data name="AnomalyProbabilityRange" xml:space="preserve">
+    <value>La probabilité d'anomalie doit être comprise entre 0 et 1.</value>
+  </data>
+    <data name="BootstrapWeightFactorRange" xml:space="preserve">
+    <value>Le facteur de pondération du bootstrap doit être compris entre 0 et 1.</value>
+  </data>
+    <data name="ChallengerModelBaseProbabilityRange" xml:space="preserve">
+    <value>La probabilité de base du modèle challenger doit être comprise entre 0 et 1.</value>
+  </data>
+    <data name="BaseRateRange" xml:space="preserve">
+    <value>Le taux de base doit être supérieur à 0 et inférieur à 1.</value>
+  </data>
+    <data name="FilterJsonRequired" xml:space="preserve">
+    <value>Un filtre des données d'entraînement est requis.</value>
+  </data>
+    <data name="FilterSqlRequired" xml:space="preserve">
+    <value>Un filtre des données d'entraînement est requis.</value>
+  </data>
+    <data name="FilterTokensRequired" xml:space="preserve">
+    <value>Un filtre des données d'entraînement est requis.</value>
+  </data>
+    <data name="FilterJsonInvalid" xml:space="preserve">
+    <value>La définition du filtre doit être un JSON valide de 1 Mo au maximum.</value>
+  </data>
+    <data name="CategoricalOptionsInvalid" xml:space="preserve">
+    <value>Les options catégorielles doivent être un JSON valide de 1 Mo au maximum.</value>
+  </data>
+    <data name="FilterSqlInvalid" xml:space="preserve">
+    <value>Le filtre doit être une expression booléenne simple, sans instructions, commentaires, sous-requêtes ni parenthèses non équilibrées.</value>
+  </data>
+    <data name="FilterTokensInvalid" xml:space="preserve">
+    <value>Les jetons du filtre doivent être un tableau JSON.</value>
+  </data>
+    <data name="DataSourceInvalid" xml:space="preserve">
+    <value>La source de données doit être Archive (0), DemoDataset (1) ou UploadedDataset (2).</value>
+  </data>
+    <data name="CalibrationMethodInvalid" xml:space="preserve">
+    <value>La méthode de calibrage doit être automatic, platt, isotonic ou beta.</value>
+  </data>
+    <data name="DatasetRequired" xml:space="preserve">
+    <value>Un jeu de données téléversé doit être sélectionné lorsque la source de données est UploadedDataset.</value>
+  </data>
+    <data name="DatasetAmbiguous" xml:space="preserve">
+    <value>Exactement un des deux jeux de données, CSV ou JSON, doit être sélectionné.</value>
+  </data>
+    <data name="DatasetNotFound" xml:space="preserve">
+    <value>Le jeu de données sélectionné n'existe pas, n'est pas confirmé ou n'est pas disponible pour votre locataire.</value>
+  </data>
+    <data name="DatasetNotPermitted" xml:space="preserve">
+    <value>Un jeu de données ne peut être sélectionné que lorsque la source de données est UploadedDataset.</value>
+  </data>
+    <data name="DatasetFilterRequired" xml:space="preserve">
+    <value>Un filtre Class Definition doit être défini pour déterminer la classe positive lorsque la source de données est UploadedDataset.</value>
+  </data>
+    <data name="AnomalyContaminationRange" xml:space="preserve">
+    <value>Pour cet algorithme d'anomalie, la probabilité d'anomalie est la fraction de contamination et doit être supérieure à 0 et au plus égale à 0,5.</value>
+  </data>
+    <data name="AnomalyAlgorithmInvalid" xml:space="preserve">
+    <value>L'algorithme d'anomalie n'est pas un algorithme connu.</value>
+  </data>
+    <data name="AnomalyParametersInvalid" xml:space="preserve">
+    <value>Les paramètres d'anomalie ne sont pas valides. {0}</value>
+  </data>
 </root>

@@ -16,10 +16,14 @@
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable RedundantAttributeUsageProperty
 
+using MessagePack;
+
 namespace Jube.Dto.Authentication
 {
+    [MessagePackObject]
     public class AuthenticationSchemaRequestDto(string? userName)
     {
+        [Key(0)]
         public string? UserName { get; } = userName;
     }
 }

@@ -11,23 +11,34 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using System.Globalization;
 using FluentValidation.Results;
 using Jube.Data.Context;
 using Jube.Data.Poco;
+using Jube.Data.Query.MarkCaseRiskRecheckQuery;
 using Jube.Data.Repository;
+using Jube.Dto.Options;
 using Jube.Dto.Repository.Case;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Extensions;
 using Jube.Resources;
 using Jube.Service.Agent.Models;
+using Jube.Service.CaseDispatch;
+using Jube.Service.CaseDispatch.Models;
 using Jube.Service.Exceptions.Repository.Case;
 using Jube.Service.Observability;
+using Jube.Service.Query.ArchiveKeyFields;
+using Jube.Service.Query.CaseChecklist;
+using Jube.Service.Query.CaseChecklist.Interfaces;
+using Jube.Service.Query.CaseSupervision;
+using Jube.Service.Repository.CaseWorkflowFormValidator;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
 using Jube.Validations.Repository.Case;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
@@ -35,8 +46,6 @@ using Newtonsoft.Json.Linq;
 using EngineCaseProcessing = Jube.Engine.BackgroundTasks.TaskStarters.Case.CaseProcessing;
 using EngineCreateCase = Jube.Engine.EntityAnalysisModelInvoke.Models.CaseManagement.CreateCase;
 using EngineJsonSerializationHelper = Jube.Engine.Helpers.JsonSerializationHelper;
-using EngineNotification = Jube.Case.Notification;
-using EngineSendHttpEndpoint = Jube.Case.SendHttpEndpoint;
 using RulePoco = Jube.Data.Poco.Case;
 using RuleRepository = Jube.Data.Repository.CaseRepository;
 
@@ -52,7 +61,9 @@ namespace Jube.Service.Repository.Case
     {
         private static readonly int[] permissions = [1];
         private readonly ILog auditLog;
+        private readonly CaseDispatcher dispatcher;
         private readonly CaseEventRepository caseEventRepository;
+        private readonly Func<DbContext, ICaseChecklistReconciler>? checklistReconcilerFactory;
         private readonly CaseWorkflowRepository caseWorkflowRepository;
         private readonly CaseWorkflowStatusRepository caseWorkflowStatusRepository;
         private readonly CreateCaseValidator createCaseValidator;
@@ -73,8 +84,10 @@ namespace Jube.Service.Repository.Case
         private CaseService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
             IStringLocalizer strings, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
-            EngineJsonSerializationHelper jsonSerializationHelper)
+            EngineJsonSerializationHelper jsonSerializationHelper,
+            Func<DbContext, ICaseChecklistReconciler>? checklistReconcilerFactory)
         {
+            this.checklistReconcilerFactory = checklistReconcilerFactory;
             this.dbContext = dbContext;
             this.log = log;
             this.auditLog = auditLog;
@@ -86,6 +99,7 @@ namespace Jube.Service.Repository.Case
             this.dynamicEnvironment = dynamicEnvironment;
             this.jsonSerializationHelper = jsonSerializationHelper;
             repository = new RuleRepository(dbContext, userName);
+            dispatcher = new CaseDispatcher(dbContext, userName, tenantRegistryId, dynamicEnvironment, log);
             caseEventRepository = new CaseEventRepository(dbContext, userName);
             caseWorkflowRepository = new CaseWorkflowRepository(dbContext, userName);
             caseWorkflowStatusRepository = new CaseWorkflowStatusRepository(dbContext, userName);
@@ -106,10 +120,21 @@ namespace Jube.Service.Repository.Case
                 jsonSerializationHelper, LogManager.GetLogger("Jube.Audit"), token);
         }
 
+        internal static Task<CaseService> CreateAsync(DbContext dbContext, string? userName, ILog log,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            EngineJsonSerializationHelper jsonSerializationHelper, ILog auditLog,
+            CancellationToken token = default)
+        {
+            return CreateAsync(dbContext, userName, log, stringLocalizerFactory, serviceChangeBus, dynamicEnvironment,
+                jsonSerializationHelper, auditLog, null, token);
+        }
+
         internal static async Task<CaseService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
             EngineJsonSerializationHelper jsonSerializationHelper, ILog auditLog,
+            Func<DbContext, ICaseChecklistReconciler>? checklistReconcilerFactory,
             CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(CaseResources));
@@ -141,7 +166,8 @@ namespace Jube.Service.Repository.Case
                 .ConfigureAwait(false);
 
             return new CaseService(dbContext, userName, resolvedTenantRegistryId.Value, permissionValidation, log,
-                auditLog, serviceChangeBus, strings, dynamicEnvironment, jsonSerializationHelper);
+                auditLog, serviceChangeBus, strings, dynamicEnvironment, jsonSerializationHelper,
+                checklistReconcilerFactory);
         }
 
         [Description("Lists every active case visible to the caller's tenant. Unbounded -- prefer ListAsync for " +
@@ -367,6 +393,11 @@ namespace Jube.Service.Repository.Case
                 poco.LastClosedStatus = 0;
 
                 var saved = await repository.InsertAsync(poco, token).ConfigureAwait(false);
+
+                await new CaseStatusTransitionRepository(dbContext).EnterAsync(saved.Id, saved.CaseWorkflowGuid,
+                    saved.CaseWorkflowStatusGuid, CaseTransitionEnterReason.Created, userName,
+                    saved.CreatedDate ?? DateTime.UtcNow, token).ConfigureAwait(false);
+
                 op.Entity(saved.Id);
                 op.Created();
 
@@ -488,12 +519,26 @@ namespace Jube.Service.Repository.Case
                     throw new InvalidCaseWorkflowStatusException(strings[CaseResources.InvalidCaseWorkflowStatus]);
                 }
 
-                var archive = await lastArchiveJsonQuery
-                    .ExecuteAsync(
-                        caseWorkflow.EntityAnalysisModelId ??
-                        throw new NotFoundException(strings[CaseResources.CaseWorkflowNotFound]),
-                        model.CaseKey ?? string.Empty, model.CaseKeyValue ?? string.Empty,
-                        token).ConfigureAwait(false);
+                var modelId = caseWorkflow.EntityAnalysisModelId ??
+                              throw new NotFoundException(strings[CaseResources.CaseWorkflowNotFound]);
+
+                var caseKey = await new ArchiveKeyFieldResolver(dbContext,
+                        ArchiveKeyFieldResolver.DeterministicEncryptor(dynamicEnvironment))
+                    .ResolveAsync(modelId, model.CaseKey, model.CaseKeyValue, token).ConfigureAwait(false);
+
+                if (!caseKey.Resolved)
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn($"Case.CreateFromCaseKeyValue: key={model.CaseKey} is not an archive key of " +
+                                 $"model {modelId} ({caseKey.State}) user={userName}");
+                    }
+
+                    throw new NotFoundException(strings[CaseResources.CaseKeyNotArchiveKey]);
+                }
+
+                var archive = await lastArchiveJsonQuery.ExecuteAsync(modelId, caseKey.Predicate!, token)
+                    .ConfigureAwait(false);
 
                 if (archive is null)
                 {
@@ -663,9 +708,10 @@ namespace Jube.Service.Repository.Case
 
                 if (!string.IsNullOrEmpty(model.LockedUser) &&
                     !string.Equals(model.LockedUser, existing.LockedUser, StringComparison.Ordinal) &&
-                    !await AsyncExtensions.AnyAsync(dbContext.UserInTenant,
-                            u => u.User == model.LockedUser && u.TenantRegistryId == tenantRegistryId, token)
-                        .ConfigureAwait(false))
+                    !string.Equals(model.LockedUser, userName, StringComparison.Ordinal) &&
+                    !(await CaseEligibleAnalysts.ListAsync(dbContext, tenantRegistryId, existing.CaseWorkflowGuid,
+                            model.CaseWorkflowStatusGuid, token).ConfigureAwait(false))
+                    .Contains(model.LockedUser, StringComparer.Ordinal))
                 {
                     throw new DtoValidationException(new ValidationResult(
                     [
@@ -674,7 +720,49 @@ namespace Jube.Service.Repository.Case
                     ]));
                 }
 
+                var readLocked = existing.Locked;
+                var readLockedUser = existing.LockedUser;
+
+                CaseChecklistOverride? overrideToConsume = null;
+                ICaseChecklistGate? checklistGate = null;
+                var leavingStatus = existing.CaseWorkflowStatusGuid != model.CaseWorkflowStatusGuid;
+                var closing = existing.ClosedStatusId is 0 or 1 or 2 && model.ClosedStatusId == 3;
+
+                if (closing)
+                {
+                    await EnsureNoReportAwaitingAsync(existing.Id, token).ConfigureAwait(false);
+                }
+
+                if (leavingStatus || closing)
+                {
+                    checklistGate = BuildChecklistGate();
+
+                    var open = await checklistGate.EvaluateAsync(existing.Id, userName, token).ConfigureAwait(false);
+
+                    if (open.Count > 0)
+                    {
+                        overrideToConsume = await checklistGate.FindLiveOverrideAsync(existing.Id,
+                            existing.CaseWorkflowStatusGuid, userName, token).ConfigureAwait(false);
+
+                        if (overrideToConsume == null)
+                        {
+                            await checklistGate.RecordBlockedAsync(existing.Id, userName, open, token)
+                                .ConfigureAwait(false);
+
+                            var names = open.Take(5).Select(s => s.Name).ToList();
+
+                            throw new ChecklistIncompleteException(
+                                strings[CaseResources.ChecklistIncomplete, open.Count, string.Join(", ", names)],
+                                open.Select(s => s.Name).ToList());
+                        }
+                    }
+                }
+
                 var caseEvents = new List<CaseEvent>();
+                var diaryWasOn = existing.Diary == 1;
+                var diaryWas = existing.DiaryDate;
+                var wasClosed = existing.ClosedStatusId == 3;
+                var statusChanged = existing.CaseWorkflowStatusGuid != model.CaseWorkflowStatusGuid;
 
                 if (existing.ClosedStatusId is 0 or 1 or 2)
                 {
@@ -683,6 +771,10 @@ namespace Jube.Service.Repository.Case
                         case 3:
                             existing.ClosedUser = userName;
                             existing.ClosedDate = DateTime.UtcNow;
+                            existing.ClosedReasonId = model.ClosedReasonId == 0 ? null : model.ClosedReasonId;
+                            existing.ClosedReasonNote = string.IsNullOrWhiteSpace(model.ClosedReasonNote)
+                                ? null
+                                : model.ClosedReasonNote.Trim();
 
                             caseEvents.Add(new CaseEvent
                             {
@@ -690,7 +782,7 @@ namespace Jube.Service.Repository.Case
                                 CaseId = existing.Id,
                                 CaseKey = existing.CaseKey,
                                 CaseKeyValue = existing.CaseKeyValue,
-                                After = model.ClosedDate?.ToString("o", CultureInfo.InvariantCulture),
+                                After = IsoUtc(model.ClosedDate),
                                 CreatedDate = existing.ClosedDate,
                                 CreatedUser = userName
                             });
@@ -703,8 +795,8 @@ namespace Jube.Service.Repository.Case
                                 CaseId = existing.Id,
                                 CaseKey = existing.CaseKey,
                                 CaseKeyValue = existing.CaseKeyValue,
-                                Before = existing.ClosedDate.ToString(),
-                                After = model.ClosedDate?.ToString("o", CultureInfo.InvariantCulture),
+                                Before = IsoUtc(existing.ClosedDate),
+                                After = IsoUtc(model.ClosedDate),
                                 CreatedDate = DateTime.UtcNow,
                                 CreatedUser = userName
                             });
@@ -717,8 +809,8 @@ namespace Jube.Service.Repository.Case
                                 CaseId = existing.Id,
                                 CaseKey = existing.CaseKey,
                                 CaseKeyValue = existing.CaseKeyValue,
-                                Before = existing.ClosedDate.ToString(),
-                                After = model.ClosedDate?.ToString("o", CultureInfo.InvariantCulture),
+                                Before = IsoUtc(existing.ClosedDate),
+                                After = IsoUtc(model.ClosedDate),
                                 CreatedDate = DateTime.UtcNow,
                                 CreatedUser = userName
                             });
@@ -737,8 +829,8 @@ namespace Jube.Service.Repository.Case
                                 CaseId = existing.Id,
                                 CaseKey = existing.CaseKey,
                                 CaseKeyValue = existing.CaseKeyValue,
-                                Before = existing.ClosedDate.ToString(),
-                                After = model.ClosedDate?.ToString("o", CultureInfo.InvariantCulture),
+                                Before = IsoUtc(existing.ClosedDate),
+                                After = IsoUtc(model.ClosedDate),
                                 CreatedDate = DateTime.UtcNow,
                                 CreatedUser = userName
                             });
@@ -751,8 +843,8 @@ namespace Jube.Service.Repository.Case
                                 CaseId = existing.Id,
                                 CaseKey = existing.CaseKey,
                                 CaseKeyValue = existing.CaseKeyValue,
-                                Before = existing.ClosedDate.ToString(),
-                                After = model.ClosedDate?.ToString("o", CultureInfo.InvariantCulture),
+                                Before = IsoUtc(existing.ClosedDate),
+                                After = IsoUtc(model.ClosedDate),
                                 CreatedDate = DateTime.UtcNow,
                                 CreatedUser = userName
                             });
@@ -762,6 +854,12 @@ namespace Jube.Service.Repository.Case
                 }
 
                 existing.ClosedStatusId = model.ClosedStatusId;
+
+                if (model.ClosedStatusId != 3)
+                {
+                    existing.ClosedReasonId = null;
+                    existing.ClosedReasonNote = null;
+                }
 
                 if (existing.LockedUser != model.LockedUser)
                 {
@@ -812,8 +910,8 @@ namespace Jube.Service.Repository.Case
                         CaseId = existing.Id,
                         CaseKey = existing.CaseKey,
                         CaseKeyValue = existing.CaseKeyValue,
-                        Before = existing.DiaryDate.ToString(),
-                        After = model.DiaryDate?.ToString("o", CultureInfo.InvariantCulture),
+                        Before = IsoUtc(existing.DiaryDate),
+                        After = IsoUtc(model.DiaryDate),
                         CreatedDate = DateTime.UtcNow,
                         CreatedUser = userName
                     });
@@ -840,6 +938,19 @@ namespace Jube.Service.Repository.Case
                 }
 
                 existing.Diary = (byte)(model.Diary ? 1 : 0);
+
+                if (diaryWasOn != model.Diary || (model.Diary && !SameInstant(diaryWas, existing.DiaryDate)))
+                {
+                    existing.RiskCheckedDate = null;
+                    existing.RiskRecheckTriggerId = (byte)CaseRiskTrigger.DiaryLaneThreshold;
+                }
+
+                if (!model.Diary)
+                {
+                    existing.DiaryTypeId = (byte)CaseDiaryType.Review;
+                }
+
+                Func<Task>? pendingDispatch = null;
 
                 if (existing.CaseWorkflowStatusGuid != model.CaseWorkflowStatusGuid)
                 {
@@ -874,50 +985,33 @@ namespace Jube.Service.Repository.Case
                         CreatedUser = userName
                     });
 
-                    if (model.Payload is not null &&
-                        (caseWorkflowStatus.EnableNotification == 1 || caseWorkflowStatus.EnableHttpEndpoint == 1))
+                    var statusSource = new DispatchSource(CaseDispatchSourceKind.Status, caseWorkflowStatus.Id,
+                        caseWorkflowStatus.Name ?? string.Empty, caseWorkflowStatus.Sql,
+                        caseWorkflowStatus.EnableNotification == 1, caseWorkflowStatus.NotificationTypeId ?? 1,
+                        caseWorkflowStatus.NotificationDestination, caseWorkflowStatus.NotificationSubject,
+                        caseWorkflowStatus.NotificationBody, caseWorkflowStatus.EnableHttpEndpoint == 1,
+                        caseWorkflowStatus.HttpEndpoint, caseWorkflowStatus.HttpEndpointTypeId ?? 1);
+
+                    if (statusSource.Wanted && (statusSource.UsesSql || model.Payload is not null))
                     {
-                        var payload = JsonConvert
-                            .DeserializeObject<EntryPayload>(
-                                existing.Json, jsonSerializationHelper.DefaultJsonSerializerSettingsSettings);
+                        var movedCase = existing;
+                        var movedStatus = caseWorkflowStatus;
 
-                        if (caseWorkflowStatus.EnableNotification == 1 && payload is not null)
+                        pendingDispatch = async () =>
                         {
-                            var notificationSubject =
-                                EntryPayloadExtensions.ReplaceTokens(
-                                    payload, caseWorkflowStatus.NotificationSubject);
-                            var notificationDestination =
-                                EntryPayloadExtensions.ReplaceTokens(
-                                    payload, caseWorkflowStatus.NotificationDestination);
-                            var notificationBody =
-                                EntryPayloadExtensions.ReplaceTokens(
-                                    payload, caseWorkflowStatus.NotificationBody);
+                            var payload = statusSource.UsesSql
+                                ? null
+                                : JsonConvert.DeserializeObject<EntryPayload>(movedCase.Json,
+                                    jsonSerializationHelper.DefaultJsonSerializerSettingsSettings);
 
-                            var notification = new EngineNotification(
-                                log, dynamicEnvironment);
-
-                            await notification.SendAsync(caseWorkflowStatus.NotificationTypeId ?? 1,
-                                    notificationDestination, notificationSubject, notificationBody, token)
+                            await dispatcher.DispatchAsync(statusSource,
+                                new DispatchCase(movedCase.Id, movedCase.CaseKey, movedCase.CaseKeyValue), null,
+                                payload is null
+                                    ? null
+                                    : new LegacyRender(text => EntryPayloadExtensions.ReplaceTokens(payload, text),
+                                        () => PreparePostBodyString(movedCase, payload, movedStatus)), null, token)
                                 .ConfigureAwait(false);
-                        }
-
-                        if (caseWorkflowStatus.EnableHttpEndpoint == 1 && payload is not null)
-                        {
-                            var endpoint =
-                                EntryPayloadExtensions.ReplaceTokens(
-                                    payload, caseWorkflowStatus.HttpEndpoint);
-
-                            if (caseWorkflowStatus.HttpEndpointTypeId == 1)
-                            {
-                                await EngineSendHttpEndpoint.PostAsync(endpoint,
-                                        PreparePostBodyString(existing, payload, caseWorkflowStatus), log)
-                                    .ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                await EngineSendHttpEndpoint.GetAsync(endpoint, log).ConfigureAwait(false);
-                            }
-                        }
+                        };
                     }
                 }
 
@@ -940,11 +1034,72 @@ namespace Jube.Service.Repository.Case
 
                 existing.Rating = model.Rating;
 
+                var lockHeld = await dbContext.Case.Where(c => c.Id == existing.Id && c.Locked == readLocked
+                                                               && c.LockedUser == readLockedUser)
+                    .Set(s => s.Locked, existing.Locked)
+                    .Set(s => s.LockedUser, existing.LockedUser)
+                    .Set(s => s.LockedDate, existing.LockedDate)
+                    .UpdateAsync(token).ConfigureAwait(false);
+
+                if (lockHeld == 0)
+                {
+                    throw new ConflictException(strings[CaseResources.LockedByAnotherUser]);
+                }
+
                 var saved = await repository.UpdateCaseAsync(existing, token).ConfigureAwait(false);
                 await caseEventRepository.BulkInsertAsync(caseEvents, token).ConfigureAwait(false);
 
+                if (closing)
+                {
+                    await MarkKeyForRiskRecheckAsync(existing, token).ConfigureAwait(false);
+                }
+
+                if (overrideToConsume != null && checklistGate != null)
+                {
+                    await checklistGate.ConsumeOverrideAsync(overrideToConsume, userName, token)
+                        .ConfigureAwait(false);
+                }
+
+                var transitions = new CaseStatusTransitionRepository(dbContext);
+                var changedAt = DateTime.UtcNow;
+                var nowClosed = saved.ClosedStatusId == 3;
+
+                if (wasClosed && !nowClosed)
+                {
+                    await transitions.EnterAsync(saved.Id, saved.CaseWorkflowGuid, saved.CaseWorkflowStatusGuid,
+                        CaseTransitionEnterReason.Reopened, userName, changedAt, token).ConfigureAwait(false);
+                }
+                else
+                {
+                    if (statusChanged)
+                    {
+                        await transitions.EnterAsync(saved.Id, saved.CaseWorkflowGuid, saved.CaseWorkflowStatusGuid,
+                            CaseTransitionEnterReason.StatusChanged, userName, changedAt, token)
+                            .ConfigureAwait(false);
+                    }
+
+                    if (!wasClosed && nowClosed)
+                    {
+                        await transitions.CloseAsync(saved.Id, saved.ClosedDate ?? changedAt, userName, token)
+                            .ConfigureAwait(false);
+                    }
+                }
+
+                var claimed = !wasLocked && model.Locked;
+
+                if (!nowClosed && (claimed || statusChanged))
+                {
+                    await ReconcileChecklistAsync(saved.Id, statusChanged ? "Status change" : "Claim", token)
+                        .ConfigureAwait(false);
+                }
+
                 op.Entity(saved.Id);
                 op.Updated();
+
+                if (pendingDispatch != null)
+                {
+                    await pendingDispatch().ConfigureAwait(false);
+                }
 
                 if (log.IsInfoEnabled)
                 {
@@ -973,11 +1128,22 @@ namespace Jube.Service.Repository.Case
                 op.Outcome("notfound");
                 throw;
             }
+            catch (ChecklistIncompleteException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
             catch (ConflictException)
             {
                 op.Outcome("conflict");
                 throw;
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
@@ -997,6 +1163,51 @@ namespace Jube.Service.Repository.Case
             }
         }
 
+        private async Task ReconcileChecklistAsync(int caseId, string trigger, CancellationToken token)
+        {
+            try
+            {
+                var reconciler = checklistReconcilerFactory?.Invoke(dbContext) ?? new CaseChecklistReconciler(dbContext,
+                    FormValidatorRuntime.SqlRunner(dynamicEnvironment, userName, log), TimeProvider.System, log);
+
+                var changes = await reconciler.ReconcileAsync(caseId, userName, trigger, token).ConfigureAwait(false);
+
+                if (changes > 0)
+                {
+                    CaseChecklistChangeEvents.Publish(serviceChangeBus, tenantRegistryId, caseId, userName, log);
+                }
+            }
+            catch (Exception e) when (e is not OperationCanceledException)
+            {
+                log.Error($"Case.Update: the checklist of case {caseId} could not be reconciled after {trigger}.", e);
+            }
+        }
+
+        private async Task EnsureNoReportAwaitingAsync(int caseId, CancellationToken token)
+        {
+            var open = await new CaseReportRepository(dbContext).CountOpenForCaseAsync(tenantRegistryId, caseId, token)
+                .ConfigureAwait(false);
+
+            if (open == 0 || permissionValidation.Validate([76]))
+            {
+                return;
+            }
+
+            throw new ConflictException(permissionValidation.Validate([75, 77])
+                ? "A regulatory report for this case is awaiting approval or filing; an approver can close it."
+                : "This case cannot be closed yet. Ask a supervisor to review it.");
+        }
+
+        private ICaseChecklistGate BuildChecklistGate()
+        {
+            var reconciler = new CaseChecklistReconciler(dbContext,
+                FormValidatorRuntime.SqlRunner(dynamicEnvironment, userName, log), TimeProvider.System, log);
+
+            return new CaseChecklistGate(dbContext, reconciler,
+                () => DataConnectionDbContext.GetResilientDbContextDataConnection(
+                    dynamicEnvironment.AppSettings("ConnectionString"), log), TimeProvider.System, log);
+        }
+
         private string PreparePostBodyString(RulePoco existing,
             EntryPayload payload,
             Data.Poco.CaseWorkflowStatus caseWorkflowStatus)
@@ -1010,6 +1221,28 @@ namespace Jube.Service.Repository.Case
 
             return caseJObject.ToString();
         }
+
+        private async Task MarkKeyForRiskRecheckAsync(Jube.Data.Poco.Case closed, CancellationToken token)
+        {
+            try
+            {
+                await new MarkCaseRiskRecheckQuery(dbContext).ForOtherOpenCasesOnKeyAsync(closed.CaseWorkflowGuid,
+                    closed.CaseKey, closed.CaseKeyValue, closed.Id, CaseRiskTrigger.LinkedKeyChanged, token)
+                    .ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                log.Error($"Case.Update: the other open cases on {closed.CaseKey} {closed.CaseKeyValue} could not " +
+                          $"be marked for risk recheck user={userName}", ex);
+            }
+        }
+
+        private static string? IsoUtc(DateTime? value) =>
+            value.HasValue
+                ? DateTime.SpecifyKind(value.Value, DateTimeKind.Utc).ToString("o", CultureInfo.InvariantCulture)
+                : null;
+
+        private static string? IsoUtc(DateTimeOffset? value) => IsoUtc(value?.UtcDateTime);
 
         private static bool SameInstant(DateTime? stored, DateTime? requested)
         {

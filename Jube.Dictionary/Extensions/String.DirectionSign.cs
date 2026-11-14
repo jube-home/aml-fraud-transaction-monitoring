@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double DirectionSign(this string? @this, string? other)
+        [Description("1 when the value sorts at or before the other, otherwise -1, so the direction of a pair can be told from its canonical key.")]
+        public static double DirectionSign(this string? @this,
+            [Description("The text the value is compared with.")] string? other)
         {
             return string.CompareOrdinal(@this ?? string.Empty, other ?? string.Empty) <= 0 ? 1d : -1d;
         }

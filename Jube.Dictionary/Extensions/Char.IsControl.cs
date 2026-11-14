@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Checks if the character is a control character.")]
         public static Boolean IsControl(this Char c)
         {
             return char.IsControl(c);

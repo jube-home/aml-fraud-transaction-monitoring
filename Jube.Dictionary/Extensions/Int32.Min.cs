@@ -7,7 +7,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Int32 Min(this Int32 val1, Int32 val2)
+        [Description("Returns the smaller of two numbers.")]
+        public static Int32 Min(this Int32 val1,
+            [Description("The second of two 32-bit signed integers to compare.")] Int32 val2)
         {
             return Math.Min(val1, val2);
         }

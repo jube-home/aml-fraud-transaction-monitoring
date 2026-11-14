@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns the hyperbolic tangent of the specified angle.")]
         public static Double Tanh(this Double value)
         {
             return Math.Tanh(value);

@@ -6,12 +6,15 @@ namespace Jube.Dictionary.Extensions
     {
         extension(string @this)
         {
-            public bool Contains(string value)
+            [Description("Checks if the string contains a substring.")]
+            public bool Contains([Description("The substring to search for.")] string value)
             {
                 return @this.IndexOf(value, StringComparison.Ordinal) != -1;
             }
 
-            public bool Contains(string value, StringComparison comparisonType)
+            [Description("Checks if the string contains a substring with comparison rules.")]
+            public bool Contains([Description("The substring to search for.")] string value,
+                [Description("The type of comparison to use.")] StringComparison comparisonType)
             {
                 return @this.IndexOf(value, comparisonType) != -1;
             }

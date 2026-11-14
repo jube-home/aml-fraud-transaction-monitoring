@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Why the text is not a valid fuzzy options string, or empty when it is.")]
         public static string FuzzyOptionsError(this string? @this)
         {
             return FuzzyOptions.Parse(@this).Error ?? "";

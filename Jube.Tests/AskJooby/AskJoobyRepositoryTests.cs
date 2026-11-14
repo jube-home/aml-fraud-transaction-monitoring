@@ -23,6 +23,7 @@ using Jube.Data.Repository;
 using Jube.Data.Repository.Models;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using LinqToDB.Data;
 using Xunit;
 
@@ -419,9 +420,9 @@ namespace Jube.Test.AskJooby
             var now = DateTime.UtcNow;
 
             var olderConversationId =
-                await SeedConversationAsync(dbContext, tenantId, createdDate: now.AddMinutes(-10));
+                await SeedConversationAsync(dbContext, tenantId, now.AddMinutes(-10));
             var newerConversationId =
-                await SeedConversationAsync(dbContext, tenantId, createdDate: now.AddMinutes(-5));
+                await SeedConversationAsync(dbContext, tenantId, now.AddMinutes(-5));
 
             var conversationRepository =
                 new AskJoobyConversationRepository(dbContext, tenantId, DatabaseFixture.Prefix);
@@ -443,9 +444,9 @@ namespace Jube.Test.AskJooby
             var now = DateTime.UtcNow;
 
             var olderConversationId =
-                await SeedConversationAsync(dbContext, tenantId, createdDate: now.AddMinutes(-10));
+                await SeedConversationAsync(dbContext, tenantId, now.AddMinutes(-10));
             var newerConversationId =
-                await SeedConversationAsync(dbContext, tenantId, createdDate: now.AddMinutes(-5));
+                await SeedConversationAsync(dbContext, tenantId, now.AddMinutes(-5));
 
             var conversationRepository =
                 new AskJoobyConversationRepository(dbContext, tenantId, DatabaseFixture.Prefix);
@@ -456,6 +457,87 @@ namespace Jube.Test.AskJooby
                 [newerConversationId, olderConversationId],
                 "with neither conversation ever touched, ordering must fall back to CreatedDate rather than " +
                 "treating a null UpdatedDate as the dawn of time");
+        }
+
+        [Fact]
+        public async Task OwnerRestrictedRepositoryNeverListsLoadsOrDeletesAnotherUsersConversationAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var tenantId = await SeedTenantAsync(dbContext);
+            var conversationId = await SeedConversationAsync(dbContext, tenantId);
+
+            var other = new AskJoobyConversationRepository(dbContext, tenantId, DatabaseFixture.Prefix + "Other", true);
+            var owner = new AskJoobyConversationRepository(dbContext, tenantId,
+                DatabaseFixture.Prefix.ToUpperInvariant(), true);
+
+            (await other.ListAsync(string.Empty, 50, 0)).Should().BeEmpty();
+            (await other.GetByIdAsync(conversationId)).Should().BeNull();
+            var act = () => other.DeleteAsync(conversationId);
+            await act.Should().ThrowAsync<KeyNotFoundException>();
+
+            (await owner.GetByIdAsync(conversationId)).Should().NotBeNull("the owner match is case-insensitive");
+            (await owner.ListAsync(string.Empty, 50, 0)).Select(c => c.Id).Should().Contain(conversationId);
+        }
+
+        [Fact]
+        public async Task UnrestrictedRepositoryStillSeesEveryConversationInTheTenantAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var tenantId = await SeedTenantAsync(dbContext);
+            var conversationId = await SeedConversationAsync(dbContext, tenantId);
+
+            var unrestricted =
+                new AskJoobyConversationRepository(dbContext, tenantId, DatabaseFixture.Prefix + "Other");
+
+            (await unrestricted.GetByIdAsync(conversationId)).Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task OwnerRestrictedFileRepositoryNeverExposesOrChangesAnotherUsersFileAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var tenantId = await SeedTenantAsync(dbContext);
+            var conversationId = await SeedConversationAsync(dbContext, tenantId);
+            var uploader = new AskJoobyFileRepository(dbContext, tenantId, DatabaseFixture.Prefix, true);
+            var other = new AskJoobyFileRepository(dbContext, tenantId, DatabaseFixture.Prefix + "Other", true);
+
+            var file = await uploader.InsertAsync(new AskJoobyFile
+            {
+                AskJoobyConversationId = conversationId, Name = "notes.txt", ContentType = "text/plain",
+                Extension = ".txt", Size = 12, Object = [.. "hello world!"u8]
+            });
+
+            (await other.GetByIdAsync(file.Id)).Should().BeNull();
+            (await other.ListByConversationAsync(conversationId)).Should().BeEmpty();
+            var act = () => other.DeleteAsync(file.Id);
+            await act.Should().ThrowAsync<KeyNotFoundException>();
+            (await uploader.GetByIdAsync(file.Id)).Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task AttachToMessageAsyncIgnoresAFileFromADifferentConversationWhenOneIsGivenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var tenantId = await SeedTenantAsync(dbContext);
+            var conversationId = await SeedConversationAsync(dbContext, tenantId);
+            var otherConversationId = await SeedConversationAsync(dbContext, tenantId);
+            var messageRepository = new AskJoobyMessageRepository(dbContext);
+            var fileRepository = new AskJoobyFileRepository(dbContext, tenantId, DatabaseFixture.Prefix);
+
+            var message = await messageRepository.InsertAsync(new AskJoobyMessage
+            {
+                AskJoobyConversationId = conversationId, RoleId = (byte)AskJoobyMessageRole.User, Content = "Hi"
+            });
+
+            var foreign = await fileRepository.InsertAsync(new AskJoobyFile
+            {
+                AskJoobyConversationId = otherConversationId, Name = "other.txt", ContentType = "text/plain",
+                Extension = ".txt", Size = 1, Object = [.. "x"u8]
+            });
+
+            await fileRepository.AttachToMessageAsync([foreign.Id], message.Id, default, conversationId);
+
+            (await fileRepository.ListByMessageIdsAsync([message.Id])).Should().BeEmpty();
         }
     }
 }

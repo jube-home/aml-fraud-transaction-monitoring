@@ -25,8 +25,10 @@ namespace Jube.Service.Agent.PageAgentToolBinder
         IStringLocalizerFactory stringLocalizerFactory,
         IServiceChangeBus serviceChangeBus,
         IEmbeddingGenerator<string, Embedding<float>>? embeddingGenerator = null,
-        DynamicEnvironment.DynamicEnvironment? dynamicEnvironment = null) : IServiceProvider
+        DynamicEnvironment.DynamicEnvironment? dynamicEnvironment = null,
+        Svirfd.Interfaces.ISvirfdLookup? svirfdLookup = null) : IServiceProvider
     {
+        private static readonly Svirfd.SvirfdNullLookup nullSvirfdLookup = new();
         private JsonSerializationHelper? jsonSerializationHelper;
 
         public object? GetService(Type serviceType)
@@ -54,6 +56,11 @@ namespace Jube.Service.Agent.PageAgentToolBinder
             if (serviceType == typeof(DynamicEnvironment.DynamicEnvironment))
             {
                 return dynamicEnvironment;
+            }
+
+            if (serviceType == typeof(Svirfd.Interfaces.ISvirfdLookup))
+            {
+                return svirfdLookup ?? nullSvirfdLookup;
             }
 
             if (serviceType == typeof(JsonSerializationHelper))

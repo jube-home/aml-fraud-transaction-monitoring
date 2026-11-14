@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Converts the string to a byte array.")]
         public static byte[] ToByteArray(this string @this)
         {
             var encoding = Encoding.ASCII;

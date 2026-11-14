@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,11 +22,13 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.RuleVocabulary
 {
     [Description("A page of the words rule text may use, in alphabetical order.")]
+    [MessagePackObject]
     public class RuleWordPageDto
     {
-        [Description("The words.")] public List<RuleWordSummaryDto> Items { get; set; } = [];
+        [Description("The words.")] [Key(0)] public List<RuleWordSummaryDto> Items { get; set; } = [];
 
         [Description("True when more words follow; call again with afterName set to the last Name.")]
+        [Key(1)]
         public bool More { get; set; }
     }
 }

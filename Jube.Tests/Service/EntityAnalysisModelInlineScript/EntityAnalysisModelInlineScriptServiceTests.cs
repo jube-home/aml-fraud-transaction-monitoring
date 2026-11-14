@@ -35,6 +35,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Infrastructure.Reactivity;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
@@ -517,7 +518,6 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineScript
             var dto = NewDto(modelId, inlineScriptId, saved.Name);
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
-            dto.Version = 999;
             dto.UpdatedUser = "also-tampered";
 
             var updated = await service.UpdateAsync(dto);

@@ -18,11 +18,14 @@
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Models
 {
+    using System;
+
     public class Notification
     {
         public string NotificationSubject { get; init; }
         public string NotificationDestination { get; init; }
         public string NotificationBody { get; init; }
         public int NotificationTypeId { get; init; }
+        public Guid? EntityAnalysisModelInstanceEntryGuid { get; init; }
     }
 }

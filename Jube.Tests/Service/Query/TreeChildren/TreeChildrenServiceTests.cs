@@ -36,6 +36,7 @@ using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using Jube.Test.Service.Query.TreeChildren.Models;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
@@ -440,7 +441,7 @@ namespace Jube.Test.Service.Query.TreeChildren
             ("RequestXPath", "id", [7]), ("VisualisationRegistryDatasource", "id", [33]),
             ("UserRegistry", "guid", [35]), ("RoleRegistryPermission", "id", [36]),
             ("VisualisationRegistryParameter", "id", [32]), ("InlineFunction", "id", [8]), ("Tag", "id", [37]),
-            ("GatewayRule", "id", [10]), ("Exhaustive", "id", [16]), ("Reprocessing", "id", [26]),
+            ("GatewayRule", "id", [10]), ("Exhaustive", "id", [16]), ("Reprocessing", "id", [26, 73, 74]),
             ("Adaptation", "id", [15]), ("CaseWorkflow", "id", [18, 19, 20, 21, 22, 23, 24, 25]),
             ("AbstractionCalculation", "id", [14]), ("AbstractionRule", "id", [13, 14]),
             ("ActivationRule", "id", [17]), ("TTLCounter", "id", [12]), ("InlineScript", "id", [9]),

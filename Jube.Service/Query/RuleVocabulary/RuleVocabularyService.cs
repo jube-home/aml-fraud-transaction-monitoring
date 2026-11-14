@@ -31,6 +31,11 @@ namespace Jube.Service.Query.RuleVocabulary
     public sealed class RuleVocabularyService
     {
         private const int MaxTake = 200;
+
+        private const string RuleParseTypeText =
+            "The kind of rule the words are for: 1 Inline Function, 2 Gateway Rule, 3 Abstraction Rule, " +
+            "4 Abstraction Calculation, 5 Activation Rule. Leave empty for the words every kind accepts. " +
+            "Abstraction Rule adds the cursor words (Cursor and its members, Exit For, Continue For).";
         private static readonly int[] permissions = [8, 10, 13, 14, 16, 17, 25, 26];
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
@@ -121,11 +126,13 @@ namespace Jube.Service.Query.RuleVocabulary
             int take = 100,
             [Description("When set, only words after this one in alphabetical order are returned.")]
             string? afterName = null,
+            [Description(RuleParseTypeText)]
+            int? ruleParseTypeId = null,
             CancellationToken token = default)
         {
             return RunAsync("List", async () =>
             {
-                var words = (await WordsAsync(token).ConfigureAwait(false))
+                var words = (await WordsAsync(token, ruleParseTypeId).ConfigureAwait(false))
                     .Where(w => string.IsNullOrEmpty(search) ||
                                 w.Name.Contains(search, StringComparison.OrdinalIgnoreCase))
                     .Where(w => string.IsNullOrEmpty(kind) ||
@@ -160,11 +167,13 @@ namespace Jube.Service.Query.RuleVocabulary
         public Task<RuleWordDto> DescribeAsync(
             [Description("The word, e.g. IsMatch.")]
             string? name,
+            [Description(RuleParseTypeText)]
+            int? ruleParseTypeId = null,
             CancellationToken token = default)
         {
             return RunAsync("Describe", async () =>
             {
-                var word = (await WordsAsync(token).ConfigureAwait(false))
+                var word = (await WordsAsync(token, ruleParseTypeId).ConfigureAwait(false))
                     .FirstOrDefault(w => string.Equals(w.Name, name, StringComparison.OrdinalIgnoreCase));
 
                 if (word == null)
@@ -172,30 +181,53 @@ namespace Jube.Service.Query.RuleVocabulary
                     throw new NotFoundException(string.Format(strings[RuleVocabularyResources.WordNotFound], name));
                 }
 
-                return new RuleWordDto
-                {
-                    Name = word.Name,
-                    Kind = word.Kind.ToString(),
-                    Overloads = word.Overloads.Select(o => new RuleWordOverloadDto
+                return ToDto(word);
+            }, token);
+        }
+
+        public Task<List<RuleWordDto>> GetAllAsync(int? ruleParseTypeId = null, CancellationToken token = default)
+        {
+            return RunAsync("GetAll", async () =>
+                (await WordsAsync(token, ruleParseTypeId).ConfigureAwait(false)).Select(ToDto).ToList(), token);
+        }
+
+        private static RuleWordDto ToDto(RuleWord word)
+        {
+            return new RuleWordDto
+            {
+                Name = word.Name,
+                Kind = word.Kind.ToString(),
+                Description = word.Description,
+                Overloads =
+                [
+                    .. word.Overloads.Select(o => new RuleWordOverloadDto
                     {
                         Signature = o.Signature,
                         ReceiverType = o.ReceiverType,
                         ReturnType = o.ReturnType,
-                        Parameters = o.Parameters.Select(p => new RuleWordParameterDto
-                        {
-                            Name = p.Name, Type = p.Type, Optional = p.Optional, DefaultValue = p.DefaultValue
-                        }).ToList()
-                    }).ToList()
-                };
-            }, token);
+                        Description = o.Description,
+                        Parameters =
+                        [
+                            .. o.Parameters.Select(p => new RuleWordParameterDto
+                            {
+                                Name = p.Name,
+                                Type = p.Type,
+                                Optional = p.Optional,
+                                DefaultValue = p.DefaultValue,
+                                Description = p.Description
+                            })
+                        ]
+                    })
+                ]
+            };
         }
 
-        private async Task<IReadOnlyList<RuleWord>> WordsAsync(CancellationToken token)
+        private async Task<IReadOnlyList<RuleWord>> WordsAsync(CancellationToken token, int? ruleParseTypeId = null)
         {
             var installation = (await new RuleScriptTokenRepository(dbContext).GetAsync(token).ConfigureAwait(false))
                 .Select(s => s.Token);
 
-            return ParserVocabulary.Build(installation);
+            return ParserVocabulary.Build(installation, ruleParseTypeId);
         }
 
         private async Task<T> RunAsync<T>(string operation, Func<Task<T>> body, CancellationToken token)

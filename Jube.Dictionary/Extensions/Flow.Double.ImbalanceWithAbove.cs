@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchImbalanceWithAbove(double other, double bound)
+            [Description("True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchImbalanceWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleImbalanceWithAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> RejectImbalanceWithAbove(double other, double bound)
+            [Description("True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectImbalanceWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleImbalanceWithAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> BreakImbalanceWithAbove(double other, double bound)
+            [Description("True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakImbalanceWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleImbalanceWithAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> RequireImbalanceWithAbove(double other, double bound)
+            [Description("True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireImbalanceWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleImbalanceWithAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> EnsureImbalanceWithAbove(double other, double bound)
+            [Description("True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureImbalanceWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchImbalanceWithAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchImbalanceWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchImbalanceWithAbove(other, bound);
             }
 
-            public Flow<double> RejectImbalanceWithAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectImbalanceWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectImbalanceWithAbove(other, bound);
             }
 
-            public Flow<double> BreakImbalanceWithAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakImbalanceWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakImbalanceWithAbove(other, bound);
             }
 
-            public Flow<double> RequireImbalanceWithAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireImbalanceWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireImbalanceWithAbove(other, bound);
             }
 
-            public Flow<double> EnsureImbalanceWithAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureImbalanceWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureImbalanceWithAbove(other, bound);
             }

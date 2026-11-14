@@ -17,7 +17,9 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchNumberInTextWithinPercentOf(double target, double tolerancePercent)
+            [Description("True when: a number found in the text is within the tolerance percentage of the target. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchNumberInTextWithinPercentOf([Description("The number the numbers found in the text are compared with.")] double target,
+                [Description("How far from the target still counts, as a percentage of it.")] double tolerancePercent)
             {
                 return flow.IsDecided
                     ? flow
@@ -25,7 +27,9 @@ namespace Jube.Dictionary.Extensions
                         FlowPredicates.StringNumberInTextWithinPercentOf(flow.Value, target, tolerancePercent));
             }
 
-            public Flow<string?> RejectNumberInTextWithinPercentOf(double target, double tolerancePercent)
+            [Description("True when: a number found in the text is within the tolerance percentage of the target. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectNumberInTextWithinPercentOf([Description("The number the numbers found in the text are compared with.")] double target,
+                [Description("How far from the target still counts, as a percentage of it.")] double tolerancePercent)
             {
                 return flow.IsDecided
                     ? flow
@@ -33,7 +37,9 @@ namespace Jube.Dictionary.Extensions
                         FlowPredicates.StringNumberInTextWithinPercentOf(flow.Value, target, tolerancePercent));
             }
 
-            public Flow<string?> BreakNumberInTextWithinPercentOf(double target, double tolerancePercent)
+            [Description("True when: a number found in the text is within the tolerance percentage of the target. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakNumberInTextWithinPercentOf([Description("The number the numbers found in the text are compared with.")] double target,
+                [Description("How far from the target still counts, as a percentage of it.")] double tolerancePercent)
             {
                 return flow.IsDecided
                     ? flow
@@ -41,7 +47,9 @@ namespace Jube.Dictionary.Extensions
                         FlowPredicates.StringNumberInTextWithinPercentOf(flow.Value, target, tolerancePercent));
             }
 
-            public Flow<string?> RequireNumberInTextWithinPercentOf(double target, double tolerancePercent)
+            [Description("True when: a number found in the text is within the tolerance percentage of the target. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireNumberInTextWithinPercentOf([Description("The number the numbers found in the text are compared with.")] double target,
+                [Description("How far from the target still counts, as a percentage of it.")] double tolerancePercent)
             {
                 return flow.IsDecided
                     ? flow
@@ -49,7 +57,9 @@ namespace Jube.Dictionary.Extensions
                         FlowPredicates.StringNumberInTextWithinPercentOf(flow.Value, target, tolerancePercent));
             }
 
-            public Flow<string?> EnsureNumberInTextWithinPercentOf(double target, double tolerancePercent)
+            [Description("True when: a number found in the text is within the tolerance percentage of the target. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureNumberInTextWithinPercentOf([Description("The number the numbers found in the text are compared with.")] double target,
+                [Description("How far from the target still counts, as a percentage of it.")] double tolerancePercent)
             {
                 return flow.IsDecided
                     ? flow
@@ -60,27 +70,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchNumberInTextWithinPercentOf(double target, double tolerancePercent)
+            [Description("Begins a pipeline from the value. True when: a number found in the text is within the tolerance percentage of the target. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchNumberInTextWithinPercentOf([Description("The number the numbers found in the text are compared with.")] double target,
+                [Description("How far from the target still counts, as a percentage of it.")] double tolerancePercent)
             {
                 return value.Start().MatchNumberInTextWithinPercentOf(target, tolerancePercent);
             }
 
-            public Flow<string?> RejectNumberInTextWithinPercentOf(double target, double tolerancePercent)
+            [Description("Begins a pipeline from the value. True when: a number found in the text is within the tolerance percentage of the target. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectNumberInTextWithinPercentOf([Description("The number the numbers found in the text are compared with.")] double target,
+                [Description("How far from the target still counts, as a percentage of it.")] double tolerancePercent)
             {
                 return value.Start().RejectNumberInTextWithinPercentOf(target, tolerancePercent);
             }
 
-            public Flow<string?> BreakNumberInTextWithinPercentOf(double target, double tolerancePercent)
+            [Description("Begins a pipeline from the value. True when: a number found in the text is within the tolerance percentage of the target. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakNumberInTextWithinPercentOf([Description("The number the numbers found in the text are compared with.")] double target,
+                [Description("How far from the target still counts, as a percentage of it.")] double tolerancePercent)
             {
                 return value.Start().BreakNumberInTextWithinPercentOf(target, tolerancePercent);
             }
 
-            public Flow<string?> RequireNumberInTextWithinPercentOf(double target, double tolerancePercent)
+            [Description("Begins a pipeline from the value. True when: a number found in the text is within the tolerance percentage of the target. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireNumberInTextWithinPercentOf([Description("The number the numbers found in the text are compared with.")] double target,
+                [Description("How far from the target still counts, as a percentage of it.")] double tolerancePercent)
             {
                 return value.Start().RequireNumberInTextWithinPercentOf(target, tolerancePercent);
             }
 
-            public Flow<string?> EnsureNumberInTextWithinPercentOf(double target, double tolerancePercent)
+            [Description("Begins a pipeline from the value. True when: a number found in the text is within the tolerance percentage of the target. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureNumberInTextWithinPercentOf([Description("The number the numbers found in the text are compared with.")] double target,
+                [Description("How far from the target still counts, as a percentage of it.")] double tolerancePercent)
             {
                 return value.Start().EnsureNumberInTextWithinPercentOf(target, tolerancePercent);
             }

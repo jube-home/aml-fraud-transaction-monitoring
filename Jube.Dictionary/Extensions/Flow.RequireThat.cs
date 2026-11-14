@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static Flow<T> RequireThat<T>(this Flow<T> flow, bool condition)
+        [Description("Continues when the condition, any Boolean expression, is true; otherwise decides rejected.")]
+        public static Flow<T> RequireThat<T>(this Flow<T> flow,
+            [Description("Any Boolean expression; the pipeline continues only while it is true.")] bool condition)
         {
             return flow.Apply(FlowKind.Require, condition);
         }

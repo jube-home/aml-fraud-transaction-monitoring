@@ -18,10 +18,12 @@ using log4net;
 
 namespace Jube.Engine.Exhaustive.Preparation
 {
-    internal class Normalisation(ILog log)
+    internal class Normalisation(ILog log, DynamicEnvironment.DynamicEnvironment environment = null)
     {
         internal double[][] NormaliseData(Dictionary<int, Variable> variables, double[][] data)
         {
+            var clipBound = ExhaustiveZScoreClipBoundResolver.Resolve(environment);
+
             for (var i = 0; i < data.Length; i++)
             {
                 if (log.IsInfoEnabled)
@@ -34,7 +36,8 @@ namespace Jube.Engine.Exhaustive.Preparation
                 {
                     if (variables[j].NormalisationType == 2)
                     {
-                        data[i][j] = Standardisation.ZScore(data[i][j], variables[j].Mean, variables[j].Sd);
+                        data[i][j] = ExhaustiveZScoreClipBoundResolver.Clamp(
+                            Standardisation.ZScore(data[i][j], variables[j].Mean, variables[j].Sd), clipBound);
                     }
                 }
 
@@ -48,9 +51,12 @@ namespace Jube.Engine.Exhaustive.Preparation
             return data;
         }
 
-        internal static double ZScore(double value, double mean, double sd, int normalisationTypeId)
+        internal static double ZScore(double value, double mean, double sd, int normalisationTypeId,
+            double clipBound = ExhaustiveZScoreClipBoundResolver.DefaultBound)
         {
-            return normalisationTypeId == 2 ? Standardisation.ZScore(value, mean, sd) : value;
+            return normalisationTypeId == 2
+                ? ExhaustiveZScoreClipBoundResolver.Clamp(Standardisation.ZScore(value, mean, sd), clipBound)
+                : value;
         }
     }
 }

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>ამ მოქმედების შესასრულებლად უფლება არ გაქვთ.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>ამ მოქმედების შესასრულებლად უნდა იყოთ შესული ტენანტში.</value>
+  </data>
+    <data name="ModelNotFound" xml:space="preserve">
+    <value>ერთეულის ანალიზის მოდელი ვერ მოიძებნა.</value>
+  </data>
+    <data name="EntityNotFound" xml:space="preserve">
+    <value>ამ მოდელში {0} იდენტიფიკატორით {1} ვერ მოიძებნა.</value>
+  </data>
+    <data name="Title_DependencyDangling" xml:space="preserve">
+    <value>იყენებს სახელს, რომელიც არ არსებობს</value>
+  </data>
+    <data name="Title_DependencyOnInactive" xml:space="preserve">
+    <value>იყენებს არააქტიურ ერთეულს</value>
+  </data>
+    <data name="Title_DependencyOnUnapproved" xml:space="preserve">
+    <value>იყენებს ერთეულს, რომელიც ჯერ არ არის დამტკიცებული</value>
+  </data>
+    <data name="Title_EntityPendingApproval" xml:space="preserve">
+    <value>შეიცვალა და დამტკიცებას ელოდება</value>
+  </data>
+    <data name="Title_EntityUnreferenced" xml:space="preserve">
+    <value>არაფერი იყენებს</value>
+  </data>
+    <data name="Title_EngineCompileFailed" xml:space="preserve">
+    <value>ძრავში არ დაკომპილირდა</value>
+  </data>
+    <data name="Title_ModelInactive" xml:space="preserve">
+    <value>მოდელი არააქტიურია</value>
+  </data>
+    <data name="Title_NoActiveActivationRules" xml:space="preserve">
+    <value>აქტიური აქტივაციის წესები არ არის</value>
+  </data>
+    <data name="Title_TtlCountersDisabled" xml:space="preserve">
+    <value>TTL მრიცხველები გათიშულია</value>
+  </data>
+    <data name="Title_SearchKeyTtlShortensWindow" xml:space="preserve">
+    <value>ძიების გასაღების ისტორია წესის ფანჯარაზე მოკლეა</value>
+  </data>
+    <data name="Title_SearchKeyTtlCollapsesWindow" xml:space="preserve">
+    <value>ძიების გასაღები წესის ფანჯრისთვის ისტორიას არ ინახავს</value>
+  </data>
+    <data name="Title_EngineStateUnavailable" xml:space="preserve">
+    <value>ძრავის მდგომარეობა მიუწვდომელია</value>
+  </data>
+    <data name="Title_EngineNoNodes" xml:space="preserve">
+    <value>არცერთი ძრავის ინსტანცია არ დასინქრონებულა</value>
+  </data>
+    <data name="Title_EngineNodeStale" xml:space="preserve">
+    <value>ძრავის ინსტანციამ ანგარიშგება შეწყვიტა</value>
+  </data>
+    <data name="Title_EngineModelNotLoaded" xml:space="preserve">
+    <value>მოდელი ძრავის ინსტანციას ჩატვირთული არ აქვს</value>
+  </data>
+    <data name="Title_EngineModelNotStarted" xml:space="preserve">
+    <value>მოდელი ჩატვირთულია, მაგრამ არ დაწყებულა</value>
+  </data>
+    <data name="Title_EngineEntityNotLoaded" xml:space="preserve">
+    <value>ძრავის ინსტანციას ჩატვირთული არ აქვს</value>
+  </data>
+    <data name="Title_EngineEntityStale" xml:space="preserve">
+    <value>ძრავი ისევ ასრულებს ერთეულს, რომელიც აღარ არის აქტიური</value>
+  </data>
+    <data name="Message_DependencyDanglingActiveRuleText" xml:space="preserve">
+    <value>{0} {1}-ის წესის ტექსტი ასახელებს {2}-ს, რომელიც არ არსებობს, ამიტომ არ იმუშავებს.</value>
+  </data>
+    <data name="Message_DependencyDanglingInactiveRuleText" xml:space="preserve">
+    <value>{0} {1}-ის წესის ტექსტი ასახელებს {2}-ს, რომელიც არ არსებობს; ის არააქტიურია, ამიტომ ამას მნიშვნელობა მხოლოდ გააქტიურების შემთხვევაში აქვს.</value>
+  </data>
+    <data name="Message_DependencyDanglingActiveSetting" xml:space="preserve">
+    <value>{1} {2}-ის {0} პარამეტრი ასახელებს {3}-ს, რომელიც არ არსებობს, ამიტომ არ იმუშავებს.</value>
+  </data>
+    <data name="Message_DependencyDanglingInactiveSetting" xml:space="preserve">
+    <value>{1} {2}-ის {0} პარამეტრი ასახელებს {3}-ს, რომელიც არ არსებობს; ის არააქტიურია, ამიტომ ამას მნიშვნელობა მხოლოდ გააქტიურების შემთხვევაში აქვს.</value>
+  </data>
+    <data name="Message_DependencyOnInactiveRuleText" xml:space="preserve">
+    <value>{0} {1}-ის წესის ტექსტი იყენებს {2} {3}-ს, რომელიც არააქტიურია, ამიტომ ძრავი მას არ ტვირთავს და გამოყენება არ იმუშავებს.</value>
+  </data>
+    <data name="Message_DependencyOnInactiveSetting" xml:space="preserve">
+    <value>{1} {2}-ის {0} პარამეტრი იყენებს {3} {4}-ს, რომელიც არააქტიურია, ამიტომ ძრავი მას არ ტვირთავს და გამოყენება არ იმუშავებს.</value>
+  </data>
+    <data name="Message_DependencyOnUnapprovedRuleText" xml:space="preserve">
+    <value>{0} {1}-ის წესის ტექსტი იყენებს {2} {3}-ს, რომელიც ჯერ არ არის დამტკიცებული, ამიტომ ძრავი მას არ ასრულებს და გამოყენება დამტკიცებამდე არ იმუშავებს.</value>
+  </data>
+    <data name="Message_DependencyOnUnapprovedSetting" xml:space="preserve">
+    <value>{1} {2}-ის {0} პარამეტრი იყენებს {3} {4}-ს, რომელიც ჯერ არ არის დამტკიცებული, ამიტომ ძრავი მას არ ასრულებს და გამოყენება დამტკიცებამდე არ იმუშავებს.</value>
+  </data>
+    <data name="Message_EntityUnreferenced" xml:space="preserve">
+    <value>{0} {1} აქტიურია, მაგრამ მოდელში არაფერი იყენებს მას.</value>
+  </data>
+    <data name="Message_EngineCompileFailed" xml:space="preserve">
+    <value>ძრავმა ბოლო სინქრონიზაციისას ვერ დააკომპილირა {0} {1}, ამიტომ ის არ მუშაობს: {2}.</value>
+  </data>
+    <data name="Message_EngineCompileFailedNoError" xml:space="preserve">
+    <value>ძრავმა ბოლო სინქრონიზაციისას ვერ დააკომპილირა {0} {1}, ამიტომ ის არ მუშაობს: შეცდომა არ ჩაწერილა.</value>
+  </data>
+    <data name="Message_ModelInactive" xml:space="preserve">
+    <value>მოდელი არააქტიურია, ამიტომ ძრავი მას არ ტვირთავს და არ იძახებს.</value>
+  </data>
+    <data name="Message_NoActiveActivationRules" xml:space="preserve">
+    <value>მოდელს აქტიური აქტივაციის წესები არ აქვს, ამიტომ არცერთი ტრანზაქცია ვერ გააქტიურდება.</value>
+  </data>
+    <data name="Message_TtlCountersDisabled" xml:space="preserve">
+    <value>TTL მრიცხველები მოდელისთვის გათიშულია, ამიტომ ძრავი {0}-ს არც ზრდის და არც კითხულობს; წესები მას 0-ად ხედავს.</value>
+  </data>
+    <data name="Message_SearchKeyTtlCollapsesWindow" xml:space="preserve">
+    <value>ძიების გასაღებს {0} TTL არ აქვს, ამიტომ ძრავი აბსტრაქციის წესის {1} {2} ფანჯარას მხოლოდ საცნობარო თარიღით ზღუდავს და თითქმის არაფერს აგროვებს.</value>
+  </data>
+    <data name="Message_SearchKeyTtlShortensWindow" xml:space="preserve">
+    <value>ძიების გასაღები {0} ისტორიას ინახავს {1} {2}-ით, რაც წესის {3} {4}-ზე მოკლეა, ამიტომ ძრავი უხმოდ უფრო მოკლე ფანჯარას იყენებს.</value>
+  </data>
+    <data name="Message_EngineStateUnavailable" xml:space="preserve">
+    <value>ამ პროცესში ძრავი არ მუშაობს და არცერთს არ ჩაუწერია, რა ჩატვირთა ამ მოდელისთვის, ამიტომ ვერ შემოწმდება, რას ასრულებს ძრავი.</value>
+  </data>
+    <data name="Message_EngineNoNodes" xml:space="preserve">
+    <value>არცერთ ძრავის ინსტანციას ამ ტენანტის მოდელები არ დაუსინქრონებია.</value>
+  </data>
+    <data name="Message_EngineNodeStale" xml:space="preserve">
+    <value>ძრავის ინსტანციამ {0} ბოლოს {1}-ზე მოახსენა და არ მუშაობს. ის წაიშლება შემდეგი სინქრონიზაციისას ან ამ სიიდან {2}-ზე ამოვარდება, თუ სინქრონიზაცია არ მოხდება.</value>
+  </data>
+    <data name="Message_EngineModelNotStarted" xml:space="preserve">
+    <value>ძრავის ინსტანციამ {0} მოდელი ჩატვირთა, მაგრამ არ დაუწყია.</value>
+  </data>
+    <data name="Message_EntityPendingApprovalWaiting" xml:space="preserve">
+    <value>{0} {1} დამტკიცებას ელოდება, ამიტომ ძრავის ინსტანცია {2} მას ჯერ არ ასრულებს.</value>
+  </data>
+    <data name="Message_EntityPendingApprovalChanged" xml:space="preserve">
+    <value>{0} {1}-ს ცვლილება დამტკიცებას ელოდება, ამიტომ ძრავის ინსტანცია {2} ისევ ბოლო დამტკიცებულ ვერსიას ასრულებს.</value>
+  </data>
+    <data name="Message_EngineEntityNotLoaded" xml:space="preserve">
+    <value>{0} {1} დამტკიცებულია და აქტიურია, მაგრამ ძრავის ინსტანციამ {2} ის არ ჩატვირთა: დაასინქრონეთ მოდელი და შეამოწმეთ, კომპილირდება თუ არა.</value>
+  </data>
+    <data name="Message_EngineEntityStale" xml:space="preserve">
+    <value>ძრავის ინსტანცია {0} ისევ ასრულებს {1} {2}-ს, რომელიც აღარ არის აქტიური; დაასინქრონეთ მოდელი მის გასათავისუფლებლად.</value>
+  </data>
+    <data name="Message_EngineModelNotLoaded" xml:space="preserve">
+    <value>ძრავის ინსტანციას {0} მოდელი ჩატვირთული არ აქვს; დაასინქრონეთ.</value>
+  </data>
+</root>

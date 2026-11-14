@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchTokenSetInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the share of an entry's words that are found, allowing typos and missing words. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchTokenSetInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The share of matching words from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringTokenSetInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> RejectTokenSetInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the share of an entry's words that are found, allowing typos and missing words. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectTokenSetInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The share of matching words from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringTokenSetInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> BreakTokenSetInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the share of an entry's words that are found, allowing typos and missing words. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakTokenSetInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The share of matching words from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringTokenSetInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> RequireTokenSetInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the share of an entry's words that are found, allowing typos and missing words. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireTokenSetInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The share of matching words from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringTokenSetInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> EnsureTokenSetInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the share of an entry's words that are found, allowing typos and missing words. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureTokenSetInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The share of matching words from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchTokenSetInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the share of an entry's words that are found, allowing typos and missing words. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchTokenSetInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The share of matching words from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().MatchTokenSetInList(list, threshold);
             }
 
-            public Flow<string?> RejectTokenSetInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the share of an entry's words that are found, allowing typos and missing words. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectTokenSetInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The share of matching words from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().RejectTokenSetInList(list, threshold);
             }
 
-            public Flow<string?> BreakTokenSetInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the share of an entry's words that are found, allowing typos and missing words. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakTokenSetInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The share of matching words from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().BreakTokenSetInList(list, threshold);
             }
 
-            public Flow<string?> RequireTokenSetInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the share of an entry's words that are found, allowing typos and missing words. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireTokenSetInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The share of matching words from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().RequireTokenSetInList(list, threshold);
             }
 
-            public Flow<string?> EnsureTokenSetInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the share of an entry's words that are found, allowing typos and missing words. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureTokenSetInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The share of matching words from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().EnsureTokenSetInList(list, threshold);
             }

@@ -83,3 +83,22 @@ back, the HTML is rebuilt from an allow-list; a note is never returned to a brow
 Text that only looks like markup, such as `<script>alert(1)</script>` typed as a note, is therefore stored and shown as
 inert text, not executed. Note the earlier point that a Case Note cannot be updated or deleted: the sanitising applies
 when the note is added and again on every read.
+
+## Source, findings, attachments and the AskJooby narrative
+
+A note now says who wrote it, an analyst, the system or AskJooby, and an analyst can mark their own note as a finding.
+Files are attached to a note, in the same lightbox, rather than to the case, and every file uploaded before this release
+was moved under a note titled `Migrated Document`. Where a Case Workflow has Enable Narrative on, a background job also
+keeps a read only AskJooby narrative of the case up to date as the facts change, showing the run it came from. See
+Frontend/CaseNotes for the full description.
+
+## Research
+
+Research is a separate record, not a kind of note. Section 5 of the case page is Notes and research, two subsections,
+and **Research** is its own tile in the Decide panel: a lightbox with a topic, the findings, the sources they rely on (a
+title, an http or https address and a date for each, ten at most) and files. See Frontend/CaseResearch.
+
+## Vue case page (case-record review)
+
+<!-- TODO(docs): the screenshots and tab names above are from the Razor UI and are stale; the case page is now one scrolling story with sections 1 Dashboard, 2 Summary, 3 Journal, 4 Network, 5 Notes and research, 6 Events, 7 Forms, 8 Messages and a Decide column on the right -->
+<!-- TODO(screenshot): file=case-record-notes.png route=/cases/:caseId state="Case page showing the notes area as described on this page" -->

@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("One minus the value (an approval ratio from a decline ratio).")]
         public static double Complement(this double @this)
         {
             return CalculationSupport.Finite(1 - @this);

@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
-            public Flow<DateTime> MatchOutsideWeekdayBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("True when: a weekend in that time zone, or outside the hours there. An unknown zone is false. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchOutsideWeekdayBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeOutsideWeekdayBusinessHoursInZone(flow.Value, zoneId, startHour, endHour));
             }
 
-            public Flow<DateTime> RejectOutsideWeekdayBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("True when: a weekend in that time zone, or outside the hours there. An unknown zone is false. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectOutsideWeekdayBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeOutsideWeekdayBusinessHoursInZone(flow.Value, zoneId, startHour, endHour));
             }
 
-            public Flow<DateTime> BreakOutsideWeekdayBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("True when: a weekend in that time zone, or outside the hours there. An unknown zone is false. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakOutsideWeekdayBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeOutsideWeekdayBusinessHoursInZone(flow.Value, zoneId, startHour, endHour));
             }
 
-            public Flow<DateTime> RequireOutsideWeekdayBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("True when: a weekend in that time zone, or outside the hours there. An unknown zone is false. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireOutsideWeekdayBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeOutsideWeekdayBusinessHoursInZone(flow.Value, zoneId, startHour, endHour));
             }
 
-            public Flow<DateTime> EnsureOutsideWeekdayBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("True when: a weekend in that time zone, or outside the hours there. An unknown zone is false. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureOutsideWeekdayBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
-            public Flow<DateTime> MatchOutsideWeekdayBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: a weekend in that time zone, or outside the hours there. An unknown zone is false. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchOutsideWeekdayBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return value.Start().MatchOutsideWeekdayBusinessHoursInZone(zoneId, startHour, endHour);
             }
 
-            public Flow<DateTime> RejectOutsideWeekdayBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: a weekend in that time zone, or outside the hours there. An unknown zone is false. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectOutsideWeekdayBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return value.Start().RejectOutsideWeekdayBusinessHoursInZone(zoneId, startHour, endHour);
             }
 
-            public Flow<DateTime> BreakOutsideWeekdayBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: a weekend in that time zone, or outside the hours there. An unknown zone is false. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakOutsideWeekdayBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return value.Start().BreakOutsideWeekdayBusinessHoursInZone(zoneId, startHour, endHour);
             }
 
-            public Flow<DateTime> RequireOutsideWeekdayBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: a weekend in that time zone, or outside the hours there. An unknown zone is false. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireOutsideWeekdayBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return value.Start().RequireOutsideWeekdayBusinessHoursInZone(zoneId, startHour, endHour);
             }
 
-            public Flow<DateTime> EnsureOutsideWeekdayBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: a weekend in that time zone, or outside the hours there. An unknown zone is false. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureOutsideWeekdayBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return value.Start().EnsureOutsideWeekdayBusinessHoursInZone(zoneId, startHour, endHour);
             }

@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchWithinPercentOf(double target, double percent)
+            [Description("True when: the value is within the percentage of the target, in either direction. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchWithinPercentOf([Description("The value to compare against.")] double target,
+                [Description("The allowed tolerance, as a percentage of target.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleWithinPercentOf(flow.Value, target, percent));
             }
 
-            public Flow<double> RejectWithinPercentOf(double target, double percent)
+            [Description("True when: the value is within the percentage of the target, in either direction. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectWithinPercentOf([Description("The value to compare against.")] double target,
+                [Description("The allowed tolerance, as a percentage of target.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleWithinPercentOf(flow.Value, target, percent));
             }
 
-            public Flow<double> BreakWithinPercentOf(double target, double percent)
+            [Description("True when: the value is within the percentage of the target, in either direction. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakWithinPercentOf([Description("The value to compare against.")] double target,
+                [Description("The allowed tolerance, as a percentage of target.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleWithinPercentOf(flow.Value, target, percent));
             }
 
-            public Flow<double> RequireWithinPercentOf(double target, double percent)
+            [Description("True when: the value is within the percentage of the target, in either direction. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireWithinPercentOf([Description("The value to compare against.")] double target,
+                [Description("The allowed tolerance, as a percentage of target.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleWithinPercentOf(flow.Value, target, percent));
             }
 
-            public Flow<double> EnsureWithinPercentOf(double target, double percent)
+            [Description("True when: the value is within the percentage of the target, in either direction. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureWithinPercentOf([Description("The value to compare against.")] double target,
+                [Description("The allowed tolerance, as a percentage of target.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchWithinPercentOf(double target, double percent)
+            [Description("Begins a pipeline from the value. True when: the value is within the percentage of the target, in either direction. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchWithinPercentOf([Description("The value to compare against.")] double target,
+                [Description("The allowed tolerance, as a percentage of target.")] double percent)
             {
                 return value.Start().MatchWithinPercentOf(target, percent);
             }
 
-            public Flow<double> RejectWithinPercentOf(double target, double percent)
+            [Description("Begins a pipeline from the value. True when: the value is within the percentage of the target, in either direction. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectWithinPercentOf([Description("The value to compare against.")] double target,
+                [Description("The allowed tolerance, as a percentage of target.")] double percent)
             {
                 return value.Start().RejectWithinPercentOf(target, percent);
             }
 
-            public Flow<double> BreakWithinPercentOf(double target, double percent)
+            [Description("Begins a pipeline from the value. True when: the value is within the percentage of the target, in either direction. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakWithinPercentOf([Description("The value to compare against.")] double target,
+                [Description("The allowed tolerance, as a percentage of target.")] double percent)
             {
                 return value.Start().BreakWithinPercentOf(target, percent);
             }
 
-            public Flow<double> RequireWithinPercentOf(double target, double percent)
+            [Description("Begins a pipeline from the value. True when: the value is within the percentage of the target, in either direction. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireWithinPercentOf([Description("The value to compare against.")] double target,
+                [Description("The allowed tolerance, as a percentage of target.")] double percent)
             {
                 return value.Start().RequireWithinPercentOf(target, percent);
             }
 
-            public Flow<double> EnsureWithinPercentOf(double target, double percent)
+            [Description("Begins a pipeline from the value. True when: the value is within the percentage of the target, in either direction. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureWithinPercentOf([Description("The value to compare against.")] double target,
+                [Description("The allowed tolerance, as a percentage of target.")] double percent)
             {
                 return value.Start().EnsureWithinPercentOf(target, percent);
             }

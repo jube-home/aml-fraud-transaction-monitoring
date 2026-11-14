@@ -8,6 +8,8 @@ grand_parent: Configuration
 
 # TTL Counters
 
+<!-- TODO(docs): this whole page pre-dates the Vue UI; owner to read end to end and re-check every Razor-era sentence (menu paths, tab names, button labels) against the Models story page -->
+
 Time to Live Counters (TTL Counters) are an alternative way to create model memory without needing to store the full
 transaction or event data in the cache tables. TTL Counters are incremented as the result of an Activation Rule matching
 and are set to live for only a prescribed amount of time after entry increment creation, after which they will
@@ -40,12 +42,15 @@ Upon a TTL Counter definition having been created, it will be available in the A
 incremented as a consequence of an Activation Rule matching.
 
 The page is available by navigating through the menu as Models >> Abstraction >> TTL Counters:
+<!-- TODO(docs): the menu path or synchronisation step above is Razor-era wording; confirm against the Vue Models story page, and whether synchronisation is still a manual step -->
 
-![Image](TopOfTreeTTLCounters.png)
+<!-- TODO(screenshot): file=model-abstraction-top-of-tree-ttlcounters.png route=/models state="Models story page, Abstraction branch, TTL Counters card with the model tree and no counter selected" -->
+![Image](model-abstraction-top-of-tree-ttlcounters.png)
 
 Click on the model tree entry towards the left hand side to add a new TTL Counter:
 
-![Image](EmptyTTLCounterEntry.png)
+<!-- TODO(screenshot): file=model-abstraction-empty-ttlcounter-entry.png route=/models state="New TTL Counter form with the Identity, Decrement and Output groups visible and Output expanded" -->
+![Image](model-abstraction-empty-ttlcounter-entry.png)
 
 The fields in the construction of TTL Counters are described as follows:
 
@@ -58,22 +63,26 @@ The fields in the construction of TTL Counters are described as follows:
 | TTL Counter Data Name      | The key to be extracted from the data payload that will be used for the purposes of grouping the TTL Counter (e.g. Account ID).  This value allows counts to be maintained on different keys.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | IP                  |
 | Sum                        | A flag to indicate if a Float or Integer value extracted from the invocation payload should be used to increment the TTL Counter and its TTL Counter Entry for deprecation, otherwise incremented by one.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | False               |
 | TTL Counter Data Value     | The Integer or Float value from the payload to increment the TTL Counter value by, extracted form the invocation payload during invocation.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | None                |
-| Resolution Interval        | The truncation of the Reference Date for the purpose of deprecation, stored as TTL Counter Entries in cache.  TTL Counter Entries are used to decrement the TTL Counter on expiration of it by a background task.  The resolution allows for pragmatic storage of the TTL Counter Values in the cache, given that TTL Counter exist for the purpose of maintaining very long term state, and their deprecation might not be time senistive.  For example,  suppose that the resolution is Day,  it implies that a single TTL Counter Entry will be made for a given day truncated, with the value being incremented on new increments of the TTL Counter, only spilling into a new TTL Counter Entry when the actual truncated day lapses, whereby the implication is that the TTL Counter is decremented daily.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+| Resolution Interval        | The truncation of the Reference Date for the purpose of deprecation, stored as TTL Counter Entries in cache.  TTL Counter Entries are used to decrement the TTL Counter on expiration of it by a background task.  The resolution allows for pragmatic storage of the TTL Counter Values in the cache, given that TTL Counter exist for the purpose of maintaining very long term state, and their deprecation might not be time senistive.  For example,  suppose that the resolution is Day,  it implies that a single TTL Counter Entry will be made for a given day truncated, with the value being incremented on new increments of the TTL Counter, only spilling into a new TTL Counter Entry when the actual truncated day lapses, whereby the implication is that the TTL Counter is decremented daily.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
 
 Complete the page fields as set forth in the table above:
 
-![Image](TTLCounterValues.png)
+<!-- TODO(screenshot): file=model-abstraction-ttlcounter-values.png route=/models state="TTL Counter form completed for IP: Day, 1, Resolution Hour, Data Name IP" -->
+![Image](model-abstraction-ttlcounter-values.png)
 
 Click the add button to create a version of this TTL Counter:
 
-![Image](TTLCounterAddedForIP.png)
+<!-- TODO(screenshot): file=model-abstraction-ttlcounter-added-for-ip.png route=/models state="TTL Counter list showing the new IP counter after Save" -->
+![Image](model-abstraction-ttlcounter-added-for-ip.png)
 
 Mindful that a TTL Counter must be incremented by an Activation Rule match, when recalled at this time, it would return
 zero in the response body, synchronise the model via Entity >> Synchronisation and repeat the HTTP POST to
+<!-- TODO(docs): the menu path or synchronisation step above is Razor-era wording; confirm against the Vue Models story page, and whether synchronisation is still a manual step -->
 endpoint [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc)
 for response as follows:
 
-![Image](TTLCounterResponse.png)
+<!-- TODO(screenshot): file=model-abstraction-ttlcounter-response.png route=/models state="Invocation response payload showing the TTL Counter value 0 for IP" -->
+![Image](model-abstraction-ttlcounter-response.png)
 
 It can be seen that TTL Counters are being recalled in their aggregated state, albeit, given no incrementation by
 Activation Rule, returned as 0 for IP. Values are available for Activation Rules subsequently, as an alternative to
@@ -112,3 +121,38 @@ The following constraints are enforced when a TTL Counter is created or updated:
 * TTL Counter Interval Value cannot be negative.
 * Resolution Interval must be one of Minutes, Hours or Days.
 * TTL Counter Data Value is required when Sum is enabled.
+* TTL Counter Interval Value cannot exceed the limit for its unit: 2,000,000,000 seconds, 52,560,000 minutes, 876,000
+  hours, 36,500 days, 1,200 months or 100 years.
+* The Model must exist in the caller's tenant and must not be deleted.
+* Editing a TTL Counter needs permission 12. A locked TTL Counter cannot be edited or deleted. Deleting a TTL Counter is
+  a soft delete.
+
+<!-- TODO(docs): confirm permission 12 is the one shown as the TTL Counters permission in the Roles and Permissions pages -->
+<!-- TODO(docs): the TTL Counter now participates in maker-checker approval (Resubmit, Retract); add a paragraph and a screenshot once the owner confirms the approval wording for this area -->
+
+## Counter keys and tenant isolation
+
+Every counter value and every decrement entry is stored in the cache under a key that begins with the tenant, the Model
+Guid and the TTL Counter Guid, followed by the TTL Counter Data Name and the value taken from the payload. Two tenants,
+two Models or two TTL Counters therefore never share a counter, even when their data values are identical.
+
+<!-- TODO(docs): owner to confirm this paragraph; written from CacheTtlCounterRepository and CacheTtlCounterEntryRepository key formats -->
+
+## Negative and Sum values
+
+With Sum enabled the value taken from the payload is added to the counter. A value that is negative, not a number or
+infinite is not counted: the increment is skipped, no decrement entry is written, and nothing is claimed for Activation
+Rule Idempotency. This is because the cached decrement removes a counter at zero or below, so a negative entry would
+leave a permanent phantom value once other entries expired. Refunds and reversals should therefore be modelled with a
+separate counter fed by the absolute value.
+
+<!-- TODO(docs): owner to confirm the refund and reversal guidance above, and whether a skipped increment should surface anywhere other than the trace log -->
+
+## Who is recorded as the author
+
+The Created User and Created Date of a TTL Counter are those of its current version: each save stamps the saving user
+and time, and the previous version is kept in the version history with its own author. Maker-checker approval relies on
+this to prevent a maker approving their own version. There is no separate Updated User column.
+
+<!-- TODO(docs): confirm wording with the Maker Checker page -->
+<!-- TODO(screenshot): file=model-abstraction-ttl-counter-sum-form.png route=/models state="TTL Counter form with Sum on and the Data Value picker open" -->

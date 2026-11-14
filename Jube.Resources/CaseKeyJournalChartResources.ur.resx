@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="WeekdayMon" xml:space="preserve">
+        <value>پیر</value>
+    </data>
+    <data name="WeekdayTue" xml:space="preserve">
+        <value>منگل</value>
+    </data>
+    <data name="WeekdayWed" xml:space="preserve">
+        <value>بدھ</value>
+    </data>
+    <data name="WeekdayThu" xml:space="preserve">
+        <value>جمعرات</value>
+    </data>
+    <data name="WeekdayFri" xml:space="preserve">
+        <value>جمعہ</value>
+    </data>
+    <data name="WeekdaySat" xml:space="preserve">
+        <value>ہفتہ</value>
+    </data>
+    <data name="WeekdaySun" xml:space="preserve">
+        <value>اتوار</value>
+    </data>
+    <data name="BucketHour" xml:space="preserve">
+        <value>گھنٹہ</value>
+    </data>
+    <data name="BucketDay" xml:space="preserve">
+        <value>دن</value>
+    </data>
+    <data name="BucketWeek" xml:space="preserve">
+        <value>ہفتہ</value>
+    </data>
+    <data name="BucketMonth" xml:space="preserve">
+        <value>مہینہ</value>
+    </data>
+    <data name="ProgressionTitle" xml:space="preserve">
+        <value>{0} وقت کے ساتھ</value>
+    </data>
+    <data name="ProgressionSubtitle" xml:space="preserve">
+        <value>فی {0} میڈین، تازہ ترین {1}</value>
+    </data>
+    <data name="DistributionTitle" xml:space="preserve">
+        <value>{0} کی تقسیم</value>
+    </data>
+    <data name="DistributionSubtitle" xml:space="preserve">
+        <value>تازہ ترین قدر، {0}، {2} لین دین میں سے {1} ویں پرسنٹائل پر ہے</value>
+    </data>
+    <data name="Transactions" xml:space="preserve">
+        <value>لین دین</value>
+    </data>
+    <data name="VelocityTitle" xml:space="preserve">
+        <value>لین دین کب ہوتے ہیں</value>
+    </data>
+    <data name="VelocitySubtitle" xml:space="preserve">
+        <value>ہفتے کے دن اور گھنٹے کے لحاظ سے (UTC)</value>
+    </data>
+    <data name="Hour" xml:space="preserve">
+        <value>گھنٹہ</value>
+    </data>
+    <data name="Weekday" xml:space="preserve">
+        <value>ہفتے کا دن</value>
+    </data>
+    <data name="GapsTitle" xml:space="preserve">
+        <value>لین دین کے درمیان وقت</value>
+    </data>
+    <data name="GapsSubtitle" xml:space="preserve">
+        <value>ہر لین دین سے پہلے کلید کتنی دیر خاموش رہی</value>
+    </data>
+    <data name="CounterpartiesTitle" xml:space="preserve">
+        <value>{0} کے فریق مقابل</value>
+    </data>
+    <data name="CounterpartiesSubtitle" xml:space="preserve">
+        <value>{0} منفرد، پچھلے 30 دنوں میں {1} نئے</value>
+    </data>
+    <data name="CorrelationTitle" xml:space="preserve">
+        <value>پیمائشیں ایک ساتھ کیسے حرکت کرتی ہیں</value>
+    </data>
+    <data name="CorrelationSubtitle" xml:space="preserve">
+        <value>پیرسن ارتباط، -1 سے 1 تک</value>
+    </data>
+    <data name="DriftTitle" xml:space="preserve">
+        <value>پہلے اور حالیہ تاریخ کے درمیان انحراف</value>
+    </data>
+    <data name="DriftSubtitle" xml:space="preserve">
+        <value>دونوں نصف کے درمیان فاصلہ؛ فیصلہ کن قدر سے اوپر انحراف ہوا</value>
+    </data>
+    <data name="Distance" xml:space="preserve">
+        <value>فاصلہ</value>
+    </data>
+    <data name="Critical" xml:space="preserve">
+        <value>فیصلہ کن</value>
+    </data>
+    <data name="ContributionMoved" xml:space="preserve">
+        <value>{0}: اسکور کو کس چیز نے حرکت دی</value>
+    </data>
+    <data name="ContributionPushed" xml:space="preserve">
+        <value>{0}: اسکور کو کس چیز نے بڑھایا</value>
+    </data>
+    <data name="BaseSubtitle" xml:space="preserve">
+        <value>بنیادی قدر {0} سے</value>
+    </data>
+    <data name="InSpace" xml:space="preserve">
+        <value> {0} میں</value>
+    </data>
+    <data name="HiddenInputs" xml:space="preserve">
+        <value>؛ {0} ان پٹ چھپائے گئے</value>
+    </data>
+    <data name="BaseValue" xml:space="preserve">
+        <value>بنیادی قدر</value>
+    </data>
+    <data name="VisibleInputs" xml:space="preserve">
+        <value>نظر آنے والے ان پٹ</value>
+    </data>
+    <data name="Score" xml:space="preserve">
+        <value>اسکور</value>
+    </data>
+    <data name="RelativeContributions" xml:space="preserve">
+        <value>اضافی نہ ہونے والی نسبتی شراکتیں</value>
+    </data>
+    <data name="ByMethod" xml:space="preserve">
+        <value> بذریعہ {0}</value>
+    </data>
+    <data name="NotAdditive" xml:space="preserve">
+        <value>، جمع پذیر نہیں</value>
+    </data>
+    <data name="Contribution" xml:space="preserve">
+        <value>شراکت</value>
+    </data>
+    <data name="GaugeThreshold" xml:space="preserve">
+        <value>حد {0}</value>
+    </data>
+    <data name="GaugeNoThreshold" xml:space="preserve">
+        <value>کوئی حد مقرر نہیں</value>
+    </data>
+    <data name="GaugeCalibrated" xml:space="preserve">
+        <value>کیلیبریٹڈ احتمال {0} · {1} · {2}</value>
+    </data>
+    <data name="GaugeScore" xml:space="preserve">
+        <value>اسکور {0} (احتمال نہیں) · {1}</value>
+    </data>
+    <data name="DriversMoved" xml:space="preserve">
+        <value>{0} کو کس چیز نے حرکت دی</value>
+    </data>
+    <data name="DriversPushed" xml:space="preserve">
+        <value>{0} کو کس چیز نے بڑھایا</value>
+    </data>
+    <data name="RelativeNotAdditive" xml:space="preserve">
+        <value>نسبتی شراکتیں، جمع پذیر نہیں</value>
+    </data>
+    <data name="OtherInputs" xml:space="preserve">
+        <value>{0} دیگر ان پٹ</value>
+    </data>
+    <data name="CalibrationTitle" xml:space="preserve">
+        <value>{0}: کیا اسکور کا وہی مطلب تھا جو اس نے کہا</value>
+    </data>
+    <data name="CalibrationValidated" xml:space="preserve">
+        <value>{0} کیسز پر توثیق شدہ</value>
+    </data>
+    <data name="CalibrationExpected" xml:space="preserve">
+        <value>متوقع بمقابلہ مشاہدہ شدہ</value>
+    </data>
+</root>

@@ -1,0 +1,9 @@
+{
+  "slice": "model-http-adaptation",
+  "note": "No SPA locale keys are owned by this slice (vue [] and i18n [] in slices.json). The HTTP Adaptation form is rendered by the form model on the Models page; labels and group titles come from FormModelResources (shared) and validator messages from the per-class EntityAnalysisModelHttpAdaptationResources resx, for which pl, ar, ka, id, sv, ur and hi were created by this slice.",
+  "ka": {},
+  "id": {},
+  "sv": {},
+  "ur": {},
+  "hi": {}
+}

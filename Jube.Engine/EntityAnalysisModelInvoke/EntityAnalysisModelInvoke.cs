@@ -125,6 +125,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
                     $" to create the Invoke Context and execute Inline Functions. " +
                     $"Has updated reference date to {context.EntityAnalysisModelInstanceEntryPayload.ReferenceDate}.");
 
+                if (context.Snapshot.Svirfd.Any)
+                {
+                    await context.ExecuteSvirfdAsync().ConfigureAwait(false);
+                    context.RecordResponseTime("Svirfd");
+                }
+
                 context.ExecuteInlineFunctions();
                 context.RecordResponseTime("InlineFunctions");
 
@@ -150,6 +156,14 @@ namespace Jube.Engine.EntityAnalysisModelInvoke
                         TaskType.TtlCountersAsync,
                         async () => await context.ExecuteTtlCountersAsync().ConfigureAwait(false),
                         context.Log));
+
+                    if (context.Snapshot.GraphRecall.Any)
+                    {
+                        context.PendingReadTasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(
+                            TaskType.GraphAsync,
+                            async () => await context.ExecuteGraphRecallAsync().ConfigureAwait(false),
+                            context.Log));
+                    }
 
                     context.PendingReadTasks.Add(TaskHelper.MeasureTaskTimeAndMemoryAllocatedAsync(
                         TaskType.AbstractionRulesWithSearchKeysAsync,

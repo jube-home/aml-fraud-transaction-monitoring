@@ -130,5 +130,66 @@ namespace Jube.Test.AskJooby
             names.Should().NotContain("src",
                 "an expression name is not a relation anyone can be granted or denied");
         }
+
+        [Theory]
+        [InlineData("WITH \"UserRegistry\" AS (SELECT 1 AS n) SELECT * FROM public.\"UserRegistry\"")]
+        [InlineData(
+            "WITH \"UserRegistry\" AS (SELECT 1 AS n) SELECT * FROM \"UserRegistry\" u1, public.\"UserRegistry\" u2")]
+        [InlineData("WITH RECURSIVE \"TenantRegistry\" AS (SELECT 1 AS n) SELECT * FROM public.\"TenantRegistry\"")]
+        [InlineData("WITH \"UserRegistry\" AS (SELECT 1 AS n) SELECT * FROM somedb.public.\"UserRegistry\"")]
+        public void ASchemaQualifiedNameIsNeverACommonTableExpressionSoItCannotShadowAForbiddenTable(string sql)
+        {
+            var allowed = DynamicSqlTableAccess.BuildVisualisationAllowedTables("Administrator", _ => true);
+
+            var act = () => PostgresSqlValidator.RewriteTableReferences(sql, allowed);
+
+            act.Should().Throw<InvalidOperationException>().WithMessage("*Registry*");
+        }
+
+        [Fact]
+        public void CollectedTableReferencesIncludeASchemaQualifiedNameThatSharesAnExpressionName()
+        {
+            var names = PostgresSqlValidator.CollectTableReferences(
+                "WITH \"UserRegistry\" AS (SELECT 1 AS n) SELECT * FROM public.\"UserRegistry\"");
+
+            names.Should().Contain("UserRegistry");
+        }
+
+        [Fact]
+        public void AnInnerExpressionMayReuseAnOuterExpressionName()
+        {
+            var allowed = DynamicSqlTableAccess.BuildAllowedTables("Administrator", _ => true, 18);
+
+            var act = () => PostgresSqlValidator.RewriteTableReferences(
+                "WITH a AS (SELECT 1 AS n) SELECT * FROM (WITH a AS (SELECT 2 AS n) SELECT n FROM a) x", allowed);
+
+            act.Should().NotThrow();
+        }
+
+        [Fact]
+        public void CurrentRoleIsABlockedValueFunction()
+        {
+            var act = () => PostgresSqlValidator.AssertSelectOnly("SELECT current_role");
+
+            act.Should().Throw<InvalidOperationException>();
+        }
+
+        [Theory]
+        [InlineData("UserInTenant")]
+        [InlineData("TenantRegistry")]
+        [InlineData("RoleRegistry")]
+        [InlineData("UserRegistry")]
+        public void AnExpressionNamedAfterATableATemplateReadsCannotCaptureTheTemplateTenancyCheck(string captured)
+        {
+            var allowed = DynamicSqlTableAccess.BuildVisualisationAllowedTables("Administrator", _ => true);
+
+            var rewritten = PostgresSqlValidator.RewriteTableReferences(
+                $"WITH \"{captured}\" AS (SELECT 1 AS n) SELECT * FROM \"Archive\"", allowed);
+
+            rewritten.Should().Contain($"public.\"{captured}\"",
+                "a schema-qualified name never resolves to an expression, so the template keeps the real table");
+
+            rewritten.Should().NotContain($"FROM \"{captured}\"");
+        }
     }
 }

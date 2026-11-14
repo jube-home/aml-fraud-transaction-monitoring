@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,28 +21,36 @@ using System.ComponentModel;
 
 namespace Jube.Dto.AskJoobyConversation
 {
+    [MessagePackObject]
     public class AskJoobyConversationDto
     {
         [Description("Server-assigned row identifier. Read-only.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("Globally-addressable identifier for this conversation. Server-assigned. Read-only.")]
+        [Key(1)]
         public Guid? Guid { get; set; }
 
         [Description("A short, auto-generated title summarising the conversation's first message. Null " +
                      "until the first reply completes.")]
+        [Key(2)]
         public string? Title { get; set; }
 
         [Description("User who started this conversation. Server-assigned. Read-only.")]
+        [Key(3)]
         public string? CreatedUser { get; set; }
 
         [Description("Timestamp (UTC) this conversation was started. Server-assigned. Read-only.")]
+        [Key(4)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("User who last sent a message in this conversation. Server-assigned. Read-only.")]
+        [Key(5)]
         public string? UpdatedUser { get; set; }
 
         [Description("Timestamp (UTC) of the most recent message. Server-assigned. Read-only.")]
+        [Key(6)]
         public DateTimeOffset? UpdatedDate { get; set; }
     }
 }

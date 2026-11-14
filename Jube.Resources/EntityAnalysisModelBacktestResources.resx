@@ -54,4 +54,31 @@
     <data name="InstanceNotFound" xml:space="preserve">
     <value>The backtest was not found.</value>
   </data>
+    <data name="RuleTextRequired" xml:space="preserve">
+    <value>A rule to backtest is required.</value>
+  </data>
+    <data name="ArchiveNotFound" xml:space="preserve">
+    <value>The transaction is not in this model's archive.</value>
+  </data>
+    <data name="LimitTooLarge" xml:space="preserve">
+    <value>An immediate backtest reads at most {0} transactions; submit it as a background backtest to read more.</value>
+  </data>
+    <data name="ResultUnavailable" xml:space="preserve">
+    <value>The backtest is {0} and has no result.</value>
+  </data>
+    <data name="OnlineTimeLimit" xml:space="preserve">
+    <value>An immediate backtest stops after {0} seconds; narrow the range or lower the limit, or submit it as a background backtest.</value>
+  </data>
+    <data name="PendingLimitModel" xml:space="preserve">
+    <value>This model already has {0} backtests waiting or running; wait for one to finish or stop one before submitting another.</value>
+  </data>
+    <data name="PendingLimitTenant" xml:space="preserve">
+    <value>Your organisation already has {0} backtests waiting or running; wait for one to finish or stop one before submitting another.</value>
+  </data>
+    <data name="PlaceholderNotInRule" xml:space="preserve">
+    <value>The rule text must contain the placeholder.</value>
+  </data>
+    <data name="CandidatesInvalid" xml:space="preserve">
+    <value>Give between 1 and {0} candidates, each a plain number.</value>
+  </data>
 </root>

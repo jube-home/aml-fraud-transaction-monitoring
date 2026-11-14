@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Net;
 using System.Threading;
@@ -416,6 +417,15 @@ namespace Jube.App.Endpoints.Repository
 
                 return TypedResults.BadRequest(ex.Result);
             }
+            catch (ChecklistIncompleteException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}: 409 (checklist incomplete) user={user} open={ex.OpenItems.Count}");
+                }
+
+                return TypedResults.Conflict(new { code = ex.Code, message = ex.Message, openItems = ex.OpenItems });
+            }
             catch (ConflictException)
             {
                 return TypedResults.Conflict();
@@ -429,6 +439,22 @@ namespace Jube.App.Endpoints.Repository
 
                 return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
             }
+            catch (VersionConflictException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}: 409 user={user} supplied={ex.SuppliedVersion} current={ex.CurrentVersion}");
+                }
+
+                return TypedResults.Conflict(new
+                {
+                    code = "VersionConflict",
+                    message = ex.Message,
+                    suppliedVersion = ex.SuppliedVersion,
+                    currentVersion = ex.CurrentVersion
+                });
+            }
+
             catch (OperationCanceledException)
             {
                 if (log.IsDebugEnabled)

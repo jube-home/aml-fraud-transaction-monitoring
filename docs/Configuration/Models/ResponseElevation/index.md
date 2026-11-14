@@ -7,30 +7,53 @@ grand_parent: Configuration
 ---
 
 # Activation Rules with Response Elevation
-Response elevation - commonly inferred as a decline code - is a consequence of the activation rule match.  The Response Elevation has several other properties which can direct action, with the values being returned in the response payload also.
 
-Navigate to the Activation Rule that was created beforehand,  titled Volume1DayUSDForIPOver100,  clicking on it for the purposes of editing:
+Response elevation - commonly inferred as a decline code - is a consequence of the activation rule match. The Response
+Elevation has several other properties which can direct action, with the values being returned in the response payload
+also.
 
+Navigate to the Activation Rule that was created beforehand, titled Volume1DayUSDForIPOver100, clicking on it for the
+purposes of editing:
+
+<!-- TODO(screenshot): file=model-activation-responseelevation-1.png route=/models state="Response elevation on an Activation Rule, replace the Razor-era image referenced below with the Vue UI" -->
 ![Image](ExistingActivationRule.png)
 
 Scroll down the page to the section Response Elevation:
 
+<!-- TODO(screenshot): file=model-activation-responseelevation-2.png route=/models state="Response elevation on an Activation Rule, replace the Razor-era image referenced below with the Vue UI" -->
 ![Image](LocationOfResponseElevation.png)
 
 Check the Response Elevation box to reveal the options available:
 
+<!-- TODO(screenshot): file=model-activation-responseelevation-3.png route=/models state="Response elevation on an Activation Rule, replace the Razor-era image referenced below with the Vue UI" -->
 ![Image](ExposedResponseElevation.png)
 
 Complete the Response Elevation Field as follows to return9 , thus infer a decline with escalation severity 9:
 
+<!-- TODO(screenshot): file=model-activation-responseelevation-4.png route=/models state="Response elevation on an Activation Rule, replace the Razor-era image referenced below with the Vue UI" -->
 ![Image](CompletedResponseElevation.png)
 
 Scroll down and click update:
 
+<!-- TODO(screenshot): file=model-activation-responseelevation-5.png route=/models state="Response elevation on an Activation Rule, replace the Razor-era image referenced below with the Vue UI" -->
 ![Image](UpdatedRuleWithResponseElevation.png)
 
-Synchronise the model via Entity >> Synchronisation and repeat the HTTP POST to endpoint [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc) for response as follows:
+Synchronise the model via Entity >> Synchronisation and repeat the HTTP POST to
+endpoint [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc)
+for response as follows:
 
+<!-- TODO(screenshot): file=model-activation-responseelevation-6.png route=/models state="Response elevation on an Activation Rule, replace the Razor-era image referenced below with the Vue UI" -->
 ![Image](ResponseElevationInResponsePayload.png)
 
-It can be seen from the HTTP response payload that the Response Elevation has been returned as 9, alongside the URL and example messages configured. It is worth noting that if more than one Activation Rule seeks to allocate a Response Elevation,  it can only be to a value greater than the one already existing (hence the name Response Elevation).
+It can be seen from the HTTP response payload that the Response Elevation has been returned as 9, alongside the URL and
+example messages configured. It is worth noting that if more than one Activation Rule seeks to allocate a Response
+Elevation, it can only be to a value greater than the one already existing (hence the name Response Elevation).
+
+## Ranges
+
+The Response Elevation is an integer and is picked by Name from
+the [Response Elevation Ranges](../ResponseElevationRanges/) of the Model. An Activation Rule cannot be saved with a
+level outside every active range, and the Engine does not send out the elevation of a rule whose level is outside every
+active range.
+
+<!-- TODO(docs): Verify every statement on this page against the Vue UI; it was last edited before the review. -->

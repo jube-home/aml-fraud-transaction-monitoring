@@ -20,6 +20,7 @@ namespace Jube.Data.Repository
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
 
     public class EntityAnalysisModelSynchronisationScheduleRepository
@@ -46,15 +47,36 @@ namespace Jube.Data.Repository
             CancellationToken token = default)
         {
             return await dbContext.EntityAnalysisModelSynchronisationSchedule
-                .Where(w => w.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue).ToListAsync(token);
+                .Where(w => w.TenantRegistryId == tenantRegistryId && tenantRegistryId.HasValue).ToListAsync(token);
         }
 
-        public Task<EntityAnalysisModelSynchronisationSchedule> GetCurrentAsync(CancellationToken token = default)
+        public Task<EntityAnalysisModelSynchronisationSchedule> GetCurrentAsync(
+            int? entityAnalysisModelId = null, CancellationToken token = default)
         {
             return dbContext.EntityAnalysisModelSynchronisationSchedule.Where(w
-                    => w.TenantRegistryId == tenantRegistryId)
+                    => w.TenantRegistryId == tenantRegistryId
+                       && (w.EntityAnalysisModelId == null
+                           || (entityAnalysisModelId.HasValue
+                               && w.EntityAnalysisModelId == entityAnalysisModelId)))
                 .OrderByDescending(o => o.Id)
                 .FirstOrDefaultAsync(token);
+        }
+
+        public Task<int> CountCreatedSinceAsync(DateTime since, int? entityAnalysisModelId = null,
+            CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModelSynchronisationSchedule.CountAsync(w
+                => w.TenantRegistryId == tenantRegistryId
+                   && w.CreatedDate >= since
+                   && (!entityAnalysisModelId.HasValue || w.EntityAnalysisModelId == entityAnalysisModelId), token);
+        }
+
+        public Task<bool> ModelExistsInTenantAsync(int entityAnalysisModelId, CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModel.AnyAsync(a
+                => a.Id == entityAnalysisModelId
+                   && a.TenantRegistryId == tenantRegistryId
+                   && (a.Deleted == 0 || a.Deleted == null), token);
         }
 
         public async Task<EntityAnalysisModelSynchronisationSchedule> InsertAsync(

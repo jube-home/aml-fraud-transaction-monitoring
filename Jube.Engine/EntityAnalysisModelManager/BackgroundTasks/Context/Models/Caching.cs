@@ -20,6 +20,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.Context.Models
 {
     using System.Collections.Concurrent;
     using System.Reflection;
+    using GraphRecall;
     using Jube.Engine.Models;
     using SanctionEntry = Sanctions.Models.SanctionEntry;
 
@@ -30,6 +31,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.Context.Models
 
         public ConcurrentDictionary<string, byte> SanctionsStopTokens { get; set; } =
             new ConcurrentDictionary<string, byte>();
+
+        public GraphRecallCache GraphRecall { get; set; } = new();
 
         public ConcurrentDictionary<string, Assembly> HashCacheAssembly { get; set; } =
             new ConcurrentDictionary<string, Assembly>();

@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchMaxWithBelow(double bound, params double[] others)
+            [Description("True when: the largest of the value and the others is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMaxWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleMaxWithBelow(flow.Value, bound, others));
             }
 
-            public Flow<double> RejectMaxWithBelow(double bound, params double[] others)
+            [Description("True when: the largest of the value and the others is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMaxWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleMaxWithBelow(flow.Value, bound, others));
             }
 
-            public Flow<double> BreakMaxWithBelow(double bound, params double[] others)
+            [Description("True when: the largest of the value and the others is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMaxWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleMaxWithBelow(flow.Value, bound, others));
             }
 
-            public Flow<double> RequireMaxWithBelow(double bound, params double[] others)
+            [Description("True when: the largest of the value and the others is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMaxWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleMaxWithBelow(flow.Value, bound, others));
             }
 
-            public Flow<double> EnsureMaxWithBelow(double bound, params double[] others)
+            [Description("True when: the largest of the value and the others is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMaxWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchMaxWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the largest of the value and the others is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMaxWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().MatchMaxWithBelow(bound, others);
             }
 
-            public Flow<double> RejectMaxWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the largest of the value and the others is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMaxWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RejectMaxWithBelow(bound, others);
             }
 
-            public Flow<double> BreakMaxWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the largest of the value and the others is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMaxWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().BreakMaxWithBelow(bound, others);
             }
 
-            public Flow<double> RequireMaxWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the largest of the value and the others is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMaxWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RequireMaxWithBelow(bound, others);
             }
 
-            public Flow<double> EnsureMaxWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the largest of the value and the others is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMaxWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().EnsureMaxWithBelow(bound, others);
             }

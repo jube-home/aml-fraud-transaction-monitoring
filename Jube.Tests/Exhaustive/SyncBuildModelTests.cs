@@ -18,6 +18,7 @@ using Accord.Neuro;
 using FluentAssertions;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Extensions;
 using Jube.Engine.Helpers;
+using Jube.Test.Infrastructure;
 using Newtonsoft.Json;
 using Xunit;
 using Poco = Jube.Data.Poco;
@@ -179,6 +180,29 @@ namespace Jube.Test.Exhaustive
                 helper.DeserializeTopologyNetworkJsonSerializerSettings);
 
             model.NetworkVariablesInOrder[0].ZScore(18).Should().Be(2);
+        }
+
+        [Fact]
+        public void TheLoadedVariablesClampAnExtremeValueToTheDefaultBound()
+        {
+            var model = SyncExhaustiveSearchInstancesExtensions.BuildExhaustiveModel(Record(),
+                Row(Serialise(Network(0, 1))), [Var("X", 5, 10, 4, 2)],
+                helper.DeserializeTopologyNetworkJsonSerializerSettings);
+
+            model.NetworkVariablesInOrder[0].ZScore(10 + 4 * 50).Should().Be(5);
+        }
+
+        [Fact]
+        public void TheLoadedVariablesUseTheEnvironmentsConfiguredClipBoundNotAHardcodedFive()
+        {
+            var environment = TestDynamicEnvironment.Create(
+                new Dictionary<string, string> { ["ExhaustiveZScoreClipBound"] = "3" });
+
+            var model = SyncExhaustiveSearchInstancesExtensions.BuildExhaustiveModel(Record(),
+                Row(Serialise(Network(0, 1))), [Var("X", 5, 10, 4, 2)],
+                helper.DeserializeTopologyNetworkJsonSerializerSettings, null, environment);
+
+            model.NetworkVariablesInOrder[0].ZScore(10 + 4 * 50).Should().Be(3);
         }
 
         [Fact]

@@ -20,6 +20,7 @@ namespace Jube.Data.Query.GetCaseEventByCaseKeyValueQuery
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
 
     public class GetCaseEventByCaseKeyValueQuery(DbContext dbContext, string userName)
     {
@@ -27,7 +28,7 @@ namespace Jube.Data.Query.GetCaseEventByCaseKeyValueQuery
             CancellationToken token = default)
         {
             var query = from c in dbContext.Case
-                from e in dbContext.CaseEvent.InnerJoin(w => w.CaseId == c.Id)
+                from e in dbContext.CaseEvent.InnerJoin(w => w.CaseId == c.Id && w.CaseKey == key && w.CaseKeyValue == value)
                 from i in dbContext.CaseWorkflow.InnerJoin(w =>
                     w.Guid == c.CaseWorkflowGuid && (w.Deleted == 0 || w.Deleted == null))
                 from m in dbContext.EntityAnalysisModel.InnerJoin(w =>
@@ -56,8 +57,24 @@ namespace Jube.Data.Query.GetCaseEventByCaseKeyValueQuery
                 orderby e.Id descending
                 select e;
 
+            var caseEvents = await query.ToListAsync(token);
+
+            var checklistEventIds = caseEvents
+                .Where(e => e.CaseEventTypeId is >= 21 and <= 28 && long.TryParse(e.After, out _))
+                .Select(e => long.Parse(e.After))
+                .Distinct()
+                .ToList();
+
+            var checklistDetails = checklistEventIds.Count == 0
+                ? new Dictionary<string, string>()
+                : (await dbContext.CaseChecklistEvent
+                    .Where(e => checklistEventIds.Contains(e.Id) && e.Detail != null)
+                    .Select(e => new { e.Id, e.Detail })
+                    .ToListAsync(token))
+                .ToDictionary(e => e.Id.ToString(), e => e.Detail);
+
             var getCaseEventByCaseKeyValueQueryDtos = new List<GetCaseEventByCaseKeyValueQueryDto>();
-            foreach (var caseEvent in await query.ToListAsync(token))
+            foreach (var caseEvent in caseEvents)
             {
                 var getCaseEventByCaseKeyValueQueryDto = new GetCaseEventByCaseKeyValueQueryDto
                 {
@@ -67,9 +84,15 @@ namespace Jube.Data.Query.GetCaseEventByCaseKeyValueQuery
                         new DateTimeOffset(
                             DateTime.SpecifyKind(caseEvent.CreatedDate.GetValueOrDefault(), DateTimeKind.Utc),
                             TimeSpan.Zero),
+                    CaseEventTypeId = caseEvent.CaseEventTypeId.GetValueOrDefault(),
                     CreatedUser = caseEvent.CreatedUser,
                     Before = caseEvent.Before,
-                    After = caseEvent.After,
+                    After = caseEvent.CaseEventTypeId is >= 21 and <= 28 && caseEvent.After != null
+                            && checklistDetails.TryGetValue(caseEvent.After, out var detail)
+                        ? detail
+                        : caseEvent.CaseEventTypeId is >= 21 and <= 28
+                            ? null
+                            : caseEvent.After,
                     CaseEventType = caseEvent.CaseEventTypeId switch
                     {
                         1 => "Automatic Unlock",
@@ -87,6 +110,26 @@ namespace Jube.Data.Query.GetCaseEventByCaseKeyValueQuery
                         13 => "Suspend Open",
                         14 => "Allocate Lock",
                         15 => "Process Expired Case",
+                        16 => "Peek",
+                        17 => "Automatic Escalation",
+                        18 => "Lock Broken",
+                        19 => "Diary Cleared",
+                        20 => "QA Sampled",
+                        21 => "Checklist Item Shown",
+                        22 => "Checklist Item Hidden",
+                        23 => "Checklist Item Checked",
+                        24 => "Checklist Item Unchecked",
+                        25 => "Checklist Gate Blocked",
+                        26 => "Checklist Gate Overridden",
+                        27 => "Checklist Gate Bypassed",
+                        28 => "Checklist Item SLA Breached",
+                        29 => "Triage Recommended",
+                        30 => "Triage Accepted",
+                        31 => "Triage Overridden",
+                        32 => "Legal Hold Placed",
+                        33 => "Legal Hold Lifted",
+                        34 => "Analyst Assessment Recorded",
+                        35 => "Analyst Assessment Withdrawn",
                         _ => "Unknown"
                     }
                 };

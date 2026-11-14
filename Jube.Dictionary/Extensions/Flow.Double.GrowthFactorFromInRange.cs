@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchGrowthFactorFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("True when: the value as a multiple of the previous value is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchGrowthFactorFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleGrowthFactorFromInRange(flow.Value, previous, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectGrowthFactorFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("True when: the value as a multiple of the previous value is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectGrowthFactorFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleGrowthFactorFromInRange(flow.Value, previous, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakGrowthFactorFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("True when: the value as a multiple of the previous value is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakGrowthFactorFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleGrowthFactorFromInRange(flow.Value, previous, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireGrowthFactorFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("True when: the value as a multiple of the previous value is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireGrowthFactorFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleGrowthFactorFromInRange(flow.Value, previous, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureGrowthFactorFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("True when: the value as a multiple of the previous value is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureGrowthFactorFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchGrowthFactorFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value as a multiple of the previous value is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchGrowthFactorFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchGrowthFactorFromInRange(previous, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectGrowthFactorFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value as a multiple of the previous value is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectGrowthFactorFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectGrowthFactorFromInRange(previous, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakGrowthFactorFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value as a multiple of the previous value is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakGrowthFactorFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakGrowthFactorFromInRange(previous, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireGrowthFactorFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value as a multiple of the previous value is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireGrowthFactorFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireGrowthFactorFromInRange(previous, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureGrowthFactorFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value as a multiple of the previous value is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureGrowthFactorFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureGrowthFactorFromInRange(previous, lowerBound, upperBound);
             }

@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchZScoreOutside(double mean, double standardDeviation, double threshold)
+            [Description("True when: the absolute z-score is above the threshold, in either direction. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchZScoreOutside([Description("The mean the value is measured from.")] double mean,
+                [Description("The standard deviation the distance is measured in.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleZScoreOutside(flow.Value, mean, standardDeviation, threshold));
             }
 
-            public Flow<double> RejectZScoreOutside(double mean, double standardDeviation, double threshold)
+            [Description("True when: the absolute z-score is above the threshold, in either direction. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectZScoreOutside([Description("The mean the value is measured from.")] double mean,
+                [Description("The standard deviation the distance is measured in.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleZScoreOutside(flow.Value, mean, standardDeviation, threshold));
             }
 
-            public Flow<double> BreakZScoreOutside(double mean, double standardDeviation, double threshold)
+            [Description("True when: the absolute z-score is above the threshold, in either direction. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakZScoreOutside([Description("The mean the value is measured from.")] double mean,
+                [Description("The standard deviation the distance is measured in.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleZScoreOutside(flow.Value, mean, standardDeviation, threshold));
             }
 
-            public Flow<double> RequireZScoreOutside(double mean, double standardDeviation, double threshold)
+            [Description("True when: the absolute z-score is above the threshold, in either direction. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireZScoreOutside([Description("The mean the value is measured from.")] double mean,
+                [Description("The standard deviation the distance is measured in.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleZScoreOutside(flow.Value, mean, standardDeviation, threshold));
             }
 
-            public Flow<double> EnsureZScoreOutside(double mean, double standardDeviation, double threshold)
+            [Description("True when: the absolute z-score is above the threshold, in either direction. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureZScoreOutside([Description("The mean the value is measured from.")] double mean,
+                [Description("The standard deviation the distance is measured in.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchZScoreOutside(double mean, double standardDeviation, double threshold)
+            [Description("Begins a pipeline from the value. True when: the absolute z-score is above the threshold, in either direction. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchZScoreOutside([Description("The mean the value is measured from.")] double mean,
+                [Description("The standard deviation the distance is measured in.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return value.Start().MatchZScoreOutside(mean, standardDeviation, threshold);
             }
 
-            public Flow<double> RejectZScoreOutside(double mean, double standardDeviation, double threshold)
+            [Description("Begins a pipeline from the value. True when: the absolute z-score is above the threshold, in either direction. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectZScoreOutside([Description("The mean the value is measured from.")] double mean,
+                [Description("The standard deviation the distance is measured in.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return value.Start().RejectZScoreOutside(mean, standardDeviation, threshold);
             }
 
-            public Flow<double> BreakZScoreOutside(double mean, double standardDeviation, double threshold)
+            [Description("Begins a pipeline from the value. True when: the absolute z-score is above the threshold, in either direction. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakZScoreOutside([Description("The mean the value is measured from.")] double mean,
+                [Description("The standard deviation the distance is measured in.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return value.Start().BreakZScoreOutside(mean, standardDeviation, threshold);
             }
 
-            public Flow<double> RequireZScoreOutside(double mean, double standardDeviation, double threshold)
+            [Description("Begins a pipeline from the value. True when: the absolute z-score is above the threshold, in either direction. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireZScoreOutside([Description("The mean the value is measured from.")] double mean,
+                [Description("The standard deviation the distance is measured in.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return value.Start().RequireZScoreOutside(mean, standardDeviation, threshold);
             }
 
-            public Flow<double> EnsureZScoreOutside(double mean, double standardDeviation, double threshold)
+            [Description("Begins a pipeline from the value. True when: the absolute z-score is above the threshold, in either direction. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureZScoreOutside([Description("The mean the value is measured from.")] double mean,
+                [Description("The standard deviation the distance is measured in.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return value.Start().EnsureZScoreOutside(mean, standardDeviation, threshold);
             }

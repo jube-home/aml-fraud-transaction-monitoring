@@ -13,7 +13,10 @@
 
 // ReSharper disable NotAccessedPositionalProperty.Global
 
+using MessagePack;
+
 namespace Jube.Dto.Payload
 {
-    public sealed record HistogramBucket(double Bin, int Frequency);
+    [MessagePackObject]
+    public sealed record HistogramBucket([property: Key(0)] double Bin, [property: Key(1)] int Frequency);
 }

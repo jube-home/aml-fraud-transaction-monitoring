@@ -53,6 +53,7 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
         {
             return new InlineScriptPoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelId = dto.EntityAnalysisModelId,
                 Name = dto.Name,

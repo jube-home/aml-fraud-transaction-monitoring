@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns the absolute value.")]
         public static Double Abs(this Double value)
         {
             return Math.Abs(value);

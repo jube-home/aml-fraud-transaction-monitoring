@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Country code of a valid IBAN, otherwise empty.")]
         public static string IbanCountryCode(this string? @this)
         {
             return @this.IsValidIban() ? @this!.Replace(" ", "").Substring(0, 2).ToUpperInvariant() : "";

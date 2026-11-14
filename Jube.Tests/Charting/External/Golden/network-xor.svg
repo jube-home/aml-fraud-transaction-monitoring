@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" class="jc jc-diagram" viewBox="0 0 640 280" preserveAspectRatio="xMidYMid meet"
-     role="img" aria-labelledby="jc-4692ea5b-t jc-4692ea5b-d">
-    <title id="jc-4692ea5b-t">XOR network</title>
-    <desc id="jc-4692ea5b-d">Neural network diagram with 3 layers of 2, 2, 1 nodes and 6 connections; connection
+     role="img" aria-labelledby="jc-07c01047-t jc-07c01047-d">
+    <title id="jc-07c01047-t">XOR network</title>
+    <desc id="jc-07c01047-d">Neural network diagram with 3 layers of 2, 2, 1 nodes and 6 connections; connection
         thickness shows weight magnitude and colour its sign.
     </desc>
     <rect class="bg" x="0" y="0" width="640" height="280" rx="8"/>
@@ -28,38 +28,56 @@
         <text class="kn ctr" x="234.1" y="27">tanh</text>
         <text class="ph ctr" x="424.1" y="12">Output</text>
         <text class="kn ctr" x="424.1" y="27">sigmoid</text>
-        <g class="mk x0 eg e0 e2" tabindex="0" role="graphics-symbol" aria-label="x1 to h1, Weight: 5.1">
-            <title>x1 to h1, Weight: 5.1</title>
+        <g class="mk x0 eg e0 e2" tabindex="0" role="graphics-symbol"
+           aria-label="x1 to h1, Weight: 5.1, Colour: red, a positive weight; thickness shows its magnitude relative to the strongest connection.">
+            <title>x1 to h1, Weight: 5.1, Colour: red, a positive weight; thickness shows its magnitude relative to the
+                strongest connection.
+            </title>
             <path class="eh" d="M58.1 67C139.1 67 139.1 67 220.1 67"/>
             <path class="ep sd9" d="M58.1 67C139.1 67 139.1 67 220.1 67" stroke-width="3.35"/>
             <text class="ant ctr" x="98.28" y="63">5.1</text>
         </g>
-        <g class="mk x1 eg e1 e2" tabindex="0" role="graphics-symbol" aria-label="x2 to h1, Weight: -5.2">
-            <title>x2 to h1, Weight: -5.2</title>
+        <g class="mk x1 eg e1 e2" tabindex="0" role="graphics-symbol"
+           aria-label="x2 to h1, Weight: -5.2, Colour: blue, a negative weight; thickness shows its magnitude relative to the strongest connection.">
+            <title>x2 to h1, Weight: -5.2, Colour: blue, a negative weight; thickness shows its magnitude relative to
+                the strongest connection.
+            </title>
             <path class="eh" d="M58.1 113C139.1 113 139.1 67 220.1 67"/>
             <path class="ep sd1" d="M58.1 113C139.1 113 139.1 67 220.1 67" stroke-width="3.41"/>
             <text class="ant ctr" x="120.33" y="96.04">-5.2</text>
         </g>
-        <g class="mk x2 eg e0 e3" tabindex="0" role="graphics-symbol" aria-label="x1 to h2, Weight: -4.8">
-            <title>x1 to h2, Weight: -4.8</title>
+        <g class="mk x2 eg e0 e3" tabindex="0" role="graphics-symbol"
+           aria-label="x1 to h2, Weight: -4.8, Colour: blue, a negative weight; thickness shows its magnitude relative to the strongest connection.">
+            <title>x1 to h2, Weight: -4.8, Colour: blue, a negative weight; thickness shows its magnitude relative to
+                the strongest connection.
+            </title>
             <path class="eh" d="M58.1 67C139.1 67 139.1 113 220.1 113"/>
             <path class="ep sd1" d="M58.1 67C139.1 67 139.1 113 220.1 113" stroke-width="3.19"/>
             <text class="ant ctr" x="139.1" y="86">-4.8</text>
         </g>
-        <g class="mk x3 eg e1 e3" tabindex="0" role="graphics-symbol" aria-label="x2 to h2, Weight: 4.9">
-            <title>x2 to h2, Weight: 4.9</title>
+        <g class="mk x3 eg e1 e3" tabindex="0" role="graphics-symbol"
+           aria-label="x2 to h2, Weight: 4.9, Colour: red, a positive weight; thickness shows its magnitude relative to the strongest connection.">
+            <title>x2 to h2, Weight: 4.9, Colour: red, a positive weight; thickness shows its magnitude relative to the
+                strongest connection.
+            </title>
             <path class="eh" d="M58.1 113C139.1 113 139.1 113 220.1 113"/>
             <path class="ep sd9" d="M58.1 113C139.1 113 139.1 113 220.1 113" stroke-width="3.24"/>
             <text class="ant ctr" x="157.87" y="109">4.9</text>
         </g>
-        <g class="mk x4 eg e2 e4" tabindex="0" role="graphics-symbol" aria-label="h1 to xor, Weight: 6.3">
-            <title>h1 to xor, Weight: 6.3</title>
+        <g class="mk x4 eg e2 e4" tabindex="0" role="graphics-symbol"
+           aria-label="h1 to xor, Weight: 6.3, Colour: red, a positive weight; thickness shows its magnitude relative to the strongest connection.">
+            <title>h1 to xor, Weight: 6.3, Colour: red, a positive weight; thickness shows its magnitude relative to the
+                strongest connection.
+            </title>
             <path class="eh" d="M248.1 67C329.1 67 329.1 90 410.1 90"/>
             <path class="ep sd10" d="M248.1 67C329.1 67 329.1 90 410.1 90" stroke-width="4"/>
             <text class="ant ctr" x="369.92" y="83.61">6.3</text>
         </g>
-        <g class="mk x5 eg e3 e4" tabindex="0" role="graphics-symbol" aria-label="h2 to xor, Weight: 6.1">
-            <title>h2 to xor, Weight: 6.1</title>
+        <g class="mk x5 eg e3 e4" tabindex="0" role="graphics-symbol"
+           aria-label="h2 to xor, Weight: 6.1, Colour: red, a positive weight; thickness shows its magnitude relative to the strongest connection.">
+            <title>h2 to xor, Weight: 6.1, Colour: red, a positive weight; thickness shows its magnitude relative to the
+                strongest connection.
+            </title>
             <path class="eh" d="M248.1 113C329.1 113 329.1 90 410.1 90"/>
             <path class="ep sd10" d="M248.1 113C329.1 113 329.1 90 410.1 90" stroke-width="3.89"/>
             <text class="ant ctr" x="288.28" y="106.61">6.1</text>
@@ -116,44 +134,50 @@
     <g class="tps">
         <g class="tp tx0">
             <g class="tt">
-                <rect class="tb" x="185" y="103" width="80.48" height="44" rx="6"/>
-                <text class="tx b" x="195" y="121">x1 to h1</text>
-                <text class="tx" x="195" y="138">Weight: 5.1</text>
+                <rect class="tb" x="87.08" y="86" width="276.32" height="61" rx="6"/>
+                <text class="tx b" x="97.08" y="104">x1 to h1</text>
+                <text class="tx" x="97.08" y="121">Weight: 5.1</text>
+                <text class="tx" x="97.08" y="138">Colour: red, a positive weight; thickness show…</text>
             </g>
         </g>
         <g class="tp tx1">
             <g class="tt">
-                <rect class="tb" x="182.96" y="126" width="84.56" height="44" rx="6"/>
-                <text class="tx b" x="192.96" y="144">x2 to h1</text>
-                <text class="tx" x="192.96" y="161">Weight: -5.2</text>
+                <rect class="tb" x="87.62" y="109" width="275.24" height="61" rx="6"/>
+                <text class="tx b" x="97.62" y="127">x2 to h1</text>
+                <text class="tx" x="97.62" y="144">Weight: -5.2</text>
+                <text class="tx" x="97.62" y="161">Colour: blue, a negative weight; thickness sho…</text>
             </g>
         </g>
         <g class="tp tx2">
             <g class="tt">
-                <rect class="tb" x="182.96" y="126" width="84.56" height="44" rx="6"/>
-                <text class="tx b" x="192.96" y="144">x1 to h2</text>
-                <text class="tx" x="192.96" y="161">Weight: -4.8</text>
+                <rect class="tb" x="87.62" y="109" width="275.24" height="61" rx="6"/>
+                <text class="tx b" x="97.62" y="127">x1 to h2</text>
+                <text class="tx" x="97.62" y="144">Weight: -4.8</text>
+                <text class="tx" x="97.62" y="161">Colour: blue, a negative weight; thickness sho…</text>
             </g>
         </g>
         <g class="tp tx3">
             <g class="tt">
-                <rect class="tb" x="185" y="149" width="80.48" height="44" rx="6"/>
-                <text class="tx b" x="195" y="167">x2 to h2</text>
-                <text class="tx" x="195" y="184">Weight: 4.9</text>
+                <rect class="tb" x="87.08" y="132" width="276.32" height="61" rx="6"/>
+                <text class="tx b" x="97.08" y="150">x2 to h2</text>
+                <text class="tx" x="97.08" y="167">Weight: 4.9</text>
+                <text class="tx" x="97.08" y="184">Colour: red, a positive weight; thickness show…</text>
             </g>
         </g>
         <g class="tp tx4">
             <g class="tt">
-                <rect class="tb" x="375" y="114.5" width="80.48" height="44" rx="6"/>
-                <text class="tx b" x="385" y="132.5">h1 to xor</text>
-                <text class="tx" x="385" y="149.5">Weight: 6.3</text>
+                <rect class="tb" x="277.08" y="97.5" width="276.32" height="61" rx="6"/>
+                <text class="tx b" x="287.08" y="115.5">h1 to xor</text>
+                <text class="tx" x="287.08" y="132.5">Weight: 6.3</text>
+                <text class="tx" x="287.08" y="149.5">Colour: red, a positive weight; thickness show…</text>
             </g>
         </g>
         <g class="tp tx5">
             <g class="tt">
-                <rect class="tb" x="375" y="137.5" width="80.48" height="44" rx="6"/>
-                <text class="tx b" x="385" y="155.5">h2 to xor</text>
-                <text class="tx" x="385" y="172.5">Weight: 6.1</text>
+                <rect class="tb" x="277.08" y="120.5" width="276.32" height="61" rx="6"/>
+                <text class="tx b" x="287.08" y="138.5">h2 to xor</text>
+                <text class="tx" x="287.08" y="155.5">Weight: 6.1</text>
+                <text class="tx" x="287.08" y="172.5">Colour: red, a positive weight; thickness show…</text>
             </g>
         </g>
         <g class="tp tn0">
@@ -172,32 +196,32 @@
         </g>
         <g class="tp tn2">
             <g class="tt">
-                <rect class="tb" x="330.24" y="110" width="150.08" height="95" rx="6"/>
-                <text class="tx b" x="340.24" y="128">h1</text>
-                <text class="tx" x="340.24" y="145">Hidden layer: Hidden 1</text>
-                <text class="tx" x="340.24" y="162">Bias: -2.6</text>
-                <text class="tx" x="340.24" y="179">Activation: tanh</text>
-                <text class="tx" x="340.24" y="196">Connections in: 2, out: 1</text>
+                <rect class="tb" x="330.24" y="109.5" width="150.08" height="95" rx="6"/>
+                <text class="tx b" x="340.24" y="127.5">h1</text>
+                <text class="tx" x="340.24" y="144.5">Hidden layer: Hidden 1</text>
+                <text class="tx" x="340.24" y="161.5">Bias: -2.6</text>
+                <text class="tx" x="340.24" y="178.5">Activation: tanh</text>
+                <text class="tx" x="340.24" y="195.5">Connections in: 2, out: 1</text>
             </g>
         </g>
         <g class="tp tn3">
             <g class="tt">
-                <rect class="tb" x="330.24" y="156" width="150.08" height="95" rx="6"/>
-                <text class="tx b" x="340.24" y="174">h2</text>
-                <text class="tx" x="340.24" y="191">Hidden layer: Hidden 1</text>
-                <text class="tx" x="340.24" y="208">Bias: -2.4</text>
-                <text class="tx" x="340.24" y="225">Activation: tanh</text>
-                <text class="tx" x="340.24" y="242">Connections in: 2, out: 1</text>
+                <rect class="tb" x="330.24" y="155.5" width="150.08" height="95" rx="6"/>
+                <text class="tx b" x="340.24" y="173.5">h2</text>
+                <text class="tx" x="340.24" y="190.5">Hidden layer: Hidden 1</text>
+                <text class="tx" x="340.24" y="207.5">Bias: -2.4</text>
+                <text class="tx" x="340.24" y="224.5">Activation: tanh</text>
+                <text class="tx" x="340.24" y="241.5">Connections in: 2, out: 1</text>
             </g>
         </g>
         <g class="tp tn4">
             <g class="tt">
-                <rect class="tb" x="350.16" y="133" width="150.08" height="95" rx="6"/>
-                <text class="tx b" x="360.16" y="151">xor</text>
-                <text class="tx" x="360.16" y="168">Output layer: Output</text>
-                <text class="tx" x="360.16" y="185">Bias: -3</text>
-                <text class="tx" x="360.16" y="202">Activation: sigmoid</text>
-                <text class="tx" x="360.16" y="219">Connections in: 2, out: 0</text>
+                <rect class="tb" x="350.16" y="132.5" width="150.08" height="95" rx="6"/>
+                <text class="tx b" x="360.16" y="150.5">xor</text>
+                <text class="tx" x="360.16" y="167.5">Output layer: Output</text>
+                <text class="tx" x="360.16" y="184.5">Bias: -3</text>
+                <text class="tx" x="360.16" y="201.5">Activation: sigmoid</text>
+                <text class="tx" x="360.16" y="218.5">Connections in: 2, out: 0</text>
             </g>
         </g>
     </g>

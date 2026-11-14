@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -102,7 +103,7 @@ namespace Jube.Test.AdvancedAnalytics.RScript
         [Trait("Covers", "AskJoobyScriptExecutionClient.RunScriptAsync")]
         public async Task RunScriptMapsTheFakeGatewaysResultAsync()
         {
-            var runs = NewRuns(new StubHttpMessageHandler((_, _) => Json("{}")));
+            var runs = NewRuns(new StubHttpMessageHandler((_, _) => Json("""{"ok":true,"errors":[],"lint":[]}""")));
             var client = new AskJoobyScriptExecutionClient(runs);
 
             var result = await client.RunScriptAsync("print(1)", 30);
@@ -111,6 +112,23 @@ namespace Jube.Test.AdvancedAnalytics.RScript
             result.ConsoleOutput.Should().Be("ok");
             runs.LastRunScript.Should().Be("print(1)");
             runs.LastRunTimeoutSeconds.Should().Be(30);
+        }
+
+        [Fact]
+        [Trait("Covers", "AskJoobyScriptExecutionClient.RunScriptAsync")]
+        public async Task RunScriptValidatesFirstAndRefusesAScriptThatFailsWithoutRunningItAsync()
+        {
+            var runs = NewRuns(new StubHttpMessageHandler((_, _) =>
+                Json("""{"ok":false,"errors":["Forbidden function 'system' referenced at line 1."],"lint":[]}""")));
+
+            var client = new AskJoobyScriptExecutionClient(runs);
+
+            var act = () => client.RunScriptAsync("system('id')", 30);
+
+            (await act.Should().ThrowAsync<InvalidOperationException>())
+                .WithMessage("*failed validation and was not run*Forbidden function*ValidateRScript*");
+
+            runs.LastRunScript.Should().BeNull();
         }
     }
 }

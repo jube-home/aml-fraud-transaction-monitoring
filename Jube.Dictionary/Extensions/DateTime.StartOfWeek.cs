@@ -7,7 +7,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static DateTime StartOfWeek(this DateTime dt, DayOfWeek startDayOfWeek = DayOfWeek.Sunday)
+        [Description("Returns the start of the week.")]
+        public static DateTime StartOfWeek(this DateTime dt,
+            [Description("The start day of week (optional).")] DayOfWeek startDayOfWeek = DayOfWeek.Sunday)
         {
             var start = new DateTime(dt.Year, dt.Month, dt.Day);
 

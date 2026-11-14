@@ -27,6 +27,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.Repository.EntityAnalysisModelSynchronisationSchedule.Models;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -334,6 +335,39 @@ namespace Jube.Test.Service.Repository.EntityAnalysisModelSynchronisationSchedul
         }
 
         [Fact]
+        public async Task InsertBeyondTheTenantRateLimitIsRefusedAndWritesNothingAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var tenantRegistryId = await dbContext.UserInTenant.Where(w => w.User == fx.Seed.LandlordUser)
+                .Select(s => s.TenantRegistryId).FirstAsync();
+
+            var existing = await dbContext.EntityAnalysisModelSynchronisationSchedule.CountAsync(w =>
+                w.TenantRegistryId == tenantRegistryId && w.CreatedDate >= DateTime.UtcNow.AddMinutes(-10));
+
+            var environment = TestDynamicEnvironment.Create(new Dictionary<string, string>
+            {
+                ["SynchronisationScheduleMaxPerTenant"] = (existing + 2).ToString()
+            });
+
+            var service = await EntityAnalysisModelSynchronisationScheduleService.CreateAsync(dbContext,
+                fx.Seed.LandlordUser, TestLog.NoOp, localizers, new NullServiceChangeBus(), environment);
+
+            for (var i = 0; i < 2; i++)
+            {
+                createdIds.Add((await service.InsertAsync(new EntityAnalysisModelSynchronisationScheduleDto())).Id);
+            }
+
+            var act = () => service.InsertAsync(new EntityAnalysisModelSynchronisationScheduleDto());
+
+            await act.Should().ThrowAsync<RateLimitedException>();
+
+            (await dbContext.EntityAnalysisModelSynchronisationSchedule.CountAsync(w =>
+                w.TenantRegistryId == tenantRegistryId && w.CreatedDate >= DateTime.UtcNow.AddMinutes(-10)))
+                .Should().Be(existing + 2);
+        }
+
+        [Fact]
         public async Task InsertWithScheduleDateTooFarInFutureIsRejectedAsync()
         {
             await using var dbContext = fx.GetDbContext();
@@ -357,7 +391,7 @@ namespace Jube.Test.Service.Repository.EntityAnalysisModelSynchronisationSchedul
             await cts.CancelAsync();
 
             // ReSharper disable once AccessToDisposedClosure
-            var act = () => service.GetCurrentAsync(cts.Token);
+            var act = () => service.GetCurrentAsync(token: cts.Token);
 
             await act.Should().ThrowAsync<OperationCanceledException>();
         }

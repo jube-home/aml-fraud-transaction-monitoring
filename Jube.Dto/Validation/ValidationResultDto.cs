@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,13 +23,16 @@ namespace Jube.Dto.Validation
 {
     [Description("The outcome of validating an entity without saving it: whether it would be accepted, and every " +
                  "failure that would stop it being saved.")]
+    [MessagePackObject]
     public class ValidationResultDto
     {
         [Description("True when the entity would be accepted by a create or update; false when any failure is " +
                      "listed.")]
+        [Key(0)]
         public bool IsValid { get; set; }
 
         [Description("Every failure found, in the order the checks ran. Empty when IsValid is true.")]
+        [Key(1)]
         public List<ValidationErrorDto> Errors { get; set; } = [];
     }
 }

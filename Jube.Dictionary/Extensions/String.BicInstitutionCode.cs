@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The four-letter institution code of a valid BIC, otherwise empty.")]
         public static string BicInstitutionCode(this string? @this)
         {
             return @this.IsValidBic() ? @this!.Substring(0, 4).ToUpperInvariant() : "";

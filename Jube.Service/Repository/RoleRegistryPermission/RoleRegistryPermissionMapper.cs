@@ -51,6 +51,7 @@ namespace Jube.Service.Repository.RoleRegistryPermission
         {
             return new RulePoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 RoleRegistryId = dto.RoleRegistryId,
                 PermissionSpecificationId = dto.PermissionSpecificationId,

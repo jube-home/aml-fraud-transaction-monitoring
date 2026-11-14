@@ -36,7 +36,7 @@ namespace Jube.Test.Service.Agent
             "CaseWorkflowFormRoleService", "CaseWorkflowMacroRoleService", "CaseWorkflowRoleService",
             "CaseWorkflowStatusRoleService", "CaseWorkflowXPathRoleService", "EntityAnalysisModelRoleService",
             "VisualisationRegistryDatasourceRoleService", "VisualisationRegistryParameterRoleService",
-            "VisualisationRegistryRoleService"
+            "VisualisationRegistryRoleService", "GraphRegistryRoleService"
         ];
 
         private static IEnumerable<Type> ServicesWithValidators()
@@ -59,7 +59,7 @@ namespace Jube.Test.Service.Agent
         {
             var services = ServicesWithValidators().ToList();
 
-            services.Should().HaveCount(42);
+            services.Should().HaveCount(52);
 
             services.Should().OnlyContain(s => s.GetMethods().Any(m =>
                 m.Name == "ValidateAsync" && m.ReturnType == typeof(Task<ValidationResultDto>)));

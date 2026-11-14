@@ -12,22 +12,29 @@ namespace Jube.Dictionary.Extensions
 #if !NETSTANDARD
         extension(Int32 argb)
         {
+            [Description("Creates a Color from a 32-bit ARGB value.")]
             public Color FromArgb()
             {
                 return Color.FromArgb(argb);
             }
 
-            public Color FromArgb(Int32 red, Int32 green, Int32 blue)
+            [Description("Creates a Color from ARGB components.")]
+            public Color FromArgb([Description("The red component (0-255).")] Int32 red,
+                [Description("The green component (0-255).")] Int32 green,
+                [Description("The blue component (0-255).")] Int32 blue)
             {
                 return Color.FromArgb(argb, red, green, blue);
             }
 
-            public Color FromArgb(Color baseColor)
+            [Description("Creates a Color with a new alpha value.")]
+            public Color FromArgb([Description("The Color from which to create the new Color.")] Color baseColor)
             {
                 return Color.FromArgb(argb, baseColor);
             }
 
-            public Color FromArgb(Int32 green, Int32 blue)
+            [Description("Creates a Color from RGB components (alpha implicit).")]
+            public Color FromArgb([Description("The green component (0-255).")] Int32 green,
+                [Description("The blue component (0-255).")] Int32 blue)
             {
                 return Color.FromArgb(argb, green, blue);
             }

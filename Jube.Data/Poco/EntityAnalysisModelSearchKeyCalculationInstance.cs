@@ -40,8 +40,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(11)] public DateTime? ExpiredSearchKeyCacheDate { get; set; }
         [Column] [Nullable] [Key(12)] public int? ExpiredSearchKeyCacheCount { get; set; }
 
-        [Association(ThisKey = "EntityAnalysisModelGuid", OtherKey = "Guid", CanBeNull = false,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "EntityAnalysisModelGuid", OtherKey = "Guid", CanBeNull = false)]
         [Key(13)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
     }

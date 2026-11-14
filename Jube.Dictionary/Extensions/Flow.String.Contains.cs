@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchContains(string? substring)
+            [Description("True when: contains the substring, case sensitive. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContains([Description("The text looked for inside the value.")] string? substring)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringContains(flow.Value, substring));
             }
 
-            public Flow<string?> RejectContains(string? substring)
+            [Description("True when: contains the substring, case sensitive. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContains([Description("The text looked for inside the value.")] string? substring)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringContains(flow.Value, substring));
             }
 
-            public Flow<string?> BreakContains(string? substring)
+            [Description("True when: contains the substring, case sensitive. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContains([Description("The text looked for inside the value.")] string? substring)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringContains(flow.Value, substring));
             }
 
-            public Flow<string?> RequireContains(string? substring)
+            [Description("True when: contains the substring, case sensitive. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContains([Description("The text looked for inside the value.")] string? substring)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringContains(flow.Value, substring));
             }
 
-            public Flow<string?> EnsureContains(string? substring)
+            [Description("True when: contains the substring, case sensitive. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContains([Description("The text looked for inside the value.")] string? substring)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchContains(string? substring)
+            [Description("Begins a pipeline from the value. True when: contains the substring, case sensitive. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContains([Description("The text looked for inside the value.")] string? substring)
             {
                 return value.Start().MatchContains(substring);
             }
 
-            public Flow<string?> RejectContains(string? substring)
+            [Description("Begins a pipeline from the value. True when: contains the substring, case sensitive. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContains([Description("The text looked for inside the value.")] string? substring)
             {
                 return value.Start().RejectContains(substring);
             }
 
-            public Flow<string?> BreakContains(string? substring)
+            [Description("Begins a pipeline from the value. True when: contains the substring, case sensitive. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContains([Description("The text looked for inside the value.")] string? substring)
             {
                 return value.Start().BreakContains(substring);
             }
 
-            public Flow<string?> RequireContains(string? substring)
+            [Description("Begins a pipeline from the value. True when: contains the substring, case sensitive. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContains([Description("The text looked for inside the value.")] string? substring)
             {
                 return value.Start().RequireContains(substring);
             }
 
-            public Flow<string?> EnsureContains(string? substring)
+            [Description("Begins a pipeline from the value. True when: contains the substring, case sensitive. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContains([Description("The text looked for inside the value.")] string? substring)
             {
                 return value.Start().EnsureContains(substring);
             }

@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsRoundAmount(this double @this, double nearest)
+        [Description("Checks if the value is an exact multiple of a given amount, e.g. a suspiciously round transaction amount.")]
+        public static bool IsRoundAmount(this double @this,
+            [Description("The multiple to test against (e.g. 100 or 1000).")] double nearest)
         {
             if (nearest <= 0)
             {

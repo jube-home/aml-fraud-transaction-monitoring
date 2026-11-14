@@ -11,18 +11,22 @@ Several pages in the platform rely on the construction of code and in most cases
 click construction tool. In most cases the code constricted is of vb.net fragment dialect, unless it is used for
 reporting, case management or Exhaustive training, in which case it is an SQL query fragment:
 
+<!-- TODO(screenshot): file=rule-authoring-builder-rule.png route=/models/activation-rules state="Activation rule open, Builder tab with two conditions" -->
 ![Image](BuilderRule.png)
 
 In the following example the Rule and Code Constructor is embedded in the Activation Rules page and has a comprehensive
 range of data available:
 
+<!-- TODO(screenshot): file=rule-authoring-activation-rule-builder.png route=/models/activation-rules state="Activation Rules page with the embedded Rule and Code Builder" -->
 ![Image](ActivationRuleBuilder.png)
 
+<!-- TODO(screenshot): file=rule-authoring-available-data.png route=/models/activation-rules state="Field drop-down open showing every group of available data" -->
 ![Image](AvailableData.png)
 
 There are oftentimes two modes to create rules, being Builder (which is point and click) and Coder (which is the
 handcrafting of the vb.net). Clicking on the Coder tab will allow for the VB.Net code fragment to be handcrafted:
 
+<!-- TODO(screenshot): file=rule-authoring-click-for-coder.png route=/models/activation-rules state="Builder above the Coder, rule text shown in the Coder" -->
 ![Image](ClickForCoder.png)
 
 The Builder and Coder is available for the creation of VB.Net fragments in:
@@ -43,6 +47,7 @@ For reasons of creating SQL fragments and not VB.Net fragments. Only the Builder
 
 An example of only the builder being available is as follows for Models >> Cases Workflows >> Cases Workflow Filter:
 
+<!-- TODO(screenshot): file=rule-authoring-only-builder-available.png route=/models/cases-workflows state="Case Workflow Filter with the builder only" -->
 ![Image](OnlyBuilderAvailable.png)
 
 Only the Coder is available for the creation of VB.Net fragments in:
@@ -52,24 +57,29 @@ Only the Coder is available for the creation of VB.Net fragments in:
 
 An example of only the coder being available is as follows for Models >> References >> Inline Functions:
 
+<!-- TODO(screenshot): file=rule-authoring-only-coder-available.png route=/models/references/inline-functions state="Inline Function with the coder only" -->
 ![Image](OnlyCoderAvailable.png)
 
 The default Coder value will be taken from the Builder, being the VB.Net fragment equivalent:
 
+<!-- TODO(screenshot): file=rule-authoring-default-code-from-builder.png route=/models/activation-rules state="Coder showing the text written by the Builder" -->
 ![Image](DefaultCodeFromBuilder.png)
 
 As typing, the freehand code will be continually parsed for integrity:
 
+<!-- TODO(screenshot): file=rule-authoring-errors-parsed.png route=/models/activation-rules state="Coder with a squiggle and the compile status badge reading Errors" -->
 ![Image](ErrorsParsed.png)
 
 With errors being displayed in the tool tip along the coder guttering. Parsing will happen on the conclusion of each
 typing burst, until such time as the rule compiles:
 
+<!-- TODO(screenshot): file=rule-authoring-compiled-rule.png route=/models/activation-rules state="Coder with the compile status badge reading Compiled" -->
 ![Image](CompiledRule.png)
 
 To facilitate the development of Coder rules, completions are populated on each keypress, returning model
 configurations:
 
+<!-- TODO(screenshot): file=rule-authoring-completions.png route=/models/activation-rules state="Coder with the completion list open" -->
 ![Image](Completions.png)
 
 Only what the engine would actually run is offered: an item that has been made inactive (a Request XPath, Inline Script,
@@ -80,15 +90,18 @@ model itself does not hide its fields, so that rules can be built for a model th
 
 If the Coder diverges from what was originally created in the Builder, then the Builder tab will be disabled:
 
+<!-- TODO(screenshot): file=rule-authoring-divergence.png route=/models/activation-rules state="Builder locked after the Coder text was edited, with the Reset button" -->
 ![Image](Divergence.png)
 
 Clicking the Reset link will restore the Builder contents to its Coder representation:
 
+<!-- TODO(screenshot): file=rule-authoring-reset-to-builder.png route=/models/activation-rules state="Reset button about to be pressed" -->
 ![Image](ResetToBuilder.png)
 
 Upon clicking Reset, the Coder will be overwritten to the parsed contents of the Builder, and the tab will become
 enabled once again:
 
+<!-- TODO(screenshot): file=rule-authoring-builder-enabled.png route=/models/activation-rules state="Builder enabled again after Reset" -->
 ![Image](BuilderEnabled.png)
 
 ## Fields available to each rule
@@ -241,3 +254,119 @@ If (NOT ( Payload.Amount > 1 AND ( Payload.Country = "GB" OR Payload.Country = "
   Return True
 End If
 ```
+
+## Right-to-left languages
+
+The Coder is always left-to-right, in an Arabic or Urdu page as in an English one, because code (`Payload.Amount > 100`)
+reads left-to-right. Its gutter is on the left and the line starts on the left. Messages from the compiler are shown
+with their own direction, so an English compiler message is not scrambled inside an Arabic page. The Builder around it
+follows the page direction.
+
+<!-- TODO(docs): confirm in an Arabic and an Urdu session that the Coder, the completion list and the squiggle tooltips look right, and add a screenshot of each. -->
+<!-- TODO(screenshot): file=rule-authoring-coder-arabic.png route=/models/activation-rules state="Arabic locale, Coder showing left-to-right code under an Arabic Builder" -->
+
+## Checking while typing
+
+The Coder checks the rule shortly after each burst of typing. Each user may make `ParseMaxPerUserPerWindow` checks (120)
+and a tenant `ParseMaxPerTenantPerWindow` (600) in each `ParseWindowSeconds` (60); past the limit the server answers
+HTTP 429 and the Coder quietly checks again ten seconds later.
+
+## Help while writing in the Coder
+
+The Coder knows the rule dialect, the fields of the model and the words the rule type allows, and uses them to help as
+the rule is written. None of it changes what a rule means or which rules compile: the server remains the only judge, and
+a rule saved before this help existed reads, compiles and runs exactly as it did.
+
+<!-- TODO(screenshot): file=rule-authoring-coder-colours.png route=/models/abstraction-rules state="Coder showing a cursor rule: coloured words, the three gutter marks and a warning squiggle" -->
+
+### Colours
+
+Each word is coloured by the part it plays, the same in the light and the dark theme:
+
+| Part         | Examples                                   | Shown as                                    |
+|--------------|--------------------------------------------|---------------------------------------------|
+| Language     | `If`, `Then`, `And`, `Not`, `Static`, `As` | Navy, bold                                  |
+| The answer   | `Matched`, `Return`                        | Navy, bold, on a pale tint                  |
+| Scan control | `Exit For`, `Continue For`                 | Navy, bold, with a dotted underline         |
+| Data         | `Payload.Amount`, `Cursor.Position`        | Teal; the object (`Payload`, `Cursor`) bold |
+| Method       | `.StartsWith(…)`, `.Round(…)`              | Purple                                      |
+| Literal      | `1000`, `"GB"`, `True`                     | Brown                                       |
+| Comment      | `' why this rule exists`                   | Grey, italic                                |
+
+Colour is never the only signal: the answer has its tint, the scan words their underline, and the gutter repeats both.
+
+### Gutter marks
+
+To the left of the line numbers, a small mark shows what a line does to the flow of the rule. Hovering a mark names it.
+
+| Mark     | Meaning                                                 |
+|----------|---------------------------------------------------------|
+| Circle   | The line sets the answer (`Matched = …` or `Return …`). |
+| Triangle | The line skips to the next record (`Continue For`).     |
+| Square   | The line ends the scan (`Exit For`).                    |
+
+### Completions
+
+Completions are grouped under headings: **Fields**, **Members**, **Methods**, **Keywords**, **Snippets** and, in an
+Abstraction Rule, **Variables** and **Patterns**.
+
+- After an object and a dot, only what that object has is offered. `Cursor.` lists the cursor's properties and methods,
+  each with its type and a sentence saying what it means. A field lists the methods that suit its type, and a method
+  lists the methods that suit what it returns, so a chain such as `Payload.Name.Trim().StartsWith(` is guided at every
+  step. Every method is offered with the sentence that describes it, lifted from the method itself, so `IsMatch` says
+  that it checks the text against a regular expression and `MatchGreater` says what is true and what it decides.
+- In an Abstraction Rule,
+  the [variables the rule declares](../../Configuration/Models/AbstractionRules/index.html#rule-variables)
+  are offered under **Variables** with their type and how long they live, and a variable followed by a dot lists the
+  methods that suit its type. At the start of a line, **Snippets** also offers the `Dim` and `Static` declarations.
+- At the start of a line in an Abstraction Rule, the **Patterns** group offers whole cursor rules to fill in: the Nth
+  record, the first N matching records, a running total until a limit kept in a `Static` variable, skipping the
+  transaction being processed, and returning a value the rule computes itself.
+- The words offered are the words the rule type allows. `Cursor`, `Exit For`, `Continue For`, `Dim` and `Static` are
+  offered in an Abstraction Rule only.
+
+Hovering a word shows what it is: a field shows its type and group, a method each way it can be called and the
+sentence that describes that call, a cursor member or a scan word the sentence that describes it, and a declared
+variable its type and whether it is kept for the transaction being tested or for the whole scan. While the arguments of
+a call are being typed, the signature help above the line shows the matching signatures with the current parameter in
+bold, the sentence that describes the call, and what the current parameter is for when that is recorded.
+
+### Warnings before the compiler answers
+
+The Coder marks three kinds of slip with an amber squiggle as soon as they are typed, without waiting for the server:
+
+| Warning                                 | Raised when                                                                           | Quick fix                       |
+|-----------------------------------------|---------------------------------------------------------------------------------------|---------------------------------|
+| *X is not a field of this model*        | An object that has known fields is given a field it does not have.                    | **Use** the nearest field name. |
+| *X is not allowed in this kind of rule* | A word is not among the words the rule type allows, nor a variable the rule declares. | None.                           |
+| *Cursor has no member called X*         | A member is asked of an object that does not have it.                                 | None.                           |
+
+Hover the squiggle to read the warning and press the quick fix. A warning is advice: it never blocks saving, and where
+the compiler reports the same place its message is shown instead. Objects whose fields the Coder has not been told about
+are left alone, so a warning is only raised where the Coder can be sure.
+
+One compiler error also carries a quick fix. Where a rule works out a value and does nothing with it, such as a line
+reading `Payload.Amount > 1000`, the error offers **Assign to Matched**, which makes the line `Matched = Payload.Amount >
+1000`.
+
+### Closing a block
+
+Pressing Enter at the end of an `If … Then` line or a `Select Case` line that has not yet been closed adds the matching
+`End If` or `End Select` below and leaves the caret, indented, on the line between. A block that is already closed, and
+a single-line `If … Then …`, are left as they are.
+
+## Operator names in other languages
+
+The operator, group and value names shown in the Builder are translated for the operators written by hand (Basic,
+Lists, Compare to another field, validation and network checks) and for every group. The operators generated from the
+extension library are shown in English in every language until a translation is added.
+
+<!-- TODO(docs): confirm that the generated pipeline operators should stay English, or ask for their translations. -->
+
+## Notes for the owner
+
+<!-- TODO(docs): the Builder is described as a Builder tab and Coder tab in the text above; the Vue page stacks the Builder above the Coder with no tabs. Reword the paragraphs that mention clicking a Coder tab. -->
+<!-- TODO(docs): the old Razor pictures above are stale. Every one has a screenshot marker. -->
+<!-- TODO(docs): check that the list of rule types that show the Builder (Gateway, Activation, Abstraction, Reprocessing) matches showsBuilder in Jube.App/Vue/src/ruleBuilder/filters.ts. -->
+<!-- TODO(docs): the Builder operator tables are copied from the server catalogue; regenerate them from BuilderOperators.cs before release. -->
+<!-- TODO(docs): numbers are written with Western digits and a decimal point whatever the page language; state this once the owner has confirmed. -->

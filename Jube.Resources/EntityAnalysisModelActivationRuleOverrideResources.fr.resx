@@ -54,4 +54,37 @@
     <data name="ActivationRuleOverrideKeyMismatch" xml:space="preserve">
     <value>La règle d'activation est liée à une autre clé de dérogation.</value>
   </data>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="OverrideKeyMaxLength" xml:space="preserve">
+    <value>La clé de substitution ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="OverrideKeyValueRequired" xml:space="preserve">
+    <value>Une valeur de clé de substitution est requise.</value>
+  </data>
+    <data name="OverrideKeyValueMaxLength" xml:space="preserve">
+    <value>La valeur de la clé de substitution ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="EntityAnalysisModelGuidRequired" xml:space="preserve">
+    <value>Un modèle valide est requis.</value>
+  </data>
+    <data name="EntityAnalysisModelGuidNotFound" xml:space="preserve">
+    <value>Le modèle référencé par cette substitution est introuvable.</value>
+  </data>
+    <data name="EntityAnalysisModelActivationRuleNameRequired" xml:space="preserve">
+    <value>Une règle d'activation est requise.</value>
+  </data>
+    <data name="EntityAnalysisModelActivationRuleNameMaxLength" xml:space="preserve">
+    <value>Le nom de la règle d'activation ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="EntityAnalysisModelActivationRuleNameNotFound" xml:space="preserve">
+    <value>La règle d'activation référencée par cette substitution est introuvable dans le modèle indiqué.</value>
+  </data>
+    <data name="DeleteExpiryDateMustBeFuture" xml:space="preserve">
+    <value>La date d'expiration de suppression doit être postérieure à la date et à l'heure actuelles.</value>
+  </data>
 </root>

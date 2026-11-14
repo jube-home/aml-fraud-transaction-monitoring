@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Izin ditolak.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Tidak terautentikasi.</value>
+  </data>
+    <data name="CaseNotFound" xml:space="preserve">
+    <value>Kasus tidak ditemukan atau tidak terlihat.</value>
+  </data>
+    <data name="SuppressionNotFound" xml:space="preserve">
+    <value>Permintaan penekanan tidak ditemukan atau tidak terlihat.</value>
+  </data>
+    <data name="CaseIdRequired" xml:space="preserve">
+    <value>Kasus wajib diisi.</value>
+  </data>
+    <data name="IdRequired" xml:space="preserve">
+    <value>Permintaan wajib diisi.</value>
+  </data>
+    <data name="PathInvalid" xml:space="preserve">
+    <value>Jalur harus 1 (kunci kasus) atau 2 (transaksi).</value>
+  </data>
+    <data name="OverrideKeyRequired" xml:space="preserve">
+    <value>Kunci override wajib diisi.</value>
+  </data>
+    <data name="OverrideKeyMaxLength" xml:space="preserve">
+    <value>Kunci override paling banyak {0} karakter.</value>
+  </data>
+    <data name="OverrideKeyValueRequired" xml:space="preserve">
+    <value>Nilai wajib diisi pada jalur transaksi.</value>
+  </data>
+    <data name="OverrideKeyValueMaxLength" xml:space="preserve">
+    <value>Nilai paling banyak {0} karakter.</value>
+  </data>
+    <data name="ReasonRequired" xml:space="preserve">
+    <value>Alasan wajib diisi.</value>
+  </data>
+    <data name="ReasonMaxLength" xml:space="preserve">
+    <value>Alasan paling banyak {0} karakter.</value>
+  </data>
+    <data name="ExpiryRequired" xml:space="preserve">
+    <value>Tanggal kedaluwarsa di masa depan wajib diisi.</value>
+  </data>
+    <data name="TargetsRequired" xml:space="preserve">
+    <value>Pilih setidaknya satu model atau aturan.</value>
+  </data>
+    <data name="TargetsTooMany" xml:space="preserve">
+    <value>Sebuah permintaan hanya dapat menyebut paling banyak {0} model dan aturan.</value>
+  </data>
+    <data name="TargetModelRequired" xml:space="preserve">
+    <value>Setiap model atau aturan memerlukan modelnya.</value>
+  </data>
+    <data name="RuleNameMaxLength" xml:space="preserve">
+    <value>Nama aturan paling banyak {0} karakter.</value>
+  </data>
+    <data name="OverrideKindInvalid" xml:space="preserve">
+    <value>Jenis override harus 0 (tekan) atau 1 (paksa).</value>
+  </data>
+    <data name="ArchiveIdsTooMany" xml:space="preserve">
+    <value>Paling banyak {0} transaksi dapat dicentang sebagai bukti.</value>
+  </data>
+    <data name="ArchiveIdInvalid" xml:space="preserve">
+    <value>Transaksi yang dicentang tidak valid.</value>
+  </data>
+    <data name="MergeInvalid" xml:space="preserve">
+    <value>Kunci jurnal gabungan tidak valid.</value>
+  </data>
+    <data name="NoteMaxLength" xml:space="preserve">
+    <value>Catatan paling banyak {0} karakter.</value>
+  </data>
+    <data name="KeyNotOverrideEnabled" xml:space="preserve">
+    <value>Kunci tidak ditandai Enable Override pada XPath permintaan, sehingga tidak dapat ditekan.</value>
+  </data>
+    <data name="KeyNotInJournal" xml:space="preserve">
+    <value>Nilai tidak ada di jurnal kasus ini.</value>
+  </data>
+    <data name="EvidenceRequired" xml:space="preserve">
+    <value>Centang setidaknya satu transaksi yang memuat nilai tersebut.</value>
+  </data>
+    <data name="EvidenceNotInScope" xml:space="preserve">
+    <value>Transaksi yang dicentang tidak ada di jurnal kasus ini atau tidak memuat nilai tersebut.</value>
+  </data>
+    <data name="CaseKeyValueTooLong" xml:space="preserve">
+    <value>Nilai kunci kasus terlalu panjang untuk ditekan.</value>
+  </data>
+    <data name="ForcePermissionRequired" xml:space="preserve">
+    <value>Memaksa memerlukan izin Apply Force Override.</value>
+  </data>
+    <data name="OverridePermissionRequired" xml:space="preserve">
+    <value>Menekan memerlukan izin Override.</value>
+  </data>
+    <data name="TargetInvalid" xml:space="preserve">
+    <value>Model atau aturan tidak valid untuk kunci ini: {0}</value>
+  </data>
+    <data name="NotPending" xml:space="preserve">
+    <value>Hanya permintaan yang tertunda yang dapat diputuskan.</value>
+  </data>
+    <data name="OwnRequest" xml:space="preserve">
+    <value>Anda tidak dapat memutuskan permintaan Anda sendiri. Tarik kembali permintaan itu.</value>
+  </data>
+    <data name="AlreadyApproved" xml:space="preserve">
+    <value>Anda sudah menyetujui versi ini.</value>
+  </data>
+    <data name="NotMaker" xml:space="preserve">
+    <value>Hanya orang yang membuat permintaan yang dapat melakukan ini.</value>
+  </data>
+    <data name="NotRetractable" xml:space="preserve">
+    <value>Hanya permintaan yang tertunda yang dapat ditarik kembali.</value>
+  </data>
+    <data name="NotResubmittable" xml:space="preserve">
+    <value>Hanya permintaan yang ditolak atau ditarik kembali yang dapat diajukan ulang.</value>
+  </data>
+    <data name="ExpiryPassed" xml:space="preserve">
+    <value>Tanggal kedaluwarsa telah lewat.</value>
+  </data>
+    <data name="ExpiryTooFar" xml:space="preserve">
+    <value>Kedaluwarsa paling lama {0} hari dari sekarang.</value>
+  </data>
+    <data name="RequestLapsed" xml:space="preserve">
+    <value>Permintaan kedaluwarsa tanpa keputusan. Minta pembuatnya menarik dan mengajukannya ulang.</value>
+  </data>
+    <data name="MakerNoLongerPermitted" xml:space="preserve">
+    <value>Orang yang membuat permintaan tidak lagi memiliki izin yang diperlukan untuk menerapkannya.</value>
+  </data>
+    <data name="OverrideKindConflict" xml:space="preserve">
+    <value>Override yang berbeda sudah berlaku untuk {0}; hapus dahulu.</value>
+  </data>
+    <data name="ApplyFailed" xml:space="preserve">
+    <value>Permintaan tidak dapat diterapkan: {0}</value>
+  </data>
+    <data name="KeyNotArchiveKey" xml:space="preserve">
+    <value>Kunci bukan bidang yang ditandai Archive Key pada model alur kerja, sehingga transaksinya tidak dapat dicari.</value>
+  </data>
+    <data name="KeyValueInvalid" xml:space="preserve">
+    <value>Nilai tidak dapat dibaca sebagai tipe data bidang kunci.</value>
+  </data>
+    <data name="CaseKeyNotArchiveKey" xml:space="preserve">
+    <value>Kunci kasus bukan bidang yang ditandai Archive Key pada model alur kerja, sehingga transaksi kasus ini tidak dapat dibaca.</value>
+  </data>
+    <data name="KeyNotLookupable" xml:space="preserve">
+    <value>Bidang kunci dienkripsi dengan vektor acak, sehingga nilainya tidak dapat dicari.</value>
+  </data>
+    <data name="LaneOperatorNotAllowed" xml:space="preserve">
+    <value>Operator rentang hanya diizinkan pada kunci numerik atau tanggal; kunci teks atau boolean hanya cocok dengan kesetaraan.</value>
+  </data>
+</root>

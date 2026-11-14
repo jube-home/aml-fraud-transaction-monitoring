@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Replaces the value being tested with the text read as a number using the invariant culture; text that is not a number errors the pipeline rather than throwing.")]
         public static Flow<double> ParseDouble(this Flow<string?> flow)
         {
             if (flow.IsDecided)
@@ -29,6 +30,7 @@ namespace Jube.Dictionary.Extensions
                 : flow.Carry(0d).Decide(FlowOutcome.Errored, "Value could not be parsed as a number.");
         }
 
+        [Description("Begins a pipeline from the value. Replaces the value being tested with the text read as a number using the invariant culture; text that is not a number errors the pipeline rather than throwing.")]
         public static Flow<double> ParseDouble(this string? value)
         {
             return value.Start().ParseDouble();

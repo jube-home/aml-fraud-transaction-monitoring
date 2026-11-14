@@ -19,6 +19,7 @@ namespace Jube.Charting.Charts
     public sealed class HistogramChartBuilder : ChartBuilder<HistogramChartBuilder>
     {
         private readonly List<HistogramSeries> binned = [];
+        private readonly List<HistogramReference> references = [];
         private readonly List<(string Name, double[] Values, string? Color)> raw = [];
         private int? bins;
         private bool density;
@@ -37,6 +38,13 @@ namespace Jube.Charting.Charts
             string? color = null)
         {
             binned.Add(new HistogramSeries(name, [.. edges], [.. counts], color));
+
+            return this;
+        }
+
+        public HistogramChartBuilder Reference(double x, string label)
+        {
+            references.Add(new HistogramReference(x, label));
 
             return this;
         }
@@ -84,7 +92,8 @@ namespace Jube.Charting.Charts
                 Options = Options,
                 Series = [.. series],
                 Normalize = normalize,
-                Density = density
+                Density = density,
+                References = [.. references]
             });
         }
 

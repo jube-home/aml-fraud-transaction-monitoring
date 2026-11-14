@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
-            public Flow<DateTime> MatchOutsideWeekdayBusinessHours(int startHour, int endHour)
+            [Description("True when: a weekend, or outside the hours, using the value's own clock. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchOutsideWeekdayBusinessHours([Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeOutsideWeekdayBusinessHours(flow.Value, startHour, endHour));
             }
 
-            public Flow<DateTime> RejectOutsideWeekdayBusinessHours(int startHour, int endHour)
+            [Description("True when: a weekend, or outside the hours, using the value's own clock. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectOutsideWeekdayBusinessHours([Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeOutsideWeekdayBusinessHours(flow.Value, startHour, endHour));
             }
 
-            public Flow<DateTime> BreakOutsideWeekdayBusinessHours(int startHour, int endHour)
+            [Description("True when: a weekend, or outside the hours, using the value's own clock. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakOutsideWeekdayBusinessHours([Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeOutsideWeekdayBusinessHours(flow.Value, startHour, endHour));
             }
 
-            public Flow<DateTime> RequireOutsideWeekdayBusinessHours(int startHour, int endHour)
+            [Description("True when: a weekend, or outside the hours, using the value's own clock. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireOutsideWeekdayBusinessHours([Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeOutsideWeekdayBusinessHours(flow.Value, startHour, endHour));
             }
 
-            public Flow<DateTime> EnsureOutsideWeekdayBusinessHours(int startHour, int endHour)
+            [Description("True when: a weekend, or outside the hours, using the value's own clock. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureOutsideWeekdayBusinessHours([Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
-            public Flow<DateTime> MatchOutsideWeekdayBusinessHours(int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: a weekend, or outside the hours, using the value's own clock. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchOutsideWeekdayBusinessHours([Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return value.Start().MatchOutsideWeekdayBusinessHours(startHour, endHour);
             }
 
-            public Flow<DateTime> RejectOutsideWeekdayBusinessHours(int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: a weekend, or outside the hours, using the value's own clock. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectOutsideWeekdayBusinessHours([Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return value.Start().RejectOutsideWeekdayBusinessHours(startHour, endHour);
             }
 
-            public Flow<DateTime> BreakOutsideWeekdayBusinessHours(int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: a weekend, or outside the hours, using the value's own clock. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakOutsideWeekdayBusinessHours([Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return value.Start().BreakOutsideWeekdayBusinessHours(startHour, endHour);
             }
 
-            public Flow<DateTime> RequireOutsideWeekdayBusinessHours(int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: a weekend, or outside the hours, using the value's own clock. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireOutsideWeekdayBusinessHours([Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return value.Start().RequireOutsideWeekdayBusinessHours(startHour, endHour);
             }
 
-            public Flow<DateTime> EnsureOutsideWeekdayBusinessHours(int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: a weekend, or outside the hours, using the value's own clock. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureOutsideWeekdayBusinessHours([Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return value.Start().EnsureOutsideWeekdayBusinessHours(startHour, endHour);
             }

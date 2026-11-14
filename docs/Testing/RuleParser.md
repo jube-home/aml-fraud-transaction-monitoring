@@ -100,16 +100,19 @@ rule text.
 
 ### EngineRuleWrapperTests
 
-`Jube.Test.RuleParser.EngineRuleWrapperTests` — 6 tests. Category: Unit.
+`Jube.Test.RuleParser.EngineRuleWrapperTests` — 9 tests. Category: Unit.
 
-| Test                                                 | Kind | Verifies                                                      |
-|------------------------------------------------------|------|---------------------------------------------------------------|
-| `TheGatewayWrapperIsTheEnginesTextExactly`           | Fact | The gateway wrapper is the engines text exactly.              |
-| `TheAbstractionWrapperIsTheEnginesTextExactly`       | Fact | The abstraction wrapper is the engines text exactly.          |
-| `TheActivationWrapperIsTheEnginesTextExactly`        | Fact | The activation wrapper is the engines text exactly.           |
-| `TheInlineFunctionWrapperIsTheEnginesTextExactly`    | Fact | The inline function wrapper is the engines text exactly.      |
-| `TheReprocessingWrapperIsTheEnginesTextExactly`      | Fact | The reprocessing wrapper is the engines text exactly.         |
-| `WithoutTryCatchTheBodyIsBareSoRuntimeErrorsSurface` | Fact | Without try catch the body is bare so runtime errors surface. |
+| Test                                                                               | Kind | Verifies                                                                                            |
+|------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------------------|
+| `TheGatewayWrapperIsTheEnginesTextExactly`                                         | Fact | The gateway wrapper is the engines text exactly.                                                    |
+| `TheAbstractionWrapperIsTheEnginesTextExactly`                                     | Fact | The abstraction wrapper is the engines text exactly.                                                |
+| `TheAbstractionWrapperWithoutVariablesIsUnchangedByAnEmptyList`                    | Fact | The abstraction wrapper without variables is unchanged by an empty list.                            |
+| `TheAbstractionWrapperWithARecordVariableDeclaresItAtTheTopOfTheMatch`             | Fact | The abstraction wrapper with a record variable declares it at the top of the match.                 |
+| `TheAbstractionWrapperWithAScanVariableKeepsItInAnObjectHeldByTheCursorForTheScan` | Fact | The abstraction wrapper with a scan variable keeps it in an object held by the cursor for the scan. |
+| `TheActivationWrapperIsTheEnginesTextExactly`                                      | Fact | The activation wrapper is the engines text exactly.                                                 |
+| `TheInlineFunctionWrapperIsTheEnginesTextExactly`                                  | Fact | The inline function wrapper is the engines text exactly.                                            |
+| `TheReprocessingWrapperIsTheEnginesTextExactly`                                    | Fact | The reprocessing wrapper is the engines text exactly.                                               |
+| `WithoutTryCatchTheBodyIsBareSoRuntimeErrorsSurface`                               | Fact | Without try catch the body is bare so runtime errors surface.                                       |
 
 ### FlowEntryCompilationTests
 
@@ -254,40 +257,112 @@ rule text.
 | `AHostileRuleNeverCompilesRegardlessOfSpelling` | Theory | A hostile rule never compiles regardless of spelling. |
 | `AHostileRuleIsAlsoRefusedAsAnActivationRule`   | Theory | A hostile rule is also refused as an activation rule. |
 
+### RuleParseErrorColumnTests
+
+`Jube.Test.RuleParser.RuleParseErrorColumnTests` — 7 tests. Category: Unit.
+
+| Test                                                                              | Kind | Verifies                                                                                        |
+|-----------------------------------------------------------------------------------|------|-------------------------------------------------------------------------------------------------|
+| `AnUnknownListIsLocatedOnTheNameAsTyped`                                          | Fact | An unknown list is located on the name as typed.                                                |
+| `ARestrictedTokenAfterARewrittenFieldIsStillLocatedOnTheTypedText`                | Fact | A restricted token after a rewritten field is still located on the typed text.                  |
+| `ARestrictedTokenOnALaterLineIsLocatedOnItsOwnLine`                               | Fact | A restricted token on a later line is located on its own line.                                  |
+| `ACompilerErrorAfterARewrittenFieldCoversTheTypedMemberAccessNotTheTranslatedOne` | Fact | A compiler error after a rewritten field covers the typed member access not the translated one. |
+| `AnUnknownWordOnPlainTextIsLocatedOnTheExactToken`                                | Fact | An unknown word on plain text is located on the exact token.                                    |
+| `ACompilerErrorOnPlainTextIsLocatedOnTheOffendingToken`                           | Fact | A compiler error on plain text is located on the offending token.                               |
+| `ADiscardedExpressionIsLocatedOnTheTypedStatement`                                | Fact | A discarded expression is located on the typed statement.                                       |
+
 ### RuleParseTests
 
-`Jube.Test.RuleParser.RuleParseTests` — 13 tests. Category: Unit.
+`Jube.Test.RuleParser.RuleParseTests` — 14 tests. Category: Unit.
 
-| Test                                                          | Kind   | Verifies                                                                |
-|---------------------------------------------------------------|--------|-------------------------------------------------------------------------|
-| `ValidGatewayRuleCompilesAndCarriesTheClassName`              | Fact   | Valid gateway rule compiles and carries the class name.                 |
-| `MatchedIsRegisteredByTheParserRatherThanSuppliedByTheCaller` | Fact   | Matched is registered by the parser rather than supplied by the caller. |
-| `AnUnregisteredNameIsStillRefused`                            | Fact   | An unregistered name is still refused.                                  |
-| `UnknownFieldReturnsLocatedErrorSpans`                        | Fact   | Unknown field returns located error spans.                              |
-| `CompilerErrorIsReportedAgainstTheUserLineNotTheWrapper`      | Fact   | Compiler error is reported against the user line not the wrapper.       |
-| `RuleTextOverTheMaximumLengthIsAnErrorWithoutParsing`         | Fact   | Rule text over the maximum length is an error without parsing.          |
-| `WithoutReferencesTheRuleParsesButIsNotMarkedCompiled`        | Fact   | Without references the rule parses but is not marked compiled.          |
-| `AbstractionRulesOnlySeeCachedPayloadFields`                  | Fact   | Abstraction rules only see cached payload fields.                       |
-| `TtlCountersAreNotVisibleBeforeTheirStage`                    | Fact   | Ttl counters are not visible before their stage.                        |
-| `TheEnvironmentTokenListIsNotMutatedByTheParser`              | Fact   | The environment token list is not mutated by the parser.                |
-| `ClassNameFollowsTheParserWrapper`                            | Theory | Class name follows the parser wrapper.                                  |
-| `CompilingWithoutLoadingKeepsTheBinaryAndLoadsNoAssembly`     | Fact   | Compiling without loading keeps the binary and loads no assembly.       |
-| `CompilingWithAndWithoutLoadingReportsTheSameErrors`          | Fact   | Compiling with and without loading reports the same errors.             |
+| Test                                                                          | Kind   | Verifies                                                                                     |
+|-------------------------------------------------------------------------------|--------|----------------------------------------------------------------------------------------------|
+| `ValidGatewayRuleCompilesAndCarriesTheClassName`                              | Fact   | Valid gateway rule compiles and carries the class name.                                      |
+| `MatchedIsRegisteredByTheParserRatherThanSuppliedByTheCaller`                 | Fact   | Matched is registered by the parser rather than supplied by the caller.                      |
+| `AnUnregisteredNameIsStillRefused`                                            | Fact   | An unregistered name is still refused.                                                       |
+| `UnknownFieldReturnsLocatedErrorSpans`                                        | Fact   | Unknown field returns located error spans.                                                   |
+| `CompilerErrorIsReportedAgainstTheUserLineNotTheWrapper`                      | Fact   | Compiler error is reported against the user line not the wrapper.                            |
+| `RuleTextOverTheMaximumLengthIsAnErrorWithoutParsing`                         | Fact   | Rule text over the maximum length is an error without parsing.                               |
+| `ALineOfManyStringLiteralsStillParsesAndAHostileTokenAfterThemIsStillLocated` | Fact   | A line of 5000 string literals still parses and a hostile token after them is still located. |
+| `WithoutReferencesTheRuleParsesButIsNotMarkedCompiled`                        | Fact   | Without references the rule parses but is not marked compiled.                               |
+| `AbstractionRulesOnlySeeCachedPayloadFields`                                  | Fact   | Abstraction rules only see cached payload fields.                                            |
+| `TtlCountersAreNotVisibleBeforeTheirStage`                                    | Fact   | Ttl counters are not visible before their stage.                                             |
+| `TheEnvironmentTokenListIsNotMutatedByTheParser`                              | Fact   | The environment token list is not mutated by the parser.                                     |
+| `ClassNameFollowsTheParserWrapper`                                            | Theory | Class name follows the parser wrapper.                                                       |
+| `CompilingWithoutLoadingKeepsTheBinaryAndLoadsNoAssembly`                     | Fact   | Compiling without loading keeps the binary and loads no assembly.                            |
+| `CompilingWithAndWithoutLoadingReportsTheSameErrors`                          | Fact   | Compiling with and without loading reports the same errors.                                  |
+
+### AbstractionCursorTokenTests
+
+`Jube.Test.RuleParser.AbstractionCursorTokenTests` — 7 tests. Category: Unit.
+
+| Test                                                   | Kind   | Verifies                                                         |
+|--------------------------------------------------------|--------|------------------------------------------------------------------|
+| `CursorVocabularyCompilesInAnAbstractionRule`          | Theory | Cursor vocabulary compiles in an abstraction rule.               |
+| `TheCursorIsRefusedOutsideAbstractionRules`            | Theory | The cursor is refused outside abstraction rules.                 |
+| `LoopControlIsRefusedOutsideAbstractionRules`          | Theory | Loop control is refused outside abstraction rules.               |
+| `AnAbstractionRuleStillCannotOpenOrLeaveLoopsOfItsOwn` | Theory | An abstraction rule still cannot open or leave loops of its own. |
+| `TheEngineSideOfTheCursorIsNotInTheVocabulary`         | Theory | The engine side of the cursor is not in the vocabulary.          |
+| `ARestrictedTokenCarriesItsCode`                       | Fact   | A restricted token carries its code.                             |
+| `ARestrictedTokenAfterLoopControlIsStillLocated`       | Fact   | A restricted token after loop control is still located.          |
+
+### AbstractionRuleVariableTests
+
+`Jube.Test.RuleParser.AbstractionRuleVariableTests` — 20 tests. Category: Unit.
+
+| Test                                                                                         | Kind   | Verifies                                                                                                       |
+|----------------------------------------------------------------------------------------------|--------|----------------------------------------------------------------------------------------------------------------|
+| `AScanVariableCompilesAndMakesTheRuleDependOnTheScan`                                        | Theory | A scan variable compiles and makes the rule depend on the scan.                                                |
+| `ARecordVariableCompilesAndLeavesTheRuleIndependentOfTheScan`                                | Theory | A record variable compiles and leaves the rule independent of the scan.                                        |
+| `AMalformedDeclarationIsRefusedWithItsOwnCode`                                               | Theory | A malformed declaration is refused with its own code.                                                          |
+| `AReservedOrRepeatedNameIsRefusedWithItsOwnCode`                                             | Theory | A reserved or repeated name is refused with its own code.                                                      |
+| `ANameLongerThanTheLimitIsRefused`                                                           | Fact   | A name longer than the limit is refused.                                                                       |
+| `MoreVariablesThanTheLimitAreRefused`                                                        | Fact   | More variables than the limit are refused.                                                                     |
+| `ARefusedNameIsLocatedOnTheNameItself`                                                       | Fact   | A refused name is located on the name itself.                                                                  |
+| `ADeclaredNameCannotFollowADot`                                                              | Theory | A declared name cannot follow a dot.                                                                           |
+| `ADeclaredNameAfterADotOnTheNextLineIsReportedOnThatLine`                                    | Fact   | A declared name after a dot on the next line is reported on that line.                                         |
+| `AFullWidthDotDoesNotHideAMemberAccessFromTheGate`                                           | Fact   | A full width dot does not hide a member access from the gate.                                                  |
+| `ADeclaredNameCannotStandWhereATypeOrANameIsExpectedEvenWhenTheInstallationAllowsTheKeyword` | Theory | A declared name cannot stand where a type or a name is expected even when the installation allows the keyword. |
+| `ADeclaredNameHidesATypeOfTheSameNameSoItsMembersCannotBeReached`                            | Theory | A declared name hides a type of the same name so its members cannot be reached.                                |
+| `ADeclaredNameCannotBeUsedFromCodeThatLeavesTheWrappersOwnMethod`                            | Theory | A declared name cannot be used from code that leaves the wrappers own method.                                  |
+| `VariablesAreRefusedOutsideAbstractionRules`                                                 | Theory | Variables are refused outside abstraction rules.                                                               |
+| `ARuleAnInstallationAlreadyAllowsIsLeftExactlyAsItWas`                                       | Theory | A rule an installation already allows is left exactly as it was.                                               |
+| `ARuleWithoutDeclarationsParsesToTheSameTextAndCarriesNoVariables`                           | Theory | A rule without declarations parses to the same text and carries no variables.                                  |
+| `ARefusedRuleWithoutDeclarationsKeepsTheErrorsItAlwaysHad`                                   | Fact   | A refused rule without declarations keeps the errors it always had.                                            |
+| `ACompilerErrorInARuleWithVariablesIsReportedOnTheLineTheAuthorWrote`                        | Fact   | A compiler error in a rule with variables is reported on the line the author wrote.                            |
+| `TheDeclarationsBecomeFieldsAndLocalsOfTheWrapperAndTheirLinesAreBlanked`                    | Fact   | The declarations become fields and locals of the wrapper and their lines are blanked.                          |
+| `RulesThatDifferOnlyInTheirDeclarationsDoNotShareAMatchSignature`                            | Fact   | Rules that differ only in their declarations do not share a match signature.                                   |
+
+### RuleVariableDeclarationsTests
+
+`Jube.Test.RuleParser.RuleVariableDeclarationsTests` — 6 tests. Category: Unit.
+
+| Test                                                                  | Kind   | Verifies                                                                           |
+|-----------------------------------------------------------------------|--------|------------------------------------------------------------------------------------|
+| `ADeclarationIsALineThatOpensWithDimOrStatic`                         | Theory | A declaration is a line that opens with dim or static.                             |
+| `EveryTypeIsReadAndWrittenInItsCanonicalCasing`                       | Fact   | Every type is read and written in its canonical casing.                            |
+| `BlankingKeepsEveryLineItsLengthAndItsLineEnding`                     | Fact   | Blanking keeps every line its length and its line ending.                          |
+| `AScanVariableKeepsItsLiteralStartingValue`                           | Theory | A scan variable keeps its literal starting value.                                  |
+| `AScanVariableStartsOnlyFromOneLiteral`                               | Theory | A scan variable starts only from one literal.                                      |
+| `TheEmitterWritesFieldsLocalsAndTheEntryThatFindsOrMakesTheScanState` | Fact   | The emitter writes fields locals and the entry that finds or makes the scan state. |
 
 ### RuleReturnContractTests
 
-`Jube.Test.RuleParser.RuleReturnContractTests` — 8 tests. Category: Unit.
+`Jube.Test.RuleParser.RuleReturnContractTests` — 11 tests. Category: Unit.
 
-| Test                                                                | Kind   | Verifies                                                                     |
-|---------------------------------------------------------------------|--------|------------------------------------------------------------------------------|
-| `BareExtensionEvaluationWithoutAssignmentIsRefusedForEveryRuleType` | Theory | Bare extension evaluation without assignment is refused for every rule type. |
-| `TheRefusalPointsAtTheDiscardedExpressionWithItsOwnSpan`            | Fact   | The refusal points at the discarded expression with its own span.            |
-| `ARuleWithNoStatementsAtAllIsRefused`                               | Fact   | A rule with no statements at all is refused.                                 |
-| `ABareReturnCompiles`                                               | Fact   | A bare return compiles.                                                      |
-| `APipelineAssignmentToMatchedCompiles`                              | Fact   | A pipeline assignment to matched compiles.                                   |
-| `AConditionalPipelineAssignmentToMatchedCompiles`                   | Fact   | A conditional pipeline assignment to matched compiles.                       |
-| `AnAssignmentToAnotherNameDoesNotSatisfyTheContract`                | Fact   | An assignment to another name does not satisfy the contract.                 |
-| `AReturnInsideAStringLiteralDoesNotSatisfyTheContract`              | Fact   | A return inside a string literal does not satisfy the contract.              |
+| Test                                                                    | Kind   | Verifies                                                                           |
+|-------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------|
+| `BareExtensionEvaluationWithoutAssignmentIsRefusedForEveryRuleType`     | Theory | Bare extension evaluation without assignment is refused for every rule type.       |
+| `TheRefusalPointsAtTheDiscardedExpressionWithItsOwnSpan`                | Fact   | The refusal points at the discarded expression with its own span.                  |
+| `ARuleWithNoStatementsAtAllIsRefused`                                   | Fact   | A rule with no statements at all is refused.                                       |
+| `ABareReturnCompiles`                                                   | Fact   | A bare return compiles.                                                            |
+| `APipelineAssignmentToMatchedCompiles`                                  | Fact   | A pipeline assignment to matched compiles.                                         |
+| `AConditionalPipelineAssignmentToMatchedCompiles`                       | Fact   | A conditional pipeline assignment to matched compiles.                             |
+| `AnAssignmentToAnotherNameDoesNotSatisfyTheContract`                    | Fact   | An assignment to another name does not satisfy the contract.                       |
+| `TheContractRefusalsCarryACodeAFixCanBeOfferedFrom`                     | Fact   | The contract refusals carry a code a fix can be offered from.                      |
+| `AnAssignmentToTheCursorResultSatisfiesTheContractForAnAbstractionRule` | Fact   | An assignment to the cursor result satisfies the contract for an abstraction rule. |
+| `AnAssignmentToAnotherCursorMemberDoesNotSatisfyTheContract`            | Fact   | An assignment to another cursor member does not satisfy the contract.              |
+| `AReturnInsideAStringLiteralDoesNotSatisfyTheContract`                  | Fact   | A return inside a string literal does not satisfy the contract.                    |
 
 ### RuleSandboxTests
 
@@ -305,12 +380,18 @@ rule text.
 
 ### RuleVocabularyTests
 
-`Jube.Test.RuleParser.RuleVocabularyTests` — 5 tests. Category: Unit.
+`Jube.Test.RuleParser.RuleVocabularyTests` — 11 tests. Category: Unit.
 
-| Test                                                         | Kind | Verifies                                                              |
-|--------------------------------------------------------------|------|-----------------------------------------------------------------------|
-| `EveryWordTheParserAllowsIsListedOnceExceptCompilerNames`    | Fact | Every word the parser allows is listed once except compiler names.    |
-| `BuiltInWordsAreKeywordsAndInstallationWordsAreAllowedWords` | Fact | Built in words are keywords and installation words are allowed words. |
-| `ExtensionMethodsAreFunctionsWithVisualBasicSignatures`      | Fact | Extension methods are functions with visual basic signatures.         |
-| `EveryFunctionHasAReceiverAndAReturnType`                    | Fact | Every function has a receiver and a return type.                      |
-| `EvalIsNeverOffered`                                         | Fact | Eval is never offered.                                                |
+| Test                                                                              | Kind   | Verifies                                                                                       |
+|-----------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------------|
+| `EveryWordTheParserAllowsIsListedOnceExceptCompilerNames`                         | Fact   | Every word the parser allows is listed once except compiler names.                             |
+| `TheAbstractionRuleVocabularyIsTheGeneralOnePlusExactlyTheCursorAndVariableWords` | Fact   | The abstraction rule vocabulary is the general one plus exactly the cursor and variable words. |
+| `TheCursorWordsAreOfferedOnlyForAbstractionRules`                                 | Theory | The cursor words are offered only for abstraction rules.                                       |
+| `TheCursorWordsCarryTheirSignaturesAndOnlyTheRuleFacingMembers`                   | Fact   | The cursor words carry their signatures and only the rule facing members.                      |
+| `TheVariableWordsAreOfferedOnlyForAbstractionRulesAndSayWhatTheyMean`             | Fact   | The variable words are offered only for abstraction rules and say what they mean.              |
+| `EveryCursorWordSaysWhatItMeans`                                                  | Fact   | Every cursor word says what it means.                                                          |
+| `BuiltInWordsAreKeywordsAndInstallationWordsAreAllowedWords`                      | Fact   | Built in words are keywords and installation words are allowed words.                          |
+| `ExtensionMethodsAreFunctionsWithVisualBasicSignatures`                           | Fact   | Extension methods are functions with visual basic signatures.                                  |
+| `EveryFunctionHasAReceiverAReturnTypeAndADescription`                             | Fact   | Every function has a receiver, a return type and a description.                                |
+| `AFunctionCarriesTheDescriptionOfEachOverloadAndParameter`                        | Fact   | A function carries the description of each overload and parameter.                             |
+| `EvalIsNeverOffered`                                                              | Fact   | Eval is never offered.                                                                         |

@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchLess(double other)
+            [Description("True when: the value is less than the argument. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchLess([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleLess(flow.Value, other));
             }
 
-            public Flow<double> RejectLess(double other)
+            [Description("True when: the value is less than the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectLess([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleLess(flow.Value, other));
             }
 
-            public Flow<double> BreakLess(double other)
+            [Description("True when: the value is less than the argument. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakLess([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleLess(flow.Value, other));
             }
 
-            public Flow<double> RequireLess(double other)
+            [Description("True when: the value is less than the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireLess([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleLess(flow.Value, other));
             }
 
-            public Flow<double> EnsureLess(double other)
+            [Description("True when: the value is less than the argument. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureLess([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchLess(double other)
+            [Description("Begins a pipeline from the value. True when: the value is less than the argument. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchLess([Description("The other number.")] double other)
             {
                 return value.Start().MatchLess(other);
             }
 
-            public Flow<double> RejectLess(double other)
+            [Description("Begins a pipeline from the value. True when: the value is less than the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectLess([Description("The other number.")] double other)
             {
                 return value.Start().RejectLess(other);
             }
 
-            public Flow<double> BreakLess(double other)
+            [Description("Begins a pipeline from the value. True when: the value is less than the argument. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakLess([Description("The other number.")] double other)
             {
                 return value.Start().BreakLess(other);
             }
 
-            public Flow<double> RequireLess(double other)
+            [Description("Begins a pipeline from the value. True when: the value is less than the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireLess([Description("The other number.")] double other)
             {
                 return value.Start().RequireLess(other);
             }
 
-            public Flow<double> EnsureLess(double other)
+            [Description("Begins a pipeline from the value. True when: the value is less than the argument. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureLess([Description("The other number.")] double other)
             {
                 return value.Start().EnsureLess(other);
             }

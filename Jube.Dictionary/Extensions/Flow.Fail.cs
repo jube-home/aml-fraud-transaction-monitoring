@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static Flow<T> Fail<T>(this Flow<T> flow, string? label)
+        [Description("Decides errored, with the label as the reason.")]
+        public static Flow<T> Fail<T>(this Flow<T> flow,
+            [Description("The reason carried to the decision.")] string? label)
         {
             return flow.IsDecided ? flow : flow.Decide(FlowOutcome.Errored, label);
         }

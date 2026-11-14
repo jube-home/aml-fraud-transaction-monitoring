@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace Jube.Data.Repository
 {
@@ -46,13 +47,38 @@ namespace Jube.Data.Repository
                 .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
 
+        public async Task<(int InstanceId, bool Active)?> GetScopeAsync(int id, CancellationToken token = default)
+        {
+            var existing = await dbContext.ExhaustiveSearchInstancePromotedTrialInstance
+                .Where(d =>
+                    (d.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance
+                        .EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    && d.Id == id
+                    && (d.Deleted == 0 || d.Deleted == null)
+                    && (d.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == 0
+                        || d.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == null))
+                .Select(d => new
+                {
+                    d.Active,
+                    d.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstanceId
+                })
+                .FirstOrDefaultAsync(token).ConfigureAwait(false);
+
+            return existing == null
+                ? null
+                : (existing.ExhaustiveSearchInstanceId.GetValueOrDefault(), existing.Active == 1);
+        }
+
         public async Task UpdateActiveAsync(int id, bool active, CancellationToken token = default)
         {
             var existing = await dbContext.ExhaustiveSearchInstancePromotedTrialInstance
                 .Where(d =>
                     (d.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance
                         .EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
-                    && d.Id == id)
+                    && d.Id == id
+                    && (d.Deleted == 0 || d.Deleted == null)
+                    && (d.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == 0
+                        || d.ExhaustiveSearchInstanceTrialInstance.ExhaustiveSearchInstance.Deleted == null))
                 .Select(d => new
                 {
                     d.Id,

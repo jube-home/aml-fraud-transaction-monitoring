@@ -20,6 +20,7 @@ using Jube.Service.Query.WatcherStream;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
@@ -128,6 +129,39 @@ namespace Jube.Test.Service.Query.WatcherStream
             tenantA.Should().NotBe(tenantB);
             serviceA.TenantRegistryId.Should().Be(tenantA);
             serviceB.TenantRegistryId.Should().Be(tenantB);
+        }
+
+        [Fact]
+        public async Task StillAuthorisedIsTrueForTheTenantTheStreamWasOpenedForAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var tenant = await TenantOfAsync(dbContext, fx.Seed.UserWithPermission);
+
+            (await WatcherStreamAuthorizationService.StillAuthorisedAsync(dbContext, fx.Seed.UserWithPermission,
+                tenant, TestLog.NoOp, localizers)).Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task StillAuthorisedIsFalseWhenTheUserNowResolvesToAnotherTenantAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var otherTenant = await TenantOfAsync(dbContext, fx.Seed.UserTenantB);
+
+            (await WatcherStreamAuthorizationService.StillAuthorisedAsync(dbContext, fx.Seed.UserWithPermission,
+                otherTenant, TestLog.NoOp, localizers)).Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task StillAuthorisedIsFalseWithoutThePermissionOrForAnUnknownUserAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var tenant = await TenantOfAsync(dbContext, fx.Seed.UserWithoutPermission);
+
+            (await WatcherStreamAuthorizationService.StillAuthorisedAsync(dbContext, fx.Seed.UserWithoutPermission,
+                tenant, TestLog.NoOp, localizers)).Should().BeFalse();
+
+            (await WatcherStreamAuthorizationService.StillAuthorisedAsync(dbContext, fx.Seed.UnknownUser, tenant,
+                TestLog.NoOp, localizers)).Should().BeFalse();
         }
     }
 }

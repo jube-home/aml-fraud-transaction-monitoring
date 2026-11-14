@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Interfaces;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,18 +24,23 @@ namespace Jube.Dto.Query.TreeChildren
 {
     [Description("A child node of a Visualisation Registry tree (datasource or parameter). Colour is 'green' for " +
                  "an active node and 'red' otherwise.")]
+    [MessagePackObject]
     public class VisualisationRegistryTreeChildDto : ITreeChild
     {
         [Description("Integer Id of the parent Visualisation Registry (0 when the child has none).")]
+        [Key(0)]
         public int VisualisationRegistryId { get; set; }
 
         [Description("Integer Id of the child row.")]
+        [Key(1)]
         public int Key { get; set; }
 
         [Description("Name of the child row.")]
+        [Key(2)]
         public string? Name { get; set; }
 
         [Description("'green' when the child is active, otherwise 'red'.")]
+        [Key(3)]
         public string? Color { get; set; }
     }
 }

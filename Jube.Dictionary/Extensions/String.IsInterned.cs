@@ -6,6 +6,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Retrieves a reference to the string from the intern pool.")]
         public static String? IsInterned(this String str)
         {
             return string.IsInterned(str);

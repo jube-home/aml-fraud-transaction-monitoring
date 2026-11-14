@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Du har inte behörighet att utföra den här åtgärden.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Du måste vara inloggad i en hyresgäst för att utföra den här åtgärden.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>Den sparade sökningen hittades inte.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>'Name' får inte vara tomt.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>'Name' får vara högst {0} tecken.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Du har redan en sparad sökning med det namnet för det här ärendearbetsflödet.</value>
+  </data>
+    <data name="CaseWorkflowGuidRequired" xml:space="preserve">
+    <value>'Case Workflow Guid' får inte vara tomt.</value>
+  </data>
+    <data name="CaseWorkflowNotFound" xml:space="preserve">
+    <value>Ärendearbetsflödet hittades inte eller så har du inte åtkomst till det.</value>
+  </data>
+    <data name="CaseWorkflowCannotChange" xml:space="preserve">
+    <value>En sparad sökning kan inte flyttas till ett annat ärendearbetsflöde.</value>
+  </data>
+    <data name="SelectJsonRequired" xml:space="preserve">
+    <value>'Select Json' får inte vara tomt.</value>
+  </data>
+    <data name="FilterJsonRequired" xml:space="preserve">
+    <value>'Filter Json' får inte vara tomt.</value>
+  </data>
+    <data name="JsonInvalid" xml:space="preserve">
+    <value>'{0}' måste vara giltig JSON.</value>
+  </data>
+    <data name="JsonTooLarge" xml:space="preserve">
+    <value>'{0}' är för stor.</value>
+  </data>
+    <data name="SharedRoleNotFound" xml:space="preserve">
+    <value>Rollen som sökningen ska delas med hittades inte.</value>
+  </data>
+</root>

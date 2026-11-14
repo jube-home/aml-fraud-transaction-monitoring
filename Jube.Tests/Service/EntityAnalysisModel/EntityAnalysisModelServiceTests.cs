@@ -34,6 +34,7 @@ using Jube.Service.Reactivity.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
@@ -97,15 +98,16 @@ namespace Jube.Test.Service.EntityAnalysisModel
                 auditLog ?? TestLog.NoOp);
         }
 
-        private static EntityAnalysisModelDto NewDto(string name)
+        private static EntityAnalysisModelDto NewDto(string name, string entryXPath = "$.TxnId",
+            string referenceDateXPath = "$.TxnDateTime")
         {
             return new EntityAnalysisModelDto
             {
                 Name = name,
                 EntryName = "TxnId",
-                EntryXPath = "$.TxnId",
+                EntryXPath = entryXPath,
                 ReferenceDateName = "TxnDateTime",
-                ReferenceDateXPath = "$.TxnDateTime",
+                ReferenceDateXPath = referenceDateXPath,
                 ReferenceDatePayloadLocationTypeId = 1,
                 CacheTtlInterval = 'h',
                 CacheFetchLimit = 100,
@@ -497,6 +499,30 @@ namespace Jube.Test.Service.EntityAnalysisModel
             ex.Result.Errors.Should().Contain(e => e.PropertyName == nameof(EntityAnalysisModelDto.ReferenceDateXPath));
         }
 
+        [Theory]
+        [InlineData("$.a[?(@.b =~ /(a+)+$/)]")]
+        [InlineData("$..[?(@.name=~/^(a|aa)+$/i)]")]
+        public async Task EntryAndReferenceDateXPathUsingTheRegularExpressionOperatorAreRefusedAndNothingIsStoredAsync(
+            string xPath)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var entry = NewDto(UniqueName("RegexEntry"), xPath);
+            var entryEx = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(entry));
+            entryEx.Result.Errors.Should().Contain(e => e.ErrorCode == "XPathRegexNotPermitted"
+                                                        && e.PropertyName == nameof(EntityAnalysisModelDto.EntryXPath));
+
+            var reference = NewDto(UniqueName("RegexReference"), referenceDateXPath: xPath);
+            var referenceEx = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(reference));
+            referenceEx.Result.Errors.Should().Contain(e => e.ErrorCode == "XPathRegexNotPermitted"
+                                                            && e.PropertyName ==
+                                                            nameof(EntityAnalysisModelDto.ReferenceDateXPath));
+
+            (await dbContext.EntityAnalysisModel.CountAsync(w =>
+                w.Name == entry.Name || w.Name == reference.Name)).Should().Be(0);
+        }
+
         [Fact]
         public async Task InvalidReferenceDatePayloadLocationTypeIdIsRejectedAsync()
         {
@@ -723,7 +749,6 @@ namespace Jube.Test.Service.EntityAnalysisModel
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
             dto.Guid = Guid.NewGuid();
-            dto.Version = 999;
             dto.UpdatedUser = "also-tampered";
 
             var updated = await service.UpdateAsync(dto);
@@ -747,6 +772,111 @@ namespace Jube.Test.Service.EntityAnalysisModel
             var dto = NewDto(saved.Name);
             dto.Id = saved.Id;
             await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateAsync(dto));
+        }
+
+        [Fact]
+        public async Task UnlockOfLockedRowAllowsUpdateAndDeleteAgainAndArchivesTheLockedVersionAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(UniqueName("Unlock")));
+            createdIds.Add(saved.Id);
+
+            await dbContext.EntityAnalysisModel.Where(w => w.Id == saved.Id).Set(s => s.Locked, (byte)1).UpdateAsync();
+
+            var dto = NewDto(saved.Name);
+            dto.Id = saved.Id;
+            await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateAsync(dto));
+            await Assert.ThrowsAsync<NotFoundException>(() => service.DeleteAsync(saved.Id));
+
+            var unlocked = await service.UnlockAsync(saved.Id);
+
+            unlocked.Locked.Should().Be(0);
+            unlocked.Version.Should().Be(2);
+            unlocked.UpdatedUser.Should().Be(fx.Seed.UserWithPermission);
+
+            var archived = await dbContext.GetTable<EntityAnalysisModelVersion>()
+                .Where(w => w.EntityAnalysisModelId == saved.Id && w.Locked == 1)
+                .ToListAsync();
+            archived.Should().ContainSingle();
+
+            dto.Version = 0;
+            var updated = await service.UpdateAsync(dto);
+            updated.Version.Should().Be(3);
+
+            await service.DeleteAsync(saved.Id);
+        }
+
+        [Fact]
+        public async Task UnlockOfUnlockedMissingOrForeignRowThrowsNotFoundAndPermissionIsRequiredAsync()
+        {
+            await using var ownerDb = fx.GetDbContext();
+            var owner = await BuildServiceAsync(ownerDb, fx.Seed.UserWithPermission);
+            var saved = await owner.InsertAsync(NewDto(UniqueName("UnlockRefused")));
+            createdIds.Add(saved.Id);
+
+            await Assert.ThrowsAsync<NotFoundException>(() => owner.UnlockAsync(saved.Id));
+            await Assert.ThrowsAsync<NotFoundException>(() => owner.UnlockAsync(int.MaxValue));
+
+            await ownerDb.EntityAnalysisModel.Where(w => w.Id == saved.Id).Set(s => s.Locked, (byte)1).UpdateAsync();
+
+            await using var otherDb = fx.GetDbContext();
+            var otherTenant = await BuildServiceAsync(otherDb, fx.Seed.UserTenantB);
+            await Assert.ThrowsAsync<NotFoundException>(() => otherTenant.UnlockAsync(saved.Id));
+
+            await using var deniedDb = fx.GetDbContext();
+            var denied = await BuildServiceAsync(deniedDb, fx.Seed.UserWithoutPermission);
+            await Assert.ThrowsAsync<ForbiddenException>(() => denied.UnlockAsync(saved.Id));
+
+            var stillLocked = await ownerDb.EntityAnalysisModel.FirstAsync(w => w.Id == saved.Id);
+            stillLocked.Locked.Should().Be(1);
+            stillLocked.Version.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task UpdatePreservesImportIdAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(UniqueName("ImportId")));
+            createdIds.Add(saved.Id);
+
+            var importId = await dbContext.InsertWithInt32IdentityAsync(new Import
+            {
+                Guid = Guid.NewGuid(),
+                TenantRegistryId = 1,
+                CreatedUser = "Administrator",
+                CreatedDate = DateTime.UtcNow,
+                ExportGuid = Guid.NewGuid(),
+            });
+
+            await dbContext.EntityAnalysisModel.Where(w => w.Id == saved.Id).Set(s => s.ImportId, importId).UpdateAsync();
+
+            var dto = NewDto(saved.Name);
+            dto.Id = saved.Id;
+            await service.UpdateAsync(dto);
+
+            (await dbContext.EntityAnalysisModel.FirstAsync(w => w.Id == saved.Id)).ImportId.Should().Be(importId);
+        }
+
+        [Fact]
+        public async Task TenantlessRepositoryReadsAcrossTenantsButNeverUpdatesDeletesOrUnlocksAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(UniqueName("Tenantless")));
+            createdIds.Add(saved.Id);
+
+            var tenantless = new Jube.Data.Repository.EntityAnalysisModelRepository(dbContext);
+
+            (await tenantless.GetByIdAsync(saved.Id)).Should().NotBeNull();
+            (await tenantless.GetByGuidAsync(saved.Guid)).Should().NotBeNull();
+
+            await Assert.ThrowsAsync<KeyNotFoundException>(() => tenantless.UpdateAsync(saved));
+            await Assert.ThrowsAsync<KeyNotFoundException>(() => tenantless.DeleteAsync(saved.Id));
+            await Assert.ThrowsAsync<KeyNotFoundException>(() => tenantless.UnlockAsync(saved.Id));
+
+            (await service.GetByIdAsync(saved.Id)).Should().NotBeNull();
         }
 
         [Fact]

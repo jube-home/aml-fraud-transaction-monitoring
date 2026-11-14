@@ -65,99 +65,92 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(35)] public byte? EnableResponseElevationLimit { get; set; }
         [Column] [Nullable] [Key(36)] public int? Version { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
         [Key(37)]
         public IEnumerable<EntityAnalysisModelVersion> EntityAnalysisModelVersion { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
         [Key(38)]
         public IEnumerable<EntityAnalysisModelAbstractionCalculation>
             EntityAnalysisModelAbstractionCalculation { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
         [Key(39)]
         public IEnumerable<EntityAnalysisModelAbstractionRule> EntityAnalysisModelAbstractionRule { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
         [Key(40)]
         public IEnumerable<EntityAnalysisModelActivationRule> EntityAnalysisModelActivationRule { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
         [Key(41)]
         public IEnumerable<EntityAnalysisModelHttpAdaptation> EntityAnalysisModelHttpAdaptation { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
+        [Key(70)]
+        public IEnumerable<EntityAnalysisModelGraphRecall> EntityAnalysisModelGraphRecall { get; set; }
+
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
+        [Key(71)]
+        public IEnumerable<EntityAnalysisModelSvirfd> EntityAnalysisModelSvirfd { get; set; }
+
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
         [Key(42)]
         public IEnumerable<EntityAnalysisModelDictionary> EntityAnalysisModelDictionary { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
         [Key(43)]
         public IEnumerable<EntityAnalysisModelGatewayRule> EntityAnalysisModelGatewayRule { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
         [Key(44)]
         public IEnumerable<EntityAnalysisModelInlineFunction> EntityAnalysisModelInlineFunction { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
         [Key(45)]
         public IEnumerable<EntityAnalysisModelInlineScript> EntityAnalysisModelInlineScript { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
         [Key(46)]
         public IEnumerable<EntityAnalysisModelList> EntityAnalysisModelList { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
         [Key(47)]
         public IEnumerable<EntityAnalysisModelRequestXpath> EntityAnalysisModelRequestXpath { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
         [Key(48)]
         public IEnumerable<EntityAnalysisModelSanction> EntityAnalysisModelSanction { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
         [Key(49)]
         public IEnumerable<EntityAnalysisModelTtlCounter> EntityAnalysisModelTtlCounter { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
         [Key(50)]
         public IEnumerable<EntityAnalysisModelTag> EntityAnalysisModelTag { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
+        [Key(69)]
+        public IEnumerable<EntityAnalysisModelResponseElevationRange> EntityAnalysisModelResponseElevationRange { get; set; }
+
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
         [Key(51)]
         public IEnumerable<ExhaustiveSearchInstance> ExhaustiveSearchInstance { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
         [Key(52)]
         public IEnumerable<CaseWorkflow> CaseWorkflow { get; set; }
 
-        [Association(ThisKey = "TenantRegistryId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "TenantRegistryId", OtherKey = "Id", CanBeNull = true)]
         [Key(53)]
         public TenantRegistry TenantRegistry { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
         [Key(54)]
         public IEnumerable<EntityAnalysisModelSuppression> EntityAnalysisModelSuppression { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
         [Key(55)]
         public IEnumerable<EntityAnalysisModelActivationRuleSuppression> EntityAnalysisModelActivationRuleSuppression
         {
@@ -176,14 +169,13 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(64)] public double? SamplePercentage { get; set; }
         [Column] [Nullable] [Key(65)] public byte? EnableLogsWarnThreshold { get; set; }
         [Column] [Nullable] [Key(66)] public byte? EnableLogs { get; set; }
+        [Column] [Nullable] [Key(72)] public byte? EnablePayloadJObject { get; set; }
 
-        [Association(ThisKey = "Guid", OtherKey = "EntityAnalysisModelGuid", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Guid", OtherKey = "EntityAnalysisModelGuid", CanBeNull = true)]
         [Key(67)]
         public IEnumerable<EntityAnalysisModelOverride> EntityAnalysisModelOverride { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelId", CanBeNull = true)]
         [Key(68)]
         public IEnumerable<EntityAnalysisModelActivationRuleOverride> EntityAnalysisModelActivationRuleOverride
         {

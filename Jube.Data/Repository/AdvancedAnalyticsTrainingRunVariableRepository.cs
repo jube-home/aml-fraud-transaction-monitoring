@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace Jube.Data.Repository
 {
@@ -65,7 +66,7 @@ namespace Jube.Data.Repository
 
         private async Task PrepareAsync(AdvancedAnalyticsTrainingRunVariable model, CancellationToken token)
         {
-            model.AdvancedAnalyticsInstanceId = await AdvancedAnalyticsRunGuard
+            model.AskJoobyAnalyticsInstanceId = await AdvancedAnalyticsRunGuard
                 .ResolveInstanceIdAsync(dbContext, tenantRegistryId, model.AdvancedAnalyticsTrainingRunId, token)
                 .ConfigureAwait(false);
 

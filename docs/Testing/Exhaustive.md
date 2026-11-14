@@ -145,10 +145,10 @@ promotion and model recall in the engine.
 | Test                                                                                                       | Kind | Verifies                                                                                                                |
 |------------------------------------------------------------------------------------------------------------|------|-------------------------------------------------------------------------------------------------------------------------|
 | `AtATwoPercentBaseRate_TheCalibratedMeanMatchesAndTheRawMeanDoesNotAsync`                                  | Fact | At a two percent base rate the calibrated mean matches and the raw mean does not.                                       |
-| `AtATwoPercentBaseRate_EceBrierAndLogLossImproveOnTheDeploymentPopulation_AndAucIsUnchangedAsync`          | Fact | At a two percent base rate ece brier and log loss improve on the deployment population and auc is unchanged.            |
 | `TheStoredQuality_ShowsTheImprovementOnTheBalancedTestSplitAndAtTheBaseRateAsync`                          | Fact | The stored quality shows the improvement on the balanced test split and at the base rate.                               |
-| `TheOptimismOfCalibratingOnTheSelectionSplitIsSmallComparedWithACalibratorFittedOnTheTestSplitItselfAsync` | Fact | The optimism of calibrating on the selection split is small compared with a calibrator fitted on the test split itself. |
 | `TheCalibratorIsFittedOnTheValidationSplit_NotOnTheTestLabelsAsync`                                        | Fact | The calibrator is fitted on the validation split not on the test labels.                                                |
+| `TheOptimismOfCalibratingOnTheSelectionSplitIsSmallComparedWithACalibratorFittedOnTheTestSplitItselfAsync` | Fact | The optimism of calibrating on the selection split is small compared with a calibrator fitted on the test split itself. |
+| `AtATwoPercentBaseRate_EceBrierAndLogLossImproveOnTheDeploymentPopulation_AndAucIsUnchangedAsync`          | Fact | At a two percent base rate ece brier and log loss improve on the deployment population and auc is unchanged.            |
 
 ### ExhaustiveCalibrationFitterTests
 
@@ -212,28 +212,51 @@ promotion and model recall in the engine.
 | `AnUnknownMethod_IsInvalid`                                    | Theory | An unknown method is invalid.                                             |
 | `CorruptColumns_AreInvalidAndNeverSilentlyRaw`                 | Fact   | Corrupt columns are invalid and never silently raw.                       |
 
+### ExhaustiveZScoreClipBoundResolverTests
+
+`Jube.Test.Exhaustive.ExhaustiveZScoreClipBoundResolverTests` — 9 tests.
+
+| Test                                                                 | Kind   | Verifies                                          |
+|----------------------------------------------------------------------|--------|---------------------------------------------------|
+| `Resolve_NullEnvironment_FallsBackToTheDefaultBound`                 | Fact   | A null environment gives the default bound of 5.  |
+| `Resolve_UsesTheCodeDefaultFromANewlyConstructedEnvironment`         | Fact   | A new environment has the code default.           |
+| `Resolve_HonoursAConfiguredOverride`                                 | Fact   | A configured override is used.                    |
+| `Resolve_UnparsableOverride_FallsBackToTheDefaultBound`              | Fact   | An unparsable override falls back.                |
+| `Resolve_ANonPositiveOrNonFiniteOverride_FallsBackToTheDefaultBound` | Theory | Zero, negative, NaN and Infinity fall back.       |
+| `ZScore_AnIndicatorWithinTheBoundIsNotMovedByTheClamp`               | Fact   | A 0 and 1 indicator is not moved by the clamp.    |
+| `Clamp_BoundsToTheSymmetricRange`                                    | Theory | Clamp is symmetric.                               |
+| `StaticZScore_AppliesTheClampOnlyWhenStandardised`                   | Theory | The static z-score clamps only when standardised. |
+| `StaticZScore_HonoursAnExplicitClipBound`                            | Fact   | An explicit bound is honoured.                    |
+
 ### ExhaustiveRecallTests
 
-`Jube.Test.Exhaustive.ExhaustiveRecallTests` — 5 tests.
+`Jube.Test.Exhaustive.ExhaustiveRecallTests` — 12 tests.
 
-| Test                                                                  | Kind | Verifies                                                                      |
-|-----------------------------------------------------------------------|------|-------------------------------------------------------------------------------|
-| `BuildScoreInputs_AllPresent_StandardisesType2Only`                   | Fact | Build score inputs all present standardises type2 only.                       |
-| `BuildScoreInputs_MissingKeys_AreMeanImputed_NotZero`                 | Fact | Build score inputs missing keys are mean imputed not zero.                    |
-| `BuildScoreInputs_MissingMatchesInPipelineFallback`                   | Fact | Build score inputs missing matches in pipeline fallback.                      |
-| `BuildScoreInputs_JsonNullAndUnconvertibleValues_AreTreatedAsMissing` | Fact | Build score inputs json null and unconvertible values are treated as missing. |
-| `BuildScoreInputs_MatchIsCaseSensitiveAndExact`                       | Fact | Build score inputs match is case sensitive and exact.                         |
+| Test                                                                                  | Kind   | Verifies                                                                      |
+|---------------------------------------------------------------------------------------|--------|-------------------------------------------------------------------------------|
+| `BuildScoreInputs_AllPresent_StandardisesType2Only`                                   | Fact   | Build score inputs all present standardises type2 only.                       |
+| `BuildScoreInputs_MissingKeys_AreMeanImputed_NotZero`                                 | Fact   | Build score inputs missing keys are mean imputed not zero.                    |
+| `BuildScoreInputs_MissingMatchesInPipelineFallback`                                   | Fact   | Build score inputs missing matches in pipeline fallback.                      |
+| `BuildScoreInputs_JsonNullAndUnconvertibleValues_AreTreatedAsMissing`                 | Fact   | Build score inputs json null and unconvertible values are treated as missing. |
+| `BuildScoreInputs_MatchIsCaseSensitiveAndExact`                                       | Fact   | Build score inputs match is case sensitive and exact.                         |
+| `BuildScoreInputs_ExtremeContinuousValue_IsClampedToTheConfiguredBoundBothDirections` | Fact   | An extreme continuous value is clamped to the bound.                          |
+| `BuildScoreInputs_ExtremeNegativeContinuousValue_IsClampedToTheConfiguredBound`       | Fact   | An extreme negative value is clamped to the negative bound.                   |
+| `ZScore_ExtremeValue_IsClampedToTheConfiguredBoundInBothDirections`                   | Fact   | A promoted variable clamps an extreme z-score both ways.                      |
+| `ZScore_ValueExactlyAtTheBound_IsUnaffected`                                          | Fact   | A value exactly at the bound is unaffected.                                   |
+| `ZScore_ValueWithinTheBound_IsByteIdenticalToTheUnclampedZScore`                      | Fact   | A value within the bound equals the unclamped z-score.                        |
+| `ZScore_NonStandardisedVariable_IsNeverClampedEvenWhenLarge`                          | Theory | A non standardised variable is never clamped.                                 |
+| `ZScore_UsesTheVariablesConfiguredClipBoundNotAHardcodedFive`                         | Fact   | The variable uses its configured clip bound.                                  |
 
 ### InactiveModelRecallHttpTests
 
 `Jube.Test.Exhaustive.InactiveModelRecallHttpTests` — 4 tests. Category: Service. Collection: Database.
 
-| Test                                                                               | Kind | Verifies                                                                                 |
-|------------------------------------------------------------------------------------|------|--------------------------------------------------------------------------------------------|
-| `AnInactiveInstanceStillRecallsThroughTheDirectInvokePathAsync`                    | Fact | An inactive instance still recalls through the direct invoke path.                       |
-| `AnInactiveInstanceStillScoresThroughTheBatchInvokePathAsync`                      | Fact | An inactive instance still scores through the batch invoke path.                         |
-| `ATenantForeignUserIsForbiddenOnTheDirectInvokePathForAnInactiveInstanceAsync`     | Fact | A tenant foreign user is forbidden on the direct invoke path for an inactive instance.   |
-| `ATenantUserWithoutTheModelRoleOrPermissionIsForbiddenForAnInactiveInstanceAsync`  | Fact | A tenant user without the model role or permission is forbidden for an inactive instance. |
+| Test                                                                              | Kind | Verifies                                                                                  |
+|-----------------------------------------------------------------------------------|------|-------------------------------------------------------------------------------------------|
+| `AnInactiveInstanceStillRecallsThroughTheDirectInvokePathAsync`                   | Fact | An inactive instance still recalls through the direct invoke path.                        |
+| `AnInactiveInstanceStillScoresThroughTheBatchInvokePathAsync`                     | Fact | An inactive instance still scores through the batch invoke path.                          |
+| `ATenantForeignUserIsForbiddenOnTheDirectInvokePathForAnInactiveInstanceAsync`    | Fact | A tenant foreign user is forbidden on the direct invoke path for an inactive instance.    |
+| `ATenantUserWithoutTheModelRoleOrPermissionIsForbiddenForAnInactiveInstanceAsync` | Fact | A tenant user without the model role or permission is forbidden for an inactive instance. |
 
 ### LoadDatabaseTests
 
@@ -267,23 +290,24 @@ promotion and model recall in the engine.
 
 ### LoadJsonExtractionTests
 
-`Jube.Test.Exhaustive.LoadJsonExtractionTests` — 13 tests.
+`Jube.Test.Exhaustive.LoadJsonExtractionTests` — 14 tests.
 
-| Test                                                                   | Kind   | Verifies                                                                         |
-|------------------------------------------------------------------------|--------|----------------------------------------------------------------------------------|
-| `ExtractValue_ReadsTheNumberAtThePath`                                 | Theory | Extract value reads the number at the path.                                      |
-| `ExtractValue_MissingNonNumericOrMalformedPathIsZero`                  | Theory | Extract value missing non numeric or malformed path is zero.                     |
-| `ExtractValue_ConsecutiveDotsInThePathAreTolerated`                    | Fact   | Extract value consecutive dots in the path are tolerated.                        |
-| `ExtractValue_MissingAndGenuineZeroAreIndistinguishable`               | Fact   | Extract value missing and genuine zero are indistinguishable.                    |
-| `ExtractValue_BooleanAndDateTokensConvertTheWayNewtonsoftConvertsThem` | Fact   | Extract value boolean and date tokens convert the way newtonsoft converts them.  |
-| `BuildRows_OneRowPerJsonWithOneColumnPerVariableInVariableOrder`       | Fact   | Build rows one row per json with one column per variable in variable order.      |
-| `BuildRows_MissingValuesBecomeZeroWithoutDroppingTheRowOrShorteningIt` | Fact   | Build rows missing values become zero without dropping the row or shortening it. |
-| `BuildRows_ExtraJsonFieldsAreIgnored`                                  | Fact   | Build rows extra json fields are ignored.                                        |
-| `BuildRows_EmptyJsonListGivesNoRows`                                   | Fact   | Build rows empty json list gives no rows.                                        |
-| `BuildRows_NoVariablesGivesEmptyRowsOnePerJson`                        | Fact   | Build rows no variables gives empty rows one per json.                           |
-| `BuildRows_UnparseableJsonThrowsRatherThanBeingSkipped`                | Fact   | Build rows unparseable json throws rather than being skipped.                    |
-| `BuildRows_VariableKeysAreReadAsAZeroBasedSequence`                    | Fact   | Build rows variable keys are read as a zero based sequence.                      |
-| `BuildRows_ManyRowsKeepInputOrder`                                     | Fact   | Build rows many rows keep input order.                                           |
+| Test                                                                   | Kind   | Verifies                                                                           |
+|------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------|
+| `ExtractValue_ReadsTheNumberAtThePath`                                 | Theory | Extract value reads the number at the path.                                        |
+| `ExtractValue_MissingNonNumericOrMalformedPathIsZero`                  | Theory | Extract value missing non numeric or malformed path is zero.                       |
+| `ExtractValue_ConsecutiveDotsInThePathAreTolerated`                    | Fact   | Extract value consecutive dots in the path are tolerated.                          |
+| `ExtractValue_MissingAndGenuineZeroAreIndistinguishable`               | Fact   | Extract value missing and genuine zero are indistinguishable.                      |
+| `ExtractValue_BooleanAndDateTokensConvertTheWayNewtonsoftConvertsThem` | Fact   | Extract value boolean and date tokens convert the way newtonsoft converts them.    |
+| `BuildRows_OneRowPerJsonWithOneColumnPerVariableInVariableOrder`       | Fact   | Build rows one row per json with one column per variable in variable order.        |
+| `BuildRows_MissingValuesBecomeZeroWithoutDroppingTheRowOrShorteningIt` | Fact   | Build rows missing values become zero without dropping the row or shortening it.   |
+| `BuildRows_ExtraJsonFieldsAreIgnored`                                  | Fact   | Build rows extra json fields are ignored.                                          |
+| `BuildRows_EmptyJsonListGivesNoRows`                                   | Fact   | Build rows empty json list gives no rows.                                          |
+| `BuildRows_NoVariablesGivesEmptyRowsOnePerJson`                        | Fact   | Build rows no variables gives empty rows one per json.                             |
+| `BuildRows_UnparseableJsonThrowsRatherThanBeingSkipped`                | Fact   | Build rows unparseable json throws rather than being skipped.                      |
+| `BuildRows_VariableKeysAreReadAsAZeroBasedSequence`                    | Fact   | Build rows variable keys are read as a zero based sequence.                        |
+| `BuildRows_ManyRowsKeepInputOrder`                                     | Fact   | Build rows many rows keep input order.                                             |
+| `ACatastrophicRegexFilterInAStoredPathIsCutShortAndReadsAsZero`        | Theory | A catastrophic regex filter in a stored value path is cut short and reads as zero. |
 
 ### LoadSampleSqlTests
 
@@ -304,7 +328,7 @@ promotion and model recall in the engine.
 
 | Test                                                                             | Kind   | Verifies                                                                                    |
 |----------------------------------------------------------------------------------|--------|---------------------------------------------------------------------------------------------|
-| `BuildVariablesFromFields_KeepsOnlyProcessingTypesThreeFiveAndSeven`             | Theory | Build variables from fields keeps only processing types three five and seven.               |
+| `BuildVariablesFromFields_KeepsOnlyProcessingTypesThreeFiveSevenAndEight`        | Theory | Build variables from fields keeps only processing types three five seven and eight.         |
 | `BuildVariablesFromFields_PreservesQueryOrderAndNumbersKeysFromZeroWithoutGaps`  | Fact   | Build variables from fields preserves query order and numbers keys from zero without gaps.  |
 | `BuildVariablesFromFields_CarriesNameProcessingTypeAndJsonPath`                  | Fact   | Build variables from fields carries name processing type and json path.                     |
 | `BuildVariablesFromFields_NoFieldsOrNoEligibleFieldsGivesNoVariables`            | Fact   | Build variables from fields no fields or no eligible fields gives no variables.             |
@@ -506,7 +530,7 @@ promotion and model recall in the engine.
 
 ### SyncBuildModelTests
 
-`Jube.Test.Exhaustive.SyncBuildModelTests` — 12 tests. Category: Unit.
+`Jube.Test.Exhaustive.SyncBuildModelTests` — 14 tests. Category: Unit.
 
 | Test                                                                           | Kind   | Verifies                                                                                     |
 |--------------------------------------------------------------------------------|--------|----------------------------------------------------------------------------------------------|
@@ -522,6 +546,8 @@ promotion and model recall in the engine.
 | `AnEmptyJsonStringGivesANullNetworkAndNoError`                                 | Fact   | An empty json string gives a null network and no error.                                      |
 | `GarbageJsonNeverEscapesAsAnException`                                         | Fact   | Garbage json never escapes as an exception.                                                  |
 | `AnOnErrorCallbackIsOptional`                                                  | Fact   | An on error callback is optional.                                                            |
+| `TheLoadedVariablesClampAnExtremeValueToTheDefaultBound`                       | Fact   | Loaded variables clamp an extreme value to the default bound.                                |
+| `TheLoadedVariablesUseTheEnvironmentsConfiguredClipBoundNotAHardcodedFive`     | Fact   | Loaded variables use the environment clip bound.                                             |
 
 ### SyncExhaustiveSearchInstancesTests
 
@@ -540,6 +566,17 @@ promotion and model recall in the engine.
 | `InstancesAreRegisteredInIdOrderAsync`                                       | Fact | Instances are registered in id order.                                             |
 | `ACorruptPromotedJsonDoesNotStopTheNextInstanceLoadingAsync`                 | Fact | A corrupt promoted json does not stop the next instance loading.                  |
 | `ResyncReplacesTheCollectionAndPicksUpANewlyPromotedTrialAsync`              | Fact | Resync replaces the collection and picks up a newly promoted trial.               |
+
+### AnchoredAssemblySerializationBinderTests
+
+`Jube.Test.Exhaustive.AnchoredAssemblySerializationBinderTests` — 4 tests. Category: Unit.
+
+| Test                                                                   | Kind   | Verifies                                                                                 |
+|------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------|
+| `ATypeOutsideTheAnchoredAssemblyIsNeverInstantiatedFromAStoredNetwork` | Fact   | A type outside the anchored assembly named in stored network JSON is never instantiated. |
+| `WellKnownGadgetTypesAreRefusedByTheBinder`                            | Theory | Process, FileInfo and a generic of Process are refused by the binder.                    |
+| `TheTypesOfTheAnchoredAssemblyArePermitted`                            | Fact   | The anchored assembly activation function types are still permitted.                     |
+| `ABinderWithNoAnchorPermitsOnlyPrimitivesAndStrings`                   | Fact   | A binder with no anchor permits only primitives, strings and arrays of them.             |
 
 ### TrainClassHistogramEndToEndTests
 
@@ -569,18 +606,19 @@ promotion and model recall in the engine.
 
 ### TrainDbRecorderTests
 
-`Jube.Test.Exhaustive.TrainDbRecorderTests` — 8 tests. Collection: Database.
+`Jube.Test.Exhaustive.TrainDbRecorderTests` — 9 tests. Collection: Database.
 
-| Test                                                                                | Kind   | Verifies                                                                               |
-|-------------------------------------------------------------------------------------|--------|----------------------------------------------------------------------------------------|
-| `IsStopRequested_IsTrueOnlyForStoppingAndStoppedStatusesAsync`                      | Theory | Is stop requested is true only for stopping and stopped statuses.                      |
-| `InstanceUpdates_PersistScoreModelsAndModelsSinceBestAsync`                         | Fact   | Instance updates persist score models and models since best.                           |
-| `Recorder_InsertsEveryTrialArtefactAndReturnsTheGeneratedIdsAsync`                  | Fact   | Recorder inserts every trial artefact and returns the generated ids.                   |
-| `TrialVariables_InsertThenMarkRemovedAsync`                                         | Fact   | Trial variables insert then mark removed.                                              |
-| `MarkTrialVariableRemoved_ForAnUnknownPair_ThrowsAsync`                             | Fact   | Mark trial variable removed for an unknown pair throws.                                |
-| `DeleteTrialVariables_SoftDeletesTheRowsOfThatTrialOnlyAsync`                       | Fact   | Delete trial variables soft deletes the rows of that trial only.                       |
-| `PromotedVariableHistogram_IsInsertedAgainstThePromotedVariableAsync`               | Fact   | Promoted variable histogram is inserted against the promoted variable.                 |
-| `PromotedVariableHistogram_ForAnUnknownPromotedVariable_ViolatesTheForeignKeyAsync` | Fact   | Promoted variable histogram for an unknown promoted variable violates the foreign key. |
+| Test                                                                                                  | Kind   | Verifies                                                                                                       |
+|-------------------------------------------------------------------------------------------------------|--------|----------------------------------------------------------------------------------------------------------------|
+| `IsStopRequested_IsTrueOnlyForStoppingAndStoppedStatusesAsync`                                        | Theory | Is stop requested is true only for stopping and stopped statuses.                                              |
+| `InstanceUpdates_PersistScoreModelsAndModelsSinceBestAsync`                                           | Fact   | Instance updates persist score models and models since best.                                                   |
+| `Recorder_InsertsEveryTrialArtefactAndReturnsTheGeneratedIdsAsync`                                    | Fact   | Recorder inserts every trial artefact and returns the generated ids.                                           |
+| `TrialVariables_InsertThenMarkRemovedAsync`                                                           | Fact   | Trial variables insert then mark removed.                                                                      |
+| `MarkTrialVariableRemoved_ForAnUnknownPair_ThrowsAsync`                                               | Fact   | Mark trial variable removed for an unknown pair throws.                                                        |
+| `DeleteTrialVariables_SoftDeletesTheRowsOfThatTrialOnlyAsync`                                         | Fact   | Delete trial variables soft deletes the rows of that trial only.                                               |
+| `ReselectingTrialVariables_NeverLeavesTheSoftDeletedRowsInThePromotedVariableListTheEngineLoadsAsync` | Fact   | Reselecting trial variables never leaves the soft deleted rows in the promoted variable list the engine loads. |
+| `PromotedVariableHistogram_IsInsertedAgainstThePromotedVariableAsync`                                 | Fact   | Promoted variable histogram is inserted against the promoted variable.                                         |
+| `PromotedVariableHistogram_ForAnUnknownPromotedVariable_ViolatesTheForeignKeyAsync`                   | Fact   | Promoted variable histogram for an unknown promoted variable violates the foreign key.                         |
 
 ### TrainInstanceRunTests
 
@@ -598,9 +636,9 @@ promotion and model recall in the engine.
 | `RunOneInstance_AutomaticRecordsEveryCandidateEvaluationAsync`                                    | Fact | Run one instance automatic records every candidate evaluation.                                          |
 | `RunOneInstance_AnomalyThatFlagsNothing_CompletesWithStatusSeventeenAndNoTrialsAsync`             | Fact | Run one instance anomaly that flags nothing completes with status seventeen and no trials.              |
 | `StartAsync_PollsRunsTheNextInstanceThenKeepsPollingUntilCancelledAsync`                          | Fact | Start async polls runs the next instance then keeps polling until cancelled.                            |
-| `StartAsync_AnAnomalyInstanceThatFlagsNothing_CompletesAtStatusSeventeenAndPollingContinuesAsync` | Fact | Start async an anomaly instance that flags nothing completes at status seventeen and polling continues. |
 | `StartAsync_ARunThatThrows_IsSurvivedAndPollingContinuesAsync`                                    | Fact | Start async a run that throws is survived and polling continues.                                        |
 | `StartAsync_CancelledBeforeStart_ReturnsImmediatelyWithoutPollingAsync`                           | Fact | Start async cancelled before start returns immediately without polling.                                 |
+| `StartAsync_AnAnomalyInstanceThatFlagsNothing_CompletesAtStatusSeventeenAndPollingContinuesAsync` | Fact | Start async an anomaly instance that flags nothing completes at status seventeen and polling continues. |
 
 ### TrainLoopTests
 
@@ -633,8 +671,8 @@ promotion and model recall in the engine.
 | `TrainAsync_CancellationToken_PropagatesAsOperationCanceledNotSwallowedPerTrialAsync`           | Fact | Train async cancellation token propagates as operation canceled not swallowed per trial.                 |
 | `TrainAsync_CancellationMidTrial_PropagatesFromTheRecorderAsync`                                | Fact | Train async cancellation mid trial propagates from the recorder.                                         |
 | `TrainAsync_AnErrorInsideOneTrial_IsSwallowedAndTheNextTrialStillRunsAsync`                     | Fact | Train async an error inside one trial is swallowed and the next trial still runs.                        |
-| `TrainAsync_AnErrorDuringPromotionStorage_SkipsTheRestOfThatPromotionButKeepsTheBestScoreAsync` | Fact | Train async an error during promotion storage skips the rest of that promotion but keeps the best score. |
 | `TrainAsync_SeparableData_ReachesAPerfectScoreAndStopsBeforeTheTrialLimitAsync`                 | Fact | Train async separable data reaches a perfect score and stops before the trial limit.                     |
+| `TrainAsync_AnErrorDuringPromotionStorage_SkipsTheRestOfThatPromotionButKeepsTheBestScoreAsync` | Fact | Train async an error during promotion storage skips the rest of that promotion but keeps the best score. |
 
 ### TrainMetricsTests
 
@@ -712,7 +750,6 @@ promotion and model recall in the engine.
 | `DatasetSymmetry_DoesNotMutateItsInputs_AndKeepsTheRowInstances`                                      | Fact   | Dataset symmetry does not mutate its inputs and keeps the row instances.                                          |
 | `DatasetSymmetry_DifferentSeedsPickDifferentSurvivors`                                                | Fact   | Dataset symmetry different seeds pick different survivors.                                                        |
 | `DatasetSymmetry_ExplicitTargetBelowBothClasses_TrimsBothClassesToTheTarget`                          | Fact   | Dataset symmetry explicit target below both classes trims both classes to the target.                             |
-| `DatasetSymmetry_ExplicitTargetAboveMinority_TrimsOnlyTheMajority_LeavingMinorityForBootstrapToTopUp` | Fact   | Dataset symmetry explicit target above minority trims only the majority leaving minority for bootstrap to top up. |
 | `DatasetSymmetry_ExplicitTargetAboveBothClasses_LeavesBothClassesUntouched`                           | Fact   | Dataset symmetry explicit target above both classes leaves both classes untouched.                                |
 | `NormaliseData_OnlyZScoresTypeTwoColumns_AndMutatesInPlace`                                           | Fact   | Normalise data only z scores type two columns and mutates in place.                                               |
 | `NormaliseData_UsesTheFittedStatisticsForEveryRow_SoARowIsNotAffectedByOthers`                        | Fact   | Normalise data uses the fitted statistics for every row so a row is not affected by others.                       |
@@ -720,6 +757,7 @@ promotion and model recall in the engine.
 | `NormaliseData_FitOnPopulationIsAppliedToAllRows_LeakageOfTestRowsIntoTheStatistics_H6Async`          | Fact   | Normalise data fit on population is applied to all rows leakage of test rows into the statistics h 6.             |
 | `OnlyOutputWithClassificationForData_ReturnsThePositiveRowsInOrder_AndThrowsIfTheCountIsTooLow`       | Fact   | Only output with classification for data returns the positive rows in order and throws if the count is too low.   |
 | `OnlyOutputWithClassificationForData_CountTooHigh_LeavesNullRows_Characterisation`                    | Fact   | Only output with classification for data count too high leaves null rows characterisation.                        |
+| `DatasetSymmetry_ExplicitTargetAboveMinority_TrimsOnlyTheMajority_LeavingMinorityForBootstrapToTopUp` | Fact   | Dataset symmetry explicit target above minority trims only the majority leaving minority for bootstrap to top up. |
 
 ### TrainStatisticsTests
 
@@ -729,11 +767,9 @@ promotion and model recall in the engine.
 |-----------------------------------------------------------------------------------------------------------------------|--------|--------------------------------------------------------------------------------------------------------------------------------|
 | `Population_ComputesMeanMinMaxAndSampleStandardDeviationAsync`                                                        | Fact   | Population computes mean min max and sample standard deviation.                                                                |
 | `Population_AssignsNormalisationTypeByShapeOfTheColumnAsync`                                                          | Fact   | Population assigns normalisation type by shape of the column.                                                                  |
-| `Population_ConstantNonZeroColumn_IsZScoreTypeWithZeroSd_AndTheStatisticsRowIsStillWrittenAsync`                      | Fact   | Population constant non zero column is z score type with zero sd and the statistics row is still written.                      |
 | `Population_TriangularDistribution_IsBuiltInNormalisedSpaceOnlyWhenMinBelowMaxAsync`                                  | Fact   | Population triangular distribution is built in normalised space only when min below max.                                       |
 | `Population_ModeZeroAndMeanNonZero_UsesAFixedSmallModeOfPointZeroOneAsync`                                            | Fact   | Population mode zero and mean non zero uses a fixed small mode of point zero one.                                              |
 | `Population_ColumnWithOnlyNonPositiveValuesAndAZeroMode_ClampsTheModeIntoTheRangeAsync`                               | Fact   | Population column with only non positive values and a zero mode clamps the mode into the range.                                |
-| `Population_ColumnWithMaximumZeroAndNegativeValues_IsTypedAsNoNormalisationLikeAnAllZeroColumn_CharacterisationAsync` | Fact   | Population column with maximum zero and negative values is typed as no normalisation like an all zero column characterisation. |
 | `Population_ConstantColumn_StoresZeroKurtosisAndSkewnessInsteadOfNaNAsync`                                            | Fact   | Population constant column stores zero kurtosis and skewness instead of na n.                                                  |
 | `Population_ColumnContainingNaN_StoresZeroedStatisticsAndHasNoDistributionAsync`                                      | Fact   | Population column containing na n stores zeroed statistics and has no distribution.                                            |
 | `BuildTriangularDistribution_ForADegenerateRange_ReturnsNull`                                                         | Theory | Build triangular distribution for a degenerate range returns null.                                                             |
@@ -741,15 +777,17 @@ promotion and model recall in the engine.
 | `Population_StoredBinCount_FollowsTheSturgesLikeRuleAndCapsAtTwentyAsync`                                             | Fact   | Population stored bin count follows the sturges like rule and caps at twenty.                                                  |
 | `Population_HistogramRows_AreWrittenPerBinInSequenceForTheInsertedVariableIdAsync`                                    | Fact   | Population histogram rows are written per bin in sequence for the inserted variable id.                                        |
 | `Population_HistogramBinCount_IgnoresTheComputedBinCount_H17Async`                                                    | Fact   | Population histogram bin count ignores the computed bin count h 17.                                                            |
-| `Classification_WritesClassificationRowsLinkedToTheExistingVariableIds_AndLeavesVariablesAloneAsync`                  | Fact   | Classification writes classification rows linked to the existing variable ids and leaves variables alone.                      |
 | `Anomaly_WritesAnomalyRowsLinkedToTheExistingVariableIdsAsync`                                                        | Fact   | Anomaly writes anomaly rows linked to the existing variable ids.                                                               |
 | `TheOriginalSignature_ResolvesTheTargetFromTheRepositoryTypeAsync`                                                    | Fact   | The original signature resolves the target from the repository type.                                                           |
 | `OnlyTheFirstVariablesCountRowsAreCovered_WhenTheMatrixHasMoreColumnsAsync`                                           | Fact   | Only the first variables count rows are covered when the matrix has more columns.                                              |
 | `MockPopulation_ClassifiesEveryColumnAndBuildsADistributionForEveryNonConstantColumnAsync`                            | Fact   | Mock population classifies every column and builds a distribution for every non constant column.                               |
+| `Classification_WritesClassificationRowsLinkedToTheExistingVariableIds_AndLeavesVariablesAloneAsync`                  | Fact   | Classification writes classification rows linked to the existing variable ids and leaves variables alone.                      |
+| `Population_ColumnWithMaximumZeroAndNegativeValues_IsTypedAsNoNormalisationLikeAnAllZeroColumn_CharacterisationAsync` | Fact   | Population column with maximum zero and negative values is typed as no normalisation like an all zero column characterisation. |
+| `Population_ConstantNonZeroColumn_IsZScoreTypeWithZeroSd_AndTheStatisticsRowIsStillWrittenAsync`                      | Fact   | Population constant non zero column is z score type with zero sd and the statistics row is still written.                      |
 
 ### TrainingRepairTests
 
-`Jube.Test.Exhaustive.TrainingRepairTests` — 6 tests.
+`Jube.Test.Exhaustive.TrainingRepairTests` — 12 tests.
 
 | Test                                                                          | Kind | Verifies                                                                        |
 |-------------------------------------------------------------------------------|------|---------------------------------------------------------------------------------|
@@ -759,6 +797,12 @@ promotion and model recall in the engine.
 | `DatasetSymmetry_Balanced_ReturnsEveryRow`                                    | Fact | Dataset symmetry balanced returns every row.                                    |
 | `OnlyOutputWithClassificationForData_KeepsAPositiveFinalRow`                  | Fact | Only output with classification for data keeps a positive final row.            |
 | `CalculateStatistics_ProducesStatisticsForEveryVariableIncludingTheLastAsync` | Fact | Calculate statistics produces statistics for every variable including the last. |
+| `NormaliseData_ExtremeOutlier_IsClampedToTheConfiguredBoundInBothDirections`  | Fact | Normalisation clamps an outlier both ways.                                      |
+| `NormaliseData_ValueExactlyAtTheBoundIsUnaffected`                            | Fact | A value at the bound is unaffected.                                             |
+| `NormaliseData_ValueWithinTheBoundIsByteIdenticalToTheUnclampedZScore`        | Fact | A value within the bound equals the unclamped z-score.                          |
+| `NormaliseData_NonStandardisedVariable_IsNeverClampedEvenWhenLarge`           | Fact | A non standardised variable is never clamped.                                   |
+| `NormaliseData_UsesTheConfiguredClipBoundNotAHardcodedFive`                   | Fact | Normalisation uses the configured bound.                                        |
+| `NormaliseData_AndThePromotedRecallVariable_ClampToTheSameConfiguredBound`    | Fact | Training and recall clamp to the same bound.                                    |
 
 ## Datasets
 

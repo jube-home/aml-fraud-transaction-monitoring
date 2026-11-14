@@ -16,7 +16,7 @@ using System.Globalization;
 using System.Text;
 using Jube.Analytics.Datasets;
 using Jube.Analytics.Datasets.Models;
-using Jube.Cache.Redis.Callback;
+using Jube.Cache.Resp.Callback;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery;
@@ -33,9 +33,11 @@ using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Extensi
 using Jube.Engine.Exhaustive.Extensions;
 using Jube.Engine.Sanctions;
 using Jube.Service.Exceptions.Invoke;
+using Jube.Service.Query.Parser;
 using Jube.Service.Repository.ExhaustiveInstanceDataset;
 using Jube.Validations.Invoke;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
@@ -292,12 +294,16 @@ namespace Jube.Service.Invoke
             var exhaustive = SyncExhaustiveSearchInstancesExtensions.BuildExhaustiveModel(record, promoted,
                 variableRows,
                 engine!.Context.JsonSerializationHelper.DeserializeTopologyNetworkJsonSerializerSettings,
-                ex => log.Error($"Exhaustive Recall: GUID {guid} failed to load the promoted network as {ex}."));
+                ex => log.Error($"Exhaustive Recall: GUID {guid} failed to load the promoted network as {ex}."),
+                dynamicEnvironment);
 
             return (exhaustive, null);
         }
 
-        public InvokeResult Sanction(SanctionSearchRequestDto request)
+        internal const int SanctionPermissionSpecificationId = 29;
+
+        public async Task<InvokeResult> SanctionAsync(SanctionSearchRequestDto request,
+            CancellationToken token = default)
         {
             try
             {
@@ -311,6 +317,23 @@ namespace Jube.Service.Invoke
                 if (engine?.Context is not { Ready: true })
                 {
                     return InvokeResult.Empty(503);
+                }
+
+                if (!await CallerMaySearchSanctionsAsync(token).ConfigureAwait(false))
+                {
+                    return InvokeResult.Forbidden();
+                }
+
+                if (!ParseRateLimiter.TryAcquire($"sanction:{userName}",
+                        SanctionSetting("SanctionSearchMaxPerUserPerWindow", 300),
+                        TimeSpan.FromSeconds(SanctionSetting("SanctionSearchWindowSeconds", 60)), DateTime.UtcNow))
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn($"Sanction Fetch: rate limited user={userName}");
+                    }
+
+                    return InvokeResult.Empty(429);
                 }
 
                 var validationResult = new SanctionSearchRequestDtoValidator(localiser).Validate(request);
@@ -352,6 +375,9 @@ namespace Jube.Service.Invoke
                         engine.Context.Sanctions.SanctionsStopTokens);
 
                 var entries = sanctionEntryReturns
+                    .OrderBy(sanctionEntryReturn => sanctionEntryReturn.LevenshteinDistance)
+                    .ThenBy(sanctionEntryReturn => sanctionEntryReturn.SanctionEntry.SanctionEntryId)
+                    .Take(SanctionSetting("SanctionSearchMaxEntries", 1000))
                     .Select(sanctionEntryReturn => new SanctionEntryDto
                     {
                         Reference = sanctionEntryReturn.SanctionEntry.SanctionEntryReference,
@@ -429,6 +455,31 @@ namespace Jube.Service.Invoke
 
                 return InvokeResult.Empty(500);
             }
+        }
+
+        private int SanctionSetting(string key, int fallback)
+        {
+            return int.TryParse(dynamicEnvironment.AppSettings(key), NumberStyles.Integer,
+                CultureInfo.InvariantCulture, out var value) && value > 0
+                ? value
+                : fallback;
+        }
+
+        private async Task<bool> CallerMaySearchSanctionsAsync(CancellationToken token)
+        {
+            if (dbContextFactory == null || string.IsNullOrWhiteSpace(userName))
+            {
+                return false;
+            }
+
+            await using var dbContext = dbContextFactory();
+
+            var permissions = await new PermissionValidation()
+                .GetPermissionsAsync(dbContext, userName, log).ConfigureAwait(false);
+
+            token.ThrowIfCancellationRequested();
+
+            return permissions.ActiveUser && permissions.Permissions.Contains(SanctionPermissionSpecificationId);
         }
 
         private static double? ParseOptionalDouble(string? value)

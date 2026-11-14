@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The branch code of a valid BIC, XXX for an eight-character BIC, otherwise empty.")]
         public static string BicBranchCode(this string? @this)
         {
             if (!@this.IsValidBic())

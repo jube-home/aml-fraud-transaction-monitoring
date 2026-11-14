@@ -50,31 +50,31 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelReprocessingRuleCreate", OperationKind.Write, false, false,
                     "Registers a Reprocessing Rule under a Model in the caller's tenant; calling twice creates two.",
-                    EntityAnalysisModelReprocessingRuleService.RequiredPermissions),
+                    EntityAnalysisModelReprocessingRuleService.EditPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelReprocessingRuleValidate", OperationKind.Read, true, false,
                     "Validates a Reprocessing Rule without saving it and returns every failure.",
-                    EntityAnalysisModelReprocessingRuleService.RequiredPermissions),
+                    EntityAnalysisModelReprocessingRuleService.EditPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelReprocessingRuleParseRule", OperationKind.Read, true, false,
                     "Parses and compiles a Reprocessing Rule's rule text as the engine would and returns each located error.",
-                    EntityAnalysisModelReprocessingRuleService.RequiredPermissions),
+                    EntityAnalysisModelReprocessingRuleService.EditPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelReprocessingRuleExecute", OperationKind.Read, true, false,
                     "Runs a Reprocessing Rule against an invocation context as the engine would and returns the result.",
-                    EntityAnalysisModelReprocessingRuleService.RequiredPermissions),
+                    EntityAnalysisModelReprocessingRuleService.EditPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelReprocessingRuleBuildRuleFromBuilderJson", OperationKind.Read, true, false,
                     "Turns query builder JSON into a Reprocessing Rule's rule text as the browser builder would, and parses it.",
-                    EntityAnalysisModelReprocessingRuleService.RequiredPermissions),
+                    EntityAnalysisModelReprocessingRuleService.EditPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelReprocessingRuleUpdate", OperationKind.Write, false, false,
                     "Supersedes a Reprocessing Rule in the caller's tenant by id, assigning it a new id.",
-                    EntityAnalysisModelReprocessingRuleService.RequiredPermissions),
+                    EntityAnalysisModelReprocessingRuleService.EditPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelReprocessingRuleDelete", OperationKind.Delete, true, true,
                     "Soft-deletes a Reprocessing Rule in the caller's tenant by id.",
-                    EntityAnalysisModelReprocessingRuleService.RequiredPermissions)
+                    EntityAnalysisModelReprocessingRuleService.EditPermissions)
             ]);
         }
     }

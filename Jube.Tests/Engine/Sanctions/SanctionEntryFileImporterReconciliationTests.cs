@@ -254,5 +254,34 @@ namespace Jube.Test.Engine.Sanctions
             var active = await repository.GetActiveBySanctionEntrySourceIdAsync(sourceId);
             active.Should().BeEmpty();
         }
+
+        [Fact]
+        public async Task AReconcileThatWouldDelistMostOfALargeSourceIsRefusedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var repository = new SanctionEntryRepository(dbContext);
+            var csv = string.Concat(Enumerable.Range(1, 120).Select(i => $"{i},Person Number{i},USA\n"));
+            var seen = await LoadAsync(dbContext, csv);
+
+            var removed = await SanctionEntryFileImporter.ReconcileRemovedAsync(repository, sourceId,
+                seen.Take(10).ToHashSet(), DatabaseFixture.Prefix, TestLog.NoOp);
+
+            removed.Should().BeEmpty();
+            (await repository.GetActiveBySanctionEntrySourceIdAsync(sourceId)).Should().HaveCount(120);
+        }
+
+        [Fact]
+        public async Task AReconcileWithinTheSafetyLimitStillDelistsTheMissingRowsOfALargeSourceAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var repository = new SanctionEntryRepository(dbContext);
+            var csv = string.Concat(Enumerable.Range(1, 120).Select(i => $"{i},Person Number{i},USA\n"));
+            var seen = await LoadAsync(dbContext, csv);
+
+            var removed = await SanctionEntryFileImporter.ReconcileRemovedAsync(repository, sourceId,
+                seen.Take(100).ToHashSet(), DatabaseFixture.Prefix, TestLog.NoOp);
+
+            removed.Should().HaveCount(20);
+        }
     }
 }

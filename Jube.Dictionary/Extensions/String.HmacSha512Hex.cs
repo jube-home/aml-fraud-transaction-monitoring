@@ -18,7 +18,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string HmacSha512Hex(this string? @this, string? key)
+        [Description("Lower-case hex HMAC-SHA-512 under a key.")]
+        public static string HmacSha512Hex(this string? @this, [Description("The secret key.")] string? key)
         {
             return Convert.ToHexStringLower(HMACSHA512.HashData(Encoding.UTF8.GetBytes(key ?? ""),
                 Encoding.UTF8.GetBytes(@this ?? "")));

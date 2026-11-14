@@ -35,6 +35,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Infrastructure.Reactivity;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
@@ -454,6 +455,22 @@ namespace Jube.Test.Service.EntityAnalysisModelTtlCounter
         }
 
         [Fact]
+        public async Task InsertUnderASoftDeletedModelIsRejectedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            await dbContext.GetTable<Data.Poco.EntityAnalysisModel>()
+                .Where(w => w.Id == modelId).Set(s => s.Deleted, (byte)1).UpdateAsync();
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() =>
+                service.InsertAsync(NewDto(modelId, UniqueName("DeletedParent"))));
+
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "EntityAnalysisModelIdInvalid");
+        }
+
+        [Fact]
         public async Task TtlCounterDataNameRequiredRejectsEmptyAsync()
         {
             await using var dbContext = fx.GetDbContext();
@@ -581,7 +598,6 @@ namespace Jube.Test.Service.EntityAnalysisModelTtlCounter
             var dto = NewDto(modelId, saved.Name);
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
-            dto.Version = 999;
             dto.Guid = Guid.NewGuid();
 
             var updated = await service.UpdateAsync(dto);

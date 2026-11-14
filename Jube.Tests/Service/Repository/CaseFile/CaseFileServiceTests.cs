@@ -29,12 +29,15 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
+using Jube.Service.Repository.CaseFile.Interfaces;
 using Jube.Service.Repository.CaseFile.Models;
+using Jube.Test.Service.Repository.CaseFile.Models;
 
 namespace Jube.Test.Service.Repository.CaseFile
 {
@@ -60,6 +63,7 @@ namespace Jube.Test.Service.Repository.CaseFile
             await dbContext.GetTable<Data.Poco.CaseFile>().Where(w => createdCaseFileIds.Contains(w.Id))
                 .DeleteAsync();
 
+            await dbContext.CaseNote.Where(w => createdCaseIds.Contains(w.CaseId!.Value)).DeleteAsync();
             await dbContext.Case.Where(w => createdCaseIds.Contains(w.Id)).DeleteAsync();
 
             var caseWorkflowStatusGuids1 = dbContext.CaseWorkflowStatus
@@ -86,10 +90,11 @@ namespace Jube.Test.Service.Repository.CaseFile
 
         private static Task<CaseFileService> BuildServiceAsync(
             DbContext dbContext, string? userName, ILog? log = null, ILog? auditLog = null,
-            IServiceChangeBus? serviceChangeBus = null)
+            IServiceChangeBus? serviceChangeBus = null, Jube.DynamicEnvironment.DynamicEnvironment? environment = null,
+            ICaseFileScanner? scanner = null)
         {
             return CaseFileService.CreateAsync(dbContext, userName, log ?? TestLog.NoOp, localizers,
-                serviceChangeBus ?? new NullServiceChangeBus(), auditLog ?? TestLog.NoOp);
+                serviceChangeBus ?? new NullServiceChangeBus(), auditLog ?? TestLog.NoOp, environment, scanner);
         }
 
         private async Task<int> CreateModelAsync(DbContext dbContext, string createdUser)
@@ -194,9 +199,16 @@ namespace Jube.Test.Service.Repository.CaseFile
         private async Task<int> CreateCaseFileAsync(DbContext dbContext, int caseId, string caseKey,
             string caseKeyValue, string createdUser, byte[]? content = null)
         {
+            var noteId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseNote
+            {
+                Note = "ZzTest carrier", CaseId = caseId, CaseKey = caseKey, CaseKeyValue = caseKeyValue,
+                CreatedUser = createdUser, CreatedDate = DateTime.UtcNow, SourceId = 1, KindId = 4, Version = 1
+            }).ConfigureAwait(false);
+
             var id = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseFile
             {
                 Object = content ?? Encoding.UTF8.GetBytes("ZzTest file content"),
+                CaseNoteId = noteId,
                 CaseId = caseId,
                 CaseKey = caseKey,
                 CaseKeyValue = caseKeyValue,
@@ -304,6 +316,139 @@ namespace Jube.Test.Service.Repository.CaseFile
             saved.Object.Should().Equal(Encoding.UTF8.GetBytes("%PDF-1.4 test"));
 
             bus.Published.Should().ContainSingle(e => e.EntityId == result.Id && e.Kind == ServiceChangeKind.Created);
+        }
+
+        [Theory]
+        [InlineData("invoice\u202Dfdp.txt", "invoicefdp.txt")]
+        [InlineData("x\u2066y\u2069.txt", "xy.txt")]
+        [InlineData("\u200Fname\u061C.txt", "name.txt")]
+        [InlineData("a\u200Bb\uFEFF.txt", "ab.txt")]
+        [InlineData("evil\u202Egnp.txt", "evilgnp.txt")]
+        [InlineData("trailing.txt. ", "trailing.txt")]
+        public async Task UploadStripsBidiAndInvisibleCharactersFromTheStoredFileNameAsync(string submitted,
+            string expected)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var (workflowGuid, statusGuid) = await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+            var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid);
+
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var result = (await service.UploadAsync([NonEmptyFile(submitted)], "account", "acc-value", caseId))
+                .Required();
+            createdCaseFileIds.Add(result.Id);
+
+            result.Name.Should().Be(expected);
+        }
+
+        [Theory]
+        [InlineData("tool.exe", "MZ-header")]
+        [InlineData("page.html", "<html><body>x</body></html>")]
+        [InlineData("image.svg", "<svg xmlns=\"http://www.w3.org/2000/svg\"></svg>")]
+        [InlineData("run.js", "alert(1)")]
+        [InlineData("run.sh", "#!/bin/sh")]
+        [InlineData("noextension", "plain text")]
+        public async Task UploadRefusesAnExtensionOutsideTheAllowListAndStoresNothingAsync(string name, string content)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var (workflowGuid, statusGuid) = await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+            var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var act = () => service.UploadAsync([NonEmptyFile(name, content)], "account", "value", caseId);
+
+            var thrown = (await act.Should().ThrowAsync<DtoValidationException>()).Which;
+            thrown.Result.Errors.Should().ContainSingle().Which.ErrorCode.Should().Be("FileTypeNotAllowed");
+            (await dbContext.CaseNote.CountAsync(w => w.CaseId == caseId)).Should().Be(0);
+            (await dbContext.GetTable<Data.Poco.CaseFile>().CountAsync(w => w.CaseId == caseId)).Should().Be(0);
+        }
+
+        [Theory]
+        [InlineData("fake.pdf", new byte[] { 0x4D, 0x5A, 0x90, 0x00, 0x03 })]
+        [InlineData("fake.txt", new byte[] { 0x3C, 0x68, 0x74, 0x6D, 0x6C, 0x3E })]
+        [InlineData("fake.png", new byte[] { 0x7F, 0x45, 0x4C, 0x46, 0x02 })]
+        [InlineData("fake.zip", new byte[] { 0x01, 0x02, 0x03, 0x00, 0x05 })]
+        public async Task UploadRefusesContentThatIsNotOfAnAcceptedTypeWhateverTheNameSaysAsync(string name,
+            byte[] bytes)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var (workflowGuid, statusGuid) = await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+            var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var act = () => service.UploadAsync(
+                [new UploadedFileContent(new System.IO.MemoryStream(bytes), name, "application/pdf", bytes.Length)],
+                "account", "value", caseId);
+
+            var thrown = (await act.Should().ThrowAsync<DtoValidationException>()).Which;
+            thrown.Result.Errors.Should().ContainSingle().Which.ErrorCode.Should().Be("FileContentNotAllowed");
+            (await dbContext.CaseNote.CountAsync(w => w.CaseId == caseId)).Should().Be(0);
+        }
+
+        [Fact]
+        public async Task TheAllowListsAreSettingsAndAnOwnerCanOptInToSvgOrToEverythingAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var (workflowGuid, statusGuid) = await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+            var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid);
+            const string svg = "<svg xmlns=\"http://www.w3.org/2000/svg\"></svg>";
+
+            var svgAllowed = TestDynamicEnvironment.Create(new Dictionary<string, string>
+            {
+                ["CaseFileAllowedExtensions"] = "svg,txt", ["CaseFileAllowedContentTypes"] = "image/svg+xml,text/plain"
+            });
+
+            var anything = TestDynamicEnvironment.Create(new Dictionary<string, string>
+            {
+                ["CaseFileAllowedExtensions"] = "*", ["CaseFileAllowedContentTypes"] = "*"
+            });
+
+            var svgService = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, environment: svgAllowed);
+            var anyService = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, environment: anything);
+
+            createdCaseFileIds.Add((await svgService.UploadAsync([NonEmptyFile("logo.svg", svg)], "account", "value",
+                caseId)).Required().Id);
+
+            await ((Func<Task>)(() => svgService.UploadAsync([NonEmptyFile("tool.exe", "x")], "account", "value", caseId)))
+                .Should().ThrowAsync<DtoValidationException>();
+
+            createdCaseFileIds.Add((await anyService.UploadAsync([NonEmptyFile("tool.exe", "MZ")], "account", "value",
+                caseId)).Required().Id);
+        }
+
+        [Fact]
+        public async Task AScannerThatRejectsOrFailsStopsTheUploadAndStoresNothingAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var (workflowGuid, statusGuid) = await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+            var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid);
+
+            var rejecting = new DelegateCaseFileScanner(_ => CaseFileScanResult.Rejected("EICAR"));
+            var failing = new DelegateCaseFileScanner(_ => throw new InvalidOperationException("scanner offline"));
+            var passing = new DelegateCaseFileScanner(_ => CaseFileScanResult.Passed);
+
+            var rejected = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, scanner: rejecting);
+            var broken = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, scanner: failing);
+            var clean = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, scanner: passing);
+
+            (await ((Func<Task>)(() => rejected.UploadAsync([NonEmptyFile()], "account", "value", caseId)))
+                .Should().ThrowAsync<DtoValidationException>()).Which.Result.Errors.Single().ErrorCode
+                .Should().Be("FileRejectedByScanner");
+
+            (await ((Func<Task>)(() => broken.UploadAsync([NonEmptyFile()], "account", "value", caseId)))
+                .Should().ThrowAsync<DtoValidationException>()).Which.Result.Errors.Single().ErrorCode
+                .Should().Be("FileScanUnavailable");
+
+            (await dbContext.CaseNote.CountAsync(w => w.CaseId == caseId)).Should().Be(0);
+            (await dbContext.GetTable<Data.Poco.CaseFile>().CountAsync(w => w.CaseId == caseId)).Should().Be(0);
+
+            createdCaseFileIds.Add((await clean.UploadAsync([NonEmptyFile("scan.pdf", "%PDF-1.4")], "account", "value",
+                caseId)).Required().Id);
+
+            var seen = passing.Requests.Should().ContainSingle().Subject;
+            seen.FileName.Should().Be("scan.pdf");
+            seen.SniffedContentType.Should().Be("application/pdf");
+            seen.UserName.Should().Be(fx.Seed.UserWithPermission);
+            seen.Content.Should().Equal(Encoding.UTF8.GetBytes("%PDF-1.4"));
         }
 
         [Fact]

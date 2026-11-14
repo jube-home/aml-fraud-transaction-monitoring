@@ -34,9 +34,14 @@ namespace Jube.Service.Agent.PageAgentToolBinder
         protected override async ValueTask<object?> InvokeCoreAsync(AIFunctionArguments arguments,
             CancellationToken cancellationToken)
         {
-            var result = await cache.InvokeIsolatedAsync(serviceType,
-                async () => await inner.InvokeAsync(arguments, cancellationToken).ConfigureAwait(false),
-                cancellationToken).ConfigureAwait(false);
+            object? result;
+
+            using (AgentInvocationScope.Enter())
+            {
+                result = await cache.InvokeIsolatedAsync(serviceType,
+                    async () => await inner.InvokeAsync(arguments, cancellationToken).ConfigureAwait(false),
+                    cancellationToken).ConfigureAwait(false);
+            }
 
             return await LargeResultPointer.ReduceAsync(result, Name, resultCache, maxResultCharacters,
                 JsonSerializerOptions, cancellationToken).ConfigureAwait(false);

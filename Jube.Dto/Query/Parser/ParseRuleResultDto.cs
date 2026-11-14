@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,12 +23,15 @@ namespace Jube.Dto.Query.Parser
 {
     [Description("The outcome of parsing a rule: a message ('Compiled' or 'Error', or the concatenated compiler " +
                  "messages) and the error spans, if any.")]
+    [MessagePackObject]
     public class ParseRuleResultDto
     {
         [Description("'Compiled' on success, 'Error' on failure, or the concatenated compiler error messages.")]
+        [Key(0)]
         public string? Message { get; set; }
 
         [Description("Located errors; absent when the rule compiled.")]
+        [Key(1)]
         public IEnumerable<ParseRuleErrorSpanDto>? ErrorSpans { get; set; }
     }
 }

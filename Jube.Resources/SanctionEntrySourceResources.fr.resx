@@ -48,4 +48,10 @@
     <data name="SanctionEntrySourceNotFound" xml:space="preserve">
     <value>Impossible de localiser la source d'entrée de sanction.</value>
   </data>
+    <data name="ImportFailed" xml:space="preserve">
+    <value>Le fichier n'a pas pu être lu jusqu'au bout ; l'importation a donc été enregistrée comme échouée et aucune entrée n'a été supprimée.</value>
+  </data>
+    <data name="FileTooLarge" xml:space="preserve">
+    <value>Le fichier dépasse la taille maximale autorisée de {0} Mio.</value>
+  </data>
 </root>

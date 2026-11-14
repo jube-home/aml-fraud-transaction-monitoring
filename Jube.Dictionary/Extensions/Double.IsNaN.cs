@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Checks if the value is not a number.")]
         public static Boolean IsNaN(this Double d)
         {
             return double.IsNaN(d);

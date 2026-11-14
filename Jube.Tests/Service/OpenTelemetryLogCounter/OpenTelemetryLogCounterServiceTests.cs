@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
+using Jube.Data.Helpers;
 using Jube.Dto.OpenTelemetryLogCounter;
 using Jube.Service.Exceptions.OpenTelemetryLogCounter;
 using Jube.Service.OpenTelemetryLogCounter;
@@ -25,6 +26,7 @@ using Jube.Service.Reactivity.Interfaces;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -260,6 +262,132 @@ namespace Jube.Test.Service.OpenTelemetryLogCounter
             var act = () => service.InsertAsync(NewDto(UniqueName("Forbidden")));
 
             await act.Should().ThrowAsync<ForbiddenException>();
+        }
+
+        [Fact]
+        public async Task InsertWithADuplicateNameIgnoringCaseIsRejectedAndWritesNoRowAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var name = UniqueName("Dup");
+            var first = await service.InsertAsync(NewDto(name));
+            createdIds.Add(first.Id);
+
+            var act = () => service.InsertAsync(NewDto(name.ToUpperInvariant(), "other"));
+
+            (await act.Should().ThrowAsync<DtoValidationException>())
+                .Which.Result.Errors.Should().ContainSingle(e => e.ErrorCode == "NameDuplicate");
+
+            (await dbContext.OpenTelemetryLogCounter.CountAsync(w => w.Name.ToLower() == name.ToLower()))
+                .Should().Be(1);
+        }
+
+        [Fact]
+        public async Task UpdateKeepingItsOwnNameIsNotADuplicateButRenamingOntoAnotherRowIsAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var a = await service.InsertAsync(NewDto(UniqueName("OwnA")));
+            var b = await service.InsertAsync(NewDto(UniqueName("OwnB")));
+            createdIds.Add(a.Id);
+            createdIds.Add(b.Id);
+
+            var keepDto = NewDto(a.Name, "changed");
+            keepDto.Id = a.Id;
+            keepDto.Version = a.Version.GetValueOrDefault();
+            var keep = await service.UpdateAsync(keepDto);
+
+            keep.Version.Should().Be(2);
+
+            var renameDto = NewDto(b.Name, "changed");
+            renameDto.Id = a.Id;
+            renameDto.Version = keep.Version.GetValueOrDefault();
+
+            var act = () => service.UpdateAsync(renameDto);
+
+            await act.Should().ThrowAsync<DtoValidationException>();
+        }
+
+        [Theory]
+        [InlineData("(a+)+$")]
+        [InlineData("(a|aa)+$")]
+        [InlineData("^(([a-z])+.)+[A-Z]([a-z])+$")]
+        [InlineData("^(?!x).*$")]
+        [InlineData("(?<=a)b")]
+        public async Task CatastrophicAndBacktrackingPatternsAreSavedAndStayBoundedAsync(string pattern)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
+            var saved = await service.InsertAsync(NewDto(UniqueName("Bounded"), pattern));
+            createdIds.Add(saved.Id);
+
+            saved.Regex.Should().Be(pattern);
+            LogCounterRegex.Create(pattern).MatchTimeout.Should().Be(LogCounterRegex.MatchTimeout);
+        }
+
+        [Theory]
+        [InlineData("(")]
+        [InlineData("[z-a]")]
+        [InlineData("(?<n>a)\\k<m>")]
+        public async Task UncompilablePatternsAreRefusedWithTheRegexInvalidCodeAsync(string pattern)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
+            var act = () => service.InsertAsync(NewDto(UniqueName("Invalid"), pattern));
+
+            (await act.Should().ThrowAsync<DtoValidationException>())
+                .Which.Result.Errors.Should().Contain(e => e.ErrorCode == "RegexInvalid");
+        }
+
+        [Fact]
+        public async Task EveryMutationWritesOneAuditLineNamingTheActorAndTheRowAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var audit = new TestLog();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser, auditLog: audit);
+
+            var saved = await service.InsertAsync(NewDto(UniqueName("Audit")));
+            createdIds.Add(saved.Id);
+
+            var dto = NewDto(saved.Name, "changed");
+            dto.Id = saved.Id;
+            dto.Version = saved.Version.GetValueOrDefault();
+            var updated = await service.UpdateAsync(dto);
+
+            await service.DeleteAsync(updated.Id);
+
+            foreach (var operation in new[] { "Create", "Update", "Delete" })
+            {
+                audit.Entries.Select(e => e.Message).Should().ContainSingle(m =>
+                    m.Contains($"area=OpenTelemetryLogCounter op={operation} actor={fx.Seed.LandlordUser} ") &&
+                    m.Contains($"entityId={saved.Id} ") && m.Contains("outcome=ok "));
+            }
+        }
+
+        [Fact]
+        public async Task EveryVerbIsRefusedToANonLandlordHoldingEveryPermissionAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var landlord = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var seeded = await landlord.InsertAsync(NewDto(UniqueName("Verbs")));
+            createdIds.Add(seeded.Id);
+            var tenant = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(UniqueName("Hijack"), "x");
+            dto.Id = seeded.Id;
+            dto.Version = 1;
+
+            await ((Func<Task>)(() => tenant.ListAsync())).Should().ThrowAsync<ForbiddenException>();
+            await ((Func<Task>)(() => tenant.GetByIdAsync(seeded.Id))).Should().ThrowAsync<ForbiddenException>();
+            await ((Func<Task>)(() => tenant.InsertAsync(dto))).Should().ThrowAsync<ForbiddenException>();
+            await ((Func<Task>)(() => tenant.UpdateAsync(dto))).Should().ThrowAsync<ForbiddenException>();
+            await ((Func<Task>)(() => tenant.ValidateAsync(dto))).Should().ThrowAsync<ForbiddenException>();
+            await ((Func<Task>)(() => tenant.DeleteAsync(seeded.Id))).Should().ThrowAsync<ForbiddenException>();
+
+            var row = await dbContext.OpenTelemetryLogCounter.FirstAsync(w => w.Id == seeded.Id);
+            row.Name.Should().Be(seeded.Name);
+            (row.Deleted ?? 0).Should().Be(0);
         }
     }
 }

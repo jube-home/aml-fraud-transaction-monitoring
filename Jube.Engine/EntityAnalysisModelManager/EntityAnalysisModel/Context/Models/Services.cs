@@ -23,6 +23,8 @@ using RabbitMQ.Client;
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable RedundantAttributeUsageProperty
 
+using Jube.Svirfd.Interfaces;
+
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Models
 {
     public class Services
@@ -31,6 +33,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Mod
         public DynamicEnvironment.DynamicEnvironment DynamicEnvironment { get; set; }
         public CacheService CacheService { get; set; }
         public IImplicitAsyncInvocationTracker ImplicitAsyncInvocationTracker { get; set; }
+        public ISvirfdLookup Svirfd { get; set; }
         public IModel RabbitMqChannel { get; set; }
         public DbContext DbContext { get; set; }
         public Parser.Parser Parser { get; set; }

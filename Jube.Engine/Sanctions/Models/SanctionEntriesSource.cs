@@ -30,5 +30,12 @@ namespace Jube.Engine.Sanctions.Models
         public int SanctionEntrySourceId { get; set; }
         public string Name { get; set; }
         public byte Skip { get; set; }
+        public int? AliasIndex { get; set; }
+        public string AliasSeparator { get; set; }
+        public int? FilterIndex { get; set; }
+        public string FilterValues { get; set; }
+
+        public SanctionEntryFileOptions FileOptions =>
+            new(AliasIndex, AliasSeparator, FilterIndex, FilterValues);
     }
 }

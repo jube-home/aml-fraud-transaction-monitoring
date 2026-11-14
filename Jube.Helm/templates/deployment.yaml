@@ -1,0 +1,146 @@
+{ { - $root := . } }
+  { { - $fullname := include "jube.fullname" . } }
+  { { - range $role := list "ui" "api" "jobs" } }
+  { { - $roleValues := index $root.Values.roles $role } }
+  { { - $env := merge (dict) (index $root.Values.env $role) $root.Values.env.common } }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: { { $fullname } }-{{ $role }}
+  labels:
+    {{- include "jube.labels" $root | nindent 4 }}
+    app.kubernetes.io/component: { { $role } }
+spec:
+  replicas: { { $roleValues.replicas } }
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: jube
+      app.kubernetes.io/instance: { { $root.Release.Name } }
+      app.kubernetes.io/component: { { $role } }
+  template:
+    metadata:
+      labels:
+        { { - include "jube.labels" $root | nindent 8 } }
+        app.kubernetes.io/component: { { $role } }
+      { { - with $root.Values.podAnnotations } }
+      annotations:
+        { { - toYaml . | nindent 8 } }
+      { { - end } }
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      terminationGracePeriodSeconds: { { $root.Values.terminationGracePeriodSeconds } }
+      { { - with $root.Values.imagePullSecrets } }
+      imagePullSecrets:
+        { { - toYaml . | nindent 8 } }
+      { { - end } }
+      { { - if and $root.Values.waitForJobs.enabled (ne $role "jobs") } }
+      initContainers:
+        - name: wait-for-jobs
+          image: { { $root.Values.waitForJobs.image } }
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          command:
+            - sh
+            - -c
+            - until wget -q -O /dev/null http://{{ $fullname }}-jobs:{{ $root.Values.service.port }}/api/ready; do echo waiting for the jobs role to finish migrating; sleep 5; done
+      { { - end } }
+      containers:
+        - name: jube
+          image: "{{ $root.Values.image.repository }}:{{ $root.Values.image.tag }}"
+          imagePullPolicy: { { $root.Values.image.pullPolicy } }
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - name: http
+              containerPort: { { $root.Values.service.port } }
+          env:
+            - name: ASPNETCORE_URLS
+              value: "http://0.0.0.0:{{ $root.Values.service.port }}"
+            - name: SecretsPath
+              value: /run/secrets/
+            - name: ConnectionString
+              value: { { include "jube.connection" (dict "postgres" $root.Values.postgres "host" $root.Values.postgres.host "port" $root.Values.postgres.port "user" $root.Values.postgres.appUser "secret" "JUBE_APP_PASSWORD") | quote } }
+            - name: ReportConnectionString
+              value: { { include "jube.connection" (dict "postgres" $root.Values.postgres "host" (default $root.Values.postgres.host $root.Values.postgres.replicaHost) "port" (ternary $root.Values.postgres.replicaPort $root.Values.postgres.port (ne (toString $root.Values.postgres.replicaHost) ""))  "user" $root.Values.postgres.reportingUser "secret" "JUBE_REPORTING_PASSWORD") | quote } }
+            { { - if eq $role "jobs" } }
+            - name: MigrationConnectionString
+              value: { { include "jube.connection" (dict "postgres" $root.Values.postgres "host" $root.Values.postgres.host "port" $root.Values.postgres.port "user" $root.Values.postgres.migrationUser "secret" "JUBE_MIGRATION_PASSWORD") | quote } }
+            - name: PurgeConnectionString
+              value: { { include "jube.connection" (dict "postgres" $root.Values.postgres "host" $root.Values.postgres.host "port" $root.Values.postgres.port "user" $root.Values.postgres.purgeUser "secret" "JUBE_PURGE_PASSWORD") | quote } }
+            { { - end } }
+            - name: RespConnectionString
+              value: { { $root.Values.resp.connectionString | quote } }
+            - name: JWTValidIssuer
+              value: { { $root.Values.publicUrl | quote } }
+            - name: JWTValidAudience
+              value: { { $root.Values.publicUrl | quote } }
+            - name: PasswordAsymmetricEncryptionPublicKey
+              value: { { $root.Values.passwordAsymmetricEncryptionPublicKey | quote } }
+            - name: EnableAskJooby
+              value: { { ternary "True" "False" $root.Values.askJooby.enabled | quote } }
+            - name: AskJoobyApiKey
+              value: "[@ASK_JOOBY_API_KEY@]"
+            { { - if ne $role "ui" } }
+            - name: RServerUrl
+              value: { { $root.Values.rServerUrl | quote } }
+            { { - end } }
+            { { - range $key := keys $env | sortAlpha } }
+            - name: { { $key } }
+              value: { { index $env $key | quote } }
+            { { - end } }
+          readinessProbe:
+            httpGet:
+              path: /api/ready
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /api/ready
+              port: http
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 6
+          startupProbe:
+            httpGet:
+              path: /api/ready
+              port: http
+            periodSeconds: 10
+            failureThreshold: 90
+          { { - with $roleValues.resources } }
+          resources:
+            { { - toYaml . | nindent 12 } }
+          { { - end } }
+          volumeMounts:
+            - name: secrets
+              mountPath: /run/secrets
+              readOnly: true
+      volumes:
+        - name: secrets
+          secret:
+            secretName: { { include "jube.secretName" $root } }
+      { { - with $root.Values.nodeSelector } }
+      nodeSelector:
+        { { - toYaml . | nindent 8 } }
+      { { - end } }
+      { { - with $root.Values.tolerations } }
+      tolerations:
+        { { - toYaml . | nindent 8 } }
+      { { - end } }
+  { { - end } }

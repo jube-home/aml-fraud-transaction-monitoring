@@ -17,35 +17,60 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchWeightedMeanWithOutsideRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("True when: the weighted average of the value and another value is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchWeightedMeanWithOutsideRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleWeightedMeanWithOutsideRange(flow.Value, weight, other, otherWeight, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectWeightedMeanWithOutsideRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("True when: the weighted average of the value and another value is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectWeightedMeanWithOutsideRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleWeightedMeanWithOutsideRange(flow.Value, weight, other, otherWeight, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakWeightedMeanWithOutsideRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("True when: the weighted average of the value and another value is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakWeightedMeanWithOutsideRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleWeightedMeanWithOutsideRange(flow.Value, weight, other, otherWeight, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireWeightedMeanWithOutsideRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("True when: the weighted average of the value and another value is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireWeightedMeanWithOutsideRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleWeightedMeanWithOutsideRange(flow.Value, weight, other, otherWeight, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureWeightedMeanWithOutsideRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("True when: the weighted average of the value and another value is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureWeightedMeanWithOutsideRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +80,52 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchWeightedMeanWithOutsideRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the weighted average of the value and another value is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchWeightedMeanWithOutsideRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchWeightedMeanWithOutsideRange(weight, other, otherWeight, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectWeightedMeanWithOutsideRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the weighted average of the value and another value is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectWeightedMeanWithOutsideRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectWeightedMeanWithOutsideRange(weight, other, otherWeight, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakWeightedMeanWithOutsideRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the weighted average of the value and another value is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakWeightedMeanWithOutsideRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakWeightedMeanWithOutsideRange(weight, other, otherWeight, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireWeightedMeanWithOutsideRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the weighted average of the value and another value is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireWeightedMeanWithOutsideRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireWeightedMeanWithOutsideRange(weight, other, otherWeight, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureWeightedMeanWithOutsideRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the weighted average of the value and another value is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureWeightedMeanWithOutsideRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureWeightedMeanWithOutsideRange(weight, other, otherWeight, lowerBound, upperBound);
             }

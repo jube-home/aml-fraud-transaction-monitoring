@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static Flow<double> Round(this Flow<double> flow, int digits)
+        [Description("Replaces the value being tested with the value rounded to the number of digits.")]
+        public static Flow<double> Round(this Flow<double> flow,
+            [Description("The number of fractional digits in the return value.")] int digits)
         {
             return flow.Carry(Math.Round(flow.Value, digits));
         }

@@ -65,6 +65,18 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Validates a Visualisation Registry Datasource without saving it and returns every failure.",
                     VisualisationRegistryDatasourceService.WritePermissions),
                 new ServiceToolDescriptor(
+                    "VisualisationRegistryDatasourceIntrospect", OperationKind.Read, true, false,
+                    "Reads the columns a Datasource's SQL Command would return, in order and with their types, without saving; a rejected command is reported with its reason.",
+                    VisualisationRegistryDatasourceService.WritePermissions),
+                new ServiceToolDescriptor(
+                    "VisualisationRegistryDatasourceChartKinds", OperationKind.Read, true, false,
+                    "Lists the chart kinds a Datasource can be drawn as and the column roles each one reads.",
+                    VisualisationRegistryDatasourceService.ListPermissions),
+                new ServiceToolDescriptor(
+                    "VisualisationRegistryDatasourcePreview", OperationKind.Read, true, false,
+                    "Runs a Datasource's SQL Command without saving and returns the card as the Visualisation page receives it: the drawn SVG chart, the rows only when the grid is on, and its state.",
+                    VisualisationRegistryDatasourceService.WritePermissions),
+                new ServiceToolDescriptor(
                     "VisualisationRegistryDatasourceUpdate", OperationKind.Write, true, false,
                     "Updates a Datasource in the caller's tenant by id, re-validating its SQL Command.",
                     VisualisationRegistryDatasourceService.WritePermissions),

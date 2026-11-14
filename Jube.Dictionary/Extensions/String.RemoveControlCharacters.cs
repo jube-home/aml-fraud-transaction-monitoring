@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The text without control characters other than tab, CR and LF.")]
         public static string RemoveControlCharacters(this string? @this)
         {
             return new string((@this ?? "").Where(c => !char.IsControl(c) || c is '\n' or '\r' or '\t').ToArray());

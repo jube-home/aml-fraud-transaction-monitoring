@@ -26,6 +26,7 @@ namespace Jube.Resources
         public const string DescriptionMaxLength = nameof(DescriptionMaxLength);
         public const string FieldMaxLength = nameof(FieldMaxLength);
         public const string HttpEndpointRequired = nameof(HttpEndpointRequired);
+        public const string HttpEndpointInvalid = nameof(HttpEndpointInvalid);
         public const string HttpEndpointTypeIdInvalid = nameof(HttpEndpointTypeIdInvalid);
         public const string NotificationDestinationRequired = nameof(NotificationDestinationRequired);
         public const string NotificationTypeIdInvalid = nameof(NotificationTypeIdInvalid);

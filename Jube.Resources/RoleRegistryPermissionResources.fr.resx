@@ -60,4 +60,7 @@
     <data name="PermissionSpecificationAlreadyGranted" xml:space="preserve">
     <value>Cette permission est déjà accordée au rôle.</value>
   </data>
+    <data name="InsufficientPrivilege" xml:space="preserve">
+    <value>Vous ne disposez pas des privilèges suffisants pour effectuer cette action.</value>
+  </data>
 </root>

@@ -21,6 +21,7 @@ using Jube.Data.Poco;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Security.PenTest;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -41,8 +42,7 @@ public sealed class PermissionParityTests(DatabaseFixture fx, ITestOutputHelper 
         ("/Model/Frame/CaseWorkflowXPath", 20), ("/Model/Frame/CaseWorkflowForm", 21),
         ("/Model/Frame/CaseWorkflowAction", 22), ("/Model/Frame/CaseWorkflowDisplay", 23),
         ("/Model/Frame/CaseWorkflowMacro", 24), ("/Model/Frame/CaseWorkflowFilter", 25),
-        ("/Administration/VisualisationRegistry", 31), ("/Administration/Frame/VisualisationRegistryParameter", 32),
-        ("/Administration/Frame/VisualisationRegistryDatasource", 33)
+        ("/Administration/VisualisationRegistry", 31), ("/Administration/Frame/VisualisationRegistryParameter", 32)
     ];
 
     public static IEnumerable<object[]> RoleAllocationRows() =>
@@ -168,18 +168,6 @@ public sealed class PermissionParityTests(DatabaseFixture fx, ITestOutputHelper 
         await AssertDeniedAsync(none, "GET", page, $"page {page} without the permission");
         await AssertDeniedAsync(none, "GET", endpoint, $"endpoint {endpoint} without the permission");
         await AssertDeniedAsync(Anonymous, "GET", endpoint, $"endpoint {endpoint} anonymously");
-    }
-
-    [Fact]
-    public async Task UserLogoutMenuEntry_IsShownOnlyToTheHoldersOfItsPermissionAsync()
-    {
-        var withOnly35 = await ClientForOnlyAsync(35);
-        var with35 = await withOnly35.GetAsync("/Account/ChangePassword");
-        with35.Body.Should().Contain("/Administration/UserLogout").And.Contain("/Administration/UserLogin");
-
-        var without = await ClientForOnlyAsync(5);
-        var page = await without.GetAsync("/Account/ChangePassword");
-        page.Body.Should().NotContain("/Administration/UserLogout");
     }
 
     [Fact]

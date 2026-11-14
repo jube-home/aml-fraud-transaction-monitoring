@@ -53,7 +53,7 @@ namespace Jube.Test.AskJooby
                 "an agent reading live activity twice in a turn may be watching for movement, and "
                 + "giving it the earlier reading would answer a question it did not ask");
 
-            ledger.CanRepeat("RedisMetricList").Should().BeFalse();
+            ledger.CanRepeat("RespMetricList").Should().BeFalse();
         }
 
         [Fact]

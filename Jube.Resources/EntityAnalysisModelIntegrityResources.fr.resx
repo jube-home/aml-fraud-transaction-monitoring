@@ -48,4 +48,133 @@
     <data name="EntityNotFound" xml:space="preserve">
     <value>Aucun {0} avec l'identifiant {1} n'a été trouvé dans ce modèle.</value>
   </data>
+    <data name="Title_DependencyDangling" xml:space="preserve">
+    <value>Utilise un nom qui n'existe pas</value>
+  </data>
+    <data name="Title_DependencyOnInactive" xml:space="preserve">
+    <value>Utilise une entité inactive</value>
+  </data>
+    <data name="Title_DependencyOnUnapproved" xml:space="preserve">
+    <value>Utilise une entité qui n'est pas encore approuvée</value>
+  </data>
+    <data name="Title_EntityPendingApproval" xml:space="preserve">
+    <value>Modifié et en attente d'approbation</value>
+  </data>
+    <data name="Title_EntityUnreferenced" xml:space="preserve">
+    <value>Utilisé par rien</value>
+  </data>
+    <data name="Title_EngineCompileFailed" xml:space="preserve">
+    <value>N'a pas été compilé dans le moteur</value>
+  </data>
+    <data name="Title_ModelInactive" xml:space="preserve">
+    <value>Le modèle est inactif</value>
+  </data>
+    <data name="Title_NoActiveActivationRules" xml:space="preserve">
+    <value>Aucune règle d'activation active</value>
+  </data>
+    <data name="Title_TtlCountersDisabled" xml:space="preserve">
+    <value>Les compteurs TTL sont désactivés</value>
+  </data>
+    <data name="Title_SearchKeyTtlShortensWindow" xml:space="preserve">
+    <value>L'historique de la clé de recherche est plus court que la fenêtre de la règle</value>
+  </data>
+    <data name="Title_SearchKeyTtlCollapsesWindow" xml:space="preserve">
+    <value>La clé de recherche ne conserve aucun historique pour la fenêtre de la règle</value>
+  </data>
+    <data name="Title_EngineStateUnavailable" xml:space="preserve">
+    <value>L'état du moteur est indisponible</value>
+  </data>
+    <data name="Title_EngineNoNodes" xml:space="preserve">
+    <value>Aucune instance du moteur ne s'est synchronisée</value>
+  </data>
+    <data name="Title_EngineNodeStale" xml:space="preserve">
+    <value>L'instance du moteur a cessé de rendre compte</value>
+  </data>
+    <data name="Title_EngineModelNotLoaded" xml:space="preserve">
+    <value>Le modèle n'est chargé par aucune instance du moteur</value>
+  </data>
+    <data name="Title_EngineModelNotStarted" xml:space="preserve">
+    <value>Le modèle est chargé mais non démarré</value>
+  </data>
+    <data name="Title_EngineEntityNotLoaded" xml:space="preserve">
+    <value>Non chargé par une instance du moteur</value>
+  </data>
+    <data name="Title_EngineEntityStale" xml:space="preserve">
+    <value>Le moteur exécute encore une entité qui n'est plus active</value>
+  </data>
+    <data name="Message_DependencyDanglingActiveRuleText" xml:space="preserve">
+    <value>Le texte de la règle de {0} {1} nomme {2}, qui n'existe pas ; il ne fonctionnera donc pas.</value>
+  </data>
+    <data name="Message_DependencyDanglingInactiveRuleText" xml:space="preserve">
+    <value>Le texte de la règle de {0} {1} nomme {2}, qui n'existe pas ; il est inactif, cela n'a donc d'importance que s'il est activé.</value>
+  </data>
+    <data name="Message_DependencyDanglingActiveSetting" xml:space="preserve">
+    <value>Le paramètre {0} de {1} {2} nomme {3}, qui n'existe pas ; il ne fonctionnera donc pas.</value>
+  </data>
+    <data name="Message_DependencyDanglingInactiveSetting" xml:space="preserve">
+    <value>Le paramètre {0} de {1} {2} nomme {3}, qui n'existe pas ; il est inactif, cela n'a donc d'importance que s'il est activé.</value>
+  </data>
+    <data name="Message_DependencyOnInactiveRuleText" xml:space="preserve">
+    <value>Le texte de la règle de {0} {1} utilise {2} {3}, qui est inactif ; le moteur ne le charge donc pas et cette utilisation ne fonctionnera pas.</value>
+  </data>
+    <data name="Message_DependencyOnInactiveSetting" xml:space="preserve">
+    <value>Le paramètre {0} de {1} {2} utilise {3} {4}, qui est inactif ; le moteur ne le charge donc pas et cette utilisation ne fonctionnera pas.</value>
+  </data>
+    <data name="Message_DependencyOnUnapprovedRuleText" xml:space="preserve">
+    <value>Le texte de la règle de {0} {1} utilise {2} {3}, qui n'est pas encore approuvé ; le moteur ne l'exécute donc pas et cette utilisation ne fonctionnera qu'après son approbation.</value>
+  </data>
+    <data name="Message_DependencyOnUnapprovedSetting" xml:space="preserve">
+    <value>Le paramètre {0} de {1} {2} utilise {3} {4}, qui n'est pas encore approuvé ; le moteur ne l'exécute donc pas et cette utilisation ne fonctionnera qu'après son approbation.</value>
+  </data>
+    <data name="Message_EntityUnreferenced" xml:space="preserve">
+    <value>{0} {1} est actif mais rien dans le modèle ne l'utilise.</value>
+  </data>
+    <data name="Message_EngineCompileFailed" xml:space="preserve">
+    <value>Le moteur n'a pas pu compiler {0} {1} lors de sa dernière synchronisation ; il n'est donc pas en cours d'exécution : {2}.</value>
+  </data>
+    <data name="Message_EngineCompileFailedNoError" xml:space="preserve">
+    <value>Le moteur n'a pas pu compiler {0} {1} lors de sa dernière synchronisation ; il n'est donc pas en cours d'exécution : aucune erreur n'a été enregistrée.</value>
+  </data>
+    <data name="Message_ModelInactive" xml:space="preserve">
+    <value>Le modèle est inactif ; le moteur ne le charge donc pas et ne l'invoque pas.</value>
+  </data>
+    <data name="Message_NoActiveActivationRules" xml:space="preserve">
+    <value>Le modèle n'a aucune règle d'activation active ; aucune transaction ne peut donc s'activer.</value>
+  </data>
+    <data name="Message_TtlCountersDisabled" xml:space="preserve">
+    <value>Les compteurs TTL sont désactivés pour le modèle ; le moteur n'incrémente ni ne lit donc {0} ; les règles le voient comme 0.</value>
+  </data>
+    <data name="Message_SearchKeyTtlCollapsesWindow" xml:space="preserve">
+    <value>La clé de recherche {0} n'a pas de TTL ; le moteur limite donc la fenêtre de {1} {2} de la règle d'abstraction à la seule date de référence et elle n'agrège presque rien.</value>
+  </data>
+    <data name="Message_SearchKeyTtlShortensWindow" xml:space="preserve">
+    <value>La clé de recherche {0} conserve l'historique pendant {1} {2}, ce qui est plus court que les {3} {4} de la règle ; le moteur utilise donc silencieusement la fenêtre la plus courte.</value>
+  </data>
+    <data name="Message_EngineStateUnavailable" xml:space="preserve">
+    <value>Aucun moteur ne s'exécute dans ce processus et aucun moteur n'a enregistré ce qu'il a chargé pour ce modèle ; ce que le moteur exécute ne peut donc pas être vérifié.</value>
+  </data>
+    <data name="Message_EngineNoNodes" xml:space="preserve">
+    <value>Aucune instance du moteur n'a synchronisé les modèles de ce locataire.</value>
+  </data>
+    <data name="Message_EngineNodeStale" xml:space="preserve">
+    <value>L'instance du moteur {0} a rendu compte pour la dernière fois à {1} et n'est pas en cours d'exécution. Elle est supprimée à la prochaine synchronisation, ou disparaît de cette liste à {2} si aucune synchronisation n'a lieu.</value>
+  </data>
+    <data name="Message_EngineModelNotStarted" xml:space="preserve">
+    <value>L'instance du moteur {0} a chargé le modèle mais ne l'a pas démarré.</value>
+  </data>
+    <data name="Message_EntityPendingApprovalWaiting" xml:space="preserve">
+    <value>{0} {1} est en attente d'approbation ; l'instance du moteur {2} ne l'exécute donc pas encore.</value>
+  </data>
+    <data name="Message_EntityPendingApprovalChanged" xml:space="preserve">
+    <value>{0} {1} a une modification en attente d'approbation ; l'instance du moteur {2} exécute donc encore la dernière version approuvée.</value>
+  </data>
+    <data name="Message_EngineEntityNotLoaded" xml:space="preserve">
+    <value>{0} {1} est approuvé et actif mais l'instance du moteur {2} ne l'a pas chargé : synchronisez le modèle et vérifiez qu'il se compile.</value>
+  </data>
+    <data name="Message_EngineEntityStale" xml:space="preserve">
+    <value>L'instance du moteur {0} exécute encore {1} {2}, qui n'est plus actif ; synchronisez le modèle pour le décharger.</value>
+  </data>
+    <data name="Message_EngineModelNotLoaded" xml:space="preserve">
+    <value>L'instance du moteur {0} n'a pas chargé le modèle ; synchronisez-le.</value>
+  </data>
 </root>

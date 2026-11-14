@@ -60,7 +60,7 @@ sudo find "$BASE_DIR" "${prune[@]}" -type f -name "*.sh" -exec chmod 755 {} +
 # paths — any rule or equivalence covering docker/ or containerd/ is left in
 # place. Comment this block out if you want a permissions-only reset.
 if command -v semanage &>/dev/null; then
-    for dir in haproxy patroni pgbackrest redis jemp-files pfx; do
+    for dir in haproxy patroni pgbackrest garnet jemp-files pfx; do
         [ -d "$BASE_DIR/$dir" ] || continue
         sudo semanage fcontext -d "$BASE_DIR/$dir(/.*)?" 2>/dev/null || true
         sudo restorecon -Rv "$BASE_DIR/$dir"

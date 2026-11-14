@@ -73,7 +73,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void ARuleThatMatchesSetsMatchedGatewayRuleAndTheResponseElevationLimit()
         {
             var rule = NewRule("HighAmount", 1.0,
-                (data, _, _, _) => (string)data["Currency"] == "AED", 42);
+                (data, _, _, _, _) => (string)data["Currency"] == "AED", 42);
 
             var context = NewContext(0.0, rule);
 
@@ -86,7 +86,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void ARuleThatDoesNotMatchLeavesMatchedGatewayRuleFalse()
         {
-            var rule = NewRule("NeverMatches", 1.0, (_, _, _, _) => false);
+            var rule = NewRule("NeverMatches", 1.0, (_, _, _, _, _) => false);
             var context = NewContext(0.0, rule);
 
             context.ExecuteGatewayRules();
@@ -99,7 +99,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var wasEvaluated = false;
 
-            var rule = NewRule("LowSample", 0.1, (_, _, _, _) =>
+            var rule = NewRule("LowSample", 0.1, (_, _, _, _, _) =>
             {
                 wasEvaluated = true;
 
@@ -119,7 +119,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var wasEvaluated = false;
 
-            var rule = NewRule("HighSample", 0.9, (_, _, _, _) =>
+            var rule = NewRule("HighSample", 0.9, (_, _, _, _, _) =>
             {
                 wasEvaluated = true;
 
@@ -137,9 +137,9 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void TheFirstMatchingRuleStopsEvaluationOfSubsequentRules()
         {
             var secondRuleEvaluated = false;
-            var first = NewRule("First", 1.0, (_, _, _, _) => true, 10);
+            var first = NewRule("First", 1.0, (_, _, _, _, _) => true, 10);
 
-            var second = NewRule("Second", 1.0, (_, _, _, _) =>
+            var second = NewRule("Second", 1.0, (_, _, _, _, _) =>
             {
                 secondRuleEvaluated = true;
 
@@ -158,9 +158,9 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void ARuleThatDoesNotMatchAllowsTheNextRuleToStillBeEvaluated()
         {
             var secondRuleEvaluated = false;
-            var first = NewRule("First", 1.0, (_, _, _, _) => false);
+            var first = NewRule("First", 1.0, (_, _, _, _, _) => false);
 
-            var second = NewRule("Second", 1.0, (_, _, _, _) =>
+            var second = NewRule("Second", 1.0, (_, _, _, _, _) =>
             {
                 secondRuleEvaluated = true;
 
@@ -181,9 +181,9 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var secondRuleEvaluated = false;
 
             var throwingRule = NewRule("Throws", 1.0,
-                (_, _, _, _) => throw new InvalidOperationException("boom"));
+                (_, _, _, _, _) => throw new InvalidOperationException("boom"));
 
-            var second = NewRule("Second", 1.0, (_, _, _, _) =>
+            var second = NewRule("Second", 1.0, (_, _, _, _, _) =>
             {
                 secondRuleEvaluated = true;
 
@@ -201,7 +201,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void EvaluationCounterIncrementsForEveryRuleTestedRegardlessOfMatch()
         {
-            var rule = NewRule("Counted", 1.0, (_, _, _, _) => false);
+            var rule = NewRule("Counted", 1.0, (_, _, _, _, _) => false);
             var context = NewContext(0.0, rule);
 
             context.ExecuteGatewayRules();
@@ -213,8 +213,8 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void ActivationCounterOnlyIncrementsWhenTheRuleActuallyMatches()
         {
-            var matching = NewRule("Matches", 1.0, (_, _, _, _) => true);
-            var nonMatching = NewRule("DoesNotMatch", 1.0, (_, _, _, _) => false);
+            var matching = NewRule("Matches", 1.0, (_, _, _, _, _) => true);
+            var nonMatching = NewRule("DoesNotMatch", 1.0, (_, _, _, _, _) => false);
             var context = NewContext(0.0, matching, nonMatching);
 
             context.ExecuteGatewayRules();
@@ -226,7 +226,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void ModelInvokeGatewayCounterIncrementsOnTheModelWhenARuleMatches()
         {
-            var rule = NewRule("Matches", 1.0, (_, _, _, _) => true);
+            var rule = NewRule("Matches", 1.0, (_, _, _, _, _) => true);
             var context = NewContext(0.0, rule);
 
             context.ExecuteGatewayRules();
@@ -237,7 +237,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void WhenSampledTheGatewayStageTimingIsPopulatedWithOneItemPerRuleTested()
         {
-            var matching = NewRule("Matches", 1.0, (_, _, _, _) => true);
+            var matching = NewRule("Matches", 1.0, (_, _, _, _, _) => true);
             var context = NewContext(0.0, matching);
 
             context.ExecuteGatewayRules();
@@ -251,7 +251,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void WhenNotSampledNoStageTimingIsBuiltAtAll()
         {
-            var rule = NewRule("Rule", 1.0, (_, _, _, _) => true);
+            var rule = NewRule("Rule", 1.0, (_, _, _, _, _) => true);
             var context = NewContext(0.0, rule);
             context.LogSampled = false;
 

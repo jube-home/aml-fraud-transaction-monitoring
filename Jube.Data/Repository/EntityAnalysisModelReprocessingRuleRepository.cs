@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace Jube.Data.Repository
 {
@@ -51,7 +53,10 @@ namespace Jube.Data.Repository
         public async Task<IEnumerable<EntityAnalysisModelReprocessingRule>> GetAsync(CancellationToken token = default)
         {
             return await dbContext.EntityAnalysisModelReprocessingRule
-                .Where(w => w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId).ToListAsync(token);
+                .Where(w => w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                            && (w.Deleted == 0 || w.Deleted == null))
+                .OrderBy(o => o.Id)
+                .ToListAsync(token);
         }
 
         public async Task<IEnumerable<EntityAnalysisModelReprocessingRule>> GetByEntityAnalysisModelIdAsync(
@@ -96,6 +101,8 @@ namespace Jube.Data.Repository
                 throw new KeyNotFoundException();
             }
 
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
+
             model.Version = existing.Version + 1;
             model.CreatedUser = userName;
             model.CreatedDate = DateTime.UtcNow;
@@ -105,6 +112,12 @@ namespace Jube.Data.Repository
                 .InsertWithInt32IdentityAsync(model, token: token);
 
             await DeleteAsync(existing.Id, token);
+
+            await dbContext.EntityAnalysisModelReprocessingRuleInstance
+                .Where(d => d.EntityAnalysisModelReprocessingRuleId == existing.Id
+                            && (d.Deleted == 0 || d.Deleted == null))
+                .Set(s => s.EntityAnalysisModelReprocessingRuleId, id)
+                .UpdateAsync(token);
 
             model.Id = id;
 
@@ -127,6 +140,16 @@ namespace Jube.Data.Repository
             {
                 throw new KeyNotFoundException();
             }
+
+            await dbContext.EntityAnalysisModelReprocessingRuleInstance
+                .Where(d => d.EntityAnalysisModelReprocessingRuleId == id
+                            && (d.Deleted == 0 || d.Deleted == null)
+                            && d.StatusId != 4
+                            && d.StatusId != 5)
+                .Set(s => s.Deleted, Convert.ToByte(1))
+                .Set(s => s.DeletedDate, DateTime.UtcNow)
+                .Set(s => s.DeletedUser, userName)
+                .UpdateAsync(token);
         }
     }
 }

@@ -167,7 +167,7 @@ namespace Jube.Test.Service.PostgresTableStatistics
             "tableSizeBytes AND 1=1 -- ", "tableSizeBytes AND 1=2 -- ",
             "tableSizeBytes' AND '1'='1' -- ", "tableSizeBytes' AND '1'='2' -- ",
             "tableSizeBytes DESC NULLS FIRST", "tableSizeBytes, pg_sleep(0)",
-            "' OR '1'='1", "'; DROP TABLE \"RedisSlowOperation\";-- ", "1; SELECT pg_sleep(0);-- "
+            "' OR '1'='1", "'; DROP TABLE \"RespSlowOperation\";-- ", "1; SELECT pg_sleep(0);-- "
         ];
 
         public static IEnumerable<object[]> BooleanInjectionPayloads =>

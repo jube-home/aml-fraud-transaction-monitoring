@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<bool> flow)
         {
+            [Description("True when: the value is true. Decides matched if so; otherwise continues.")]
             public Flow<bool> MatchIsTrue()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.BooleanIsTrue(flow.Value));
             }
 
+            [Description("True when: the value is true. Decides rejected if so; otherwise continues.")]
             public Flow<bool> RejectIsTrue()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.BooleanIsTrue(flow.Value));
             }
 
+            [Description("True when: the value is true. Decides broken if so; otherwise continues.")]
             public Flow<bool> BreakIsTrue()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.BooleanIsTrue(flow.Value));
             }
 
+            [Description("True when: the value is true. Continues if so; otherwise decides rejected.")]
             public Flow<bool> RequireIsTrue()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.BooleanIsTrue(flow.Value));
             }
 
+            [Description("True when: the value is true. Continues if so; otherwise decides broken.")]
             public Flow<bool> EnsureIsTrue()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(bool value)
         {
+            [Description("Begins a pipeline from the value. True when: the value is true. Decides matched if so; otherwise continues.")]
             public Flow<bool> MatchIsTrue()
             {
                 return value.Start().MatchIsTrue();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is true. Decides rejected if so; otherwise continues.")]
             public Flow<bool> RejectIsTrue()
             {
                 return value.Start().RejectIsTrue();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is true. Decides broken if so; otherwise continues.")]
             public Flow<bool> BreakIsTrue()
             {
                 return value.Start().BreakIsTrue();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is true. Continues if so; otherwise decides rejected.")]
             public Flow<bool> RequireIsTrue()
             {
                 return value.Start().RequireIsTrue();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is true. Continues if so; otherwise decides broken.")]
             public Flow<bool> EnsureIsTrue()
             {
                 return value.Start().EnsureIsTrue();

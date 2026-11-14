@@ -17,35 +17,60 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchWeightedMeanWithInRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("True when: the weighted average of the value and another value is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchWeightedMeanWithInRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleWeightedMeanWithInRange(flow.Value, weight, other, otherWeight, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectWeightedMeanWithInRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("True when: the weighted average of the value and another value is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectWeightedMeanWithInRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleWeightedMeanWithInRange(flow.Value, weight, other, otherWeight, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakWeightedMeanWithInRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("True when: the weighted average of the value and another value is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakWeightedMeanWithInRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleWeightedMeanWithInRange(flow.Value, weight, other, otherWeight, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireWeightedMeanWithInRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("True when: the weighted average of the value and another value is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireWeightedMeanWithInRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleWeightedMeanWithInRange(flow.Value, weight, other, otherWeight, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureWeightedMeanWithInRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("True when: the weighted average of the value and another value is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureWeightedMeanWithInRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +80,52 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchWeightedMeanWithInRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the weighted average of the value and another value is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchWeightedMeanWithInRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchWeightedMeanWithInRange(weight, other, otherWeight, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectWeightedMeanWithInRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the weighted average of the value and another value is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectWeightedMeanWithInRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectWeightedMeanWithInRange(weight, other, otherWeight, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakWeightedMeanWithInRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the weighted average of the value and another value is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakWeightedMeanWithInRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakWeightedMeanWithInRange(weight, other, otherWeight, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireWeightedMeanWithInRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the weighted average of the value and another value is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireWeightedMeanWithInRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireWeightedMeanWithInRange(weight, other, otherWeight, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureWeightedMeanWithInRange(double weight, double other, double otherWeight, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the weighted average of the value and another value is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureWeightedMeanWithInRange([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureWeightedMeanWithInRange(weight, other, otherWeight, lowerBound, upperBound);
             }

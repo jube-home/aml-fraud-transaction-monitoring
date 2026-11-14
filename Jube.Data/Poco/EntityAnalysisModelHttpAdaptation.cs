@@ -42,8 +42,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(13)] public byte? ReportTable { get; set; }
         [Column] [Nullable] [Key(14)] public string HttpEndpoint { get; set; }
 
-        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true)]
         [Key(15)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
 

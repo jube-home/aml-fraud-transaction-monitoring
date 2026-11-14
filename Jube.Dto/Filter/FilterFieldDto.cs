@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,17 +23,21 @@ namespace Jube.Dto.Filter
 {
     [Description("A field that query builder JSON filters may use: its id, its builder type, the operators allowed " +
                  "for that type and what the field means.")]
+    [MessagePackObject]
     public class FilterFieldDto
     {
         [Description("The field id to put in a rule's id, e.g. Name or Active.")]
+        [Key(0)]
         public string Name { get; set; } = string.Empty;
 
         [Description("The builder type: String, Integer, Double, Boolean, DateTime or Guid.")]
+        [Key(1)]
         public string DataType { get; set; } = string.Empty;
 
         [Description("The operators a rule on this field may use.")]
+        [Key(2)]
         public List<string> Operators { get; set; } = [];
 
-        [Description("What the field means.")] public string Description { get; set; } = string.Empty;
+        [Description("What the field means.")] [Key(3)] public string Description { get; set; } = string.Empty;
     }
 }

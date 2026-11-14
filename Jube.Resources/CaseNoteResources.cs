@@ -28,5 +28,7 @@ namespace Jube.Resources
         public const string CaseIdRequired = nameof(CaseIdRequired);
         public const string PayloadRequired = nameof(PayloadRequired);
         public const string NoteMaxLength = nameof(NoteMaxLength);
+        public const string NoteNotFound = nameof(NoteNotFound);
+        public const string CaseLocked = nameof(CaseLocked);
     }
 }

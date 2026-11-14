@@ -28,8 +28,10 @@ as the key list reloads. A request authenticated by API key never mints a browse
 
 **Q: Is MFA supported?**
 
-A: A pluggable MFA (RSA-style token) exists with a mock endpoint for development, but offloading to an identity provider
-via OAuth/SSO is the recommended approach.
+A: Yes. A second step can be added after Username and Password or Negotiate sign-in, with two factors shipped: an RSA
+SecurID passcode (with a mock endpoint for development) and a code from an authenticator app (TOTP). The factor sits
+behind an interface, so another can be added. Offloading to an identity provider via OAuth/SSO, with MFA handled there,
+remains the recommended approach. See [Authentication Concepts](../Concepts/Authentication/index.html).
 
 ## Secrets and cryptography
 

@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchMatches(string? pattern)
+            [Description("True when: matches the regular expression. A bad pattern or a 100ms timeout is false, never an exception. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchMatches([Description("The regular expression pattern to match.")] string? pattern)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringMatches(flow.Value, pattern));
             }
 
-            public Flow<string?> RejectMatches(string? pattern)
+            [Description("True when: matches the regular expression. A bad pattern or a 100ms timeout is false, never an exception. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectMatches([Description("The regular expression pattern to match.")] string? pattern)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringMatches(flow.Value, pattern));
             }
 
-            public Flow<string?> BreakMatches(string? pattern)
+            [Description("True when: matches the regular expression. A bad pattern or a 100ms timeout is false, never an exception. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakMatches([Description("The regular expression pattern to match.")] string? pattern)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringMatches(flow.Value, pattern));
             }
 
-            public Flow<string?> RequireMatches(string? pattern)
+            [Description("True when: matches the regular expression. A bad pattern or a 100ms timeout is false, never an exception. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireMatches([Description("The regular expression pattern to match.")] string? pattern)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringMatches(flow.Value, pattern));
             }
 
-            public Flow<string?> EnsureMatches(string? pattern)
+            [Description("True when: matches the regular expression. A bad pattern or a 100ms timeout is false, never an exception. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureMatches([Description("The regular expression pattern to match.")] string? pattern)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchMatches(string? pattern)
+            [Description("Begins a pipeline from the value. True when: matches the regular expression. A bad pattern or a 100ms timeout is false, never an exception. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchMatches([Description("The regular expression pattern to match.")] string? pattern)
             {
                 return value.Start().MatchMatches(pattern);
             }
 
-            public Flow<string?> RejectMatches(string? pattern)
+            [Description("Begins a pipeline from the value. True when: matches the regular expression. A bad pattern or a 100ms timeout is false, never an exception. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectMatches([Description("The regular expression pattern to match.")] string? pattern)
             {
                 return value.Start().RejectMatches(pattern);
             }
 
-            public Flow<string?> BreakMatches(string? pattern)
+            [Description("Begins a pipeline from the value. True when: matches the regular expression. A bad pattern or a 100ms timeout is false, never an exception. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakMatches([Description("The regular expression pattern to match.")] string? pattern)
             {
                 return value.Start().BreakMatches(pattern);
             }
 
-            public Flow<string?> RequireMatches(string? pattern)
+            [Description("Begins a pipeline from the value. True when: matches the regular expression. A bad pattern or a 100ms timeout is false, never an exception. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireMatches([Description("The regular expression pattern to match.")] string? pattern)
             {
                 return value.Start().RequireMatches(pattern);
             }
 
-            public Flow<string?> EnsureMatches(string? pattern)
+            [Description("Begins a pipeline from the value. True when: matches the regular expression. A bad pattern or a 100ms timeout is false, never an exception. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureMatches([Description("The regular expression pattern to match.")] string? pattern)
             {
                 return value.Start().EnsureMatches(pattern);
             }

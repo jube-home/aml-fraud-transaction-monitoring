@@ -30,6 +30,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -581,6 +582,38 @@ namespace Jube.Test.Service.Repository.UserInTenant
 
             var row = await dbContext.UserInTenant.FirstAsync(w => w.User == landlordActorUser);
             row.User.Should().Be(landlordActorUser);
+        }
+
+        [Theory]
+        [InlineData("inactive")]
+        [InlineData("deleted")]
+        public async Task UpdateToADisabledTenantIsRefusedAndTheLandlordStaysWhereTheyAreAsync(string state)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var (landlordActorTenantId, landlordActorUser) = await CreateLandlordActorAsync(dbContext);
+
+            var disabledTenantId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.TenantRegistry
+            {
+                Name = $"{DatabaseFixture.Prefix}UitDisabled{Guid.NewGuid():N}"[..40],
+                Active = (byte)(state == "inactive" ? 0 : 1),
+                Locked = 0,
+                Deleted = (byte)(state == "deleted" ? 1 : 0),
+                Landlord = 0,
+                Version = 1,
+                CreatedDate = DateTime.UtcNow,
+                CreatedUser = DatabaseFixture.Prefix
+            });
+            createdTenantIds.Add(disabledTenantId);
+
+            var service = await BuildServiceAsync(dbContext, landlordActorUser);
+
+            var act = () => service.UpdateAsync(disabledTenantId);
+
+            var exception = await act.Should().ThrowAsync<DtoValidationException>();
+            exception.Which.Result.Errors.Should().Contain(e => e.ErrorCode == "TenantRegistryIdNotFound");
+
+            (await GetTenantRegistryIdForUserAsync(dbContext, landlordActorUser)).Should()
+                .Be(landlordActorTenantId);
         }
     }
 }

@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static int TokenCount(this string? @this, string? separator)
+        [Description("Number of tokens after splitting on a separator.")]
+        public static int TokenCount(this string? @this,
+            [Description("The text that separates the tokens.")] string? separator)
         {
             var value = @this ?? "";
 

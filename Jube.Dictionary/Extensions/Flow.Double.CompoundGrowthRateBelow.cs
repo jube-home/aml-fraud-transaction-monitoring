@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchCompoundGrowthRateBelow(double previous, double periods, double bound)
+            [Description("True when: the steady growth rate per period that takes the previous value to this one is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchCompoundGrowthRateBelow([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleCompoundGrowthRateBelow(flow.Value, previous, periods, bound));
             }
 
-            public Flow<double> RejectCompoundGrowthRateBelow(double previous, double periods, double bound)
+            [Description("True when: the steady growth rate per period that takes the previous value to this one is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectCompoundGrowthRateBelow([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleCompoundGrowthRateBelow(flow.Value, previous, periods, bound));
             }
 
-            public Flow<double> BreakCompoundGrowthRateBelow(double previous, double periods, double bound)
+            [Description("True when: the steady growth rate per period that takes the previous value to this one is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakCompoundGrowthRateBelow([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleCompoundGrowthRateBelow(flow.Value, previous, periods, bound));
             }
 
-            public Flow<double> RequireCompoundGrowthRateBelow(double previous, double periods, double bound)
+            [Description("True when: the steady growth rate per period that takes the previous value to this one is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireCompoundGrowthRateBelow([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleCompoundGrowthRateBelow(flow.Value, previous, periods, bound));
             }
 
-            public Flow<double> EnsureCompoundGrowthRateBelow(double previous, double periods, double bound)
+            [Description("True when: the steady growth rate per period that takes the previous value to this one is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureCompoundGrowthRateBelow([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchCompoundGrowthRateBelow(double previous, double periods, double bound)
+            [Description("Begins a pipeline from the value. True when: the steady growth rate per period that takes the previous value to this one is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchCompoundGrowthRateBelow([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchCompoundGrowthRateBelow(previous, periods, bound);
             }
 
-            public Flow<double> RejectCompoundGrowthRateBelow(double previous, double periods, double bound)
+            [Description("Begins a pipeline from the value. True when: the steady growth rate per period that takes the previous value to this one is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectCompoundGrowthRateBelow([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectCompoundGrowthRateBelow(previous, periods, bound);
             }
 
-            public Flow<double> BreakCompoundGrowthRateBelow(double previous, double periods, double bound)
+            [Description("Begins a pipeline from the value. True when: the steady growth rate per period that takes the previous value to this one is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakCompoundGrowthRateBelow([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakCompoundGrowthRateBelow(previous, periods, bound);
             }
 
-            public Flow<double> RequireCompoundGrowthRateBelow(double previous, double periods, double bound)
+            [Description("Begins a pipeline from the value. True when: the steady growth rate per period that takes the previous value to this one is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireCompoundGrowthRateBelow([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireCompoundGrowthRateBelow(previous, periods, bound);
             }
 
-            public Flow<double> EnsureCompoundGrowthRateBelow(double previous, double periods, double bound)
+            [Description("Begins a pipeline from the value. True when: the steady growth rate per period that takes the previous value to this one is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureCompoundGrowthRateBelow([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureCompoundGrowthRateBelow(previous, periods, bound);
             }

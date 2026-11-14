@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchShareOfMaxOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the value over the largest of it and the others is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchShareOfMaxOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleShareOfMaxOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RejectShareOfMaxOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the value over the largest of it and the others is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectShareOfMaxOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleShareOfMaxOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> BreakShareOfMaxOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the value over the largest of it and the others is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakShareOfMaxOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleShareOfMaxOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RequireShareOfMaxOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the value over the largest of it and the others is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireShareOfMaxOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleShareOfMaxOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> EnsureShareOfMaxOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the value over the largest of it and the others is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureShareOfMaxOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchShareOfMaxOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value over the largest of it and the others is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchShareOfMaxOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().MatchShareOfMaxOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RejectShareOfMaxOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value over the largest of it and the others is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectShareOfMaxOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RejectShareOfMaxOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> BreakShareOfMaxOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value over the largest of it and the others is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakShareOfMaxOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().BreakShareOfMaxOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RequireShareOfMaxOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value over the largest of it and the others is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireShareOfMaxOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RequireShareOfMaxOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> EnsureShareOfMaxOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value over the largest of it and the others is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureShareOfMaxOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().EnsureShareOfMaxOutsideRange(lowerBound, upperBound, others);
             }

@@ -14,7 +14,7 @@ BASE_DIR="$(pwd)"
 EXCLUDE=(docker containerd images)
 
 # Trees this script is responsible for.
-MANAGED=(haproxy patroni pgbackrest redis jemp-files pfx)
+MANAGED=(haproxy patroni pgbackrest garnet jemp-files pfx)
 
 echo "Applying SELinux and UID permissions to $BASE_DIR"
 echo "Excluding: ${EXCLUDE[*]}"
@@ -38,8 +38,8 @@ sudo chown -R 70:"$(id -g)" "$BASE_DIR/pgbackrest"
 sudo chmod -R 775 "$BASE_DIR/pgbackrest"
 
 # Redis/Sentinel and Patroni/Postgres (UID 999)
-sudo chown -R 999:"$(id -g)" "$BASE_DIR/redis"
-sudo chmod -R 775 "$BASE_DIR/redis"
+sudo chown -R 999:"$(id -g)" "$BASE_DIR/garnet"
+sudo chmod -R 775 "$BASE_DIR/garnet"
 sudo chown -R 70:"$(id -g)" "$BASE_DIR/patroni"
 
 # HAProxy (UID 99)

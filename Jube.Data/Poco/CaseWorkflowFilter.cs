@@ -66,8 +66,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(20)] public Guid Guid { get; set; }
         [Column] [Nullable] [Key(21)] public int? ImportId { get; set; }
 
-        [Association(ThisKey = "Guid", OtherKey = "CaseWorkflowFilterGuid", CanBeNull = false,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Guid", OtherKey = "CaseWorkflowFilterGuid", CanBeNull = false)]
         [Key(22)]
         public CaseWorkflowFilterRole CaseWorkflowFilterRole { get; set; }
     }

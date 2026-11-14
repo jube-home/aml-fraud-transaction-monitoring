@@ -25,7 +25,8 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "CaseNoteInsert", OperationKind.Write, false, false,
                     "Adds a note to a case, filed against a CaseWorkflowAction; dispatches that action's " +
-                    "notification/webhook if enabled. Notes are append-only.",
+                    "notification/webhook if enabled. Optionally carries the sources it relies on (real http or " +
+                    "https addresses actually retrieved, never invented). Notes are append-only.",
                     CaseNoteService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "CaseNoteValidate", OperationKind.Read, true, false,
@@ -34,6 +35,11 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "CaseNoteListByCaseKeyValue", OperationKind.Read, true, false,
                     "Lists case notes for a Case Key/Value pair, newest first, scoped to the caller's tenant.",
+                    CaseNoteService.RequiredPermissions),
+                new ServiceToolDescriptor(
+                    "CaseNoteSetFinding", OperationKind.Write, true, false,
+                    "Marks one of the caller's own notes as a finding, or clears the mark. Notes written by " +
+                    "AskJooby or the system cannot be changed.",
                     CaseNoteService.RequiredPermissions)
             ]);
         }

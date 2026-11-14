@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchMaxWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the largest of the value and the others is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMaxWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleMaxWithOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RejectMaxWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the largest of the value and the others is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMaxWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleMaxWithOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> BreakMaxWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the largest of the value and the others is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMaxWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleMaxWithOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RequireMaxWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the largest of the value and the others is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMaxWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleMaxWithOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> EnsureMaxWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the largest of the value and the others is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMaxWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchMaxWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the largest of the value and the others is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMaxWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().MatchMaxWithOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RejectMaxWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the largest of the value and the others is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMaxWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RejectMaxWithOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> BreakMaxWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the largest of the value and the others is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMaxWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().BreakMaxWithOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RequireMaxWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the largest of the value and the others is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMaxWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RequireMaxWithOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> EnsureMaxWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the largest of the value and the others is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMaxWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().EnsureMaxWithOutsideRange(lowerBound, upperBound, others);
             }

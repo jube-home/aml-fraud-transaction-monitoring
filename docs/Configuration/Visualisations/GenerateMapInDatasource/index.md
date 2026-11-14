@@ -7,103 +7,45 @@ grand_parent: Configuration
 ---
 
 # Generate Map in Visualisation Datasource
-Similar to charts Visualisations are achieved via embedding configuration Javascript for the Kendo Charting toolset. The Kendo Map toolset provides a rich set of mapping functions that can be used to alternatively present data that would otherwise be in grid form.
 
-A demonstration of the Kendo mapping tools can be seen as follows:
+The Map is one of the chart kinds, drawn on the server in the same way as the others. It is a world map of country
+outlines, held inside Jube, so no external map service is called and nothing is sent outside the installation.
 
-[https://demos.telerik.com/kendo-ui/map/index](https://demos.telerik.com/kendo-ui/map/index)
+Switch on **Show a chart** in the Datasource builder and choose **Map**. A map is drawn from the columns in one of two
+ways, and the builder recognises which from the column names.
 
-A datasource can accept the initialisation parameters for a Kendo Chart:
+## Points
 
-![Image](LocationOfMapInitCode.png)
+Plot points on the map by returning a latitude and a longitude, in degrees. Columns named `lat` or `latitude`, and
+`lon`, `lng`, `long` or `longitude`, are found by name wherever they sit in the result. Otherwise assign them in the
+roles. Both are required together.
 
-Extracted as follows:
-
-``` javascript
-({
-    center: [30.268107, -97.744821],
-    zoom: 3,
-    layers: [{
-        type: "tile",
-        urlTemplate: "https://#= subdomain #.tile.openstreetmap.org/#= zoom #/#= x #/#= y #.png",
-        subdomains: ["a", "b", "c"],
-        attribution: "&copy; <a href='https://osm.org/copyright'>OpenStreetMap contributors</a>"
-    }],
-    markers: [{
-        location: [30.268107, -97.744821],
-        shape: "pinTarget",
-        tooltip: {
-            content: "Austin, TX"
-        }
-    }]
-})
+```sql
+select "Latitude", "Longitude", "Sum" as "Value", "Channel"
+from "ExampleGeoCoded"
 ```
 
-For the purpose of chart initialisation, series are the columns returned by the SQL statement (which are parsed out on creation of the datasource and do not otherwise require manual definition beyond the SQL select block), however, the latitude and longitude values must be returned using the Array type, which has special construct in SQL:
+A numeric **Value** makes each point a bubble sized by the magnitude, an optional **Label** names the point, and a
+**Series** column splits the points into coloured groups with a legend.
 
-``` sql
-select ARRAY["Latitude" ,"Longitude"] as "Location","Sum" from "ExampleGeoCoded"
+## Countries
+
+Colour whole countries by returning a country, as an ISO two or three letter code or a name, and a numeric value to
+colour them by:
+
+```sql
+select "CountryCode" as "Country", count(*) as "Value"
+from "ExampleCases"
+group by "CountryCode"
 ```
 
-Executing the above SQL directly presents the following dataset:
+Columns named `country`, `iso`, `iso2`, `iso3` or `nation` are found by name. The countries with the highest values are
+labelled, and a legend shows the colour scale.
 
-![Image](DataReturnedOfArrayType.png)
+A map plots points or countries, not both, and a country map needs its value column. The builder says so when the
+columns do not fit.
 
-The array return value will be used to drop a bubble or pin. In the case of bubble, the Sum expresses magnitude.
+## Recall
 
-Taking the following example of Kendo Map initialisation:
-
-``` javascript
-({
-    center: [51.5072,0.1276],
-    zoom: 3,
-    layers: [{
-        type: "tile",
-        urlTemplate: "https://#= subdomain #.tile.openstreetmap.org/#= zoom #/#= x #/#= y #.png",
-        subdomains: ["a", "b", "c"],
-        attribution: "&copy; <a href='https://osm.org/copyright'>OpenStreetMap contributors</a>"
-    }, {
-        type: "bubble",
-        style: {
-            fill: {
-                color: "#00f",
-                opacity: 0.4
-            },
-            stroke: {
-                width: 0
-            }
-        },
-        locationField: "Location",
-        valueField: "Sum"
-    }]
-})
-```
-
-Note the locationField and valueField has been updated for binding to the datasource:
-
-``` javascript
-    locationField: "Location",
-    valueField: "Sum"
-```
-
-Any datasource object will be added during the recall process and should be removed from the initialisation.
-
-Navigate Administration >> Visualisation >> Visualisation Datasources,  then click on the Visualisation Registry Entry to create a new datasource:
-
-![Image](EmptyDatasourceReadyForMap.png)
-
-Using the above SQL and map initialisation as above, create a new entry:
-
-![Image](ExampleMapTop.png)
-
-![Image](ExampleMapBottom.png)
-
-Click Add to create a version of the Visualisation Registry Datasource, which will parse the SQL and create the series definitions in the background:
-
-![Image](VersionOfMap.png)
-
-Navigate to the Visualisation Registry through the Visualisation Directory to recall. Noting the default parameter value for Name, as Email, click on Run to execute the datasource, whereby SQL will be tokenized for with the parameter value provided.  Scroll down to make visible the third tile:
-
-![Image](MapRecall.png)
-
-It can be seen that the map has been plotted as initialisation with bubbles being dropped based on the location,  and the bubbles magnitude being the Sum value. In the event that magnitude, thus bubble, is not required,  then the pin target can simply be used in the chart initialization.
+The map is drawn to the width of the tile and its height follows the proportions of the world map. When the grid is
+switched on as well, the rows are listed beneath, so the same query shows where and how much.

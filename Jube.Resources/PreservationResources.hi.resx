@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+        <value>आपको यह कार्रवाई करने की अनुमति नहीं है।</value>
+    </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+        <value>यह कार्रवाई करने के लिए आपको किसी टेनेंट में साइन इन होना चाहिए।</value>
+    </data>
+    <data name="NoFileSupplied" xml:space="preserve">
+        <value>कोई संरक्षण फ़ाइल नहीं दी गई।</value>
+    </data>
+    <data name="InvalidPreservationFile" xml:space="preserve">
+        <value>संरक्षण फ़ाइल को डिक्रिप्ट नहीं किया जा सका। पासवर्ड जाँचें और यह भी कि फ़ाइल Jube का एक्सपोर्ट है। Jube के पिछले रिलीज़ से एक्सपोर्ट की गई फ़ाइल इम्पोर्ट नहीं की जा सकती।</value>
+    </data>
+    <data name="PasswordTooShort" xml:space="preserve">
+        <value>पासवर्ड कम से कम 12 वर्णों का होना चाहिए।</value>
+    </data>
+    <data name="WarningNoApprovalHistory" xml:space="preserve">
+        <value>पैकेज में स्वीकृति इतिहास नहीं है, इसलिए हर इम्पोर्ट की गई इकाई आपके नाम से अपने वर्तमान संस्करण पर स्वीकृत के रूप में दर्ज होगी।</value>
+    </data>
+    <data name="WarningNoRoles" xml:space="preserve">
+        <value>पैकेज में कोई भूमिका नहीं है, इसलिए टेनेंट की सभी {0} भूमिकाएँ हटा दी जाएँगी।</value>
+    </data>
+    <data name="WarningProductionData" xml:space="preserve">
+        <value>पैकेज में ऐसा डेटा है जो बड़ा या संवेदनशील हो सकता है: सूचियों के {0} मान, डिक्शनरी के {1} जोड़े और Exhaustive की {2} पंक्तियाँ।</value>
+    </data>
+    <data name="WarningOlderFormat" xml:space="preserve">
+        <value>पैकेज का फ़ॉर्मैट संस्करण {0} है, जो वर्तमान संस्करण {1} से पुराना है।</value>
+    </data>
+    <data name="BlockerRoleRekey" xml:space="preserve">
+        <value>पैकेज की भूमिकाएँ किसी अन्य टेनेंट में पहले से मौजूद हैं और इस टेनेंट में उपयोगकर्ता हैं, इसलिए इम्पोर्ट अस्वीकार कर दिया जाएगा।</value>
+    </data>
+    <data name="BlockerPrivilege" xml:space="preserve">
+        <value>पैकेज या टेनेंट की वर्तमान भूमिकाओं में ऐसी अनुमतियाँ हैं जो आपके पास नहीं हैं, इसलिए इम्पोर्ट अस्वीकार कर दिया जाएगा। केवल वही उपयोगकर्ता, जिसके पास ये सभी अनुमतियाँ हों, या लैंडलॉर्ड इम्पोर्ट कर सकता है।</value>
+    </data>
+    <data name="DiffNeedsSnapshot" xml:space="preserve">
+        <value>तुलना का कम से कम एक पक्ष स्नैपशॉट होना चाहिए।</value>
+    </data>
+    <data name="DiffSameSnapshot" xml:space="preserve">
+        <value>स्नैपशॉट की तुलना स्वयं से नहीं की जा सकती।</value>
+    </data>
+    <data name="PackageTooLarge" xml:space="preserve">
+    <value>पैकेज इस सर्वर द्वारा स्वीकार किए जाने से बड़ा है।</value>
+  </data>
+</root>

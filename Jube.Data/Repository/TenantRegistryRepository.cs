@@ -1,3 +1,4 @@
+using Jube.Data.Concurrency;
 /* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
@@ -21,6 +22,7 @@ namespace Jube.Data.Repository
     using AutoMapper;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Microsoft.Extensions.Logging.Abstractions;
     using Poco;
 
@@ -84,6 +86,7 @@ namespace Jube.Data.Repository
             model.Landlord = existing.Landlord;
             model.UpdatedUser = userName;
             model.UpdatedDate = DateTime.UtcNow;
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
             model.Version = existing.Version + 1;
 
             await dbContext.UpdateAsync(model, token: token);
@@ -96,7 +99,35 @@ namespace Jube.Data.Repository
 
             await dbContext.InsertAsync(audit, token: token);
 
+            if (model.Active != 1)
+            {
+                await ReturnSwitchedUsersHomeAsync(model.Id, token).ConfigureAwait(false);
+            }
+
             return model;
+        }
+
+        private async Task ReturnSwitchedUsersHomeAsync(int tenantRegistryId, CancellationToken token)
+        {
+            var stranded = await (from uit in dbContext.UserInTenant
+                    join ur in dbContext.UserRegistry on uit.User equals ur.Name
+                    join rr in dbContext.RoleRegistry on ur.RoleRegistryGuid equals rr.Guid
+                    where uit.TenantRegistryId == tenantRegistryId
+                          && rr.TenantRegistryId != tenantRegistryId
+                          && rr.TenantRegistryId != null
+                          && (rr.Deleted == 0 || rr.Deleted == null)
+                          && (ur.Deleted == 0 || ur.Deleted == null)
+                    select new { uit.Id, Home = rr.TenantRegistryId.Value })
+                .ToListAsync(token).ConfigureAwait(false);
+
+            foreach (var row in stranded)
+            {
+                await dbContext.UserInTenant.Where(w => w.Id == row.Id)
+                    .Set(s => s.TenantRegistryId, row.Home)
+                    .Set(s => s.SwitchedUser, userName)
+                    .Set(s => s.SwitchedDate, DateTime.UtcNow)
+                    .UpdateAsync(token).ConfigureAwait(false);
+            }
         }
 
         public async Task DeleteAsync(int id, CancellationToken token = default)
@@ -104,6 +135,7 @@ namespace Jube.Data.Repository
             var records = await dbContext.TenantRegistry
                 .Where(d => d.Id == id
                             && (d.Locked == 0 || d.Locked == null)
+                            && (d.Landlord == 0 || d.Landlord == null)
                             && (d.Deleted == 0 || d.Deleted == null))
                 .Set(s => s.Deleted, Convert.ToByte(1))
                 .Set(s => s.DeletedDate, DateTime.UtcNow)
@@ -114,6 +146,8 @@ namespace Jube.Data.Repository
             {
                 throw new KeyNotFoundException();
             }
+
+            await ReturnSwitchedUsersHomeAsync(id, token).ConfigureAwait(false);
         }
     }
 }

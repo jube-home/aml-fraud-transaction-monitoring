@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="MessagePack" Version="3.1.12"/>
         <PackageReference Include="AgentGuard" Version="0.11.0"/>
         <PackageReference Include="AgentGuard.Onnx" Version="0.11.0"/>
         <PackageReference Include="DiffPlex" Version="1.9.0"/>

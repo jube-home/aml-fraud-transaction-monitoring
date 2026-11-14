@@ -28,8 +28,9 @@ using Jube.Test.AdvancedAnalytics.Worker;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
-using Jube.Service.Repository.AdvancedAnalyticsModel.Models;
+using Jube.Service.Repository.AskJoobyAnalyticsModel.Models;
 using Jube.Data.Query.GetNextAdvancedAnalyticsTrainingRunQuery;
 
 namespace Jube.Test.AdvancedAnalytics.Service
@@ -93,7 +94,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             result.TrainedModelId.Should().NotBeNull();
             result.TrainedModelVersionId.Should().Be(status.TrainedModelVersionId);
 
-            var version = await Db.AdvancedAnalyticsTrainedModelVersion
+            var version = await Db.AskJoobyAnalyticsTrainedModelVersion
                 .Where(w => w.Id == result.TrainedModelVersionId)
                 .FirstAsync();
 

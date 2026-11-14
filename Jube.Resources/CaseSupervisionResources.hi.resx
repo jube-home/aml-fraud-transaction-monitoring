@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>आपको केस की निगरानी की अनुमति नहीं है।</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>प्रमाणीकरण आवश्यक है।</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>केस नहीं मिला।</value>
+  </data>
+    <data name="WorkflowNotFound" xml:space="preserve">
+    <value>केस वर्कफ़्लो नहीं मिला।</value>
+  </data>
+    <data name="CaseIdInvalid" xml:space="preserve">
+    <value>एक केस आवश्यक है।</value>
+  </data>
+    <data name="ToUserRequired" xml:space="preserve">
+    <value>वह विश्लेषक आवश्यक है जो केस लेगा।</value>
+  </data>
+    <data name="ToUserMaxLength" xml:space="preserve">
+    <value>विश्लेषक का नाम बहुत लंबा है।</value>
+  </data>
+    <data name="ReasonMaxLength" xml:space="preserve">
+    <value>कारण अधिकतम 500 वर्णों का हो सकता है।</value>
+  </data>
+    <data name="AnalystNotEligible" xml:space="preserve">
+    <value>वह विश्लेषक इस केस को नहीं देख सकता, इसलिए केस उसके नाम पर लॉक नहीं किया जा सकता।</value>
+  </data>
+    <data name="CaseNotOpen" xml:space="preserve">
+    <value>केवल खुले केस को दोबारा सौंपा जा सकता है या उसका लॉक तोड़ा जा सकता है।</value>
+  </data>
+    <data name="CaseNotLocked" xml:space="preserve">
+    <value>केस लॉक नहीं है।</value>
+  </data>
+    <data name="CaseChanged" xml:space="preserve">
+    <value>अनुरोध के दौरान केस बदल गया। उसे जाँचें और फिर प्रयास करें।</value>
+  </data>
+    <data name="PeriodInvalid" xml:space="preserve">
+    <value>'From' 'To' से पहले का होना चाहिए, और अवधि अधिकतम 366 दिन की हो सकती है।</value>
+  </data>
+    <data name="LegalHoldReasonRequired" xml:space="preserve">
+    <value>किसी मामले को कानूनी रोक में रखने के लिए कारण आवश्यक है।</value>
+  </data>
+</root>

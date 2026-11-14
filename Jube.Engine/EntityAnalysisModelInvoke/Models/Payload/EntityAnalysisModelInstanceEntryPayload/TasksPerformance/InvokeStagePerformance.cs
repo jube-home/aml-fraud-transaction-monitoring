@@ -30,6 +30,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
         public StageDuration CacheDbStorage { get; set; }
         public StageTiming<TaskPerformance> Sanctions { get; set; }
         public StageTiming<TaskPerformance> TtlCounters { get; set; }
+        public StageTiming<TaskPerformance> Graph { get; set; }
+        public StageTiming<TaskPerformance> Svirfd { get; set; }
         public StageTiming<TaskPerformance> AbstractionRulesWithSearchKeys { get; set; }
         public StageDuration JoinReadTasks { get; set; }
         public StageTiming<TaskPerformance> AbstractionRulesWithoutSearchKeys { get; set; }
@@ -82,6 +84,16 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
             if (TtlCounters != null)
             {
                 yield return (nameof(TtlCounters), TtlCounters);
+            }
+
+            if (Graph != null)
+            {
+                yield return (nameof(Graph), Graph);
+            }
+
+            if (Svirfd != null)
+            {
+                yield return (nameof(Svirfd), Svirfd);
             }
 
             if (AbstractionRulesWithSearchKeys != null)

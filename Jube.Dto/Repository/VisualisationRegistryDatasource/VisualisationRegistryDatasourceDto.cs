@@ -13,7 +13,9 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,71 +25,57 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.Repository.VisualisationRegistryDatasource
 {
     [FormEndpoint("VisualisationRegistryDatasource")]
+    [FormRoles]
     [FormKeys(Id = nameof(Id), Parent = nameof(VisualisationRegistryId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
+    [DatasourceEditor(Command = nameof(Command), DisplayKind = nameof(DisplayKindId), Grid = nameof(IncludeGrid),
+        Template = nameof(TemplateText), Mapping = nameof(Mapping))]
     [FormGroup("Identity", Order = 10)]
     [FormGroup("Query", Order = 20)]
     [FormGroup("Layout", Order = 30)]
-    [FormGroup("Display", Order = 40)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
+    [MessagePackObject]
     public class VisualisationRegistryDatasourceDto : IUpdated, IActivatable, ILockable, ITreeChild
     {
         [Description("Identifier of the parent Visualisation Registry this Datasource belongs to. Set from the " +
                      "parent context; not user-editable.")]
+        [Key(0)]
         public int VisualisationRegistryId { get; set; }
 
         [Description("Internal correlation identifier used to relate this Datasource to its Role assignments. " +
                      "Not surfaced on the current page.")]
+        [Key(1)]
         public Guid Guid { get; set; }
 
         [Description("Display name of this Datasource. Unique within the parent Visualisation Registry " +
                      "(case-insensitive).")]
         [FormField(Group = "Identity", Order = 10)]
         [ListColumn(Order = 10, Title = "Name")]
+        [Key(2)]
         public string? Name { get; set; }
 
         [Description("When true, this Datasource is locked and cannot be edited or deleted.")]
         [FormField(Group = "Identity", Order = 30, Widget = "switch")]
         [NewDefault(false)]
+        [Key(3)]
         public bool Locked { get; set; }
 
         [Description("When true, the rows returned by Command are also shown as a data grid alongside any " +
                      "Display visualisation.")]
-        [FormField(Group = "Layout", Order = 40, Widget = "switch")]
+        [FormField(Group = "Query", Order = 20, Widget = "switch")]
         [NewDefault(true)]
+        [Key(4)]
         public bool IncludeGrid { get; set; }
-
-        [Description("When true, the rows returned by Command are additionally rendered using the Display " +
-                     "Type and Display Text below (a chart, map or HTML fragment). When false, only the grid " +
-                     "(if IncludeGrid) is shown.")]
-        [FormField(Group = "Display", Order = 10, Widget = "switch")]
-        [NewDefault(false)]
-        public bool IncludeDisplay { get; set; }
 
         [Description("When true, this Datasource participates in the parent Visualisation Registry's dashboard.")]
         [FormField(Group = "Identity", Order = 20, Widget = "switch")]
         [NewDefault(true)]
+        [Key(5)]
         public bool Active { get; set; }
-
-        [Description("The Display surface's script or markup: Kendo chart/map configuration Javascript when " +
-                     "Display Type is Chart Javascript (1) or Map Javascript (2), or raw HTML when Display Type " +
-                     "is HTML (3). Required when IncludeDisplay is enabled.")]
-        [FormField(Group = "Display", Order = 30, Widget = "code")]
-        [VisibleWhen(nameof(IncludeDisplay), true)]
-        [RequiredWhen(nameof(IncludeDisplay), true)]
-        [Forms.Editor("Code")]
-        public string? VisualisationText { get; set; }
-
-        [Description("Which Display surface Visualisation Text targets: 1 Chart Javascript, 2 Map Javascript, " +
-                     "3 HTML. Only enforced when IncludeDisplay is enabled.")]
-        [FormField(Group = "Display", Order = 20, Widget = "radio")]
-        [VisibleWhen(nameof(IncludeDisplay), true)]
-        [RequiredWhen(nameof(IncludeDisplay), true)]
-        [NewDefault(1)]
-        public int VisualisationTypeId { get; set; }
 
         [Description("Legacy free-text description field. Not surfaced on the current page and not populated " +
                      "by it -- see the migration report.")]
+        [Key(6)]
         public string? Description { get; set; }
 
         [Description("The SQL SELECT statement this Datasource runs against the reporting connection to produce " +
@@ -95,64 +83,103 @@ namespace Jube.Dto.Repository.VisualisationRegistryDatasource
                      "tokens. Validated against the reporting database on Create/Update; a SELECT-only " +
                      "restriction applies when the server enforces it.")]
         [FormField(Group = "Query", Order = 10, Widget = "code")]
-        [Forms.Editor("Code")]
+        [Key(7)]
         public string? Command { get; set; }
 
         [Description("Ordering of this Datasource's tiles within the parent Visualisation Registry's dashboard; " +
                      "lower values render first.")]
         [FormField(Group = "Layout", Order = 10, Widget = "number")]
         [NewDefault(0)]
+        [Key(8)]
         public double Priority { get; set; }
 
         [Description("Legacy free-text column count field, distinct from the parent Visualisation Registry's " +
                      "own Columns setting. Not surfaced on the current page and not populated by it -- see the " +
                      "migration report.")]
+        [Key(9)]
         public int Columns { get; set; }
 
         [Description("Number of dashboard grid rows this Datasource's tile spans.")]
         [FormField(Group = "Layout", Order = 20, Widget = "number")]
         [NewDefault(0)]
+        [Key(10)]
         public int RowSpan { get; set; }
 
         [Description("Number of dashboard grid columns this Datasource's tile spans.")]
         [FormField(Group = "Layout", Order = 30, Widget = "number")]
         [NewDefault(0)]
+        [Key(11)]
         public int ColumnSpan { get; set; }
+
+        [Description("Which chart this Datasource is drawn as, from DatasourceDisplayKind: 1=column, 2=bar, " +
+                     "3=stacked column, 4=stacked bar, 5=percent stacked column, 6=percent stacked bar, 7=line, " +
+                     "8=area, 9=stacked area, 10=percent stacked area, 11=pie, 12=donut, 13=scatter or bubble, " +
+                     "14=histogram, 15=heatmap, 16=combo, 17=box plot, 18=candlestick, 19=waterfall, 20=funnel, " +
+                     "21=radar, 22=polar, 23=gauge, 24=bullet, 25=sparkline, 26=treemap, 27=gantt, 28=map. 0 draws " +
+                     "no chart, leaving the grid alone if IncludeGrid is on. A chart is drawn on the server from the " +
+                     "columns of Command, each filling a chart role by position unless Mapping says otherwise. A " +
+                     "Datasource must show a chart, a grid or both.")]
+        [FormField(Group = "Query", Order = 30, Widget = "select")]
+        [Options(typeof(DatasourceDisplayKind))]
+        [Key(12)]
+        public int DisplayKindId { get; set; }
+
+        [Description("The template the Datasource is drawn from when DisplayKindId is the Template kind (29): " +
+                     "markup in a small Vue-style dialect, rendered on the server and escaped.")]
+        [FormField(Group = "Query", Order = 40, Widget = "code")]
+        [Key(13)]
+        public string? TemplateText { get; set; }
+
+        [Description("Explicit assignments of result columns to chart roles, each with a role from " +
+                     "DatasourceChartRole and the column names that fill it in order. A role left out takes its " +
+                     "columns from the result by position. A column fills at most one role. Populated when a single " +
+                     "Datasource is read, not in lists.")]
+        [FormField(Group = "Query", Order = 50)]
+        [Key(14)]
+        public List<DatasourceMappingEntryDto> Mapping { get; set; } = [];
 
         [Description("Server-assigned row identifier. Read-only.")]
         [FormField(Group = "Audit", Order = 10, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(15)]
         public int Id { get; set; }
 
         [Description("Timestamp (UTC) this Datasource was created. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 20, ReadOnly = true, Widget = "date")]
+        [Key(16)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("User who last updated this Datasource. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 40, ReadOnly = true)]
+        [Key(17)]
         public string? UpdatedUser { get; set; }
 
         [Description("Timestamp (UTC) this Datasource was last updated. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 50, ReadOnly = true, Widget = "date")]
+        [Key(18)]
         public DateTimeOffset? UpdatedDate { get; set; }
 
         [Description("User who created this Datasource. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 30, ReadOnly = true)]
+        [Key(19)]
         public string? CreatedUser { get; set; }
 
         [Description("Server-assigned optimistic-concurrency version number, incremented on every update. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 60, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(20)]
         public int Version { get; set; }
 
         [Description("User who deleted this Datasource, if soft-deleted. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 70, ReadOnly = true)]
+        [Key(21)]
         public string? DeletedUser { get; set; }
 
         [Description("Timestamp (UTC) this Datasource was soft-deleted, if applicable. Server-assigned. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 80, ReadOnly = true, Widget = "date")]
+        [Key(22)]
         public DateTimeOffset? DeletedDate { get; set; }
     }
 }

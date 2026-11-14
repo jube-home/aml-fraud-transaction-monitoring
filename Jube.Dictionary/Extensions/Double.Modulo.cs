@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double Modulo(this double @this, double divisor)
+        [Description("Remainder that takes the sign of the divisor (Euclidean-style), so -7.Modulo(3) is 2.")]
+        public static double Modulo(this double @this,
+            [Description("The number to divide by; the remainder is returned.")] double divisor)
         {
             if (!double.IsFinite(@this) || !double.IsFinite(divisor) || divisor == 0)
             {

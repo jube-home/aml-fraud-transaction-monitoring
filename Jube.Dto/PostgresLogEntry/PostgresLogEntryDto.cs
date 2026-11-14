@@ -12,6 +12,9 @@
  */
 
 using System.ComponentModel;
+using Jube.Dto.Forms;
+using Jube.Dto.Options;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,28 +23,39 @@ using System.ComponentModel;
 
 namespace Jube.Dto.PostgresLogEntry
 {
+    [GridEndpoint("PostgresLogEntry", Title = "Postgres log entry", DefaultSort = "occurredDate")]
+    [GridSearch(Label = "Message or level contains")]
+    [MessagePackObject]
     public sealed record PostgresLogEntryDto(
-        [property: Description("Server-assigned identifier of the row, most recent first when listed.")]
+        [property: Key(0)] [property: Description("Server-assigned identifier of the row, most recent first when listed.")]
+        [property: ListColumn(Hidden = true)]
         int Id,
-        [property:
+        [property: Key(1)] [property:
             Description(
                 "UTC timestamp Postgres itself logged this line at, parsed from the line's own timestamp prefix.")]
+        [property: ListColumn(Order = 10)]
+        [property: GridTimeRange]
         DateTime OccurredDate,
-        [property:
+        [property: Key(2)] [property:
             Description(
                 "The Postgres log level: LOG, WARNING, ERROR, FATAL, PANIC, DEBUG1-5, STATEMENT, DETAIL, HINT, CONTEXT, or null if the line did not match the expected log_line_prefix format.")]
+        [property: ListColumn(Order = 20)]
         string? Level,
-        [property:
+        [property: Key(3)] [property:
             Description(
                 "The Postgres backend process id that logged this line, useful for correlating a run of continuation lines (STATEMENT/DETAIL/CONTEXT) back to the same backend.")]
+        [property: ListColumn(Order = 30, Format = GridFormat.Code)]
         int? Pid,
-        [property:
+        [property: Key(4)] [property:
             Description(
                 "The log message text. Any STATEMENT/DETAIL/CONTEXT/HINT continuation lines Postgres printed immediately after this one are folded in here, newline-separated, since Postgres's own log format has no separate exception-vs-message distinction.")]
+        [property: ListColumn(Order = 40)]
         string Message,
-        [property: Description("UTC timestamp this row was flushed to the database.")]
+        [property: Key(5)] [property: Description("UTC timestamp this row was flushed to the database.")]
+        [property: ListColumn(Order = 60, Title = "Flushed Date")]
         DateTime CreatedDate,
-        [property:
+        [property: Key(6)] [property:
             Description("Hostname of the Jube node that captured this row (not the Postgres server's own hostname).")]
+        [property: ListColumn(Order = 50)]
         string Instance);
 }

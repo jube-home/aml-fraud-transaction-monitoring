@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>آپ کو یہ کارروائی کرنے کی اجازت نہیں ہے۔</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>یہ کارروائی کرنے کے لیے آپ کا کسی ٹیننٹ میں سائن اِن ہونا ضروری ہے۔</value>
+  </data>
+    <data name="WorkflowNotFound" xml:space="preserve">
+    <value>کیس ورک فلو نہیں ملا یا آپ کو اس تک رسائی حاصل نہیں ہے۔</value>
+  </data>
+    <data name="KeyRequired" xml:space="preserve">
+    <value>جرنل کو مطابقت کے لیے پے لوڈ فیلڈ کا نام درکار ہے۔</value>
+  </data>
+    <data name="ValueRequired" xml:space="preserve">
+    <value>جرنل کو مطابقت کے لیے ایک قدر درکار ہے۔</value>
+  </data>
+    <data name="KeyInvalid" xml:space="preserve">
+    <value>پے لوڈ فیلڈ کا نام زیادہ سے زیادہ 256 حروف کا ہونا چاہیے اور اس میں کنٹرول حروف نہیں ہونے چاہییں۔</value>
+  </data>
+    <data name="LensInvalid" xml:space="preserve">
+    <value>لینز payload، rules، features، models یا sanctions میں سے ایک ہونا چاہیے۔</value>
+  </data>
+    <data name="LimitInvalid" xml:space="preserve">
+    <value>حد 1 اور 5000 کے درمیان ہونی چاہیے۔</value>
+  </data>
+    <data name="PeriodInvalid" xml:space="preserve">
+    <value>'سے' کو 'تک' سے پہلے ہونا چاہیے اور مدت زیادہ سے زیادہ 3660 دن ہونی چاہیے۔</value>
+  </data>
+    <data name="SectionInvalid" xml:space="preserve">
+    <value>سیکشن summary، notable، progression، distributions، velocity، gaps، novelty، counterparties، correlation، drift یا peers میں سے ایک ہونا چاہیے۔</value>
+  </data>
+    <data name="TransactionNotFound" xml:space="preserve">
+    <value>اس کیس ورک فلو کے لیے لین دین نہیں ملا۔</value>
+  </data>
+    <data name="TransactionIdInvalid" xml:space="preserve">
+    <value>لین دین کی شناخت صفر سے زیادہ ہونی چاہیے۔</value>
+  </data>
+    <data name="TagTransactionsInvalid" xml:space="preserve">
+    <value>ایک سے 500 کے درمیان لین دین درکار ہیں اور کوئی لین دین دہرایا نہیں جا سکتا۔</value>
+  </data>
+    <data name="TagChangeRequired" xml:space="preserve">
+    <value>شامل کرنے یا ہٹانے کے لیے کم از کم ایک ٹیگ درکار ہے۔</value>
+  </data>
+    <data name="TagNameInvalid" xml:space="preserve">
+    <value>ٹیگ کے نام میں متن ہونا چاہیے اور وہ زیادہ سے زیادہ 256 حروف کا ہونا چاہیے۔</value>
+  </data>
+    <data name="TagUnknown" xml:space="preserve">
+    <value>شامل کیا جانے والا ہر ٹیگ ورک فلو کے ماڈل کا فعال ٹیگ ہونا چاہیے۔</value>
+  </data>
+    <data name="TagLimitInvalid" xml:space="preserve">
+    <value>ایک وقت میں 20 سے زیادہ ٹیگ شامل، حذف یا برقرار نہیں رکھے جا سکتے۔</value>
+  </data>
+    <data name="PinTransactionsInvalid" xml:space="preserve">
+    <value>ایک سے 50 کے درمیان لین دین درکار ہیں اور کوئی لین دین دہرایا نہیں جا سکتا۔</value>
+  </data>
+    <data name="TravelLimitInvalid" xml:space="preserve">
+    <value>رفتار کی حد 1 سے 10,000 کلومیٹر فی گھنٹہ کے درمیان اور سب سے مختصر مرحلہ 0 سے 20,000 کلومیٹر کے درمیان ہونا چاہیے۔</value>
+  </data>
+    <data name="ReplayNotFound" xml:space="preserve">
+    <value>اس کیس پر محفوظ شدہ ری پلے نہیں ملا۔</value>
+  </data>
+    <data name="ReplayNameInvalid" xml:space="preserve">
+    <value>ری پلے کے لیے 1 سے 100 حروف کا نام درکار ہے۔</value>
+  </data>
+    <data name="ReplayWindowInvalid" xml:space="preserve">
+    <value>ری پلے 7، 30، 90 یا 365 دن پیچھے دیکھتا ہے۔</value>
+  </data>
+    <data name="ReplayLimitInvalid" xml:space="preserve">
+    <value>ایک کیس پر زیادہ سے زیادہ 10 محفوظ شدہ ری پلے ہو سکتے ہیں۔</value>
+  </data>
+    <data name="PinLimitInvalid" xml:space="preserve">
+    <value>ایک کیس پر زیادہ سے زیادہ 50 پن کیے گئے لین دین ہو سکتے ہیں۔</value>
+  </data>
+    <data name="CaseNotFound" xml:space="preserve">
+    <value>کیس نہیں ملا۔</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>کیس کسی دوسرے صارف کے لیے مقفل ہے۔</value>
+  </data>
+    <data name="FilterInvalid" xml:space="preserve">
+    <value>فلٹر درست نہیں ہے۔ اس کے لیے قواعد کا ایک گروپ درکار ہے جس کے ہر قاعدے میں ماڈل کا ایک فیلڈ، فیلڈ کے مطابق آپریٹر اور فیلڈ کی ٹائپ کی قدر ہو۔</value>
+  </data>
+    <data name="FilterUnreadable" xml:space="preserve">
+    <value>فلٹر لاگو نہیں کیا جا سکا کیونکہ ایک محفوظ شدہ قدر کو اس فیلڈ کی ٹائپ کے طور پر نہیں پڑھا جا سکا جس سے اس کا موازنہ کیا گیا۔</value>
+  </data>
+    <data name="MergeInvalid" xml:space="preserve">
+    <value>مرج کے لیے JSON ارے درکار ہے جس میں کیس کی کے علاوہ زیادہ سے زیادہ تین آبجیکٹ ہوں، ہر ایک میں کی اور قدر ہو۔</value>
+  </data>
+    <data name="TagJobTooManyMatches" xml:space="preserve">
+    <value>بہت زیادہ لین دین مطابقت رکھتے ہیں، انہیں ایک ہی جاب میں ٹیگ نہیں کیا جا سکتا۔ منظر کو محدود کریں اور دوبارہ کوشش کریں۔</value>
+  </data>
+    <data name="TagJobNoMatches" xml:space="preserve">
+    <value>کوئی لین دین منظر سے مطابقت نہیں رکھتا۔</value>
+  </data>
+    <data name="TagJobNotFound" xml:space="preserve">
+    <value>ٹیگنگ جاب نہیں ملی۔</value>
+  </data>
+    <data name="TagJobNotUndoable" xml:space="preserve">
+    <value>صرف وہی مکمل شدہ ٹیگنگ واپس کی جا سکتی ہے جس نے کچھ تبدیل کیا ہو اور جو پہلے واپس نہ کی گئی ہو۔</value>
+  </data>
+    <data name="TagJobActiveLimit" xml:space="preserve">
+    <value>بہت زیادہ بلک ٹیگنگ جابز پہلے ہی قطار میں ہیں یا چل رہی ہیں۔ کسی ایک کے مکمل ہونے کا انتظار کریں یا ایک منسوخ کریں اور دوبارہ کوشش کریں۔</value>
+  </data>
+    <data name="KeyNotArchiveKey" xml:space="preserve">
+    <value>کی ورک فلو کے ماڈل پر Archive Key کے طور پر نشان زد فیلڈ نہیں ہے، اس لیے اس کے لین دین تلاش نہیں کیے جا سکتے۔ ماڈل کے request XPath میں فیلڈ کو Archive Key نشان زد کریں یا کوئی دوسری کی منتخب کریں۔</value>
+  </data>
+    <data name="KeyValueInvalid" xml:space="preserve">
+    <value>قدر کو کی کے فیلڈ کی ڈیٹا ٹائپ کے طور پر نہیں پڑھا جا سکتا۔</value>
+  </data>
+    <data name="KeyNotLookupable" xml:space="preserve">
+    <value>کی کا فیلڈ بے ترتیب ویکٹر سے خفیہ کیا گیا ہے، اس لیے اس کی قدریں تلاش نہیں کی جا سکتیں۔</value>
+  </data>
+    <data name="LaneOperatorNotAllowed" xml:space="preserve">
+    <value>رینج آپریٹر صرف عددی یا تاریخ کی کی پر مجاز ہے؛ متنی یا بولین کی صرف برابری سے مماثل ہوتی ہے۔</value>
+  </data>
+    <data name="CaseKeyNotArchiveKey" xml:space="preserve">
+    <value>کیس کی ورک فلو کے ماڈل پر Archive Key کے طور پر نشان زد فیلڈ نہیں ہے، اس لیے اس کیس کا جرنل نہیں پڑھا جا سکتا۔ ماڈل کے request XPath میں فیلڈ کو Archive Key نشان زد کریں اور تاریخی ڈیٹا کے لیے archive key مائیگریشن اسکرپٹ چلائیں۔</value>
+  </data>
+</root>

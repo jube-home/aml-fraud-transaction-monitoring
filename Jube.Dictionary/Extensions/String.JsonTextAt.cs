@@ -18,7 +18,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string JsonTextAt(this string? @this, string? path)
+        [Description("The value at a path such as $.a.b[0] as text: strings unquoted, anything else as JSON; empty when missing.")]
+        public static string JsonTextAt(this string? @this, [Description("The path, for example $.a.b.")] string? path)
         {
             var node = StructuredDataSupport.Navigate(StructuredDataSupport.Parse(@this), path);
 

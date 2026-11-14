@@ -47,7 +47,8 @@ namespace Jube.App.Endpoints.Repository
                 .Produces((int)HttpStatusCode.Forbidden)
                 .WithName("SanctionEntrySourceList");
 
-            group.MapPost("Import", ImportAsync)
+            group.MapPost("{id:int}/Import", ImportAsync)
+                .WithMetadata(new RequestSizeLimitAttribute(SanctionEntrySourceService.MaximumImportBytes + 65536))
                 .ValidateAntiforgeryForCookieSessions()
                 .Produces((int)HttpStatusCode.OK)
                 .Produces<ValidationResult>((int)HttpStatusCode.BadRequest)
@@ -115,7 +116,7 @@ namespace Jube.App.Endpoints.Repository
         }
 
         private static async Task<IResult> ImportAsync(
-            IFormFile files, [FromForm] int id, HttpContext httpContext, ILog log,
+            int id, IFormFile files, HttpContext httpContext, ILog log,
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {

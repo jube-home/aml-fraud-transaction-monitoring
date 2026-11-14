@@ -1,0 +1,8 @@
+{
+  "_note": "model-references owns no SPA locale keys. valueGrid keys are inherited from the data-grid slice; ka, id, sv, ur and hi proposals for them are in review/data-grid.md sections 6, 12 and 13. Server-side resx files for the ten model-reference classes were created directly (pl, ar, ka, id, sv, ur, hi).",
+  "ka": {},
+  "id": {},
+  "sv": {},
+  "ur": {},
+  "hi": {}
+}

@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchLogRatioOfOutsideRange(double denominator, double lowerBound, double upperBound)
+            [Description("True when: the natural log of the value over the denominator, symmetric for increases and decreases is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchLogRatioOfOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleLogRatioOfOutsideRange(flow.Value, denominator, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectLogRatioOfOutsideRange(double denominator, double lowerBound, double upperBound)
+            [Description("True when: the natural log of the value over the denominator, symmetric for increases and decreases is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectLogRatioOfOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleLogRatioOfOutsideRange(flow.Value, denominator, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakLogRatioOfOutsideRange(double denominator, double lowerBound, double upperBound)
+            [Description("True when: the natural log of the value over the denominator, symmetric for increases and decreases is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakLogRatioOfOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleLogRatioOfOutsideRange(flow.Value, denominator, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireLogRatioOfOutsideRange(double denominator, double lowerBound, double upperBound)
+            [Description("True when: the natural log of the value over the denominator, symmetric for increases and decreases is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireLogRatioOfOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleLogRatioOfOutsideRange(flow.Value, denominator, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureLogRatioOfOutsideRange(double denominator, double lowerBound, double upperBound)
+            [Description("True when: the natural log of the value over the denominator, symmetric for increases and decreases is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureLogRatioOfOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchLogRatioOfOutsideRange(double denominator, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the natural log of the value over the denominator, symmetric for increases and decreases is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchLogRatioOfOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchLogRatioOfOutsideRange(denominator, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectLogRatioOfOutsideRange(double denominator, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the natural log of the value over the denominator, symmetric for increases and decreases is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectLogRatioOfOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectLogRatioOfOutsideRange(denominator, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakLogRatioOfOutsideRange(double denominator, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the natural log of the value over the denominator, symmetric for increases and decreases is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakLogRatioOfOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakLogRatioOfOutsideRange(denominator, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireLogRatioOfOutsideRange(double denominator, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the natural log of the value over the denominator, symmetric for increases and decreases is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireLogRatioOfOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireLogRatioOfOutsideRange(denominator, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureLogRatioOfOutsideRange(double denominator, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the natural log of the value over the denominator, symmetric for increases and decreases is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureLogRatioOfOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureLogRatioOfOutsideRange(denominator, lowerBound, upperBound);
             }

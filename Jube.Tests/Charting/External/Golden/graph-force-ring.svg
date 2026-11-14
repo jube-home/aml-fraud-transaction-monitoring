@@ -1,0 +1,540 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc jc-diagram" viewBox="0 0 640 634" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-4ff9084f-t jc-4ff9084f-d">
+    <title id="jc-4ff9084f-t">Account ring</title>
+    <desc id="jc-4ff9084f-d">Network graph diagram with 12 nodes and 19 directed edges; edge thickness shows amount.
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="634" rx="8"/>
+    <text class="ttl" x="16" y="32">Account ring</text>
+    <text class="sub" x="16" y="50">Eight accounts cycling funds through one hub</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="62" width="69.12" height="18"/>
+        <rect class="sw" x="16" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="75">Accounts</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="101.12" y="62" width="61.68" height="18"/>
+        <rect class="sw" x="103.12" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="121.12" y="75">Devices</text>
+    </g>
+    <g class="lg s2">
+        <rect class="hit" x="180.8" y="62" width="63.72" height="18"/>
+        <rect class="sw" x="182.8" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="200.8" y="75">Network</text>
+    </g>
+    <g transform="translate(111.72 90)">
+        <defs>
+            <marker id="jc-4ff9084f-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9"
+                    markerUnits="userSpaceOnUse" orient="auto">
+                <path class="ah" d="M0 0L10 5L0 10Z"/>
+            </marker>
+        </defs>
+        <g class="mk x0 eg e1 e0" tabindex="0" role="graphics-symbol"
+           aria-label="Account 0 to Hub account, Amount: 1000, First: 2026-03-02 09:00, Last: 2026-03-02 11:00"
+           data-from="acct-0" data-to="hub" data-edge="t0" data-kind="directed" data-first="1772442000"
+           data-last="1772449200">
+            <title>Account 0 to Hub account, Amount: 1000, First: 2026-03-02 09:00, Last: 2026-03-02 11:00</title>
+            <path class="eh" d="M311.23 190.98L230.76 266.61"/>
+            <path class="ep et" d="M311.23 190.98L230.76 266.61" stroke-width="1.27" marker-end="url(#jc-4ff9084f-ar)"/>
+            <text class="ant ctr" x="270.99" y="224.8">1000</text>
+        </g>
+        <g class="mk x1 eg e2 e0" tabindex="0" role="graphics-symbol"
+           aria-label="Account 1 to Hub account, Amount: 1250, Events: 2, First: 2026-03-02 10:00, Last: 2026-03-02 12:00"
+           data-from="acct-1" data-to="hub" data-edge="t1" data-kind="directed" data-first="1772445600"
+           data-last="1772452800">
+            <title>Account 1 to Hub account, Amount: 1250, Events: 2, First: 2026-03-02 10:00, Last: 2026-03-02 12:00
+            </title>
+            <path class="eh" d="M233.31 185.26L214.26 256.76"/>
+            <path class="ep et" d="M233.31 185.26L214.26 256.76" stroke-width="1.36" marker-end="url(#jc-4ff9084f-ar)"/>
+            <text class="ant ctr" x="223.79" y="217.01">×2 1250</text>
+        </g>
+        <g class="mk x2 eg e1 e2" tabindex="0" role="graphics-symbol"
+           aria-label="Account 0 to Account 1, Amount: 450, First: 2026-03-02 22:00" data-from="acct-0" data-to="acct-1"
+           data-edge="x2" data-kind="directed" data-first="1772488800" data-last="1772488800">
+            <title>Account 0 to Account 1, Amount: 450, First: 2026-03-02 22:00</title>
+            <path class="eh" d="M306.99 176.6L260.46 168.07"/>
+            <path class="ep et" d="M306.99 176.6L260.46 168.07" stroke-width="1.07" marker-end="url(#jc-4ff9084f-ar)"/>
+            <text class="ant ctr" x="283.72" y="168.33">450</text>
+        </g>
+        <g class="mk x3 eg e3 e0" tabindex="0" role="graphics-symbol"
+           aria-label="Account 2 to Hub account, Amount: 1500, Events: 3, First: 2026-03-02 11:00, Last: 2026-03-02 13:00"
+           data-from="acct-2" data-to="hub" data-edge="t2" data-kind="directed" data-first="1772449200"
+           data-last="1772456400">
+            <title>Account 2 to Hub account, Amount: 1500, Events: 3, First: 2026-03-02 11:00, Last: 2026-03-02 13:00
+            </title>
+            <path class="eh" d="M299.81 281.44L240.09 287.21"/>
+            <path class="ep et" d="M299.81 281.44L240.09 287.21" stroke-width="1.45" marker-end="url(#jc-4ff9084f-ar)"/>
+            <text class="ant ctr" x="269.95" y="280.33">×3 1500</text>
+        </g>
+        <g class="mk x4 eg e2 e3" tabindex="0" role="graphics-symbol"
+           aria-label="Account 1 to Account 2, Amount: 500, First: 2026-03-02 23:00" data-from="acct-1" data-to="acct-2"
+           data-edge="x4" data-kind="directed" data-first="1772492400" data-last="1772492400">
+            <title>Account 1 to Account 2, Amount: 500, First: 2026-03-02 23:00</title>
+            <path class="eh" d="M251.69 181.9L308.83 261.56"/>
+            <path class="ep et" d="M251.69 181.9L308.83 261.56" stroke-width="1.08" marker-end="url(#jc-4ff9084f-ar)"/>
+            <text class="ant ctr" x="280.26" y="203.73">500</text>
+        </g>
+        <g class="mk x5 eg e4 e0" tabindex="0" role="graphics-symbol"
+           aria-label="Account 3 to Hub account, Amount: 1750, First: 2026-03-02 12:00, Last: 2026-03-02 14:00"
+           data-from="acct-3" data-to="hub" data-edge="t3" data-kind="directed" data-first="1772452800"
+           data-last="1772460000">
+            <title>Account 3 to Hub account, Amount: 1750, First: 2026-03-02 12:00, Last: 2026-03-02 14:00</title>
+            <path class="eh" d="M344.4 339.34L238.28 302.15"/>
+            <path class="ep et" d="M344.4 339.34L238.28 302.15" stroke-width="1.54" marker-end="url(#jc-4ff9084f-ar)"/>
+            <text class="ant ctr" x="291.34" y="330.74">1750</text>
+        </g>
+        <g class="mk x6 eg e3 e4" tabindex="0" role="graphics-symbol"
+           aria-label="Account 2 to Account 3, Amount: 550, First: 2026-03-03 00:00" data-from="acct-2" data-to="acct-3"
+           data-edge="x6" data-kind="directed" data-first="1772496000" data-last="1772496000">
+            <title>Account 2 to Account 3, Amount: 550, First: 2026-03-03 00:00</title>
+            <path class="eh" d="M333.08 297.95L352.45 329.32"/>
+            <path class="ep et" d="M333.08 297.95L352.45 329.32" stroke-width="1.1" marker-end="url(#jc-4ff9084f-ar)"/>
+            <text class="ant ctr" x="342.76" y="309.64">550</text>
+        </g>
+        <g class="mk x7 eg e5 e0" tabindex="0" role="graphics-symbol"
+           aria-label="Account 4 to Hub account, Amount: 2000, Events: 2, First: 2026-03-02 13:00, Last: 2026-03-02 15:00"
+           data-from="acct-4" data-to="hub" data-edge="t4" data-kind="directed" data-first="1772456400"
+           data-last="1772463600">
+            <title>Account 4 to Hub account, Amount: 2000, Events: 2, First: 2026-03-02 13:00, Last: 2026-03-02 15:00
+            </title>
+            <path class="eh" d="M257.43 382.69L222.5 321.03"/>
+            <path class="ep et" d="M257.43 382.69L222.5 321.03" stroke-width="1.63" marker-end="url(#jc-4ff9084f-ar)"/>
+            <text class="ant ctr" x="239.96" y="361.86">×2 2000</text>
+        </g>
+        <g class="mk x8 eg e4 e5" tabindex="0" role="graphics-symbol"
+           aria-label="Account 3 to Account 4, Amount: 600, First: 2026-03-03 01:00" data-from="acct-3" data-to="acct-4"
+           data-edge="x8" data-kind="directed" data-first="1772499600" data-last="1772499600">
+            <title>Account 3 to Account 4, Amount: 600, First: 2026-03-03 01:00</title>
+            <path class="eh" d="M345.78 355.13L283.7 390.01"/>
+            <path class="ep et" d="M345.78 355.13L283.7 390.01" stroke-width="1.12" marker-end="url(#jc-4ff9084f-ar)"/>
+            <text class="ant ctr" x="314.74" y="368.57">600</text>
+        </g>
+        <g class="mk x9 eg e6 e0" tabindex="0" role="graphics-symbol"
+           aria-label="Account 5 to Hub account, Amount: 2250, Events: 3, First: 2026-03-02 14:00, Last: 2026-03-02 16:00"
+           data-from="acct-5" data-to="hub" data-edge="t5" data-kind="directed" data-first="1772460000"
+           data-last="1772467200">
+            <title>Account 5 to Hub account, Amount: 2250, Events: 3, First: 2026-03-02 14:00, Last: 2026-03-02 16:00
+            </title>
+            <path class="eh" d="M197.58 424.51L203.25 325.52"/>
+            <path class="ep et" d="M197.58 424.51L203.25 325.52" stroke-width="1.73" marker-end="url(#jc-4ff9084f-ar)"/>
+            <text class="ant ctr" x="200.41" y="385.02">×3 2250</text>
+        </g>
+        <g class="mk x10 eg e5 e6" tabindex="0" role="graphics-symbol"
+           aria-label="Account 4 to Account 5, Amount: 650, First: 2026-03-03 02:00" data-from="acct-4" data-to="acct-5"
+           data-edge="x10" data-kind="directed" data-first="1772503200" data-last="1772503200">
+            <title>Account 4 to Account 5, Amount: 650, First: 2026-03-03 02:00</title>
+            <path class="eh" d="M250.88 410.09L214.54 434.24"/>
+            <path class="ep et" d="M250.88 410.09L214.54 434.24" stroke-width="1.14" marker-end="url(#jc-4ff9084f-ar)"/>
+            <text class="ant ctr" x="232.71" y="404.17">650</text>
+        </g>
+        <g class="mk x11 eg e7 e0" tabindex="0" role="graphics-symbol"
+           aria-label="Account 6 to Hub account, Amount: 2500, First: 2026-03-02 15:00, Last: 2026-03-02 17:00"
+           data-from="acct-6" data-to="hub" data-edge="t6" data-kind="directed" data-first="1772463600"
+           data-last="1772470800">
+            <title>Account 6 to Hub account, Amount: 2500, First: 2026-03-02 15:00, Last: 2026-03-02 17:00</title>
+            <path class="eh" d="M116.91 376.65L180.18 315"/>
+            <path class="ep et" d="M116.91 376.65L180.18 315" stroke-width="1.82" marker-end="url(#jc-4ff9084f-ar)"/>
+            <text class="ant ctr" x="148.55" y="341.83">2500</text>
+        </g>
+        <g class="mk x12 eg e6 e7" tabindex="0" role="graphics-symbol"
+           aria-label="Account 5 to Account 6, Amount: 700, First: 2026-03-03 03:00" data-from="acct-5" data-to="acct-6"
+           data-edge="x12" data-kind="directed" data-first="1772506800" data-last="1772506800">
+            <title>Account 5 to Account 6, Amount: 700, First: 2026-03-03 03:00</title>
+            <path class="eh" d="M177.6 435.05L119.61 400.03"/>
+            <path class="ep et" d="M177.6 435.05L119.61 400.03" stroke-width="1.16" marker-end="url(#jc-4ff9084f-ar)"/>
+            <text class="ant ctr" x="148.6" y="413.54">700</text>
+        </g>
+        <g class="mk x13 eg e8 e0" tabindex="0" role="graphics-symbol"
+           aria-label="Account 7 to Hub account, Amount: 2750, Events: 2, First: 2026-03-02 16:00, Last: 2026-03-02 18:00"
+           data-from="acct-7" data-to="hub" data-edge="t7" data-kind="directed" data-first="1772467200"
+           data-last="1772474400">
+            <title>Account 7 to Hub account, Amount: 2750, Events: 2, First: 2026-03-02 16:00, Last: 2026-03-02 18:00
+            </title>
+            <path class="eh" d="M74.6 298.36L170.31 292.66"/>
+            <path class="ep et" d="M74.6 298.36L170.31 292.66" stroke-width="1.91" marker-end="url(#jc-4ff9084f-ar)"/>
+            <text class="ant ctr" x="122.45" y="291.51">×2 2750</text>
+        </g>
+        <g class="mk x14 eg e7 e8" tabindex="0" role="graphics-symbol"
+           aria-label="Account 6 to Account 7, Amount: 750, First: 2026-03-03 04:00" data-from="acct-6" data-to="acct-7"
+           data-edge="x14" data-kind="directed" data-first="1772510400" data-last="1772510400">
+            <title>Account 6 to Account 7, Amount: 750, First: 2026-03-03 04:00</title>
+            <path class="eh" d="M94.55 372.85L65.4 314.23"/>
+            <path class="ep et" d="M94.55 372.85L65.4 314.23" stroke-width="1.18" marker-end="url(#jc-4ff9084f-ar)"/>
+            <text class="ant ctr" x="79.98" y="353.54">750</text>
+        </g>
+        <g class="mk x15 eg e9 e3" tabindex="0" role="graphics-symbol" aria-label="Device 7f3a to Account 2"
+           data-from="dev-1" data-to="acct-2" data-edge="x15" data-kind="directed">
+            <title>Device 7f3a to Account 2</title>
+            <path class="eh" d="M343.21 442.32L324.46 301.02"/>
+            <path class="ep et" d="M343.21 442.32L324.46 301.02" stroke-width="1.6" marker-end="url(#jc-4ff9084f-ar)"/>
+        </g>
+        <g class="mk x16 eg e9 e6" tabindex="0" role="graphics-symbol" aria-label="Device 7f3a to Account 5"
+           data-from="dev-1" data-to="acct-5" data-edge="x16" data-kind="directed">
+            <title>Device 7f3a to Account 5</title>
+            <path class="eh" d="M328.83 457.42L218.12 448.17"/>
+            <path class="ep et" d="M328.83 457.42L218.12 448.17" stroke-width="1.6" marker-end="url(#jc-4ff9084f-ar)"/>
+        </g>
+        <g class="mk x17 eg e10 e2" tabindex="0" role="graphics-symbol" aria-label="10.4.0.9 to Account 1"
+           data-from="ip-1" data-to="acct-1" data-edge="x17" data-kind="directed">
+            <title>10.4.0.9 to Account 1</title>
+            <path class="eh" d="M263.03 37.75L243.04 142.64"/>
+            <path class="ep et" d="M263.03 37.75L243.04 142.64" stroke-width="1.6" marker-end="url(#jc-4ff9084f-ar)"/>
+        </g>
+        <g class="mk x18 eg e0 e11" tabindex="0" role="graphics-symbol"
+           aria-label="Hub account to Counterparty, Amount: 9800" data-from="hub" data-to="cp-1" data-edge="x18"
+           data-kind="directed">
+            <title>Hub account to Counterparty, Amount: 9800</title>
+            <path class="eh" d="M179.2 267.2L104.68 200.32"/>
+            <path class="ep et" d="M179.2 267.2L104.68 200.32" stroke-width="4.5" marker-end="url(#jc-4ff9084f-ar)"/>
+            <text class="ant ctr" x="141.94" y="243.76">9800</text>
+        </g>
+        <g class="mk n0 nd s0 j1 j2 j3 j4 j5 j6 j7 j8 j11" tabindex="0" role="graphics-symbol"
+           aria-label="Hub account, Accounts, Edges in: 8, out: 1, hub, ○" data-node="hub" data-kind="hexagon">
+            <title>Hub account, Accounts, Edges in: 8, out: 1, hub, ○</title>
+            <path class="nb" d="M235.56 308.08L205.25 325.58L174.94 308.08L174.94 273.08L205.25 255.58L235.56 273.08Z"/>
+            <path class="nt" d="M235.56 308.08L205.25 325.58L174.94 308.08L174.94 273.08L205.25 255.58L235.56 273.08Z"/>
+            <text class="lbl ctr" x="205.25" y="337.58">Hub account</text>
+            <rect class="nb" x="236.25" y="250.58" width="23.45" height="14" rx="7"/>
+            <text class="lbl ctr mid fs10" x="247.98" y="257.58">hub</text>
+            <rect class="nb" x="261.71" y="250.58" width="14" height="14" rx="7"/>
+            <text class="lbl ctr mid fs10" x="268.71" y="257.58">○</text>
+        </g>
+        <g class="mk n1 nd s0 j0 j2" tabindex="0" role="graphics-symbol"
+           aria-label="Account 0, Accounts, Edges in: 0, out: 2" data-node="acct-0" data-kind="circle">
+            <title>Account 0, Accounts, Edges in: 0, out: 2</title>
+            <circle class="nb" cx="323.34" cy="179.6" r="16.63"/>
+            <circle class="nt" cx="323.34" cy="179.6" r="16.63"/>
+            <text class="lbl ctr" x="323.34" y="208.22">Account 0</text>
+        </g>
+        <g class="mk n2 nd s0 j0 j1 j3 j10" tabindex="0" role="graphics-symbol"
+           aria-label="Account 1, Accounts, Edges in: 2, out: 2" data-node="acct-1" data-kind="circle">
+            <title>Account 1, Accounts, Edges in: 2, out: 2</title>
+            <circle class="nb" cx="238.94" cy="164.12" r="21.88"/>
+            <circle class="nt" cx="238.94" cy="164.12" r="21.88"/>
+            <text class="lbl ctr" x="238.94" y="198">Account 1</text>
+        </g>
+        <g class="mk n3 nd s0 j0 j2 j4 j9" tabindex="0" role="graphics-symbol"
+           aria-label="Account 2, Accounts, Edges in: 2, out: 2" data-node="acct-2" data-kind="circle">
+            <title>Account 2, Accounts, Edges in: 2, out: 2</title>
+            <circle class="nb" cx="321.58" cy="279.34" r="21.88"/>
+            <circle class="nt" cx="321.58" cy="279.34" r="21.88"/>
+            <text class="lbl ctr" x="321.58" y="313.21">Account 2</text>
+        </g>
+        <g class="mk n4 nd s0 j0 j3 j5" tabindex="0" role="graphics-symbol"
+           aria-label="Account 3, Accounts, Edges in: 1, out: 2" data-node="acct-3" data-kind="circle">
+            <title>Account 3, Accounts, Edges in: 1, out: 2</title>
+            <circle class="nb" cx="362.56" cy="345.7" r="19.25"/>
+            <circle class="nt" cx="362.56" cy="345.7" r="19.25"/>
+            <text class="lbl ctr" x="362.56" y="376.95">Account 3</text>
+        </g>
+        <g class="mk n5 nd s0 j0 j4 j6" tabindex="0" role="graphics-symbol"
+           aria-label="Account 4, Accounts, Edges in: 1, out: 2" data-node="acct-4" data-kind="circle">
+            <title>Account 4, Accounts, Edges in: 1, out: 2</title>
+            <circle class="nb" cx="266.91" cy="399.43" r="19.25"/>
+            <circle class="nt" cx="266.91" cy="399.43" r="19.25"/>
+            <text class="lbl ctr" x="266.91" y="430.68">Account 4</text>
+        </g>
+        <g class="mk n6 nd s0 j0 j5 j7 j9" tabindex="0" role="graphics-symbol"
+           aria-label="Account 5, Accounts, Edges in: 2, out: 2" data-node="acct-5" data-kind="circle">
+            <title>Account 5, Accounts, Edges in: 2, out: 2</title>
+            <circle class="nb" cx="196.33" cy="446.35" r="21.88"/>
+            <circle class="nt" cx="196.33" cy="446.35" r="21.88"/>
+            <text class="lbl ctr" x="196.33" y="480.23">Account 5</text>
+        </g>
+        <g class="mk n7 nd s0 j0 j6 j8" tabindex="0" role="graphics-symbol"
+           aria-label="Account 6, Accounts, Edges in: 1, out: 2" data-node="acct-6" data-kind="circle">
+            <title>Account 6, Accounts, Edges in: 1, out: 2</title>
+            <circle class="nb" cx="103.13" cy="390.08" r="19.25"/>
+            <circle class="nt" cx="103.13" cy="390.08" r="19.25"/>
+            <text class="lbl ctr" x="103.13" y="421.33">Account 6</text>
+        </g>
+        <g class="mk n8 nd s0 j0 j7" tabindex="0" role="graphics-symbol"
+           aria-label="Account 7, Accounts, Edges in: 1, out: 1" data-node="acct-7" data-kind="circle">
+            <title>Account 7, Accounts, Edges in: 1, out: 1</title>
+            <circle class="nb" cx="58" cy="299.35" r="16.63"/>
+            <circle class="nt" cx="58" cy="299.35" r="16.63"/>
+            <text class="lbl ctr" x="58" y="327.97">Account 7</text>
+        </g>
+        <g class="mk n9 nd s1 j3 j6" tabindex="0" role="graphics-symbol"
+           aria-label="Device 7f3a, Devices, Edges in: 0, out: 2" data-node="dev-1" data-kind="square">
+            <title>Device 7f3a, Devices, Edges in: 0, out: 2</title>
+            <rect class="nb" x="330.44" y="443.84" width="29.93" height="29.93" rx="3"/>
+            <rect class="nt" x="330.44" y="443.84" width="29.93" height="29.93" rx="3"/>
+            <text class="lbl ctr" x="345.4" y="487.43">Device 7f3a</text>
+        </g>
+        <g class="mk n10 nd s2 j2" tabindex="0" role="graphics-symbol"
+           aria-label="10.4.0.9, Network, Edges in: 0, out: 1" data-node="ip-1" data-kind="diamond">
+            <title>10.4.0.9, Network, Edges in: 0, out: 1</title>
+            <path class="nb" d="M265.65 10L279.65 24L265.65 38L251.65 24Z"/>
+            <path class="nt" d="M265.65 10L279.65 24L265.65 38L251.65 24Z"/>
+            <text class="lbl ctr" x="265.65" y="50">10.4.0.9</text>
+        </g>
+        <g class="mk n11 nd s0 j0" tabindex="0" role="graphics-symbol"
+           aria-label="Counterparty, Accounts, Edges in: 1, out: 0, ★" data-node="cp-1" data-kind="triangle">
+            <title>Counterparty, Accounts, Edges in: 1, out: 0, ★</title>
+            <path class="nb" d="M94.26 176.97L107.56 199.37L80.96 199.37Z"/>
+            <path class="nt" d="M94.26 176.97L107.56 199.37L80.96 199.37Z"/>
+            <text class="lbl ctr" x="94.26" y="216.97">Counterparty</text>
+            <rect class="nb" x="104.26" y="171.97" width="14" height="14" rx="7"/>
+            <text class="lbl ctr mid fs10" x="111.26" y="178.97">★</text>
+        </g>
+    </g>
+    <text class="kn" x="111.72" y="610.43">thickness = amount</text>
+    <g class="tps">
+        <g class="tp tx0">
+            <g class="tt">
+                <rect class="tb" x="392.71" y="275.8" width="167.81" height="78" rx="6"/>
+                <text class="tx b" x="402.71" y="293.8">Account 0 to Hub account</text>
+                <text class="tx" x="402.71" y="310.8">Amount: 1000</text>
+                <text class="tx" x="402.71" y="327.8">First: 2026-03-02 09:00</text>
+                <text class="tx" x="402.71" y="344.8">Last: 2026-03-02 11:00</text>
+            </g>
+        </g>
+        <g class="tp tx1">
+            <g class="tt">
+                <rect class="tb" x="345.5" y="259.51" width="167.81" height="95" rx="6"/>
+                <text class="tx b" x="355.5" y="277.51">Account 1 to Hub account</text>
+                <text class="tx" x="355.5" y="294.51">Amount: 1250</text>
+                <text class="tx" x="355.5" y="311.51">Events: 2</text>
+                <text class="tx" x="355.5" y="328.51">First: 2026-03-02 10:00</text>
+                <text class="tx" x="355.5" y="345.51">Last: 2026-03-02 12:00</text>
+            </g>
+        </g>
+        <g class="tp tx2">
+            <g class="tt">
+                <rect class="tb" x="405.44" y="227.83" width="154.32" height="61" rx="6"/>
+                <text class="tx b" x="415.44" y="245.83">Account 0 to Account 1</text>
+                <text class="tx" x="415.44" y="262.83">Amount: 450</text>
+                <text class="tx" x="415.44" y="279.83">First: 2026-03-02 22:00</text>
+            </g>
+        </g>
+        <g class="tp tx3">
+            <g class="tt">
+                <rect class="tb" x="391.67" y="322.83" width="167.81" height="95" rx="6"/>
+                <text class="tx b" x="401.67" y="340.83">Account 2 to Hub account</text>
+                <text class="tx" x="401.67" y="357.83">Amount: 1500</text>
+                <text class="tx" x="401.67" y="374.83">Events: 3</text>
+                <text class="tx" x="401.67" y="391.83">First: 2026-03-02 11:00</text>
+                <text class="tx" x="401.67" y="408.83">Last: 2026-03-02 13:00</text>
+            </g>
+        </g>
+        <g class="tp tx4">
+            <g class="tt">
+                <rect class="tb" x="401.98" y="277.23" width="154.32" height="61" rx="6"/>
+                <text class="tx b" x="411.98" y="295.23">Account 1 to Account 2</text>
+                <text class="tx" x="411.98" y="312.23">Amount: 500</text>
+                <text class="tx" x="411.98" y="329.23">First: 2026-03-02 23:00</text>
+            </g>
+        </g>
+        <g class="tp tx5">
+            <g class="tt">
+                <rect class="tb" x="413.06" y="367.74" width="167.81" height="78" rx="6"/>
+                <text class="tx b" x="423.06" y="385.74">Account 3 to Hub account</text>
+                <text class="tx" x="423.06" y="402.74">Amount: 1750</text>
+                <text class="tx" x="423.06" y="419.74">First: 2026-03-02 12:00</text>
+                <text class="tx" x="423.06" y="436.74">Last: 2026-03-02 14:00</text>
+            </g>
+        </g>
+        <g class="tp tx6">
+            <g class="tt">
+                <rect class="tb" x="464.48" y="369.14" width="154.32" height="61" rx="6"/>
+                <text class="tx b" x="474.48" y="387.14">Account 2 to Account 3</text>
+                <text class="tx" x="474.48" y="404.14">Amount: 550</text>
+                <text class="tx" x="474.48" y="421.14">First: 2026-03-03 00:00</text>
+            </g>
+        </g>
+        <g class="tp tx7">
+            <g class="tt">
+                <rect class="tb" x="361.68" y="390.36" width="167.81" height="95" rx="6"/>
+                <text class="tx b" x="371.68" y="408.36">Account 4 to Hub account</text>
+                <text class="tx" x="371.68" y="425.36">Amount: 2000</text>
+                <text class="tx" x="371.68" y="442.36">Events: 2</text>
+                <text class="tx" x="371.68" y="459.36">First: 2026-03-02 13:00</text>
+                <text class="tx" x="371.68" y="476.36">Last: 2026-03-02 15:00</text>
+            </g>
+        </g>
+        <g class="tp tx8">
+            <g class="tt">
+                <rect class="tb" x="436.46" y="428.07" width="154.32" height="61" rx="6"/>
+                <text class="tx b" x="446.46" y="446.07">Account 3 to Account 4</text>
+                <text class="tx" x="446.46" y="463.07">Amount: 600</text>
+                <text class="tx" x="446.46" y="480.07">First: 2026-03-03 01:00</text>
+            </g>
+        </g>
+        <g class="tp tx9">
+            <g class="tt">
+                <rect class="tb" x="322.13" y="413.52" width="167.81" height="95" rx="6"/>
+                <text class="tx b" x="332.13" y="431.52">Account 5 to Hub account</text>
+                <text class="tx" x="332.13" y="448.52">Amount: 2250</text>
+                <text class="tx" x="332.13" y="465.52">Events: 3</text>
+                <text class="tx" x="332.13" y="482.52">First: 2026-03-02 14:00</text>
+                <text class="tx" x="332.13" y="499.52">Last: 2026-03-02 16:00</text>
+            </g>
+        </g>
+        <g class="tp tx10">
+            <g class="tt">
+                <rect class="tb" x="354.43" y="477.67" width="154.32" height="61" rx="6"/>
+                <text class="tx b" x="364.43" y="495.67">Account 4 to Account 5</text>
+                <text class="tx" x="364.43" y="512.67">Amount: 650</text>
+                <text class="tx" x="364.43" y="529.67">First: 2026-03-03 02:00</text>
+            </g>
+        </g>
+        <g class="tp tx11">
+            <g class="tt">
+                <rect class="tb" x="270.27" y="392.83" width="167.81" height="78" rx="6"/>
+                <text class="tx b" x="280.27" y="410.83">Account 6 to Hub account</text>
+                <text class="tx" x="280.27" y="427.83">Amount: 2500</text>
+                <text class="tx" x="280.27" y="444.83">First: 2026-03-02 15:00</text>
+                <text class="tx" x="280.27" y="461.83">Last: 2026-03-02 17:00</text>
+            </g>
+        </g>
+        <g class="tp tx12">
+            <g class="tt">
+                <rect class="tb" x="270.32" y="473.04" width="154.32" height="61" rx="6"/>
+                <text class="tx b" x="280.32" y="491.04">Account 5 to Account 6</text>
+                <text class="tx" x="280.32" y="508.04">Amount: 700</text>
+                <text class="tx" x="280.32" y="525.04">First: 2026-03-03 03:00</text>
+            </g>
+        </g>
+        <g class="tp tx13">
+            <g class="tt">
+                <rect class="tb" x="244.17" y="334.01" width="167.81" height="95" rx="6"/>
+                <text class="tx b" x="254.17" y="352.01">Account 7 to Hub account</text>
+                <text class="tx" x="254.17" y="369.01">Amount: 2750</text>
+                <text class="tx" x="254.17" y="386.01">Events: 2</text>
+                <text class="tx" x="254.17" y="403.01">First: 2026-03-02 16:00</text>
+                <text class="tx" x="254.17" y="420.01">Last: 2026-03-02 18:00</text>
+            </g>
+        </g>
+        <g class="tp tx14">
+            <g class="tt">
+                <rect class="tb" x="201.7" y="399.04" width="154.32" height="61" rx="6"/>
+                <text class="tx b" x="211.7" y="417.04">Account 6 to Account 7</text>
+                <text class="tx" x="211.7" y="434.04">Amount: 750</text>
+                <text class="tx" x="211.7" y="451.04">First: 2026-03-03 04:00</text>
+            </g>
+        </g>
+        <g class="tp tx15">
+            <g class="tt">
+                <rect class="tb" x="455.55" y="444.17" width="164.75" height="27" rx="6"/>
+                <text class="tx b" x="465.55" y="462.17">Device 7f3a to Account 2</text>
+            </g>
+        </g>
+        <g class="tp tx16">
+            <g class="tt">
+                <rect class="tb" x="395.2" y="525.3" width="164.75" height="27" rx="6"/>
+                <text class="tx b" x="405.2" y="543.3">Device 7f3a to Account 5</text>
+            </g>
+        </g>
+        <g class="tp tx17">
+            <g class="tt">
+                <rect class="tb" x="374.75" y="162.69" width="141.86" height="27" rx="6"/>
+                <text class="tx b" x="384.75" y="180.69">10.4.0.9 to Account 1</text>
+            </g>
+        </g>
+        <g class="tp tx18">
+            <g class="tt">
+                <rect class="tb" x="263.66" y="297.76" width="183.83" height="44" rx="6"/>
+                <text class="tx b" x="273.66" y="315.76">Hub account to Counterparty</text>
+                <text class="tx" x="273.66" y="332.76">Amount: 9800</text>
+            </g>
+        </g>
+        <g class="tp tn0">
+            <g class="tt">
+                <rect class="tb" x="361.97" y="341.58" width="116.96" height="78" rx="6"/>
+                <text class="tx b" x="371.97" y="359.58">Hub account</text>
+                <text class="tx" x="371.97" y="376.58">Accounts</text>
+                <text class="tx" x="371.97" y="393.58">Edges in: 8, out: 1</text>
+                <text class="tx" x="371.97" y="410.58">hub, ○</text>
+            </g>
+        </g>
+        <g class="tp tn1">
+            <g class="tt">
+                <rect class="tb" x="461.69" y="239.1" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="471.69" y="257.1">Account 0</text>
+                <text class="tx" x="471.69" y="274.1">Accounts</text>
+                <text class="tx" x="471.69" y="291.1">Edges in: 0, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn2">
+            <g class="tt">
+                <rect class="tb" x="382.54" y="223.62" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="392.54" y="241.62">Account 1</text>
+                <text class="tx" x="392.54" y="258.62">Accounts</text>
+                <text class="tx" x="392.54" y="275.62">Edges in: 2, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn3">
+            <g class="tt">
+                <rect class="tb" x="465.17" y="338.84" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="475.17" y="356.84">Account 2</text>
+                <text class="tx" x="475.17" y="373.84">Accounts</text>
+                <text class="tx" x="475.17" y="390.84">Edges in: 2, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn4">
+            <g class="tt">
+                <rect class="tb" x="503.53" y="405.2" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="513.53" y="423.2">Account 3</text>
+                <text class="tx" x="513.53" y="440.2">Accounts</text>
+                <text class="tx" x="513.53" y="457.2">Edges in: 1, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn5">
+            <g class="tt">
+                <rect class="tb" x="407.88" y="458.93" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="417.88" y="476.93">Account 4</text>
+                <text class="tx" x="417.88" y="493.93">Accounts</text>
+                <text class="tx" x="417.88" y="510.93">Edges in: 1, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn6">
+            <g class="tt">
+                <rect class="tb" x="339.92" y="505.85" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="349.92" y="523.85">Account 5</text>
+                <text class="tx" x="349.92" y="540.85">Accounts</text>
+                <text class="tx" x="349.92" y="557.85">Edges in: 2, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn7">
+            <g class="tt">
+                <rect class="tb" x="244.09" y="449.58" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="254.09" y="467.58">Account 6</text>
+                <text class="tx" x="254.09" y="484.58">Accounts</text>
+                <text class="tx" x="254.09" y="501.58">Edges in: 1, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn8">
+            <g class="tt">
+                <rect class="tb" x="196.34" y="358.85" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="206.34" y="376.85">Account 7</text>
+                <text class="tx" x="206.34" y="393.85">Accounts</text>
+                <text class="tx" x="206.34" y="410.85">Edges in: 1, out: 1</text>
+            </g>
+        </g>
+        <g class="tp tn9">
+            <g class="tt">
+                <rect class="tb" x="483.74" y="518.3" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="493.74" y="536.3">Device 7f3a</text>
+                <text class="tx" x="493.74" y="553.3">Devices</text>
+                <text class="tx" x="493.74" y="570.3">Edges in: 0, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn10">
+            <g class="tt">
+                <rect class="tb" x="401.37" y="83.5" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="411.37" y="101.5">10.4.0.9</text>
+                <text class="tx" x="411.37" y="118.5">Network</text>
+                <text class="tx" x="411.37" y="135.5">Edges in: 0, out: 1</text>
+            </g>
+        </g>
+        <g class="tp tn11">
+            <g class="tt">
+                <rect class="tb" x="229.97" y="241.97" width="116.96" height="78" rx="6"/>
+                <text class="tx b" x="239.97" y="259.97">Counterparty</text>
+                <text class="tx" x="239.97" y="276.97">Accounts</text>
+                <text class="tx" x="239.97" y="293.97">Edges in: 1, out: 0</text>
+                <text class="tx" x="239.97" y="310.97">★</text>
+            </g>
+        </g>
+    </g>
+</svg>

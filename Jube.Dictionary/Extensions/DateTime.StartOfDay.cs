@@ -6,6 +6,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns the start of the day (00:00:00.000).")]
         public static DateTime StartOfDay(this DateTime @this)
         {
             return new DateTime(@this.Year, @this.Month, @this.Day);

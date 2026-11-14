@@ -17,7 +17,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static int DamerauDistance(this string? @this, string? other)
+        [Description("Edit distance counting an adjacent transposition as one edit.")]
+        public static int DamerauDistance(this string? @this,
+            [Description("The text the value is compared with.")] string? other)
         {
             return FuzzyScorers.DamerauDistance(@this ?? "", other ?? "");
         }

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="SqlSyntaxError" xml:space="preserve">
+        <value>تعذّرت قراءة SQL بالقرب من "{0}".</value>
+    </data>
+    <data name="SqlUnknownTable" xml:space="preserve">
+        <value>الجدول "{0}" غير موجود أو لا يُسمح لك بالاستعلام عنه.</value>
+    </data>
+    <data name="SqlUnknownTableSuggest" xml:space="preserve">
+        <value>الجدول "{0}" غير موجود أو لا يُسمح لك بالاستعلام عنه. هل تقصد "{1}"؟</value>
+    </data>
+    <data name="SqlUnknownColumn" xml:space="preserve">
+        <value>العمود "{0}" غير موجود.</value>
+    </data>
+    <data name="SqlUnknownColumnSuggest" xml:space="preserve">
+        <value>العمود "{0}" غير موجود. هل تقصد "{1}"؟ يجب وضع الأسماء ذات الأحرف الكبيرة بين علامتي اقتباس مزدوجتين.</value>
+    </data>
+    <data name="SqlUnknownAlias" xml:space="preserve">
+        <value>لا يوجد جدول أو اسم مستعار باسم "{0}" في هذا الاستعلام.</value>
+    </data>
+    <data name="SqlUnknownAliasSuggest" xml:space="preserve">
+        <value>لا يوجد جدول أو اسم مستعار باسم "{0}" في هذا الاستعلام. هل تقصد "{1}"؟</value>
+    </data>
+    <data name="SqlAmbiguousColumn" xml:space="preserve">
+        <value>العمود "{0}" غامض. ضع اسم الجدول أو الاسم المستعار قبله.</value>
+    </data>
+    <data name="SqlUnknownFunction" xml:space="preserve">
+        <value>الدالة "{0}" غير موجودة.</value>
+    </data>
+    <data name="SqlUnknownFunctionSuggest" xml:space="preserve">
+        <value>الدالة "{0}" غير موجودة. هل تقصد "{1}"؟</value>
+    </data>
+    <data name="SqlFunctionArity" xml:space="preserve">
+        <value>لا يمكن إعطاء الدالة "{0}" {1} من المعاملات. فهي تقبل {2}.</value>
+    </data>
+    <data name="SqlOverNotWindow" xml:space="preserve">
+        <value>لا يمكن استخدام OVER مع "{0}" لأنها ليست دالة تجميع ولا دالة نافذة.</value>
+    </data>
+    <data name="SqlWindowNeedsOver" xml:space="preserve">
+        <value>الدالة النافذة "{0}" تحتاج إلى عبارة OVER.</value>
+    </data>
+    <data name="SqlWindowNotAllowed" xml:space="preserve">
+        <value>الدالة النافذة "{0}" غير مسموحة في هذا الجزء من الاستعلام.</value>
+    </data>
+    <data name="SqlAggregateInWhere" xml:space="preserve">
+        <value>دالة التجميع "{0}" غير مسموحة في WHERE. استخدم HAVING للتصفية على التجميعات.</value>
+    </data>
+    <data name="SqlAggregateInJoin" xml:space="preserve">
+        <value>دالة التجميع "{0}" غير مسموحة في شرط JOIN.</value>
+    </data>
+    <data name="SqlAggregateInGroupBy" xml:space="preserve">
+        <value>دالة التجميع "{0}" غير مسموحة في GROUP BY.</value>
+    </data>
+    <data name="SqlAggregateNested" xml:space="preserve">
+        <value>لا يمكن تداخل دوال التجميع. "{0}" مستخدمة داخل تجميع آخر.</value>
+    </data>
+    <data name="SqlColumnNotGrouped" xml:space="preserve">
+        <value>يجب أن يظهر العمود "{0}" في GROUP BY أو أن يُستخدم داخل دالة تجميع.</value>
+    </data>
+    <data name="SqlTypeMismatch" xml:space="preserve">
+        <value>لا يمكن مقارنة قيمة من النوع {0} أو دمجها مع قيمة من النوع {1}.</value>
+    </data>
+    <data name="SqlLiteralInvalid" xml:space="preserve">
+        <value>القيمة '{0}' غير صالحة للنوع {1}.</value>
+    </data>
+    <data name="SqlFunctionArgumentType" xml:space="preserve">
+        <value>الدالة "{0}" لا تقبل قيمة من النوع {1}.</value>
+    </data>
+    <data name="SqlAggregateArgumentType" xml:space="preserve">
+        <value>دالة التجميع "{0}" لا تقبل قيمة من النوع {1}.</value>
+    </data>
+    <data name="SqlOperatorType" xml:space="preserve">
+        <value>لا يمكن استخدام العامل {0} مع قيمة من النوع {1}.</value>
+    </data>
+    <data name="SqlConditionType" xml:space="preserve">
+        <value>يجب أن يكون الشرط صحيحًا أو خاطئًا، وليس قيمة من النوع {0}.</value>
+    </data>
+    <data name="SqlTypesUnmatched" xml:space="preserve">
+        <value>لا يمكن دمج قيم من النوع {0} والنوع {1} في نتيجة واحدة.</value>
+    </data>
+    <data name="SqlLimitNegative" xml:space="preserve">
+        <value>لا يمكن أن يكون {0} سالبًا.</value>
+    </data>
+    <data name="SqlLimitType" xml:space="preserve">
+        <value>{0} يحتاج إلى عدد صحيح وليس قيمة من النوع {1}.</value>
+    </data>
+    <data name="SqlLimitVariables" xml:space="preserve">
+        <value>لا يمكن أن يشير {0} إلى أعمدة.</value>
+    </data>
+    <data name="SqlOrdinalOutOfRange" xml:space="preserve">
+        <value>الموضع {1} في {0} غير موجود في قائمة التحديد.</value>
+    </data>
+    <data name="SqlSetOperationColumns" xml:space="preserve">
+        <value>يجب أن يُرجع كل استعلام في UNION أو INTERSECT أو EXCEPT العدد نفسه من الأعمدة، لكن هذه تُرجع {0} و{1}.</value>
+    </data>
+    <data name="SqlSubqueryColumns" xml:space="preserve">
+        <value>يجب أن يُرجع الاستعلام الفرعي المستخدم كقيمة عمودًا واحدًا بالضبط.</value>
+    </data>
+    <data name="SqlUnknownType" xml:space="preserve">
+        <value>نوع البيانات "{0}" غير موجود.</value>
+    </data>
+    <data name="SqlParameterUnknown" xml:space="preserve">
+        <value>المعامل @{0} غير متاح هنا.</value>
+    </data>
+    <data name="SqlParameterType" xml:space="preserve">
+        <value>يحمل المعامل @{0} قيمة من النوع {1} لكنه يُقارن بعمود من النوع {2}.</value>
+    </data>
+</root>

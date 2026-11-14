@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
-            public Flow<DateTime> MatchDayOfMonthIn(params int[] days)
+            [Description("True when: day of the month is one of the numbers. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchDayOfMonthIn([Description("The days of the month, 1 to 31.")] params int[] days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeDayOfMonthIn(flow.Value, days));
             }
 
-            public Flow<DateTime> RejectDayOfMonthIn(params int[] days)
+            [Description("True when: day of the month is one of the numbers. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectDayOfMonthIn([Description("The days of the month, 1 to 31.")] params int[] days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeDayOfMonthIn(flow.Value, days));
             }
 
-            public Flow<DateTime> BreakDayOfMonthIn(params int[] days)
+            [Description("True when: day of the month is one of the numbers. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakDayOfMonthIn([Description("The days of the month, 1 to 31.")] params int[] days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeDayOfMonthIn(flow.Value, days));
             }
 
-            public Flow<DateTime> RequireDayOfMonthIn(params int[] days)
+            [Description("True when: day of the month is one of the numbers. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireDayOfMonthIn([Description("The days of the month, 1 to 31.")] params int[] days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeDayOfMonthIn(flow.Value, days));
             }
 
-            public Flow<DateTime> EnsureDayOfMonthIn(params int[] days)
+            [Description("True when: day of the month is one of the numbers. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureDayOfMonthIn([Description("The days of the month, 1 to 31.")] params int[] days)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
-            public Flow<DateTime> MatchDayOfMonthIn(params int[] days)
+            [Description("Begins a pipeline from the value. True when: day of the month is one of the numbers. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchDayOfMonthIn([Description("The days of the month, 1 to 31.")] params int[] days)
             {
                 return value.Start().MatchDayOfMonthIn(days);
             }
 
-            public Flow<DateTime> RejectDayOfMonthIn(params int[] days)
+            [Description("Begins a pipeline from the value. True when: day of the month is one of the numbers. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectDayOfMonthIn([Description("The days of the month, 1 to 31.")] params int[] days)
             {
                 return value.Start().RejectDayOfMonthIn(days);
             }
 
-            public Flow<DateTime> BreakDayOfMonthIn(params int[] days)
+            [Description("Begins a pipeline from the value. True when: day of the month is one of the numbers. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakDayOfMonthIn([Description("The days of the month, 1 to 31.")] params int[] days)
             {
                 return value.Start().BreakDayOfMonthIn(days);
             }
 
-            public Flow<DateTime> RequireDayOfMonthIn(params int[] days)
+            [Description("Begins a pipeline from the value. True when: day of the month is one of the numbers. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireDayOfMonthIn([Description("The days of the month, 1 to 31.")] params int[] days)
             {
                 return value.Start().RequireDayOfMonthIn(days);
             }
 
-            public Flow<DateTime> EnsureDayOfMonthIn(params int[] days)
+            [Description("Begins a pipeline from the value. True when: day of the month is one of the numbers. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureDayOfMonthIn([Description("The days of the month, 1 to 31.")] params int[] days)
             {
                 return value.Start().EnsureDayOfMonthIn(days);
             }

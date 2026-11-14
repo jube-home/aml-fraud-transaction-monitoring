@@ -17,35 +17,60 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchImpliedSpeedAbove(double longitude1, double latitude2, double longitude2, double hoursElapsed, double kilometersPerHour)
+            [Description("True when: the value is latitude 1. The speed implied by travelling to the second point in the hours is above the limit (impossible travel). Zero hours is infinite speed. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchImpliedSpeedAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in kilometres per hour that counts.")] double kilometersPerHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleImpliedSpeedAbove(flow.Value, longitude1, latitude2, longitude2, hoursElapsed, kilometersPerHour));
             }
 
-            public Flow<double> RejectImpliedSpeedAbove(double longitude1, double latitude2, double longitude2, double hoursElapsed, double kilometersPerHour)
+            [Description("True when: the value is latitude 1. The speed implied by travelling to the second point in the hours is above the limit (impossible travel). Zero hours is infinite speed. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectImpliedSpeedAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in kilometres per hour that counts.")] double kilometersPerHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleImpliedSpeedAbove(flow.Value, longitude1, latitude2, longitude2, hoursElapsed, kilometersPerHour));
             }
 
-            public Flow<double> BreakImpliedSpeedAbove(double longitude1, double latitude2, double longitude2, double hoursElapsed, double kilometersPerHour)
+            [Description("True when: the value is latitude 1. The speed implied by travelling to the second point in the hours is above the limit (impossible travel). Zero hours is infinite speed. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakImpliedSpeedAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in kilometres per hour that counts.")] double kilometersPerHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleImpliedSpeedAbove(flow.Value, longitude1, latitude2, longitude2, hoursElapsed, kilometersPerHour));
             }
 
-            public Flow<double> RequireImpliedSpeedAbove(double longitude1, double latitude2, double longitude2, double hoursElapsed, double kilometersPerHour)
+            [Description("True when: the value is latitude 1. The speed implied by travelling to the second point in the hours is above the limit (impossible travel). Zero hours is infinite speed. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireImpliedSpeedAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in kilometres per hour that counts.")] double kilometersPerHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleImpliedSpeedAbove(flow.Value, longitude1, latitude2, longitude2, hoursElapsed, kilometersPerHour));
             }
 
-            public Flow<double> EnsureImpliedSpeedAbove(double longitude1, double latitude2, double longitude2, double hoursElapsed, double kilometersPerHour)
+            [Description("True when: the value is latitude 1. The speed implied by travelling to the second point in the hours is above the limit (impossible travel). Zero hours is infinite speed. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureImpliedSpeedAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in kilometres per hour that counts.")] double kilometersPerHour)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +80,52 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchImpliedSpeedAbove(double longitude1, double latitude2, double longitude2, double hoursElapsed, double kilometersPerHour)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The speed implied by travelling to the second point in the hours is above the limit (impossible travel). Zero hours is infinite speed. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchImpliedSpeedAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in kilometres per hour that counts.")] double kilometersPerHour)
             {
                 return value.Start().MatchImpliedSpeedAbove(longitude1, latitude2, longitude2, hoursElapsed, kilometersPerHour);
             }
 
-            public Flow<double> RejectImpliedSpeedAbove(double longitude1, double latitude2, double longitude2, double hoursElapsed, double kilometersPerHour)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The speed implied by travelling to the second point in the hours is above the limit (impossible travel). Zero hours is infinite speed. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectImpliedSpeedAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in kilometres per hour that counts.")] double kilometersPerHour)
             {
                 return value.Start().RejectImpliedSpeedAbove(longitude1, latitude2, longitude2, hoursElapsed, kilometersPerHour);
             }
 
-            public Flow<double> BreakImpliedSpeedAbove(double longitude1, double latitude2, double longitude2, double hoursElapsed, double kilometersPerHour)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The speed implied by travelling to the second point in the hours is above the limit (impossible travel). Zero hours is infinite speed. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakImpliedSpeedAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in kilometres per hour that counts.")] double kilometersPerHour)
             {
                 return value.Start().BreakImpliedSpeedAbove(longitude1, latitude2, longitude2, hoursElapsed, kilometersPerHour);
             }
 
-            public Flow<double> RequireImpliedSpeedAbove(double longitude1, double latitude2, double longitude2, double hoursElapsed, double kilometersPerHour)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The speed implied by travelling to the second point in the hours is above the limit (impossible travel). Zero hours is infinite speed. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireImpliedSpeedAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in kilometres per hour that counts.")] double kilometersPerHour)
             {
                 return value.Start().RequireImpliedSpeedAbove(longitude1, latitude2, longitude2, hoursElapsed, kilometersPerHour);
             }
 
-            public Flow<double> EnsureImpliedSpeedAbove(double longitude1, double latitude2, double longitude2, double hoursElapsed, double kilometersPerHour)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The speed implied by travelling to the second point in the hours is above the limit (impossible travel). Zero hours is infinite speed. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureImpliedSpeedAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in kilometres per hour that counts.")] double kilometersPerHour)
             {
                 return value.Start().EnsureImpliedSpeedAbove(longitude1, latitude2, longitude2, hoursElapsed, kilometersPerHour);
             }

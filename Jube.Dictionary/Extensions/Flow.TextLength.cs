@@ -15,11 +15,13 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Replaces the value being tested with the length of the text as an integer, zero for null.")]
         public static Flow<int> TextLength(this Flow<string?> flow)
         {
             return flow.Carry(flow.Value?.Length ?? 0);
         }
 
+        [Description("Begins a pipeline from the value. Replaces the value being tested with the length of the text as an integer, zero for null.")]
         public static Flow<int> TextLength(this string? value)
         {
             return value.Start().TextLength();

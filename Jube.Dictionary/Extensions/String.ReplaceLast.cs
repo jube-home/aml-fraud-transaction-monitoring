@@ -6,7 +6,9 @@ namespace Jube.Dictionary.Extensions
     {
         extension(string @this)
         {
-            public string ReplaceLast(string oldValue, string newValue)
+            [Description("Replaces the last occurrence of a substring.")]
+            public string ReplaceLast([Description("The value to replace.")] string oldValue,
+                [Description("The replacement value.")] string newValue)
             {
                 var startindex = @this.LastIndexOf(oldValue, StringComparison.Ordinal);
 
@@ -18,7 +20,10 @@ namespace Jube.Dictionary.Extensions
                 return @this.Remove(startindex, oldValue.Length).Insert(startindex, newValue);
             }
 
-            public string ReplaceLast(int number, string oldValue, string newValue)
+            [Description("Replaces the last N occurrences of a substring.")]
+            public string ReplaceLast([Description("The number of occurrences to replace.")] int number,
+                [Description("The value to replace.")] string oldValue,
+                [Description("The replacement value.")] string newValue)
             {
                 var list = @this.Split(oldValue).ToList();
                 var old = Math.Max(0, list.Count - number - 1);

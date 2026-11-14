@@ -19,5 +19,6 @@ namespace Jube.Resources
         public const string NotAuthenticated = nameof(NotAuthenticated);
         public const string NotFound = nameof(NotFound);
         public const string IdInvalid = nameof(IdInvalid);
+        public const string InstanceIsLive = nameof(InstanceIsLive);
     }
 }

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>आपको यह कार्रवाई करने की अनुमति नहीं है।</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>यह कार्रवाई करने के लिए आपको किसी टेनेंट में साइन इन होना चाहिए।</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>एक मान्य मॉडल आवश्यक है।</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>नाम आवश्यक है।</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>नाम {0} वर्णों से अधिक नहीं हो सकता।</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>यह नाम पहले से मौजूद है।</value>
+  </data>
+    <data name="RuleScriptTypeIdInvalid" xml:space="preserve">
+    <value>नियम स्क्रिप्ट का प्रकार Builder या Coder होना चाहिए।</value>
+  </data>
+    <data name="BuilderRuleScriptRequired" xml:space="preserve">
+    <value>नियम स्क्रिप्ट आवश्यक है।</value>
+  </data>
+    <data name="BuilderRuleScriptMaxLength" xml:space="preserve">
+    <value>नियम स्क्रिप्ट {0} वर्णों से अधिक नहीं हो सकती।</value>
+  </data>
+    <data name="JsonRequired" xml:space="preserve">
+    <value>नियम बिल्डर की परिभाषा आवश्यक है।</value>
+  </data>
+    <data name="CoderRuleScriptRequired" xml:space="preserve">
+    <value>Coder नियम स्क्रिप्ट आवश्यक है।</value>
+  </data>
+    <data name="CoderRuleScriptMaxLength" xml:space="preserve">
+    <value>Coder नियम स्क्रिप्ट {0} वर्णों से अधिक नहीं हो सकती।</value>
+  </data>
+    <data name="SearchKeyRequired" xml:space="preserve">
+    <value>जब खोज सक्षम हो तो खोज कुंजी आवश्यक है।</value>
+  </data>
+    <data name="SearchValueRange" xml:space="preserve">
+    <value>खोज मान शून्य या अधिक होना चाहिए और चुने गए अंतराल की सीमा के भीतर होना चाहिए।</value>
+  </data>
+    <data name="SearchIntervalInvalid" xml:space="preserve">
+    <value>खोज अंतराल सेकंड, मिनट, घंटे या दिन होना चाहिए।</value>
+  </data>
+    <data name="SearchFunctionTypeIdInvalid" xml:space="preserve">
+    <value>फ़ंक्शन प्रकार पहचाना नहीं गया।</value>
+  </data>
+    <data name="SearchFunctionKeyRequired" xml:space="preserve">
+    <value>इस फ़ंक्शन प्रकार के लिए फ़ंक्शन कुंजी आवश्यक है।</value>
+  </data>
+    <data name="OffsetTypeIdInvalid" xml:space="preserve">
+    <value>ऑफ़सेट प्रकार पहला, अंतिम, पहला छोड़ें या अंतिम लें होना चाहिए।</value>
+  </data>
+    <data name="OffsetValueRange" xml:space="preserve">
+    <value>ऑफ़सेट मान 0 और 1,000,000 के बीच होना चाहिए।</value>
+  </data>
+    <data name="JsonInvalid" xml:space="preserve">
+    <value>नियम बिल्डर की परिभाषा अधिकतम 1 MB का मान्य JSON होनी चाहिए।</value>
+  </data>
+    <data name="IterationOrderIdInvalid" xml:space="preserve">
+    <value>पुनरावृत्ति क्रम आरोही या अवरोही होना चाहिए।</value>
+  </data>
+    <data name="SearchFunctionParametersInvalid" xml:space="preserve">
+    <value>चयनित फ़ंक्शन के लिए फ़ंक्शन पैरामीटर मान्य नहीं हैं। {0}</value>
+  </data>
+</root>

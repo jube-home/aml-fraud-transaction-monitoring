@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchRetentionAfterBelow(double outflow, double bound)
+            [Description("True when: the share of the value kept after the outflow, negative when more went out than came in is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRetentionAfterBelow([Description("The amount that went out.")] double outflow,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleRetentionAfterBelow(flow.Value, outflow, bound));
             }
 
-            public Flow<double> RejectRetentionAfterBelow(double outflow, double bound)
+            [Description("True when: the share of the value kept after the outflow, negative when more went out than came in is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRetentionAfterBelow([Description("The amount that went out.")] double outflow,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleRetentionAfterBelow(flow.Value, outflow, bound));
             }
 
-            public Flow<double> BreakRetentionAfterBelow(double outflow, double bound)
+            [Description("True when: the share of the value kept after the outflow, negative when more went out than came in is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRetentionAfterBelow([Description("The amount that went out.")] double outflow,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleRetentionAfterBelow(flow.Value, outflow, bound));
             }
 
-            public Flow<double> RequireRetentionAfterBelow(double outflow, double bound)
+            [Description("True when: the share of the value kept after the outflow, negative when more went out than came in is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRetentionAfterBelow([Description("The amount that went out.")] double outflow,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleRetentionAfterBelow(flow.Value, outflow, bound));
             }
 
-            public Flow<double> EnsureRetentionAfterBelow(double outflow, double bound)
+            [Description("True when: the share of the value kept after the outflow, negative when more went out than came in is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRetentionAfterBelow([Description("The amount that went out.")] double outflow,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchRetentionAfterBelow(double outflow, double bound)
+            [Description("Begins a pipeline from the value. True when: the share of the value kept after the outflow, negative when more went out than came in is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRetentionAfterBelow([Description("The amount that went out.")] double outflow,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchRetentionAfterBelow(outflow, bound);
             }
 
-            public Flow<double> RejectRetentionAfterBelow(double outflow, double bound)
+            [Description("Begins a pipeline from the value. True when: the share of the value kept after the outflow, negative when more went out than came in is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRetentionAfterBelow([Description("The amount that went out.")] double outflow,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectRetentionAfterBelow(outflow, bound);
             }
 
-            public Flow<double> BreakRetentionAfterBelow(double outflow, double bound)
+            [Description("Begins a pipeline from the value. True when: the share of the value kept after the outflow, negative when more went out than came in is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRetentionAfterBelow([Description("The amount that went out.")] double outflow,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakRetentionAfterBelow(outflow, bound);
             }
 
-            public Flow<double> RequireRetentionAfterBelow(double outflow, double bound)
+            [Description("Begins a pipeline from the value. True when: the share of the value kept after the outflow, negative when more went out than came in is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRetentionAfterBelow([Description("The amount that went out.")] double outflow,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireRetentionAfterBelow(outflow, bound);
             }
 
-            public Flow<double> EnsureRetentionAfterBelow(double outflow, double bound)
+            [Description("Begins a pipeline from the value. True when: the share of the value kept after the outflow, negative when more went out than came in is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRetentionAfterBelow([Description("The amount that went out.")] double outflow,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureRetentionAfterBelow(outflow, bound);
             }

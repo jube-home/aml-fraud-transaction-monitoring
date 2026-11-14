@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double RelativeChangeFrom(this double @this, double previous)
+        [Description("The change from the previous value as a fraction of it.")]
+        public static double RelativeChangeFrom(this double @this,
+            [Description("The earlier value the change is measured from.")] double previous)
         {
             return CalculationSupport.Finite((@this - previous) / previous);
         }

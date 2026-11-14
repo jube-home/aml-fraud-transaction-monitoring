@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>आपको यह कार्रवाई करने की अनुमति नहीं है।</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>यह कार्रवाई करने के लिए आपको किसी टेनेंट में साइन इन होना आवश्यक है।</value>
+  </data>
+    <data name="ModelNotFound" xml:space="preserve">
+    <value>प्रशिक्षित मॉडल नहीं मिला।</value>
+  </data>
+    <data name="VersionNotFound" xml:space="preserve">
+    <value>मॉडल संस्करण नहीं मिला।</value>
+  </data>
+    <data name="InstanceNotAllocated" xml:space="preserve">
+    <value>इस मॉडल का स्वामी इंस्टेंस किसी मॉडल को आवंटित नहीं है, इसलिए संस्करण लाइव नहीं किया जा सकता।</value>
+  </data>
+    <data name="AllocatedModelUnavailable" xml:space="preserve">
+    <value>जिस मॉडल को इंस्टेंस आवंटित है वह अब आपके टेनेंट में मौजूद नहीं है।</value>
+  </data>
+    <data name="NoEarlierVersion" xml:space="preserve">
+    <value>वापस जाने के लिए कोई पुराना संस्करण नहीं है।</value>
+  </data>
+    <data name="VersionIdsInvalid" xml:space="preserve">
+    <value>दो अलग संस्करण पहचानकर्ता आवश्यक हैं।</value>
+  </data>
+    <data name="EvidenceUnavailable" xml:space="preserve">
+    <value>इस संस्करण का कोई संग्रहीत साक्ष्य नहीं है।</value>
+  </data>
+    <data name="ModelHasNoActiveVersion" xml:space="preserve">
+    <value>मॉडल का कोई लाइव संस्करण नहीं है जिससे वापस जाया जा सके।</value>
+  </data>
+    <data name="InstanceIsLive" xml:space="preserve">
+    <value>इंस्टेंस लाइव है। इसके मॉडल का लाइव संस्करण बदलने से पहले इसे बंद करें, जिसके लिए चेकर आवश्यक है।</value>
+  </data>
+</root>

@@ -14,41 +14,34 @@
 namespace Jube.Data.Query.GetLastArchiveJsonByEntityAnalysisModelIdAndCaseKeyValueQuery
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using ArchiveKeyLookup;
     using Context;
-    using Extensions;
-    using ResilientNpgsqlConnection;
-    using ResilientNpgsqlConnection.Extensions.Jube.ResilientNpgsqlConnection;
+    using LinqToDB;
+    using LinqToDB.Data;
 
     public class GetLastArchiveJsonByEntityAnalysisModelIdAndCaseKeyValueQuery(DbContext dbContext)
     {
         public async Task<(string Json, Guid EntityAnalysisModelInstanceEntryGuid)?> ExecuteAsync(
-            int entityAnalysisModelId, string caseKey, string caseKeyValue, CancellationToken token = default)
+            int entityAnalysisModelId, ArchiveKeyPredicate caseKey, CancellationToken token = default)
         {
-            const string sql = """
-                               select "Json", "EntityAnalysisModelInstanceEntryGuid"
-                               from "Archive"
-                               where "EntityAnalysisModelId" = @entityAnalysisModelId
-                                 and ("Json" -> 'payload' ->> @caseKey) = @caseKeyValue
-                               order by "CreatedDate" desc
-                               limit 1
-                               """;
+            var parameters = new List<DataParameter> { new("model", entityAnalysisModelId, DataType.Int32) };
 
-            await using var command = new ResilientNpgsqlCommand((ResilientNpgsqlConnection)dbContext.Connection, sql);
-            command.Parameters.AddWithValue("@entityAnalysisModelId", entityAnalysisModelId);
-            command.Parameters.AddWithValue("@caseKey", caseKey);
-            command.Parameters.AddWithValue("@caseKeyValue", caseKeyValue);
-            await command.PrepareAsync(token).ConfigureAwait(false);
+            var sql = "select a.\"Json\"::text as \"Json\", a.\"EntityAnalysisModelInstanceEntryGuid\" " +
+                      ArchiveKeyLookupSql.From(caseKey, value =>
+                      {
+                          parameters.Add(new DataParameter($"p{parameters.Count}", value));
 
-            await using var reader = await command.ExecuteReaderAsync(token).ConfigureAwait(false);
+                          return $"@p{parameters.Count - 1}";
+                      }) +
+                      "and a.\"EntityAnalysisModelId\" = @model order by a.\"Id\" desc limit 1";
 
-            if (!await reader.ReadAsync(token).ConfigureAwait(false))
-            {
-                return null;
-            }
+            var rows = await dbContext.QueryToListAsync<GetLastArchiveJsonByEntityAnalysisModelIdAndCaseKeyValueQueryDto>(
+                sql, token, parameters.ToArray()).ConfigureAwait(false);
 
-            return (reader.GetValue(0).AsString(), reader.GetValue(1).AsGuid());
+            return rows.Count == 0 ? null : (rows[0].Json, rows[0].EntityAnalysisModelInstanceEntryGuid);
         }
     }
 }

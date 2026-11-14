@@ -19,6 +19,7 @@ namespace Jube.Data.Query.AdvancedAnalyticsPreservationIterationsQuery
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
 
     public class AdvancedAnalyticsPreservationIterationsQuery(DbContext dbContext, int tenantRegistryId)

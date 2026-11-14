@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
+            [Description("True when: the value is not a number. Decides matched if so; otherwise continues.")]
             public Flow<double> MatchIsNaN()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleIsNaN(flow.Value));
             }
 
+            [Description("True when: the value is not a number. Decides rejected if so; otherwise continues.")]
             public Flow<double> RejectIsNaN()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleIsNaN(flow.Value));
             }
 
+            [Description("True when: the value is not a number. Decides broken if so; otherwise continues.")]
             public Flow<double> BreakIsNaN()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleIsNaN(flow.Value));
             }
 
+            [Description("True when: the value is not a number. Continues if so; otherwise decides rejected.")]
             public Flow<double> RequireIsNaN()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleIsNaN(flow.Value));
             }
 
+            [Description("True when: the value is not a number. Continues if so; otherwise decides broken.")]
             public Flow<double> EnsureIsNaN()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
+            [Description("Begins a pipeline from the value. True when: the value is not a number. Decides matched if so; otherwise continues.")]
             public Flow<double> MatchIsNaN()
             {
                 return value.Start().MatchIsNaN();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is not a number. Decides rejected if so; otherwise continues.")]
             public Flow<double> RejectIsNaN()
             {
                 return value.Start().RejectIsNaN();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is not a number. Decides broken if so; otherwise continues.")]
             public Flow<double> BreakIsNaN()
             {
                 return value.Start().BreakIsNaN();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is not a number. Continues if so; otherwise decides rejected.")]
             public Flow<double> RequireIsNaN()
             {
                 return value.Start().RequireIsNaN();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is not a number. Continues if so; otherwise decides broken.")]
             public Flow<double> EnsureIsNaN()
             {
                 return value.Start().EnsureIsNaN();

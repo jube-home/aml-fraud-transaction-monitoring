@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="WeekdayMon" xml:space="preserve">
+        <value>Mon</value>
+    </data>
+    <data name="WeekdayTue" xml:space="preserve">
+        <value>Tue</value>
+    </data>
+    <data name="WeekdayWed" xml:space="preserve">
+        <value>Wed</value>
+    </data>
+    <data name="WeekdayThu" xml:space="preserve">
+        <value>Thu</value>
+    </data>
+    <data name="WeekdayFri" xml:space="preserve">
+        <value>Fri</value>
+    </data>
+    <data name="WeekdaySat" xml:space="preserve">
+        <value>Sat</value>
+    </data>
+    <data name="WeekdaySun" xml:space="preserve">
+        <value>Sun</value>
+    </data>
+    <data name="BucketHour" xml:space="preserve">
+        <value>hour</value>
+    </data>
+    <data name="BucketDay" xml:space="preserve">
+        <value>day</value>
+    </data>
+    <data name="BucketWeek" xml:space="preserve">
+        <value>week</value>
+    </data>
+    <data name="BucketMonth" xml:space="preserve">
+        <value>month</value>
+    </data>
+    <data name="ProgressionTitle" xml:space="preserve">
+        <value>{0} over time</value>
+    </data>
+    <data name="ProgressionSubtitle" xml:space="preserve">
+        <value>Median per {0}, latest {1}</value>
+    </data>
+    <data name="DistributionTitle" xml:space="preserve">
+        <value>{0} distribution</value>
+    </data>
+    <data name="DistributionSubtitle" xml:space="preserve">
+        <value>The latest value, {0}, is at the {1}th percentile of {2} transactions</value>
+    </data>
+    <data name="Transactions" xml:space="preserve">
+        <value>Transactions</value>
+    </data>
+    <data name="VelocityTitle" xml:space="preserve">
+        <value>When transactions happen</value>
+    </data>
+    <data name="VelocitySubtitle" xml:space="preserve">
+        <value>By weekday and hour (UTC)</value>
+    </data>
+    <data name="Hour" xml:space="preserve">
+        <value>Hour</value>
+    </data>
+    <data name="Weekday" xml:space="preserve">
+        <value>Weekday</value>
+    </data>
+    <data name="GapsTitle" xml:space="preserve">
+        <value>Time between transactions</value>
+    </data>
+    <data name="GapsSubtitle" xml:space="preserve">
+        <value>How long the key was quiet before each transaction</value>
+    </data>
+    <data name="CounterpartiesTitle" xml:space="preserve">
+        <value>{0} counterparties</value>
+    </data>
+    <data name="CounterpartiesSubtitle" xml:space="preserve">
+        <value>{0} distinct, {1} new in the last 30 days</value>
+    </data>
+    <data name="CorrelationTitle" xml:space="preserve">
+        <value>How the measures move together</value>
+    </data>
+    <data name="CorrelationSubtitle" xml:space="preserve">
+        <value>Pearson correlation, from -1 to 1</value>
+    </data>
+    <data name="DriftTitle" xml:space="preserve">
+        <value>Drift between earlier and recent history</value>
+    </data>
+    <data name="DriftSubtitle" xml:space="preserve">
+        <value>Distance between the two halves; above the critical value has drifted</value>
+    </data>
+    <data name="Distance" xml:space="preserve">
+        <value>Distance</value>
+    </data>
+    <data name="Critical" xml:space="preserve">
+        <value>Critical</value>
+    </data>
+    <data name="ContributionMoved" xml:space="preserve">
+        <value>{0}: what moved the score</value>
+    </data>
+    <data name="ContributionPushed" xml:space="preserve">
+        <value>{0}: what pushed the score</value>
+    </data>
+    <data name="BaseSubtitle" xml:space="preserve">
+        <value>From the base value of {0}</value>
+    </data>
+    <data name="InSpace" xml:space="preserve">
+        <value> in {0}</value>
+    </data>
+    <data name="HiddenInputs" xml:space="preserve">
+        <value>; {0} inputs hidden</value>
+    </data>
+    <data name="BaseValue" xml:space="preserve">
+        <value>Base value</value>
+    </data>
+    <data name="VisibleInputs" xml:space="preserve">
+        <value>Visible inputs</value>
+    </data>
+    <data name="Score" xml:space="preserve">
+        <value>Score</value>
+    </data>
+    <data name="RelativeContributions" xml:space="preserve">
+        <value>Relative contributions</value>
+    </data>
+    <data name="ByMethod" xml:space="preserve">
+        <value> by {0}</value>
+    </data>
+    <data name="NotAdditive" xml:space="preserve">
+        <value>, not additive</value>
+    </data>
+    <data name="Contribution" xml:space="preserve">
+        <value>Contribution</value>
+    </data>
+    <data name="GaugeThreshold" xml:space="preserve">
+        <value>threshold {0}</value>
+    </data>
+    <data name="GaugeNoThreshold" xml:space="preserve">
+        <value>no threshold declared</value>
+    </data>
+    <data name="GaugeCalibrated" xml:space="preserve">
+        <value>Calibrated probability {0} · {1} · {2}</value>
+    </data>
+    <data name="GaugeScore" xml:space="preserve">
+        <value>Score {0} (not a probability) · {1}</value>
+    </data>
+    <data name="DriversMoved" xml:space="preserve">
+        <value>What moved {0}</value>
+    </data>
+    <data name="DriversPushed" xml:space="preserve">
+        <value>What pushed {0}</value>
+    </data>
+    <data name="RelativeNotAdditive" xml:space="preserve">
+        <value>Relative contributions, not additive</value>
+    </data>
+    <data name="OtherInputs" xml:space="preserve">
+        <value>{0} other inputs</value>
+    </data>
+    <data name="CalibrationTitle" xml:space="preserve">
+        <value>{0}: did the score mean what it said</value>
+    </data>
+    <data name="CalibrationValidated" xml:space="preserve">
+        <value>Validated on {0} cases</value>
+    </data>
+    <data name="CalibrationExpected" xml:space="preserve">
+        <value>Expected against observed</value>
+    </data>
+</root>

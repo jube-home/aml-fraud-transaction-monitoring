@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Checks if the string is a well-formed IBAN with a valid mod-97 checksum.")]
         public static bool IsValidIban(this string? @this)
         {
             if (string.IsNullOrWhiteSpace(@this))

@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchContainsAnyInList(IEnumerable<string> list)
+            [Description("True when: contains at least one entry of the List token. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringContainsAnyInList(flow.Value, list));
             }
 
-            public Flow<string?> RejectContainsAnyInList(IEnumerable<string> list)
+            [Description("True when: contains at least one entry of the List token. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringContainsAnyInList(flow.Value, list));
             }
 
-            public Flow<string?> BreakContainsAnyInList(IEnumerable<string> list)
+            [Description("True when: contains at least one entry of the List token. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringContainsAnyInList(flow.Value, list));
             }
 
-            public Flow<string?> RequireContainsAnyInList(IEnumerable<string> list)
+            [Description("True when: contains at least one entry of the List token. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringContainsAnyInList(flow.Value, list));
             }
 
-            public Flow<string?> EnsureContainsAnyInList(IEnumerable<string> list)
+            [Description("True when: contains at least one entry of the List token. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchContainsAnyInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: contains at least one entry of the List token. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().MatchContainsAnyInList(list);
             }
 
-            public Flow<string?> RejectContainsAnyInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: contains at least one entry of the List token. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RejectContainsAnyInList(list);
             }
 
-            public Flow<string?> BreakContainsAnyInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: contains at least one entry of the List token. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().BreakContainsAnyInList(list);
             }
 
-            public Flow<string?> RequireContainsAnyInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: contains at least one entry of the List token. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RequireContainsAnyInList(list);
             }
 
-            public Flow<string?> EnsureContainsAnyInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: contains at least one entry of the List token. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().EnsureContainsAnyInList(list);
             }

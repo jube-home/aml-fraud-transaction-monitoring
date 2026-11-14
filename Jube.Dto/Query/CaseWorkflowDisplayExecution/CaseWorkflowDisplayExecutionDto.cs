@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,12 +22,15 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.CaseWorkflowDisplayExecution
 {
     [Description("Request to render a case workflow display (an HTML template with payload tokens) against a case.")]
+    [MessagePackObject]
     public class CaseWorkflowDisplayExecutionDto
     {
         [Description("Integer Id of the case whose stored payload supplies the token values.")]
+        [Key(0)]
         public int CaseId { get; set; }
 
         [Description("Integer Id of the active case workflow display whose HTML template is rendered.")]
+        [Key(1)]
         public int CaseWorkflowDisplayId { get; set; }
     }
 }

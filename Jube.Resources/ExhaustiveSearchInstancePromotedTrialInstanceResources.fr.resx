@@ -48,4 +48,7 @@
     <data name="IdInvalid" xml:space="preserve">
     <value>Un identifiant d'essai promu valide est requis.</value>
   </data>
+    <data name="InstanceIsLive" xml:space="preserve">
+    <value>L'Exhaustive Adaptation est en production. Désactivez-la, effectuez la modification, puis réactivez-la par approbation, afin que la modification soit vérifiée avant qu'elle ne produise des scores.</value>
+  </data>
 </root>

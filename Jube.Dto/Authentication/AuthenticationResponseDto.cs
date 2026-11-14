@@ -16,11 +16,16 @@
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable RedundantAttributeUsageProperty
 
+using MessagePack;
+
 namespace Jube.Dto.Authentication
 {
+    [MessagePackObject]
     public class AuthenticationResponseDto
     {
+        [Key(0)]
         public string? Token { get; init; }
+        [Key(1)]
         public DateTime Expiration { get; init; }
     }
 }

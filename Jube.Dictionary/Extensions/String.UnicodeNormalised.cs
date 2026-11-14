@@ -17,7 +17,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string UnicodeNormalised(this string? @this, string? form)
+        [Description("The text in Unicode normalisation form NFC, NFD, NFKC or NFKD.")]
+        public static string UnicodeNormalised(this string? @this,
+            [Description("The normalisation form: NFC, NFD, NFKC or NFKD.")] string? form)
         {
             var normalizationForm = (form ?? "NFC").Trim().ToUpperInvariant() switch
             {

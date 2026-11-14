@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Returns everything before the \"@\" in an email address, or the whole string if there is none.")]
         public static string EmailLocalPart(this string? @this)
         {
             var value = @this ?? "";

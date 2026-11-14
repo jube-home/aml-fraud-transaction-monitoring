@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsInAnyCidr(this string? @this, IEnumerable<string>? cidrs)
+        [Description("True when: an IP address inside any of the CIDR ranges.")]
+        public static bool IsInAnyCidr(this string? @this,
+            [Description("The CIDR ranges, usually a List token.")] IEnumerable<string>? cidrs)
         {
             if (cidrs is null)
             {

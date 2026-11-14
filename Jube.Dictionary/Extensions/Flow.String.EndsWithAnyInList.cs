@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchEndsWithAnyInList(IEnumerable<string> list)
+            [Description("True when: ends with any entry of the List token. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchEndsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringEndsWithAnyInList(flow.Value, list));
             }
 
-            public Flow<string?> RejectEndsWithAnyInList(IEnumerable<string> list)
+            [Description("True when: ends with any entry of the List token. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectEndsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringEndsWithAnyInList(flow.Value, list));
             }
 
-            public Flow<string?> BreakEndsWithAnyInList(IEnumerable<string> list)
+            [Description("True when: ends with any entry of the List token. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakEndsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringEndsWithAnyInList(flow.Value, list));
             }
 
-            public Flow<string?> RequireEndsWithAnyInList(IEnumerable<string> list)
+            [Description("True when: ends with any entry of the List token. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireEndsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringEndsWithAnyInList(flow.Value, list));
             }
 
-            public Flow<string?> EnsureEndsWithAnyInList(IEnumerable<string> list)
+            [Description("True when: ends with any entry of the List token. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureEndsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchEndsWithAnyInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: ends with any entry of the List token. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchEndsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().MatchEndsWithAnyInList(list);
             }
 
-            public Flow<string?> RejectEndsWithAnyInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: ends with any entry of the List token. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectEndsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RejectEndsWithAnyInList(list);
             }
 
-            public Flow<string?> BreakEndsWithAnyInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: ends with any entry of the List token. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakEndsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().BreakEndsWithAnyInList(list);
             }
 
-            public Flow<string?> RequireEndsWithAnyInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: ends with any entry of the List token. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireEndsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RequireEndsWithAnyInList(list);
             }
 
-            public Flow<string?> EnsureEndsWithAnyInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: ends with any entry of the List token. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureEndsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().EnsureEndsWithAnyInList(list);
             }

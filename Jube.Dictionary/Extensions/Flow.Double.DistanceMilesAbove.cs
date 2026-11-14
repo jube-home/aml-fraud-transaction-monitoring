@@ -17,35 +17,55 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchDistanceMilesAbove(double longitude1, double latitude2, double longitude2, double miles)
+            [Description("True when: the value is latitude 1. The distance to the second point is above the miles. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchDistanceMilesAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in miles that counts.")] double miles)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleDistanceMilesAbove(flow.Value, longitude1, latitude2, longitude2, miles));
             }
 
-            public Flow<double> RejectDistanceMilesAbove(double longitude1, double latitude2, double longitude2, double miles)
+            [Description("True when: the value is latitude 1. The distance to the second point is above the miles. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectDistanceMilesAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in miles that counts.")] double miles)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleDistanceMilesAbove(flow.Value, longitude1, latitude2, longitude2, miles));
             }
 
-            public Flow<double> BreakDistanceMilesAbove(double longitude1, double latitude2, double longitude2, double miles)
+            [Description("True when: the value is latitude 1. The distance to the second point is above the miles. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakDistanceMilesAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in miles that counts.")] double miles)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleDistanceMilesAbove(flow.Value, longitude1, latitude2, longitude2, miles));
             }
 
-            public Flow<double> RequireDistanceMilesAbove(double longitude1, double latitude2, double longitude2, double miles)
+            [Description("True when: the value is latitude 1. The distance to the second point is above the miles. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireDistanceMilesAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in miles that counts.")] double miles)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleDistanceMilesAbove(flow.Value, longitude1, latitude2, longitude2, miles));
             }
 
-            public Flow<double> EnsureDistanceMilesAbove(double longitude1, double latitude2, double longitude2, double miles)
+            [Description("True when: the value is latitude 1. The distance to the second point is above the miles. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureDistanceMilesAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in miles that counts.")] double miles)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +75,47 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchDistanceMilesAbove(double longitude1, double latitude2, double longitude2, double miles)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The distance to the second point is above the miles. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchDistanceMilesAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in miles that counts.")] double miles)
             {
                 return value.Start().MatchDistanceMilesAbove(longitude1, latitude2, longitude2, miles);
             }
 
-            public Flow<double> RejectDistanceMilesAbove(double longitude1, double latitude2, double longitude2, double miles)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The distance to the second point is above the miles. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectDistanceMilesAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in miles that counts.")] double miles)
             {
                 return value.Start().RejectDistanceMilesAbove(longitude1, latitude2, longitude2, miles);
             }
 
-            public Flow<double> BreakDistanceMilesAbove(double longitude1, double latitude2, double longitude2, double miles)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The distance to the second point is above the miles. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakDistanceMilesAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in miles that counts.")] double miles)
             {
                 return value.Start().BreakDistanceMilesAbove(longitude1, latitude2, longitude2, miles);
             }
 
-            public Flow<double> RequireDistanceMilesAbove(double longitude1, double latitude2, double longitude2, double miles)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The distance to the second point is above the miles. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireDistanceMilesAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in miles that counts.")] double miles)
             {
                 return value.Start().RequireDistanceMilesAbove(longitude1, latitude2, longitude2, miles);
             }
 
-            public Flow<double> EnsureDistanceMilesAbove(double longitude1, double latitude2, double longitude2, double miles)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The distance to the second point is above the miles. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureDistanceMilesAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in miles that counts.")] double miles)
             {
                 return value.Start().EnsureDistanceMilesAbove(longitude1, latitude2, longitude2, miles);
             }

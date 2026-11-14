@@ -17,7 +17,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static int BusinessDaysUntil(this DateTime @this, DateTime other)
+        [Description("Counts the weekdays (Mon-Fri) strictly after this date up to and including other, useful for settlement/SLA calculations. Negative when other is earlier.")]
+        public static int BusinessDaysUntil(this DateTime @this,
+            [Description("The date to count towards.")] DateTime other)
         {
             var start = @this.Date;
             var end = other.Date;

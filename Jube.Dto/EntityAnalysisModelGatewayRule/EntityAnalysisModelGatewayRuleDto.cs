@@ -13,7 +13,9 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,6 +25,8 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.EntityAnalysisModelGatewayRule
 {
     [FormEndpoint("EntityAnalysisModelGatewayRule")]
+    [FormApproval]
+    [RuleEditor(RuleParseType.GatewayRule, ScriptType = nameof(RuleScriptTypeId), Builder = nameof(BuilderRuleScript), BuilderJson = nameof(Json), Coder = nameof(CoderRuleScript))]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -30,48 +34,59 @@ namespace Jube.Dto.EntityAnalysisModelGatewayRule
     [FormGroup("Gateway", Order = 30)]
     [FormGroup("Counters", Order = 40, Collapsed = true)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
+    [MessagePackObject]
     public class EntityAnalysisModelGatewayRuleDto : IUpdated, IActivatable, ILockable, ITreeChild, IRuleBuilderJson
     {
         [Description("Identifier of the Model this Gateway Rule is registered against. Set from the parent Model " +
                      "context; not user-editable.")]
+        [Key(0)]
         public int EntityAnalysisModelId { get; set; }
 
         [Description("Display name of this Gateway Rule. Unique within the Model (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Card present only")]
         [ListColumn(Order = 10, Title = "Name")]
+        [Key(1)]
         public string? Name { get; set; }
 
         [Description("Free-text description of what this Gateway Rule filters for.")]
-        [FormField(Group = "Identity", Order = 20, Widget = "textarea")]
+        [FormField(Group = "Identity", Order = 20, Widget = "textarea", Placeholder = "e.g. Only evaluate card-present transactions.")]
+        [Key(2)]
         public string? Description { get; set; }
 
         [Description("Evaluation order relative to the other Gateway Rules on this Model; lower values evaluate " +
                      "first.")]
         [FormField(Group = "Identity", Order = 30)]
         [ListColumn(Order = 20, Title = "Priority")]
+        [NewDefault(0)]
+        [Key(3)]
         public double Priority { get; set; }
 
         [Description("Which rule authoring surface is authoritative for this rule: 1 = visual Builder (requires " +
                      "BuilderRuleScript and Json), 2 = hand-written Coder (requires CoderRuleScript). The two " +
                      "surfaces are mutually exclusive -- only the selected surface's script is required.")]
         [FormField(Group = "Rule", Order = 30)]
-        [Forms.Editor("RuleBuilder")]
+        [Key(4)]
         public int RuleScriptTypeId { get; set; }
 
         [Description("The hand-written Coder-surface source for this rule. Required when RuleScriptTypeId is 2 " +
                      "(Coder); not required when RuleScriptTypeId is 1 (Builder).")]
         [FormField(Group = "Rule", Order = 40)]
-        [Forms.Editor("RuleBuilder")]
+        [RequiredWhen(nameof(RuleScriptTypeId), 2)]
+        [Key(5)]
         public string? CoderRuleScript { get; set; }
 
         [Description("Upon a match, the largest Response Elevation that may be responded with; larger values are " +
                      "truncated to this limit. Also bounded at the Model level.")]
         [FormField(Group = "Gateway", Order = 10)]
+        [NewDefault(0)]
+        [Key(6)]
         public int MaxResponseElevation { get; set; }
 
         [Description("Fraction (0-1) of matching transactions that are sampled through to subsequent processing " +
                      "steps; the remainder are held back even though the Rule matched.")]
         [FormField(Group = "Gateway", Order = 20, Widget = "slider")]
+        [NewDefault(1)]
+        [Key(7)]
         public double GatewaySample { get; set; }
 
         [Description("Whether the response payload is returned for a match on this Gateway Rule. Accepted by the " +
@@ -79,83 +94,100 @@ namespace Jube.Dto.EntityAnalysisModelGatewayRule
                      "migration report).")]
         [FormField(Group = "Gateway", Order = 30, Widget = "switch")]
         [NewDefault(false)]
+        [Key(8)]
         public bool ResponsePayload { get; set; }
 
         [Description("Running count of transactions that matched this Gateway Rule. Server-maintained; reset via " +
                      "the dedicated reset operation. Read-only.")]
         [FormField(Group = "Counters", Order = 10, ReadOnly = true)]
+        [Key(9)]
         public int ActivationCounter { get; set; }
 
         [Description("Timestamp (UTC) this Gateway Rule was last matched. Server-maintained. Read-only.")]
         [FormField(Group = "Counters", Order = 20, ReadOnly = true, Widget = "date")]
+        [Key(10)]
         public DateTimeOffset? ActivationCounterDate { get; set; }
 
         [Description("Running count of transactions this Gateway Rule was evaluated against. Server-maintained; " +
                      "reset via the dedicated reset operation. Read-only.")]
         [FormField(Group = "Counters", Order = 30, ReadOnly = true)]
+        [Key(11)]
         public long EvaluationCounter { get; set; }
 
         [Description("Globally-addressable identifier for this row, stable across environments and the form "
                      + "in which every other area refers to it. Server-assigned. Read-only.")]
+        [Key(12)]
         public Guid Guid { get; set; }
 
         [Description("When true, this Gateway Rule participates in evaluation on transaction invocation.")]
         [FormField(Group = "Identity", Order = 40, Widget = "switch")]
         [NewDefault(false)]
+        [Key(13)]
         public bool Active { get; set; }
 
         [Description("When true, this Gateway Rule is locked and cannot be edited or deleted.")]
         [FormField(Group = "Identity", Order = 50, Widget = "switch")]
         [NewDefault(false)]
+        [Key(14)]
         public bool Locked { get; set; }
 
         [Description("The compiled Builder/Coder rule script that is evaluated against the transaction Payload " +
                      "and Dictionary values; must return True on match, False otherwise. Required when " +
                      "RuleScriptTypeId is 1 (Builder); not required when RuleScriptTypeId is 2 (Coder).")]
         [FormField(Group = "Rule", Order = 10)]
-        [Forms.Editor("RuleBuilder")]
+        [RequiredWhen(nameof(RuleScriptTypeId), 1)]
+        [Key(15)]
         public string BuilderRuleScript { get; set; } = string.Empty;
 
         [Description("The Query Builder JSON definition backing BuilderRuleScript. Required when RuleScriptTypeId " +
                      "is 1 (Builder); not required when RuleScriptTypeId is 2 (Coder).")]
         [FormField(Group = "Rule", Order = 20)]
-        [Forms.Editor("RuleBuilder")]
+        [RequiredWhen(nameof(RuleScriptTypeId), 1)]
+        [Key(16)]
         public string Json { get; set; } = string.Empty;
 
         [Description("Server-assigned row identifier. Read-only.")]
         [FormField(Group = "Audit", Order = 10, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(17)]
         public int Id { get; set; }
 
         [Description("User who created this Gateway Rule. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 20, ReadOnly = true)]
+        [Key(18)]
         public string? CreatedUser { get; set; }
 
         [Description("Timestamp (UTC) this Gateway Rule was created. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 30, ReadOnly = true, Widget = "date")]
+        [Key(19)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("User who last updated this Gateway Rule. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 40, ReadOnly = true)]
+        [Key(20)]
         public string? UpdatedUser { get; set; }
 
         [Description("Timestamp (UTC) this Gateway Rule was last updated. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 50, ReadOnly = true, Widget = "date")]
+        [Key(21)]
         public DateTimeOffset? UpdatedDate { get; set; }
 
         [Description("Server-assigned optimistic-concurrency version number, incremented on every update. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 60, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(22)]
         public int Version { get; set; }
 
         [Description("User who deleted this Gateway Rule, if soft-deleted. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 70, ReadOnly = true)]
+        [Key(23)]
         public string? DeletedUser { get; set; }
 
         [Description("Timestamp (UTC) this Gateway Rule was soft-deleted, if applicable. Server-assigned. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 80, ReadOnly = true, Widget = "date")]
+        [Key(24)]
         public DateTimeOffset? DeletedDate { get; set; }
     }
 }

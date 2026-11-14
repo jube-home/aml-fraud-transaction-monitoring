@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,19 +21,22 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Query.AdvancedAnalyticsNarrative
 {
-    [Description("A plain-language, expert-rule-generated explanation of an Advanced Analytics trained model " +
+    [Description("A plain-language, expert-rule-generated explanation of an AskJooby Analytics trained model " +
                  "version: one holistic set of paragraphs synthesising all available evidence, plus a shorter " +
                  "set of paragraphs per chart group interpreting that group's actual values for this version. " +
                  "Each entry is a list of paragraphs, rendered as separate <p> elements, never a single " +
                  "run-on block.")]
+    [MessagePackObject]
     public class AdvancedAnalyticsNarrativeDto
     {
         [Description("Paragraphs synthesising structure, data and quality for this version, in reading order.")]
+        [Key(0)]
         public List<string> Holistic { get; set; } = [];
 
         [Description("Paragraphs per chart group (ModelDiagram, Calibration, Roc), interpreting that group's " +
                      "actual values for this version. A group is omitted when there isn't enough data to say " +
                      "anything reliable about it.")]
+        [Key(1)]
         public Dictionary<string, List<string>> Groups { get; set; } = new();
     }
 }

@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,24 +21,31 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Query.CaseWorkflowFormEntryByCaseKeyValue
 {
+    [MessagePackObject]
     public class CaseWorkflowFormEntryByCaseKeyValueDto
     {
         [Description("Server-assigned integer identifier of the Case Workflow Form Entry.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("Identifier of the Case the Case Workflow Form Entry was made against.")]
+        [Key(1)]
         public int CaseId { get; set; }
 
         [Description("UTC date and time at which the Case Workflow Form Entry was created.")]
+        [Key(2)]
         public DateTimeOffset CreatedDate { get; set; }
 
         [Description("User name that created the Case Workflow Form Entry.")]
+        [Key(3)]
         public string? CreatedUser { get; set; }
 
         [Description("Legacy response status identifier. Retained for wire compatibility; always 0.")]
+        [Key(4)]
         public byte ResponseStatusId { get; set; }
 
         [Description("Name of the Case Workflow Form the entry was made against.")]
+        [Key(5)]
         public string? Name { get; set; }
     }
 }

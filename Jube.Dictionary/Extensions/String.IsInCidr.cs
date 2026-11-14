@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsInCidr(this string? @this, string? cidr)
+        [Description("Whether the address falls inside a CIDR range of the same family.")]
+        public static bool IsInCidr(this string? @this,
+            [Description("The CIDR range, for example 10.0.0.0/8.")] string? cidr)
         {
             if (!NetworkAddressSupport.TryParseAddress(@this, out var address) ||
                 !NetworkAddressSupport.TryParseCidr(cidr, out var network, out var prefix, out var bits) ||

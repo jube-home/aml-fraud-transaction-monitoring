@@ -12,6 +12,9 @@
  */
 
 using System.ComponentModel;
+using Jube.Dto.Forms;
+using Jube.Dto.Options;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,31 +23,45 @@ using System.ComponentModel;
 
 namespace Jube.Dto.HaProxyReachabilityProbe
 {
+    [GridEndpoint("HaProxyReachabilityProbe", Title = "Ha proxy reachability probe", DefaultSort = "createdDate")]
+    [GridSearch(Label = "Target or HAProxy address contains")]
+    [MessagePackObject]
     public sealed record HaProxyReachabilityProbeDto(
-        [property: Description("Server-assigned identifier of the row, most recent first when listed.")]
+        [property: Key(0)] [property: Description("Server-assigned identifier of the row, most recent first when listed.")]
+        [property: ListColumn(Hidden = true)]
         int Id,
-        [property: Description("UTC timestamp this probe was attempted.")]
+        [property: Key(1)] [property: Description("UTC timestamp this probe was attempted.")]
+        [property: ListColumn(Hidden = true)]
         DateTime? OccurredDate,
-        [property:
+        [property: Key(2)] [property:
             Description(
                 "What was probed: JubeUi and JubeApi are a real GET /api/ready routed through HAProxy; PostgresPrimary/PostgresReplica are a bare TCP connect only.")]
+        [property: ListColumn(Order = 30)]
         string Target,
-        [property:
+        [property: Key(3)] [property:
             Description(
                 "The specific HAProxy replica IP:port probed -- resolved via tasks.haproxy (Swarm's per-task DNS, bypassing the VIP) so a problem specific to one node's HAProxy is attributable rather than averaged away by load balancing.")]
+        [property: ListColumn(Order = 40, Title = "HAProxy Address")]
         string HaProxyAddress,
-        [property: Description("Whether this probe succeeded.")]
+        [property: Key(4)] [property: Description("Whether this probe succeeded.")]
+        [property: ListColumn(Order = 50)]
         bool? Success,
-        [property: Description("Microseconds from starting the connection attempt to it succeeding or failing.")]
+        [property: Key(5)] [property: Description("Microseconds from starting the connection attempt to it succeeding or failing.")]
+        [property: ListColumn(Order = 60, Title = "Connect", Unit = "µs", Format = GridFormat.Integer)]
         long? ConnectMicroseconds,
-        [property: Description("The HTTP status code returned, for JubeUi/JubeApi probes only.")]
+        [property: Key(6)] [property: Description("The HTTP status code returned, for JubeUi/JubeApi probes only.")]
+        [property: ListColumn(Order = 70, Title = "HTTP Status", Format = GridFormat.Integer)]
         int? HttpStatusCode,
-        [property: Description("The exception message on failure; null on success.")]
+        [property: Key(7)] [property: Description("The exception message on failure; null on success.")]
+        [property: ListColumn(Order = 80)]
         string ErrorMessage,
-        [property: Description("UTC timestamp this sample was captured and flushed to the database.")]
+        [property: Key(8)] [property: Description("UTC timestamp this sample was captured and flushed to the database.")]
+        [property: ListColumn(Order = 10, Title = "Sampled Date")]
+        [property: GridTimeRange]
         DateTime CreatedDate,
-        [property:
+        [property: Key(9)] [property:
             Description(
                 "Hostname of the Jube.Monitoring instance that ran this probe -- one row per HAProxy replica per target per minute per capturing instance.")]
+        [property: ListColumn(Order = 20)]
         string Instance);
 }

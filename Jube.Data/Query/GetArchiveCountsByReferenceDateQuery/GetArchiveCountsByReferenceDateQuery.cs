@@ -18,6 +18,7 @@ namespace Jube.Data.Query.GetArchiveCountsByReferenceDateQuery
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
 
     public class GetArchiveCountsByReferenceDateQuery(DbContext dbContext)
     {

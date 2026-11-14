@@ -7,32 +7,46 @@ grand_parent: Configuration
 ---
 
 # Exhaustive Adaptation Training Variable Statistics
-One of the first tasks in training a model in Exhaustive is the process of establishing statistics.  Statistics are important for each variable as they are used in Z Score normalisation of variables,  which is an important concept in Machine Learning generally. The statistics are however comprehensively recorded, which provides rich insight about the dataset and problem domain more generally.
 
-Keep in mind that statistics are calculated after the initial sample, but before class filtering, which means that it the statistics are a representation of the domain at large,  rather than the positive class.
+<!-- TODO(docs): this page predates the Vue port and describes the Razor layout (tabs, grids, buttons); re-read it against the Exhaustive pages under Models and correct names, positions and labels. -->
+One of the first tasks in training a model in Exhaustive is the process of establishing statistics. Statistics are
+important for each variable as they are used in Z Score normalisation of variables, which is an important concept in
+Machine Learning generally. The statistics are however comprehensively recorded, which provides rich insight about the
+dataset and problem domain more generally.
+
+Keep in mind that statistics are calculated after the initial sample, but before class filtering, which means that it
+the statistics are a representation of the domain at large, rather than the positive class.
 
 Notice in the model performance tabs, Statistics:
 
-![LocationOfTab](LocationOfTab.png)
+<!-- TODO(screenshot): file=model-exhaustive-location-of-tab.png route=/models state="TrainingVariableStatistics: replace the Razor-era image LocationOfTab.png with the Vue Exhaustive page" -->
+![LocationOfTab](model-exhaustive-location-of-tab.png)
 
 Click on the Statistics tab to expose for each variable summary statistics and histograms:
 
-![ExposedStatistics.png](ExposedStatistics.png)
+<!-- TODO(screenshot): file=model-exhaustive-exposed-statistics.png route=/models state="TrainingVariableStatistics: replace the Razor-era image ExposedStatistics.png with the Vue Exhaustive page" -->
+![ExposedStatistics.png](model-exhaustive-exposed-statistics.png)
 
-The variables are presented in the order of their correlation between the class and variable descending (strongest first).
+The variables are presented in the order of their correlation between the class and variable descending (strongest
+first).
 
 Note that the grid is hierarchical and each row may be expanded upon:
 
-![LocationOfRowExpansion.png](LocationOfRowExpansion.png)
+<!-- TODO(screenshot): file=model-exhaustive-location-of-row-expansion.png route=/models state="TrainingVariableStatistics: replace the Razor-era image LocationOfRowExpansion.png with the Vue Exhaustive page" -->
+![LocationOfRowExpansion.png](model-exhaustive-location-of-row-expansion.png)
 
-The expansion of the row is intended to present an analysis on the extent to which variables related to one another,  so called multi-colinearity.  Click to expand the row:
+The expansion of the row is intended to present an analysis on the extent to which variables related to one another, so
+called multi-colinearity. Click to expand the row:
 
-![ExpandedRow](ExpandedRow.png)
+<!-- TODO(screenshot): file=model-exhaustive-expanded-row.png route=/models state="TrainingVariableStatistics: replace the Razor-era image ExpandedRow.png with the Vue Exhaustive page" -->
+![ExpandedRow](model-exhaustive-expanded-row.png)
 
-For each variable, the correlation to that variable is returned.  The variables are ordered by absolute correlation, with strongest correlations first.  Colour formatting exists on the following basis:
+For each variable, the correlation to that variable is returned. The variables are ordered by absolute correlation, with
+strongest correlations first. Colour formatting exists on the following basis:
 
 * Red > 0.9.
 * Orange > 0.7.
 * Else Green.
 
-Understanding the relationships between variables gives opportunity to collapse some variables into each other,  for example by updating Abstraction Rules.
+Understanding the relationships between variables gives opportunity to collapse some variables into each other, for
+example by updating Abstraction Rules.

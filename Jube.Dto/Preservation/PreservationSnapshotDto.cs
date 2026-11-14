@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,14 +21,15 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Preservation
 {
+    [MessagePackObject]
     public sealed record PreservationSnapshotDto(
-        [property: Description("Server-assigned identifier of this snapshot.")]
+        [property: Key(0)] [property: Description("Server-assigned identifier of this snapshot.")]
         int Id,
-        [property: Description("Identifying Guid of this snapshot -- pass this to PreservationRecover to " +
+        [property: Key(1)] [property: Description("Identifying Guid of this snapshot -- pass this to PreservationRecover to " +
                                "restore it.")]
         Guid Guid,
-        [property: Description("Size of the stored snapshot body in bytes, or null if it did not complete.")]
+        [property: Key(2)] [property: Description("Size of the stored snapshot body in bytes, or null if it did not complete.")]
         long? Bytes,
-        [property: Description("UTC timestamp the snapshot was taken.")]
+        [property: Key(3)] [property: Description("UTC timestamp the snapshot was taken.")]
         DateTimeOffset TakenAtUtc);
 }

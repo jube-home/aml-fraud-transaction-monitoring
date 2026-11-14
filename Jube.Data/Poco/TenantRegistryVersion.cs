@@ -40,5 +40,9 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(11)] public byte? Deleted { get; set; }
         [Column] [Nullable] [Key(12)] public byte? Landlord { get; set; }
         [Column] [Nullable] [Key(13)] public int? Version { get; set; }
+        [Column] [Nullable] [Key(14)] public string HttpAdaptationUrl { get; set; }
+        [Column] [Nullable] [Key(15)] public int? HttpAdaptationTimeoutMilliseconds { get; set; }
+        [Column] [Nullable] [Key(16)] public byte? HttpAdaptationValidateSsl { get; set; }
+        [Column] [Nullable] [Key(17)] public byte? SvirfdRemoteLookupsEnabled { get; set; }
     }
 }

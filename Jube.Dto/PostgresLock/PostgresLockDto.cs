@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,35 +21,36 @@ using System.ComponentModel;
 
 namespace Jube.Dto.PostgresLock
 {
+    [MessagePackObject]
     public sealed record PostgresLockDto(
-        [property: Description("The backend process id holding or waiting on this lock (pg_locks.pid) -- " +
+        [property: Key(0)] [property: Description("The backend process id holding or waiting on this lock (pg_locks.pid) -- " +
                                "cross-reference against PostgresActivityList's Pid for the rest of that " +
                                "backend's state.")]
         int Pid,
-        [property: Description("Role name of the backend holding or waiting on this lock.")]
+        [property: Key(1)] [property: Description("Role name of the backend holding or waiting on this lock.")]
         string? UserName,
-        [property: Description("That backend's current (or most recently completed) query text.")]
+        [property: Key(2)] [property: Description("That backend's current (or most recently completed) query text.")]
         string? Query,
-        [property: Description("What kind of object this lock is on: relation, extend, page, tuple, " +
+        [property: Key(3)] [property: Description("What kind of object this lock is on: relation, extend, page, tuple, " +
                                "transactionid, virtualxid, object, userlock, advisory. Most contention worth " +
                                "diagnosing is locktype='relation'.")]
         string? LockType,
-        [property: Description("The specific lock mode held or wanted, e.g. AccessShareLock, RowExclusiveLock, " +
+        [property: Key(4)] [property: Description("The specific lock mode held or wanted, e.g. AccessShareLock, RowExclusiveLock, " +
                                "ShareUpdateExclusiveLock, AccessExclusiveLock -- see PostgreSQL's own lock-mode " +
                                "compatibility table for which modes conflict with which.")]
         string? Mode,
-        [property: Description("True if this lock is actually held; false means this backend is WAITING for " +
+        [property: Key(5)] [property: Description("True if this lock is actually held; false means this backend is WAITING for " +
                                "it. A row with Granted=false is a backend stuck behind someone else -- find " +
                                "who by matching RelationName/LockType against a Granted=true row from a " +
                                "different Pid.")]
         bool Granted,
-        [property: Description("The table/index/sequence this lock is on, when LockType is 'relation' or " +
+        [property: Key(6)] [property: Description("The table/index/sequence this lock is on, when LockType is 'relation' or " +
                                "similar -- null for a lock that is not on a relation at all (an advisory " +
                                "lock, a transactionid lock, ...).")]
         string? RelationName,
-        [property: Description("The virtual transaction id (backend/local-xid pair) this lock belongs to.")]
+        [property: Key(7)] [property: Description("The virtual transaction id (backend/local-xid pair) this lock belongs to.")]
         string? VirtualTransactionId,
-        [property: Description("True if this lock was satisfied by the fast path, skipping the shared lock " +
+        [property: Key(8)] [property: Description("True if this lock was satisfied by the fast path, skipping the shared lock " +
                                "manager -- normal for the common, uncontended case.")]
         bool FastPath);
 }

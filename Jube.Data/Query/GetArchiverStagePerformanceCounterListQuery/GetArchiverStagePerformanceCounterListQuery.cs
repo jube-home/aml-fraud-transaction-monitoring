@@ -21,6 +21,7 @@ namespace Jube.Data.Query.GetArchiverStagePerformanceCounterListQuery
     using Context;
     using Helpers;
     using LinqToDB;
+    using LinqToDB.Async;
     using Models;
     using Poco;
 

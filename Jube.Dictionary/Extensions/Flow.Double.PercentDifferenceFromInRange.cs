@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchPercentDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the gap between the two as a percentage of their average size, the same either way round is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoublePercentDifferenceFromInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectPercentDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the gap between the two as a percentage of their average size, the same either way round is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoublePercentDifferenceFromInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakPercentDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the gap between the two as a percentage of their average size, the same either way round is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoublePercentDifferenceFromInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RequirePercentDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the gap between the two as a percentage of their average size, the same either way round is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoublePercentDifferenceFromInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsurePercentDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the gap between the two as a percentage of their average size, the same either way round is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchPercentDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the gap between the two as a percentage of their average size, the same either way round is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchPercentDifferenceFromInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectPercentDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the gap between the two as a percentage of their average size, the same either way round is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectPercentDifferenceFromInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakPercentDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the gap between the two as a percentage of their average size, the same either way round is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakPercentDifferenceFromInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RequirePercentDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the gap between the two as a percentage of their average size, the same either way round is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequirePercentDifferenceFromInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsurePercentDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the gap between the two as a percentage of their average size, the same either way round is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsurePercentDifferenceFromInRange(other, lowerBound, upperBound);
             }

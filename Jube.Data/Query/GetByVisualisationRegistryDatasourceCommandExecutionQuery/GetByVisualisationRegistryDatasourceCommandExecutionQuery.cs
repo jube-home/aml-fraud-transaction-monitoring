@@ -19,6 +19,7 @@ namespace Jube.Data.Query.GetByVisualisationRegistryDatasourceCommandExecutionQu
     using System.Threading;
     using System.Threading.Tasks;
     using Context;
+    using Reporting.Check;
     using log4net;
     using Reporting;
     using Repository;
@@ -109,6 +110,10 @@ namespace Jube.Data.Query.GetByVisualisationRegistryDatasourceCommandExecutionQu
                     }
                 }
             }
+
+            await SqlPreflight.AssertAsync(visualisationRegistryDatasource.Command,
+                reportConnectionString ?? dbContext.Connection.ConnectionString, allowedTables,
+                mergedParametersByName, token).ConfigureAwait(false);
 
             using var postgres = new Postgres(reportConnectionString ?? dbContext.Connection.ConnectionString, log,
                 allowedTables == null);

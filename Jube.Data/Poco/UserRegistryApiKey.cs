@@ -40,8 +40,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(11)] public DateTime? DeletedDate { get; set; }
         [Column] [Nullable] [Key(12)] public string DeletedUser { get; set; }
 
-        [Association(ThisKey = "UserRegistryId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "UserRegistryId", OtherKey = "Id", CanBeNull = true)]
         [Column]
         [Nullable]
         [Key(13)]

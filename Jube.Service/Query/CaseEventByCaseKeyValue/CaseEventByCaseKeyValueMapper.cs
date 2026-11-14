@@ -22,6 +22,7 @@ namespace Jube.Service.Query.CaseEventByCaseKeyValue
         {
             Id = source.Id,
             CaseId = source.CaseId,
+            CaseEventTypeId = source.CaseEventTypeId,
             CaseEventType = source.CaseEventType,
             CreatedDate = source.CreatedDate,
             CreatedUser = source.CreatedUser,

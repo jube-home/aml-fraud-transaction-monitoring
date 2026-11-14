@@ -1,3 +1,4 @@
+using Jube.Data.Concurrency;
 /* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
@@ -20,6 +21,7 @@ namespace Jube.Data.Repository
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
 
     public class VisualisationRegistryRepository
@@ -105,10 +107,10 @@ namespace Jube.Data.Repository
                 token);
         }
 
-        public async Task<IEnumerable<VisualisationRegistry>> GetByShowInDirectoryActiveOrderByIdDescAsync(
+        public async Task<IEnumerable<VisualisationRegistry>> GetByDirectoryActiveOrderByIdDescAsync(
             CancellationToken token = default)
         {
-            return await dbContext.VisualisationRegistry.Where(w => w.ShowInDirectory == 1
+            return await dbContext.VisualisationRegistry.Where(w => (w.ContextKindId == null || w.ContextKindId == 1)
                                                                     && w.Active == 1
                                                                     && dbContext.VisualisationRegistryRole
                                                                         .Where(r => r.VisualisationRegistryGuid ==
@@ -159,6 +161,7 @@ namespace Jube.Data.Repository
             model.UpdatedUser = userName;
             model.UpdatedDate = DateTime.UtcNow;
             model.TenantRegistryId = tenantRegistryId;
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
             model.ImportId = existing.ImportId;
@@ -171,7 +174,7 @@ namespace Jube.Data.Repository
                 Name = existing.Name,
                 Active = existing.Active,
                 Locked = existing.Locked,
-                ShowInDirectory = existing.ShowInDirectory,
+                ContextKindId = existing.ContextKindId,
                 Columns = existing.Columns,
                 ColumnWidth = existing.ColumnWidth,
                 RowHeight = existing.RowHeight,

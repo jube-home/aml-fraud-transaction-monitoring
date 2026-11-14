@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+        <value>Du har inte behörighet att hantera Exhaustive-datamängder.</value>
+    </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+        <value>Autentisering krävs.</value>
+    </data>
+    <data name="NotFound" xml:space="preserve">
+        <value>Datamängden hittades inte.</value>
+    </data>
+    <data name="FileRequired" xml:space="preserve">
+        <value>En CSV-fil krävs.</value>
+    </data>
+    <data name="FileNameInvalid" xml:space="preserve">
+        <value>Filnamnet accepteras inte. Endast en .csv- eller .txt-fil accepteras.</value>
+    </data>
+    <data name="ContentTypeInvalid" xml:space="preserve">
+        <value>Innehållstypen accepteras inte. Ladda upp en CSV-fil i oformaterad text.</value>
+    </data>
+    <data name="NameRequired" xml:space="preserve">
+        <value>Ett namn krävs.</value>
+    </data>
+    <data name="NameMaxLength" xml:space="preserve">
+        <value>Namnet får inte överstiga {0} tecken.</value>
+    </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+        <value>Det finns redan en datamängd med det namnet.</value>
+    </data>
+    <data name="DatasetInUse" xml:space="preserve">
+        <value>Datamängden används av en Exhaustive Adaptation som inte har avslutat träningen och kan inte ändras eller tas bort.</value>
+    </data>
+    <data name="AlreadyConfirmed" xml:space="preserve">
+        <value>Datamängden används av en Exhaustive Adaptation och dess mappning kan inte längre ändras.</value>
+    </data>
+    <data name="MappingColumnsRequired" xml:space="preserve">
+        <value>Kolumnmappningen krävs.</value>
+    </data>
+    <data name="MappingColumnCountMismatch" xml:space="preserve">
+        <value>Mappningen måste ange varje kolumn i datamängden.</value>
+    </data>
+    <data name="MappingColumnIndexInvalid" xml:space="preserve">
+        <value>Mappningen hänvisar till en kolumn som inte finns.</value>
+    </data>
+    <data name="MappingColumnIndexDuplicate" xml:space="preserve">
+        <value>Mappningen anger en kolumn mer än en gång.</value>
+    </data>
+    <data name="MappingNoVariables" xml:space="preserve">
+        <value>Minst en variabelkolumn måste inkluderas.</value>
+    </data>
+    <data name="MappingVariableNotNumeric" xml:space="preserve">
+        <value>En inkluderad kolumn är inte numerisk och kunde inte anpassas som kategorisk.</value>
+    </data>
+    <data name="MappingVariableConstant" xml:space="preserve">
+        <value>En inkluderad kolumn är konstant och innehåller ingen information.</value>
+    </data>
+    <data name="MappingNameInvalid" xml:space="preserve">
+        <value>Ett variabelnamn måste börja med en bokstav och får bara innehålla bokstäver, siffror och understreck, upp till 64 tecken.</value>
+    </data>
+    <data name="MappingNameDuplicate" xml:space="preserve">
+        <value>Variabelnamn måste vara unika.</value>
+    </data>
+    <data name="MappingProcessingTypeInvalid" xml:space="preserve">
+        <value>Bearbetningstypen måste vara Payload (1) eller Abstraction (5).</value>
+    </data>
+    <data name="SourceLabelInvalid" xml:space="preserve">
+    <value>Källetiketten får vara högst 256 tecken utan styrtecken, markup, sökvägsavgränsare eller skaltecken.</value>
+  </data>
+    <data name="JsonRequired" xml:space="preserve">
+    <value>JSON-innehåll krävs.</value>
+  </data>
+    <data name="UploadTooLarge" xml:space="preserve">
+        <value>Filen överskrider den tillåtna storleken.</value>
+    </data>
+</root>

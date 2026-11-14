@@ -18,7 +18,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsSimilarInList(this string? @this, IEnumerable<string>? list, double threshold)
+        [Description("True when: the Levenshtein ratio to an entry is at least the threshold.")]
+        public static bool IsSimilarInList(this string? @this,
+            [Description("The List token whose entries are compared.")] IEnumerable<string>? list,
+            [Description("The similarity from 0 to 1 that counts.")] double threshold)
         {
             return FuzzyListMatcher.Any(@this, list, FuzzyOptions.For(FuzzyAlgorithm.Similarity, threshold));
         }

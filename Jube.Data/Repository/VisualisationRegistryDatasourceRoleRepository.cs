@@ -20,6 +20,7 @@ namespace Jube.Data.Repository
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
     using Jube.Data.Helpers;
 

@@ -8,7 +8,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Double GetNumericValue(this String s, Int32 index)
+        [Description("Gets the numeric value of a character at a position.")]
+        public static Double GetNumericValue(this String s,
+            [Description("The character position in the string.")] Int32 index)
         {
             return char.GetNumericValue(s, index);
         }

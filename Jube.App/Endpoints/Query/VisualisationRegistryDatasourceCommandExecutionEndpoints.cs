@@ -12,82 +12,52 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Context;
+using Jube.Dto.Repository.VisualisationRegistryDatasource;
 using Jube.Service.Exceptions.Query.VisualisationRegistryDatasourceCommandExecution;
 using Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution;
 using Jube.Service.Reactivity.Interfaces;
 using log4net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 
 namespace Jube.App.Endpoints.Query
 {
     public static class VisualisationRegistryDatasourceCommandExecutionEndpoints
     {
-        private const string Base = "/api/GetByVisualisationRegistryDatasourceCommandExecutionQuery";
+        private const string CardBase = "/api/VisualisationRegistryDatasource";
 
-        private static readonly JsonSerializerSettings serializerSettings = new()
-        {
-            ContractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new CamelCaseNamingStrategy()
-            }
-        };
 
         public static void MapVisualisationRegistryDatasourceCommandExecutionEndpoints(
             this IEndpointRouteBuilder endpoints)
         {
-            var group = endpoints.MapGroup(Base)
+            endpoints.MapGroup(CardBase)
                 .RequireAuthorization()
-                .WithTags("VisualisationRegistryDatasourceCommandExecution");
-
-            group.MapPost("{id:int}", ExecuteAsync)
-                .WithName("VisualisationRegistryDatasourceCommandExecutionExecute");
+                .WithTags("VisualisationRegistryDatasourceCommandExecution")
+                .MapPost("{id:int}/Card", CardAsync)
+                .Produces<DatasourceCardDto>()
+                .Produces((int)HttpStatusCode.BadRequest)
+                .Produces((int)HttpStatusCode.NotFound)
+                .WithName("VisualisationRegistryDatasourceCommandExecutionCard");
         }
 
-        private static async Task<IResult> ExecuteAsync(int id, HttpContext httpContext, ILog log,
-            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
-            IServiceChangeBus serviceChangeBus, CancellationToken token)
+        private static async Task<IResult> CardAsync(int id, [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] DatasourceCardRequestDto request,
+            HttpContext httpContext, ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
 
             if (log.IsDebugEnabled)
             {
-                log.Debug($"POST {Base}/{id}: entry user={user}");
-            }
-
-            JArray parameters;
-
-            try
-            {
-                using var reader = new StreamReader(httpContext.Request.Body);
-                var body = await reader.ReadToEndAsync(token);
-
-                if (string.IsNullOrWhiteSpace(body))
-                {
-                    if (log.IsWarnEnabled)
-                    {
-                        log.Warn($"POST {Base}/{id}: 400 (empty parameters) user={user}");
-                    }
-
-                    return TypedResults.BadRequest();
-                }
-
-                parameters = JArray.Parse(body);
-            }
-            catch (JsonException)
-            {
-                return TypedResults.BadRequest();
+                log.Debug($"POST {CardBase}/{id}/Card: entry user={user}");
             }
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
@@ -96,19 +66,15 @@ namespace Jube.App.Endpoints.Query
             try
             {
                 var service = await VisualisationRegistryDatasourceCommandExecutionService.CreateAsync(dbContext, user,
-                    log,
-                    stringLocalizerFactory, serviceChangeBus, dynamicEnvironment, token);
+                    log, stringLocalizerFactory, serviceChangeBus, dynamicEnvironment, token);
 
-                var result = await service.ExecuteAsync(id, parameters, token);
-
-                return TypedResults.Content(JsonConvert.SerializeObject(result, serializerSettings),
-                    "application/json");
+                return TypedResults.Ok(await service.CardAsync(id, request, token));
             }
             catch (NotAuthenticatedException)
             {
                 if (log.IsWarnEnabled)
                 {
-                    log.Warn($"POST {Base}/{id}: 403 (not authenticated) user={user}");
+                    log.Warn($"POST {CardBase}/{id}/Card: 403 (not authenticated) user={user}");
                 }
 
                 return TypedResults.Forbid();
@@ -117,33 +83,41 @@ namespace Jube.App.Endpoints.Query
             {
                 if (log.IsWarnEnabled)
                 {
-                    log.Warn($"POST {Base}/{id}: 403 user={user}");
+                    log.Warn($"POST {CardBase}/{id}/Card: 403 user={user}");
                 }
 
                 return TypedResults.Forbid();
             }
-            catch (Exception e) when (e is FormatException or OverflowException or InvalidCastException
-                                          or ArgumentException or NullReferenceException or KeyNotFoundException)
+            catch (NotFoundException)
             {
                 if (log.IsWarnEnabled)
                 {
-                    log.Warn($"POST {Base}/{id}: 400 (unreadable parameters) user={user}", e);
+                    log.Warn($"POST {CardBase}/{id}/Card: 404 user={user}");
                 }
 
-                return TypedResults.BadRequest();
+                return TypedResults.NotFound();
+            }
+            catch (InvalidParametersException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {CardBase}/{id}/Card: 400 user={user} message={ex.Message}");
+                }
+
+                return TypedResults.BadRequest(new { code = ex.Code, message = ex.Message });
             }
             catch (OperationCanceledException)
             {
                 if (log.IsDebugEnabled)
                 {
-                    log.Debug($"POST {Base}/{id}: client cancelled user={user}");
+                    log.Debug($"POST {CardBase}/{id}/Card: client cancelled user={user}");
                 }
 
                 throw;
             }
             catch (Exception e)
             {
-                log.Error($"POST {Base}/{id}: 500 user={user}", e);
+                log.Error($"POST {CardBase}/{id}/Card: 500 user={user}", e);
 
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }

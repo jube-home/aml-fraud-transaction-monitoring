@@ -22,5 +22,12 @@ namespace Jube.Resources
         public const string CaseKeyValueRequired = nameof(CaseKeyValueRequired);
         public const string CaseIdInvalid = nameof(CaseIdInvalid);
         public const string FileTooLarge = nameof(FileTooLarge);
+        public const string OneParentOnly = nameof(OneParentOnly);
+        public const string CaseLocked = nameof(CaseLocked);
+        public const string RemovalRestricted = nameof(RemovalRestricted);
+        public const string FileTypeNotAllowed = nameof(FileTypeNotAllowed);
+        public const string FileContentNotAllowed = nameof(FileContentNotAllowed);
+        public const string FileRejectedByScanner = nameof(FileRejectedByScanner);
+        public const string FileScanUnavailable = nameof(FileScanUnavailable);
     }
 }

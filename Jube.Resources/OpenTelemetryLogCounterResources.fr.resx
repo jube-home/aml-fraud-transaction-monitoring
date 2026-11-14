@@ -60,4 +60,7 @@
     <data name="RegexTooLong" xml:space="preserve">
     <value>L'expression régulière doit comporter {0} caractères ou moins.</value>
   </data>
+    <data name="NameDuplicate" xml:space="preserve">
+    <value>Une ligne active portant ce nom existe déjà (les noms sont comparés sans tenir compte de la casse).</value>
+  </data>
 </root>

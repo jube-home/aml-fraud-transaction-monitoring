@@ -9,7 +9,8 @@ grand_parent: Concepts
 # OpenTelemetry Log Counter
 
 [Infrastructure Health Metrics](../InfrastructureHealthMetrics/index.html) already captures a lot of unstructured log
-text purely for browsing — `ApplicationLogEntry`, `PostgresLogEntry` and `ContainerLogEntry` messages, `RedisSlowOperation`
+text purely for browsing — `ApplicationLogEntry`, `PostgresLogEntry` and `ContainerLogEntry` messages,
+`RespSlowOperation`
 commands, `EtcdClusterEvent`/`PatroniClusterEvent` transitions. None of it feeds OpenTelemetry: noticing a recurring
 pattern (a specific Postgres deadlock, a container crash string) has meant reading rows, not watching a dashboard.
 
@@ -24,7 +25,7 @@ A single rule set, polled from the database roughly once a minute and swapped in
 
 - `ApplicationLogEntry.Message` (log4net WARN/ERROR/FATAL capture)
 - `PostgresLogEntry.Message` (tailed Postgres server log lines)
-- `RedisSlowOperation.Command`
+- `RespSlowOperation.Command`
 - `ContainerLogEntry.Message` — checked independently by the separate `Jube.Monitoring` sidecar process, which is
   deliberately isolated from `Jube.App`/`Jube.Engine` (see [Infrastructure Health
   Metrics](../InfrastructureHealthMetrics/index.html#docker-monitoring-sidecar-jubemonitoring)) and so polls its own

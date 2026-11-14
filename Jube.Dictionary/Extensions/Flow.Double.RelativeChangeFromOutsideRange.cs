@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchRelativeChangeFromOutsideRange(double previous, double lowerBound, double upperBound)
+            [Description("True when: the change from the previous value as a fraction of it is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRelativeChangeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleRelativeChangeFromOutsideRange(flow.Value, previous, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectRelativeChangeFromOutsideRange(double previous, double lowerBound, double upperBound)
+            [Description("True when: the change from the previous value as a fraction of it is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRelativeChangeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleRelativeChangeFromOutsideRange(flow.Value, previous, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakRelativeChangeFromOutsideRange(double previous, double lowerBound, double upperBound)
+            [Description("True when: the change from the previous value as a fraction of it is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRelativeChangeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleRelativeChangeFromOutsideRange(flow.Value, previous, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireRelativeChangeFromOutsideRange(double previous, double lowerBound, double upperBound)
+            [Description("True when: the change from the previous value as a fraction of it is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRelativeChangeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleRelativeChangeFromOutsideRange(flow.Value, previous, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureRelativeChangeFromOutsideRange(double previous, double lowerBound, double upperBound)
+            [Description("True when: the change from the previous value as a fraction of it is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRelativeChangeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchRelativeChangeFromOutsideRange(double previous, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value as a fraction of it is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRelativeChangeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchRelativeChangeFromOutsideRange(previous, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectRelativeChangeFromOutsideRange(double previous, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value as a fraction of it is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRelativeChangeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectRelativeChangeFromOutsideRange(previous, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakRelativeChangeFromOutsideRange(double previous, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value as a fraction of it is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRelativeChangeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakRelativeChangeFromOutsideRange(previous, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireRelativeChangeFromOutsideRange(double previous, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value as a fraction of it is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRelativeChangeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireRelativeChangeFromOutsideRange(previous, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureRelativeChangeFromOutsideRange(double previous, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value as a fraction of it is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRelativeChangeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureRelativeChangeFromOutsideRange(previous, lowerBound, upperBound);
             }

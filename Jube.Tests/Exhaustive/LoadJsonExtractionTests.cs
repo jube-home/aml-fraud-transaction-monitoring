@@ -180,6 +180,17 @@ namespace Jube.Test.Exhaustive
             act.Should().Throw<KeyNotFoundException>();
         }
 
+        [Theory]
+        [InlineData("$.a[?(@.s =~ /^(a+)+$/)]")]
+        [InlineData("a[?(@.s =~ /^(a+)+$/)].s")]
+        public void ACatastrophicRegexFilterInAStoredPathIsCutShortAndReadsAsZero(string path)
+        {
+            var json = "{\"a\":[{\"s\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaX\"}]}";
+
+            Extraction.ExtractValue(JObject.Parse(json), path).Should().Be(0);
+            Extraction.BuildRows(Variables(path), [json])[0][0].Should().Be(0);
+        }
+
         [Fact]
         public void BuildRows_ManyRowsKeepInputOrder()
         {

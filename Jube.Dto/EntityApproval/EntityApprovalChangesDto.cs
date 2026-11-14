@@ -16,11 +16,14 @@
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable RedundantAttributeUsageProperty
 
+using MessagePack;
+
 namespace Jube.Dto.EntityApproval
 {
     using System.Collections.Generic;
 
+    [MessagePackObject]
     public sealed record EntityApprovalChangesDto(
-        bool HasEarlierVersion,
-        IReadOnlyList<EntityApprovalChangeDto> Changes);
+        [property: Key(0)] bool HasEarlierVersion,
+        [property: Key(1)] IReadOnlyList<EntityApprovalChangeDto> Changes);
 }

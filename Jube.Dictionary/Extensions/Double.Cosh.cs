@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns the hyperbolic cosine of the specified angle.")]
         public static Double Cosh(this Double value)
         {
             return Math.Cosh(value);

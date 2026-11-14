@@ -16,9 +16,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Tt
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Cache.Redis;
-    using Cache.Redis.Interfaces;
-    using Cache.Redis.Models;
+    using Cache.Resp;
+    using Cache.Resp.Interfaces;
+    using Cache.Resp.Models;
     using EntityAnalysisModel;
     using EntityAnalysisModel.Models.Models;
 

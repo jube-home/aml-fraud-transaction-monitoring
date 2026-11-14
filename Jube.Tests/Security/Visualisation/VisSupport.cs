@@ -22,6 +22,7 @@ using Jube.Data.Poco;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Security.PenTest;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace Jube.Test.Security.Visualisation;
 
@@ -102,7 +103,7 @@ internal static class VisSupport
             Active = (byte)(active ? 1 : 0),
             Locked = (byte)(locked ? 1 : 0),
             Deleted = (byte)(deleted ? 1 : 0),
-            ShowInDirectory = (byte)(showInDirectory ? 1 : 0),
+            ContextKindId = (byte)(showInDirectory ? 1 : 2),
             Columns = 2,
             ColumnWidth = 100,
             RowHeight = 100,
@@ -153,7 +154,6 @@ internal static class VisSupport
             Active = 1,
             Locked = 0,
             Deleted = 0,
-            VisualisationTypeId = 1,
             Command = "select 1",
             Priority = 1,
             Version = 1,

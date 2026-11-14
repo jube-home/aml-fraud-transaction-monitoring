@@ -9,12 +9,14 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Double d)
         {
+            [Description("Returns the natural logarithm.")]
             public Double Log()
             {
                 return Math.Log(d);
             }
 
-            public Double Log(Double newBase)
+            [Description("Returns the logarithm in a specified base.")]
+            public Double Log([Description("The base of the logarithm.")] Double newBase)
             {
                 return Math.Log(d, newBase);
             }

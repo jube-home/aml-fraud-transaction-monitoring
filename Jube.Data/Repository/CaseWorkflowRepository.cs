@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Jube.Data.Context;
 using Jube.Data.Poco;
+using Jube.Dto.Options;
 using LinqToDB;
+using LinqToDB.Async;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Jube.Data.Repository
@@ -58,6 +61,14 @@ namespace Jube.Data.Repository
         {
             return dbContext.VisualisationRegistry.AnyAsync(w =>
                 w.Guid == visualisationRegistryGuid
+                && w.TenantRegistryId == tenantRegistryId
+                && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
+        public Task<bool> ExistsGraphRegistryAsync(Guid graphRegistryGuid, CancellationToken token = default)
+        {
+            return dbContext.GraphRegistry.AnyAsync(w =>
+                w.Guid == graphRegistryGuid
                 && w.TenantRegistryId == tenantRegistryId
                 && (w.Deleted == 0 || w.Deleted == null), token);
         }
@@ -203,12 +214,17 @@ namespace Jube.Data.Repository
                 throw new KeyNotFoundException();
             }
 
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
+
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
             model.CreatedUser = existing.CreatedUser;
             model.CreatedDate = existing.CreatedDate;
             model.UpdatedUser = userName;
             model.UpdatedDate = DateTime.UtcNow;
+            model.ImportId = existing.ImportId;
+            model.EntityAnalysisModelId = existing.EntityAnalysisModelId;
+            model.TenantRegistryId = existing.TenantRegistryId;
 
             await dbContext.UpdateAsync(model, token: token);
 
@@ -221,7 +237,33 @@ namespace Jube.Data.Repository
 
             await dbContext.InsertAsync(audit, token: token);
 
+            if (RiskInputsChanged(existing, model))
+            {
+                await dbContext.Case
+                    .Where(c => c.CaseWorkflowGuid == existing.Guid && (c.ClosedStatusId == 0 || c.ClosedStatusId == 1))
+                    .Set(s => s.RiskCheckedDate, (DateTime?)null)
+                    .Set(s => s.RiskRecheckTriggerId,
+                        (byte?)(existing.TypologySeverityId != model.TypologySeverityId
+                            ? CaseRiskTrigger.TypologyChanged
+                            : CaseRiskTrigger.ModelChanged))
+                    .UpdateAsync(token);
+            }
+
             return model;
+        }
+
+        public static bool RiskInputsChanged(CaseWorkflow before, CaseWorkflow after)
+        {
+            return before.ValueField != after.ValueField
+                   || before.TypologySeverityId != after.TypologySeverityId
+                   || before.RiskKappa != after.RiskKappa
+                   || before.RiskRho != after.RiskRho
+                   || before.RiskPriorStrength != after.RiskPriorStrength
+                   || before.RiskBaseRatePrior != after.RiskBaseRatePrior
+                   || before.RiskDeadlineLaneDays != after.RiskDeadlineLaneDays
+                   || before.RiskKeyHistoryHalfLifeDays != after.RiskKeyHistoryHalfLifeDays
+                   || before.RiskImpactWeights != after.RiskImpactWeights
+                   || before.RiskMoneyBands != after.RiskMoneyBands;
         }
 
         public async Task DeleteAsync(int id, CancellationToken token = default)

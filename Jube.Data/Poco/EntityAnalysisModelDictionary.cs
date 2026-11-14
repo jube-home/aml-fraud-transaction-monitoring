@@ -42,13 +42,12 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(12)] public string DataName { get; set; }
         [Column] [Nullable] [Key(13)] public byte? ResponsePayload { get; set; }
 
-        [Association(ThisKey = "EntityAnalysisModelGuid", OtherKey = "Guid", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "EntityAnalysisModelGuid", OtherKey = "Guid", CanBeNull = true)]
         [Key(14)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
 
         [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelDictionaryId",
-            CanBeNull = true, Relationship = Relationship.OneToMany)]
+            CanBeNull = true)]
         [Key(15)]
         public IEnumerable<EntityAnalysisModelDictionaryKvp>
             EntityAnalysisModelDictionaryKvp { get; set; }

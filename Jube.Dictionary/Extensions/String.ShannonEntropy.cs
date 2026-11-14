@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Returns the Shannon entropy of the string, in bits per character, a measure of randomness (e.g. detecting algorithmically generated identifiers).")]
         public static double ShannonEntropy(this string? @this)
         {
             if (string.IsNullOrEmpty(@this))

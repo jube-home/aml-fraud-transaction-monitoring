@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Nie masz uprawnień do wykonania tej czynności.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Wywołujący nie jest uwierzytelniony.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>Nie znaleziono wpisu Svirfd.</value>
+  </data>
+    <data name="EntityAnalysisModelNotFound" xml:space="preserve">
+    <value>Nie znaleziono modelu.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>Nazwa jest wymagana.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Nazwa może mieć co najwyżej {0} znaków.</value>
+  </data>
+    <data name="NameNotIdentifier" xml:space="preserve">
+    <value>Nazwa musi zaczynać się od litery i zawierać tylko litery i cyfry, ponieważ reguły odczytują ją jako Svirfd.{Name}.{Member}.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Wpis o tej nazwie już istnieje w modelu.</value>
+  </data>
+    <data name="RequestXPathNameRequired" xml:space="preserve">
+    <value>Wymagane jest pole żądania, którego wartość identyfikuje wpis.</value>
+  </data>
+    <data name="KeyMaxLength" xml:space="preserve">
+    <value>Klucz może mieć co najwyżej {0} znaków.</value>
+  </data>
+    <data name="RequestXPathNotIp" xml:space="preserve">
+    <value>Pole musi być XPath żądania tego modelu o typie danych IP.</value>
+  </data>
+</root>

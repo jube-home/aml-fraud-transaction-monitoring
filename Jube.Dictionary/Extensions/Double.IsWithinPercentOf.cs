@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsWithinPercentOf(this double @this, double target, double percent)
+        [Description("Checks if the value is within a percentage tolerance of a target value (e.g. an invoice amount matching a purchase order).")]
+        public static bool IsWithinPercentOf(this double @this,
+            [Description("The value to compare against.")] double target,
+            [Description("The allowed tolerance, as a percentage of target.")] double percent)
         {
             if (target == 0)
             {

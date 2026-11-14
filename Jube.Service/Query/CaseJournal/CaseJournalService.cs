@@ -20,6 +20,10 @@ using Jube.Resources;
 using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.CaseJournal;
 using Jube.Service.Observability;
+using Jube.Service.Query.ArchiveKeyFields;
+using FluentValidation.Results;
+using LinqToDB;
+using LinqToDB.Async;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
 using log4net;
@@ -30,7 +34,9 @@ namespace Jube.Service.Query.CaseJournal
     public sealed class CaseJournalService
     {
         private static readonly int[] permissions = [1];
+        private readonly ArchiveKeyFieldResolver archiveKeys;
         private readonly ILog auditLog;
+        private readonly DbContext dbContext;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly GetCaseJournalQuery query;
@@ -43,6 +49,8 @@ namespace Jube.Service.Query.CaseJournal
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
             IStringLocalizer strings, string? reportConnectionString)
         {
+            this.dbContext = dbContext;
+            archiveKeys = new ArchiveKeyFieldResolver(dbContext);
             this.log = log;
             this.auditLog = auditLog;
             this.serviceChangeBus = serviceChangeBus;
@@ -135,8 +143,28 @@ namespace Jube.Service.Query.CaseJournal
             {
                 EnsurePermitted("CaseJournal.Get");
 
-                var dto = CaseJournalMapper.ToDto(await query.ExecuteAsync(drillName, drillValue, caseWorkflowGuid,
-                    limit, activationsOnly ? 1 : 0, responseElevation, token).ConfigureAwait(false));
+                var modelId = await dbContext.CaseWorkflow
+                    .Where(w => w.Guid == caseWorkflowGuid && (w.Deleted == null || w.Deleted == 0)
+                                && w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId)
+                    .Select(w => w.EntityAnalysisModelId).FirstOrDefaultAsync(token).ConfigureAwait(false);
+
+                var resolution = modelId is null
+                    ? await archiveKeys.ResolveAcrossTenantAsync(tenantRegistryId, drillName, drillValue, token)
+                        .ConfigureAwait(false)
+                    : await archiveKeys.ResolveAsync(modelId.Value, drillName, drillValue, token).ConfigureAwait(false);
+
+                if (!resolution.Resolved && modelId is not null)
+                {
+                    var resource = resolution.State == ArchiveKeyResolutionState.ValueInvalid
+                        ? CaseJournalResources.DrillValueInvalid
+                        : CaseJournalResources.DrillNameNotArchiveKey;
+
+                    throw new DtoValidationException(new ValidationResult(
+                        [new ValidationFailure(nameof(drillName), strings[resource]) { ErrorCode = resource }]));
+                }
+
+                var dto = CaseJournalMapper.ToDto(await query.ExecuteAsync(resolution.Predicate, modelId,
+                    caseWorkflowGuid, limit, activationsOnly ? 1 : 0, responseElevation, token).ConfigureAwait(false));
 
                 op.Rows(dto.Rows?.Count ?? 0);
 

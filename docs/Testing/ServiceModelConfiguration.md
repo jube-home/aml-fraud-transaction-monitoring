@@ -42,71 +42,76 @@ Collection: Database.
 
 ### EntityAnalysisModelServiceTests
 
-`Jube.Test.Service.EntityAnalysisModel.EntityAnalysisModelServiceTests` — 60 tests. Category: Service. Collection:
+`Jube.Test.Service.EntityAnalysisModel.EntityAnalysisModelServiceTests` — 65 tests. Category: Service. Collection:
 Database.
 
-| Test                                                                                  | Kind   | Verifies                                                                                    |
-|---------------------------------------------------------------------------------------|--------|---------------------------------------------------------------------------------------------|
-| `InsertPersistsAndReturnsVersionOneAsync`                                             | Fact   | Insert persists and returns version one.                                                    |
-| `GetAllReturnsCreatedRowAndGetByIdReturnsItAsync`                                     | Fact   | Get all returns created row and get by id returns it.                                       |
-| `UpdateIncrementsVersionAndWritesAuditRowAsync`                                       | Fact   | Update increments version and writes audit row.                                             |
-| `UpdatePreservesOriginalCreatedAuditButSetsUpdatedUserAndDateAsync`                   | Fact   | Update preserves original created audit but sets updated user and date.                     |
-| `DeleteKeepsRowReachableByIdAndHidesItFromListsAsync`                                 | Fact   | Delete keeps row reachable by id and hides it from lists.                                   |
-| `EveryMethodThrowsForbiddenWhenPermissionMissingAndWritesNoRowAsync`                  | Fact   | Every method throws forbidden when permission missing and writes no row.                    |
-| `NullOrBlankUserNameThrowsNotAuthenticatedBeforeAnyQueryAsync`                        | Theory | Null or blank user name throws not authenticated before any query.                          |
-| `UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync`                                | Fact   | User with no user in tenant row throws not authenticated.                                   |
-| `UnknownUserThrowsNotAuthenticatedAsync`                                              | Fact   | Unknown user throws not authenticated.                                                      |
-| `LandlordUserBypassesPermissionChecksButStaysTenantScopedAsync`                       | Fact   | Landlord user bypasses permission checks but stays tenant scoped.                           |
-| `LandlordGetAllNeverContainsOtherTenantsRowsAsync`                                    | Fact   | Landlord get all never contains other tenants rows.                                         |
-| `UserInTenantBCannotGetUpdateOrDeleteTenantARowAsync`                                 | Fact   | User in tenant b cannot get update or delete tenant a row.                                  |
-| `GetAllAsTenantBNeverContainsTenantARowsAsync`                                        | Fact   | Get all as tenant b never contains tenant a rows.                                           |
-| `UserInBothTenantsGetsEachRowOnceFromGetAllAsync`                                     | Fact   | User in both tenants gets each row once from get all.                                       |
-| `NameRequiredRejectsNullEmptyOrWhitespaceAsync`                                       | Theory | Name required rejects null empty or whitespace.                                             |
-| `NameRequiredMessageResolvesPerCultureAsync`                                          | Fact   | Name required message resolves per culture.                                                 |
-| `NameOverMaximumLengthIsRejectedWithErrorCodeAsync`                                   | Fact   | Name over maximum length is rejected with error code.                                       |
-| `DuplicateNameWithinSameTenantFailsButDifferentTenantSucceedsAsync`                   | Fact   | Duplicate name within same tenant fails but different tenant succeeds.                      |
-| `DuplicateNameDifferingOnlyByCaseWithinSameTenantFailsAsync`                          | Fact   | Duplicate name differing only by case within same tenant fails.                             |
-| `UpdateWithSameNameOnSameRowPassesAsync`                                              | Fact   | Update with same name on same row passes.                                                   |
-| `ReferenceDateXPathNotRequiredWhenPayloadLocationIsNowAsync`                          | Fact   | Reference date x path not required when payload location is now.                            |
-| `ReferenceDateXPathRequiredWhenPayloadLocationIsBodyAsync`                            | Fact   | Reference date x path required when payload location is body.                               |
-| `InvalidReferenceDatePayloadLocationTypeIdIsRejectedAsync`                            | Fact   | Invalid reference date payload location type id is rejected.                                |
-| `InvalidCacheTtlIntervalIsRejectedAsync`                                              | Fact   | Invalid cache ttl interval is rejected.                                                     |
-| `ActivationWatcherSampleOutOfRangeOnlyRejectedWhenWatcherEnabledAsync`                | Fact   | Activation watcher sample out of range only rejected when watcher enabled.                  |
-| `ImplicitAsyncTimeoutOutOfRangeOnlyRejectedWhenEnabledAsync`                          | Fact   | Implicit async timeout out of range only rejected when enabled.                             |
-| `ImplicitAsyncTimeoutMessageResolvesPerCultureAsync`                                  | Fact   | Implicit async timeout message resolves per culture.                                        |
-| `ImplicitAsyncSwitchAndTimeoutRoundTripAsync`                                         | Fact   | Implicit async switch and timeout round trip.                                               |
-| `EnableTraceRoundTripAsync`                                                           | Fact   | Enable trace round trip.                                                                    |
-| `LogsWarnThresholdSwitchAndThresholdRoundTripAsync`                                   | Fact   | Logs warn threshold switch and threshold round trip.                                        |
-| `LogsInfoAndWarnThresholdAreIndependentNotMutuallyExclusiveAsync`                     | Fact   | Logs info and warn threshold are independent not mutually exclusive.                        |
-| `LogsWarnThresholdOutOfRangeOnlyRejectedWhenEnabledAsync`                             | Fact   | Logs warn threshold out of range only rejected when enabled.                                |
-| `TamperedIdentityAndAuditFieldsOnInsertHaveNoEffectAsync`                             | Fact   | Tampered identity and audit fields on insert have no effect.                                |
-| `TamperedIdentityAndAuditFieldsOnUpdateHaveNoEffectAsync`                             | Fact   | Tampered identity and audit fields on update have no effect.                                |
-| `UpdateOfLockedRowThrowsNotFoundAsync`                                                | Fact   | Update of locked row throws not found.                                                      |
-| `UpdateOfSoftDeletedRowRevivesItAsync`                                                | Fact   | Update of soft deleted row revives it.                                                      |
-| `UpdateOfNeverExistedIdThrowsNotFoundAsync`                                           | Fact   | Update of never existed id throws not found.                                                |
-| `DeleteOfMissingOrAlreadyDeletedRowThrowsNotFoundAsync`                               | Fact   | Delete of missing or already deleted row throws not found.                                  |
-| `ResubmitOfNonRejectedVersionThrowsApprovalRefusedAndWritesNoRowAsync`                | Fact   | Resubmit of non rejected version throws approval refused and writes no row.                 |
-| `ResubmitOfRejectedVersionBumpsVersionArchivesOldAndKeepsContentAsync`                | Fact   | Resubmit of rejected version bumps version archives old and keeps content.                  |
-| `ResubmitOfRejectedDeleteKeepsDeletedTrueAndReopensApprovalAsync`                     | Fact   | Resubmit of rejected delete keeps deleted true and reopens approval.                        |
-| `RetractOfNonRejectedVersionThrowsApprovalRefusedAsync`                               | Fact   | Retract of non rejected version throws approval refused.                                    |
-| `RetractWithNoApprovedBaselineThrowsApprovalRefusedAsync`                             | Fact   | Retract with no approved baseline throws approval refused.                                  |
-| `RetractOfRejectedEditRestoresLastApprovedContentAndStampsTheRejectionRetractedAsync` | Fact   | Retract of rejected edit restores last approved content and stamps the rejection retracted. |
-| `RetractOfRejectedDeleteUndeletesAsync`                                               | Fact   | Retract of rejected delete undeletes.                                                       |
-| `ActiveAndLockedRoundTripBoolToByteAndBackAsync`                                      | Fact   | Active and locked round trip bool to byte and back.                                         |
-| `FieldsWithNoBackingPocoColumnAreAlwaysDefaultOnReadAsync`                            | Fact   | Fields with no backing poco column are always default on read.                              |
-| `GetByIdForMissingIdReturnsNullNotExceptionAsync`                                     | Fact   | Get by id for missing id returns null not exception.                                        |
-| `PreCancelledTokenOnReadThrowsOperationCanceledAsync`                                 | Fact   | Pre cancelled token on read throws operation canceled.                                      |
-| `PermissionDeniedLogsWarnNotErrorAndGatesHoldAsync`                                   | Fact   | Permission denied logs warn not error and gates hold.                                       |
-| `SuccessfulInsertLogsExactlyOneInfoAndReadsLogNoInfoAsync`                            | Fact   | Successful insert logs exactly one info and reads log no info.                              |
-| `WithGatesDisabledHappyPathRecordsNoDebugInfoOrWarnAsync`                             | Fact   | With gates disabled happy path records no debug info or warn.                               |
-| `FailureLogsErrorWithExceptionAttachedAndStillPropagatesAsync`                        | Fact   | Failure logs error with exception attached and still propagates.                            |
-| `EachCallEmitsOneSpanWithOutcomeTagAsync`                                             | Fact   | Each call emits one span with outcome tag.                                                  |
-| `EachCallRecordsOneDurationMeasurementAsync`                                          | Fact   | Each call records one duration measurement.                                                 |
-| `AuditLogGetsExactlyOneLineIncludingReadsAsync`                                       | Fact   | Audit log gets exactly one line including reads.                                            |
-| `InsertPublishesExactlyOneCreatedEventAsync`                                          | Fact   | Insert publishes exactly one created event.                                                 |
-| `ReadsAndFailuresPublishNothingAsync`                                                 | Fact   | Reads and failures publish nothing.                                                         |
-| `CatalogueRegistersUniquePascalCaseNoUnderscoreNames`                                 | Fact   | Catalogue registers unique pascal case no underscore names.                                 |
-| `ListAsyncClampsTakeAndPaginatesDeterministicallyAsync`                               | Fact   | List async clamps take and paginates deterministically.                                     |
+| Test                                                                                           | Kind   | Verifies                                                                                                 |
+|------------------------------------------------------------------------------------------------|--------|----------------------------------------------------------------------------------------------------------|
+| `InsertPersistsAndReturnsVersionOneAsync`                                                      | Fact   | Insert persists and returns version one.                                                                 |
+| `GetAllReturnsCreatedRowAndGetByIdReturnsItAsync`                                              | Fact   | Get all returns created row and get by id returns it.                                                    |
+| `UpdateIncrementsVersionAndWritesAuditRowAsync`                                                | Fact   | Update increments version and writes audit row.                                                          |
+| `UpdatePreservesOriginalCreatedAuditButSetsUpdatedUserAndDateAsync`                            | Fact   | Update preserves original created audit but sets updated user and date.                                  |
+| `DeleteKeepsRowReachableByIdAndHidesItFromListsAsync`                                          | Fact   | Delete keeps row reachable by id and hides it from lists.                                                |
+| `EveryMethodThrowsForbiddenWhenPermissionMissingAndWritesNoRowAsync`                           | Fact   | Every method throws forbidden when permission missing and writes no row.                                 |
+| `NullOrBlankUserNameThrowsNotAuthenticatedBeforeAnyQueryAsync`                                 | Theory | Null or blank user name throws not authenticated before any query.                                       |
+| `UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync`                                         | Fact   | User with no user in tenant row throws not authenticated.                                                |
+| `UnknownUserThrowsNotAuthenticatedAsync`                                                       | Fact   | Unknown user throws not authenticated.                                                                   |
+| `LandlordUserBypassesPermissionChecksButStaysTenantScopedAsync`                                | Fact   | Landlord user bypasses permission checks but stays tenant scoped.                                        |
+| `LandlordGetAllNeverContainsOtherTenantsRowsAsync`                                             | Fact   | Landlord get all never contains other tenants rows.                                                      |
+| `UserInTenantBCannotGetUpdateOrDeleteTenantARowAsync`                                          | Fact   | User in tenant b cannot get update or delete tenant a row.                                               |
+| `GetAllAsTenantBNeverContainsTenantARowsAsync`                                                 | Fact   | Get all as tenant b never contains tenant a rows.                                                        |
+| `UserInBothTenantsGetsEachRowOnceFromGetAllAsync`                                              | Fact   | User in both tenants gets each row once from get all.                                                    |
+| `NameRequiredRejectsNullEmptyOrWhitespaceAsync`                                                | Theory | Name required rejects null empty or whitespace.                                                          |
+| `NameRequiredMessageResolvesPerCultureAsync`                                                   | Fact   | Name required message resolves per culture.                                                              |
+| `NameOverMaximumLengthIsRejectedWithErrorCodeAsync`                                            | Fact   | Name over maximum length is rejected with error code.                                                    |
+| `DuplicateNameWithinSameTenantFailsButDifferentTenantSucceedsAsync`                            | Fact   | Duplicate name within same tenant fails but different tenant succeeds.                                   |
+| `DuplicateNameDifferingOnlyByCaseWithinSameTenantFailsAsync`                                   | Fact   | Duplicate name differing only by case within same tenant fails.                                          |
+| `UpdateWithSameNameOnSameRowPassesAsync`                                                       | Fact   | Update with same name on same row passes.                                                                |
+| `ReferenceDateXPathNotRequiredWhenPayloadLocationIsNowAsync`                                   | Fact   | Reference date x path not required when payload location is now.                                         |
+| `ReferenceDateXPathRequiredWhenPayloadLocationIsBodyAsync`                                     | Fact   | Reference date x path required when payload location is body.                                            |
+| `InvalidReferenceDatePayloadLocationTypeIdIsRejectedAsync`                                     | Fact   | Invalid reference date payload location type id is rejected.                                             |
+| `InvalidCacheTtlIntervalIsRejectedAsync`                                                       | Fact   | Invalid cache ttl interval is rejected.                                                                  |
+| `ActivationWatcherSampleOutOfRangeOnlyRejectedWhenWatcherEnabledAsync`                         | Fact   | Activation watcher sample out of range only rejected when watcher enabled.                               |
+| `ImplicitAsyncTimeoutOutOfRangeOnlyRejectedWhenEnabledAsync`                                   | Fact   | Implicit async timeout out of range only rejected when enabled.                                          |
+| `ImplicitAsyncTimeoutMessageResolvesPerCultureAsync`                                           | Fact   | Implicit async timeout message resolves per culture.                                                     |
+| `ImplicitAsyncSwitchAndTimeoutRoundTripAsync`                                                  | Fact   | Implicit async switch and timeout round trip.                                                            |
+| `EnableTraceRoundTripAsync`                                                                    | Fact   | Enable trace round trip.                                                                                 |
+| `LogsWarnThresholdSwitchAndThresholdRoundTripAsync`                                            | Fact   | Logs warn threshold switch and threshold round trip.                                                     |
+| `LogsInfoAndWarnThresholdAreIndependentNotMutuallyExclusiveAsync`                              | Fact   | Logs info and warn threshold are independent not mutually exclusive.                                     |
+| `LogsWarnThresholdOutOfRangeOnlyRejectedWhenEnabledAsync`                                      | Fact   | Logs warn threshold out of range only rejected when enabled.                                             |
+| `TamperedIdentityAndAuditFieldsOnInsertHaveNoEffectAsync`                                      | Fact   | Tampered identity and audit fields on insert have no effect.                                             |
+| `TamperedIdentityAndAuditFieldsOnUpdateHaveNoEffectAsync`                                      | Fact   | Tampered identity and audit fields on update have no effect.                                             |
+| `UpdateOfLockedRowThrowsNotFoundAsync`                                                         | Fact   | Update of locked row throws not found.                                                                   |
+| `UpdateOfSoftDeletedRowRevivesItAsync`                                                         | Fact   | Update of soft deleted row revives it.                                                                   |
+| `UpdateOfNeverExistedIdThrowsNotFoundAsync`                                                    | Fact   | Update of never existed id throws not found.                                                             |
+| `DeleteOfMissingOrAlreadyDeletedRowThrowsNotFoundAsync`                                        | Fact   | Delete of missing or already deleted row throws not found.                                               |
+| `ResubmitOfNonRejectedVersionThrowsApprovalRefusedAndWritesNoRowAsync`                         | Fact   | Resubmit of non rejected version throws approval refused and writes no row.                              |
+| `ResubmitOfRejectedVersionBumpsVersionArchivesOldAndKeepsContentAsync`                         | Fact   | Resubmit of rejected version bumps version archives old and keeps content.                               |
+| `ResubmitOfRejectedDeleteKeepsDeletedTrueAndReopensApprovalAsync`                              | Fact   | Resubmit of rejected delete keeps deleted true and reopens approval.                                     |
+| `RetractOfNonRejectedVersionThrowsApprovalRefusedAsync`                                        | Fact   | Retract of non rejected version throws approval refused.                                                 |
+| `RetractWithNoApprovedBaselineThrowsApprovalRefusedAsync`                                      | Fact   | Retract with no approved baseline throws approval refused.                                               |
+| `RetractOfRejectedEditRestoresLastApprovedContentAndStampsTheRejectionRetractedAsync`          | Fact   | Retract of rejected edit restores last approved content and stamps the rejection retracted.              |
+| `RetractOfRejectedDeleteUndeletesAsync`                                                        | Fact   | Retract of rejected delete undeletes.                                                                    |
+| `ActiveAndLockedRoundTripBoolToByteAndBackAsync`                                               | Fact   | Active and locked round trip bool to byte and back.                                                      |
+| `FieldsWithNoBackingPocoColumnAreAlwaysDefaultOnReadAsync`                                     | Fact   | Fields with no backing poco column are always default on read.                                           |
+| `GetByIdForMissingIdReturnsNullNotExceptionAsync`                                              | Fact   | Get by id for missing id returns null not exception.                                                     |
+| `PreCancelledTokenOnReadThrowsOperationCanceledAsync`                                          | Fact   | Pre cancelled token on read throws operation canceled.                                                   |
+| `PermissionDeniedLogsWarnNotErrorAndGatesHoldAsync`                                            | Fact   | Permission denied logs warn not error and gates hold.                                                    |
+| `SuccessfulInsertLogsExactlyOneInfoAndReadsLogNoInfoAsync`                                     | Fact   | Successful insert logs exactly one info and reads log no info.                                           |
+| `WithGatesDisabledHappyPathRecordsNoDebugInfoOrWarnAsync`                                      | Fact   | With gates disabled happy path records no debug info or warn.                                            |
+| `FailureLogsErrorWithExceptionAttachedAndStillPropagatesAsync`                                 | Fact   | Failure logs error with exception attached and still propagates.                                         |
+| `EachCallEmitsOneSpanWithOutcomeTagAsync`                                                      | Fact   | Each call emits one span with outcome tag.                                                               |
+| `EachCallRecordsOneDurationMeasurementAsync`                                                   | Fact   | Each call records one duration measurement.                                                              |
+| `AuditLogGetsExactlyOneLineIncludingReadsAsync`                                                | Fact   | Audit log gets exactly one line including reads.                                                         |
+| `InsertPublishesExactlyOneCreatedEventAsync`                                                   | Fact   | Insert publishes exactly one created event.                                                              |
+| `ReadsAndFailuresPublishNothingAsync`                                                          | Fact   | Reads and failures publish nothing.                                                                      |
+| `CatalogueRegistersUniquePascalCaseNoUnderscoreNames`                                          | Fact   | Catalogue registers unique pascal case no underscore names.                                              |
+| `ListAsyncClampsTakeAndPaginatesDeterministicallyAsync`                                        | Fact   | List async clamps take and paginates deterministically.                                                  |
+| `TenantlessRepositoryReadsAcrossTenantsButNeverUpdatesDeletesOrUnlocksAsync`                   | Fact   | Tenantless repository reads across tenants but never updates deletes or unlocks.                         |
+| `UpdatePreservesImportIdAsync`                                                                 | Fact   | Update preserves import id.                                                                              |
+| `UnlockOfUnlockedMissingOrForeignRowThrowsNotFoundAndPermissionIsRequiredAsync`                | Fact   | Unlock of unlocked missing or foreign row throws not found and permission is required.                   |
+| `UnlockOfLockedRowAllowsUpdateAndDeleteAgainAndArchivesTheLockedVersionAsync`                  | Fact   | Unlock of locked row allows update and delete again and archives the locked version.                     |
+| `EntryAndReferenceDateXPathUsingTheRegularExpressionOperatorAreRefusedAndNothingIsStoredAsync` | Theory | Entry and reference date x path using the regular expression operator are refused and nothing is stored. |
 
 ## Entity analysis model abstraction calculation
 
@@ -167,7 +172,7 @@ tests. Category: Service. Collection: Database.
 
 ### EntityAnalysisModelAbstractionRuleServiceTests
 
-`Jube.Test.Service.EntityAnalysisModelAbstractionRule.EntityAnalysisModelAbstractionRuleServiceTests` — 59 tests.
+`Jube.Test.Service.EntityAnalysisModelAbstractionRule.EntityAnalysisModelAbstractionRuleServiceTests` — 71 tests.
 Category: Service. Collection: Database.
 
 | Test                                                                                  | Kind   | Verifies                                                                                    |
@@ -203,6 +208,18 @@ Category: Service. Collection: Database.
 | `SearchFunctionKeyNotRequiredWhenFunctionTypeIsCountAsync`                            | Fact   | Search function key not required when function type is count.                               |
 | `InvalidOffsetTypeIdIsRejectedWhenOffsetEnabledAsync`                                 | Fact   | Invalid offset type id is rejected when offset enabled.                                     |
 | `OffsetValueNegativeIsRejectedWhenOffsetEnabledAsync`                                 | Fact   | Offset value negative is rejected when offset enabled.                                      |
+| `SearchValueAboveTheIntervalLimitIsRejectedAsync`                                     | Theory | Search value above the interval limit is rejected (s, n, h, d).                             |
+| `SearchValueAtTheIntervalLimitIsAcceptedAsync`                                        | Fact   | Search value at the interval limit is accepted.                                             |
+| `OffsetValueAboveTheFetchLimitIsRejectedAsync`                                        | Theory | Offset value above the fetch limit is rejected.                                             |
+| `IterationOrderDefaultsToAscendingWhenTheClientDoesNotSendItAsync`                    | Fact   | Iteration order defaults to ascending when the client does not send it.                     |
+| `IterationOrderAndFunctionParametersRoundTripAndAreCarriedIntoTheVersionRowAsync`     | Fact   | Iteration order and function parameters round trip and are carried into the version row.    |
+| `IterationOrderOtherThanAscendingOrDescendingIsRejectedAsync`                         | Theory | Iteration order other than ascending or descending is rejected.                             |
+| `FunctionParametersThatDoNotFitTheFunctionAreRejectedAsync`                           | Theory | Function parameters that do not fit the function are rejected.                              |
+| `FunctionParametersStoredAsTrueOrFalseAreReadBackAsOneOrZeroAsync`                    | Fact   | Function parameters stored as true or false are read back as one or zero.                   |
+| `MoreFunctionParametersThanAnyFunctionTakesAreRejectedAsync`                          | Fact   | More function parameters than any function takes are rejected.                              |
+| `TheCatalogueFunctionTypesAreAcceptedAsync`                                           | Theory | The catalogue function types are accepted.                                                  |
+| `TheCursorResultFunctionNeedsNoFunctionKeyAsync`                                      | Fact   | The cursor result function needs no function key.                                           |
+| `FunctionTypesOutsideTheEnumerationAreRejectedAsync`                                  | Theory | Function types outside the enumeration are rejected.                                        |
 | `OffsetNotValidatedWhenOffsetDisabledAsync`                                           | Fact   | Offset not validated when offset disabled.                                                  |
 | `TamperedIdentityAndAuditFieldsOnInsertHaveNoEffectAsync`                             | Fact   | Tampered identity and audit fields on insert have no effect.                                |
 | `TamperedIdentityAndAuditFieldsOnUpdateHaveNoEffectAsync`                             | Fact   | Tampered identity and audit fields on update have no effect.                                |
@@ -256,80 +273,98 @@ Category: Service. Collection: Database.
 
 ### EntityAnalysisModelActivationRuleServiceTests
 
-`Jube.Test.Service.EntityAnalysisModelActivationRule.EntityAnalysisModelActivationRuleServiceTests` — 60 tests.
+`Jube.Test.Service.EntityAnalysisModelActivationRule.EntityAnalysisModelActivationRuleServiceTests` — 73 tests.
 Category: Service. Collection: Database.
 
-| Test                                                                                  | Kind   | Verifies                                                                                    |
-|---------------------------------------------------------------------------------------|--------|---------------------------------------------------------------------------------------------|
-| `InsertPersistsAndReturnsVersionOneAsync`                                             | Fact   | Insert persists and returns version one.                                                    |
-| `GetAllReturnsCreatedRowAndGetByIdReturnsItAsync`                                     | Fact   | Get all returns created row and get by id returns it.                                       |
-| `GetByEntityAnalysisModelIdReturnsOnlyRowsForThatModelAsync`                          | Fact   | Get by entity analysis model id returns only rows for that model.                           |
-| `UpdateIncrementsVersionAndWritesAuditRowAsync`                                       | Fact   | Update increments version and writes audit row.                                             |
-| `DeleteKeepsRowReachableByIdAndHidesItFromListsAsync`                                 | Fact   | Delete keeps row reachable by id and hides it from lists.                                   |
-| `EveryMethodThrowsForbiddenWhenPermissionMissingAndWritesNoRowAsync`                  | Fact   | Every method throws forbidden when permission missing and writes no row.                    |
-| `NullOrBlankUserNameThrowsNotAuthenticatedBeforeAnyQueryAsync`                        | Theory | Null or blank user name throws not authenticated before any query.                          |
-| `UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync`                                | Fact   | User with no user in tenant row throws not authenticated.                                   |
-| `UnknownUserThrowsNotAuthenticatedAsync`                                              | Fact   | Unknown user throws not authenticated.                                                      |
-| `UserInTenantBCannotGetUpdateOrDeleteTenantARowAsync`                                 | Fact   | User in tenant b cannot get update or delete tenant a row.                                  |
-| `GetAllAsTenantBNeverContainsTenantARowsAsync`                                        | Fact   | Get all as tenant b never contains tenant a rows.                                           |
-| `NameRequiredRejectsNullEmptyOrWhitespaceAsync`                                       | Theory | Name required rejects null empty or whitespace.                                             |
-| `NameOverMaximumLengthIsRejectedWithErrorCodeAsync`                                   | Fact   | Name over maximum length is rejected with error code.                                       |
-| `DuplicateNameWithinSameModelFailsButDifferentModelSucceedsAsync`                     | Fact   | Duplicate name within same model fails but different model succeeds.                        |
-| `InvalidEntityAnalysisModelIdIsRejectedAsync`                                         | Fact   | Invalid entity analysis model id is rejected.                                               |
-| `InvalidRuleScriptTypeIdIsRejectedAsync`                                              | Fact   | Invalid rule script type id is rejected.                                                    |
-| `BuilderRuleScriptRequiredRejectsEmptyAsync`                                          | Fact   | Builder rule script required rejects empty.                                                 |
-| `JsonRequiredRejectsEmptyWhenBuilderModeSelectedAsync`                                | Fact   | Json required rejects empty when builder mode selected.                                     |
-| `CoderRuleScriptRequiredRejectsEmptyWhenCoderModeSelectedAsync`                       | Fact   | Coder rule script required rejects empty when coder mode selected.                          |
-| `BuilderModeDoesNotRequireCoderRuleScriptAsync`                                       | Fact   | Builder mode does not require coder rule script.                                            |
-| `CoderModeDoesNotRequireBuilderRuleScriptOrJsonAsync`                                 | Fact   | Coder mode does not require builder rule script or json.                                    |
-| `CaseWorkflowFieldsRequiredWhenEnableCaseWorkflowTrueAsync`                           | Fact   | Case workflow fields required when enable case workflow true.                               |
-| `CaseWorkflowFieldsNotRequiredWhenEnableCaseWorkflowFalseAsync`                       | Fact   | Case workflow fields not required when enable case workflow false.                          |
-| `BypassFieldsValidatedOnlyWhenCaseWorkflowAndBypassEnabledAsync`                      | Fact   | Bypass fields validated only when case workflow and bypass enabled.                         |
-| `ResponseElevationFieldsRequiredWhenEnabledAndSentToActivationWatcherAsync`           | Fact   | Response elevation fields required when enabled and sent to activation watcher.             |
-| `ResponseElevationColorsMustBeHexAsync`                                               | Fact   | Response elevation colors must be hex.                                                      |
-| `ResponseElevationFieldsNotRequiredWhenNotSentToActivationWatcherAsync`               | Fact   | Response elevation fields not required when not sent to activation watcher.                 |
-| `NotificationDestinationRequiredWhenEnableNotificationTrueAsync`                      | Fact   | Notification destination required when enable notification true.                            |
-| `TtlCounterFieldsRequiredWhenEnableTtlCounterTrueAsync`                               | Fact   | Ttl counter fields required when enable ttl counter true.                                   |
-| `ActivationSampleMustBeBetweenZeroAndOneAsync`                                        | Theory | Activation sample must be between zero and one.                                             |
-| `PriorityCannotBeNegativeAsync`                                                       | Fact   | Priority cannot be negative.                                                                |
-| `TamperedIdentityAndAuditFieldsOnInsertHaveNoEffectAsync`                             | Fact   | Tampered identity and audit fields on insert have no effect.                                |
-| `TamperedIdentityAndAuditFieldsOnUpdateHaveNoEffectAsync`                             | Fact   | Tampered identity and audit fields on update have no effect.                                |
-| `UpdateOfLockedRowThrowsNotFoundAsync`                                                | Fact   | Update of locked row throws not found.                                                      |
-| `UpdateOfSoftDeletedRowRevivesItAsync`                                                | Fact   | Update of soft deleted row revives it.                                                      |
-| `UpdateOfNeverExistedIdThrowsNotFoundAsync`                                           | Fact   | Update of never existed id throws not found.                                                |
-| `DeleteOfMissingOrAlreadyDeletedRowThrowsNotFoundAsync`                               | Fact   | Delete of missing or already deleted row throws not found.                                  |
-| `ResubmitOfNonRejectedVersionThrowsApprovalRefusedAndWritesNoRowAsync`                | Fact   | Resubmit of non rejected version throws approval refused and writes no row.                 |
-| `ResubmitOfRejectedVersionBumpsVersionArchivesOldAndKeepsContentAsync`                | Fact   | Resubmit of rejected version bumps version archives old and keeps content.                  |
-| `ResubmitOfRejectedDeleteKeepsDeletedTrueAndReopensApprovalAsync`                     | Fact   | Resubmit of rejected delete keeps deleted true and reopens approval.                        |
-| `RetractOfNonRejectedVersionThrowsApprovalRefusedAsync`                               | Fact   | Retract of non rejected version throws approval refused.                                    |
-| `RetractWithNoApprovedBaselineThrowsApprovalRefusedAsync`                             | Fact   | Retract with no approved baseline throws approval refused.                                  |
-| `RetractOfRejectedEditRestoresLastApprovedContentAndStampsTheRejectionRetractedAsync` | Fact   | Retract of rejected edit restores last approved content and stamps the rejection retracted. |
-| `RetractOfRejectedDeleteUndeletesAsync`                                               | Fact   | Retract of rejected delete undeletes.                                                       |
-| `ActiveAndLockedRoundTripBoolToByteAndBackAsync`                                      | Fact   | Active and locked round trip bool to byte and back.                                         |
-| `ResetCounterZeroesActivationAndEvaluationCountersAsync`                              | Fact   | Reset counter zeroes activation and evaluation counters.                                    |
-| `ResetCounterOfMissingRowThrowsNotFoundAsync`                                         | Fact   | Reset counter of missing row throws not found.                                              |
-| `GetByIdForMissingIdReturnsNullNotExceptionAsync`                                     | Fact   | Get by id for missing id returns null not exception.                                        |
-| `PreCancelledTokenOnReadThrowsOperationCanceledAsync`                                 | Fact   | Pre cancelled token on read throws operation canceled.                                      |
-| `PermissionDeniedLogsWarnNotErrorAndGatesHoldAsync`                                   | Fact   | Permission denied logs warn not error and gates hold.                                       |
-| `SuccessfulInsertLogsExactlyOneInfoAndReadsLogNoInfoAsync`                            | Fact   | Successful insert logs exactly one info and reads log no info.                              |
-| `WithGatesDisabledHappyPathRecordsNoDebugInfoOrWarnAsync`                             | Fact   | With gates disabled happy path records no debug info or warn.                               |
-| `FailureLogsErrorWithExceptionAttachedAndStillPropagatesAsync`                        | Fact   | Failure logs error with exception attached and still propagates.                            |
-| `EachCallEmitsOneSpanWithOutcomeTagAsync`                                             | Fact   | Each call emits one span with outcome tag.                                                  |
-| `EachCallRecordsOneDurationMeasurementAsync`                                          | Fact   | Each call records one duration measurement.                                                 |
-| `AuditLogGetsExactlyOneLineIncludingReadsAsync`                                       | Fact   | Audit log gets exactly one line including reads.                                            |
-| `InsertPublishesExactlyOneCreatedEventAsync`                                          | Fact   | Insert publishes exactly one created event.                                                 |
-| `ReadsAndFailuresPublishNothingAsync`                                                 | Fact   | Reads and failures publish nothing.                                                         |
-| `CatalogueRegistersUniquePascalCaseNoUnderscoreNames`                                 | Fact   | Catalogue registers unique pascal case no underscore names.                                 |
-| `ListAsyncClampsTakeAndPaginatesDeterministicallyAsync`                               | Fact   | List async clamps take and paginates deterministically.                                     |
+| Test                                                                                  | Kind    | Verifies                                                                                                                                      |
+|---------------------------------------------------------------------------------------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| `ResubmitOfNonRejectedVersionThrowsApprovalRefusedAndWritesNoRowAsync`                | Fact    | Resubmit of a version that is not rejected is refused.                                                                                        |
+| `ResubmitOfRejectedVersionBumpsVersionArchivesOldAndRecordsTheCallerAsMakerAsync`     | Fact    | Resubmit bumps the version, archives the old row and records the caller as maker.                                                             |
+| `RetractWithNoApprovedBaselineThrowsApprovalRefusedAsync`                             | Fact    | Retract with no approved baseline is refused.                                                                                                 |
+| `RetractOfRejectedEditRestoresLastApprovedContentAndCarriesTheApprovalAsync`          | Fact    | Retract restores approved content and carries the approval forward.                                                                           |
+| `CaseWorkflowStatusOfTheSelectedModelIsAcceptedAsync`                                 | Fact    | A Case Workflow Status of a Case Workflow of the rule Model is accepted.                                                                      |
+| `UnknownCaseWorkflowGuidsAreRefusedAsync`                                             | Fact    | Unknown Case Workflow and Status guids are refused with CaseWorkflowStatusGuidNotFound.                                                       |
+| `ACaseWorkflowOfAnotherTenantCannotBeReferencedAsync`                                 | Fact    | Another tenant Case Workflow cannot be referenced (IDOR).                                                                                     |
+| `ACaseWorkflowOfAnotherModelInTheSameTenantCannotBeReferencedAsync`                   | Fact    | A Case Workflow of a different Model in the same tenant is refused.                                                                           |
+| `UpdateCannotMoveARuleToAnotherModelAsync`                                            | Fact    | An update cannot change the Model of a rule.                                                                                                  |
+| `CountersSuppliedByTheClientAreIgnoredOnInsertAndUpdateAsync`                         | Fact    | Client supplied evaluation, activation and forced counters are ignored on insert and update.                                                  |
+| `InsertPersistsAndReturnsVersionOneAsync`                                             | Fact    | Insert persists and returns version one.                                                                                                      |
+| `GetAllReturnsCreatedRowAndGetByIdReturnsItAsync`                                     | Fact    | Get all returns created row and get by id returns it.                                                                                         |
+| `GetByEntityAnalysisModelIdReturnsOnlyRowsForThatModelAsync`                          | Fact    | Get by entity analysis model id returns only rows for that model.                                                                             |
+| `UpdateIncrementsVersionAndWritesAuditRowAsync`                                       | Fact    | Update increments version and writes audit row.                                                                                               |
+| `DeleteKeepsRowReachableByIdAndHidesItFromListsAsync`                                 | Fact    | Delete keeps row reachable by id and hides it from lists.                                                                                     |
+| `EveryMethodThrowsForbiddenWhenPermissionMissingAndWritesNoRowAsync`                  | Fact    | Every method throws forbidden when permission missing and writes no row.                                                                      |
+| `NullOrBlankUserNameThrowsNotAuthenticatedBeforeAnyQueryAsync`                        | Theory  | Null or blank user name throws not authenticated before any query.                                                                            |
+| `UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync`                                | Fact    | User with no user in tenant row throws not authenticated.                                                                                     |
+| `UnknownUserThrowsNotAuthenticatedAsync`                                              | Fact    | Unknown user throws not authenticated.                                                                                                        |
+| `UserInTenantBCannotGetUpdateOrDeleteTenantARowAsync`                                 | Fact    | User in tenant b cannot get update or delete tenant a row.                                                                                    |
+| `GetAllAsTenantBNeverContainsTenantARowsAsync`                                        | Fact    | Get all as tenant b never contains tenant a rows.                                                                                             |
+| `NameRequiredRejectsNullEmptyOrWhitespaceAsync`                                       | Theory  | Name required rejects null empty or whitespace.                                                                                               |
+| `NameOverMaximumLengthIsRejectedWithErrorCodeAsync`                                   | Fact    | Name over maximum length is rejected with error code.                                                                                         |
+| `DuplicateNameWithinSameModelFailsButDifferentModelSucceedsAsync`                     | Fact    | Duplicate name within same model fails but different model succeeds.                                                                          |
+| `InvalidEntityAnalysisModelIdIsRejectedAsync`                                         | Fact    | Invalid entity analysis model id is rejected.                                                                                                 |
+| `InvalidRuleScriptTypeIdIsRejectedAsync`                                              | Fact    | Invalid rule script type id is rejected.                                                                                                      |
+| `BuilderRuleScriptRequiredRejectsEmptyAsync`                                          | Fact    | Builder rule script required rejects empty.                                                                                                   |
+| `JsonRequiredRejectsEmptyWhenBuilderModeSelectedAsync`                                | Fact    | Json required rejects empty when builder mode selected.                                                                                       |
+| `CoderRuleScriptRequiredRejectsEmptyWhenCoderModeSelectedAsync`                       | Fact    | Coder rule script required rejects empty when coder mode selected.                                                                            |
+| `BuilderModeDoesNotRequireCoderRuleScriptAsync`                                       | Fact    | Builder mode does not require coder rule script.                                                                                              |
+| `CoderModeDoesNotRequireBuilderRuleScriptOrJsonAsync`                                 | Fact    | Coder mode does not require builder rule script or json.                                                                                      |
+| `CaseWorkflowFieldsRequiredWhenEnableCaseWorkflowTrueAsync`                           | Fact    | Case workflow fields required when enable case workflow true.                                                                                 |
+| `CaseWorkflowFieldsNotRequiredWhenEnableCaseWorkflowFalseAsync`                       | Fact    | Case workflow fields not required when enable case workflow false.                                                                            |
+| `BypassFieldsValidatedOnlyWhenCaseWorkflowAndBypassEnabledAsync`                      | Fact    | Bypass fields validated only when case workflow and bypass enabled.                                                                           |
+| `ResponseElevationFieldsRequiredWhenEnabledAndSentToActivationWatcherAsync`           | Fact    | Response elevation fields required when enabled and sent to activation watcher.                                                               |
+| `ResponseElevationColorsMustBeHexAsync`                                               | Fact    | Response elevation colors must be hex.                                                                                                        |
+| `ResponseElevationFieldsNotRequiredWhenNotSentToActivationWatcherAsync`               | Fact    | Response elevation fields not required when not sent to activation watcher.                                                                   |
+| `TtlCounterFieldsRequiredWhenEnableTtlCounterTrueAsync`                               | Fact    | Ttl counter fields required when enable ttl counter true.                                                                                     |
+| `ActivationSampleMustBeBetweenZeroAndOneAsync`                                        | Theory  | Activation sample must be between zero and one.                                                                                               |
+| `PriorityCannotBeNegativeAsync`                                                       | Fact    | Priority cannot be negative.                                                                                                                  |
+| `TamperedIdentityAndAuditFieldsOnInsertHaveNoEffectAsync`                             | Fact    | Tampered identity and audit fields on insert have no effect.                                                                                  |
+| `TamperedIdentityAndAuditFieldsOnUpdateHaveNoEffectAsync`                             | Fact    | Tampered identity and audit fields on update have no effect.                                                                                  |
+| `UpdateOfLockedRowThrowsNotFoundAsync`                                                | Fact    | Update of locked row throws not found.                                                                                                        |
+| `UpdateOfSoftDeletedRowRevivesItAsync`                                                | Fact    | Update of soft deleted row revives it.                                                                                                        |
+| `UpdateOfNeverExistedIdThrowsNotFoundAsync`                                           | Fact    | Update of never existed id throws not found.                                                                                                  |
+| `DeleteOfMissingOrAlreadyDeletedRowThrowsNotFoundAsync`                               | Fact    | Delete of missing or already deleted row throws not found.                                                                                    |
+| `ResubmitOfNonRejectedVersionThrowsApprovalRefusedAndWritesNoRowAsync`                | Fact    | Resubmit of non rejected version throws approval refused and writes no row.                                                                   |
+| `ResubmitOfRejectedVersionBumpsVersionArchivesOldAndKeepsContentAsync`                | Fact    | Resubmit of rejected version bumps version archives old and keeps content.                                                                    |
+| `ResubmitOfRejectedDeleteKeepsDeletedTrueAndReopensApprovalAsync`                     | Fact    | Resubmit of rejected delete keeps deleted true and reopens approval.                                                                          |
+| `RetractOfNonRejectedVersionThrowsApprovalRefusedAsync`                               | Fact    | Retract of non rejected version throws approval refused.                                                                                      |
+| `RetractWithNoApprovedBaselineThrowsApprovalRefusedAsync`                             | Fact    | Retract with no approved baseline throws approval refused.                                                                                    |
+| `RetractOfRejectedEditRestoresLastApprovedContentAndStampsTheRejectionRetractedAsync` | Fact    | Retract of rejected edit restores last approved content and stamps the rejection retracted.                                                   |
+| `RetractOfRejectedDeleteUndeletesAsync`                                               | Fact    | Retract of rejected delete undeletes.                                                                                                         |
+| `ActiveAndLockedRoundTripBoolToByteAndBackAsync`                                      | Fact    | Active and locked round trip bool to byte and back.                                                                                           |
+| `ResetCounterZeroesActivationAndEvaluationCountersAsync`                              | Fact    | Reset counter zeroes activation and evaluation counters.                                                                                      |
+| `ResetCounterOfMissingRowThrowsNotFoundAsync`                                         | Fact    | Reset counter of missing row throws not found.                                                                                                |
+| `GetByIdForMissingIdReturnsNullNotExceptionAsync`                                     | Fact    | Get by id for missing id returns null not exception.                                                                                          |
+| `PreCancelledTokenOnReadThrowsOperationCanceledAsync`                                 | Fact    | Pre cancelled token on read throws operation canceled.                                                                                        |
+| `PermissionDeniedLogsWarnNotErrorAndGatesHoldAsync`                                   | Fact    | Permission denied logs warn not error and gates hold.                                                                                         |
+| `SuccessfulInsertLogsExactlyOneInfoAndReadsLogNoInfoAsync`                            | Fact    | Successful insert logs exactly one info and reads log no info.                                                                                |
+| `WithGatesDisabledHappyPathRecordsNoDebugInfoOrWarnAsync`                             | Fact    | With gates disabled happy path records no debug info or warn.                                                                                 |
+| `FailureLogsErrorWithExceptionAttachedAndStillPropagatesAsync`                        | Fact    | Failure logs error with exception attached and still propagates.                                                                              |
+| `EachCallEmitsOneSpanWithOutcomeTagAsync`                                             | Fact    | Each call emits one span with outcome tag.                                                                                                    |
+| `EachCallRecordsOneDurationMeasurementAsync`                                          | Fact    | Each call records one duration measurement.                                                                                                   |
+| `AuditLogGetsExactlyOneLineIncludingReadsAsync`                                       | Fact    | Audit log gets exactly one line including reads.                                                                                              |
+| `InsertPublishesExactlyOneCreatedEventAsync`                                          | Fact    | Insert publishes exactly one created event.                                                                                                   |
+| `ReadsAndFailuresPublishNothingAsync`                                                 | Fact    | Reads and failures publish nothing.                                                                                                           |
+| `CatalogueRegistersUniquePascalCaseNoUnderscoreNames`                                 | Fact    | Catalogue registers unique pascal case no underscore names.                                                                                   |
+| `ListAsyncClampsTakeAndPaginatesDeterministicallyAsync`                               | Fact    | List async clamps take and paginates deterministically.                                                                                       |
+| `ResponseElevationOutsideEveryActiveRangeIsRejectedAsync`                             | Fact    | Response elevation outside every active range is rejected.                                                                                    |
+| `ResponseElevationInsideAnActiveRangeIsAcceptedAndStoredAsAnIntegerAsync`             | Fact    | Response elevation inside an active range is accepted and stored as an integer.                                                               |
+| `ResponseElevationIsNotCheckedAgainstRangesWhileElevationIsOffAsync`                  | Fact    | Response elevation is not checked against ranges while elevation is off.                                                                      |
+| `LegacyNotificationColumnsSurviveAnUpdateThatCannotSetThemAsync`                      | Fact    | Legacy notification columns survive an update that cannot set them.                                                                           |
+| `SavingAThresholdVariantCreatesAShadowRuleCopiedFromTheBaseAsync`                     | Service | Saving a chosen threshold creates a new shadow rule, a coder rule copied from the base with the number filled in, leaving the base unchanged. |
+| `SavingAThresholdVariantRefusesABadPlaceholderValueOrBaseAndNeedsPermissionAsync`     | Service | A missing placeholder, a non-numeric value or an unknown base is refused, and saving needs the write permission.                              |
 
 ### EntityAnalysisModelActivationRuleTtlCounterTests
 
-`Jube.Test.Service.EntityAnalysisModelActivationRule.EntityAnalysisModelActivationRuleTtlCounterTests` — 1 test.
+`Jube.Test.Service.EntityAnalysisModelActivationRule.EntityAnalysisModelActivationRuleTtlCounterTests` — 4 tests.
 Category: Service. Collection: Database.
 
-| Test                                      | Kind | Verifies                                  |
-|-------------------------------------------|------|-------------------------------------------|
-| `UpdateKeepsTtlGuidsWhenSwitchedOffAsync` | Fact | Update keeps ttl guids when switched off. |
+| Test                                                                | Kind | Verifies                                                                  |
+|---------------------------------------------------------------------|------|---------------------------------------------------------------------------|
+| `UpdateKeepsTtlGuidsWhenSwitchedOffAsync`                           | Fact | Update keeps ttl guids when switched off.                                 |
+| `UnknownTtlCounterGuidsAreRefusedAsync`                             | Fact | Unknown TTL counter and model guids are refused.                          |
+| `ATtlCounterOfAnotherTenantCannotBeReferencedAsync`                 | Fact | A TTL counter of another tenant cannot be referenced.                     |
+| `ACounterGuidFromADifferentModelThanTheSelectedModelIsRefusedAsync` | Fact | A counter guid from a different model than the selected model is refused. |
 
 ## Entity analysis model activation rule override
 
@@ -338,49 +373,52 @@ Category: Service. Collection: Database.
 `Jube.Test.Service.EntityAnalysisModelActivationRuleOverride.EntityAnalysisModelActivationRuleOverrideServiceTests` — 41
 tests. Category: Service. Collection: Database.
 
-| Test                                                                             | Kind   | Verifies                                                                              |
-|----------------------------------------------------------------------------------|--------|---------------------------------------------------------------------------------------|
-| `InsertIsRefusedWhereTheActivationRuleIsNotEnabledForOverrideAsync`              | Fact   | Insert is refused where the activation rule is not enabled for override.              |
-| `InsertOfForceIsRefusedWithoutTheForceOverridePermissionAsync`                   | Fact   | Insert of force is refused without the force override permission.                     |
-| `InsertIsRefusedWhereTheActivationRuleIsBoundToAnotherOverrideKeyAsync`          | Fact   | Insert is refused where the activation rule is bound to another override key.         |
-| `InsertPersistsAndReturnsVersionOneAsync`                                        | Fact   | Insert persists and returns version one.                                              |
-| `GetAllReturnsCreatedRowAndGetByIdReturnsItAsync`                                | Fact   | Get all returns created row and get by id returns it.                                 |
-| `GetByEntityAnalysisModelGuidReturnsOnlyRowsForThatModelAsync`                   | Fact   | Get by entity analysis model guid returns only rows for that model.                   |
-| `UpdateTogglesOffExistingRowAndOnANewRowAsync`                                   | Fact   | Update toggles off existing row and on a new row.                                     |
-| `UpdateDeleteExpiryDateUpdatesActiveRowAsync`                                    | Fact   | Update delete expiry date updates active row.                                         |
-| `UpdateDeleteExpiryDateForMissingRowThrowsNotFoundAsync`                         | Fact   | Update delete expiry date for missing row throws not found.                           |
-| `DeleteSoftDeletesAndRowDisappearsFromReadsAsync`                                | Fact   | Delete soft deletes and row disappears from reads.                                    |
-| `DeleteOfMissingRowThrowsNotFoundAsync`                                          | Fact   | Delete of missing row throws not found.                                               |
-| `EveryMethodThrowsForbiddenWhenPermissionMissingAndWritesNoRowAsync`             | Fact   | Every method throws forbidden when permission missing and writes no row.              |
-| `NullOrBlankUserNameThrowsNotAuthenticatedBeforeAnyQueryAsync`                   | Theory | Null or blank user name throws not authenticated before any query.                    |
-| `UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync`                           | Fact   | User with no user in tenant row throws not authenticated.                             |
-| `UnknownUserThrowsNotAuthenticatedAsync`                                         | Fact   | Unknown user throws not authenticated.                                                |
-| `UserInTenantBCannotGetOrDeleteTenantARowAsync`                                  | Fact   | User in tenant b cannot get or delete tenant a row.                                   |
-| `GetAllAsTenantBNeverContainsTenantARowsAsync`                                   | Fact   | Get all as tenant b never contains tenant a rows.                                     |
-| `OverrideKeyRequiredRejectsNullEmptyOrWhitespaceAsync`                           | Theory | Override key required rejects null empty or whitespace.                               |
-| `OverrideKeyOverMaximumLengthIsRejectedWithErrorCodeAsync`                       | Fact   | Override key over maximum length is rejected with error code.                         |
-| `OverrideKeyValueRequiredRejectsEmptyAsync`                                      | Fact   | Override key value required rejects empty.                                            |
-| `OverrideKeyValueOverMaximumLengthIsRejectedWithErrorCodeAsync`                  | Fact   | Override key value over maximum length is rejected with error code.                   |
-| `EmptyEntityAnalysisModelGuidIsRejectedAsync`                                    | Fact   | Empty entity analysis model guid is rejected.                                         |
-| `NonExistentEntityAnalysisModelGuidIsRejectedAsync`                              | Fact   | Non existent entity analysis model guid is rejected.                                  |
-| `EntityAnalysisModelActivationRuleNameRequiredRejectsNullEmptyOrWhitespaceAsync` | Theory | Entity analysis model activation rule name required rejects null empty or whitespace. |
-| `NonExistentEntityAnalysisModelActivationRuleNameIsRejectedAsync`                | Fact   | Non existent entity analysis model activation rule name is rejected.                  |
-| `EntityAnalysisModelActivationRuleNameFromAnotherModelIsRejectedAsync`           | Fact   | Entity analysis model activation rule name from another model is rejected.            |
-| `DeleteExpiryDateInThePastIsRejectedAsync`                                       | Fact   | Delete expiry date in the past is rejected.                                           |
-| `TamperedIdentityAndAuditFieldsOnInsertHaveNoEffectAsync`                        | Fact   | Tampered identity and audit fields on insert have no effect.                          |
-| `GetByIdForMissingIdReturnsNullNotExceptionAsync`                                | Fact   | Get by id for missing id returns null not exception.                                  |
-| `PreCancelledTokenOnReadThrowsOperationCanceledAsync`                            | Fact   | Pre cancelled token on read throws operation canceled.                                |
-| `PermissionDeniedLogsWarnNotErrorAndGatesHoldAsync`                              | Fact   | Permission denied logs warn not error and gates hold.                                 |
-| `SuccessfulInsertLogsExactlyOneInfoAndReadsLogNoInfoAsync`                       | Fact   | Successful insert logs exactly one info and reads log no info.                        |
-| `WithGatesDisabledHappyPathRecordsNoDebugInfoOrWarnAsync`                        | Fact   | With gates disabled happy path records no debug info or warn.                         |
-| `FailureLogsErrorWithExceptionAttachedAndStillPropagatesAsync`                   | Fact   | Failure logs error with exception attached and still propagates.                      |
-| `EachCallEmitsOneSpanWithOutcomeTagAsync`                                        | Fact   | Each call emits one span with outcome tag.                                            |
-| `EachCallRecordsOneDurationMeasurementAsync`                                     | Fact   | Each call records one duration measurement.                                           |
-| `AuditLogGetsExactlyOneLineIncludingReadsAsync`                                  | Fact   | Audit log gets exactly one line including reads.                                      |
-| `InsertPublishesExactlyOneCreatedEventAsync`                                     | Fact   | Insert publishes exactly one created event.                                           |
-| `ReadsAndFailuresPublishNothingAsync`                                            | Fact   | Reads and failures publish nothing.                                                   |
-| `CatalogueRegistersUniquePascalCaseNoUnderscoreNames`                            | Fact   | Catalogue registers unique pascal case no underscore names.                           |
-| `ListAsyncClampsTakeAndPaginatesDeterministicallyAsync`                          | Fact   | List async clamps take and paginates deterministically.                               |
+| Test                                                                               | Kind   | Verifies                                                                                   |
+|------------------------------------------------------------------------------------|--------|--------------------------------------------------------------------------------------------|
+| `InsertIsRefusedWhereTheActivationRuleIsNotEnabledForOverrideAsync`                | Fact   | Insert is refused where the activation rule is not enabled for override.                   |
+| `InsertOfForceIsRefusedWithoutTheForceOverridePermissionAsync`                     | Fact   | Insert of force is refused without the force override permission.                          |
+| `InsertIsRefusedWhereTheActivationRuleIsBoundToAnotherOverrideKeyAsync`            | Fact   | Insert is refused where the activation rule is bound to another override key.              |
+| `InsertPersistsAndReturnsVersionOneAsync`                                          | Fact   | Insert persists and returns version one.                                                   |
+| `GetAllReturnsCreatedRowAndGetByIdReturnsItAsync`                                  | Fact   | Get all returns created row and get by id returns it.                                      |
+| `GetByEntityAnalysisModelGuidReturnsOnlyRowsForThatModelAsync`                     | Fact   | Get by entity analysis model guid returns only rows for that model.                        |
+| `UpdateTogglesOffExistingRowAndOnANewRowAsync`                                     | Fact   | Update toggles off existing row and on a new row.                                          |
+| `UpdateDeleteExpiryDateUpdatesActiveRowAsync`                                      | Fact   | Update delete expiry date updates active row.                                              |
+| `UpdateDeleteExpiryDateForMissingRowThrowsNotFoundAsync`                           | Fact   | Update delete expiry date for missing row throws not found.                                |
+| `DeleteSoftDeletesAndRowDisappearsFromReadsAsync`                                  | Fact   | Delete soft deletes and row disappears from reads.                                         |
+| `DeleteOfMissingRowThrowsNotFoundAsync`                                            | Fact   | Delete of missing row throws not found.                                                    |
+| `EveryMethodThrowsForbiddenWhenPermissionMissingAndWritesNoRowAsync`               | Fact   | Every method throws forbidden when permission missing and writes no row.                   |
+| `NullOrBlankUserNameThrowsNotAuthenticatedBeforeAnyQueryAsync`                     | Theory | Null or blank user name throws not authenticated before any query.                         |
+| `UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync`                             | Fact   | User with no user in tenant row throws not authenticated.                                  |
+| `UnknownUserThrowsNotAuthenticatedAsync`                                           | Fact   | Unknown user throws not authenticated.                                                     |
+| `UserInTenantBCannotGetOrDeleteTenantARowAsync`                                    | Fact   | User in tenant b cannot get or delete tenant a row.                                        |
+| `GetAllAsTenantBNeverContainsTenantARowsAsync`                                     | Fact   | Get all as tenant b never contains tenant a rows.                                          |
+| `OverrideKeyRequiredRejectsNullEmptyOrWhitespaceAsync`                             | Theory | Override key required rejects null empty or whitespace.                                    |
+| `OverrideKeyOverMaximumLengthIsRejectedWithErrorCodeAsync`                         | Fact   | Override key over maximum length is rejected with error code.                              |
+| `OverrideKeyValueRequiredRejectsEmptyAsync`                                        | Fact   | Override key value required rejects empty.                                                 |
+| `OverrideKeyValueOverMaximumLengthIsRejectedWithErrorCodeAsync`                    | Fact   | Override key value over maximum length is rejected with error code.                        |
+| `EmptyEntityAnalysisModelGuidIsRejectedAsync`                                      | Fact   | Empty entity analysis model guid is rejected.                                              |
+| `NonExistentEntityAnalysisModelGuidIsRejectedAsync`                                | Fact   | Non existent entity analysis model guid is rejected.                                       |
+| `EntityAnalysisModelActivationRuleNameRequiredRejectsNullEmptyOrWhitespaceAsync`   | Theory | Entity analysis model activation rule name required rejects null empty or whitespace.      |
+| `NonExistentEntityAnalysisModelActivationRuleNameIsRejectedAsync`                  | Fact   | Non existent entity analysis model activation rule name is rejected.                       |
+| `EntityAnalysisModelActivationRuleNameFromAnotherModelIsRejectedAsync`             | Fact   | Entity analysis model activation rule name from another model is rejected.                 |
+| `DeleteExpiryDateInThePastIsRejectedAsync`                                         | Fact   | Delete expiry date in the past is rejected.                                                |
+| `TamperedIdentityAndAuditFieldsOnInsertHaveNoEffectAsync`                          | Fact   | Tampered identity and audit fields on insert have no effect.                               |
+| `GetByIdForMissingIdReturnsNullNotExceptionAsync`                                  | Fact   | Get by id for missing id returns null not exception.                                       |
+| `PreCancelledTokenOnReadThrowsOperationCanceledAsync`                              | Fact   | Pre cancelled token on read throws operation canceled.                                     |
+| `PermissionDeniedLogsWarnNotErrorAndGatesHoldAsync`                                | Fact   | Permission denied logs warn not error and gates hold.                                      |
+| `SuccessfulInsertLogsExactlyOneInfoAndReadsLogNoInfoAsync`                         | Fact   | Successful insert logs exactly one info and reads log no info.                             |
+| `WithGatesDisabledHappyPathRecordsNoDebugInfoOrWarnAsync`                          | Fact   | With gates disabled happy path records no debug info or warn.                              |
+| `FailureLogsErrorWithExceptionAttachedAndStillPropagatesAsync`                     | Fact   | Failure logs error with exception attached and still propagates.                           |
+| `EachCallEmitsOneSpanWithOutcomeTagAsync`                                          | Fact   | Each call emits one span with outcome tag.                                                 |
+| `EachCallRecordsOneDurationMeasurementAsync`                                       | Fact   | Each call records one duration measurement.                                                |
+| `AuditLogGetsExactlyOneLineIncludingReadsAsync`                                    | Fact   | Audit log gets exactly one line including reads.                                           |
+| `InsertPublishesExactlyOneCreatedEventAsync`                                       | Fact   | Insert publishes exactly one created event.                                                |
+| `ReadsAndFailuresPublishNothingAsync`                                              | Fact   | Reads and failures publish nothing.                                                        |
+| `CatalogueRegistersUniquePascalCaseNoUnderscoreNames`                              | Fact   | Catalogue registers unique pascal case no underscore names.                                |
+| `ListAsyncClampsTakeAndPaginatesDeterministicallyAsync`                            | Fact   | List async clamps take and paginates deterministically.                                    |
+| `UpdateWithAnIdThatMatchesNoVisibleRowThrowsNotFoundAndCreatesNothingAsync`        | Fact   | Update with an id that matches no visible row throws not found and creates nothing.        |
+| `InsertKeepsTheDeleteExpiryDateTheCallerSuppliedAsync`                             | Fact   | Insert keeps the delete expiry date the caller supplied.                                   |
+| `UpdateDeleteExpiryDateOfAForceRowIsRefusedWithoutTheForceOverridePermissionAsync` | Fact   | Update delete expiry date of a force row is refused without the force override permission. |
 
 ## Entity analysis model dictionary
 
@@ -529,70 +567,72 @@ Service. Collection: Database.
 
 ### EntityAnalysisModelGatewayRuleServiceTests
 
-`Jube.Test.Service.EntityAnalysisModelGatewayRule.EntityAnalysisModelGatewayRuleServiceTests` — 59 tests. Category:
+`Jube.Test.Service.EntityAnalysisModelGatewayRule.EntityAnalysisModelGatewayRuleServiceTests` — 61 tests. Category:
 Service. Collection: Database.
 
-| Test                                                                                  | Kind   | Verifies                                                                                    |
-|---------------------------------------------------------------------------------------|--------|---------------------------------------------------------------------------------------------|
-| `InsertPersistsAndReturnsVersionOneAsync`                                             | Fact   | Insert persists and returns version one.                                                    |
-| `GetAllReturnsCreatedRowAndGetByIdReturnsItAsync`                                     | Fact   | Get all returns created row and get by id returns it.                                       |
-| `GetByEntityAnalysisModelIdReturnsOnlyRowsForThatModelAsync`                          | Fact   | Get by entity analysis model id returns only rows for that model.                           |
-| `UpdateIncrementsVersionAndWritesAuditRowAsync`                                       | Fact   | Update increments version and writes audit row.                                             |
-| `DeleteKeepsRowReachableByIdAndHidesItFromListsAsync`                                 | Fact   | Delete keeps row reachable by id and hides it from lists.                                   |
-| `EveryMethodThrowsForbiddenWhenPermissionMissingAndWritesNoRowAsync`                  | Fact   | Every method throws forbidden when permission missing and writes no row.                    |
-| `NullOrBlankUserNameThrowsNotAuthenticatedBeforeAnyQueryAsync`                        | Theory | Null or blank user name throws not authenticated before any query.                          |
-| `UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync`                                | Fact   | User with no user in tenant row throws not authenticated.                                   |
-| `UnknownUserThrowsNotAuthenticatedAsync`                                              | Fact   | Unknown user throws not authenticated.                                                      |
-| `UserInTenantBCannotGetUpdateOrDeleteTenantARowAsync`                                 | Fact   | User in tenant b cannot get update or delete tenant a row.                                  |
-| `GetAllAsTenantBNeverContainsTenantARowsAsync`                                        | Fact   | Get all as tenant b never contains tenant a rows.                                           |
-| `NameRequiredRejectsNullEmptyOrWhitespaceAsync`                                       | Theory | Name required rejects null empty or whitespace.                                             |
-| `NameOverMaximumLengthIsRejectedWithErrorCodeAsync`                                   | Fact   | Name over maximum length is rejected with error code.                                       |
-| `DuplicateNameWithinSameModelFailsButDifferentModelSucceedsAsync`                     | Fact   | Duplicate name within same model fails but different model succeeds.                        |
-| `DuplicateNameDifferingOnlyByCaseWithinSameModelFailsAsync`                           | Fact   | Duplicate name differing only by case within same model fails.                              |
-| `InvalidEntityAnalysisModelIdIsRejectedAsync`                                         | Fact   | Invalid entity analysis model id is rejected.                                               |
-| `BuilderRuleScriptRequiredRejectsEmptyAsync`                                          | Fact   | Builder rule script required rejects empty.                                                 |
-| `CoderRuleScriptRequiredRejectsEmptyWhenCoderModeSelectedAsync`                       | Fact   | Coder rule script required rejects empty when coder mode selected.                          |
-| `JsonRequiredRejectsEmptyWhenBuilderModeSelectedAsync`                                | Fact   | Json required rejects empty when builder mode selected.                                     |
-| `BuilderModeDoesNotRequireCoderRuleScriptAsync`                                       | Fact   | Builder mode does not require coder rule script.                                            |
-| `CoderModeDoesNotRequireBuilderRuleScriptOrJsonAsync`                                 | Fact   | Coder mode does not require builder rule script or json.                                    |
-| `InvalidRuleScriptTypeIdIsRejectedAsync`                                              | Fact   | Invalid rule script type id is rejected.                                                    |
-| `GatewaySampleOutOfRangeIsRejectedAsync`                                              | Theory | Gateway sample out of range is rejected.                                                    |
-| `MaxResponseElevationNegativeIsRejectedAsync`                                         | Fact   | Max response elevation negative is rejected.                                                |
-| `PriorityNegativeIsRejectedAsync`                                                     | Fact   | Priority negative is rejected.                                                              |
-| `TamperedIdentityAndAuditFieldsOnInsertHaveNoEffectAsync`                             | Fact   | Tampered identity and audit fields on insert have no effect.                                |
-| `TamperedIdentityAndAuditFieldsOnUpdateHaveNoEffectAsync`                             | Fact   | Tampered identity and audit fields on update have no effect.                                |
-| `UpdateOfLockedRowThrowsNotFoundAsync`                                                | Fact   | Update of locked row throws not found.                                                      |
-| `UpdateOfSoftDeletedRowRevivesItAsync`                                                | Fact   | Update of soft deleted row revives it.                                                      |
-| `UpdateOfNeverExistedIdThrowsNotFoundAsync`                                           | Fact   | Update of never existed id throws not found.                                                |
-| `DeleteOfMissingOrAlreadyDeletedRowThrowsNotFoundAsync`                               | Fact   | Delete of missing or already deleted row throws not found.                                  |
-| `ResubmitOfNonRejectedVersionThrowsApprovalRefusedAndWritesNoRowAsync`                | Fact   | Resubmit of non rejected version throws approval refused and writes no row.                 |
-| `ResubmitOfRejectedVersionBumpsVersionArchivesOldAndKeepsContentAsync`                | Fact   | Resubmit of rejected version bumps version archives old and keeps content.                  |
-| `ResubmitOfRejectedDeleteKeepsDeletedTrueAndReopensApprovalAsync`                     | Fact   | Resubmit of rejected delete keeps deleted true and reopens approval.                        |
-| `RetractOfNonRejectedVersionThrowsApprovalRefusedAsync`                               | Fact   | Retract of non rejected version throws approval refused.                                    |
-| `RetractWithNoApprovedBaselineThrowsApprovalRefusedAsync`                             | Fact   | Retract with no approved baseline throws approval refused.                                  |
-| `RetractOfRejectedEditRestoresLastApprovedContentAndStampsTheRejectionRetractedAsync` | Fact   | Retract of rejected edit restores last approved content and stamps the rejection retracted. |
-| `RetractOfRejectedDeleteUndeletesAsync`                                               | Fact   | Retract of rejected delete undeletes.                                                       |
-| `RetractOfRejectedReviveAfterApprovedDeleteRestoresTheDeletedBaselineAsync`           | Fact   | Retract of rejected revive after approved delete restores the deleted baseline.             |
-| `ResubmitWithANoteStampsResubmittedNoteWithoutClobberingTheRejectionNoteAsync`        | Fact   | Resubmit with a note stamps resubmitted note without clobbering the rejection note.         |
-| `RetractWithANoteStampsRetractedNoteWithoutClobberingTheRejectionNoteAsync`           | Fact   | Retract with a note stamps retracted note without clobbering the rejection note.            |
-| `ActiveAndLockedRoundTripBoolToByteAndBackAsync`                                      | Fact   | Active and locked round trip bool to byte and back.                                         |
-| `ResponsePayloadIsNeverPersistedAsync`                                                | Fact   | Response payload is never persisted.                                                        |
-| `UpdateOverwritesCounterFieldsWithSuppliedValuesAsync`                                | Fact   | Update overwrites counter fields with supplied values.                                      |
-| `ResetCounterZeroesActivationAndEvaluationCountersAsync`                              | Fact   | Reset counter zeroes activation and evaluation counters.                                    |
-| `ResetCounterOfMissingRowThrowsNotFoundAsync`                                         | Fact   | Reset counter of missing row throws not found.                                              |
-| `GetByIdForMissingIdReturnsNullNotExceptionAsync`                                     | Fact   | Get by id for missing id returns null not exception.                                        |
-| `PreCancelledTokenOnReadThrowsOperationCanceledAsync`                                 | Fact   | Pre cancelled token on read throws operation canceled.                                      |
-| `PermissionDeniedLogsWarnNotErrorAndGatesHoldAsync`                                   | Fact   | Permission denied logs warn not error and gates hold.                                       |
-| `SuccessfulInsertLogsExactlyOneInfoAndReadsLogNoInfoAsync`                            | Fact   | Successful insert logs exactly one info and reads log no info.                              |
-| `WithGatesDisabledHappyPathRecordsNoDebugInfoOrWarnAsync`                             | Fact   | With gates disabled happy path records no debug info or warn.                               |
-| `FailureLogsErrorWithExceptionAttachedAndStillPropagatesAsync`                        | Fact   | Failure logs error with exception attached and still propagates.                            |
-| `EachCallEmitsOneSpanWithOutcomeTagAsync`                                             | Fact   | Each call emits one span with outcome tag.                                                  |
-| `EachCallRecordsOneDurationMeasurementAsync`                                          | Fact   | Each call records one duration measurement.                                                 |
-| `AuditLogGetsExactlyOneLineIncludingReadsAsync`                                       | Fact   | Audit log gets exactly one line including reads.                                            |
-| `InsertPublishesExactlyOneCreatedEventAsync`                                          | Fact   | Insert publishes exactly one created event.                                                 |
-| `ReadsAndFailuresPublishNothingAsync`                                                 | Fact   | Reads and failures publish nothing.                                                         |
-| `CatalogueRegistersUniquePascalCaseNoUnderscoreNames`                                 | Fact   | Catalogue registers unique pascal case no underscore names.                                 |
-| `ListAsyncClampsTakeAndPaginatesDeterministicallyAsync`                               | Fact   | List async clamps take and paginates deterministically.                                     |
+| Test                                                                                  | Kind   | Verifies                                                                                       |
+|---------------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------------|
+| `InsertPersistsAndReturnsVersionOneAsync`                                             | Fact   | Insert persists and returns version one.                                                       |
+| `GetAllReturnsCreatedRowAndGetByIdReturnsItAsync`                                     | Fact   | Get all returns created row and get by id returns it.                                          |
+| `GetByEntityAnalysisModelIdReturnsOnlyRowsForThatModelAsync`                          | Fact   | Get by entity analysis model id returns only rows for that model.                              |
+| `UpdateIncrementsVersionAndWritesAuditRowAsync`                                       | Fact   | Update increments version and writes audit row.                                                |
+| `DeleteKeepsRowReachableByIdAndHidesItFromListsAsync`                                 | Fact   | Delete keeps row reachable by id and hides it from lists.                                      |
+| `EveryMethodThrowsForbiddenWhenPermissionMissingAndWritesNoRowAsync`                  | Fact   | Every method throws forbidden when permission missing and writes no row.                       |
+| `NullOrBlankUserNameThrowsNotAuthenticatedBeforeAnyQueryAsync`                        | Theory | Null or blank user name throws not authenticated before any query.                             |
+| `UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync`                                | Fact   | User with no user in tenant row throws not authenticated.                                      |
+| `UnknownUserThrowsNotAuthenticatedAsync`                                              | Fact   | Unknown user throws not authenticated.                                                         |
+| `UserInTenantBCannotGetUpdateOrDeleteTenantARowAsync`                                 | Fact   | User in tenant b cannot get update or delete tenant a row.                                     |
+| `GetAllAsTenantBNeverContainsTenantARowsAsync`                                        | Fact   | Get all as tenant b never contains tenant a rows.                                              |
+| `NameRequiredRejectsNullEmptyOrWhitespaceAsync`                                       | Theory | Name required rejects null empty or whitespace.                                                |
+| `NameOverMaximumLengthIsRejectedWithErrorCodeAsync`                                   | Fact   | Name over maximum length is rejected with error code.                                          |
+| `DuplicateNameWithinSameModelFailsButDifferentModelSucceedsAsync`                     | Fact   | Duplicate name within same model fails but different model succeeds.                           |
+| `DuplicateNameDifferingOnlyByCaseWithinSameModelFailsAsync`                           | Fact   | Duplicate name differing only by case within same model fails.                                 |
+| `InvalidEntityAnalysisModelIdIsRejectedAsync`                                         | Fact   | Invalid entity analysis model id is rejected.                                                  |
+| `BuilderRuleScriptRequiredRejectsEmptyAsync`                                          | Fact   | Builder rule script required rejects empty.                                                    |
+| `CoderRuleScriptRequiredRejectsEmptyWhenCoderModeSelectedAsync`                       | Fact   | Coder rule script required rejects empty when coder mode selected.                             |
+| `JsonRequiredRejectsEmptyWhenBuilderModeSelectedAsync`                                | Fact   | Json required rejects empty when builder mode selected.                                        |
+| `BuilderModeDoesNotRequireCoderRuleScriptAsync`                                       | Fact   | Builder mode does not require coder rule script.                                               |
+| `CoderModeDoesNotRequireBuilderRuleScriptOrJsonAsync`                                 | Fact   | Coder mode does not require builder rule script or json.                                       |
+| `InvalidRuleScriptTypeIdIsRejectedAsync`                                              | Fact   | Invalid rule script type id is rejected.                                                       |
+| `GatewaySampleOutOfRangeIsRejectedAsync`                                              | Theory | Gateway sample out of range is rejected.                                                       |
+| `MaxResponseElevationNegativeIsRejectedAsync`                                         | Fact   | Max response elevation negative is rejected.                                                   |
+| `PriorityNegativeIsRejectedAsync`                                                     | Fact   | Priority negative is rejected.                                                                 |
+| `TamperedIdentityAndAuditFieldsOnInsertHaveNoEffectAsync`                             | Fact   | Tampered identity and audit fields on insert have no effect.                                   |
+| `TamperedIdentityAndAuditFieldsOnUpdateHaveNoEffectAsync`                             | Fact   | Tampered identity and audit fields on update have no effect.                                   |
+| `UpdateOfLockedRowThrowsNotFoundAsync`                                                | Fact   | Update of locked row throws not found.                                                         |
+| `UpdateOfSoftDeletedRowRevivesItAsync`                                                | Fact   | Update of soft deleted row revives it.                                                         |
+| `UpdateOfNeverExistedIdThrowsNotFoundAsync`                                           | Fact   | Update of never existed id throws not found.                                                   |
+| `DeleteOfMissingOrAlreadyDeletedRowThrowsNotFoundAsync`                               | Fact   | Delete of missing or already deleted row throws not found.                                     |
+| `ResubmitOfNonRejectedVersionThrowsApprovalRefusedAndWritesNoRowAsync`                | Fact   | Resubmit of non rejected version throws approval refused and writes no row.                    |
+| `ResubmitOfRejectedVersionBumpsVersionArchivesOldAndKeepsContentAsync`                | Fact   | Resubmit of rejected version bumps version archives old and keeps content.                     |
+| `ResubmitOfRejectedDeleteKeepsDeletedTrueAndReopensApprovalAsync`                     | Fact   | Resubmit of rejected delete keeps deleted true and reopens approval.                           |
+| `RetractOfNonRejectedVersionThrowsApprovalRefusedAsync`                               | Fact   | Retract of non rejected version throws approval refused.                                       |
+| `RetractWithNoApprovedBaselineThrowsApprovalRefusedAsync`                             | Fact   | Retract with no approved baseline throws approval refused.                                     |
+| `RetractOfRejectedEditRestoresLastApprovedContentAndStampsTheRejectionRetractedAsync` | Fact   | Retract of rejected edit restores last approved content and stamps the rejection retracted.    |
+| `RetractOfRejectedDeleteUndeletesAsync`                                               | Fact   | Retract of rejected delete undeletes.                                                          |
+| `RetractOfRejectedReviveAfterApprovedDeleteRestoresTheDeletedBaselineAsync`           | Fact   | Retract of rejected revive after approved delete restores the deleted baseline.                |
+| `ResubmitWithANoteStampsResubmittedNoteWithoutClobberingTheRejectionNoteAsync`        | Fact   | Resubmit with a note stamps resubmitted note without clobbering the rejection note.            |
+| `RetractWithANoteStampsRetractedNoteWithoutClobberingTheRejectionNoteAsync`           | Fact   | Retract with a note stamps retracted note without clobbering the rejection note.               |
+| `ActiveAndLockedRoundTripBoolToByteAndBackAsync`                                      | Fact   | Active and locked round trip bool to byte and back.                                            |
+| `ResponsePayloadIsNeverPersistedAsync`                                                | Fact   | Response payload is never persisted.                                                           |
+| `UpdateOverwritesCounterFieldsWithSuppliedValuesAsync`                                | Fact   | Update overwrites counter fields with supplied values.                                         |
+| `ResetCounterZeroesActivationAndEvaluationCountersAsync`                              | Fact   | Reset counter zeroes activation and evaluation counters.                                       |
+| `ResetCounterOfMissingRowThrowsNotFoundAsync`                                         | Fact   | Reset counter of missing row throws not found.                                                 |
+| `GetByIdForMissingIdReturnsNullNotExceptionAsync`                                     | Fact   | Get by id for missing id returns null not exception.                                           |
+| `PreCancelledTokenOnReadThrowsOperationCanceledAsync`                                 | Fact   | Pre cancelled token on read throws operation canceled.                                         |
+| `PermissionDeniedLogsWarnNotErrorAndGatesHoldAsync`                                   | Fact   | Permission denied logs warn not error and gates hold.                                          |
+| `SuccessfulInsertLogsExactlyOneInfoAndReadsLogNoInfoAsync`                            | Fact   | Successful insert logs exactly one info and reads log no info.                                 |
+| `WithGatesDisabledHappyPathRecordsNoDebugInfoOrWarnAsync`                             | Fact   | With gates disabled happy path records no debug info or warn.                                  |
+| `FailureLogsErrorWithExceptionAttachedAndStillPropagatesAsync`                        | Fact   | Failure logs error with exception attached and still propagates.                               |
+| `EachCallEmitsOneSpanWithOutcomeTagAsync`                                             | Fact   | Each call emits one span with outcome tag.                                                     |
+| `EachCallRecordsOneDurationMeasurementAsync`                                          | Fact   | Each call records one duration measurement.                                                    |
+| `AuditLogGetsExactlyOneLineIncludingReadsAsync`                                       | Fact   | Audit log gets exactly one line including reads.                                               |
+| `InsertPublishesExactlyOneCreatedEventAsync`                                          | Fact   | Insert publishes exactly one created event.                                                    |
+| `ReadsAndFailuresPublishNothingAsync`                                                 | Fact   | Reads and failures publish nothing.                                                            |
+| `CatalogueRegistersUniquePascalCaseNoUnderscoreNames`                                 | Fact   | Catalogue registers unique pascal case no underscore names.                                    |
+| `ListAsyncClampsTakeAndPaginatesDeterministicallyAsync`                               | Fact   | List async clamps take and paginates deterministically.                                        |
+| `SavingAHostileRuleScriptIsRefusedAndNothingIsStoredAsync`                            | Theory | A hostile Builder or Coder rule script is refused with RuleScriptInvalid and no row is stored. |
+| `UpdatingARuleToAHostileScriptIsRefusedAndTheStoredScriptIsUnchangedAsync`            | Fact   | Updating to a hostile script is refused and the stored row keeps version and script.           |
 
 ## Entity analysis model http adaptation
 
@@ -655,7 +695,7 @@ Category: Service. Collection: Database.
 
 ### EntityAnalysisModelInlineFunctionServiceTests
 
-`Jube.Test.Service.EntityAnalysisModelInlineFunction.EntityAnalysisModelInlineFunctionServiceTests` — 47 tests.
+`Jube.Test.Service.EntityAnalysisModelInlineFunction.EntityAnalysisModelInlineFunctionServiceTests` — 49 tests.
 Category: Service. Collection: Database.
 
 | Test                                                                                  | Kind   | Verifies                                                                                    |
@@ -707,6 +747,8 @@ Category: Service. Collection: Database.
 | `ReadsAndFailuresPublishNothingAsync`                                                 | Fact   | Reads and failures publish nothing.                                                         |
 | `CatalogueRegistersUniquePascalCaseNoUnderscoreNames`                                 | Fact   | Catalogue registers unique pascal case no underscore names.                                 |
 | `ListAsyncClampsTakeAndPaginatesDeterministicallyAsync`                               | Fact   | List async clamps take and paginates deterministically.                                     |
+| `SavingAHostileFunctionScriptIsRefusedAndNothingIsStoredAsync`                        | Fact   | A hostile function script is refused with RuleScriptInvalid and no row is stored.           |
+| `UpdatingAFunctionToAHostileScriptIsRefusedAndTheStoredScriptIsUnchangedAsync`        | Fact   | Updating to a hostile script is refused and the stored row keeps version and script.        |
 
 ## Entity analysis model inline script
 
@@ -902,109 +944,116 @@ Collection: Database.
 
 ### EntityAnalysisModelOverrideServiceTests
 
-`Jube.Test.Service.EntityAnalysisModelOverride.EntityAnalysisModelOverrideServiceTests` — 35 tests. Category: Service.
+`Jube.Test.Service.EntityAnalysisModelOverride.EntityAnalysisModelOverrideServiceTests` — 38 tests. Category: Service.
 Collection: Database.
 
-| Test                                                                 | Kind   | Verifies                                                                 |
-|----------------------------------------------------------------------|--------|--------------------------------------------------------------------------|
-| `InsertPersistsAndReturnsVersionOneAsync`                            | Fact   | Insert persists and returns version one.                                 |
-| `GetAllReturnsCreatedRowAndGetByIdReturnsItAsync`                    | Fact   | Get all returns created row and get by id returns it.                    |
-| `GetByEntityAnalysisModelIdReturnsOnlyRowsForThatModelAsync`         | Fact   | Get by entity analysis model id returns only rows for that model.        |
-| `UpdateTogglesOffExistingRowAndOnANewRowAsync`                       | Fact   | Update toggles off existing row and on a new row.                        |
-| `UpdateDeleteExpiryDateUpdatesActiveRowAsync`                        | Fact   | Update delete expiry date updates active row.                            |
-| `UpdateDeleteExpiryDateForMissingRowThrowsNotFoundAsync`             | Fact   | Update delete expiry date for missing row throws not found.              |
-| `DeleteSoftDeletesAndRowDisappearsFromReadsAsync`                    | Fact   | Delete soft deletes and row disappears from reads.                       |
-| `DeleteOfMissingRowThrowsNotFoundAsync`                              | Fact   | Delete of missing row throws not found.                                  |
-| `EveryMethodThrowsForbiddenWhenPermissionMissingAndWritesNoRowAsync` | Fact   | Every method throws forbidden when permission missing and writes no row. |
-| `NullOrBlankUserNameThrowsNotAuthenticatedBeforeAnyQueryAsync`       | Theory | Null or blank user name throws not authenticated before any query.       |
-| `UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync`               | Fact   | User with no user in tenant row throws not authenticated.                |
-| `UnknownUserThrowsNotAuthenticatedAsync`                             | Fact   | Unknown user throws not authenticated.                                   |
-| `UserInTenantBCannotGetOrDeleteTenantARowAsync`                      | Fact   | User in tenant b cannot get or delete tenant a row.                      |
-| `GetAllAsTenantBNeverContainsTenantARowsAsync`                       | Fact   | Get all as tenant b never contains tenant a rows.                        |
-| `OverrideKeyRequiredRejectsNullEmptyOrWhitespaceAsync`               | Theory | Override key required rejects null empty or whitespace.                  |
-| `OverrideKeyOverMaximumLengthIsRejectedWithErrorCodeAsync`           | Fact   | Override key over maximum length is rejected with error code.            |
-| `OverrideKeyValueRequiredRejectsEmptyAsync`                          | Fact   | Override key value required rejects empty.                               |
-| `OverrideKeyValueOverMaximumLengthIsRejectedWithErrorCodeAsync`      | Fact   | Override key value over maximum length is rejected with error code.      |
-| `EmptyEntityAnalysisModelGuidIsRejectedAsync`                        | Fact   | Empty entity analysis model guid is rejected.                            |
-| `NonExistentEntityAnalysisModelGuidIsRejectedAsync`                  | Fact   | Non existent entity analysis model guid is rejected.                     |
-| `DeleteExpiryDateInThePastIsRejectedAsync`                           | Fact   | Delete expiry date in the past is rejected.                              |
-| `TamperedIdentityAndAuditFieldsOnInsertHaveNoEffectAsync`            | Fact   | Tampered identity and audit fields on insert have no effect.             |
-| `GetByIdForMissingIdReturnsNullNotExceptionAsync`                    | Fact   | Get by id for missing id returns null not exception.                     |
-| `PreCancelledTokenOnReadThrowsOperationCanceledAsync`                | Fact   | Pre cancelled token on read throws operation canceled.                   |
-| `PermissionDeniedLogsWarnNotErrorAndGatesHoldAsync`                  | Fact   | Permission denied logs warn not error and gates hold.                    |
-| `SuccessfulInsertLogsExactlyOneInfoAndReadsLogNoInfoAsync`           | Fact   | Successful insert logs exactly one info and reads log no info.           |
-| `WithGatesDisabledHappyPathRecordsNoDebugInfoOrWarnAsync`            | Fact   | With gates disabled happy path records no debug info or warn.            |
-| `FailureLogsErrorWithExceptionAttachedAndStillPropagatesAsync`       | Fact   | Failure logs error with exception attached and still propagates.         |
-| `EachCallEmitsOneSpanWithOutcomeTagAsync`                            | Fact   | Each call emits one span with outcome tag.                               |
-| `EachCallRecordsOneDurationMeasurementAsync`                         | Fact   | Each call records one duration measurement.                              |
-| `AuditLogGetsExactlyOneLineIncludingReadsAsync`                      | Fact   | Audit log gets exactly one line including reads.                         |
-| `InsertPublishesExactlyOneCreatedEventAsync`                         | Fact   | Insert publishes exactly one created event.                              |
-| `ReadsAndFailuresPublishNothingAsync`                                | Fact   | Reads and failures publish nothing.                                      |
-| `CatalogueRegistersUniquePascalCaseNoUnderscoreNames`                | Fact   | Catalogue registers unique pascal case no underscore names.              |
-| `ListAsyncClampsTakeAndPaginatesDeterministicallyAsync`              | Fact   | List async clamps take and paginates deterministically.                  |
+| Test                                                                               | Kind   | Verifies                                                                 |
+|------------------------------------------------------------------------------------|--------|--------------------------------------------------------------------------|
+| `UpdateDeleteExpiryDateOfAForceRowIsRefusedWithoutTheForceOverridePermissionAsync` | Fact   | Extending the expiry of a Force override needs permission 62.            |
+| `InsertKeepsTheDeleteExpiryDateTheCallerSuppliedAsync`                             | Fact   | Create stores the supplied Delete Expiry Date.                           |
+| `UpdateWithAnIdThatMatchesNoVisibleRowThrowsNotFoundAndCreatesNothingAsync`        | Fact   | Update with an unknown Id is a not found and creates nothing.            |
+| `InsertPersistsAndReturnsVersionOneAsync`                                          | Fact   | Insert persists and returns version one.                                 |
+| `GetAllReturnsCreatedRowAndGetByIdReturnsItAsync`                                  | Fact   | Get all returns created row and get by id returns it.                    |
+| `GetByEntityAnalysisModelIdReturnsOnlyRowsForThatModelAsync`                       | Fact   | Get by entity analysis model id returns only rows for that model.        |
+| `UpdateTogglesOffExistingRowAndOnANewRowAsync`                                     | Fact   | Update toggles off existing row and on a new row.                        |
+| `UpdateDeleteExpiryDateUpdatesActiveRowAsync`                                      | Fact   | Update delete expiry date updates active row.                            |
+| `UpdateDeleteExpiryDateForMissingRowThrowsNotFoundAsync`                           | Fact   | Update delete expiry date for missing row throws not found.              |
+| `DeleteSoftDeletesAndRowDisappearsFromReadsAsync`                                  | Fact   | Delete soft deletes and row disappears from reads.                       |
+| `DeleteOfMissingRowThrowsNotFoundAsync`                                            | Fact   | Delete of missing row throws not found.                                  |
+| `EveryMethodThrowsForbiddenWhenPermissionMissingAndWritesNoRowAsync`               | Fact   | Every method throws forbidden when permission missing and writes no row. |
+| `NullOrBlankUserNameThrowsNotAuthenticatedBeforeAnyQueryAsync`                     | Theory | Null or blank user name throws not authenticated before any query.       |
+| `UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync`                             | Fact   | User with no user in tenant row throws not authenticated.                |
+| `UnknownUserThrowsNotAuthenticatedAsync`                                           | Fact   | Unknown user throws not authenticated.                                   |
+| `UserInTenantBCannotGetOrDeleteTenantARowAsync`                                    | Fact   | User in tenant b cannot get or delete tenant a row.                      |
+| `GetAllAsTenantBNeverContainsTenantARowsAsync`                                     | Fact   | Get all as tenant b never contains tenant a rows.                        |
+| `OverrideKeyRequiredRejectsNullEmptyOrWhitespaceAsync`                             | Theory | Override key required rejects null empty or whitespace.                  |
+| `OverrideKeyOverMaximumLengthIsRejectedWithErrorCodeAsync`                         | Fact   | Override key over maximum length is rejected with error code.            |
+| `OverrideKeyValueRequiredRejectsEmptyAsync`                                        | Fact   | Override key value required rejects empty.                               |
+| `OverrideKeyValueOverMaximumLengthIsRejectedWithErrorCodeAsync`                    | Fact   | Override key value over maximum length is rejected with error code.      |
+| `EmptyEntityAnalysisModelGuidIsRejectedAsync`                                      | Fact   | Empty entity analysis model guid is rejected.                            |
+| `NonExistentEntityAnalysisModelGuidIsRejectedAsync`                                | Fact   | Non existent entity analysis model guid is rejected.                     |
+| `DeleteExpiryDateInThePastIsRejectedAsync`                                         | Fact   | Delete expiry date in the past is rejected.                              |
+| `TamperedIdentityAndAuditFieldsOnInsertHaveNoEffectAsync`                          | Fact   | Tampered identity and audit fields on insert have no effect.             |
+| `GetByIdForMissingIdReturnsNullNotExceptionAsync`                                  | Fact   | Get by id for missing id returns null not exception.                     |
+| `PreCancelledTokenOnReadThrowsOperationCanceledAsync`                              | Fact   | Pre cancelled token on read throws operation canceled.                   |
+| `PermissionDeniedLogsWarnNotErrorAndGatesHoldAsync`                                | Fact   | Permission denied logs warn not error and gates hold.                    |
+| `SuccessfulInsertLogsExactlyOneInfoAndReadsLogNoInfoAsync`                         | Fact   | Successful insert logs exactly one info and reads log no info.           |
+| `WithGatesDisabledHappyPathRecordsNoDebugInfoOrWarnAsync`                          | Fact   | With gates disabled happy path records no debug info or warn.            |
+| `FailureLogsErrorWithExceptionAttachedAndStillPropagatesAsync`                     | Fact   | Failure logs error with exception attached and still propagates.         |
+| `EachCallEmitsOneSpanWithOutcomeTagAsync`                                          | Fact   | Each call emits one span with outcome tag.                               |
+| `EachCallRecordsOneDurationMeasurementAsync`                                       | Fact   | Each call records one duration measurement.                              |
+| `AuditLogGetsExactlyOneLineIncludingReadsAsync`                                    | Fact   | Audit log gets exactly one line including reads.                         |
+| `InsertPublishesExactlyOneCreatedEventAsync`                                       | Fact   | Insert publishes exactly one created event.                              |
+| `ReadsAndFailuresPublishNothingAsync`                                              | Fact   | Reads and failures publish nothing.                                      |
+| `CatalogueRegistersUniquePascalCaseNoUnderscoreNames`                              | Fact   | Catalogue registers unique pascal case no underscore names.              |
+| `ListAsyncClampsTakeAndPaginatesDeterministicallyAsync`                            | Fact   | List async clamps take and paginates deterministically.                  |
 
 ## Entity analysis model reprocessing rule
 
 ### EntityAnalysisModelReprocessingRuleServiceTests
 
-`Jube.Test.Service.EntityAnalysisModelReprocessingRule.EntityAnalysisModelReprocessingRuleServiceTests` — 47 tests.
+`Jube.Test.Service.EntityAnalysisModelReprocessingRule.EntityAnalysisModelReprocessingRuleServiceTests` — 50 tests.
 Category: Service. Collection: Database.
 
-| Test                                                                 | Kind   | Verifies                                                                 |
-|----------------------------------------------------------------------|--------|--------------------------------------------------------------------------|
-| `InsertPersistsAndReturnsVersionOneAsync`                            | Fact   | Insert persists and returns version one.                                 |
-| `GetAllReturnsCreatedRowAndGetByIdReturnsItAsync`                    | Fact   | Get all returns created row and get by id returns it.                    |
-| `GetByEntityAnalysisModelIdReturnsOnlyRowsForThatModelAsync`         | Fact   | Get by entity analysis model id returns only rows for that model.        |
-| `UpdateSupersedesRowWithNewIdAndIncrementsVersionAsync`              | Fact   | Update supersedes row with new id and increments version.                |
-| `DeleteSoftDeletesAndRowDisappearsFromReadsAsync`                    | Fact   | Delete soft deletes and row disappears from reads.                       |
-| `EveryMethodThrowsForbiddenWhenPermissionMissingAndWritesNoRowAsync` | Fact   | Every method throws forbidden when permission missing and writes no row. |
-| `NullOrBlankUserNameThrowsNotAuthenticatedBeforeAnyQueryAsync`       | Theory | Null or blank user name throws not authenticated before any query.       |
-| `UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync`               | Fact   | User with no user in tenant row throws not authenticated.                |
-| `UnknownUserThrowsNotAuthenticatedAsync`                             | Fact   | Unknown user throws not authenticated.                                   |
-| `UserInTenantBCannotGetUpdateOrDeleteTenantARowAsync`                | Fact   | User in tenant b cannot get update or delete tenant a row.               |
-| `GetAllAsTenantBNeverContainsTenantARowsAsync`                       | Fact   | Get all as tenant b never contains tenant a rows.                        |
-| `NameRequiredRejectsNullEmptyOrWhitespaceAsync`                      | Theory | Name required rejects null empty or whitespace.                          |
-| `NameOverMaximumLengthIsRejectedWithErrorCodeAsync`                  | Fact   | Name over maximum length is rejected with error code.                    |
-| `DuplicateNameWithinSameModelFailsButDifferentModelSucceedsAsync`    | Fact   | Duplicate name within same model fails but different model succeeds.     |
-| `DuplicateNameDifferingOnlyByCaseWithinSameModelFailsAsync`          | Fact   | Duplicate name differing only by case within same model fails.           |
-| `InvalidEntityAnalysisModelIdIsRejectedAsync`                        | Fact   | Invalid entity analysis model id is rejected.                            |
-| `BuilderRuleScriptRequiredRejectsEmptyAsync`                         | Fact   | Builder rule script required rejects empty.                              |
-| `CoderRuleScriptRequiredRejectsEmptyWhenCoderModeSelectedAsync`      | Fact   | Coder rule script required rejects empty when coder mode selected.       |
-| `JsonRequiredRejectsEmptyWhenBuilderModeSelectedAsync`               | Fact   | Json required rejects empty when builder mode selected.                  |
-| `BuilderModeDoesNotRequireCoderRuleScriptAsync`                      | Fact   | Builder mode does not require coder rule script.                         |
-| `CoderModeDoesNotRequireBuilderRuleScriptOrJsonAsync`                | Fact   | Coder mode does not require builder rule script or json.                 |
-| `InvalidRuleScriptTypeIdIsRejectedAsync`                             | Fact   | Invalid rule script type id is rejected.                                 |
-| `NegativePriorityIsRejectedAsync`                                    | Fact   | Negative priority is rejected.                                           |
-| `ReprocessingSampleOutOfRangeIsRejectedAsync`                        | Theory | Reprocessing sample out of range is rejected.                            |
-| `NegativeReprocessingValueIsRejectedAsync`                           | Fact   | Negative reprocessing value is rejected.                                 |
-| `InvalidReprocessingIntervalIsRejectedAsync`                         | Theory | Invalid reprocessing interval is rejected.                               |
-| `EachAllowedReprocessingIntervalIsAcceptedAsync`                     | Theory | Each allowed reprocessing interval is accepted.                          |
-| `TamperedIdentityAndAuditFieldsOnInsertHaveNoEffectAsync`            | Fact   | Tampered identity and audit fields on insert have no effect.             |
-| `TamperedIdentityAndAuditFieldsOnUpdateHaveNoEffectAsync`            | Fact   | Tampered identity and audit fields on update have no effect.             |
-| `UpdateOfLockedRowThrowsNotFoundAsync`                               | Fact   | Update of locked row throws not found.                                   |
-| `UpdateOfSoftDeletedRowThrowsNotFoundAsync`                          | Fact   | Update of soft deleted row throws not found.                             |
-| `UpdateOfNeverExistedIdThrowsNotFoundAsync`                          | Fact   | Update of never existed id throws not found.                             |
-| `DeleteOfMissingOrAlreadyDeletedRowThrowsNotFoundAsync`              | Fact   | Delete of missing or already deleted row throws not found.               |
-| `ActiveAndLockedRoundTripBoolToByteAndBackAsync`                     | Fact   | Active and locked round trip bool to byte and back.                      |
-| `GetByIdForMissingIdReturnsNullNotExceptionAsync`                    | Fact   | Get by id for missing id returns null not exception.                     |
-| `PreCancelledTokenOnReadThrowsOperationCanceledAsync`                | Fact   | Pre cancelled token on read throws operation canceled.                   |
-| `PermissionDeniedLogsWarnNotErrorAndGatesHoldAsync`                  | Fact   | Permission denied logs warn not error and gates hold.                    |
-| `SuccessfulInsertLogsExactlyOneInfoAndReadsLogNoInfoAsync`           | Fact   | Successful insert logs exactly one info and reads log no info.           |
-| `WithGatesDisabledHappyPathRecordsNoDebugInfoOrWarnAsync`            | Fact   | With gates disabled happy path records no debug info or warn.            |
-| `FailureLogsErrorWithExceptionAttachedAndStillPropagatesAsync`       | Fact   | Failure logs error with exception attached and still propagates.         |
-| `EachCallEmitsOneSpanWithOutcomeTagAsync`                            | Fact   | Each call emits one span with outcome tag.                               |
-| `EachCallRecordsOneDurationMeasurementAsync`                         | Fact   | Each call records one duration measurement.                              |
-| `AuditLogGetsExactlyOneLineIncludingReadsAsync`                      | Fact   | Audit log gets exactly one line including reads.                         |
-| `InsertPublishesExactlyOneCreatedEventAsync`                         | Fact   | Insert publishes exactly one created event.                              |
-| `ReadsAndFailuresPublishNothingAsync`                                | Fact   | Reads and failures publish nothing.                                      |
-| `CatalogueRegistersUniquePascalCaseNoUnderscoreNames`                | Fact   | Catalogue registers unique pascal case no underscore names.              |
-| `ListAsyncClampsTakeAndPaginatesDeterministicallyAsync`              | Fact   | List async clamps take and paginates deterministically.                  |
+| Test                                                                   | Kind   | Verifies                                                                   |
+|------------------------------------------------------------------------|--------|----------------------------------------------------------------------------|
+| `InsertPersistsAndReturnsVersionOneAsync`                              | Fact   | Insert persists and returns version one.                                   |
+| `GetAllReturnsCreatedRowAndGetByIdReturnsItAsync`                      | Fact   | Get all returns created row and get by id returns it.                      |
+| `GetByEntityAnalysisModelIdReturnsOnlyRowsForThatModelAsync`           | Fact   | Get by entity analysis model id returns only rows for that model.          |
+| `UpdateSupersedesRowWithNewIdAndIncrementsVersionAsync`                | Fact   | Update supersedes row with new id and increments version.                  |
+| `DeleteSoftDeletesAndRowDisappearsFromReadsAsync`                      | Fact   | Delete soft deletes and row disappears from reads.                         |
+| `EveryMethodThrowsForbiddenWhenPermissionMissingAndWritesNoRowAsync`   | Fact   | Every method throws forbidden when permission missing and writes no row.   |
+| `NullOrBlankUserNameThrowsNotAuthenticatedBeforeAnyQueryAsync`         | Theory | Null or blank user name throws not authenticated before any query.         |
+| `UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync`                 | Fact   | User with no user in tenant row throws not authenticated.                  |
+| `UnknownUserThrowsNotAuthenticatedAsync`                               | Fact   | Unknown user throws not authenticated.                                     |
+| `UserInTenantBCannotGetUpdateOrDeleteTenantARowAsync`                  | Fact   | User in tenant b cannot get update or delete tenant a row.                 |
+| `GetAllAsTenantBNeverContainsTenantARowsAsync`                         | Fact   | Get all as tenant b never contains tenant a rows.                          |
+| `NameRequiredRejectsNullEmptyOrWhitespaceAsync`                        | Theory | Name required rejects null empty or whitespace.                            |
+| `NameOverMaximumLengthIsRejectedWithErrorCodeAsync`                    | Fact   | Name over maximum length is rejected with error code.                      |
+| `DuplicateNameWithinSameModelFailsButDifferentModelSucceedsAsync`      | Fact   | Duplicate name within same model fails but different model succeeds.       |
+| `DuplicateNameDifferingOnlyByCaseWithinSameModelFailsAsync`            | Fact   | Duplicate name differing only by case within same model fails.             |
+| `InvalidEntityAnalysisModelIdIsRejectedAsync`                          | Fact   | Invalid entity analysis model id is rejected.                              |
+| `BuilderRuleScriptRequiredRejectsEmptyAsync`                           | Fact   | Builder rule script required rejects empty.                                |
+| `CoderRuleScriptRequiredRejectsEmptyWhenCoderModeSelectedAsync`        | Fact   | Coder rule script required rejects empty when coder mode selected.         |
+| `JsonRequiredRejectsEmptyWhenBuilderModeSelectedAsync`                 | Fact   | Json required rejects empty when builder mode selected.                    |
+| `BuilderModeDoesNotRequireCoderRuleScriptAsync`                        | Fact   | Builder mode does not require coder rule script.                           |
+| `CoderModeDoesNotRequireBuilderRuleScriptOrJsonAsync`                  | Fact   | Coder mode does not require builder rule script or json.                   |
+| `InvalidRuleScriptTypeIdIsRejectedAsync`                               | Fact   | Invalid rule script type id is rejected.                                   |
+| `NegativePriorityIsRejectedAsync`                                      | Fact   | Negative priority is rejected.                                             |
+| `ReprocessingSampleOutOfRangeIsRejectedAsync`                          | Theory | Reprocessing sample out of range is rejected.                              |
+| `NegativeReprocessingValueIsRejectedAsync`                             | Fact   | Negative reprocessing value is rejected.                                   |
+| `InvalidReprocessingIntervalIsRejectedAsync`                           | Theory | Invalid reprocessing interval is rejected.                                 |
+| `EachAllowedReprocessingIntervalIsAcceptedAsync`                       | Theory | Each allowed reprocessing interval is accepted.                            |
+| `TamperedIdentityAndAuditFieldsOnInsertHaveNoEffectAsync`              | Fact   | Tampered identity and audit fields on insert have no effect.               |
+| `TamperedIdentityAndAuditFieldsOnUpdateHaveNoEffectAsync`              | Fact   | Tampered identity and audit fields on update have no effect.               |
+| `UpdateOfLockedRowThrowsNotFoundAsync`                                 | Fact   | Update of locked row throws not found.                                     |
+| `UpdateOfSoftDeletedRowThrowsNotFoundAsync`                            | Fact   | Update of soft deleted row throws not found.                               |
+| `UpdateOfNeverExistedIdThrowsNotFoundAsync`                            | Fact   | Update of never existed id throws not found.                               |
+| `DeleteOfMissingOrAlreadyDeletedRowThrowsNotFoundAsync`                | Fact   | Delete of missing or already deleted row throws not found.                 |
+| `ActiveAndLockedRoundTripBoolToByteAndBackAsync`                       | Fact   | Active and locked round trip bool to byte and back.                        |
+| `GetByIdForMissingIdReturnsNullNotExceptionAsync`                      | Fact   | Get by id for missing id returns null not exception.                       |
+| `PreCancelledTokenOnReadThrowsOperationCanceledAsync`                  | Fact   | Pre cancelled token on read throws operation canceled.                     |
+| `PermissionDeniedLogsWarnNotErrorAndGatesHoldAsync`                    | Fact   | Permission denied logs warn not error and gates hold.                      |
+| `SuccessfulInsertLogsExactlyOneInfoAndReadsLogNoInfoAsync`             | Fact   | Successful insert logs exactly one info and reads log no info.             |
+| `WithGatesDisabledHappyPathRecordsNoDebugInfoOrWarnAsync`              | Fact   | With gates disabled happy path records no debug info or warn.              |
+| `FailureLogsErrorWithExceptionAttachedAndStillPropagatesAsync`         | Fact   | Failure logs error with exception attached and still propagates.           |
+| `EachCallEmitsOneSpanWithOutcomeTagAsync`                              | Fact   | Each call emits one span with outcome tag.                                 |
+| `EachCallRecordsOneDurationMeasurementAsync`                           | Fact   | Each call records one duration measurement.                                |
+| `AuditLogGetsExactlyOneLineIncludingReadsAsync`                        | Fact   | Audit log gets exactly one line including reads.                           |
+| `InsertPublishesExactlyOneCreatedEventAsync`                           | Fact   | Insert publishes exactly one created event.                                |
+| `ReadsAndFailuresPublishNothingAsync`                                  | Fact   | Reads and failures publish nothing.                                        |
+| `CatalogueRegistersUniquePascalCaseNoUnderscoreNames`                  | Fact   | Catalogue registers unique pascal case no underscore names.                |
+| `ListAsyncClampsTakeAndPaginatesDeterministicallyAsync`                | Fact   | List async clamps take and paginates deterministically.                    |
+| `DeletingARuleCancelsItsUncompletedInstancesAndKeepsFinishedOnesAsync` | Fact   | Deleting a rule cancels its uncompleted instances and keeps finished ones. |
+| `ListsNeverContainSoftDeletedRulesAsync`                               | Fact   | Lists never contain soft-deleted rules.                                    |
+| `EditingARuleKeepsItsFinishedRunsReachableFromTheNewVersionAsync`      | Fact   | Editing a rule keeps its finished runs reachable from the new version.     |
 
 ## Entity analysis model reprocessing rule instance
 
 ### EntityAnalysisModelReprocessingRuleInstanceServiceTests
 
-`Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance.EntityAnalysisModelReprocessingRuleInstanceServiceTests` — 36 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance.EntityAnalysisModelReprocessingRuleInstanceServiceTests` —
+39 tests. Category: Service. Collection: Database.
 
 | Test                                                                                | Kind   | Verifies                                                                                |
 |-------------------------------------------------------------------------------------|--------|-----------------------------------------------------------------------------------------|
@@ -1044,12 +1093,15 @@ Category: Service. Collection: Database.
 | `ReadsAndFailuresPublishNothingAsync`                                               | Fact   | Reads and failures publish nothing.                                                     |
 | `CatalogueRegistersUniquePascalCaseNoUnderscoreNames`                               | Fact   | Catalogue registers unique pascal case no underscore names.                             |
 | `ListAsyncClampsTakeAndPaginatesDeterministicallyAsync`                             | Fact   | List async clamps take and paginates deterministically.                                 |
+| `InsertQueuesServerAssignedStateAndRefusesASecondUncompletedInstanceAsync`          | Fact   | Insert queues server-assigned state and refuses a second uncompleted instance.          |
+| `UpdateIgnoresClientSuppliedRunStateAndRequeuesAnInstanceThatWasRunningAsync`       | Fact   | Update ignores client-supplied run state and requeues an instance that was running.     |
+| `ListsNeverContainSoftDeletedRowsAsync`                                             | Fact   | Lists never contain soft-deleted rows.                                                  |
 
 ## Entity analysis model request x path
 
 ### EntityAnalysisModelRequestXPathServiceTests
 
-`Jube.Test.Service.EntityAnalysisModelRequestXPath.EntityAnalysisModelRequestXPathServiceTests` — 53 tests. Category:
+`Jube.Test.Service.EntityAnalysisModelRequestXPath.EntityAnalysisModelRequestXPathServiceTests` — 54 tests. Category:
 Service. Collection: Database.
 
 | Test                                                                                                | Kind   | Verifies                                                                                                         |
@@ -1058,7 +1110,6 @@ Service. Collection: Database.
 | `GetAllReturnsCreatedRowAndGetByIdReturnsItAsync`                                                   | Fact   | Get all returns created row and get by id returns it.                                                            |
 | `GetByEntityAnalysisModelIdReturnsOnlyRowsForThatModelAsync`                                        | Fact   | Get by entity analysis model id returns only rows for that model.                                                |
 | `GetByOverrideKeyOnlyReturnsOverrideEnabledRowsAsync`                                               | Fact   | Get by override key only returns override enabled rows.                                                          |
-| `GetByEntityAnalysisModelIdByDataTypeIgnoresDataTypeIdParameterAndFiltersToStringIntegerFloatAsync` | Fact   | Get by entity analysis model id by data type ignores data type id parameter and filters to string integer float. |
 | `UpdateIncrementsVersionAndWritesAuditRowAsync`                                                     | Fact   | Update increments version and writes audit row.                                                                  |
 | `DeleteKeepsRowReachableByIdAndHidesItFromListsAsync`                                               | Fact   | Delete keeps row reachable by id and hides it from lists.                                                        |
 | `EveryMethodThrowsForbiddenWhenPermissionMissingAndWritesNoRowAsync`                                | Fact   | Every method throws forbidden when permission missing and writes no row.                                         |
@@ -1107,8 +1158,87 @@ Service. Collection: Database.
 | `ReadsAndFailuresPublishNothingAsync`                                                               | Fact   | Reads and failures publish nothing.                                                                              |
 | `CatalogueRegistersUniquePascalCaseNoUnderscoreNames`                                               | Fact   | Catalogue registers unique pascal case no underscore names.                                                      |
 | `ListAsyncClampsTakeAndPaginatesDeterministicallyAsync`                                             | Fact   | List async clamps take and paginates deterministically.                                                          |
+| `AnXPathUsingTheRegularExpressionOperatorIsRefusedAndNothingIsStoredAsync`                          | Theory | An XPath using the JSONPath regular expression operator (=~) is refused and no row is stored.                    |
+| `GetByEntityAnalysisModelIdByDataTypeIgnoresDataTypeIdParameterAndFiltersToStringIntegerFloatAsync` | Fact   | Get by entity analysis model id by data type ignores data type id parameter and filters to string integer float. |
 
 ## Entity analysis model sanction
+
+### EntityAnalysisModelResponseElevationRangeServiceTests
+
+`Jube.Test.Service.EntityAnalysisModelResponseElevationRange.EntityAnalysisModelResponseElevationRangeServiceTests` — 55
+tests. Category: Service. Collection:
+Database.
+
+| Test                                                                                  | Kind   | Verifies                                                                                    |
+|---------------------------------------------------------------------------------------|--------|---------------------------------------------------------------------------------------------|
+| `InsertUnderASoftDeletedModelIsRejectedAsync`                                         | Fact   | A range cannot be created under a soft deleted Model.                                       |
+| `UpdateCannotMoveARangeToAnotherModelAsync`                                           | Fact   | An update cannot change the Model of a range.                                               |
+| `InsertPersistsAndReturnsVersionOneAsync`                                             | Fact   | Insert persists and returns version one.                                                    |
+| `GetAllReturnsCreatedRowAndGetByIdReturnsItAsync`                                     | Fact   | Get all returns created row and get by id returns it.                                       |
+| `GetByEntityAnalysisModelIdReturnsOnlyActiveRowsForThatModelOrderedByNameAsync`       | Fact   | Get by entity analysis model id returns only active rows for that model ordered by name.    |
+| `UpdateIncrementsVersionAndWritesAuditRowAsync`                                       | Fact   | Update increments version and writes audit row.                                             |
+| `DeleteKeepsRowReachableByIdAndHidesItFromListsAsync`                                 | Fact   | Delete keeps row reachable by id and hides it from lists.                                   |
+| `EveryMethodThrowsForbiddenWhenPermissionMissingAndWritesNoRowAsync`                  | Fact   | Every method throws forbidden when permission missing and writes no row.                    |
+| `NullOrBlankUserNameThrowsNotAuthenticatedBeforeAnyQueryAsync`                        | Theory | Null or blank user name throws not authenticated before any query.                          |
+| `UserWithNoUserInTenantRowThrowsNotAuthenticatedAsync`                                | Fact   | User with no user in tenant row throws not authenticated.                                   |
+| `UnknownUserThrowsNotAuthenticatedAsync`                                              | Fact   | Unknown user throws not authenticated.                                                      |
+| `UserInTenantBCannotGetUpdateOrDeleteTenantARowAsync`                                 | Fact   | User in tenant b cannot get update or delete tenant a row.                                  |
+| `GetAllAsTenantBNeverContainsTenantARowsAsync`                                        | Fact   | Get all as tenant b never contains tenant a rows.                                           |
+| `NameRequiredRejectsNullEmptyOrWhitespaceAsync`                                       | Theory | Name required rejects null empty or whitespace.                                             |
+| `NameOverMaximumLengthIsRejectedWithErrorCodeAsync`                                   | Fact   | Name over maximum length is rejected with error code.                                       |
+| `DuplicateNameWithinSameModelFailsButDifferentModelSucceedsAsync`                     | Fact   | Duplicate name within same model fails but different model succeeds.                        |
+| `DuplicateNameDifferingOnlyByCaseWithinSameModelFailsAsync`                           | Fact   | Duplicate name differing only by case within same model fails.                              |
+| `InvalidEntityAnalysisModelIdIsRejectedAsync`                                         | Fact   | Invalid entity analysis model id is rejected.                                               |
+| `TamperedIdentityAndAuditFieldsOnInsertHaveNoEffectAsync`                             | Fact   | Tampered identity and audit fields on insert have no effect.                                |
+| `TamperedIdentityAndAuditFieldsOnUpdateHaveNoEffectAsync`                             | Fact   | Tampered identity and audit fields on update have no effect.                                |
+| `UpdateOfLockedRowThrowsNotFoundAsync`                                                | Fact   | Update of locked row throws not found.                                                      |
+| `UpdateOfSoftDeletedRowRevivesItAsync`                                                | Fact   | Update of soft deleted row revives it.                                                      |
+| `UpdateOfNeverExistedIdThrowsNotFoundAsync`                                           | Fact   | Update of never existed id throws not found.                                                |
+| `DeleteOfMissingOrAlreadyDeletedRowThrowsNotFoundAsync`                               | Fact   | Delete of missing or already deleted row throws not found.                                  |
+| `ResubmitOfNonRejectedVersionThrowsApprovalRefusedAndWritesNoRowAsync`                | Fact   | Resubmit of non rejected version throws approval refused and writes no row.                 |
+| `ResubmitOfRejectedVersionBumpsVersionArchivesOldAndKeepsContentAsync`                | Fact   | Resubmit of rejected version bumps version archives old and keeps content.                  |
+| `ResubmitOfRejectedDeleteKeepsDeletedTrueAndReopensApprovalAsync`                     | Fact   | Resubmit of rejected delete keeps deleted true and reopens approval.                        |
+| `RetractOfNonRejectedVersionThrowsApprovalRefusedAsync`                               | Fact   | Retract of non rejected version throws approval refused.                                    |
+| `RetractWithNoApprovedBaselineThrowsApprovalRefusedAsync`                             | Fact   | Retract with no approved baseline throws approval refused.                                  |
+| `RetractOfRejectedEditRestoresLastApprovedContentAndStampsTheRejectionRetractedAsync` | Fact   | Retract of rejected edit restores last approved content and stamps the rejection retracted. |
+| `RetractOfRejectedDeleteUndeletesAsync`                                               | Fact   | Retract of rejected delete undeletes.                                                       |
+| `ActiveAndLockedRoundTripBoolToByteAndBackAsync`                                      | Fact   | Active and locked round trip bool to byte and back.                                         |
+| `GetByIdForMissingIdReturnsNullNotExceptionAsync`                                     | Fact   | Get by id for missing id returns null not exception.                                        |
+| `PreCancelledTokenOnReadThrowsOperationCanceledAsync`                                 | Fact   | Pre cancelled token on read throws operation canceled.                                      |
+| `PermissionDeniedLogsWarnNotErrorAndGatesHoldAsync`                                   | Fact   | Permission denied logs warn not error and gates hold.                                       |
+| `SuccessfulInsertLogsExactlyOneInfoAndReadsLogNoInfoAsync`                            | Fact   | Successful insert logs exactly one info and reads log no info.                              |
+| `WithGatesDisabledHappyPathRecordsNoDebugInfoOrWarnAsync`                             | Fact   | With gates disabled happy path records no debug info or warn.                               |
+| `FailureLogsErrorWithExceptionAttachedAndStillPropagatesAsync`                        | Fact   | Failure logs error with exception attached and still propagates.                            |
+| `EachCallEmitsOneSpanWithOutcomeTagAsync`                                             | Fact   | Each call emits one span with outcome tag.                                                  |
+| `EachCallRecordsOneDurationMeasurementAsync`                                          | Fact   | Each call records one duration measurement.                                                 |
+| `AuditLogGetsExactlyOneLineIncludingReadsAsync`                                       | Fact   | Audit log gets exactly one line including reads.                                            |
+| `InsertPublishesExactlyOneCreatedEventAsync`                                          | Fact   | Insert publishes exactly one created event.                                                 |
+| `ReadsAndFailuresPublishNothingAsync`                                                 | Fact   | Reads and failures publish nothing.                                                         |
+| `CatalogueRegistersUniquePascalCaseNoUnderscoreNames`                                 | Fact   | Catalogue registers unique pascal case no underscore names.                                 |
+| `ListAsyncClampsTakeAndPaginatesDeterministicallyAsync`                               | Fact   | List async clamps take and paginates deterministically.                                     |
+
+## Entity approval
+
+| `OverlappingRangeWithinSameModelIsRejectedNamingTheClashingRangeAsync`                | Fact | Overlapping range
+within same model is rejected naming the clashing range. |
+| `AdjacentRangesAndTheSameLevelsInAnotherModelAreAcceptedAsync`                        | Fact | Adjacent ranges and the
+same levels in another model are accepted. |
+| `UpdatingARangeDoesNotClashWithItselfAsync`                                           | Fact | Updating a range does
+not clash with itself. |
+| `NegativeMinimumOrMaximumBelowMinimumIsRejectedAsync`                                 | Theory | Negative minimum or
+maximum below minimum is rejected. |
+| `DeclineAndHoldTogetherIsRejectedButEitherAloneIsAcceptedAsync`                       | Fact | Decline and hold
+together is rejected but either alone is accepted. |
+| `HookFieldsAreRequiredOnlyWhenTheirSwitchIsOnAsync`                                   | Fact | Hook fields are
+required only when their switch is on. |
+| `ColoursMustBeSixDigitHexAsync`                                                       | Fact | Colours must be six
+digit hex. |
+| `GetByEntityAnalysisModelIdLabelsEachRangeWithItsNameAndLevelsAsync`                  | Fact | Get by entity analysis
+model id labels each range with its name and levels. |
+| `RepositoryFindsTheActiveRangeContainingALevelAndNoneOutsideAsync`                    | Fact | Repository finds the
+active range containing a level and none outside. |
+| `AWebHookOnAnInternalHostIsRefusedAtSaveTimeUnlessAllowListedAsync` | Theory | A web hook on an internal host is
+refused at save time unless allow listed. |
 
 ### EntityAnalysisModelSanctionServiceTests
 
@@ -1226,22 +1356,23 @@ Database.
 
 ## Entity approval
 
-### AdvancedAnalyticsInstanceMakerCheckerTests
+### AskJoobyAnalyticsInstanceMakerCheckerTests
 
-`Jube.Test.Service.EntityApproval.AdvancedAnalyticsInstanceMakerCheckerTests` — 9 tests. Category: Service. Collection:
+`Jube.Test.Service.EntityApproval.AskJoobyAnalyticsInstanceMakerCheckerTests` — 10 tests. Category: Service. Collection:
 Database.
 
-| Test                                                                      | Kind | Verifies                                                                     |
-|---------------------------------------------------------------------------|------|------------------------------------------------------------------------------|
-| `ADeletionIsHeldBackFromTheSyncQueryUntilACheckerApprovesItAsync`         | Fact | A deletion is held back from the sync query until a checker approves it.     |
-| `ARejectedDeletionLeavesTheInstanceInTheSyncQueryAsync`                   | Fact | A rejected deletion leaves the instance in the sync query.                   |
-| `AnActiveFlipIsNotAppliedUntilACheckerApprovesItAsync`                    | Fact | An active flip is not applied until a checker approves it.                   |
-| `ARejectedActiveFlipKeepsTheInstanceInactiveAsync`                        | Fact | A rejected active flip keeps the instance inactive.                          |
-| `RenamingAnAlreadyApprovedInstanceNeverEntersAPendingStateAsync`          | Fact | Renaming an already approved instance never enters a pending state.          |
-| `TheModelsValueStatusListsAPendingActivationOfItsInstanceAsync`           | Fact | The models value status lists a pending activation of its instance.          |
-| `ApprovingAllPendingOnTheModelApprovesThePendingActivationAsync`          | Fact | Approving all pending on the model approves the pending activation.          |
-| `ResubmittingARejectedDeletionReopensApprovalUnchangedAsync`              | Fact | Resubmitting a rejected deletion reopens approval unchanged.                 |
-| `RetractingARejectedDeletionRestoresTheLastApprovedStateImmediatelyAsync` | Fact | Retracting a rejected deletion restores the last approved state immediately. |
+| Test                                                                           | Kind | Verifies                                                                                                   |
+|--------------------------------------------------------------------------------|------|------------------------------------------------------------------------------------------------------------|
+| `ADeletionIsHeldBackFromTheSyncQueryUntilACheckerApprovesItAsync`              | Fact | A deletion is held back from the sync query until a checker approves it.                                   |
+| `ARejectedDeletionLeavesTheInstanceInTheSyncQueryAsync`                        | Fact | A rejected deletion leaves the instance in the sync query.                                                 |
+| `AnActiveFlipIsNotAppliedUntilACheckerApprovesItAsync`                         | Fact | An active flip is not applied until a checker approves it.                                                 |
+| `ARejectedActiveFlipKeepsTheInstanceInactiveAsync`                             | Fact | A rejected active flip keeps the instance inactive.                                                        |
+| `RenamingAnAlreadyApprovedInstanceNeverEntersAPendingStateAsync`               | Fact | Renaming an already approved instance never enters a pending state.                                        |
+| `ChangingTheOutputFlagsOfAnApprovedInstanceIsHeldUntilACheckerApprovesItAsync` | Fact | Changing the output flags of an approved instance opens an approval cycle and is held from the sync query. |
+| `TheModelsValueStatusListsAPendingActivationOfItsInstanceAsync`                | Fact | The models value status lists a pending activation of its instance.                                        |
+| `ApprovingAllPendingOnTheModelApprovesThePendingActivationAsync`               | Fact | Approving all pending on the model approves the pending activation.                                        |
+| `ResubmittingARejectedDeletionReopensApprovalUnchangedAsync`                   | Fact | Resubmitting a rejected deletion reopens approval unchanged.                                               |
+| `RetractingARejectedDeletionRestoresTheLastApprovedStateImmediatelyAsync`      | Fact | Retracting a rejected deletion restores the last approved state immediately.                               |
 
 ### ApprovalNoteAndHistoryTests
 
@@ -1306,6 +1437,34 @@ Database.
 | `AFirstVersionHasNoEarlierVersionToCompareAsync`                                          | Fact | A first version has no earlier version to compare.                                                 |
 | `ChangesForAVersionThatIsNoLongerCurrentAreRefusedAsync`                                  | Fact | Changes for a version that is no longer current are refused.                                       |
 
+### ForceOverrideApprovalTests
+
+`Jube.Test.Service.EntityApproval.ForceOverrideApprovalTests` — 19 tests. Category: Service. Collection: Database.
+
+| Test                                                                                              | Kind | Verifies                                                                                                                         |
+|---------------------------------------------------------------------------------------------------|------|----------------------------------------------------------------------------------------------------------------------------------|
+| `APendingForceOverrideIsNotInTheApprovedProjectionButASuppressOverrideIsAsync`                    | Fact | A pending Force override is not in the approved projection and a Suppress override is.                                           |
+| `OnlyAForceOverrideIsAnApprovalSubjectAndItIsListedAsPendingAsync`                                | Fact | Only a Force override is an approval subject, listed as pending with its maker.                                                  |
+| `AMakerCannotApproveOrRejectTheirOwnForceOverrideAsync`                                           | Fact | A maker cannot approve or reject their own Force override.                                                                       |
+| `ACheckerApprovingAForceOverrideBringsItIntoTheApprovedProjectionAsync`                           | Fact | Approval brings the Force override into the approved projection.                                                                 |
+| `ARejectedForceOverrideNeverReachesTheApprovedProjectionAsync`                                    | Fact | A rejected Force override never reaches the approved projection.                                                                 |
+| `RemovingAnApprovedForceOverrideIsPendingAndTheApprovedVersionStaysInForceUntilApprovedAsync`     | Fact | A removal is a pending version; the approved version stays in force until it is approved.                                        |
+| `ChangingTheExpiryOfAnApprovedForceOverrideNeedsApprovalFromSomeoneOtherThanTheEditorAsync`       | Fact | An expiry edit keeps the approved expiry live, makes the editor the maker and needs a checker.                                   |
+| `AnExpiryEditToAForceOverrideShowsTheExpiryFieldInTheReviewedChangesAsync`                        | Fact | The reviewed changes include the Delete Expiry Date for an override.                                                             |
+| `AnApprovedForceOverrideThatHasExpiredIsNotInTheApprovedProjectionAsync`                          | Fact | Expiry semantics are unchanged for an approved Force override.                                                                   |
+| `ARuleLevelForceOverrideFollowsTheSameApprovalRuleAsync`                                          | Fact | A rule level Force override follows the same approval rule and maker rule.                                                       |
+| `SwitchingARuleLevelOverrideToForceWithholdsItUntilApprovedAndMakesTheSwitcherTheMakerAsync`      | Fact | Switching a rule override to Force withholds it until approved.                                                                  |
+| `SwitchingAForceRuleLevelOverrideBackToSuppressTakesEffectWithoutApprovalAsync`                   | Fact | Switching Force back to Suppress takes effect without approval.                                                                  |
+| `ResubmitOfAForceOverrideNeedsTheForcePermissionAndRetractNeedsARejectedVersionAsync`             | Fact | Resubmit needs permission 62, retract needs a rejected version and permission 2.                                                 |
+| `ResubmitOfARejectedForceOverrideBumpsTheVersionAndMakesTheCallerTheMakerAsync`                   | Fact | Resubmit bumps the version and makes the caller the maker; approval then brings it live.                                         |
+| `RetractOfARejectedRemovalRestoresTheApprovedForceOverrideAsync`                                  | Fact | Retract of a rejected removal restores the approved Force override.                                                              |
+| `AForceOverrideOfAnotherTenantIsNeitherListedNorApprovableAsync`                                  | Fact | Another tenant's Force override is neither listed nor approvable.                                                                |
+| `AForceOverrideWhoseRemovalIsPendingStaysListedWithItsPendingStateUntilTheRemovalIsApprovedAsync` | Fact | The model grid query keeps a pending removal listed as present and pending, also after a rejection, and as live after a retract. |
+| `AnApprovedRemovalOfAForceOverrideNoLongerListsItAsPresentAsync`                                  | Fact | Once the removal is approved the override is no longer listed as present.                                                        |
+| `ARuleLevelForceOverrideWhoseRemovalIsPendingStaysListedWithItsPendingStateAsync`                 | Fact | The same for the rule grid query.                                                                                                |
+
+<!-- TODO(docs): Counts and descriptions in this table were written, not generated from a build; regenerate the catalogue row counts. -->
+
 ### MakerCheckerEngineTests
 
 `Jube.Test.Service.EntityApproval.MakerCheckerEngineTests` — 10 tests. Category: Service. Collection: Database.
@@ -1342,10 +1501,11 @@ Database.
 
 ### InvokeEndpointTests
 
-`Jube.Test.Service.Invoke.InvokeEndpointTests` — 60 tests. Collection: Database.
+`Jube.Test.Service.Invoke.InvokeEndpointTests` — 61 tests. Collection: Database.
 
 | Test                                                                                   | Kind   | Verifies                                                                                     |
 |----------------------------------------------------------------------------------------|--------|----------------------------------------------------------------------------------------------|
+| `Sanction_ByAUserWithoutTheViewSanctionPermission_Returns403Async`                     | Fact   | A signed-in user without permission 29 is refused 403 by the sanction search.                |
 | `Invoke_WithTheDocumentationPayload_Returns200JsonFromTheRealEngineAsync`              | Fact   | Invoke with the documentation payload returns200 json from the real engine.                  |
 | `Invoke_OverridesInThePayload_AreReadByTheModelAsync`                                  | Fact   | Invoke overrides in the payload are read by the model.                                       |
 | `Invoke_DoesNotRequireAJsonContentTypeAsync`                                           | Theory | Invoke does not require a json content type.                                                 |
@@ -1475,3 +1635,37 @@ Database.
 | `PreviewLeavesTextOfTwoHundredCharactersOrFewerWhole`    | Fact   | Preview leaves text of two hundred characters or fewer whole.    |
 | `PreviewRendersNonTextValues`                            | Fact   | Preview renders non text values.                                 |
 | `ShortenLeavesNonTextValuesAlone`                        | Fact   | Shorten leaves non text values alone.                            |
+
+### ReprocessingRulePermissionSplitTests
+
+`Jube.Test.Service.ReprocessingPermissions.ReprocessingRulePermissionSplitTests` — 5 tests.
+Category: Service. Collection: Database.
+
+| Test                                                                               | Kind   | Verifies                                                                                       |
+|------------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------------|
+| `TheEditPermissionAloneCanCreateValidateUpdateAndDeleteTheRuleAsync`               | Fact   | The edit permission alone can create validate update and delete the rule.                      |
+| `AHolderOfOnlyTheTriggerOrStopPermissionCannotEditTheRuleAndNothingIsWrittenAsync` | Theory | A holder of only the trigger or stop permission cannot edit the rule and nothing is written.   |
+| `EachOfTheThreePermissionsCanReadTheRuleAndListTheRulesOfAModelAsync`              | Theory | Each of the three permissions can read the rule and list the rules of a model.                 |
+| `ARoleHoldingNoneOfTheThreeCannotReadTheRuleAsync`                                 | Fact   | A role holding none of the three cannot read the rule.                                         |
+| `TheServiceDeclaresTheEditPermissionAsTheOriginalNumberAndReadsAsAnyOfTheThree`    | Fact   | The service declares the edit permission as the original number and reads as any of the three. |
+
+<!-- TODO(docs): owner to confirm this catalogue entry after the first run of the new tests (they were written, not run). -->
+
+### ReprocessingInstancePermissionSplitTests
+
+`Jube.Test.Service.ReprocessingPermissions.ReprocessingInstancePermissionSplitTests` — 9 tests.
+Category: Service. Collection: Database.
+
+| Test                                                                                        | Kind   | Verifies                                                                                              |
+|---------------------------------------------------------------------------------------------|--------|-------------------------------------------------------------------------------------------------------|
+| `TheTriggerPermissionAloneCanStartAValidatedRunButCannotStopItAsync`                        | Fact   | The trigger permission alone can start a validated run but cannot stop it.                            |
+| `TheTriggerPermissionAloneCanCreateAPlainInstanceAsync`                                     | Fact   | The trigger permission alone can create a plain instance.                                             |
+| `AHolderWithoutTheTriggerPermissionCannotStartValidateOrUpdateARunAndNothingIsWrittenAsync` | Theory | A holder without the trigger permission cannot start validate or update a run and nothing is written. |
+| `TheStopPermissionAloneCanDeleteARunAsync`                                                  | Fact   | The stop permission alone can delete a run.                                                           |
+| `AHolderWithoutTheStopPermissionCannotDeleteARunAndTheRunSurvivesAsync`                     | Theory | A holder without the stop permission cannot delete a run and the run survives.                        |
+| `AHolderOfOnlyTheStopPermissionCannotStartAnotherRunAsync`                                  | Fact   | A holder of only the stop permission cannot start another run.                                        |
+| `EachOfTheThreePermissionsCanReadTheRunsAsync`                                              | Theory | Each of the three permissions can read the runs.                                                      |
+| `ARoleHoldingNoneOfTheThreeCannotReadTheRunsAsync`                                          | Fact   | A role holding none of the three cannot read the runs.                                                |
+| `TheServiceDeclaresEachVerbWithItsOwnPermissionAndReadsAsAnyOfTheThree`                     | Fact   | The service declares each verb with its own permission and reads as any of the three.                 |
+
+<!-- TODO(docs): owner to confirm this catalogue entry after the first run of the new tests (they were written, not run). -->

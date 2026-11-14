@@ -6,7 +6,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static bool NotIn(this Double @this, params Double[] values)
+        [Description("Checks if the value is not equal to any in the provided array.")]
+        public static bool NotIn(this Double @this,
+            [Description("The value list to compare with the object.")] params Double[] values)
         {
             return Array.IndexOf(values, @this) == -1;
         }

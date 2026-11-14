@@ -17,4 +17,4 @@
 # Retention lives in pgbackrest.conf, not here:
 #   repo1-retention-full=2   → two weekly fulls ≈ 8–14 days of PITR
 #   raise to 4–5 if a client context needs ~30 days
- 
+ Ok, 

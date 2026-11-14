@@ -20,6 +20,7 @@ namespace Jube.Data.Query.GetEntityAnalysisPotentialMultiPartStringNamesQuery
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
 
     public class GetEntityAnalysisPotentialMultiPartStringNamesQuery
     {
@@ -42,7 +43,7 @@ namespace Jube.Data.Query.GetEntityAnalysisPotentialMultiPartStringNamesQuery
                             && w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
                             && (w.EntityAnalysisModel.Deleted == 0 || w.EntityAnalysisModel.Deleted == null)
                             && (w.Deleted == 0 || w.Deleted == null)
-                            && w.DataTypeId == 1
+                            && (w.DataTypeId == 1 || w.DataTypeId == 8)
                             && w.Active == 1)
                 .Select(s => s.Name)
                 .Union(dbContext.EntityAnalysisModelInlineFunction
@@ -63,7 +64,7 @@ namespace Jube.Data.Query.GetEntityAnalysisPotentialMultiPartStringNamesQuery
                             && w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
                             && (w.EntityAnalysisModel.Deleted == 0 || w.EntityAnalysisModel.Deleted == null)
                             && (w.Deleted == 0 || w.Deleted == null)
-                            && w.DataTypeId == 1
+                            && (w.DataTypeId == 1 || w.DataTypeId == 8)
                             && w.Active == 1)
                 .Select(s => s.Name)
                 .Union(dbContext.EntityAnalysisModelInlineFunction

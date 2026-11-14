@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns a TimeSpan representing the number of minutes.")]
         public static TimeSpan FromMinutes(this Double value)
         {
             return TimeSpan.FromMinutes(value);

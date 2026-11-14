@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Whether the address is neither private nor reserved.")]
         public static bool IsPublicIpAddress(this string? @this)
         {
             return NetworkAddressSupport.TryParseAddress(@this, out _) && !@this.IsPrivateIpAddress() &&

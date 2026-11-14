@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double DistanceToThreshold(this double @this, double threshold)
+        [Description("The gap between the value and the threshold in either direction.")]
+        public static double DistanceToThreshold(this double @this,
+            [Description("The threshold the value is tested against.")] double threshold)
         {
             return CalculationSupport.Finite(Math.Abs(@this - threshold));
         }

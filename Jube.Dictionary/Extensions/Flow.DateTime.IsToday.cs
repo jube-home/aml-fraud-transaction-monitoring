@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
+            [Description("True when: on the current date. Decides matched if so; otherwise continues.")]
             public Flow<DateTime> MatchIsToday()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeIsToday(flow.Value));
             }
 
+            [Description("True when: on the current date. Decides rejected if so; otherwise continues.")]
             public Flow<DateTime> RejectIsToday()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeIsToday(flow.Value));
             }
 
+            [Description("True when: on the current date. Decides broken if so; otherwise continues.")]
             public Flow<DateTime> BreakIsToday()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeIsToday(flow.Value));
             }
 
+            [Description("True when: on the current date. Continues if so; otherwise decides rejected.")]
             public Flow<DateTime> RequireIsToday()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeIsToday(flow.Value));
             }
 
+            [Description("True when: on the current date. Continues if so; otherwise decides broken.")]
             public Flow<DateTime> EnsureIsToday()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
+            [Description("Begins a pipeline from the value. True when: on the current date. Decides matched if so; otherwise continues.")]
             public Flow<DateTime> MatchIsToday()
             {
                 return value.Start().MatchIsToday();
             }
 
+            [Description("Begins a pipeline from the value. True when: on the current date. Decides rejected if so; otherwise continues.")]
             public Flow<DateTime> RejectIsToday()
             {
                 return value.Start().RejectIsToday();
             }
 
+            [Description("Begins a pipeline from the value. True when: on the current date. Decides broken if so; otherwise continues.")]
             public Flow<DateTime> BreakIsToday()
             {
                 return value.Start().BreakIsToday();
             }
 
+            [Description("Begins a pipeline from the value. True when: on the current date. Continues if so; otherwise decides rejected.")]
             public Flow<DateTime> RequireIsToday()
             {
                 return value.Start().RequireIsToday();
             }
 
+            [Description("Begins a pipeline from the value. True when: on the current date. Continues if so; otherwise decides broken.")]
             public Flow<DateTime> EnsureIsToday()
             {
                 return value.Start().EnsureIsToday();

@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,14 +22,17 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.EntityAnalysisModelIntegrity
 {
     [Description("An entity an engine instance has loaded.")]
+    [MessagePackObject]
     public class EngineLoadedEntityDto
     {
-        [Description("The entity id.")] public int Id { get; set; }
+        [Description("The entity id.")] [Key(0)] public int Id { get; set; }
 
         [Description("The entity name as the engine loaded it.")]
+        [Key(1)]
         public string Name { get; set; } = string.Empty;
 
         [Description("The entity guid, or null when the entity no longer exists in the database.")]
+        [Key(2)]
         public Guid? Guid { get; set; }
     }
 }

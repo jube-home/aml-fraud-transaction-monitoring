@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The name folded for matching: lower case, no accents or punctuation, no leading titles or trailing company suffixes.")]
         public static string NormalisedForMatching(this string? @this)
         {
             return FuzzyNormaliser.Normalise(@this, FuzzyNormalisation.Default with

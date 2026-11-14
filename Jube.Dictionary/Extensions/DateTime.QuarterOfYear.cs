@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns the calendar quarter (1-4) the date falls in.")]
         public static int QuarterOfYear(this DateTime @this)
         {
             return (@this.Month - 1) / 3 + 1;

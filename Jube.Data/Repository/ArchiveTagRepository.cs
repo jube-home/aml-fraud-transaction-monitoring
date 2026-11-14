@@ -21,6 +21,7 @@ namespace Jube.Data.Repository
     using AutoMapper;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Microsoft.Extensions.Logging.Abstractions;
     using Poco;
 
@@ -33,7 +34,7 @@ namespace Jube.Data.Repository
 
             try
             {
-                await LinqToDB.Data.DataConnectionExtensions.ExecuteAsync(dbContext,
+                await LinqToDB.Data.DataContextExtensions.ExecuteAsync(dbContext,
                     "SELECT pg_advisory_xact_lock(hashtext(@guid))", token,
                     new LinqToDB.Data.DataParameter("guid", entityAnalysisModelInstanceEntryGuid.ToString()));
 

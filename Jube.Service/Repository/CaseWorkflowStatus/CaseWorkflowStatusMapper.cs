@@ -26,9 +26,16 @@ namespace Jube.Service.Repository.CaseWorkflowStatus
             {
                 Id = rulePoco.Id,
                 Name = rulePoco.Name,
+                Sql = rulePoco.Sql,
                 Active = rulePoco.Active == 1,
                 Locked = rulePoco.Locked == 1,
                 Priority = rulePoco.Priority.GetValueOrDefault(),
+                OutcomeId = rulePoco.OutcomeId,
+                MaxDwellMinutes = rulePoco.MaxDwellMinutes,
+                EscalationTriggerId = rulePoco.EscalationTriggerId,
+                EscalationThreshold = rulePoco.EscalationThreshold,
+                EscalationTargetCaseWorkflowStatusGuid = rulePoco.EscalationTargetCaseWorkflowStatusGuid,
+                EscalationReleaseLock = rulePoco.EscalationReleaseLock == 1,
                 ForeColor = rulePoco.ForeColor,
                 BackColor = rulePoco.BackColor,
                 EnableHttpEndpoint = rulePoco.EnableHttpEndpoint == 1,
@@ -55,11 +62,22 @@ namespace Jube.Service.Repository.CaseWorkflowStatus
 
         public static RulePoco ToPoco(CaseWorkflowStatusDto dto) => new()
         {
+            Version = dto.Version,
             Id = dto.Id,
             Name = dto.Name,
+            Sql = dto.Sql,
             Active = (byte)(dto.Active ? 1 : 0),
             Locked = (byte)(dto.Locked ? 1 : 0),
             Priority = (byte)dto.Priority,
+            OutcomeId = (byte)dto.OutcomeId,
+            MaxDwellMinutes = dto.MaxDwellMinutes,
+            EscalationTriggerId = dto.EscalationTriggerId.HasValue ? (byte)dto.EscalationTriggerId.Value : null,
+            EscalationThreshold = dto.EscalationThreshold,
+            EscalationTargetCaseWorkflowStatusGuid = dto.EscalationTargetCaseWorkflowStatusGuid is { } target
+                                                     && target != Guid.Empty
+                ? target
+                : null,
+            EscalationReleaseLock = (byte)(dto.EscalationReleaseLock ? 1 : 0),
             ForeColor = dto.ForeColor,
             BackColor = dto.BackColor,
             EnableHttpEndpoint = (byte)(dto.EnableHttpEndpoint ? 1 : 0),

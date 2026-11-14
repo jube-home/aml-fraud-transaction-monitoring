@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchMinWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the smallest of the value and the others is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMinWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleMinWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RejectMinWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the smallest of the value and the others is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMinWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleMinWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> BreakMinWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the smallest of the value and the others is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMinWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleMinWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RequireMinWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the smallest of the value and the others is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMinWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleMinWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> EnsureMinWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the smallest of the value and the others is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMinWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchMinWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the smallest of the value and the others is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMinWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().MatchMinWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RejectMinWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the smallest of the value and the others is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMinWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RejectMinWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> BreakMinWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the smallest of the value and the others is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMinWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().BreakMinWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RequireMinWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the smallest of the value and the others is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMinWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RequireMinWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> EnsureMinWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the smallest of the value and the others is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMinWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().EnsureMinWithInRange(lowerBound, upperBound, others);
             }

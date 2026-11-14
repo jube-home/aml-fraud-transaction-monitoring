@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static Flow<double> DividedBy(this Flow<double> flow, double divisor)
+        [Description("Replaces the value being tested with the value divided by the argument; a zero divisor errors the pipeline.")]
+        public static Flow<double> DividedBy(this Flow<double> flow,
+            [Description("The number to divide by.")] double divisor)
         {
             if (flow.IsDecided)
             {
@@ -27,7 +29,8 @@ namespace Jube.Dictionary.Extensions
                 : flow.Carry(flow.Value / divisor);
         }
 
-        public static double DividedBy(this double value, double divisor)
+        [Description("The value divided by the divisor, NaN if undefined.")]
+        public static double DividedBy(this double value, [Description("The number to divide by.")] double divisor)
         {
             return CalculationSupport.Finite(value / divisor);
         }

@@ -24,7 +24,9 @@ FORBIDDEN_SYMBOLS <- c(
   "install.packages", "remove.packages",
   "quit", "q", "sink", "trace", "untrace", "traceback", "source",
 
-  "<<-"
+  "<<-",
+
+  "getFromNamespace", "getAnywhere", "asNamespace", "getNamespace", "loadNamespace", "attachNamespace", "getExportedValue", "file", "gzfile", "bzfile", "xzfile", "unz", "fifo", "readLines", "readline", "readRDS", "readBin", "readChar", "scan", "save.image", "saveRDS", "writeLines", "writeBin", "writeChar", "read.csv", "read.csv2", "read.table", "read.delim", "write.csv", "write.csv2", "write.table", "dir.create", "list.files", "list.dirs", "file.copy", "file.info", "Sys.glob", "serverSocket", "socketAccept", "socketSelect", "nsl", "mcparallel", "mclapply", "mcmapply", "pvec"
 )
 
 SCRIPT_MAX_CHARS <- 200000L

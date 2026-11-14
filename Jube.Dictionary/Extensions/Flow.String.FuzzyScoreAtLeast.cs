@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchFuzzyScoreAtLeast(IEnumerable<string> list, double threshold, string? options)
+            [Description("True when: the best score across the List token, from 0 to 1, is at least the threshold. Options string may be null. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchFuzzyScoreAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The score the pipeline must have reached.")] double threshold,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringFuzzyScoreAtLeast(flow.Value, list, threshold, options));
             }
 
-            public Flow<string?> RejectFuzzyScoreAtLeast(IEnumerable<string> list, double threshold, string? options)
+            [Description("True when: the best score across the List token, from 0 to 1, is at least the threshold. Options string may be null. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectFuzzyScoreAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The score the pipeline must have reached.")] double threshold,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringFuzzyScoreAtLeast(flow.Value, list, threshold, options));
             }
 
-            public Flow<string?> BreakFuzzyScoreAtLeast(IEnumerable<string> list, double threshold, string? options)
+            [Description("True when: the best score across the List token, from 0 to 1, is at least the threshold. Options string may be null. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakFuzzyScoreAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The score the pipeline must have reached.")] double threshold,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringFuzzyScoreAtLeast(flow.Value, list, threshold, options));
             }
 
-            public Flow<string?> RequireFuzzyScoreAtLeast(IEnumerable<string> list, double threshold, string? options)
+            [Description("True when: the best score across the List token, from 0 to 1, is at least the threshold. Options string may be null. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireFuzzyScoreAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The score the pipeline must have reached.")] double threshold,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringFuzzyScoreAtLeast(flow.Value, list, threshold, options));
             }
 
-            public Flow<string?> EnsureFuzzyScoreAtLeast(IEnumerable<string> list, double threshold, string? options)
+            [Description("True when: the best score across the List token, from 0 to 1, is at least the threshold. Options string may be null. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureFuzzyScoreAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The score the pipeline must have reached.")] double threshold,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchFuzzyScoreAtLeast(IEnumerable<string> list, double threshold, string? options)
+            [Description("Begins a pipeline from the value. True when: the best score across the List token, from 0 to 1, is at least the threshold. Options string may be null. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchFuzzyScoreAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The score the pipeline must have reached.")] double threshold,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return value.Start().MatchFuzzyScoreAtLeast(list, threshold, options);
             }
 
-            public Flow<string?> RejectFuzzyScoreAtLeast(IEnumerable<string> list, double threshold, string? options)
+            [Description("Begins a pipeline from the value. True when: the best score across the List token, from 0 to 1, is at least the threshold. Options string may be null. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectFuzzyScoreAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The score the pipeline must have reached.")] double threshold,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return value.Start().RejectFuzzyScoreAtLeast(list, threshold, options);
             }
 
-            public Flow<string?> BreakFuzzyScoreAtLeast(IEnumerable<string> list, double threshold, string? options)
+            [Description("Begins a pipeline from the value. True when: the best score across the List token, from 0 to 1, is at least the threshold. Options string may be null. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakFuzzyScoreAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The score the pipeline must have reached.")] double threshold,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return value.Start().BreakFuzzyScoreAtLeast(list, threshold, options);
             }
 
-            public Flow<string?> RequireFuzzyScoreAtLeast(IEnumerable<string> list, double threshold, string? options)
+            [Description("Begins a pipeline from the value. True when: the best score across the List token, from 0 to 1, is at least the threshold. Options string may be null. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireFuzzyScoreAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The score the pipeline must have reached.")] double threshold,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return value.Start().RequireFuzzyScoreAtLeast(list, threshold, options);
             }
 
-            public Flow<string?> EnsureFuzzyScoreAtLeast(IEnumerable<string> list, double threshold, string? options)
+            [Description("Begins a pipeline from the value. True when: the best score across the List token, from 0 to 1, is at least the threshold. Options string may be null. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureFuzzyScoreAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The score the pipeline must have reached.")] double threshold,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return value.Start().EnsureFuzzyScoreAtLeast(list, threshold, options);
             }

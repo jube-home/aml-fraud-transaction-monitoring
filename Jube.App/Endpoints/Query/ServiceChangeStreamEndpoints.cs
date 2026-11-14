@@ -14,6 +14,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Jube.App.Code;
 using Jube.App.Code.ServiceChange;
 using Jube.Data.Context;
 using Jube.Data.Security;
@@ -21,6 +22,7 @@ using Jube.Service.Exceptions.Query.ServiceChangeStream;
 using Jube.Service.Query.ServiceChangeStream;
 using log4net;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
@@ -44,6 +46,7 @@ namespace Jube.App.Endpoints.Query
         private static async Task StreamAsync(HttpContext httpContext, ILog log,
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
             IStringLocalizerFactory stringLocalizerFactory, ServiceChangeStreamRegistry registry,
+            IWebHostEnvironment webHostEnvironment, ClientAssetStore clientAssetStore,
             CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
@@ -93,7 +96,27 @@ namespace Jube.App.Endpoints.Query
 
                 await httpContext.Response.StartAsync(cancellationTokenSource.Token);
                 await httpContext.Response.WriteAsync("retry: 3000\n\n", cancellationTokenSource.Token);
-                await httpContext.Response.Body.FlushAsync(cancellationTokenSource.Token);
+
+                var ownBuildId = ClientBuildId.Read(webHostEnvironment.WebRootFileProvider);
+                var announcedBuildId = string.Empty;
+
+                async Task AnnounceBuildAsync()
+                {
+                    var target = await clientAssetStore.GetTargetAsync(ownBuildId);
+
+                    if (target.Length == 0 || target == announcedBuildId)
+                    {
+                        return;
+                    }
+
+                    announcedBuildId = target;
+
+                    await httpContext.Response.WriteAsync($"event: build\ndata: {target}\n\n",
+                        cancellationTokenSource.Token);
+                    await httpContext.Response.Body.FlushAsync(cancellationTokenSource.Token);
+                }
+
+                await AnnounceBuildAsync();
 
                 var heartbeatIntervalSeconds =
                     int.TryParse(dynamicEnvironment.AppSettings("ServiceChangeStreamHeartbeatIntervalSeconds"),
@@ -114,6 +137,7 @@ namespace Jube.App.Endpoints.Query
                     {
                         await httpContext.Response.WriteAsync(": keep-alive\n\n", cancellationTokenSource.Token);
                         await httpContext.Response.Body.FlushAsync(cancellationTokenSource.Token);
+                        await AnnounceBuildAsync();
                         continue;
                     }
 

@@ -132,12 +132,12 @@ Tests of the remaining service surface: agent helpers, extension methods and sha
 
 `Jube.Test.Service.Agent.ServiceToolCatalogueTests` — 4 tests. Category: Service.
 
-| Test                                                                         | Kind | Verifies                                                                                |
-|------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------|
-| `EveryToolNameIsUniqueAcrossTheWholeCatalogue`                               | Fact | Every tool name is unique across the whole catalogue.                                   |
-| `EveryToolCarriesAtLeastOneRequiredPermissionUnlessItReadsCompiledKnowledge` | Fact | Every tool carries at least one required permission unless it reads compiled knowledge. |
-| `EveryCompiledKnowledgeExemptionNamesAnOperationThatExistsAndIsARead`        | Fact | Every compiled knowledge exemption names an operation that exists and is a read.        |
-| `EveryDescriptorsRequiredPermissionsMatchesItsServicesOwnField`              | Fact | Every descriptors required permissions matches its services own field.                  |
+| Test                                                                        | Kind | Verifies                                                                                 |
+|-----------------------------------------------------------------------------|------|------------------------------------------------------------------------------------------|
+| `EveryToolNameIsUniqueAcrossTheWholeCatalogue`                              | Fact | Every tool name is unique across the whole catalogue.                                    |
+| `EveryToolCarriesAtLeastOneRequiredPermissionUnlessItIsAPermissionFreeRead` | Fact | Every tool carries at least one required permission unless it is a permission free read. |
+| `EveryPermissionFreeOperationNamesAnOperationThatExistsAndIsARead`          | Fact | Every permission free operation names an operation that exists and is a read.            |
+| `EveryDescriptorsRequiredPermissionsMatchesItsServicesOwnField`             | Fact | Every descriptors required permissions matches its services own field.                   |
 
 ### ToolInventoryDocumentTests
 
@@ -431,3 +431,12 @@ Tests of the remaining service surface: agent helpers, extension methods and sha
 |-------------------|------|--------------------|
 | `DistinctAndJoin` | Fact | Distinct and join. |
 | `SetOperations`   | Fact | Set operations.    |
+
+### WafAttackServiceTests
+
+`Jube.Test.Service.WafAttack.WafAttackServiceTests` — 2 tests. Category: Service. Collection: Database.
+
+| Test                                               | Kind | Verifies                                            |
+|----------------------------------------------------|------|-----------------------------------------------------|
+| `ListMasksCredentialsInTheStoredMatchedValueAsync` | Fact | List masks credentials in the stored matched value. |
+| `ListWithoutLandlordThrowsForbiddenAsync`          | Fact | List without landlord throws forbidden.             |

@@ -34,6 +34,27 @@ namespace Jube.Service.Query.WatcherStream
         public string UserName { get; }
         public int TenantRegistryId { get; }
 
+        public static async Task<bool> StillAuthorisedAsync(DbContext dbContext, string? userName,
+            int tenantRegistryId, ILog log, IStringLocalizerFactory stringLocalizerFactory,
+            CancellationToken token = default)
+        {
+            try
+            {
+                var current = await CreateAsync(dbContext, userName, log, stringLocalizerFactory, token)
+                    .ConfigureAwait(false);
+
+                return current.TenantRegistryId == tenantRegistryId;
+            }
+            catch (NotAuthenticatedException)
+            {
+                return false;
+            }
+            catch (ForbiddenException)
+            {
+                return false;
+            }
+        }
+
         public static async Task<WatcherStreamAuthorizationService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
             CancellationToken token = default)

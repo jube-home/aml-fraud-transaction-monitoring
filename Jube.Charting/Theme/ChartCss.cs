@@ -20,7 +20,7 @@ namespace Jube.Charting.Theme
     internal static class ChartCss
     {
         private const string FontStack =
-            "system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif";
+            "system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans','Noto Sans Arabic','Noto Nastaliq Urdu','Noto Sans Devanagari','Noto Sans Georgian',sans-serif";
 
         private static string Variables(ThemeVariant v)
         {
@@ -71,7 +71,7 @@ namespace Jube.Charting.Theme
                 css.Append("display:block;");
             }
 
-            css.Append("color-scheme:light;").Append(Variables(Palette.Light))
+            css.Append("direction:ltr;color-scheme:light;").Append(Variables(Palette.Light))
                 .Append("font-family:").Append(FontStack).Append(";font-size:12px}");
 
             css.Append("@media (prefers-color-scheme:dark){")
@@ -111,6 +111,11 @@ namespace Jube.Charting.Theme
         {
             return Contrast.BestText(Rgb.Parse(custom), Rgb.Parse(Palette.Light.Text), Rgb.Parse(Palette.Dark.Text))
                 .Hex;
+        }
+
+        public static string Hidden(string k)
+        {
+            return k + " [data-hidden]{opacity:.08;pointer-events:none}";
         }
 
         public static string ReducedMotion(string k)
@@ -238,7 +243,7 @@ namespace Jube.Charting.Theme
             b.Append(".jc[data-theme=\"light\"]{color-scheme:light;").Append(Variables(Palette.Light)).Append('}');
             b.Append(".jc[data-theme=\"dark\"]{color-scheme:dark;").Append(Variables(Palette.Dark)).Append('}');
 
-            b.Append(".jc{display:block;color-scheme:light;font-family:").Append(FontStack)
+            b.Append(".jc{display:block;direction:ltr;color-scheme:light;font-family:").Append(FontStack)
                 .Append(";font-size:12px}");
 
             b.Append(".jc:not([width]){width:100%;height:auto;max-width:100%}");

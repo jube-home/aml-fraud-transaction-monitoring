@@ -64,6 +64,8 @@ namespace Jube.Service.Query.CaseById
                 }).ToList(),
                 EnableVisualisation = source.EnableVisualisation,
                 VisualisationRegistryGuid = source.VisualisationRegistryGuid,
+                EnableGraph = source.EnableGraph,
+                GraphRegistryGuid = source.GraphRegistryGuid,
                 EntityAnalysisModelId = source.EntityAnalysisModelId
             };
     }

@@ -12,6 +12,7 @@
  */
 
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -287,6 +288,51 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelIntegrity
 
             await Assert.ThrowsAsync<ForbiddenException>(async () =>
                 await (await ServiceAsync(dbContext, userName: fx.Seed.UserWithoutPermission)).ModelsAsync());
+        }
+
+        [Fact]
+        public async Task TitlesAndMessagesAreLocalisedWithTheirArgumentsAsync()
+        {
+            var original = CultureInfo.CurrentUICulture;
+
+            try
+            {
+                await using var dbContext = fx.GetDbContext();
+                var service = await ServiceAsync(dbContext);
+
+                CultureInfo.CurrentUICulture = new CultureInfo("en");
+                var english = (await service.CheckAsync(modelId)).Checks
+                    .First(c => c.Code == nameof(IntegrityCode.DependencyDangling));
+
+                CultureInfo.CurrentUICulture = new CultureInfo("pl");
+                var polish = (await service.CheckAsync(modelId)).Checks
+                    .First(c => c.Code == nameof(IntegrityCode.DependencyDangling));
+
+                english.Title.Should().Be("Uses a name that does not exist");
+                polish.Title.Should().Be("Używa nazwy, która nie istnieje");
+                polish.Message.Should().Contain("nie istnieje").And.Contain("Missing");
+                polish.Message.Should().NotBe(english.Message);
+                polish.Message.Should().NotContain("{");
+            }
+            finally
+            {
+                CultureInfo.CurrentUICulture = original;
+            }
+        }
+
+        [Fact]
+        public async Task ASoftDeletedModelIsNotFoundByEveryOperationAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            await dbContext.EntityAnalysisModel.Where(w => w.Id == modelId).Set(s => s.Deleted, (byte?)1)
+                .UpdateAsync();
+
+            var service = await ServiceAsync(dbContext);
+
+            await Assert.ThrowsAsync<NotFoundException>(() => service.CheckAsync(modelId));
+            await Assert.ThrowsAsync<NotFoundException>(() => service.EngineStateAsync(modelId));
+            await Assert.ThrowsAsync<NotFoundException>(() => service.GraphAsync(modelId));
+            (await service.ModelsAsync()).Should().NotContain(m => m.Id == modelId);
         }
 
         [Fact]

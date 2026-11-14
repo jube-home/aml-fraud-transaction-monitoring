@@ -14,12 +14,14 @@
 using System;
 using System.Collections.Generic;
 using Jube.Data.Poco;
+using Jube.Dto.Hold;
 using Jube.Dictionary;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.CaseManagement;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Logs;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.ResponseTime;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Archiver;
+using Jube.GraphRecallProtocol;
 using Jube.HttpAdaptationProtocol;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -29,12 +31,19 @@ using Newtonsoft.Json.Linq;
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable RedundantAttributeUsageProperty
 
+using Svirfd;
+
+using System.Linq;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload
 {
     using Adaptation = Adaptation;
 
     public class EntityAnalysisModelInstanceEntryPayload
     {
+        private JObject jObject;
+        private Func<JObject> jObjectSource;
+
         [JsonProperty(Order = 1)] public DictionaryNoBoxing<string> Payload { get; set; }
         [JsonProperty(Order = 2)] public ResponseElevation ResponseElevation { get; set; } = new();
         [JsonProperty(Order = 3)] public string EntityAnalysisModelInstanceName { get; set; }
@@ -64,6 +73,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
         [JsonProperty(Order = 26)]
         public PooledDictionary<string, EntityModelActivationRulePayload> Activation { get; set; }
 
+        [JsonProperty("sanctionMatch", Order = 41, NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, List<SanctionMatchDetail>> SanctionMatch { get; set; }
+
+        [JsonProperty("shadowActivation", Order = 40, NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, EntityModelActivationRulePayload> ShadowActivation { get; set; }
+
         [JsonProperty(Order = 27)] public CreateCase CreateCase { get; set; }
         [JsonProperty(Order = 28)] public string[] Tag { get; set; }
         [JsonProperty(Order = 29)] public InvocationLog Logs { get; set; }
@@ -77,6 +92,23 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
         [JsonProperty(Order = 36)]
         public PooledDictionary<string, Adaptation> AdvancedAnalyticsAdaptationDetail { get; set; }
 
+        [JsonProperty(Order = 37, NullValueHandling = NullValueHandling.Ignore)]
+        public ResponseHold Hold { get; set; }
+
+        [JsonProperty(Order = 38)]
+        [JsonConverter(typeof(GraphArchiveJsonConverter))]
+        public PooledDictionary<string, GraphEntity> Graph { get; set; }
+
+        [JsonIgnore] public PooledDictionary<string, IpResponse> Svirfd { get; set; }
+        [JsonIgnore] public HashSet<string> SvirfdArchiveNames { get; set; }
+
+        [JsonProperty("svirfd", Order = 39)]
+        [JsonConverter(typeof(SvirfdArchiveJsonConverter))]
+        public IReadOnlyDictionary<string, IpResponse> SvirfdArchive =>
+            Svirfd == null || SvirfdArchiveNames == null
+                ? null
+                : Svirfd.Where(p => SvirfdArchiveNames.Contains(p.Key)).ToDictionary(p => p.Key, p => p.Value);
+
         [JsonIgnore] public byte[] ArchiveJson { get; set; }
         [JsonIgnore] public byte[] ResponseJson { get; set; }
         [JsonIgnore] public List<ArchiveKey> ArchiveKeys { get; set; }
@@ -84,6 +116,32 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
         [JsonIgnore] public bool EnableRdbmsArchive { get; init; }
         [JsonIgnore] public int EntityAnalysisModelId { get; init; }
         [JsonIgnore] public int TenantRegistryId { get; init; }
-        [JsonIgnore] public JObject JObject { get; set; }
+        [JsonIgnore]
+        public JObject JObject
+        {
+            get
+            {
+                if (jObject != null || jObjectSource == null)
+                {
+                    return jObject;
+                }
+
+                jObject = jObjectSource();
+                jObjectSource = null;
+
+                return jObject;
+            }
+            set
+            {
+                jObject = value;
+                jObjectSource = null;
+            }
+        }
+
+        public void DeferJObject(Func<JObject> source)
+        {
+            jObject = null;
+            jObjectSource = source;
+        }
     }
 }

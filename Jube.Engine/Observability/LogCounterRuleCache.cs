@@ -15,10 +15,10 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Context;
+using Jube.Data.Helpers;
 using Jube.Data.Repository;
 using log4net;
 
@@ -30,45 +30,12 @@ namespace Jube.Engine.Observability
 
         public void CheckAndIncrement(string text)
         {
-            if (string.IsNullOrEmpty(text))
-            {
-                return;
-            }
+            ruleSet.Match(text, IsExcluded, Increment, Warn);
+        }
 
-            var snapshot = rules;
-
-            if (snapshot.Length == 0)
-            {
-                return;
-            }
-
-            foreach (var rule in snapshot)
-            {
-                bool isMatch;
-
-                try
-                {
-                    isMatch = rule.Regex.IsMatch(text);
-                }
-                catch (RegexMatchTimeoutException)
-                {
-                    log.Warn($"LogCounterRuleCache: rule '{rule.Name}' timed out matching a log line and was skipped.");
-                    continue;
-                }
-
-                if (!isMatch)
-                {
-                    continue;
-                }
-
-                if (ExcludeCache?.IsExcluded(rule.Name) == true)
-                {
-                    continue;
-                }
-
-                var counter = counters.GetOrAdd(rule.Name, name => EngineDiagnostics.Meter.CreateCounter<long>(name));
-                counter.Add(1);
-            }
+        public void ApplyRules(IEnumerable<(string Name, string Pattern)> definitions)
+        {
+            ruleSet.Apply(definitions, Warn);
         }
 
         public async Task StartAsync(CancellationToken token)
@@ -102,9 +69,23 @@ namespace Jube.Engine.Observability
 
         private const int PollIntervalMilliseconds = 60000;
         private const int RetryDelayMilliseconds = 5000;
-        private static readonly TimeSpan regexMatchTimeout = TimeSpan.FromSeconds(1);
         private readonly ConcurrentDictionary<string, Counter<long>> counters = new(StringComparer.Ordinal);
-        private volatile (string Name, Regex Regex)[] rules = [];
+        private readonly LogCounterRuleSet ruleSet = new();
+
+        private bool IsExcluded(string name)
+        {
+            return ExcludeCache?.IsExcluded(name) == true;
+        }
+
+        private void Increment(string name)
+        {
+            counters.GetOrAdd(name, key => EngineDiagnostics.Meter.CreateCounter<long>(key)).Add(1);
+        }
+
+        private void Warn(string message)
+        {
+            log.Warn($"LogCounterRuleCache: {message}");
+        }
 
         private async Task RefreshAsync(CancellationToken token)
         {
@@ -115,27 +96,14 @@ namespace Jube.Engine.Observability
 
             var rows = await repository.GetAllActiveAsync(token).ConfigureAwait(false);
 
-            var refreshed = new List<(string Name, Regex Regex)>(rows.Count);
+            var definitions = new List<(string Name, string Pattern)>(rows.Count);
 
             foreach (var row in rows)
             {
-                if (string.IsNullOrEmpty(row.Name) || string.IsNullOrEmpty(row.Regex))
-                {
-                    continue;
-                }
-
-                try
-                {
-                    refreshed.Add((row.Name, new Regex(row.Regex, RegexOptions.Compiled, regexMatchTimeout)));
-                }
-                catch (ArgumentException ex)
-                {
-                    log.Warn(
-                        $"LogCounterRuleCache: rule '{row.Name}' has an invalid Regex and was skipped: {ex.Message}");
-                }
+                definitions.Add((row.Name, row.Regex));
             }
 
-            rules = [.. refreshed];
+            ApplyRules(definitions);
         }
     }
 }

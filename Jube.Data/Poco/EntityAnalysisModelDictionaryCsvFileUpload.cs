@@ -41,7 +41,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(12)] public DateTime? DeletedDate { get; set; }
 
         [Association(ThisKey = "EntityAnalysisModelDictionaryId", OtherKey = "Id",
-            CanBeNull = true, Relationship = Relationship.ManyToOne)]
+            CanBeNull = true)]
         [Key(13)]
         public EntityAnalysisModelDictionary EntityAnalysisModelDictionary { get; set; }
     }

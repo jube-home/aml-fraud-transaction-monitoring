@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchInverseRatioOfInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the other value over this value is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchInverseRatioOfInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleInverseRatioOfInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectInverseRatioOfInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the other value over this value is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectInverseRatioOfInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleInverseRatioOfInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakInverseRatioOfInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the other value over this value is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakInverseRatioOfInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleInverseRatioOfInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireInverseRatioOfInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the other value over this value is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireInverseRatioOfInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleInverseRatioOfInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureInverseRatioOfInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the other value over this value is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureInverseRatioOfInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchInverseRatioOfInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the other value over this value is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchInverseRatioOfInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchInverseRatioOfInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectInverseRatioOfInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the other value over this value is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectInverseRatioOfInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectInverseRatioOfInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakInverseRatioOfInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the other value over this value is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakInverseRatioOfInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakInverseRatioOfInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireInverseRatioOfInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the other value over this value is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireInverseRatioOfInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireInverseRatioOfInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureInverseRatioOfInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the other value over this value is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureInverseRatioOfInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureInverseRatioOfInRange(other, lowerBound, upperBound);
             }

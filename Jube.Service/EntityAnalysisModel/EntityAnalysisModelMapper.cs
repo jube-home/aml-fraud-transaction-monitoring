@@ -39,15 +39,17 @@ namespace Jube.Service.EntityAnalysisModel
                     ReferenceDatePayloadLocationTypeId =
                         entityAnalysisModel.ReferenceDatePayloadLocationTypeId.GetValueOrDefault(),
                     CacheFetchLimit = entityAnalysisModel.CacheFetchLimit.GetValueOrDefault(),
-                    CacheTtlInterval = entityAnalysisModel.CacheTtlInterval.GetValueOrDefault(),
+                    CacheTtlInterval = entityAnalysisModel.CacheTtlInterval.GetValueOrDefault('h'),
                     CacheTtlIntervalValue = entityAnalysisModel.CacheTtlIntervalValue.GetValueOrDefault(),
                     MaxResponseElevation = entityAnalysisModel.MaxResponseElevation.GetValueOrDefault(),
-                    MaxResponseElevationInterval = entityAnalysisModel.MaxResponseElevationInterval.GetValueOrDefault(),
+                    MaxResponseElevationInterval =
+                        entityAnalysisModel.MaxResponseElevationInterval.GetValueOrDefault('d'),
                     MaxResponseElevationValue = entityAnalysisModel.MaxResponseElevationValue.GetValueOrDefault(),
                     MaxResponseElevationThreshold =
                         entityAnalysisModel.MaxResponseElevationThreshold.GetValueOrDefault(),
                     EnableResponseElevationLimit = entityAnalysisModel.EnableResponseElevationLimit == 1,
-                    MaxActivationWatcherInterval = entityAnalysisModel.MaxActivationWatcherInterval.GetValueOrDefault(),
+                    MaxActivationWatcherInterval =
+                        entityAnalysisModel.MaxActivationWatcherInterval.GetValueOrDefault('d'),
                     MaxActivationWatcherValue = entityAnalysisModel.MaxActivationWatcherValue.GetValueOrDefault(),
                     MaxActivationWatcherThreshold =
                         entityAnalysisModel.MaxActivationWatcherThreshold.GetValueOrDefault(),
@@ -56,6 +58,7 @@ namespace Jube.Service.EntityAnalysisModel
                     EnableSanctionCache = entityAnalysisModel.EnableSanctionCache == 1,
                     EnableTtlCounter = entityAnalysisModel.EnableTtlCounter == 1,
                     EnableRdbmsArchive = entityAnalysisModel.EnableRdbmsArchive == 1,
+                    EnablePayloadJObject = entityAnalysisModel.EnablePayloadJObject.GetValueOrDefault(1) == 1,
                     EnableActivationArchive = entityAnalysisModel.EnableActivationArchive == 1,
                     EnableActivationWatcher = entityAnalysisModel.EnableActivationWatcher == 1,
                     EnableImplicitAsync = entityAnalysisModel.EnableImplicitAsync == 1,
@@ -89,6 +92,7 @@ namespace Jube.Service.EntityAnalysisModel
         {
             return new ModelPoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 Name = dto.Name,
                 Active = (byte)(dto.Active ? 1 : 0),
@@ -116,6 +120,7 @@ namespace Jube.Service.EntityAnalysisModel
                 EnableSanctionCache = (byte)(dto.EnableSanctionCache ? 1 : 0),
                 EnableTtlCounter = (byte)(dto.EnableTtlCounter ? 1 : 0),
                 EnableRdbmsArchive = (byte)(dto.EnableRdbmsArchive ? 1 : 0),
+                EnablePayloadJObject = (byte)(dto.EnablePayloadJObject ? 1 : 0),
                 EnableActivationArchive = (byte)(dto.EnableActivationArchive ? 1 : 0),
                 EnableActivationWatcher = (byte)(dto.EnableActivationWatcher ? 1 : 0),
                 EnableImplicitAsync = (byte)(dto.EnableImplicitAsync ? 1 : 0),

@@ -88,22 +88,22 @@ Also accepted, for compatibility with jsonlite's default vector serialisation: a
 
 ### 3.3 `ModelDescriptor`
 
-| Member                                            | Type                                               | Notes                                                                                                                                                                                               |
-|---------------------------------------------------|----------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `Name`                                            | string                                             |                                                                                                                                                                                                     |
-| `Family`                                          | string                                             | Open vocabulary. See [`ProtocolConstants.Family`](#38-protocolconstants-open-vocabularies).                                                                                                         |
-| `Version`                                         | string                                             |                                                                                                                                                                                                     |
-| `ArtifactHash`                                    | string                                             |                                                                                                                                                                                                     |
-| `TrainedDate`                                     | date-time                                          |                                                                                                                                                                                                     |
-| `FeatureCount`                                    | integer                                            |                                                                                                                                                                                                     |
-| `Validation`                                      | `ValidationDescriptor`                              |                                                                                                                                                                                                     |
-| `BootstrapReplicates`                             | integer                                            | Bayesian networks: `R` as passed to `bnlearn::boot.strength`.                                                                                                                                       |
-| `LabelsVersion`, `LabelsHash`                     | string                                             | Provenance of the curated `Narrative`/`HumanLabel` template dictionary. No wire member is produced by a generative language model; a phrasing change is traceable the same way a weights change is. |
-| `TopologyVersion`, `TopologyHash`, `TopologyDate` | string, string, date-time                          | Structure, versioned separately from weights, so a re-fit on an unchanged topology doesn't duplicate `ArtifactHash`.                                                                                |
-| `WeightsVersion`, `WeightsHash`, `WeightsDate`    | string, string, date-time                          |                                                                                                                                                                                                     |
-| `StructureLearning`                               | string                                             | Open vocabulary: `HillClimbing`, `MMHC`, `TabuSearch`, `Expert`, `Constrained`, `None`.                                                                                                             |
-| `WhitelistedArcs`, `BlacklistedArcs`              | integer                                            | Bayesian networks: counts of expert-constrained arcs.                                                                                                                                               |
-| `HiddenLayers`, `ProcessingElements`              | integer                                            | Populated for `NeuralNetwork`, omitted otherwise.                                                                                                                                                   |
+| Member                                            | Type                      | Notes                                                                                                                                                                                               |
+|---------------------------------------------------|---------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Name`                                            | string                    |                                                                                                                                                                                                     |
+| `Family`                                          | string                    | Open vocabulary. See [`ProtocolConstants.Family`](#38-protocolconstants-open-vocabularies).                                                                                                         |
+| `Version`                                         | string                    |                                                                                                                                                                                                     |
+| `ArtifactHash`                                    | string                    |                                                                                                                                                                                                     |
+| `TrainedDate`                                     | date-time                 |                                                                                                                                                                                                     |
+| `FeatureCount`                                    | integer                   |                                                                                                                                                                                                     |
+| `Validation`                                      | `ValidationDescriptor`    |                                                                                                                                                                                                     |
+| `BootstrapReplicates`                             | integer                   | Bayesian networks: `R` as passed to `bnlearn::boot.strength`.                                                                                                                                       |
+| `LabelsVersion`, `LabelsHash`                     | string                    | Provenance of the curated `Narrative`/`HumanLabel` template dictionary. No wire member is produced by a generative language model; a phrasing change is traceable the same way a weights change is. |
+| `TopologyVersion`, `TopologyHash`, `TopologyDate` | string, string, date-time | Structure, versioned separately from weights, so a re-fit on an unchanged topology doesn't duplicate `ArtifactHash`.                                                                                |
+| `WeightsVersion`, `WeightsHash`, `WeightsDate`    | string, string, date-time |                                                                                                                                                                                                     |
+| `StructureLearning`                               | string                    | Open vocabulary: `HillClimbing`, `MMHC`, `TabuSearch`, `Expert`, `Constrained`, `None`.                                                                                                             |
+| `WhitelistedArcs`, `BlacklistedArcs`              | integer                   | Bayesian networks: counts of expert-constrained arcs.                                                                                                                                               |
+| `HiddenLayers`, `ProcessingElements`              | integer                   | Populated for `NeuralNetwork`, omitted otherwise.                                                                                                                                                   |
 
 Omit the topology/weights fields entirely, rather than duplicating `ArtifactHash` into them, where a family has no
 meaningful topology/weights split.
@@ -236,8 +236,10 @@ suppressed adaptation safely does not match, at the cost of a log line rather th
 `Value` is registered as an always-allowed token in the Parser (alongside `HttpAdaptation` itself), so it does not need
 to be added to the `RuleScriptToken` table for existing or new rules to compile.
 
-To avoid the exception and the log line, read the value as a number with `HttpAdaptation.Example.Value.OrNaN()`, which is `NaN` for a suppressed adaptation, so
-the comparison fails and nothing is logged, or with `OrZero()` to read it as zero. `GetValueOrDefault` is not a permitted token.
+To avoid the exception and the log line, read the value as a number with `HttpAdaptation.Example.Value.OrNaN()`, which
+is `NaN` for a suppressed adaptation, so
+the comparison fails and nothing is logged, or with `OrZero()` to read it as zero. `GetValueOrDefault` is not a
+permitted token.
 See [Rule Compilation Tokens and Extensions](../RuleCompilationAlgorithm/index.html).
 
 ### 5.3 Execution order: Priority and boosting
@@ -264,8 +266,16 @@ to False on a deployment that does not need them: they are unauthenticated by de
 HTTP 500 on purpose, which a security scanner will quite correctly report as a server error and an application error
 disclosure for as long as the route is mapped.
 
+The quickstart compose file at the repository root leaves the default in place, so the seeded example model works out
+of the box. The production-shaped Jube Cluster compose files set `EnableMockEndpoints=False` on every Jube service, so
+on
+a cluster point the adaptation at a real endpoint. The mock RSA MFA verifier is not part of this family: it needs the
+separate `EnableMockMfaEndpoint` setting (default False) as well.
+
+<!-- TODO(docs): owner to read this page end to end, it has not been re-verified against the Vue UI -->
+
 ## 6. Source of record
 
 The types in this document are a description of, not a substitute for, the C# records under
-`Jube.Engine/EntityAnalysisModelInvoke/Context/Extensions/HttpAdaptations/Protocol/`. Where this page and the code
+`Jube.HttpAdaptationProtocol/`. Where this page and the code
 disagree, the code is correct and this page is stale.

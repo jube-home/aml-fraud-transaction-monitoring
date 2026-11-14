@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Validation;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,21 +24,27 @@ namespace Jube.Dto.Query.EntityAnalysisModelDependency
 {
     [Description("What would stop working if an entity were deleted, deactivated or renamed: every entity that " +
                  "uses it, directly or through another entity.")]
+    [MessagePackObject]
     public class DependencyImpactDto
     {
         [Description("The entity asked about.")]
+        [Key(0)]
         public ModelEntityDto? Entity { get; set; }
 
         [Description("Every use of the entity, direct uses first, then uses through them.")]
+        [Key(1)]
         public List<ModelDependencyDto> Dependents { get; set; } = [];
 
         [Description("How many entities use it directly.")]
+        [Key(2)]
         public int DirectDependents { get; set; }
 
         [Description("True when deleting the entity would be refused because other entities use it.")]
+        [Key(3)]
         public bool DeleteBlocked { get; set; }
 
         [Description("Why the entity could not be looked up.")]
+        [Key(4)]
         public List<ValidationErrorDto> Errors { get; set; } = [];
     }
 }

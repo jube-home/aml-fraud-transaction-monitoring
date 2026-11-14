@@ -13,7 +13,9 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,8 +25,14 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.ExhaustiveSearchInstance
 {
     [FormEndpoint("ExhaustiveSearchInstance")]
+    [FormApproval]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
+    [ExhaustiveDatasetEditor(Csv = nameof(ExhaustiveInstanceCsvId), Json = nameof(ExhaustiveInstanceJsonId),
+        Source = nameof(DataSourceId), Status = nameof(StatusId))]
+    [ExhaustiveFilterEditor(FilterJson = nameof(FilterJson), FilterSql = nameof(FilterSql),
+        FilterTokens = nameof(FilterTokens), Source = nameof(DataSourceId), Csv = nameof(ExhaustiveInstanceCsvId),
+        Json = nameof(ExhaustiveInstanceJsonId))]
     [FormGroup("Identity", Order = 10)]
     [FormGroup("Training Data", Order = 15)]
     [FormGroup("Anomaly Detection", Order = 20)]
@@ -33,15 +41,18 @@ namespace Jube.Dto.ExhaustiveSearchInstance
     [FormGroup("Output", Order = 40)]
     [FormGroup("Training Status", Order = 50, Collapsed = true)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
+    [MessagePackObject]
     public class ExhaustiveSearchInstanceDto : IUpdated, IActivatable, ILockable, ITreeChild, IGuidIdentified
     {
         [Description("Identifier of the Model this Exhaustive Adaptation is registered against. Set from the " +
                      "parent Model context; not user-editable.")]
+        [Key(0)]
         public int EntityAnalysisModelId { get; set; }
 
         [Description("Display name of this Exhaustive Adaptation. Unique within the Model (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Fraud classifier v1")]
         [ListColumn(Order = 10, Title = "Name")]
+        [Key(1)]
         public string? Name { get; set; }
 
         [Description("Where training reads its data from: 0 Archive (the default, real processed transactions), " +
@@ -50,6 +61,8 @@ namespace Jube.Dto.ExhaustiveSearchInstance
                      "ExhaustiveInstanceCsvId or ExhaustiveInstanceJsonId). Null is treated as 0.")]
         [FormField(Group = "Training Data", Order = 10, Widget = "select")]
         [NewDefault(0)]
+        [Options(typeof(ExhaustiveDataSource))]
+        [Key(2)]
         public int? DataSourceId { get; set; }
 
         [Description("Identifier of the uploaded CSV dataset to train on. When DataSourceId is 2 exactly one of " +
@@ -58,6 +71,7 @@ namespace Jube.Dto.ExhaustiveSearchInstance
         [FormField(Group = "Training Data", Order = 20, Widget = "select")]
         [VisibleWhen(nameof(DataSourceId), 2)]
         [Lookup("/api/ExhaustiveInstanceCsv", TextField = "name", ValueField = "id")]
+        [Key(3)]
         public int? ExhaustiveInstanceCsvId { get; set; }
 
         [Description("Identifier of the uploaded JSON dataset to train on. When DataSourceId is 2 exactly one of " +
@@ -66,13 +80,15 @@ namespace Jube.Dto.ExhaustiveSearchInstance
         [FormField(Group = "Training Data", Order = 25, Widget = "select")]
         [VisibleWhen(nameof(DataSourceId), 2)]
         [Lookup("/api/ExhaustiveInstanceJson", TextField = "name", ValueField = "id")]
+        [Key(4)]
         public int? ExhaustiveInstanceJsonId { get; set; }
 
         [Description("Optional deployment base rate: the fraction of real cases that are positive, strictly " +
                      "between 0 and 1 (exclusive). Recalled probabilities are calibrated to this rate. When null " +
                      "the rate is measured from the population (archive or dataset row counts, or the flagged " +
                      "fraction for anomaly labelled training) and recorded with its source on the promoted model.")]
-        [FormField(Group = "Training Data", Order = 30, Widget = "number")]
+        [FormField(Group = "Training Data", Order = 30, Widget = "number", Placeholder = "e.g. 0.01")]
+        [Key(5)]
         public double? BaseRate { get; set; }
 
         [Description("When true, a vine copula is fitted to the minority class after shuffling/normalising/" +
@@ -82,6 +98,7 @@ namespace Jube.Dto.ExhaustiveSearchInstance
                      "already reaches half of Bootstrap To.")]
         [FormField(Group = "Training Data", Order = 37, Widget = "switch")]
         [NewDefault(true)]
+        [Key(6)]
         public bool Bootstrap { get; set; }
 
         [Description("Target total row count (real plus synthesised) for the balanced training partition once " +
@@ -90,6 +107,7 @@ namespace Jube.Dto.ExhaustiveSearchInstance
         [VisibleWhen(nameof(Bootstrap), true)]
         [RequiredWhen(nameof(Bootstrap), true)]
         [NewDefault(30000)]
+        [Key(7)]
         public int? BootstrapTo { get; set; }
 
         [Description("Down-weights synthesised (bootstrapped) rows relative to real rows, from 0 to 1, applied " +
@@ -100,6 +118,7 @@ namespace Jube.Dto.ExhaustiveSearchInstance
         [FormField(Group = "Training Data", Order = 39, Widget = "slider")]
         [VisibleWhen(nameof(Bootstrap), true)]
         [NewDefault(1)]
+        [Key(8)]
         public double? BootstrapWeightFactor { get; set; }
 
         [Description("Base probability (0-1) that a given trial trains one of the challenger classifier " +
@@ -108,6 +127,7 @@ namespace Jube.Dto.ExhaustiveSearchInstance
                      "floor rate, not a fixed rate.")]
         [FormField(Group = "Training Data", Order = 40, Widget = "slider")]
         [NewDefault(0.1)]
+        [Key(9)]
         public double? ChallengerModelBaseProbability { get; set; }
 
         [Description("How the model's raw score is turned into a probability at promotion time: 'automatic' " +
@@ -120,6 +140,8 @@ namespace Jube.Dto.ExhaustiveSearchInstance
                      "like the training data source, and fixed once training has started.")]
         [FormField(Group = "Training Data", Order = 35, Widget = "select")]
         [NewDefault("automatic")]
+        [Options(typeof(CalibrationMethod))]
+        [Key(10)]
         public string? CalibrationMethod { get; set; }
 
         [Description("When true, a One Class Support Vector Machine Anomaly Detection model is trained and " +
@@ -127,6 +149,7 @@ namespace Jube.Dto.ExhaustiveSearchInstance
                      "alongside) a Training Data Filter.")]
         [FormField(Group = "Anomaly Detection", Order = 10, Widget = "switch")]
         [NewDefault(false)]
+        [Key(11)]
         public bool Anomaly { get; set; }
 
         [Description("The probability threshold below which the Anomaly Detection model classifies an example " +
@@ -134,6 +157,8 @@ namespace Jube.Dto.ExhaustiveSearchInstance
         [FormField(Group = "Anomaly Detection", Order = 20, Widget = "number")]
         [VisibleWhen(nameof(Anomaly), true)]
         [RequiredWhen(nameof(Anomaly), true)]
+        [NewDefault(0.02)]
+        [Key(12)]
         public double AnomalyProbability { get; set; }
 
         [Description("The Anomaly Detection algorithm that labels the positive class. Null or 0 is the One Class " +
@@ -146,18 +171,22 @@ namespace Jube.Dto.ExhaustiveSearchInstance
         [FormField(Group = "Anomaly Detection", Order = 15, Widget = "select")]
         [VisibleWhen(nameof(Anomaly), true)]
         [NewDefault(0)]
+        [Options(typeof(AnomalyAlgorithm))]
+        [Key(13)]
         public int? AnomalyAlgorithmId { get; set; }
 
         [Description("Optional JSON of algorithm parameters, variable reduction options and automatic evaluation " +
                      "options. Unknown properties are rejected. Reduction defaults to none for algorithm 0 and to " +
                      "the recommended reduction for the others.")]
-        [FormField(Group = "Anomaly Detection", Order = 30, Widget = "textarea")]
+        [FormField(Group = "Anomaly Detection", Order = 30, Widget = "anomalyReduction")]
         [VisibleWhen(nameof(Anomaly), true)]
+        [Key(14)]
         public string? AnomalyParametersJson { get; set; }
 
         [Description("One line summary of the anomaly detection run recorded at training: algorithm, variables " +
                      "kept, rows flagged and threshold. Server-assigned. Read-only.")]
         [FormField(Group = "Training Status", Order = 25, ReadOnly = true)]
+        [Key(15)]
         public string? AnomalySummary { get; set; }
 
         [Description("The full machine-readable anomaly report of the training run: algorithm, parameters, " +
@@ -166,6 +195,7 @@ namespace Jube.Dto.ExhaustiveSearchInstance
                      "ignored. Read-only.")]
         [FormField(Group = "Training Status", Order = 26, ReadOnly = true, Widget = "textarea")]
         [ListColumn(Hidden = true)]
+        [Key(16)]
         public string? AnomalyReportJson { get; set; }
 
         [Description("When true, positive class for supervised learning is instead defined by filtering the " +
@@ -173,13 +203,14 @@ namespace Jube.Dto.ExhaustiveSearchInstance
                      "is also used to negate the sample of negative class.")]
         [FormField(Group = "Training Data Filter", Order = 10, Widget = "switch")]
         [NewDefault(false)]
+        [Key(17)]
         public bool Filter { get; set; }
 
         [Description("The Query Builder JSON definition backing FilterSql. Required when Filter is true.")]
         [FormField(Group = "Training Data Filter", Order = 20)]
         [VisibleWhen(nameof(Filter), true)]
         [RequiredWhen(nameof(Filter), true)]
-        [Forms.Editor("ExhaustiveFilterBuilder")]
+        [Key(18)]
         public string? FilterJson { get; set; }
 
         [Description("The compiled SQL predicate, derived from FilterJson, applied to the Archive table to " +
@@ -188,6 +219,7 @@ namespace Jube.Dto.ExhaustiveSearchInstance
         [FormField(Group = "Training Data Filter", Order = 30, ReadOnly = true)]
         [VisibleWhen(nameof(Filter), true)]
         [RequiredWhen(nameof(Filter), true)]
+        [Key(19)]
         public string? FilterSql { get; set; }
 
         [Description("The SQL parameter tokens for FilterSql, derived from FilterJson. Required when Filter is " +
@@ -195,24 +227,28 @@ namespace Jube.Dto.ExhaustiveSearchInstance
         [FormField(Group = "Training Data Filter", Order = 40, ReadOnly = true)]
         [VisibleWhen(nameof(Filter), true)]
         [RequiredWhen(nameof(Filter), true)]
+        [Key(20)]
         public string? FilterTokens { get; set; }
 
         [Description("Optional JSON options that explode categorical string payload fields into indicator " +
                      "variables for training, for example {\"enabled\":true,\"maxLevels\":25," +
                      "\"minLevelCount\":20,\"maxTotalIndicators\":200,\"exclude\":[\"Payload.Reference\"]," +
                      "\"include\":[]}. When absent or not enabled, string fields are ignored as before.")]
-        [FormField(Group = "Categorical Variables", Order = 10)]
+        [FormField(Group = "Categorical Variables", Order = 10, Placeholder = "{\"enabled\":true,\"maxLevels\":25}")]
+        [Key(21)]
         public string? CategoricalOptionsJson { get; set; }
 
         [Description("When true, every recall of this Exhaustive Adaptation is persisted to the reporting " +
                      "table for later analysis.")]
-        [FormField(Group = "Output", Order = 10, Widget = "switch")]
+        [FormField(Group = "Output", Order = 10, Widget = "switch", Label = "Archive Key")]
         [NewDefault(false)]
+        [Key(22)]
         public bool ReportTable { get; set; }
 
         [Description("Whether the response payload is returned for a recall of this Exhaustive Adaptation.")]
         [FormField(Group = "Output", Order = 20, Widget = "switch")]
         [NewDefault(false)]
+        [Key(23)]
         public bool ResponsePayload { get; set; }
 
         [Description("Server-managed training progress status. 0 Awaiting Server, 1 Query for base case data, " +
@@ -224,39 +260,47 @@ namespace Jube.Dto.ExhaustiveSearchInstance
                      "16 Finished, 17 Finished no class available, 18 Stopping, 19 Stopped. An Exhaustive " +
                      "Adaptation can only be edited while this is 0. Read-only.")]
         [FormField(Group = "Training Status", Order = 20, ReadOnly = true)]
+        [Key(24)]
         public byte StatusId { get; set; }
 
         [Description("Server-managed count of Neural Network topologies attempted so far during evolution. " +
                      "Read-only.")]
         [FormField(Group = "Training Status", Order = 30, ReadOnly = true)]
+        [Key(25)]
         public int Models { get; set; }
 
         [Description("Server-managed count of topologies tried since the last promoted (best-scoring) " +
                      "topology. Training terminates once this exceeds the configured threshold. Read-only.")]
         [FormField(Group = "Training Status", Order = 40, ReadOnly = true)]
+        [Key(26)]
         public int ModelsSinceBest { get; set; }
 
         [Description("Server-managed score of the best topology promoted so far during evolution. Read-only.")]
         [FormField(Group = "Training Status", Order = 50, ReadOnly = true)]
+        [Key(27)]
         public double Score { get; set; }
 
         [Description("Server-managed topology complexity of the best topology promoted so far. Read-only.")]
         [FormField(Group = "Training Status", Order = 60, ReadOnly = true)]
+        [Key(28)]
         public double TopologyComplexity { get; set; }
 
         [Description("Timestamp (UTC) training completed, if applicable. Server-assigned. Read-only.")]
         [FormField(Group = "Training Status", Order = 70, ReadOnly = true, Widget = "date")]
+        [Key(29)]
         public DateTimeOffset? CompletedDate { get; set; }
 
         [Description("When true, this Exhaustive Adaptation participates in evaluation on transaction " +
                      "invocation once trained.")]
         [FormField(Group = "Identity", Order = 20, Widget = "switch")]
         [NewDefault(false)]
+        [Key(30)]
         public bool Active { get; set; }
 
         [Description("Server-assigned globally-unique identifier for this Exhaustive Adaptation, usable for " +
                      "direct HTTP recall of the trained model once training has completed. Read-only.")]
         [FormField(Group = "Training Status", Order = 10, ReadOnly = true)]
+        [Key(31)]
         public Guid Guid { get; set; }
 
         [Description("When true, this Exhaustive Adaptation is locked and cannot be edited or deleted. Also " +
@@ -264,47 +308,56 @@ namespace Jube.Dto.ExhaustiveSearchInstance
                      "while its training StatusId is still 'Awaiting Server' (0).")]
         [FormField(Group = "Identity", Order = 30, Widget = "switch")]
         [NewDefault(false)]
+        [Key(32)]
         public bool Locked { get; set; }
 
         [Description("Server-assigned row identifier. Read-only.")]
         [FormField(Group = "Audit", Order = 10, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(33)]
         public int Id { get; set; }
 
         [Description("User who created this Exhaustive Adaptation. Server-assigned. Read-only. Note: also " +
                      "re-assigned to the acting user on every update -- see the migration report.")]
         [FormField(Group = "Audit", Order = 20, ReadOnly = true)]
+        [Key(34)]
         public string? CreatedUser { get; set; }
 
         [Description("Timestamp (UTC) this Exhaustive Adaptation was created. Server-assigned. Read-only. " +
                      "Note: also reset to the update time on every update -- see the migration report.")]
         [FormField(Group = "Audit", Order = 30, ReadOnly = true, Widget = "date")]
+        [Key(35)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("Not populated -- the underlying table has no corresponding column. Always null. See the " +
                      "migration report.")]
         [FormField(Group = "Audit", Order = 40, ReadOnly = true)]
+        [Key(36)]
         public string? UpdatedUser { get; set; }
 
         [Description("Timestamp (UTC) this Exhaustive Adaptation was last updated. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 50, ReadOnly = true, Widget = "date")]
+        [Key(37)]
         public DateTimeOffset? UpdatedDate { get; set; }
 
         [Description("Server-assigned optimistic-concurrency version number, incremented on every update. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 60, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(38)]
         public int Version { get; set; }
 
         [Description("User who deleted this Exhaustive Adaptation, if soft-deleted. Server-assigned. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 70, ReadOnly = true)]
+        [Key(39)]
         public string? DeletedUser { get; set; }
 
         [Description("Timestamp (UTC) this Exhaustive Adaptation was soft-deleted, if applicable. " +
                      "Server-assigned. Read-only. Note: the underlying column is non-nullable, so a row that " +
                      "has never been deleted reports 0001-01-01 rather than null -- see the migration report.")]
         [FormField(Group = "Audit", Order = 80, ReadOnly = true, Widget = "date")]
+        [Key(40)]
         public DateTimeOffset? DeletedDate { get; set; }
     }
 }

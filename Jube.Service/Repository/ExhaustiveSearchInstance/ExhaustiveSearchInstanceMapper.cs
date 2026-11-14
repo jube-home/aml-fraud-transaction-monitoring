@@ -84,6 +84,7 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstance
         {
             return new ExhaustiveSearchInstancePoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelId = dto.EntityAnalysisModelId,
                 Name = dto.Name,

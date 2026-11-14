@@ -24,5 +24,8 @@ namespace Jube.Parser.Models
         public int Length { get; set; }
         public string Message { get; set; }
         public int Line { get; set; }
+        public int? Column { get; set; }
+        public int? EndColumn { get; set; }
+        public string Code { get; set; }
     }
 }

@@ -33,6 +33,10 @@ namespace Jube.Service.Repository.TenantRegistry
                 UpdatedUser = rulePoco.UpdatedUser,
                 UpdatedDate = ToOffset(rulePoco.UpdatedDate),
                 Version = rulePoco.Version.GetValueOrDefault(),
+                HttpAdaptationUrl = rulePoco.HttpAdaptationUrl,
+                HttpAdaptationTimeoutMilliseconds = rulePoco.HttpAdaptationTimeoutMilliseconds.GetValueOrDefault(),
+                HttpAdaptationValidateSsl = rulePoco.HttpAdaptationValidateSsl != 0,
+                SvirfdRemoteLookupsEnabled = rulePoco.SvirfdRemoteLookupsEnabled != 0,
                 DeletedUser = rulePoco.DeletedUser,
                 DeletedDate = ToOffset(rulePoco.DeletedDate)
             };
@@ -42,10 +46,17 @@ namespace Jube.Service.Repository.TenantRegistry
 
         public static RulePoco ToPoco(TenantRegistryDto dto) => new()
         {
+            Version = dto.Version,
             Id = dto.Id,
             Name = dto.Name,
             Active = (byte)(dto.Active ? 1 : 0),
-            Locked = (byte)(dto.Locked ? 1 : 0)
+            Locked = (byte)(dto.Locked ? 1 : 0),
+            HttpAdaptationUrl = string.IsNullOrWhiteSpace(dto.HttpAdaptationUrl) ? null : dto.HttpAdaptationUrl.Trim(),
+            HttpAdaptationTimeoutMilliseconds = dto.HttpAdaptationTimeoutMilliseconds == 0
+                ? null
+                : dto.HttpAdaptationTimeoutMilliseconds,
+            HttpAdaptationValidateSsl = (byte)(dto.HttpAdaptationValidateSsl ? 1 : 0),
+            SvirfdRemoteLookupsEnabled = (byte)(dto.SvirfdRemoteLookupsEnabled ? 1 : 0)
         };
 
         private static DateTimeOffset? ToOffset(DateTime? value) =>

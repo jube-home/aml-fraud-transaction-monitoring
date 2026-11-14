@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double ConvertAtRate(this double @this, double rate)
+        [Description("Multiplies by a supplied positive exchange rate; NaN otherwise.")]
+        public static double ConvertAtRate(this double @this,
+            [Description("The exchange rate to multiply by.")] double rate)
         {
             if (!double.IsFinite(rate) || rate <= 0)
             {

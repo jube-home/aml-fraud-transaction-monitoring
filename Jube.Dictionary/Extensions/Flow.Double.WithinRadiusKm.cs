@@ -17,35 +17,55 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchWithinRadiusKm(double longitude1, double latitude2, double longitude2, double radiusKm)
+            [Description("True when: the value is latitude 1. Within the radius in kilometres of the second point. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchWithinRadiusKm([Description("Longitude of the first point.")] double longitude1,
+                [Description("Latitude of the second point.")] double latitude2,
+                [Description("Longitude of the second point.")] double longitude2,
+                [Description("The radius to test against.")] double radiusKm)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleWithinRadiusKm(flow.Value, longitude1, latitude2, longitude2, radiusKm));
             }
 
-            public Flow<double> RejectWithinRadiusKm(double longitude1, double latitude2, double longitude2, double radiusKm)
+            [Description("True when: the value is latitude 1. Within the radius in kilometres of the second point. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectWithinRadiusKm([Description("Longitude of the first point.")] double longitude1,
+                [Description("Latitude of the second point.")] double latitude2,
+                [Description("Longitude of the second point.")] double longitude2,
+                [Description("The radius to test against.")] double radiusKm)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleWithinRadiusKm(flow.Value, longitude1, latitude2, longitude2, radiusKm));
             }
 
-            public Flow<double> BreakWithinRadiusKm(double longitude1, double latitude2, double longitude2, double radiusKm)
+            [Description("True when: the value is latitude 1. Within the radius in kilometres of the second point. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakWithinRadiusKm([Description("Longitude of the first point.")] double longitude1,
+                [Description("Latitude of the second point.")] double latitude2,
+                [Description("Longitude of the second point.")] double longitude2,
+                [Description("The radius to test against.")] double radiusKm)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleWithinRadiusKm(flow.Value, longitude1, latitude2, longitude2, radiusKm));
             }
 
-            public Flow<double> RequireWithinRadiusKm(double longitude1, double latitude2, double longitude2, double radiusKm)
+            [Description("True when: the value is latitude 1. Within the radius in kilometres of the second point. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireWithinRadiusKm([Description("Longitude of the first point.")] double longitude1,
+                [Description("Latitude of the second point.")] double latitude2,
+                [Description("Longitude of the second point.")] double longitude2,
+                [Description("The radius to test against.")] double radiusKm)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleWithinRadiusKm(flow.Value, longitude1, latitude2, longitude2, radiusKm));
             }
 
-            public Flow<double> EnsureWithinRadiusKm(double longitude1, double latitude2, double longitude2, double radiusKm)
+            [Description("True when: the value is latitude 1. Within the radius in kilometres of the second point. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureWithinRadiusKm([Description("Longitude of the first point.")] double longitude1,
+                [Description("Latitude of the second point.")] double latitude2,
+                [Description("Longitude of the second point.")] double longitude2,
+                [Description("The radius to test against.")] double radiusKm)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +75,47 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchWithinRadiusKm(double longitude1, double latitude2, double longitude2, double radiusKm)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. Within the radius in kilometres of the second point. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchWithinRadiusKm([Description("Longitude of the first point.")] double longitude1,
+                [Description("Latitude of the second point.")] double latitude2,
+                [Description("Longitude of the second point.")] double longitude2,
+                [Description("The radius to test against.")] double radiusKm)
             {
                 return value.Start().MatchWithinRadiusKm(longitude1, latitude2, longitude2, radiusKm);
             }
 
-            public Flow<double> RejectWithinRadiusKm(double longitude1, double latitude2, double longitude2, double radiusKm)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. Within the radius in kilometres of the second point. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectWithinRadiusKm([Description("Longitude of the first point.")] double longitude1,
+                [Description("Latitude of the second point.")] double latitude2,
+                [Description("Longitude of the second point.")] double longitude2,
+                [Description("The radius to test against.")] double radiusKm)
             {
                 return value.Start().RejectWithinRadiusKm(longitude1, latitude2, longitude2, radiusKm);
             }
 
-            public Flow<double> BreakWithinRadiusKm(double longitude1, double latitude2, double longitude2, double radiusKm)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. Within the radius in kilometres of the second point. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakWithinRadiusKm([Description("Longitude of the first point.")] double longitude1,
+                [Description("Latitude of the second point.")] double latitude2,
+                [Description("Longitude of the second point.")] double longitude2,
+                [Description("The radius to test against.")] double radiusKm)
             {
                 return value.Start().BreakWithinRadiusKm(longitude1, latitude2, longitude2, radiusKm);
             }
 
-            public Flow<double> RequireWithinRadiusKm(double longitude1, double latitude2, double longitude2, double radiusKm)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. Within the radius in kilometres of the second point. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireWithinRadiusKm([Description("Longitude of the first point.")] double longitude1,
+                [Description("Latitude of the second point.")] double latitude2,
+                [Description("Longitude of the second point.")] double longitude2,
+                [Description("The radius to test against.")] double radiusKm)
             {
                 return value.Start().RequireWithinRadiusKm(longitude1, latitude2, longitude2, radiusKm);
             }
 
-            public Flow<double> EnsureWithinRadiusKm(double longitude1, double latitude2, double longitude2, double radiusKm)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. Within the radius in kilometres of the second point. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureWithinRadiusKm([Description("Longitude of the first point.")] double longitude1,
+                [Description("Latitude of the second point.")] double latitude2,
+                [Description("Longitude of the second point.")] double longitude2,
+                [Description("The radius to test against.")] double radiusKm)
             {
                 return value.Start().EnsureWithinRadiusKm(longitude1, latitude2, longitude2, radiusKm);
             }

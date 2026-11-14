@@ -40,13 +40,11 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(10)] public int? Version { get; set; }
         [Column] [Nullable] [Key(11)] public int? InheritedId { get; set; }
 
-        [Association(ThisKey = "EntityAnalysisModelGuid", OtherKey = "Guid", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "EntityAnalysisModelGuid", OtherKey = "Guid", CanBeNull = true)]
         [Key(12)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelListId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "EntityAnalysisModelListId", CanBeNull = true)]
         [Key(13)]
         public IEnumerable<EntityAnalysisModelListValue> EntityAnalysisModelListValue { get; set; }
 

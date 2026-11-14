@@ -64,7 +64,7 @@
     <value>The interval type must be one of Seconds, Minutes, Hours, Days, Months or Years.</value>
   </data>
     <data name="TtlCounterValueRange" xml:space="preserve">
-    <value>The interval value cannot be negative.</value>
+    <value>The interval value cannot be negative or exceed the limit for the chosen interval type.</value>
   </data>
     <data name="ResolutionIntervalInvalid" xml:space="preserve">
     <value>The resolution interval must be one of Minutes, Hours or Days.</value>

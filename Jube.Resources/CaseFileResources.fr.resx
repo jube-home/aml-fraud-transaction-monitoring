@@ -39,4 +39,43 @@
     <data name="CaseKeyRequired" xml:space="preserve">
     <value>La clé de dossier est requise.</value>
   </data>
+    <data name="OneParentOnly" xml:space="preserve">
+    <value>Un fichier appartient à une note ou à une recherche, jamais aux deux.</value>
+  </data>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="NotVisible" xml:space="preserve">
+    <value>Le fichier ou son dossier est introuvable.</value>
+  </data>
+    <data name="CaseKeyValueRequired" xml:space="preserve">
+    <value>La valeur de la clé du dossier est requise.</value>
+  </data>
+    <data name="CaseIdInvalid" xml:space="preserve">
+    <value>Un identifiant de dossier valide est requis.</value>
+  </data>
+    <data name="FileTooLarge" xml:space="preserve">
+    <value>Le fichier dépasse la taille maximale autorisée.</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>Le dossier est verrouillé par un autre utilisateur.</value>
+  </data>
+    <data name="RemovalRestricted" xml:space="preserve">
+    <value>Seul l'utilisateur qui a téléversé ce fichier, l'utilisateur qui détient le dossier ou un superviseur peut le supprimer.</value>
+  </data>
+    <data name="FileTypeNotAllowed" xml:space="preserve">
+    <value>Les fichiers portant cette extension ne sont pas acceptés comme preuve de dossier.</value>
+  </data>
+    <data name="FileContentNotAllowed" xml:space="preserve">
+    <value>Le contenu de ce fichier n'est pas d'un type accepté comme preuve de dossier.</value>
+  </data>
+    <data name="FileRejectedByScanner" xml:space="preserve">
+    <value>Le fichier a été rejeté par l'analyse antimalware.</value>
+  </data>
+    <data name="FileScanUnavailable" xml:space="preserve">
+    <value>Le fichier n'a pas pu être analysé ; il n'a donc pas été accepté.</value>
+  </data>
 </root>

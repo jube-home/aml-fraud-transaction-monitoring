@@ -33,6 +33,7 @@ namespace Jube.Service.Query.Parser
         private static readonly int[] permissions = [8, 10, 13, 14, 16, 17, 25, 26];
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
+        private readonly DynamicEnvironment.DynamicEnvironment? dynamicEnvironment;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly IServiceChangeBus serviceChangeBus;
@@ -42,9 +43,10 @@ namespace Jube.Service.Query.Parser
 
         private ParserService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
-            IStringLocalizer strings)
+            IStringLocalizer strings, DynamicEnvironment.DynamicEnvironment? dynamicEnvironment)
         {
             this.dbContext = dbContext;
+            this.dynamicEnvironment = dynamicEnvironment;
             this.log = log;
             this.auditLog = auditLog;
             this.serviceChangeBus = serviceChangeBus;
@@ -58,15 +60,16 @@ namespace Jube.Service.Query.Parser
 
         public static Task<ParserService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
-            CancellationToken token = default)
+            CancellationToken token = default, DynamicEnvironment.DynamicEnvironment? dynamicEnvironment = null)
         {
             return CreateAsync(dbContext, userName, log, stringLocalizerFactory, serviceChangeBus,
-                LogManager.GetLogger("Jube.Audit"), token);
+                LogManager.GetLogger("Jube.Audit"), token, dynamicEnvironment);
         }
 
         internal static async Task<ParserService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
-            IServiceChangeBus serviceChangeBus, ILog auditLog, CancellationToken token = default)
+            IServiceChangeBus serviceChangeBus, ILog auditLog, CancellationToken token = default,
+            DynamicEnvironment.DynamicEnvironment? dynamicEnvironment = null)
         {
             var strings = stringLocalizerFactory.Create(typeof(ParserResources));
 
@@ -97,7 +100,7 @@ namespace Jube.Service.Query.Parser
                 .ConfigureAwait(false);
 
             return new ParserService(dbContext, userName, resolvedTenantRegistryId.Value, permissionValidation,
-                log, auditLog, serviceChangeBus, strings);
+                log, auditLog, serviceChangeBus, strings, dynamicEnvironment);
         }
 
         [Description("Parses and compiles a user-authored rule (inline function, gateway rule, abstraction rule, " +
@@ -121,12 +124,18 @@ namespace Jube.Service.Query.Parser
             try
             {
                 EnsurePermitted("Parser.Parse");
+                EnsureWithinRateLimit();
 
                 return await ParseCoreAsync(request, token).ConfigureAwait(false);
             }
             catch (ForbiddenException)
             {
                 op.Outcome("forbidden");
+                throw;
+            }
+            catch (RateLimitedException)
+            {
+                op.Outcome("ratelimited");
                 throw;
             }
             catch (OperationCanceledException)
@@ -161,6 +170,34 @@ namespace Jube.Service.Query.Parser
                 Message = result.Message,
                 ErrorSpans = result.ErrorSpans.Count > 0 ? ParserMapper.ToDto(result.ErrorSpans) : null
             };
+        }
+
+        private int Limit(string key, int fallback)
+        {
+            return int.TryParse(dynamicEnvironment?.AppSettings(key), out var value) && value > 0
+                ? value
+                : fallback;
+        }
+
+        private void EnsureWithinRateLimit()
+        {
+            var window = TimeSpan.FromSeconds(Limit("ParseWindowSeconds", 60));
+            var now = DateTime.UtcNow;
+
+            if (ParseRateLimiter.TryAcquire($"user:{tenantRegistryId}:{userName}",
+                    Limit("ParseMaxPerUserPerWindow", 120), window, now) &&
+                ParseRateLimiter.TryAcquire($"tenant:{tenantRegistryId}",
+                    Limit("ParseMaxPerTenantPerWindow", 600), window, now))
+            {
+                return;
+            }
+
+            if (log.IsWarnEnabled)
+            {
+                log.Warn($"Parser.Parse: rate limited user={userName} tenant={tenantRegistryId}");
+            }
+
+            throw new RateLimitedException(strings[ParserResources.ParseRateLimited]);
         }
 
         private void EnsurePermitted(string op)

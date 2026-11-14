@@ -42,17 +42,17 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(13)] public int? Version { get; set; }
         [Column] [Nullable] [Key(14)] public string Html { get; set; }
 
-        [Association(ThisKey = "CaseWorkflowId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "CaseWorkflowId", OtherKey = "Id", CanBeNull = true)]
         [Key(15)]
         public CaseWorkflow CaseWorkflow { get; set; }
 
         [Column] [Nullable] [Key(16)] public Guid Guid { get; set; }
         [Column] [Nullable] [Key(17)] public int? ImportId { get; set; }
 
-        [Association(ThisKey = "Guid", OtherKey = "CaseWorkflowDisplayGuid", CanBeNull = false,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Guid", OtherKey = "CaseWorkflowDisplayGuid", CanBeNull = false)]
         [Key(18)]
         public CaseWorkflowDisplayRole CaseWorkflowDisplayRole { get; set; }
+
+        [Column] [Nullable] [Key(19)] public string Sql { get; set; }
     }
 }

@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,18 +22,22 @@ using System.ComponentModel;
 namespace Jube.Dto.EntityAnalysisModelDictionaryKvp
 {
     [Description("Outcome of importing one CSV file.")]
+    [MessagePackObject]
     public class EntityAnalysisModelDictionaryKvpCsvUploadResultDto
     {
         [Description("Identifier of the upload record created for the file.")]
+        [Key(0)]
         public int Id { get; set; }
 
-        [Description("Original file name.")] public string? FileName { get; set; }
+        [Description("Original file name.")] [Key(1)] public string? FileName { get; set; }
 
         [Description("Lines processed without error.")]
+        [Key(2)]
         public int Records { get; set; }
 
         [Description("Error count recorded against the upload (always zero, as in the legacy behaviour; failed " +
                      "lines are logged and excluded from Records).")]
+        [Key(3)]
         public int Errors { get; set; }
     }
 }

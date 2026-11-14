@@ -1,0 +1,351 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc jc-diagram" viewBox="0 0 640 509" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-2a750d81-t jc-2a750d81-d">
+    <title id="jc-2a750d81-t">Neighbourhood of account 0</title>
+    <desc id="jc-2a750d81-d">Radial graph diagram with 11 nodes and 11 directed edges in 3 rings; edge thickness shows
+        weight.
+    </desc>
+    <rect class="bg" x="0" y="0" width="640" height="509" rx="8"/>
+    <text class="ttl" x="16" y="32">Neighbourhood of account 0</text>
+    <text class="sub" x="16" y="50">Two hops, rings by distance</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="62" width="69.12" height="18"/>
+        <rect class="sw" x="16" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="75">Accounts</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="101.12" y="62" width="61.68" height="18"/>
+        <rect class="sw" x="103.12" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="121.12" y="75">Devices</text>
+    </g>
+    <g class="lg s2">
+        <rect class="hit" x="180.8" y="62" width="63.72" height="18"/>
+        <rect class="sw" x="182.8" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="200.8" y="75">Network</text>
+    </g>
+    <g transform="translate(82.27 90)">
+        <defs>
+            <marker id="jc-2a750d81-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9"
+                    markerUnits="userSpaceOnUse" orient="auto">
+                <path class="ah" d="M0 0L10 5L0 10Z"/>
+            </marker>
+        </defs>
+        <g class="mk x0 eg e0 e1" tabindex="0" role="graphics-symbol" aria-label="Account 0 to Account 1, Weight: 500"
+           data-from="acct-0" data-to="acct-1" data-edge="x0" data-kind="directed">
+            <title>Account 0 to Account 1, Weight: 500</title>
+            <path class="eh" d="M251.06 179.72L302.84 142.1"/>
+            <path class="ep et" d="M251.06 179.72L302.84 142.1" stroke-width="1.65" marker-end="url(#jc-2a750d81-ar)"/>
+            <text class="ant ctr" x="276.95" y="142.91">500</text>
+        </g>
+        <g class="mk x1 eg e0 e2" tabindex="0" role="graphics-symbol" aria-label="Account 0 to Account 2, Weight: 1000"
+           data-from="acct-0" data-to="acct-2" data-edge="x1" data-kind="directed">
+            <title>Account 0 to Account 2, Weight: 1000</title>
+            <path class="eh" d="M247.96 199.27L285.58 251.05"/>
+            <path class="ep et" d="M247.96 199.27L285.58 251.05" stroke-width="2.4" marker-end="url(#jc-2a750d81-ar)"/>
+            <text class="ant ctr" x="266.77" y="235.16">1000</text>
+        </g>
+        <g class="mk x2 eg e0 e3" tabindex="0" role="graphics-symbol" aria-label="Account 0 to Account 3, Weight: 1500"
+           data-from="acct-0" data-to="acct-3" data-edge="x2" data-kind="directed">
+            <title>Account 0 to Account 3, Weight: 1500</title>
+            <path class="eh" d="M231.51 199.27L193.89 251.05"/>
+            <path class="ep et" d="M231.51 199.27L193.89 251.05" stroke-width="3.15" marker-end="url(#jc-2a750d81-ar)"/>
+            <text class="ant ctr" x="212.7" y="235.16">1500</text>
+        </g>
+        <g class="mk x3 eg e0 e4" tabindex="0" role="graphics-symbol" aria-label="Account 0 to Account 4, Weight: 2000"
+           data-from="acct-0" data-to="acct-4" data-edge="x3" data-kind="directed">
+            <title>Account 0 to Account 4, Weight: 2000</title>
+            <path class="eh" d="M228.41 179.72L176.63 142.1"/>
+            <path class="ep et" d="M228.41 179.72L176.63 142.1" stroke-width="3.9" marker-end="url(#jc-2a750d81-ar)"/>
+            <text class="ant ctr" x="202.52" y="142.91">2000</text>
+        </g>
+        <g class="mk x4 eg e1 e5" tabindex="0" role="graphics-symbol" aria-label="Account 1 to Device a1"
+           data-from="acct-1" data-to="dev-1" data-edge="x4" data-kind="directed">
+            <title>Account 1 to Device a1</title>
+            <path class="eh" d="M327.79 137.08L407.84 155.95"/>
+            <path class="ep et" d="M327.79 137.08L407.84 155.95" stroke-width="1.6" marker-end="url(#jc-2a750d81-ar)"/>
+        </g>
+        <g class="mk x5 eg e2 e5" tabindex="0" role="graphics-symbol" aria-label="Account 2 to Device a1"
+           data-from="acct-2" data-to="dev-1" data-edge="x5" data-kind="directed">
+            <title>Account 2 to Device a1</title>
+            <path class="eh" d="M304.7 253.57L410.58 167.96"/>
+            <path class="ep et" d="M304.7 253.57L410.58 167.96" stroke-width="1.6" marker-end="url(#jc-2a750d81-ar)"/>
+        </g>
+        <g class="mk x6 eg e3 e6" tabindex="0" role="graphics-symbol" aria-label="Account 3 to Device b2"
+           data-from="acct-3" data-to="dev-2" data-edge="x6" data-kind="directed">
+            <title>Account 3 to Device b2</title>
+            <path class="eh" d="M177.43 273.7L139.81 325.48"/>
+            <path class="ep et" d="M177.43 273.7L139.81 325.48" stroke-width="1.6" marker-end="url(#jc-2a750d81-ar)"/>
+        </g>
+        <g class="mk x7 eg e4 e7" tabindex="0" role="graphics-symbol" aria-label="Account 4 to 10.0.0.1"
+           data-from="acct-4" data-to="ip-1" data-edge="x7" data-kind="directed">
+            <title>Account 4 to 10.0.0.1</title>
+            <path class="eh" d="M151.68 137.08L71.63 155.95"/>
+            <path class="ep et" d="M151.68 137.08L71.63 155.95" stroke-width="1.6" marker-end="url(#jc-2a750d81-ar)"/>
+        </g>
+        <g class="mk x8 eg e4 e8" tabindex="0" role="graphics-symbol" aria-label="Account 4 to 10.0.0.2"
+           data-from="acct-4" data-to="ip-2" data-edge="x8" data-kind="directed">
+            <title>Account 4 to 10.0.0.2</title>
+            <path class="eh" d="M164.15 119.92L157.36 37.95"/>
+            <path class="ep et" d="M164.15 119.92L157.36 37.95" stroke-width="1.6" marker-end="url(#jc-2a750d81-ar)"/>
+        </g>
+        <g class="mk x9 eg e1 e9" tabindex="0" role="graphics-symbol" aria-label="Account 1 to Merchant, Weight: 120"
+           data-from="acct-1" data-to="cp-1" data-edge="x9" data-kind="directed">
+            <title>Account 1 to Merchant, Weight: 120</title>
+            <path class="eh" d="M315.32 119.92L322.11 37.95"/>
+            <path class="ep et" d="M315.32 119.92L322.11 37.95" stroke-width="1.08" marker-end="url(#jc-2a750d81-ar)"/>
+            <text class="ant ctr" x="318.72" y="74.93">120</text>
+        </g>
+        <g class="mk x10 eg e2 e10" tabindex="0" role="graphics-symbol" aria-label="Account 2 to Exchange, Weight: 2400"
+           data-from="acct-2" data-to="cp-2" data-edge="x10" data-kind="directed">
+            <title>Account 2 to Exchange, Weight: 2400</title>
+            <path class="eh" d="M302.04 273.7L339.66 325.48"/>
+            <path class="ep et" d="M302.04 273.7L339.66 325.48" stroke-width="4.5" marker-end="url(#jc-2a750d81-ar)"/>
+            <text class="ant ctr" x="320.85" y="309.59">2400</text>
+        </g>
+        <g class="mk n0 nd s0 j1 j2 j3 j4" tabindex="0" role="graphics-symbol"
+           aria-label="Account 0, Accounts, Edges in: 0, out: 4, ○" data-node="acct-0" data-kind="circle">
+            <title>Account 0, Accounts, Edges in: 0, out: 4, ○</title>
+            <circle class="nb" cx="239.73" cy="187.95" r="14"/>
+            <circle class="nt" cx="239.73" cy="187.95" r="14"/>
+            <text class="lbl ctr" x="239.73" y="213.95">Account 0</text>
+            <rect class="nb" x="249.73" y="168.95" width="14" height="14" rx="7"/>
+            <text class="lbl ctr mid fs10" x="256.73" y="175.95">○</text>
+        </g>
+        <g class="mk n1 nd s0 j0 j5 j9" tabindex="0" role="graphics-symbol"
+           aria-label="Account 1, Accounts, Edges in: 1, out: 2" data-node="acct-1" data-kind="circle">
+            <title>Account 1, Accounts, Edges in: 1, out: 2</title>
+            <circle class="nb" cx="314.16" cy="133.87" r="14"/>
+            <circle class="nt" cx="314.16" cy="133.87" r="14"/>
+            <text class="lbl ctr" x="314.16" y="159.87">Account 1</text>
+        </g>
+        <g class="mk n2 nd s0 j0 j5 j10" tabindex="0" role="graphics-symbol"
+           aria-label="Account 2, Accounts, Edges in: 1, out: 2" data-node="acct-2" data-kind="circle">
+            <title>Account 2, Accounts, Edges in: 1, out: 2</title>
+            <circle class="nb" cx="293.81" cy="262.37" r="14"/>
+            <circle class="nt" cx="293.81" cy="262.37" r="14"/>
+            <text class="lbl ctr" x="293.81" y="288.37">Account 2</text>
+        </g>
+        <g class="mk n3 nd s0 j0 j6" tabindex="0" role="graphics-symbol"
+           aria-label="Account 3, Accounts, Edges in: 1, out: 1" data-node="acct-3" data-kind="circle">
+            <title>Account 3, Accounts, Edges in: 1, out: 1</title>
+            <circle class="nb" cx="185.66" cy="262.37" r="14"/>
+            <circle class="nt" cx="185.66" cy="262.37" r="14"/>
+            <text class="lbl ctr" x="185.66" y="288.37">Account 3</text>
+        </g>
+        <g class="mk n4 nd s0 j0 j7 j8" tabindex="0" role="graphics-symbol"
+           aria-label="Account 4, Accounts, Edges in: 1, out: 2" data-node="acct-4" data-kind="circle">
+            <title>Account 4, Accounts, Edges in: 1, out: 2</title>
+            <circle class="nb" cx="165.31" cy="133.87" r="14"/>
+            <circle class="nt" cx="165.31" cy="133.87" r="14"/>
+            <text class="lbl ctr" x="165.31" y="159.87">Account 4</text>
+        </g>
+        <g class="mk n5 nd s1 j1 j2" tabindex="0" role="graphics-symbol"
+           aria-label="Device a1, Devices, Edges in: 2, out: 0" data-node="dev-1" data-kind="square">
+            <title>Device a1, Devices, Edges in: 2, out: 0</title>
+            <rect class="nb" x="408.87" y="146.56" width="25.2" height="25.2" rx="3"/>
+            <rect class="nt" x="408.87" y="146.56" width="25.2" height="25.2" rx="3"/>
+            <text class="lbl ctr" x="421.47" y="185.16">Device a1</text>
+        </g>
+        <g class="mk n6 nd s1 j3" tabindex="0" role="graphics-symbol"
+           aria-label="Device b2, Devices, Edges in: 1, out: 0" data-node="dev-2" data-kind="square">
+            <title>Device b2, Devices, Edges in: 1, out: 0</title>
+            <rect class="nb" x="118.98" y="324.2" width="25.2" height="25.2" rx="3"/>
+            <rect class="nt" x="118.98" y="324.2" width="25.2" height="25.2" rx="3"/>
+            <text class="lbl ctr" x="131.58" y="362.8">Device b2</text>
+        </g>
+        <g class="mk n7 nd s2 j4" tabindex="0" role="graphics-symbol"
+           aria-label="10.0.0.1, Network, Edges in: 1, out: 0" data-node="ip-1" data-kind="diamond">
+            <title>10.0.0.1, Network, Edges in: 1, out: 0</title>
+            <path class="nb" d="M58 145.16L72 159.16L58 173.16L44 159.16Z"/>
+            <path class="nt" d="M58 145.16L72 159.16L58 173.16L44 159.16Z"/>
+            <text class="lbl ctr" x="58" y="185.16">10.0.0.1</text>
+        </g>
+        <g class="mk n8 nd s2 j4" tabindex="0" role="graphics-symbol"
+           aria-label="10.0.0.2, Network, Edges in: 1, out: 0" data-node="ip-2" data-kind="diamond">
+            <title>10.0.0.2, Network, Edges in: 1, out: 0</title>
+            <path class="nb" d="M156.2 10L170.2 24L156.2 38L142.2 24Z"/>
+            <path class="nt" d="M156.2 10L170.2 24L156.2 38L142.2 24Z"/>
+            <text class="lbl ctr" x="156.2" y="50">10.0.0.2</text>
+        </g>
+        <g class="mk n9 nd s0 j1" tabindex="0" role="graphics-symbol"
+           aria-label="Merchant, Accounts, Edges in: 1, out: 0" data-node="cp-1" data-kind="triangle">
+            <title>Merchant, Accounts, Edges in: 1, out: 0</title>
+            <path class="nb" d="M323.27 10L336.57 32.4L309.97 32.4Z"/>
+            <path class="nt" d="M323.27 10L336.57 32.4L309.97 32.4Z"/>
+            <text class="lbl ctr" x="323.27" y="50">Merchant</text>
+        </g>
+        <g class="mk n10 nd s0 j2" tabindex="0" role="graphics-symbol"
+           aria-label="Exchange, Accounts, Edges in: 1, out: 0, ★" data-node="cp-2" data-kind="triangle">
+            <title>Exchange, Accounts, Edges in: 1, out: 0, ★</title>
+            <path class="nb" d="M347.89 322.8L361.19 345.2L334.59 345.2Z"/>
+            <path class="nt" d="M347.89 322.8L361.19 345.2L334.59 345.2Z"/>
+            <text class="lbl ctr" x="347.89" y="362.8">Exchange</text>
+            <rect class="nb" x="357.89" y="317.8" width="14" height="14" rx="7"/>
+            <text class="lbl ctr mid fs10" x="364.89" y="324.8">★</text>
+        </g>
+    </g>
+    <text class="kn" x="82.27" y="485.8">thickness = weight</text>
+    <g class="tps">
+        <g class="tp tx0">
+            <g class="tt">
+                <rect class="tb" x="369.21" y="224.91" width="154.32" height="44" rx="6"/>
+                <text class="tx b" x="379.21" y="242.91">Account 0 to Account 1</text>
+                <text class="tx" x="379.21" y="259.91">Weight: 500</text>
+            </g>
+        </g>
+        <g class="tp tx1">
+            <g class="tt">
+                <rect class="tb" x="359.04" y="289.16" width="154.32" height="44" rx="6"/>
+                <text class="tx b" x="369.04" y="307.16">Account 0 to Account 2</text>
+                <text class="tx" x="369.04" y="324.16">Weight: 1000</text>
+            </g>
+        </g>
+        <g class="tp tx2">
+            <g class="tt">
+                <rect class="tb" x="304.96" y="289.16" width="154.32" height="44" rx="6"/>
+                <text class="tx b" x="314.96" y="307.16">Account 0 to Account 3</text>
+                <text class="tx" x="314.96" y="324.16">Weight: 1500</text>
+            </g>
+        </g>
+        <g class="tp tx3">
+            <g class="tt">
+                <rect class="tb" x="294.79" y="224.91" width="154.32" height="44" rx="6"/>
+                <text class="tx b" x="304.79" y="242.91">Account 0 to Account 4</text>
+                <text class="tx" x="304.79" y="259.91">Weight: 2000</text>
+            </g>
+        </g>
+        <g class="tp tx4">
+            <g class="tt">
+                <rect class="tb" x="460.08" y="219.02" width="153.31" height="27" rx="6"/>
+                <text class="tx b" x="470.08" y="237.02">Account 1 to Device a1</text>
+            </g>
+        </g>
+        <g class="tp tx5">
+            <g class="tt">
+                <rect class="tb" x="449.91" y="283.27" width="153.31" height="27" rx="6"/>
+                <text class="tx b" x="459.91" y="301.27">Account 2 to Device a1</text>
+            </g>
+        </g>
+        <g class="tp tx6">
+            <g class="tt">
+                <rect class="tb" x="250.89" y="372.09" width="153.31" height="27" rx="6"/>
+                <text class="tx b" x="260.89" y="390.09">Account 3 to Device b2</text>
+            </g>
+        </g>
+        <g class="tp tx7">
+            <g class="tt">
+                <rect class="tb" x="203.92" y="219.02" width="141.86" height="27" rx="6"/>
+                <text class="tx b" x="213.92" y="237.02">Account 4 to 10.0.0.1</text>
+            </g>
+        </g>
+        <g class="tp tx8">
+            <g class="tt">
+                <rect class="tb" x="253.02" y="151.43" width="141.86" height="27" rx="6"/>
+                <text class="tx b" x="263.02" y="169.43">Account 4 to 10.0.0.2</text>
+            </g>
+        </g>
+        <g class="tp tx9">
+            <g class="tt">
+                <rect class="tb" x="410.98" y="142.93" width="150.76" height="44" rx="6"/>
+                <text class="tx b" x="420.98" y="160.93">Account 1 to Merchant</text>
+                <text class="tx" x="420.98" y="177.93">Weight: 120</text>
+            </g>
+        </g>
+        <g class="tp tx10">
+            <g class="tt">
+                <rect class="tb" x="413.11" y="363.59" width="153.05" height="44" rx="6"/>
+                <text class="tx b" x="423.11" y="381.59">Account 2 to Exchange</text>
+                <text class="tx" x="423.11" y="398.59">Weight: 2400</text>
+            </g>
+        </g>
+        <g class="tp tn0">
+            <g class="tt">
+                <rect class="tb" x="346" y="238.95" width="116.96" height="78" rx="6"/>
+                <text class="tx b" x="356" y="256.95">Account 0</text>
+                <text class="tx" x="356" y="273.95">Accounts</text>
+                <text class="tx" x="356" y="290.95">Edges in: 0, out: 4</text>
+                <text class="tx" x="356" y="307.95">○</text>
+            </g>
+        </g>
+        <g class="tp tn1">
+            <g class="tt">
+                <rect class="tb" x="420.43" y="193.37" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="430.43" y="211.37">Account 1</text>
+                <text class="tx" x="430.43" y="228.37">Accounts</text>
+                <text class="tx" x="430.43" y="245.37">Edges in: 1, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn2">
+            <g class="tt">
+                <rect class="tb" x="400.08" y="321.87" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="410.08" y="339.87">Account 2</text>
+                <text class="tx" x="410.08" y="356.87">Accounts</text>
+                <text class="tx" x="410.08" y="373.87">Edges in: 1, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn3">
+            <g class="tt">
+                <rect class="tb" x="291.92" y="321.87" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="301.92" y="339.87">Account 3</text>
+                <text class="tx" x="301.92" y="356.87">Accounts</text>
+                <text class="tx" x="301.92" y="373.87">Edges in: 1, out: 1</text>
+            </g>
+        </g>
+        <g class="tp tn4">
+            <g class="tt">
+                <rect class="tb" x="271.57" y="193.37" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="281.57" y="211.37">Account 4</text>
+                <text class="tx" x="281.57" y="228.37">Accounts</text>
+                <text class="tx" x="281.57" y="245.37">Edges in: 1, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn5">
+            <g class="tt">
+                <rect class="tb" x="390.77" y="218.66" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="400.77" y="236.66">Device a1</text>
+                <text class="tx" x="400.77" y="253.66">Devices</text>
+                <text class="tx" x="400.77" y="270.66">Edges in: 2, out: 0</text>
+            </g>
+        </g>
+        <g class="tp tn6">
+            <g class="tt">
+                <rect class="tb" x="237.85" y="396.3" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="247.85" y="414.3">Device b2</text>
+                <text class="tx" x="247.85" y="431.3">Devices</text>
+                <text class="tx" x="247.85" y="448.3">Edges in: 1, out: 0</text>
+            </g>
+        </g>
+        <g class="tp tn7">
+            <g class="tt">
+                <rect class="tb" x="164.27" y="218.66" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="174.27" y="236.66">10.0.0.1</text>
+                <text class="tx" x="174.27" y="253.66">Network</text>
+                <text class="tx" x="174.27" y="270.66">Edges in: 1, out: 0</text>
+            </g>
+        </g>
+        <g class="tp tn8">
+            <g class="tt">
+                <rect class="tb" x="262.47" y="83.5" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="272.47" y="101.5">10.0.0.2</text>
+                <text class="tx" x="272.47" y="118.5">Network</text>
+                <text class="tx" x="272.47" y="135.5">Edges in: 1, out: 0</text>
+            </g>
+        </g>
+        <g class="tp tn9">
+            <g class="tt">
+                <rect class="tb" x="429.53" y="83.5" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="439.53" y="101.5">Merchant</text>
+                <text class="tx" x="439.53" y="118.5">Accounts</text>
+                <text class="tx" x="439.53" y="135.5">Edges in: 1, out: 0</text>
+            </g>
+        </g>
+        <g class="tp tn10">
+            <g class="tt">
+                <rect class="tb" x="454.15" y="387.8" width="116.96" height="78" rx="6"/>
+                <text class="tx b" x="464.15" y="405.8">Exchange</text>
+                <text class="tx" x="464.15" y="422.8">Accounts</text>
+                <text class="tx" x="464.15" y="439.8">Edges in: 1, out: 0</text>
+                <text class="tx" x="464.15" y="456.8">★</text>
+            </g>
+        </g>
+    </g>
+</svg>

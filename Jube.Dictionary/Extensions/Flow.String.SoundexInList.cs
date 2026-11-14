@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchSoundexInList(IEnumerable<string> list)
+            [Description("True when: every word sounds like the same word of an entry, in order. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchSoundexInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringSoundexInList(flow.Value, list));
             }
 
-            public Flow<string?> RejectSoundexInList(IEnumerable<string> list)
+            [Description("True when: every word sounds like the same word of an entry, in order. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectSoundexInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringSoundexInList(flow.Value, list));
             }
 
-            public Flow<string?> BreakSoundexInList(IEnumerable<string> list)
+            [Description("True when: every word sounds like the same word of an entry, in order. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakSoundexInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringSoundexInList(flow.Value, list));
             }
 
-            public Flow<string?> RequireSoundexInList(IEnumerable<string> list)
+            [Description("True when: every word sounds like the same word of an entry, in order. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireSoundexInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringSoundexInList(flow.Value, list));
             }
 
-            public Flow<string?> EnsureSoundexInList(IEnumerable<string> list)
+            [Description("True when: every word sounds like the same word of an entry, in order. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureSoundexInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchSoundexInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: every word sounds like the same word of an entry, in order. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchSoundexInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().MatchSoundexInList(list);
             }
 
-            public Flow<string?> RejectSoundexInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: every word sounds like the same word of an entry, in order. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectSoundexInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RejectSoundexInList(list);
             }
 
-            public Flow<string?> BreakSoundexInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: every word sounds like the same word of an entry, in order. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakSoundexInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().BreakSoundexInList(list);
             }
 
-            public Flow<string?> RequireSoundexInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: every word sounds like the same word of an entry, in order. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireSoundexInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RequireSoundexInList(list);
             }
 
-            public Flow<string?> EnsureSoundexInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: every word sounds like the same word of an entry, in order. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureSoundexInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().EnsureSoundexInList(list);
             }

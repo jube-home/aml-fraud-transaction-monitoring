@@ -17,14 +17,18 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchIsInsidePolygon(double longitude, IEnumerable<string>? vertices)
+            [Description("True when: the point at the value as latitude and the argument as longitude is inside the polygon given as a list of latitude,longitude vertices. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchIsInsidePolygon([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The polygon's vertices as latitude,longitude text in order, usually a List token.")] IEnumerable<string>? vertices)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleIsInsidePolygon(flow.Value, longitude, vertices));
             }
 
-            public Flow<double> RejectIsInsidePolygon(double longitude, IEnumerable<string>? vertices)
+            [Description("True when: the point at the value as latitude and the argument as longitude is inside the polygon given as a list of latitude,longitude vertices. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectIsInsidePolygon([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The polygon's vertices as latitude,longitude text in order, usually a List token.")] IEnumerable<string>? vertices)
             {
                 return flow.IsDecided
                     ? flow
@@ -32,14 +36,18 @@ namespace Jube.Dictionary.Extensions
                         FlowPredicates.DoubleIsInsidePolygon(flow.Value, longitude, vertices));
             }
 
-            public Flow<double> BreakIsInsidePolygon(double longitude, IEnumerable<string>? vertices)
+            [Description("True when: the point at the value as latitude and the argument as longitude is inside the polygon given as a list of latitude,longitude vertices. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakIsInsidePolygon([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The polygon's vertices as latitude,longitude text in order, usually a List token.")] IEnumerable<string>? vertices)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleIsInsidePolygon(flow.Value, longitude, vertices));
             }
 
-            public Flow<double> RequireIsInsidePolygon(double longitude, IEnumerable<string>? vertices)
+            [Description("True when: the point at the value as latitude and the argument as longitude is inside the polygon given as a list of latitude,longitude vertices. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireIsInsidePolygon([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The polygon's vertices as latitude,longitude text in order, usually a List token.")] IEnumerable<string>? vertices)
             {
                 return flow.IsDecided
                     ? flow
@@ -47,7 +55,9 @@ namespace Jube.Dictionary.Extensions
                         FlowPredicates.DoubleIsInsidePolygon(flow.Value, longitude, vertices));
             }
 
-            public Flow<double> EnsureIsInsidePolygon(double longitude, IEnumerable<string>? vertices)
+            [Description("True when: the point at the value as latitude and the argument as longitude is inside the polygon given as a list of latitude,longitude vertices. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureIsInsidePolygon([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The polygon's vertices as latitude,longitude text in order, usually a List token.")] IEnumerable<string>? vertices)
             {
                 return flow.IsDecided
                     ? flow
@@ -58,27 +68,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchIsInsidePolygon(double longitude, IEnumerable<string>? vertices)
+            [Description("Begins a pipeline from the value. True when: the point at the value as latitude and the argument as longitude is inside the polygon given as a list of latitude,longitude vertices. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchIsInsidePolygon([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The polygon's vertices as latitude,longitude text in order, usually a List token.")] IEnumerable<string>? vertices)
             {
                 return value.Start().MatchIsInsidePolygon(longitude, vertices);
             }
 
-            public Flow<double> RejectIsInsidePolygon(double longitude, IEnumerable<string>? vertices)
+            [Description("Begins a pipeline from the value. True when: the point at the value as latitude and the argument as longitude is inside the polygon given as a list of latitude,longitude vertices. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectIsInsidePolygon([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The polygon's vertices as latitude,longitude text in order, usually a List token.")] IEnumerable<string>? vertices)
             {
                 return value.Start().RejectIsInsidePolygon(longitude, vertices);
             }
 
-            public Flow<double> BreakIsInsidePolygon(double longitude, IEnumerable<string>? vertices)
+            [Description("Begins a pipeline from the value. True when: the point at the value as latitude and the argument as longitude is inside the polygon given as a list of latitude,longitude vertices. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakIsInsidePolygon([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The polygon's vertices as latitude,longitude text in order, usually a List token.")] IEnumerable<string>? vertices)
             {
                 return value.Start().BreakIsInsidePolygon(longitude, vertices);
             }
 
-            public Flow<double> RequireIsInsidePolygon(double longitude, IEnumerable<string>? vertices)
+            [Description("Begins a pipeline from the value. True when: the point at the value as latitude and the argument as longitude is inside the polygon given as a list of latitude,longitude vertices. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireIsInsidePolygon([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The polygon's vertices as latitude,longitude text in order, usually a List token.")] IEnumerable<string>? vertices)
             {
                 return value.Start().RequireIsInsidePolygon(longitude, vertices);
             }
 
-            public Flow<double> EnsureIsInsidePolygon(double longitude, IEnumerable<string>? vertices)
+            [Description("Begins a pipeline from the value. True when: the point at the value as latitude and the argument as longitude is inside the polygon given as a list of latitude,longitude vertices. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureIsInsidePolygon([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The polygon's vertices as latitude,longitude text in order, usually a List token.")] IEnumerable<string>? vertices)
             {
                 return value.Start().EnsureIsInsidePolygon(longitude, vertices);
             }

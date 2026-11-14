@@ -32,6 +32,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -315,6 +316,19 @@ namespace Jube.Test.Service.Query.CaseEventByCaseKeyValue
         [InlineData(13, "Suspend Open")]
         [InlineData(14, "Allocate Lock")]
         [InlineData(15, "Process Expired Case")]
+        [InlineData(16, "Peek")]
+        [InlineData(17, "Automatic Escalation")]
+        [InlineData(18, "Lock Broken")]
+        [InlineData(19, "Diary Cleared")]
+        [InlineData(20, "QA Sampled")]
+        [InlineData(21, "Checklist Item Shown")]
+        [InlineData(22, "Checklist Item Hidden")]
+        [InlineData(23, "Checklist Item Checked")]
+        [InlineData(24, "Checklist Item Unchecked")]
+        [InlineData(25, "Checklist Gate Blocked")]
+        [InlineData(26, "Checklist Gate Overridden")]
+        [InlineData(27, "Checklist Gate Bypassed")]
+        [InlineData(28, "Checklist Item SLA Breached")]
         [InlineData(99, "Unknown")]
         [InlineData(null, "Unknown")]
         public async Task EventTypeIdIsMappedToDisplayNameAsync(int? typeId, string expected)

@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchMeanWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the average of the value and the others is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMeanWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleMeanWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RejectMeanWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the average of the value and the others is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMeanWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleMeanWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> BreakMeanWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the average of the value and the others is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMeanWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleMeanWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RequireMeanWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the average of the value and the others is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMeanWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleMeanWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> EnsureMeanWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the average of the value and the others is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMeanWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchMeanWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the average of the value and the others is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMeanWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().MatchMeanWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RejectMeanWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the average of the value and the others is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMeanWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RejectMeanWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> BreakMeanWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the average of the value and the others is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMeanWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().BreakMeanWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RequireMeanWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the average of the value and the others is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMeanWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RequireMeanWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> EnsureMeanWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the average of the value and the others is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMeanWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().EnsureMeanWithInRange(lowerBound, upperBound, others);
             }

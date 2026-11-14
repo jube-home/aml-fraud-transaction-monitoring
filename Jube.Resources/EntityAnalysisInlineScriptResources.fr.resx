@@ -39,4 +39,7 @@
     <data name="PermissionDenied" xml:space="preserve">
     <value>Vous n'avez pas la permission d'effectuer cette action.</value>
   </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
 </root>

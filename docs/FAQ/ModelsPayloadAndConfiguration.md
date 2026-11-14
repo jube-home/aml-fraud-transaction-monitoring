@@ -26,8 +26,11 @@ might need, excluding sensitive data such as card numbers.
 
 **Q: What data types are supported for payload fields?**
 
-A: String, integer, float (a double under the hood), date, boolean, and latitude/longitude (doubles with special meaning
-for the Activation Watcher map). The type controls which operators rules can use against the field.
+A: String, integer, float (a double under the hood), date, boolean, latitude/longitude (doubles with special meaning
+for the Activation Watcher map) and IP (an IPv4 or IPv6 address held as text, so it works wherever a string does, and
+looked up for IP intelligence when a Svirfd entry of the model names it). The type controls which operators rules can
+use
+against the field.
 
 **Q: Is the JSON path in Request XPath case-sensitive?**
 
@@ -88,7 +91,7 @@ updated manually if needed.
 A: It controls whether the element is echoed in the response JSON. It is useful in development and can be switched off
 later to reduce payload size.
 
-**Q: What does the "Report Table" switch do?**
+**Q: What does the "Archive Key" switch do?**
 
 A: It promotes the key to the Archive Key table, which has a typed, indexed (composite key plus value, covering) access
 path into the Archive table. It is forward-only: existing data is not back-filled.

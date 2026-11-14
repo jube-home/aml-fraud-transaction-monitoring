@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,13 +21,16 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Repository.UserRegistry
 {
+    [MessagePackObject]
     public class UserRegistryPasswordResetDto
     {
         [Description("Identifier of the user whose password is being reset.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("When true, the newly-issued temporary password is additionally salted with the " +
                      "user's Name and SHA-256 hashed before Argon2 hashing.")]
+        [Key(1)]
         public bool WirePasswordHash { get; set; }
     }
 }

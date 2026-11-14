@@ -32,6 +32,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.Repository.VisualisationRegistryParameter.Models;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
@@ -878,13 +879,46 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
             var dto = NewDto(visualisationRegistryId, saved.Name.Required());
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
-            dto.Version = 999;
+            dto.Version = saved.Version.GetValueOrDefault();
             dto.UpdatedUser = "also-tampered";
 
             var updated = await service.UpdateAsync(dto);
             updated.CreatedUser.Should().Be(userName);
             updated.Version.Should().Be(2);
             updated.UpdatedUser.Should().Be(userName);
+
+            dto.Version = 999;
+
+            var forged = () => service.UpdateAsync(dto);
+
+            await forged.Should().ThrowAsync<Jube.Data.Concurrency.VersionConflictException>();
+        }
+
+        [Fact]
+        public async Task UpdateCannotMoveAParameterToAnotherRegistryOfTheSameTenantAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var (_, userName) = await CreateTenantUserWithPermissionsAsync(dbContext,
+                [VisualisationParameterAdministrationSpec], "MoveUpdate");
+
+            var registryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
+            var otherRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, userName);
+            var service = await BuildServiceAsync(dbContext, userName);
+
+            var saved = await service.InsertAsync(NewDto(registryId, UniqueName("MoveUpdate")));
+            createdIds.Add(saved.Id);
+
+            var dto = NewDto(otherRegistryId, saved.Name.Required());
+            dto.Id = saved.Id;
+            dto.Version = saved.Version.GetValueOrDefault();
+
+            await service.UpdateAsync(dto);
+
+            var stored = await dbContext.GetTable<Data.Poco.VisualisationRegistryParameter>()
+                .FirstAsync(w => w.Id == saved.Id);
+
+            stored.VisualisationRegistryId.Should().Be(registryId);
         }
 
         [Fact]

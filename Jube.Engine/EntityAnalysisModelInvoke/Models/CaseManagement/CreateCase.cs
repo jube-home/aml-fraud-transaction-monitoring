@@ -27,6 +27,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.CaseManagement
         [JsonIgnore] public Guid EntityAnalysisModelInstanceEntryGuid { get; init; }
         public Guid CaseWorkflowGuid { get; init; }
         public Guid CaseWorkflowStatusGuid { get; init; }
+        public Guid? EntityAnalysisModelActivationRuleGuid { get; init; }
         public string CaseKeyValue { get; set; }
         public string CaseKey { get; set; }
         public bool SuspendBypass { get; set; }

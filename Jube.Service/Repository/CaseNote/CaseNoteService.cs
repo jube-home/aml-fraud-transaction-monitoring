@@ -20,7 +20,11 @@ using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelIn
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Extensions;
 using Jube.Resources;
 using Jube.Service.Agent;
+using Jube.Data.Query.MarkCaseRiskRecheckQuery;
+using Jube.Dto.Options;
 using Jube.Service.Agent.Models;
+using Jube.Service.CaseDispatch;
+using Jube.Service.CaseDispatch.Models;
 using Jube.Service.Exceptions.Repository.CaseNote;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -31,8 +35,6 @@ using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using EngineJsonSerializationHelper = Jube.Engine.Helpers.JsonSerializationHelper;
-using EngineNotification = Jube.Case.Notification;
-using EngineSendHttpEndpoint = Jube.Case.SendHttpEndpoint;
 using RulePoco = Jube.Data.Poco.CaseNote;
 using RuleRepository = Jube.Data.Repository.CaseNoteRepository;
 
@@ -46,10 +48,11 @@ namespace Jube.Service.Repository.CaseNote
     {
         private static readonly int[] permissions = [1];
         private readonly ILog auditLog;
+        private readonly CaseDispatcher dispatcher;
+        private readonly DbContext dbContext;
         private readonly CaseRepository caseRepository;
         private readonly CaseWorkflowActionRepository caseWorkflowActionRepository;
         private readonly CaseWorkflowStatusRepository caseWorkflowStatusRepository;
-        private readonly DynamicEnvironment.DynamicEnvironment dynamicEnvironment;
         private readonly EngineJsonSerializationHelper jsonSerializationHelper;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -62,9 +65,11 @@ namespace Jube.Service.Repository.CaseNote
 
         private CaseNoteService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
-            IStringLocalizer strings, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizer strings,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
             EngineJsonSerializationHelper jsonSerializationHelper)
         {
+            this.dbContext = dbContext;
             this.log = log;
             this.auditLog = auditLog;
             this.serviceChangeBus = serviceChangeBus;
@@ -72,9 +77,9 @@ namespace Jube.Service.Repository.CaseNote
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            this.dynamicEnvironment = dynamicEnvironment;
             this.jsonSerializationHelper = jsonSerializationHelper;
             repository = new RuleRepository(dbContext, userName);
+            dispatcher = new CaseDispatcher(dbContext, userName, tenantRegistryId, dynamicEnvironment, log);
             caseRepository = new CaseRepository(dbContext, userName);
             caseWorkflowActionRepository = new CaseWorkflowActionRepository(dbContext, userName);
             caseWorkflowStatusRepository = new CaseWorkflowStatusRepository(dbContext, userName);
@@ -132,7 +137,8 @@ namespace Jube.Service.Repository.CaseNote
 
         [Description("Adds a note to a case, filed against a CaseWorkflowAction; dispatches that action's " +
                      "notification and/or HTTP endpoint, if either is enabled. Notes are append-only -- there is " +
-                     "no update or delete.")]
+                     "no update or delete. A note written through this tool by an agent is flagged as written by " +
+                     "AskJooby, though still authored by the calling user.")]
         [ServiceOperation("CaseNoteInsert", OperationKind.Write, Idempotent = false)]
         public async Task<CaseNoteDto> InsertAsync(CaseNoteDto? model, CancellationToken token = default)
         {
@@ -174,6 +180,8 @@ namespace Jube.Service.Repository.CaseNote
 
                     throw new NotFoundException(strings[CaseNoteResources.CaseNotFound]);
                 }
+
+                EnsureNotLockedByAnother(existingCase, "CaseNote.Insert");
 
                 var caseWorkflowAction = await caseWorkflowActionRepository
                     .GetByIdActiveOnlyAsync(model.ActionId, token).ConfigureAwait(false);
@@ -217,6 +225,7 @@ namespace Jube.Service.Repository.CaseNote
                 poco.CaseKey = existingCase.CaseKey;
                 poco.CaseKeyValue = existingCase.CaseKeyValue;
                 poco.Note = HtmlSanitiser.Sanitise(poco.Note);
+                poco.SourceId = (int)(AgentInvocationScope.Active ? CaseNoteSource.AskJooby : CaseNoteSource.User);
                 var saved = await repository.InsertAsync(poco, token).ConfigureAwait(false);
                 op.Entity(saved.Id);
                 op.Created();
@@ -226,46 +235,33 @@ namespace Jube.Service.Repository.CaseNote
                     log.Info($"CaseNote.Insert: created Id={saved.Id} caseId={model.CaseId} user={userName}");
                 }
 
-                if (model.Payload is not null &&
-                    (caseWorkflowAction.EnableNotification == 1 || caseWorkflowAction.EnableHttpEndpoint == 1))
+                var actionSource = new DispatchSource(CaseDispatchSourceKind.Action, caseWorkflowAction.Id,
+                    caseWorkflowAction.Name ?? string.Empty, caseWorkflowAction.Sql,
+                    caseWorkflowAction.EnableNotification == 1, caseWorkflowAction.NotificationTypeId ?? 1,
+                    caseWorkflowAction.NotificationDestination, caseWorkflowAction.NotificationSubject,
+                    caseWorkflowAction.NotificationBody, caseWorkflowAction.EnableHttpEndpoint == 1,
+                    caseWorkflowAction.HttpEndpoint, caseWorkflowAction.HttpEndpointTypeId ?? 1);
+
+                if (actionSource.Wanted && (actionSource.UsesSql || model.Payload is not null))
                 {
-                    var payload = JsonConvert.DeserializeObject<EntryPayload>(
-                        existingCase.Json, jsonSerializationHelper.DefaultJsonSerializerSettingsSettings);
+                    var payload = actionSource.UsesSql
+                        ? null
+                        : JsonConvert.DeserializeObject<EntryPayload>(existingCase.Json,
+                            jsonSerializationHelper.DefaultJsonSerializerSettingsSettings);
 
-                    if (caseWorkflowAction.EnableNotification == 1 && payload is not null)
-                    {
-                        var notificationSubject =
-                            EntryPayloadExtensions.ReplaceTokens(payload, caseWorkflowAction.NotificationSubject);
-                        var notificationDestination =
-                            EntryPayloadExtensions.ReplaceTokens(payload, caseWorkflowAction.NotificationDestination);
-                        var notificationBody =
-                            EntryPayloadExtensions.ReplaceTokens(payload, caseWorkflowAction.NotificationBody);
-
-                        var notification = new EngineNotification(log, dynamicEnvironment);
-
-                        await notification.SendAsync(caseWorkflowAction.NotificationTypeId ?? 1,
-                                notificationDestination, notificationSubject, notificationBody, token)
-                            .ConfigureAwait(false);
-                    }
-
-                    if (caseWorkflowAction.EnableHttpEndpoint == 1 && payload is not null)
-                    {
-                        var endpoint = EntryPayloadExtensions.ReplaceTokens(payload, caseWorkflowAction.HttpEndpoint);
-
-                        if (caseWorkflowAction.HttpEndpointTypeId == 1)
-                        {
-                            await EngineSendHttpEndpoint.PostAsync(endpoint,
-                                PreparePostBodyString(saved, existingCase, caseWorkflowStatus, caseWorkflowAction,
-                                    payload), log).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            await EngineSendHttpEndpoint.GetAsync(endpoint, log).ConfigureAwait(false);
-                        }
-                    }
+                    await dispatcher.DispatchAsync(actionSource,
+                        new DispatchCase(existingCase.Id, existingCase.CaseKey, existingCase.CaseKeyValue), null,
+                        payload is null
+                            ? null
+                            : new LegacyRender(text => EntryPayloadExtensions.ReplaceTokens(payload, text),
+                                () => PreparePostBodyString(saved, existingCase, caseWorkflowStatus,
+                                    caseWorkflowAction, payload)), null, token).ConfigureAwait(false);
                 }
 
-                return CaseNoteMapper.ToDto(saved);
+                var inserted = CaseNoteMapper.ToDto(saved);
+                inserted.Files = [];
+
+                return inserted;
             }
             catch (ForbiddenException)
             {
@@ -280,6 +276,11 @@ namespace Jube.Service.Repository.CaseNote
             catch (NotFoundException)
             {
                 op.Outcome("not_found");
+                throw;
+            }
+            catch (CaseLockedException)
+            {
+                op.Outcome("locked");
                 throw;
             }
             catch (OperationCanceledException)
@@ -363,9 +364,13 @@ namespace Jube.Service.Repository.CaseNote
                 var dtos = CaseNoteMapper.ToDto(
                     await repository.GetByCaseKeyValueAsync(key, value, token).ConfigureAwait(false));
 
+                var files = await CaseNoteAttachmentLoader
+                    .LoadAsync(dbContext, userName, key, value, token).ConfigureAwait(false);
+
                 foreach (var dto in dtos)
                 {
                     dto.Note = HtmlSanitiser.Sanitise(dto.Note);
+                    dto.Files = files.GetValueOrDefault(dto.Id) ?? [];
                 }
 
                 op.Rows(dtos.Count);
@@ -397,6 +402,113 @@ namespace Jube.Service.Repository.CaseNote
 
                 throw;
             }
+        }
+
+        [Description("Marks one of the caller's own notes as a finding, or clears the mark. Only the author of a " +
+                     "note written by a person can change it; notes written by Jube or AskJooby are read-only. " +
+                     "Idempotent.")]
+        [ServiceOperation("CaseNoteSetFinding", OperationKind.Write, Idempotent = true)]
+        public async Task<CaseNoteDto> SetFindingAsync(CaseNoteFindingRequestDto? model,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("CaseNote", "SetFinding", userName, tenantRegistryId, auditLog, log,
+                serviceChangeBus);
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(model);
+                EnsurePermitted("CaseNote.SetFinding");
+
+                var existing = await repository.GetByIdAsync(model.Id, token).ConfigureAwait(false);
+
+                var findingCase = existing?.CaseId is null
+                    ? null
+                    : await caseRepository.GetByIdActiveOnlyAsync(existing.CaseId.Value, token).ConfigureAwait(false);
+
+                if (existing is null || findingCase is null)
+                {
+                    throw NoteMissing("CaseNote.SetFinding", model.Id);
+                }
+
+                EnsureNotLockedByAnother(findingCase, "CaseNote.SetFinding");
+
+                var changed = await repository.SetFindingAsync(model.Id, model.IsFinding, token)
+                    .ConfigureAwait(false);
+
+                if (changed == 0)
+                {
+                    throw NoteMissing("CaseNote.SetFinding", model.Id);
+                }
+
+                try
+                {
+                    await new MarkCaseRiskRecheckQuery(dbContext)
+                        .ExecuteAsync([existing.CaseId.GetValueOrDefault()], CaseRiskTrigger.FindingRecorded, token)
+                        .ConfigureAwait(false);
+                }
+                catch (Exception ex) when (ex is not OperationCanceledException)
+                {
+                    log.Error($"CaseNote.SetFinding: the risk of case {existing.CaseId} could not be marked for " +
+                              $"recheck user={userName}", ex);
+                }
+
+                op.Entity(model.Id);
+                op.Updated();
+                existing.IsFinding = model.IsFinding;
+
+                return CaseNoteMapper.ToDto(existing);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                op.Outcome("not_found");
+                throw;
+            }
+            catch (CaseLockedException)
+            {
+                op.Outcome("locked");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"CaseNote.SetFinding: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        private void EnsureNotLockedByAnother(Data.Poco.Case existingCase, string operation)
+        {
+            if (!CaseLockCheck.HeldByAnother(existingCase, userName))
+            {
+                return;
+            }
+
+            if (log.IsWarnEnabled)
+            {
+                log.Warn($"{operation}: caseId={existingCase.Id} is locked to another user user={userName}");
+            }
+
+            throw new CaseLockedException(strings[CaseNoteResources.CaseLocked]);
+        }
+
+        private NotFoundException NoteMissing(string operation, int id)
+        {
+            if (log.IsWarnEnabled)
+            {
+                log.Warn($"{operation}: id={id} not found, not visible or not the caller's own user={userName}");
+            }
+
+            return new NotFoundException(strings[CaseNoteResources.NoteNotFound]);
         }
 
         private string PreparePostBodyString(RulePoco caseNote, Data.Poco.Case existingCase,

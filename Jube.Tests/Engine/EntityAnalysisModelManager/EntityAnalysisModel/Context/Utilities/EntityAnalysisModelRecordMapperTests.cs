@@ -246,6 +246,12 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
 
             yield return
             [
+                "EnablePayloadJObject", (Action<PocoModel, byte?>)((r, v) => r.EnablePayloadJObject = v),
+                (Func<EngineModel, bool>)(m => m.Flags.EnablePayloadJObject), true
+            ];
+
+            yield return
+            [
                 "EnableTrace", (Action<PocoModel, byte?>)((r, v) => r.EnableTrace = v),
                 (Func<EngineModel, bool>)(m => m.Flags.EnableTrace), false
             ];

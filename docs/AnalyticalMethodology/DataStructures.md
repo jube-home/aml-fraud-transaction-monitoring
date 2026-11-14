@@ -553,8 +553,8 @@ Console output:
 explicitly to the mounted `/work` volume rather than relying on the ambient working directory, but the mechanism
 demonstrated — `save()` writing a `.RData` file that `file.exists()` then confirms — is unchanged from the original.)
 
-**AdvancedAnalytics equivalent:** `AdvancedAnalyticsTrainedModelVersion` (`Jube.Data.Poco`, via
-`AdvancedAnalyticsTrainedModelVersionRepository` in `Jube.Data.Repository`) is the product's persistence of a trained
+**AdvancedAnalytics equivalent:** `AskJoobyAnalyticsTrainedModelVersion` (`Jube.Data.Poco`, via
+`AskJoobyAnalyticsTrainedModelVersionRepository` in `Jube.Data.Repository`) is the product's persistence of a trained
 model's state — `ModelJson` (`json`, not `jsonb`, so key order and number formatting are kept verbatim),
 `VariablesJson`, `MetricsJson` (`jsonb`) and `CalibratorJson` (`json`, same verbatim reasoning as
 `ModelJson`). It is `Insert`-only and immutable — there is no update or delete, and a new version number is assigned per
@@ -588,7 +588,7 @@ character(0)
 session immediately before the `load()` call, without needing an interactive restart inside the validation container.)
 
 **AdvancedAnalytics equivalent:** reading a version back is a repository call rather than a file load —
-`AdvancedAnalyticsTrainedModelVersionRepository.GetById`, `GetByModelIdAndVersionNumber` or
+`AskJoobyAnalyticsTrainedModelVersionRepository.GetById`, `GetByModelIdAndVersionNumber` or
 `GetActiveByModelId` (`Jube.Data.Repository`) return the stored `ModelJson`/`VariablesJson`/`MetricsJson`/
 `CalibratorJson` for a specific version or a model's currently active one. There is no working-directory convention or
 ambient file to look for — the version is addressed by id, by model id and version number, or by "whichever version is

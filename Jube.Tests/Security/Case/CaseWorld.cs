@@ -22,6 +22,7 @@ using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using LinqToDB.Data;
 using Xunit.Abstractions;
 using CasePoco = Jube.Data.Poco.Case;
@@ -166,6 +167,8 @@ public sealed class CaseWorld
             EntityAnalysisModelId = modelId,
             CreatedDate = DateTime.UtcNow
         });
+        await ArchiveKeySeed.KeysAsync(db, modelId, guid,
+            new Newtonsoft.Json.Linq.JObject { ["AccountId"] = "ZzTestArchive" + label + Tag });
 
         return guid;
     }
@@ -319,20 +322,6 @@ public sealed class CaseWorld
             Json = "{}"
         });
 
-        var fileId = await db.InsertWithInt32IdentityAsync(new Data.Poco.CaseFile
-        {
-            Object = Encoding.UTF8.GetBytes($"ZzTestFileContent{label}{Tag}"),
-            CaseId = caseId,
-            CaseKey = caseKey,
-            CaseKeyValue = caseKeyValue,
-            Name = $"ZzTestFile{label}{Tag}.txt",
-            Extension = ".txt",
-            ContentType = "text/plain",
-            Size = 20,
-            CreatedDate = DateTime.UtcNow,
-            CreatedUser = user
-        });
-
         var noteId = await db.InsertWithInt32IdentityAsync(new Data.Poco.CaseNote
         {
             Note = $"ZzTestNote{label}{Tag}",
@@ -343,6 +332,21 @@ public sealed class CaseWorld
             CaseKeyValue = caseKeyValue,
             CreatedUser = user,
             CreatedDate = DateTime.UtcNow
+        });
+
+        var fileId = await db.InsertWithInt32IdentityAsync(new Data.Poco.CaseFile
+        {
+            Object = Encoding.UTF8.GetBytes($"ZzTestFileContent{label}{Tag}"),
+            CaseId = caseId,
+            CaseNoteId = noteId,
+            CaseKey = caseKey,
+            CaseKeyValue = caseKeyValue,
+            Name = $"ZzTestFile{label}{Tag}.txt",
+            Extension = ".txt",
+            ContentType = "text/plain",
+            Size = 20,
+            CreatedDate = DateTime.UtcNow,
+            CreatedUser = user
         });
 
         return new CaseGraph
@@ -480,6 +484,8 @@ public sealed class CaseWorld
                          "\"CaseWorkflowId\" IN (SELECT \"Id\" FROM \"CaseWorkflow\" WHERE \"EntityAnalysisModelId\" = ANY(@m))"),
                      ("CaseWorkflowFilter",
                          "\"CaseWorkflowId\" IN (SELECT \"Id\" FROM \"CaseWorkflow\" WHERE \"EntityAnalysisModelId\" = ANY(@m))"),
+                     ("CaseSuppression",
+                         "\"CaseId\" IN (SELECT \"Id\" FROM \"Case\" WHERE \"CaseWorkflowGuid\" IN (SELECT \"Guid\" FROM \"CaseWorkflow\" WHERE \"EntityAnalysisModelId\" = ANY(@m)))"),
                      ("CaseNote",
                          "\"CaseId\" IN (SELECT \"Id\" FROM \"Case\" WHERE \"CaseWorkflowGuid\" IN (SELECT \"Guid\" FROM \"CaseWorkflow\" WHERE \"EntityAnalysisModelId\" = ANY(@m)))"),
                      ("CaseFile",
@@ -522,8 +528,15 @@ public sealed class CaseWorld
             cases + ")",
             "DELETE FROM \"CaseWorkflowFormEntry\" WHERE \"CaseId\" IN " + cases,
             "DELETE FROM \"CaseEvent\" WHERE \"CaseId\" IN " + cases,
-            "DELETE FROM \"CaseNote\" WHERE \"CaseId\" IN " + cases,
             "DELETE FROM \"CaseFile\" WHERE \"CaseId\" IN " + cases,
+            "DELETE FROM \"CaseResearchCitation\" WHERE \"CaseResearchId\" IN (SELECT \"Id\" FROM \"CaseResearch\" WHERE \"CaseId\" IN " + cases + ")",
+            "DELETE FROM \"CaseResearch\" WHERE \"CaseId\" IN " + cases,
+            "DELETE FROM \"CaseSuppressionApproval\" WHERE \"CaseSuppressionId\" IN (SELECT \"Id\" FROM \"CaseSuppression\" WHERE \"CaseId\" IN " + cases + ")",
+            "DELETE FROM \"CaseSuppressionTransaction\" WHERE \"CaseSuppressionId\" IN (SELECT \"Id\" FROM \"CaseSuppression\" WHERE \"CaseId\" IN " + cases + ")",
+            "DELETE FROM \"CaseSuppressionTarget\" WHERE \"CaseSuppressionId\" IN (SELECT \"Id\" FROM \"CaseSuppression\" WHERE \"CaseId\" IN " + cases + ")",
+            "DELETE FROM \"CaseSuppressionVersion\" WHERE \"CaseSuppressionId\" IN (SELECT \"Id\" FROM \"CaseSuppression\" WHERE \"CaseId\" IN " + cases + ")",
+            "DELETE FROM \"CaseSuppression\" WHERE \"CaseId\" IN " + cases,
+            "DELETE FROM \"CaseNote\" WHERE \"CaseId\" IN " + cases,
             "DELETE FROM \"Case\" WHERE \"CaseWorkflowGuid\" IN " + wfg,
             "DELETE FROM \"CaseWorkflowActionRole\" WHERE \"CaseWorkflowActionGuid\" IN (SELECT \"Guid\" FROM \"CaseWorkflowAction\" WHERE \"CaseWorkflowId\" IN " +
             wf + ")",
@@ -552,12 +565,15 @@ public sealed class CaseWorld
             "'",
             "DELETE FROM \"ArchiveTagVersion\" WHERE \"ArchiveTagId\" IN (SELECT \"Id\" FROM \"ArchiveTag\" WHERE \"EntityAnalysisModelInstanceEntryGuid\" = ANY(@g))",
             "DELETE FROM \"ArchiveTag\" WHERE \"EntityAnalysisModelInstanceEntryGuid\" = ANY(@g)",
+            "DELETE FROM \"ArchiveKeyVersion\" WHERE \"EntityAnalysisModelInstanceEntryGuid\" = ANY(@g)",
+            "DELETE FROM \"ArchiveKey\" WHERE \"EntityAnalysisModelInstanceEntryGuid\" = ANY(@g)",
             "DELETE FROM \"Archive\" WHERE \"EntityAnalysisModelId\" = ANY(@m)",
             "DELETE FROM \"ActivationWatcher\" WHERE \"Key\" LIKE 'ZzTestWatcherKey%' AND \"KeyValue\" LIKE '%" + Tag +
             "'",
             "DELETE FROM \"EntityAnalysisModelVersion\" WHERE \"EntityAnalysisModelId\" = ANY(@m)",
             "DELETE FROM \"EntityAnalysisModelInstance\" WHERE \"EntityAnalysisModelId\" = ANY(@m)",
             "DELETE FROM \"MockArchive\" WHERE \"EntityAnalysisModelId\" = ANY(@m)",
+            "DELETE FROM \"EntityAnalysisModelRequestXpath\" WHERE \"EntityAnalysisModelId\" = ANY(@m)",
             "DELETE FROM \"EntityAnalysisModel\" WHERE \"Id\" = ANY(@m)"
         ];
 

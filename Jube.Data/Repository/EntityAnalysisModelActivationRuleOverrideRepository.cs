@@ -20,34 +20,88 @@ namespace Jube.Data.Repository
     using System.Threading.Tasks;
     using AutoMapper;
     using Context;
+    using Extensions;
     using LinqToDB;
+    using LinqToDB.Async;
     using Microsoft.Extensions.Logging.Abstractions;
+    using Models;
     using Poco;
+    using Query.GetApprovedEntityQuery;
 
-    public class EntityAnalysisModelActivationRuleOverrideRepository
+    public class EntityAnalysisModelActivationRuleOverrideRepository :
+        VersionedApprovalRepository<EntityAnalysisModelActivationRuleOverride,
+            EntityAnalysisModelActivationRuleOverrideVersion>
     {
+        private const byte ForceKind = 1;
+
         private readonly DbContext dbContext;
         private readonly int? tenantRegistryId;
         private readonly string userName;
 
-        public EntityAnalysisModelActivationRuleOverrideRepository(DbContext dbContext, string userName)
+        public EntityAnalysisModelActivationRuleOverrideRepository(DbContext dbContext, string userName) : this(
+            dbContext,
+            dbContext.UserInTenant.Where(w => w.User == userName).Select(s => s.TenantRegistryId)
+                .FirstOrDefault(), userName)
         {
-            this.dbContext = dbContext;
-            this.userName = userName;
-
-            tenantRegistryId = this.dbContext.UserInTenant.Where(w => w.User == this.userName)
-                .Select(s => s.TenantRegistryId).FirstOrDefault();
         }
 
-        public EntityAnalysisModelActivationRuleOverrideRepository(DbContext dbContext, int tenantRegistryId)
+        public EntityAnalysisModelActivationRuleOverrideRepository(DbContext dbContext, int tenantRegistryId) :
+            this(dbContext, tenantRegistryId, null)
+        {
+        }
+
+        public EntityAnalysisModelActivationRuleOverrideRepository(DbContext dbContext) : this(dbContext, null,
+            null)
+        {
+        }
+
+        private EntityAnalysisModelActivationRuleOverrideRepository(DbContext dbContext, int? tenantRegistryId,
+            string userName) : base(dbContext, EntityApprovalKind.EntityAnalysisModelActivationRuleOverride,
+            nameof(EntityAnalysisModelActivationRuleOverrideVersion.EntityAnalysisModelActivationRuleOverrideId),
+            tenantRegistryId, userName)
         {
             this.dbContext = dbContext;
             this.tenantRegistryId = tenantRegistryId;
+            this.userName = userName;
         }
 
-        public EntityAnalysisModelActivationRuleOverrideRepository(DbContext dbContext)
+        protected override Task<EntityAnalysisModelActivationRuleOverride> LoadForMutationAsync(int id,
+            CancellationToken token)
         {
-            this.dbContext = dbContext;
+            return dbContext.EntityAnalysisModelActivationRuleOverride.FirstOrDefaultAsync(w =>
+                (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                && w.Id == id, token);
+        }
+
+        public async Task<IEnumerable<EntityAnalysisModelActivationRuleOverride>>
+            GetApprovedByEntityAnalysisModelGuidOrderByIdAsync(Guid entityAnalysisModelGuid,
+                int approvalsRequired = 1, CancellationToken token = default)
+        {
+            var current = await dbContext.EntityAnalysisModelActivationRuleOverride
+                .Where(w =>
+                    (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    && w.EntityAnalysisModelGuid == entityAnalysisModelGuid)
+                .OrderBy(o => o.Id)
+                .ToListAsync(token).ConfigureAwait(false);
+
+            var now = DateTime.UtcNow;
+
+            var suppress = current.Where(w => w.OverrideKind != ForceKind
+                                              && (w.Deleted == 0 || w.Deleted == null)
+                                              && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > now));
+
+            var approvedForce = await new GetApprovedEntityQuery<EntityAnalysisModelActivationRuleOverride,
+                    EntityAnalysisModelActivationRuleOverrideVersion>(dbContext,
+                    EntityApprovalKind.EntityAnalysisModelActivationRuleOverride,
+                    nameof(EntityAnalysisModelActivationRuleOverrideVersion
+                        .EntityAnalysisModelActivationRuleOverrideId), tenantRegistryId)
+                .ExecuteAsync(current.Where(w => w.OverrideKind == ForceKind).ToList(), approvalsRequired, token)
+                .ConfigureAwait(false);
+
+            return suppress
+                .Concat(approvedForce.Where(w => w.DeleteExpiryDate == null || w.DeleteExpiryDate > now))
+                .OrderBy(o => o.Id)
+                .ToList();
         }
 
         public async Task<IEnumerable<EntityAnalysisModelActivationRuleOverride>> GetAsync(
@@ -79,6 +133,38 @@ namespace Jube.Data.Repository
                 (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
                 && w.Id == id && (w.Deleted == 0 || w.Deleted == null)
                 && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > DateTime.UtcNow), token);
+        }
+
+        public async Task<List<EntityAnalysisModelActivationRuleOverride>> GetForcePendingRemovalAsync(
+            Guid entityAnalysisModelGuid, string overrideKey, string overrideKeyValue, int approvalsRequired = 1,
+            CancellationToken token = default)
+        {
+            var removed = await dbContext.EntityAnalysisModelActivationRuleOverride
+                .Where(w =>
+                    (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    && w.EntityAnalysisModelGuid == entityAnalysisModelGuid
+                    && w.OverrideKey == overrideKey
+                    && w.OverrideKeyValue == overrideKeyValue
+                    && w.OverrideKind == ForceKind
+                    && w.Deleted == 1)
+                .ToListAsync(token).ConfigureAwait(false);
+
+            var now = DateTime.UtcNow;
+
+            var stillLive = await new GetApprovedEntityQuery<EntityAnalysisModelActivationRuleOverride,
+                    EntityAnalysisModelActivationRuleOverrideVersion>(dbContext,
+                    EntityApprovalKind.EntityAnalysisModelActivationRuleOverride,
+                    nameof(EntityAnalysisModelActivationRuleOverrideVersion
+                        .EntityAnalysisModelActivationRuleOverrideId), tenantRegistryId)
+                .ExecuteAsync(removed, approvalsRequired, token).ConfigureAwait(false);
+
+            return stillLive.Where(w => w.DeleteExpiryDate == null || w.DeleteExpiryDate > now).ToList();
+        }
+
+        public Task<EntityAnalysisModelActivationRuleOverride> GetByIdIncludingRemovedAsync(int id,
+            CancellationToken token = default)
+        {
+            return LoadForMutationAsync(id, token);
         }
 
         public async Task<EntityAnalysisModelActivationRuleOverride> InsertAsync(
@@ -120,6 +206,11 @@ namespace Jube.Data.Repository
                         && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > DateTime.UtcNow), token);
             }
 
+            if (existing == null && model.Id != 0)
+            {
+                throw new KeyNotFoundException();
+            }
+
             if (existing != null)
             {
                 await DeleteAsync(existing.Id, token);
@@ -150,6 +241,24 @@ namespace Jube.Data.Repository
                 throw new KeyNotFoundException();
             }
 
+            if (existing.OverrideKind == ForceKind)
+            {
+                await dbContext.InTransactionAsync(async () =>
+                {
+                    await InsertVersionAsync(existing, token);
+
+                    await dbContext.EntityAnalysisModelActivationRuleOverride
+                        .Where(d => d.Id == id)
+                        .Set(s => s.Deleted, Convert.ToByte(1))
+                        .Set(s => s.DeletedDate, DateTime.UtcNow)
+                        .Set(s => s.DeletedUser, userName)
+                        .Set(s => s.Version, (existing.Version ?? 1) + 1)
+                        .UpdateAsync(token);
+                }, token);
+
+                return;
+            }
+
             await dbContext.EntityAnalysisModelActivationRuleOverride
                 .Where(d => d.Id == id)
                 .Set(s => s.Deleted, Convert.ToByte(1))
@@ -158,6 +267,21 @@ namespace Jube.Data.Repository
                 .UpdateAsync(token);
 
             await InsertVersionAsync(existing, token);
+        }
+
+        public Task<bool> IsActiveForceAsync(Guid entityAnalysisModelGuid, string overrideKey,
+            string overrideKeyValue, string entityAnalysisModelActivationRuleName, CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModelActivationRuleOverride
+                .AnyAsync(w =>
+                    (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    && w.OverrideKey == overrideKey
+                    && w.OverrideKeyValue == overrideKeyValue
+                    && w.EntityAnalysisModelGuid == entityAnalysisModelGuid
+                    && w.EntityAnalysisModelActivationRuleName == entityAnalysisModelActivationRuleName
+                    && w.OverrideKind == 1
+                    && (w.Deleted == 0 || w.Deleted == null)
+                    && (w.DeleteExpiryDate == null || w.DeleteExpiryDate > DateTime.UtcNow), token);
         }
 
         public async Task<EntityAnalysisModelActivationRuleOverride> UpdateDeleteExpiryDateAsync(
@@ -181,13 +305,29 @@ namespace Jube.Data.Repository
 
             var version = (existing.Version ?? 0) + 1;
 
-            await dbContext.EntityAnalysisModelActivationRuleOverride
+            await InsertVersionAsync(existing, token);
+
+            var update = dbContext.EntityAnalysisModelActivationRuleOverride
                 .Where(w => w.Id == existing.Id)
                 .Set(s => s.DeleteExpiryDate, deleteExpiryDate)
-                .Set(s => s.Version, version)
-                .UpdateAsync(token);
+                .Set(s => s.Version, version);
 
-            await InsertVersionAsync(existing, token);
+            if (existing.OverrideKind == ForceKind)
+            {
+                var createdDate = DateTime.UtcNow;
+
+                await update
+                    .Set(s => s.CreatedUser, userName)
+                    .Set(s => s.CreatedDate, createdDate)
+                    .UpdateAsync(token);
+
+                existing.CreatedUser = userName;
+                existing.CreatedDate = createdDate;
+            }
+            else
+            {
+                await update.UpdateAsync(token);
+            }
 
             existing.DeleteExpiryDate = deleteExpiryDate;
             existing.Version = version;
@@ -216,13 +356,29 @@ namespace Jube.Data.Repository
 
             var version = (existing.Version ?? 0) + 1;
 
-            await dbContext.EntityAnalysisModelActivationRuleOverride
+            await InsertVersionAsync(existing, token);
+
+            var update = dbContext.EntityAnalysisModelActivationRuleOverride
                 .Where(w => w.Id == existing.Id)
                 .Set(s => s.OverrideKind, overrideKind)
-                .Set(s => s.Version, version)
-                .UpdateAsync(token);
+                .Set(s => s.Version, version);
 
-            await InsertVersionAsync(existing, token);
+            if (overrideKind == ForceKind || existing.OverrideKind == ForceKind)
+            {
+                var createdDate = DateTime.UtcNow;
+
+                await update
+                    .Set(s => s.CreatedUser, userName)
+                    .Set(s => s.CreatedDate, createdDate)
+                    .UpdateAsync(token);
+
+                existing.CreatedUser = userName;
+                existing.CreatedDate = createdDate;
+            }
+            else
+            {
+                await update.UpdateAsync(token);
+            }
 
             existing.OverrideKind = overrideKind;
             existing.Version = version;

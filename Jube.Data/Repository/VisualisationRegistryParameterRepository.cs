@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ using AutoMapper;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Async;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Jube.Data.Repository
@@ -27,7 +29,7 @@ namespace Jube.Data.Repository
     public class VisualisationRegistryParameterRepository
     {
         private readonly DbContext dbContext;
-        private readonly int? tenantRegistryId;
+        private readonly int tenantRegistryId;
         private readonly string userName;
 
         public VisualisationRegistryParameterRepository(DbContext dbContext, string userName)
@@ -43,11 +45,6 @@ namespace Jube.Data.Repository
         {
             this.dbContext = dbContext;
             this.tenantRegistryId = tenantRegistryId;
-        }
-
-        public VisualisationRegistryParameterRepository(DbContext dbContext)
-        {
-            this.dbContext = dbContext;
         }
 
         public Task<VisualisationRegistryParameter> GetByNameVisualisationRegistryIdAsync(string name,
@@ -76,7 +73,7 @@ namespace Jube.Data.Repository
         {
             return await dbContext.VisualisationRegistryParameter
                 .Where(w =>
-                    (w.VisualisationRegistry.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    w.VisualisationRegistry.TenantRegistryId == tenantRegistryId
                     && (w.Deleted == 0 || w.Deleted == null)).ToListAsync(token);
         }
 
@@ -85,7 +82,7 @@ namespace Jube.Data.Repository
         {
             return await dbContext.VisualisationRegistryParameter
                 .Where(w =>
-                    (w.VisualisationRegistry.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    w.VisualisationRegistry.TenantRegistryId == tenantRegistryId
                     && w.VisualisationRegistryId == visualisationRegistryId &&
                     (w.Deleted == 0 || w.Deleted == null))
                 .OrderBy(o => o.Id).ToListAsync(token);
@@ -96,7 +93,7 @@ namespace Jube.Data.Repository
         {
             return await dbContext.VisualisationRegistryParameter
                 .Where(w =>
-                    (w.VisualisationRegistry.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    w.VisualisationRegistry.TenantRegistryId == tenantRegistryId
                     && (w.VisualisationRegistry.Deleted == 0 || w.VisualisationRegistry.Deleted == null)
                     && w.VisualisationRegistryId == visualisationRegistryId
                     && w.Active == 1
@@ -121,7 +118,7 @@ namespace Jube.Data.Repository
         public Task<VisualisationRegistryParameter> GetByIdAsync(int id, CancellationToken token = default)
         {
             return dbContext.VisualisationRegistryParameter.FirstOrDefaultAsync(w
-                => (w.VisualisationRegistry.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                => w.VisualisationRegistry.TenantRegistryId == tenantRegistryId
                    && w.Id == id
                    && (w.Deleted == 0 || w.Deleted == null), token);
         }
@@ -129,7 +126,7 @@ namespace Jube.Data.Repository
         public Task<VisualisationRegistryParameter> GetByGuidAsync(Guid guid, CancellationToken token = default)
         {
             return dbContext.VisualisationRegistryParameter.FirstOrDefaultAsync(w
-                => (w.VisualisationRegistry.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                => w.VisualisationRegistry.TenantRegistryId == tenantRegistryId
                    && w.Guid == guid
                    && (w.Deleted == 0 || w.Deleted == null), token);
         }
@@ -151,7 +148,7 @@ namespace Jube.Data.Repository
         {
             var existing = await dbContext.VisualisationRegistryParameter
                 .FirstOrDefaultAsync(w =>
-                    (w.VisualisationRegistry.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue) &&
+                    w.VisualisationRegistry.TenantRegistryId == tenantRegistryId &&
                     w.Id == model.Id
                     && (w.Deleted == 0 || w.Deleted == null)
                     && (w.Locked == 0 || w.Locked == null), token);
@@ -161,6 +158,8 @@ namespace Jube.Data.Repository
                 throw new KeyNotFoundException();
             }
 
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
+
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
             model.CreatedUser = existing.CreatedUser;
@@ -168,6 +167,7 @@ namespace Jube.Data.Repository
             model.UpdatedUser = userName;
             model.UpdatedDate = DateTime.UtcNow;
             model.ImportId = existing.ImportId;
+            model.VisualisationRegistryId = existing.VisualisationRegistryId;
 
             await dbContext.UpdateAsync(model, token: token);
 
@@ -187,7 +187,7 @@ namespace Jube.Data.Repository
         {
             var records = await dbContext.VisualisationRegistryParameter
                 .Where(d =>
-                    (d.VisualisationRegistry.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    d.VisualisationRegistry.TenantRegistryId == tenantRegistryId
                     && d.Id == id
                     && (d.Locked == 0 || d.Locked == null)
                     && (d.Deleted == 0 || d.Deleted == null))

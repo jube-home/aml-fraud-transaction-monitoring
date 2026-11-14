@@ -17,6 +17,7 @@ using System.Globalization;
 using System.Linq;
 using Jube.Engine.EntityAnalysisModelInvoke.Extraction;
 using Jube.Engine.EntityAnalysisModelInvoke.Simulation.Models;
+using Jube.GraphRecallProtocol;
 using Newtonsoft.Json.Linq;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
@@ -74,6 +75,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
             ["AbstractionCalculation"] = "abstractionCalculation",
             ["ExhaustiveAdaptation"] = "exhaustiveAdaptation",
             ["AdvancedAnalyticsAdaptation"] = "advancedAnalyticsAdaptation",
+            ["Graph"] = "graph",
             ["HTTPAdaptation"] = "httpAdaptation",
             ["Dictionary"] = "dictionary",
             ["Activation"] = "activation"
@@ -309,7 +311,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
                 return new InvocationValue(field, group[field.Key] != null, InvocationValueOrigin.Archive);
             }
 
-            var token = group[field.Key];
+            var token = field.Namespace == "Graph" ? GraphToken(group, field.Key) : group[field.Key];
 
             if (field.Namespace == "HTTPAdaptation" && token is JObject adaptation)
             {
@@ -339,11 +341,29 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
                     $"The archived value is not a valid {field.DataType}; shown as recorded.");
         }
 
+        private static JToken GraphToken(JObject group, string key)
+        {
+            if (!GraphEntityMembers.Split(key, out var entityName, out var memberName) ||
+                !GraphEntityMembers.TryGet(memberName, out var member))
+            {
+                return null;
+            }
+
+            JToken token = group[entityName];
+
+            foreach (var segment in member.Segments)
+            {
+                token = token is JObject owner ? owner[GraphEntityMembers.CamelCase(segment)] : null;
+            }
+
+            return token;
+        }
+
         private static string EntryId(JObject json, string entryXPath)
         {
             try
             {
-                return string.IsNullOrEmpty(entryXPath) ? string.Empty : json.SelectToken(entryXPath)?.ToString() ?? "";
+                return string.IsNullOrEmpty(entryXPath) ? string.Empty : Jube.Data.Helpers.BoundedJsonPath.Select(json, entryXPath)?.ToString() ?? "";
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {

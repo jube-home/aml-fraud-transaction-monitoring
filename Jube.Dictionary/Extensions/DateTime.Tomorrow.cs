@@ -6,6 +6,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns the next day at the same time.")]
         public static DateTime Tomorrow(this DateTime @this)
         {
             return @this.AddDays(1);

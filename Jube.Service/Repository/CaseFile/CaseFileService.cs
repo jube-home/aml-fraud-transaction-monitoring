@@ -16,12 +16,14 @@ using System.Text.RegularExpressions;
 using FluentValidation.Results;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Dto.Options;
 using Jube.Dto.Repository.CaseFile;
 using Jube.Resources;
 using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Repository.CaseFile;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
+using Jube.Service.Repository.CaseFile.Interfaces;
 using Jube.Service.Repository.CaseFile.Models;
 using Jube.Service.Security;
 using log4net;
@@ -33,12 +35,18 @@ namespace Jube.Service.Repository.CaseFile
 {
     public sealed class CaseFileService
     {
-        private const int MaxFileBytes = 25 * 1024 * 1024;
+        public const int MaxFileBytes = 25 * 1024 * 1024;
         private const int MaxFileNameLength = 255;
+        private const string UploadedDocumentNote = "Uploaded Document";
         private static readonly int[] permissions = [1];
+        private static readonly int[] supervisionPermissions = [18];
         private readonly ILog auditLog;
+        private readonly CaseNoteRepository caseNoteRepository;
+        private readonly CaseResearchRepository caseResearchRepository;
         private readonly CaseRepository caseRepository;
         private readonly ILog log;
+        private readonly ICaseFileScanner scanner;
+        private readonly CaseFileTypePolicy typePolicy;
         private readonly PermissionValidation permissionValidation;
         private readonly RuleRepository repository;
         private readonly IServiceChangeBus serviceChangeBus;
@@ -48,8 +56,10 @@ namespace Jube.Service.Repository.CaseFile
 
         private CaseFileService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
-            IStringLocalizer strings)
+            IStringLocalizer strings, CaseFileTypePolicy typePolicy, ICaseFileScanner scanner)
         {
+            this.typePolicy = typePolicy;
+            this.scanner = scanner;
             this.log = log;
             this.auditLog = auditLog;
             this.serviceChangeBus = serviceChangeBus;
@@ -59,6 +69,8 @@ namespace Jube.Service.Repository.CaseFile
             this.permissionValidation = permissionValidation;
             repository = new RuleRepository(dbContext, userName);
             caseRepository = new CaseRepository(dbContext, userName);
+            caseNoteRepository = new CaseNoteRepository(dbContext, userName);
+            caseResearchRepository = new CaseResearchRepository(dbContext, userName);
         }
 
         public static IReadOnlyList<int> RequiredPermissions => permissions;
@@ -68,11 +80,21 @@ namespace Jube.Service.Repository.CaseFile
             CancellationToken token = default)
         {
             return CreateAsync(dbContext, userName, log, stringLocalizerFactory, serviceChangeBus,
-                LogManager.GetLogger("Jube.Audit"), token);
+                LogManager.GetLogger("Jube.Audit"), token: token);
+        }
+
+        public static Task<CaseFileService> CreateAsync(DbContext dbContext, string? userName, ILog log,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            DynamicEnvironment.DynamicEnvironment? dynamicEnvironment, ICaseFileScanner? scanner,
+            CancellationToken token = default)
+        {
+            return CreateAsync(dbContext, userName, log, stringLocalizerFactory, serviceChangeBus,
+                LogManager.GetLogger("Jube.Audit"), dynamicEnvironment, scanner, token);
         }
 
         internal static async Task<CaseFileService> CreateAsync(DbContext dbContext, string? userName, ILog log,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus, ILog auditLog,
+            DynamicEnvironment.DynamicEnvironment? dynamicEnvironment = null, ICaseFileScanner? scanner = null,
             CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(CaseFileResources));
@@ -104,12 +126,15 @@ namespace Jube.Service.Repository.CaseFile
                 .ConfigureAwait(false);
 
             return new CaseFileService(dbContext, userName, resolvedTenantRegistryId.Value, permissionValidation,
-                log, auditLog, serviceChangeBus, strings);
+                log, auditLog, serviceChangeBus, strings, CaseFileTypePolicy.FromEnvironment(dynamicEnvironment),
+                scanner ?? new NoOpCaseFileScanner());
         }
 
-        [Description("Uploads and attaches files to a Case, identified by its CaseKey/CaseKeyValue transaction " +
-                     "identity. Only the first non-empty file in the given set is stored; empty files are " +
-                     "skipped. Not idempotent -- calling twice with the same file stores it twice.")]
+        [Description("Uploads and attaches a file to a case note of a Case, identified by its CaseKey/CaseKeyValue " +
+                     "transaction identity. The note must be one the caller wrote on that Case; when no note is " +
+                     "given, a note titled \"Uploaded Document\" is created to carry the file. Only the first " +
+                     "non-empty file in the given set is stored; empty files are skipped. Not idempotent -- " +
+                     "calling twice with the same file stores it twice.")]
         [ServiceOperation("CaseFileUpload", OperationKind.Write, Idempotent = false)]
         public async Task<CaseFileDto?> UploadAsync(
             [Description("The files to attach; only the first non-empty one is stored.")]
@@ -120,6 +145,12 @@ namespace Jube.Service.Repository.CaseFile
             string? caseKeyValue,
             [Description("Identifier of the Case the file(s) attach to.")]
             int caseId,
+            [Description("Identifier of the case note, written by the caller on that Case, to attach the file to. " +
+                         "Omit or send zero to have a note created for the file.")]
+            int? caseNoteId = null,
+            [Description("Identifier of the case research, captured by the caller on that Case, to attach the file to. " +
+                         "Send either a note or research, never both. Omit both to have a note created for the file.")]
+            int? caseResearchId = null,
             CancellationToken token = default)
         {
             using var op = OperationScope.Start("CaseFile", "Upload", userName, tenantRegistryId, auditLog, log,
@@ -178,6 +209,67 @@ namespace Jube.Service.Repository.CaseFile
                     throw new NotVisibleException(strings[CaseFileResources.NotVisible]);
                 }
 
+                if (CaseLockCheck.HeldByAnother(existingCase, userName))
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn($"CaseFile.Upload: caseId={caseId} is locked to another user user={userName}");
+                    }
+
+                    throw new CaseLockedException(strings[CaseFileResources.CaseLocked]);
+                }
+
+                Data.Poco.CaseNote? targetNote = null;
+                Data.Poco.CaseResearch? targetResearch = null;
+
+                if (caseNoteId is > 0 && caseResearchId is > 0)
+                {
+                    throw new DtoValidationException(new ValidationResult(
+                    [
+                        new ValidationFailure(nameof(caseResearchId), strings[CaseFileResources.OneParentOnly])
+                            { ErrorCode = "OneParentOnly" }
+                    ]));
+                }
+
+                if (caseResearchId is > 0)
+                {
+                    var research = await caseResearchRepository.GetByIdAsync(caseResearchId.Value, token)
+                        .ConfigureAwait(false);
+
+                    if (research is null || research.CaseId != caseId || research.CreatedUser != userName
+                        || research.SourceId != (int)CaseResearchSource.User)
+                    {
+                        if (log.IsWarnEnabled)
+                        {
+                            log.Warn($"CaseFile.Upload: research {caseResearchId} not found, not on case {caseId} or " +
+                                     $"not the caller's own user={userName}");
+                        }
+
+                        throw new NotVisibleException(strings[CaseFileResources.NotVisible]);
+                    }
+
+                    targetResearch = research;
+                }
+
+                if (caseNoteId is > 0)
+                {
+                    var note = await caseNoteRepository.GetByIdAsync(caseNoteId.Value, token).ConfigureAwait(false);
+
+                    if (note is null || note.CaseId != caseId || note.CreatedUser != userName
+                        || note.SourceId != (int)CaseNoteSource.User)
+                    {
+                        if (log.IsWarnEnabled)
+                        {
+                            log.Warn($"CaseFile.Upload: note {caseNoteId} not found, not on case {caseId} or not " +
+                                     $"the caller's own user={userName}");
+                        }
+
+                        throw new NotVisibleException(strings[CaseFileResources.NotVisible]);
+                    }
+
+                    targetNote = note;
+                }
+
                 foreach (var file in files)
                 {
                     await using var content = file.Content;
@@ -196,20 +288,51 @@ namespace Jube.Service.Repository.CaseFile
                         ]));
                     }
 
+                    var safeName = SafeFileName(file.Name);
+
+                    if (typePolicy.Evaluate(safeName, []) == CaseFileTypeVerdict.ExtensionNotAllowed)
+                    {
+                        throw Refused("FileTypeNotAllowed", strings[CaseFileResources.FileTypeNotAllowed]);
+                    }
+
                     using var memoryStream = new MemoryStream();
                     await content.CopyToAsync(memoryStream, token).ConfigureAwait(false);
-                    var safeName = SafeFileName(file.Name);
+                    var bytes = memoryStream.ToArray();
+
+                    if (typePolicy.Evaluate(safeName, bytes) != CaseFileTypeVerdict.Accepted)
+                    {
+                        throw Refused("FileContentNotAllowed", strings[CaseFileResources.FileContentNotAllowed]);
+                    }
+
+                    await ScanAsync(safeName, file.ContentType, bytes, token).ConfigureAwait(false);
+
+                    if (targetResearch is null)
+                    {
+                        targetNote ??= await caseNoteRepository.InsertAsync(new Data.Poco.CaseNote
+                        {
+                            Note = UploadedDocumentNote,
+                            CaseKey = existingCase.CaseKey,
+                            CaseKeyValue = existingCase.CaseKeyValue,
+                            CaseId = caseId,
+                            SourceId = (int)CaseNoteSource.User,
+                            KindId = (int)CaseNoteKind.Document,
+                            Version = 1
+                        }, token).ConfigureAwait(false);
+                    }
 
                     var saved = await repository.InsertAsync(new RulePoco
                     {
-                        Object = memoryStream.ToArray(),
+                        CaseNoteId = targetNote?.Id,
+                        CaseResearchId = targetResearch?.Id,
+                        Object = bytes,
                         CaseKey = existingCase.CaseKey,
                         CaseKeyValue = existingCase.CaseKeyValue,
                         CaseId = caseId,
                         Extension = Path.GetExtension(safeName),
-                        Size = memoryStream.Length,
+                        Size = bytes.Length,
                         Name = safeName,
-                        ContentType = SafeContentType(file.ContentType)
+                        ContentType = SafeContentType(file.ContentType),
+                        Hash = Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(bytes))
                     }, token).ConfigureAwait(false);
 
                     op.Entity(saved.Id);
@@ -239,6 +362,11 @@ namespace Jube.Service.Repository.CaseFile
             catch (NotVisibleException)
             {
                 op.Outcome("forbidden");
+                throw;
+            }
+            catch (CaseLockedException)
+            {
+                op.Outcome("locked");
                 throw;
             }
             catch (DtoValidationException)
@@ -283,7 +411,10 @@ namespace Jube.Service.Repository.CaseFile
             try
             {
                 EnsurePermitted("CaseFile.Remove");
-                var existingFile = await EnsureFileVisibleAsync("CaseFile.Remove", id, token).ConfigureAwait(false);
+                var (existingFile, existingCase) = await EnsureFileVisibleAsync("CaseFile.Remove", id, token)
+                    .ConfigureAwait(false);
+
+                EnsureMayRemove(existingFile, existingCase);
 
                 await repository.DeleteAsync(id, token).ConfigureAwait(false);
 
@@ -303,6 +434,11 @@ namespace Jube.Service.Repository.CaseFile
             catch (NotVisibleException)
             {
                 op.Outcome("forbidden");
+                throw;
+            }
+            catch (CaseLockedException)
+            {
+                op.Outcome("locked");
                 throw;
             }
             catch (OperationCanceledException)
@@ -338,7 +474,7 @@ namespace Jube.Service.Repository.CaseFile
             {
                 EnsurePermitted("CaseFile.Generate");
 
-                var existingFile = await EnsureFileVisibleAsync("CaseFile.Generate", id, token)
+                var (existingFile, _) = await EnsureFileVisibleAsync("CaseFile.Generate", id, token)
                     .ConfigureAwait(false);
 
                 op.Entity(id);
@@ -427,15 +563,56 @@ namespace Jube.Service.Repository.CaseFile
             }
         }
 
+        private DtoValidationException Refused(string code, string message)
+        {
+            if (log.IsWarnEnabled)
+            {
+                log.Warn($"CaseFile.Upload: refused ({code}) user={userName}");
+            }
+
+            return new DtoValidationException(new ValidationResult(
+                [new ValidationFailure("file", message) { ErrorCode = code }]));
+        }
+
+        private async Task ScanAsync(string safeName, string? declaredContentType, byte[] bytes,
+            CancellationToken token)
+        {
+            CaseFileScanResult result;
+
+            try
+            {
+                result = await scanner.ScanAsync(new CaseFileScanRequest(safeName,
+                    SafeContentType(declaredContentType), CaseFileContentSniffer.Sniff(bytes), bytes,
+                    tenantRegistryId, userName), token).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                log.Error($"CaseFile.Upload: the malware scanner failed user={userName}", ex);
+
+                throw Refused("FileScanUnavailable", strings[CaseFileResources.FileScanUnavailable]);
+            }
+
+            if (!result.Clean)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"CaseFile.Upload: the malware scanner rejected a file user={userName} " +
+                             $"reason={result.Reason}");
+                }
+
+                throw Refused("FileRejectedByScanner", strings[CaseFileResources.FileRejectedByScanner]);
+            }
+        }
+
         private static string SafeFileName(string? name)
         {
             var candidate = (name ?? string.Empty).Replace('\\', '/');
             candidate = candidate[(candidate.LastIndexOf('/') + 1)..];
 
             var cleaned = new string(candidate
-                .Where(c => !char.IsControl(c) && c != '"' && c != '<' && c != '>' && c != '|' && c != ':' &&
-                            c != '*' && c != '?' && c != '\u202E')
-                .ToArray()).Trim().TrimStart('.');
+                .Where(c => !char.IsControl(c) && !IsInvisibleOrBidiControl(c) && c != '"' && c != '<' && c != '>' &&
+                            c != '|' && c != ':' && c != '*' && c != '?')
+                .ToArray()).Trim().TrimStart('.').TrimEnd('.', ' ');
 
             if (cleaned.Length > MaxFileNameLength)
             {
@@ -443,6 +620,12 @@ namespace Jube.Service.Repository.CaseFile
             }
 
             return cleaned.Length == 0 ? "file" : cleaned;
+        }
+
+        private static bool IsInvisibleOrBidiControl(char c)
+        {
+            return c is '\u061C' or '\u200B' or '\u200E' or '\u200F' or '\u2028' or '\u2029' or '\u2060' or '\uFEFF'
+                   || c is >= '\u202A' and <= '\u202E' or >= '\u2066' and <= '\u2069';
         }
 
         private static string SafeContentType(string? contentType)
@@ -457,7 +640,39 @@ namespace Jube.Service.Repository.CaseFile
             return contentType;
         }
 
-        private async Task<RulePoco> EnsureFileVisibleAsync(string op, int id, CancellationToken token)
+        private void EnsureMayRemove(RulePoco existingFile, Data.Poco.Case existingCase)
+        {
+            if (permissionValidation.Validate(supervisionPermissions))
+            {
+                return;
+            }
+
+            if (CaseLockCheck.HeldByAnother(existingCase, userName))
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"CaseFile.Remove: caseId={existingCase.Id} is locked to another user user={userName}");
+                }
+
+                throw new CaseLockedException(strings[CaseFileResources.CaseLocked]);
+            }
+
+            if (string.Equals(existingFile.CreatedUser, userName, StringComparison.Ordinal) ||
+                CaseLockCheck.HeldBy(existingCase, userName))
+            {
+                return;
+            }
+
+            if (log.IsWarnEnabled)
+            {
+                log.Warn($"CaseFile.Remove: id={existingFile.Id} is neither the caller's upload nor on a case the " +
+                         $"caller holds user={userName}");
+            }
+
+            throw new ForbiddenException(strings[CaseFileResources.RemovalRestricted], supervisionPermissions);
+        }
+
+        private async Task<(RulePoco File, Data.Poco.Case Case)> EnsureFileVisibleAsync(string op, int id, CancellationToken token)
         {
             var existingFile = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
 
@@ -495,7 +710,20 @@ namespace Jube.Service.Repository.CaseFile
                 throw new NotVisibleException(strings[CaseFileResources.NotVisible]);
             }
 
-            return existingFile;
+            if (existingFile.CaseNoteId.HasValue
+                && !await caseNoteRepository.ActionGrantedToUserAsync(existingFile.CaseNoteId.Value, token)
+                    .ConfigureAwait(false))
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"{op}: id={id} belongs to a note whose action the caller's roles do not hold " +
+                             $"user={userName}");
+                }
+
+                throw new NotVisibleException(strings[CaseFileResources.NotVisible]);
+            }
+
+            return (existingFile, existingCase);
         }
 
         private void EnsurePermitted(string op)

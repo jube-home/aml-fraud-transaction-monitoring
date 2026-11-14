@@ -24,5 +24,9 @@ namespace Jube.Resources
         public const string FileTypeNotAllowed = nameof(FileTypeNotAllowed);
         public const string EmptyReply = nameof(EmptyReply);
         public const string NoInferenceBackend = nameof(NoInferenceBackend);
+        public const string StreamFailed = nameof(StreamFailed);
+        public const string ApprovalSummary = nameof(ApprovalSummary);
+        public const string ApprovalNotFound = nameof(ApprovalNotFound);
+        public const string RateLimited = nameof(RateLimited);
     }
 }

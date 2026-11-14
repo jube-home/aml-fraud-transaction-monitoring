@@ -16,6 +16,8 @@
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable RedundantAttributeUsageProperty
 
+using MessagePack;
+
 namespace Jube.AskJooby.Validation.Models
 {
     public enum ValidationFailureKind
@@ -24,5 +26,9 @@ namespace Jube.AskJooby.Validation.Models
         Error
     }
 
-    public sealed record ValidationResult(bool Approved, string? Feedback, ValidationFailureKind? FailureKind = null);
+    [MessagePackObject]
+    public sealed record ValidationResult(
+        [property: Key(0)] bool Approved,
+        [property: Key(1)] string? Feedback,
+        [property: Key(2)] ValidationFailureKind? FailureKind = null);
 }

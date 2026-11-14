@@ -7,7 +7,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Int32 ConvertToUtf32(this String s, Int32 index)
+        [Description("Converts a character or surrogate pair to a Unicode code point.")]
+        public static Int32 ConvertToUtf32(this String s,
+            [Description("The index position of the character or surrogate pair.")] Int32 index)
         {
             return char.ConvertToUtf32(s, index);
         }

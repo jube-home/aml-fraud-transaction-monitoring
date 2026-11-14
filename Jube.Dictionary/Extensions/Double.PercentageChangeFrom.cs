@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double PercentageChangeFrom(this double @this, double previousValue)
+        [Description("Returns the percentage change from a previous value to this value.")]
+        public static double PercentageChangeFrom(this double @this,
+            [Description("The value to compare against.")] double previousValue)
         {
             return (@this - previousValue) / previousValue * 100.0;
         }

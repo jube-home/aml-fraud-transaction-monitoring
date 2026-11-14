@@ -16,6 +16,7 @@ namespace Jube.Resources
     public sealed class UserRegistryApiKeyResources
     {
         public const string PermissionDenied = nameof(PermissionDenied);
+        public const string InsufficientPrivilege = nameof(InsufficientPrivilege);
         public const string NotAuthenticated = nameof(NotAuthenticated);
         public const string UserRegistryIdInvalid = nameof(UserRegistryIdInvalid);
         public const string UserRegistryNotFound = nameof(UserRegistryNotFound);

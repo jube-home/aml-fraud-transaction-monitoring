@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The latitude of the centre of a geohash cell, otherwise NaN.")]
         public static double GeohashLatitude(this string? @this)
         {
             return GeohashSupport.TryDecode(@this, out var latitude, out _) ? latitude : double.NaN;

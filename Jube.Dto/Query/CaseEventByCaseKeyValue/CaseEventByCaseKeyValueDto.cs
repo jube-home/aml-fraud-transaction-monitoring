@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,28 +21,41 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Query.CaseEventByCaseKeyValue
 {
+    [MessagePackObject]
     public class CaseEventByCaseKeyValueDto
     {
         [Description("Server-assigned integer identifier of the case event.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("Identifier of the case this event belongs to.")]
+        [Key(1)]
         public int CaseId { get; set; }
 
         [Description(
+            "Numeric case event type; the display of Before and After depends on it. 1=Automatic Unlock, 2=Skim Case, 3=Automatic Lock, 4=Full Case Fetch, 5=Closed, 6=Manual Lock, 7=Diary, 8=Workflow Change, 9=Status Change, 10=Diary Date Change, 11=Rating Change, 12=Suspend Closed, 13=Suspend Open, 14=Allocate Lock, 15=Process Expired Case, 16=Peek, 17=Automatic Escalation, 18=Lock Broken, 19=Diary Cleared, 20=QA Sampled, 21 to 28 the checklist events.")]
+        [Key(2)]
+        public int CaseEventTypeId { get; set; }
+
+        [Description(
             "Human-readable case event type, for example 'Workflow Change' or 'Closed'; 'Unknown' when the type is unrecognised.")]
+        [Key(3)]
         public string? CaseEventType { get; set; }
 
         [Description("UTC timestamp at which the event was created.")]
+        [Key(4)]
         public DateTimeOffset CreatedDate { get; set; }
 
         [Description("User name that caused the event.")]
+        [Key(5)]
         public string? CreatedUser { get; set; }
 
-        [Description("Serialised state of the case before the event, where recorded.")]
+        [Description("State of the case before the event, where recorded. Stored as the raw value: an ISO 8601 UTC date, an enumeration id, a status Guid, a user name or plain text, according to CaseEventTypeId.")]
+        [Key(6)]
         public string? Before { get; set; }
 
-        [Description("Serialised state of the case after the event, where recorded.")]
+        [Description("State of the case after the event, where recorded. Stored as the raw value in the same way as Before.")]
+        [Key(7)]
         public string? After { get; set; }
     }
 }

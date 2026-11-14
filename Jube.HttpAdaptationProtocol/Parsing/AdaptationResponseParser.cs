@@ -25,6 +25,15 @@ namespace Jube.HttpAdaptationProtocol.Parsing
             MissingMemberHandling = MissingMemberHandling.Ignore
         };
 
+        private const int MaximumLoggedBodyCharacters = 200;
+
+        private static string Truncate(string rawBody)
+        {
+            return rawBody.Length <= MaximumLoggedBodyCharacters
+                ? rawBody
+                : rawBody[..MaximumLoggedBodyCharacters];
+        }
+
         public static Adaptation ParseAdaptationResponse(this string rawBody, ILog log)
         {
             var trimmed = rawBody?.Trim();
@@ -65,7 +74,7 @@ namespace Jube.HttpAdaptationProtocol.Parsing
                 if (log.IsWarnEnabled)
                 {
                     log.Warn(
-                        $"Http Adaptation: response body could not be parsed as either a bare number or a v1.1 Adaptation object ({ex.Message}). Body: {rawBody}");
+                        $"Http Adaptation: response body could not be parsed as either a bare number or a v1.1 Adaptation object ({ex.Message}). Body (first {MaximumLoggedBodyCharacters} characters): {Truncate(rawBody)}");
                 }
 
                 return new Adaptation

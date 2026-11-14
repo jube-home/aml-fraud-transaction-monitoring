@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchPercentDifferenceFromAbove(double other, double bound)
+            [Description("True when: the gap between the two as a percentage of their average size, the same either way round is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentDifferenceFromAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoublePercentDifferenceFromAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> RejectPercentDifferenceFromAbove(double other, double bound)
+            [Description("True when: the gap between the two as a percentage of their average size, the same either way round is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentDifferenceFromAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoublePercentDifferenceFromAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> BreakPercentDifferenceFromAbove(double other, double bound)
+            [Description("True when: the gap between the two as a percentage of their average size, the same either way round is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentDifferenceFromAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoublePercentDifferenceFromAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> RequirePercentDifferenceFromAbove(double other, double bound)
+            [Description("True when: the gap between the two as a percentage of their average size, the same either way round is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentDifferenceFromAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoublePercentDifferenceFromAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> EnsurePercentDifferenceFromAbove(double other, double bound)
+            [Description("True when: the gap between the two as a percentage of their average size, the same either way round is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentDifferenceFromAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchPercentDifferenceFromAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the gap between the two as a percentage of their average size, the same either way round is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentDifferenceFromAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchPercentDifferenceFromAbove(other, bound);
             }
 
-            public Flow<double> RejectPercentDifferenceFromAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the gap between the two as a percentage of their average size, the same either way round is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentDifferenceFromAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectPercentDifferenceFromAbove(other, bound);
             }
 
-            public Flow<double> BreakPercentDifferenceFromAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the gap between the two as a percentage of their average size, the same either way round is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentDifferenceFromAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakPercentDifferenceFromAbove(other, bound);
             }
 
-            public Flow<double> RequirePercentDifferenceFromAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the gap between the two as a percentage of their average size, the same either way round is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentDifferenceFromAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequirePercentDifferenceFromAbove(other, bound);
             }
 
-            public Flow<double> EnsurePercentDifferenceFromAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the gap between the two as a percentage of their average size, the same either way round is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentDifferenceFromAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsurePercentDifferenceFromAbove(other, bound);
             }

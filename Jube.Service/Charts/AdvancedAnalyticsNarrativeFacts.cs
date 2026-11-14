@@ -14,7 +14,7 @@
 using System.Text.RegularExpressions;
 using Jube.Engine.AdvancedAnalytics.Evidence;
 using Jube.Service.Query.AdvancedAnalyticsChart;
-using Jube.Service.Repository.AdvancedAnalyticsModel.Models;
+using Jube.Service.Repository.AskJoobyAnalyticsModel.Models;
 
 namespace Jube.Service.Charts
 {

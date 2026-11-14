@@ -8,7 +8,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Boolean IsLower(this String s, Int32 index)
+        [Description("Checks if a character at a position is lowercase.")]
+        public static Boolean IsLower(this String s,
+            [Description("The position of the character to evaluate.")] Int32 index)
         {
             return char.IsLower(s, index);
         }

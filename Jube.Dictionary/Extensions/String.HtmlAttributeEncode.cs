@@ -12,6 +12,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(String s)
         {
+            [Description("HTML attribute encodes a string.")]
             public String HtmlAttributeEncode()
             {
                 return HttpUtility.HtmlAttributeEncode(s);

@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -91,7 +92,7 @@ namespace Jube.App.Endpoints
                 .Produces((int)HttpStatusCode.NoContent)
                 .WithName("EntityAnalysisModelDictionaryKvpRetract");
 
-            endpoints.MapPost(CsvUploadBase, UploadCsvAsync)
+            endpoints.MapPost(CsvUploadBase + "/{entityAnalysisModelDictionaryId:int}", UploadCsvAsync)
                 .RequireAuthorization()
                 .ValidateAntiforgeryForCookieSessions()
                 .WithTags("EntityAnalysisModelDictionaryKvp")
@@ -101,12 +102,11 @@ namespace Jube.App.Endpoints
         }
 
         private static async Task<IResult> UploadCsvAsync(
-            HttpContext httpContext, ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
-            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
-            CancellationToken token)
+            int entityAnalysisModelDictionaryId, IFormFileCollection formFiles, HttpContext httpContext, ILog log,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
+            IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
-            var entityAnalysisModelDictionaryId = ResolveEntityAnalysisModelDictionaryId(httpContext);
 
             if (log.IsDebugEnabled)
             {
@@ -123,44 +123,7 @@ namespace Jube.App.Endpoints
                     stringLocalizerFactory, serviceChangeBus,
                     ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired")), token);
 
-                if (!httpContext.Request.HasFormContentType)
-                {
-                    return TypedResults.StatusCode((int)HttpStatusCode.UnsupportedMediaType);
-                }
-
-                IFormCollection form;
-
-                try
-                {
-                    form = await httpContext.Request.ReadFormAsync(token);
-                }
-                catch (BadHttpRequestException ex)
-                {
-                    if (log.IsWarnEnabled)
-                    {
-                        log.Warn($"POST {CsvUploadBase}: {ex.StatusCode} (bad request body) user={user}");
-                    }
-
-                    return TypedResults.StatusCode(ex.StatusCode);
-                }
-                catch (Exception ex) when (ex is InvalidDataException or IOException or InvalidOperationException)
-                {
-                    if (log.IsWarnEnabled)
-                    {
-                        log.Warn($"POST {CsvUploadBase}: 400 (malformed form) user={user}");
-                    }
-
-                    return TypedResults.BadRequest();
-                }
-
-                if (entityAnalysisModelDictionaryId == 0
-                    && form.TryGetValue("entityAnalysisModelDictionaryId", out var formValue)
-                    && int.TryParse(formValue, out var formId))
-                {
-                    entityAnalysisModelDictionaryId = formId;
-                }
-
-                var uploaded = form.Files.GetFiles("files");
+                var uploaded = formFiles.GetFiles("files");
 
                 if (uploaded.Count == 0)
                 {
@@ -225,33 +188,20 @@ namespace Jube.App.Endpoints
             }
         }
 
-        private static async Task<int?> ResolveIdAsync(HttpContext httpContext)
-        {
-            if (httpContext.Request.Query.TryGetValue("id", out var queryValue) &&
-                int.TryParse(queryValue, out var queryId))
-            {
-                return queryId;
-            }
-
-            if (httpContext.Request.HasFormContentType)
-            {
-                var form = await httpContext.Request.ReadFormAsync();
-
-                if (form.TryGetValue("id", out var formValue) && int.TryParse(formValue, out var formId))
-                {
-                    return formId;
-                }
-            }
-
-            return null;
-        }
-
         private static int ResolveEntityAnalysisModelDictionaryId(HttpContext httpContext)
         {
             return httpContext.Request.Query.TryGetValue("entityAnalysisModelDictionaryId", out var queryValue) &&
                    int.TryParse(queryValue, out var queryId)
                 ? queryId
                 : 0;
+        }
+
+        private static int? ResolveId(HttpContext httpContext)
+        {
+            return httpContext.Request.Query.TryGetValue("id", out var queryValue) &&
+                   int.TryParse(queryValue, out var queryId)
+                ? queryId
+                : null;
         }
 
         private static async Task<IResult> GetAsync(
@@ -574,6 +524,22 @@ namespace Jube.App.Endpoints
 
                 return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
             }
+            catch (VersionConflictException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}: 409 user={user} supplied={ex.SuppliedVersion} current={ex.CurrentVersion}");
+                }
+
+                return TypedResults.Conflict(new
+                {
+                    code = "VersionConflict",
+                    message = ex.Message,
+                    suppliedVersion = ex.SuppliedVersion,
+                    currentVersion = ex.CurrentVersion
+                });
+            }
+
             catch (OperationCanceledException)
             {
                 if (log.IsDebugEnabled)
@@ -598,7 +564,7 @@ namespace Jube.App.Endpoints
         {
             var user = httpContext.User.Identity?.Name;
 
-            var id = await ResolveIdAsync(httpContext);
+            var id = ResolveId(httpContext);
 
             if (id is null)
             {

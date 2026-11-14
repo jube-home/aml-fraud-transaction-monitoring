@@ -26,6 +26,7 @@ namespace Jube.Service.Repository.CaseWorkflowAction
             {
                 Id = rulePoco.Id,
                 Name = rulePoco.Name,
+                Sql = rulePoco.Sql,
                 Active = rulePoco.Active == 1,
                 Locked = rulePoco.Locked == 1,
                 EnableHttpEndpoint = rulePoco.EnableHttpEndpoint == 1,
@@ -52,8 +53,10 @@ namespace Jube.Service.Repository.CaseWorkflowAction
 
         public static RulePoco ToPoco(CaseWorkflowActionDto dto) => new()
         {
+            Version = dto.Version,
             Id = dto.Id,
             Name = dto.Name,
+            Sql = dto.Sql,
             Active = (byte)(dto.Active ? 1 : 0),
             Locked = (byte)(dto.Locked ? 1 : 0),
             EnableHttpEndpoint = (byte)(dto.EnableHttpEndpoint ? 1 : 0),

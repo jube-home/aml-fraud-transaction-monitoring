@@ -43,7 +43,6 @@ namespace Jube.Test.Preservation
             new ResourceManagerStringLocalizerFactory(Options.Create(new LocalizationOptions()),
                 NullLoggerFactory.Instance);
 
-        public const string Salt = "ZzTestPreservationSalt";
         public const string Password = "correct horse";
         public DatabaseFixture Fixture { get; } = fx;
 
@@ -176,34 +175,60 @@ namespace Jube.Test.Preservation
             await using var dbContext = Fixture.GetDbContext();
 
             var service = await PreservationSnapshotService.CreateAsync(dbContext, tenant.UserName, TestLog.NoOp,
-                localizers, new NullServiceChangeBus(), Salt, false);
+                localizers, new NullServiceChangeBus());
 
             var snapshot = await service.CreateAsync(request);
 
             return await service.GetBodyAsync(snapshot.Id);
         }
 
+        public static Task<PreservationSnapshotService> BuildSnapshotServiceAsync(DbContext dbContext,
+            string userName)
+        {
+            return PreservationSnapshotService.CreateAsync(dbContext, userName, TestLog.NoOp, localizers,
+                new NullServiceChangeBus());
+        }
+
         public static Task<PreservationService> BuildServiceAsync(DbContext dbContext, string userName,
             IServiceChangeBus? bus = null)
         {
             return PreservationService.CreateAsync(dbContext, userName, TestLog.NoOp, localizers,
-                bus ?? new NullServiceChangeBus(), TestLog.NoOp, Salt, false);
+                bus ?? new NullServiceChangeBus(), TestLog.NoOp);
+        }
+
+        public static async Task<string> LiveJsonAsync(DbContext dbContext, string userName,
+            bool exhaustive = true, bool lists = true, bool dictionaries = true, bool visualisations = true,
+            bool roles = false, bool advancedAnalytics = false)
+        {
+            var library = new Jube.Preservation.Preservation(dbContext, userName);
+
+            var payload = await library.LivePayloadAsync(new ExportOptions
+            {
+                Exhaustive = exhaustive,
+                Lists = lists,
+                Dictionaries = dictionaries,
+                Visualisations = visualisations,
+                Roles = roles,
+                AdvancedAnalytics = advancedAnalytics
+            });
+
+            return Jube.Preservation.Preservation.PayloadJson(payload);
         }
 
         public static Wrapper Decrypt(byte[] encrypted)
         {
-            return MessagePackSerializer.Deserialize<Wrapper>(new JempAesEncryption(Password, Salt).Decrypt(encrypted),
+            return MessagePackSerializer.Deserialize<Wrapper>(new JempAesEncryption(Password).Decrypt(encrypted),
                 Lz4);
         }
 
         public static byte[] Encrypt(Wrapper wrapper)
         {
-            return new JempAesEncryption(Password, Salt).Encrypt(MessagePackSerializer.Serialize(wrapper, Lz4));
+            return new JempAesEncryption(Password).Encrypt(MessagePackSerializer.Serialize(wrapper, Lz4));
         }
 
         public static byte[] DecryptToBytes(byte[] encrypted)
         {
-            return new JempAesEncryption(Password, Salt).Decrypt(encrypted);
+            return new JempAesEncryption(Password).Decrypt(encrypted);
         }
     }
 }

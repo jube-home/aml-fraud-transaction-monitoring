@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The network address of a CIDR range, otherwise empty.")]
         public static string CidrFirstAddress(this string? @this)
         {
             return NetworkAddressSupport.TryParseCidr(@this, out var network, out _, out _) ? network.ToString() : "";

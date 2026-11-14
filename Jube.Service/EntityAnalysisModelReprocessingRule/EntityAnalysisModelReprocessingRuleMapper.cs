@@ -57,6 +57,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
         {
             return new ReprocessingRulePoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelId = dto.EntityAnalysisModelId,
                 Name = dto.Name,

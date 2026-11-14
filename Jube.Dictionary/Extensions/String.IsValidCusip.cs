@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Whether the text is a nine-character CUSIP with a valid check digit.")]
         public static bool IsValidCusip(this string? @this)
         {
             var value = (@this ?? "").Trim().ToUpperInvariant();

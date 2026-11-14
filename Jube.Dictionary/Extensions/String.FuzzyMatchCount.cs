@@ -19,12 +19,15 @@ namespace Jube.Dictionary.Extensions
     {
         extension(string? @this)
         {
-            public int FuzzyMatchCount(IEnumerable<string>? list)
+            [Description("How many entries pass.")]
+            public int FuzzyMatchCount([Description("The List token whose entries are compared.")] IEnumerable<string>? list)
             {
                 return FuzzyListMatcher.Evaluate(@this, list, FuzzyOptions.Default).Count;
             }
 
-            public int FuzzyMatchCount(IEnumerable<string>? list, string? options)
+            [Description("How many entries pass.")]
+            public int FuzzyMatchCount([Description("The List token whose entries are compared.")] IEnumerable<string>? list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return FuzzyListMatcher.Evaluate(@this, list, FuzzyOptions.Parse(options)).Count;
             }

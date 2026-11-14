@@ -4,7 +4,11 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string Replace(this string @this, int startIndex, int length, string value)
+        [Description("Replaces a substring at a specific position.")]
+        public static string Replace(this string @this,
+            [Description("The start index.")] int startIndex,
+            [Description("The length.")] int length,
+            [Description("The replacement value.")] string value)
         {
             @this = @this.Remove(startIndex, length).Insert(startIndex, value);
 

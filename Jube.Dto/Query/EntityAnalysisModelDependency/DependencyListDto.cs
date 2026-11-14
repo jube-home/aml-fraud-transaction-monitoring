@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Validation;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,15 +23,19 @@ using Jube.Dto.Validation;
 namespace Jube.Dto.Query.EntityAnalysisModelDependency
 {
     [Description("What an entity uses.")]
+    [MessagePackObject]
     public class DependencyListDto
     {
         [Description("The entity asked about.")]
+        [Key(0)]
         public ModelEntityDto? Entity { get; set; }
 
         [Description("Everything the entity uses; a null Target means the name does not resolve.")]
+        [Key(1)]
         public List<ModelDependencyDto> Dependencies { get; set; } = [];
 
         [Description("Why the entity could not be looked up.")]
+        [Key(2)]
         public List<ValidationErrorDto> Errors { get; set; } = [];
     }
 }

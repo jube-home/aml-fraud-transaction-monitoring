@@ -10,17 +10,20 @@ namespace Jube.Dictionary.Extensions
     {
         extension(DateTime @this)
         {
+            [Description("Converts the date to a month and day string.")]
             public string ToMonthDayString()
             {
                 return @this.ToString("m", DateTimeFormatInfo.CurrentInfo);
             }
 
-            public string ToMonthDayString(string culture)
+            [Description("Converts the date to a month and day string using a culture.")]
+            public string ToMonthDayString([Description("The culture.")] string culture)
             {
                 return @this.ToString("m", new CultureInfo(culture));
             }
 
-            public string ToMonthDayString(CultureInfo culture)
+            [Description("Converts the date to a month and day string using a culture.")]
+            public string ToMonthDayString([Description("The culture.")] CultureInfo culture)
             {
                 return @this.ToString("m", culture);
             }

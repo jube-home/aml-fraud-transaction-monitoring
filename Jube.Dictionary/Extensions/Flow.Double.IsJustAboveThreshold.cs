@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchIsJustAboveThreshold(double threshold, double marginPercent)
+            [Description("True when: above the threshold but within the margin percentage of it. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchIsJustAboveThreshold([Description("The threshold the value is tested against.")] double threshold,
+                [Description("How far above the threshold still counts, as a percentage of it.")] double marginPercent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleIsJustAboveThreshold(flow.Value, threshold, marginPercent));
             }
 
-            public Flow<double> RejectIsJustAboveThreshold(double threshold, double marginPercent)
+            [Description("True when: above the threshold but within the margin percentage of it. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectIsJustAboveThreshold([Description("The threshold the value is tested against.")] double threshold,
+                [Description("How far above the threshold still counts, as a percentage of it.")] double marginPercent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleIsJustAboveThreshold(flow.Value, threshold, marginPercent));
             }
 
-            public Flow<double> BreakIsJustAboveThreshold(double threshold, double marginPercent)
+            [Description("True when: above the threshold but within the margin percentage of it. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakIsJustAboveThreshold([Description("The threshold the value is tested against.")] double threshold,
+                [Description("How far above the threshold still counts, as a percentage of it.")] double marginPercent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleIsJustAboveThreshold(flow.Value, threshold, marginPercent));
             }
 
-            public Flow<double> RequireIsJustAboveThreshold(double threshold, double marginPercent)
+            [Description("True when: above the threshold but within the margin percentage of it. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireIsJustAboveThreshold([Description("The threshold the value is tested against.")] double threshold,
+                [Description("How far above the threshold still counts, as a percentage of it.")] double marginPercent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleIsJustAboveThreshold(flow.Value, threshold, marginPercent));
             }
 
-            public Flow<double> EnsureIsJustAboveThreshold(double threshold, double marginPercent)
+            [Description("True when: above the threshold but within the margin percentage of it. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureIsJustAboveThreshold([Description("The threshold the value is tested against.")] double threshold,
+                [Description("How far above the threshold still counts, as a percentage of it.")] double marginPercent)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchIsJustAboveThreshold(double threshold, double marginPercent)
+            [Description("Begins a pipeline from the value. True when: above the threshold but within the margin percentage of it. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchIsJustAboveThreshold([Description("The threshold the value is tested against.")] double threshold,
+                [Description("How far above the threshold still counts, as a percentage of it.")] double marginPercent)
             {
                 return value.Start().MatchIsJustAboveThreshold(threshold, marginPercent);
             }
 
-            public Flow<double> RejectIsJustAboveThreshold(double threshold, double marginPercent)
+            [Description("Begins a pipeline from the value. True when: above the threshold but within the margin percentage of it. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectIsJustAboveThreshold([Description("The threshold the value is tested against.")] double threshold,
+                [Description("How far above the threshold still counts, as a percentage of it.")] double marginPercent)
             {
                 return value.Start().RejectIsJustAboveThreshold(threshold, marginPercent);
             }
 
-            public Flow<double> BreakIsJustAboveThreshold(double threshold, double marginPercent)
+            [Description("Begins a pipeline from the value. True when: above the threshold but within the margin percentage of it. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakIsJustAboveThreshold([Description("The threshold the value is tested against.")] double threshold,
+                [Description("How far above the threshold still counts, as a percentage of it.")] double marginPercent)
             {
                 return value.Start().BreakIsJustAboveThreshold(threshold, marginPercent);
             }
 
-            public Flow<double> RequireIsJustAboveThreshold(double threshold, double marginPercent)
+            [Description("Begins a pipeline from the value. True when: above the threshold but within the margin percentage of it. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireIsJustAboveThreshold([Description("The threshold the value is tested against.")] double threshold,
+                [Description("How far above the threshold still counts, as a percentage of it.")] double marginPercent)
             {
                 return value.Start().RequireIsJustAboveThreshold(threshold, marginPercent);
             }
 
-            public Flow<double> EnsureIsJustAboveThreshold(double threshold, double marginPercent)
+            [Description("Begins a pipeline from the value. True when: above the threshold but within the margin percentage of it. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureIsJustAboveThreshold([Description("The threshold the value is tested against.")] double threshold,
+                [Description("How far above the threshold still counts, as a percentage of it.")] double marginPercent)
             {
                 return value.Start().EnsureIsJustAboveThreshold(threshold, marginPercent);
             }

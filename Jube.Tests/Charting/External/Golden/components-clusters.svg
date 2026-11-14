@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" class="jc jc-diagram" viewBox="0 0 712 311" preserveAspectRatio="xMidYMid meet"
-     role="img" aria-labelledby="jc-3743dfd2-t jc-3743dfd2-d">
-    <title id="jc-3743dfd2-t">Customer segments</title>
-    <desc id="jc-3743dfd2-d">Cluster centroid profile heatmap of 5 clusters across 9 features with a cluster size bar
+     role="img" aria-labelledby="jc-9382df79-t jc-9382df79-d">
+    <title id="jc-9382df79-t">Customer segments</title>
+    <desc id="jc-9382df79-d">Cluster centroid profile heatmap of 5 clusters across 9 features with a cluster size bar
         for each; the largest is Everyday sp… with 5200 members.
     </desc>
     <rect class="bg" x="0" y="0" width="712" height="311" rx="8"/>
@@ -161,10 +161,10 @@
             <rect class="rb" x="471.92" y="69.2" width="130" height="16" rx="2"/>
             <text class="tk mid" x="607.92" y="77.2">5200 · 54%</text>
             <g class="tt">
-                <rect class="tb" x="315.24" y="47.2" width="276.68" height="61" rx="6"/>
-                <text class="tx b" x="325.24" y="65.2">Everyday spenders</text>
-                <text class="tx" x="325.24" y="82.2">Size: 5200 (53.9%)</text>
-                <text class="tx" x="325.24" y="99.2">Defining features: account_…, geo_mis…, tenure</text>
+                <rect class="tb" x="315.24" y="46.7" width="276.68" height="61" rx="6"/>
+                <text class="tx b" x="325.24" y="64.7">Everyday spenders</text>
+                <text class="tx" x="325.24" y="81.7">Size: 5200 (53.9%)</text>
+                <text class="tx" x="325.24" y="98.7">Defining features: account_…, geo_mis…, tenure</text>
             </g>
         </g>
         <text class="end mid" x="103.92" y="103.2">High rollers</text>
@@ -310,10 +310,10 @@
             <rect class="rb" x="471.92" y="95.2" width="45" height="16" rx="2"/>
             <text class="tk mid" x="522.92" y="103.2">1800 · 19%</text>
             <g class="tt">
-                <rect class="tb" x="230.96" y="73.2" width="275.96" height="61" rx="6"/>
-                <text class="tx b" x="240.96" y="91.2">High rollers</text>
-                <text class="tx" x="240.96" y="108.2">Size: 1800 (18.7%)</text>
-                <text class="tx" x="240.96" y="125.2">Defining features: amount_z, balance_…, tenure</text>
+                <rect class="tb" x="230.96" y="72.7" width="275.96" height="61" rx="6"/>
+                <text class="tx b" x="240.96" y="90.7">High rollers</text>
+                <text class="tx" x="240.96" y="107.7">Size: 1800 (18.7%)</text>
+                <text class="tx" x="240.96" y="124.7">Defining features: amount_z, balance_…, tenure</text>
             </g>
         </g>
         <text class="end mid" x="103.92" y="129.2">New and active</text>
@@ -459,10 +459,10 @@
             <rect class="rb" x="471.92" y="121.2" width="37.5" height="16" rx="2"/>
             <text class="tk mid" x="515.42" y="129.2">1500 · 16%</text>
             <g class="tt">
-                <rect class="tb" x="222.38" y="99.2" width="277.04" height="61" rx="6"/>
-                <text class="tx b" x="232.38" y="117.2">New and active</text>
-                <text class="tx" x="232.38" y="134.2">Size: 1500 (15.6%)</text>
-                <text class="tx" x="232.38" y="151.2">Defining features: velocity_…, account_…, tenu…</text>
+                <rect class="tb" x="222.38" y="98.7" width="277.04" height="61" rx="6"/>
+                <text class="tx b" x="232.38" y="116.7">New and active</text>
+                <text class="tx" x="232.38" y="133.7">Size: 1500 (15.6%)</text>
+                <text class="tx" x="232.38" y="150.7">Defining features: velocity_…, account_…, tenu…</text>
             </g>
         </g>
         <text class="end mid" x="103.92" y="155.2">Night owls</text>
@@ -608,10 +608,10 @@
             <rect class="rb" x="471.92" y="147.2" width="22.5" height="16" rx="2"/>
             <text class="tk mid" x="500.42" y="155.2">900 · 9%</text>
             <g class="tt">
-                <rect class="tb" x="208.94" y="125.2" width="275.48" height="61" rx="6"/>
-                <text class="tx b" x="218.94" y="143.2">Night owls</text>
-                <text class="tx" x="218.94" y="160.2">Size: 900 (9.3%)</text>
-                <text class="tx" x="218.94" y="177.2">Defining features: night_time, channel_…, velo…</text>
+                <rect class="tb" x="208.94" y="124.7" width="275.48" height="61" rx="6"/>
+                <text class="tx b" x="218.94" y="142.7">Night owls</text>
+                <text class="tx" x="218.94" y="159.7">Size: 900 (9.3%)</text>
+                <text class="tx" x="218.94" y="176.7">Defining features: night_time, channel_…, velo…</text>
             </g>
         </g>
         <text class="end mid" x="103.92" y="181.2">Suspicious</text>
@@ -757,10 +757,10 @@
             <rect class="rb" x="471.92" y="173.2" width="6" height="16" rx="2"/>
             <text class="tk mid" x="483.92" y="181.2">240 · 2%</text>
             <g class="tt">
-                <rect class="tb" x="191.36" y="151.2" width="276.56" height="61" rx="6"/>
-                <text class="tx b" x="201.36" y="169.2">Suspicious</text>
-                <text class="tx" x="201.36" y="186.2">Size: 240 (2.5%)</text>
-                <text class="tx" x="201.36" y="203.2">Defining features: geo_mis…, velocity_…, merc…</text>
+                <rect class="tb" x="191.36" y="150.7" width="276.56" height="61" rx="6"/>
+                <text class="tx b" x="201.36" y="168.7">Suspicious</text>
+                <text class="tx" x="201.36" y="185.7">Size: 240 (2.5%)</text>
+                <text class="tx" x="201.36" y="202.7">Defining features: geo_mis…, velocity_…, merc…</text>
             </g>
         </g>
         <text class="key" x="0" y="213.2">Standardised value</text>

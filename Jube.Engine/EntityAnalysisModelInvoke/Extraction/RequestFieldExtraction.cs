@@ -21,7 +21,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
 
     public static class RequestFieldExtraction
     {
-        private const int ReferenceDateFromClock = 3;
+        public const int ReferenceDateFromClock = 3;
 
         public static JObject Parse(TextReader reader)
         {
@@ -35,7 +35,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
         {
             try
             {
-                var value = json.SelectToken(xPath)?.ToString();
+                var value = Jube.Data.Helpers.BoundedJsonPath.Select(json, xPath)?.ToString();
 
                 if (value == null && !string.IsNullOrEmpty(defaultValue))
                 {
@@ -89,6 +89,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                     converted = null;
 
                     return false;
+                case 8:
                 default:
                     converted = value;
 
@@ -123,7 +124,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                 return utcNow;
             }
 
-            var token = json?.SelectToken(referenceDateXPath);
+            var token = Jube.Data.Helpers.BoundedJsonPath.Select(json, referenceDateXPath);
 
             return token == null ? utcNow : ParseDate(token.Value<string>(), assumeLocal, utcNow);
         }

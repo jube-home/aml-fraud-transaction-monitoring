@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Checks if the character is a high surrogate.")]
         public static Boolean IsHighSurrogate(this Char c)
         {
             return char.IsHighSurrogate(c);

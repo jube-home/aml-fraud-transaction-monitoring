@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Checks if the string is a numeric string with a valid Luhn checksum digit, validates card numbers, IMEI numbers, etc.")]
         public static bool IsValidLuhn(this string? @this)
         {
             if (string.IsNullOrEmpty(@this) || @this.Length < 2)

@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The UTC date-time for a number of epoch seconds.")]
         public static DateTime FromEpochSeconds(this double @this)
         {
             return DateTime.UnixEpoch.AddSeconds(@this);

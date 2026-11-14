@@ -25,6 +25,7 @@ using Jube.Service.Reactivity.Interfaces;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -239,6 +240,175 @@ namespace Jube.Test.Service.OpenTelemetryExclude
             });
 
             await act.Should().ThrowAsync<ForbiddenException>();
+        }
+
+        [Fact]
+        public async Task InsertWithADuplicateNameIgnoringCaseIsRejectedAndWritesNoRowAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var name = UniqueName("Dup");
+            var first = await service.InsertAsync(new OpenTelemetryExcludeDto { Name = name, Active = true });
+            createdIds.Add(first.Id);
+
+            var act = () => service.InsertAsync(new OpenTelemetryExcludeDto
+                { Name = name.ToUpperInvariant(), Active = true });
+
+            (await act.Should().ThrowAsync<DtoValidationException>())
+                .Which.Result.Errors.Should().ContainSingle(e => e.ErrorCode == "NameDuplicate");
+
+            (await dbContext.OpenTelemetryExclude.CountAsync(w => w.Name.ToLower() == name.ToLower())).Should().Be(1);
+        }
+
+        [Fact]
+        public async Task UpdateKeepingItsOwnNameIsNotADuplicateButRenamingOntoAnotherRowIsAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var a = await service.InsertAsync(new OpenTelemetryExcludeDto { Name = UniqueName("OwnA"), Active = false });
+            var b = await service.InsertAsync(new OpenTelemetryExcludeDto { Name = UniqueName("OwnB"), Active = false });
+            createdIds.Add(a.Id);
+            createdIds.Add(b.Id);
+
+            var keep = await service.UpdateAsync(new OpenTelemetryExcludeDto
+                { Id = a.Id, Name = a.Name, Active = true, Version = a.Version.GetValueOrDefault() });
+
+            keep.Version.Should().Be(2);
+
+            var act = () => service.UpdateAsync(new OpenTelemetryExcludeDto
+                { Id = a.Id, Name = b.Name, Active = true, Version = keep.Version.GetValueOrDefault() });
+
+            await act.Should().ThrowAsync<DtoValidationException>();
+        }
+
+        [Fact]
+        public async Task ANameCanBeReusedOnceTheRowThatHeldItIsDeletedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var name = UniqueName("Reuse");
+            var first = await service.InsertAsync(new OpenTelemetryExcludeDto { Name = name, Active = false });
+            createdIds.Add(first.Id);
+            await service.DeleteAsync(first.Id);
+
+            var second = await service.InsertAsync(new OpenTelemetryExcludeDto { Name = name, Active = false });
+            createdIds.Add(second.Id);
+
+            second.Id.Should().NotBe(first.Id);
+        }
+
+        [Theory]
+        [InlineData(" padded")]
+        [InlineData("padded ")]
+        [InlineData("has space")]
+        [InlineData("tab\there")]
+        [InlineData("line\nbreak")]
+        [InlineData("rtl\u202Eoverride")]
+        [InlineData("iso\u2066late")]
+        [InlineData("zero\u200Bwidth")]
+        [InlineData("bom\uFEFFname")]
+        [InlineData("sep\u2028arator")]
+        [InlineData("wild*card")]
+        [InlineData("semi;colon")]
+        [InlineData("quote'name")]
+        [InlineData("caf\u00E9")]
+        public async Task InsertWithAForeignPaddedOrDirectionalCharacterNameFailsValidationAndWritesNoRowAsync(
+            string suffix)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var before = await dbContext.OpenTelemetryExclude.CountAsync();
+
+            var act = () => service.InsertAsync(new OpenTelemetryExcludeDto
+                { Name = suffix.StartsWith(' ') ? suffix : "jube.test." + suffix, Active = true });
+
+            (await act.Should().ThrowAsync<DtoValidationException>())
+                .Which.Result.Errors.Should().Contain(e => e.ErrorCode == "NameInvalidCharacters");
+
+            (await dbContext.OpenTelemetryExclude.CountAsync()).Should().Be(before);
+        }
+
+        [Theory]
+        [InlineData("jube.engine.logs.warn.count")]
+        [InlineData("http.server.request.duration")]
+        [InlineData("aspnetcore.authentication.sign_ins")]
+        [InlineData("kestrel/active-connections")]
+        public async Task OrdinaryInstrumentNamesAreAcceptedAsync(string instrument)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            await dbContext.OpenTelemetryExclude.Where(w => w.Name == instrument).DeleteAsync();
+
+            var saved = await service.InsertAsync(new OpenTelemetryExcludeDto { Name = instrument, Active = false });
+            createdIds.Add(saved.Id);
+
+            saved.Name.Should().Be(instrument);
+        }
+
+        [Fact]
+        public async Task EveryMutationWritesOneAuditLineNamingTheActorAndTheRowAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var audit = new TestLog();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser, auditLog: audit);
+
+            var saved = await service.InsertAsync(new OpenTelemetryExcludeDto
+                { Name = UniqueName("Audit"), Active = true });
+            createdIds.Add(saved.Id);
+
+            var updated = await service.UpdateAsync(new OpenTelemetryExcludeDto
+                { Id = saved.Id, Name = saved.Name, Active = false, Version = saved.Version.GetValueOrDefault() });
+
+            await service.DeleteAsync(updated.Id);
+
+            foreach (var operation in new[] { "Create", "Update", "Delete" })
+            {
+                audit.Entries.Select(e => e.Message).Should().ContainSingle(m =>
+                    m.Contains($"area=OpenTelemetryExclude op={operation} actor={fx.Seed.LandlordUser} ") &&
+                    m.Contains($"entityId={saved.Id} ") && m.Contains("outcome=ok "));
+            }
+        }
+
+        [Fact]
+        public async Task ARefusedNonLandlordWritesAForbiddenAuditLineAndNoRowAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var audit = new TestLog();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, auditLog: audit);
+            var before = await dbContext.OpenTelemetryExclude.CountAsync();
+
+            var act = () => service.InsertAsync(new OpenTelemetryExcludeDto
+                { Name = UniqueName("Refused"), Active = true });
+
+            await act.Should().ThrowAsync<ForbiddenException>();
+
+            audit.Entries.Select(e => e.Message).Should().ContainSingle(m =>
+                m.Contains($"actor={fx.Seed.UserWithPermission} ") && m.Contains("outcome=forbidden "));
+
+            (await dbContext.OpenTelemetryExclude.CountAsync()).Should().Be(before);
+        }
+
+        [Fact]
+        public async Task EveryVerbIsRefusedToANonLandlordHoldingEveryPermissionAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var landlord = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var seeded = await landlord.InsertAsync(new OpenTelemetryExcludeDto
+                { Name = UniqueName("Verbs"), Active = false });
+            createdIds.Add(seeded.Id);
+            var tenant = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = new OpenTelemetryExcludeDto { Id = seeded.Id, Name = UniqueName("Hijack"), Active = true, Version = 1 };
+
+            await ((Func<Task>)(() => tenant.ListAsync())).Should().ThrowAsync<ForbiddenException>();
+            await ((Func<Task>)(() => tenant.GetByIdAsync(seeded.Id))).Should().ThrowAsync<ForbiddenException>();
+            await ((Func<Task>)(() => tenant.InsertAsync(dto))).Should().ThrowAsync<ForbiddenException>();
+            await ((Func<Task>)(() => tenant.UpdateAsync(dto))).Should().ThrowAsync<ForbiddenException>();
+            await ((Func<Task>)(() => tenant.ValidateAsync(dto))).Should().ThrowAsync<ForbiddenException>();
+            await ((Func<Task>)(() => tenant.DeleteAsync(seeded.Id))).Should().ThrowAsync<ForbiddenException>();
+
+            var row = await dbContext.OpenTelemetryExclude.FirstAsync(w => w.Id == seeded.Id);
+            row.Name.Should().Be(seeded.Name);
+            (row.Deleted ?? 0).Should().Be(0);
         }
     }
 }

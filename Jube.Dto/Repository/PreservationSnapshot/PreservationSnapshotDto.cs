@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,45 +21,58 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Repository.PreservationSnapshot
 {
+    [MessagePackObject]
     public class PreservationSnapshotDto
     {
         [Description("Server-assigned snapshot identifier. This is the value to quote to roll back to this " +
                      "snapshot, by importing it.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("Globally unique identifier of the snapshot.")]
+        [Key(1)]
         public Guid Guid { get; set; }
 
         [Description("What caused the snapshot to be taken: the Preservation page, a model synchronisation, " +
                      "or AskJooby acting on the configuration.")]
+        [Key(2)]
         public PreservationSnapshotSource SnapshotSourceId { get; set; }
 
         [Description("Optional label given when the snapshot was taken, for example the reason for the change " +
                      "that followed it.")]
+        [Key(3)]
         public string? Name { get; set; }
 
         [Description("Version of the export body format held in the snapshot.")]
+        [Key(4)]
         public int? ExportVersion { get; set; }
 
         [Description("Identifier carried inside the snapshot body, matching the wrapper it was taken from.")]
+        [Key(5)]
         public Guid? ExportGuid { get; set; }
 
         [Description("How many Entity Analysis Models the snapshot body holds.")]
+        [Key(6)]
         public int? EntityAnalysisModelCount { get; set; }
 
         [Description("Size of the snapshot body in bytes.")]
+        [Key(7)]
         public long? Bytes { get; set; }
 
         [Description("True when the snapshot failed to complete and is not importable.")]
+        [Key(8)]
         public bool InError { get; set; }
 
         [Description("User the snapshot was taken by. Server-assigned.")]
+        [Key(9)]
         public string? CreatedUser { get; set; }
 
         [Description("Timestamp (UTC) the snapshot was started. Server-assigned.")]
+        [Key(10)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("Timestamp (UTC) the snapshot body was written. Null while incomplete or in error.")]
+        [Key(11)]
         public DateTimeOffset? CompletedDate { get; set; }
     }
 }

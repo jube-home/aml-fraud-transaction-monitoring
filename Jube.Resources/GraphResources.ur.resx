@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>آپ کو یہ کارروائی کرنے کی اجازت نہیں ہے۔</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>آپ کی توثیق نہیں ہوئی ہے۔</value>
+  </data>
+    <data name="RegistryNotFound" xml:space="preserve">
+    <value>گراف رجسٹری نہیں ملی یا فعال نہیں ہے۔</value>
+  </data>
+    <data name="NodeNotFound" xml:space="preserve">
+    <value>نوڈ نہیں ملا۔</value>
+  </data>
+    <data name="EdgeNotFound" xml:space="preserve">
+    <value>ایج نہیں ملی۔</value>
+  </data>
+    <data name="KeyRequired" xml:space="preserve">
+    <value>کلید اور قدر درکار ہیں۔</value>
+  </data>
+    <data name="KeyTooLong" xml:space="preserve">
+    <value>کلید یا قدر بہت لمبی ہے۔</value>
+  </data>
+    <data name="HopsOutOfRange" xml:space="preserve">
+    <value>ہاپس 1 سے 3 کے درمیان ہونے چاہئیں۔</value>
+  </data>
+    <data name="FanOutOutOfRange" xml:space="preserve">
+    <value>فین آؤٹ 1 سے 100 کے درمیان ہونا چاہیے۔</value>
+  </data>
+    <data name="WindowInvalid" xml:space="preserve">
+    <value>ونڈو کا اختتام اس کے آغاز کے بعد ہونا چاہیے۔</value>
+  </data>
+    <data name="EdgesInvalid" xml:space="preserve">
+    <value>ایج تعریفات کی فہرست درست نہیں ہے۔</value>
+  </data>
+    <data name="SentenceHub" xml:space="preserve">
+    <value>{0} {1} ایک حب ہے جسے {2} فریقِ مقابل شیئر کرتے ہیں؛ درخواست کیے بغیر تلاش اس سے نہیں گزرتی۔</value>
+  </data>
+    <data name="SentenceSharedDevice" xml:space="preserve">
+    <value>{0} {1} کو {2} اکاؤنٹس شیئر کرتے ہیں۔</value>
+  </data>
+    <data name="SentenceDistance" xml:space="preserve">
+    <value>{0} ہاپ تصدیق شدہ درست مثبت سے، {1} تین ہاپس کے اندر۔</value>
+  </data>
+    <data name="SentenceOpenCases" xml:space="preserve">
+    <value>اس کلید پر {0} کھلے کیس۔</value>
+  </data>
+    <data name="SentenceConfirmedCases" xml:space="preserve">
+    <value>اس کلید پر {0} کیس تصدیق شدہ کے طور پر بند ہوئے۔</value>
+  </data>
+    <data name="SentenceCommunity" xml:space="preserve">
+    <value>کمیونٹی {0} کا رکن۔</value>
+  </data>
+    <data name="SentenceDegree" xml:space="preserve">
+    <value>{0} منفرد فریقِ مقابل، {1} رقم کے بہاؤ کے ذریعے۔</value>
+  </data>
+    <data name="LayoutInvalid" xml:space="preserve">
+    <value>لے آؤٹ پہچانا نہیں گیا۔</value>
+  </data>
+    <data name="CaseNotFound" xml:space="preserve">
+    <value>کیس نہیں ملا یا آپ کے لیے کھلا نہیں ہے۔</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>کیس کسی دوسرے صارف کے لیے مقفل ہے۔</value>
+  </data>
+    <data name="CaptureNote" xml:space="preserve">
+    <value>نیٹ ورک کیپچر: {2} اور {3} کے درمیان {0} نوڈز اور {1} ایجز۔</value>
+  </data>
+    <data name="ExplorationNameInvalid" xml:space="preserve">
+    <value>دریافت کو زیادہ سے زیادہ 120 حروف کا نام درکار ہے۔</value>
+  </data>
+    <data name="ExplorationAddressInvalid" xml:space="preserve">
+    <value>دریافت کا پتہ غائب ہے یا بہت لمبا ہے۔</value>
+  </data>
+    <data name="ExplorationNotFound" xml:space="preserve">
+    <value>دریافت نہیں ملی۔</value>
+  </data>
+    <data name="NodeIdsRequired" xml:space="preserve">
+    <value>دونوں نوڈ شناخت کنندگان درکار ہیں اور مختلف ہونے چاہئیں۔</value>
+  </data>
+    <data name="PathHopsOutOfRange" xml:space="preserve">
+    <value>راستے 1 سے 6 ہاپس کے ہو سکتے ہیں اور 1 سے 20 واپس کیے جاتے ہیں۔</value>
+  </data>
+    <data name="FlowInvalid" xml:space="preserve">
+    <value>بہاؤ کی درخواست کو 1 سے 720 گھنٹے کی ہاپ ونڈو، 0 سے 0.9 رواداری، 1 سے 6 گہرائی اور 1 سے 50 فین آؤٹ درکار ہیں، اور فین آؤٹ اور گہرائی کا حاصل ضرب بہت بڑا نہیں ہونا چاہیے۔</value>
+  </data>
+    <data name="PatternNotFound" xml:space="preserve">
+    <value>پیٹرن نہیں ملا۔</value>
+  </data>
+    <data name="CommunityNotFound" xml:space="preserve">
+    <value>کمیونٹی نہیں ملی۔</value>
+  </data>
+    <data name="PatternStateInvalid" xml:space="preserve">
+    <value>پیٹرن کو دیکھا گیا، مسترد یا کیس بنایا گیا کے طور پر نشان زد کیا جا سکتا ہے، اور کیس بنانے کے لیے کیس شناخت درکار ہے۔</value>
+  </data>
+    <data name="HubOverrideInvalid" xml:space="preserve">
+    <value>حب اوور رائیڈ 0 (کوئی نہیں)، 1 (کبھی حب نہیں) یا 2 (ہمیشہ حب) ہونا چاہیے۔</value>
+  </data>
+    <data name="SentencePath" xml:space="preserve">
+    <value>{1} {2} سے {3} {4} تک {0} ہاپ، راستے کا وزن {5:0.###}۔</value>
+  </data>
+    <data name="SentenceFlow" xml:space="preserve">
+    <value>{0} ٹرانچ {2} ہاپس میں {1} نوڈز تک پہنچتے ہیں؛ {3} نوڈز رقم سیدھی آگے بھیج دیتے ہیں۔</value>
+  </data>
+    <data name="SentencePattern" xml:space="preserve">
+    <value>{0} کا لنگر {1} {2} پر: {3} اراکین، اسکور {4:0.###}، {5:yyyy-MM-dd} سے {6:yyyy-MM-dd}۔</value>
+  </data>
+    <data name="SentenceCommunityRate" xml:space="preserve">
+    <value>کمیونٹی {0}، {1} نوڈز: {3} بند کیسز میں سے {2} تصدیق شدہ، ٹیننٹ کی شرح کا {4:0.0} گنا۔</value>
+  </data>
+    <data name="SentencePatternMember" xml:space="preserve">
+    <value>{0} پیٹرنز کا رکن، تازہ ترین {1}۔</value>
+  </data>
+    <data name="SentenceTag" xml:space="preserve">
+    <value>{1} سے ٹیگ شدہ لین دین یا کیس سے {0} ہاپ، تین ہاپس کے اندر {2}۔</value>
+  </data>
+    <data name="ExpandedInvalid" xml:space="preserve">
+    <value>زیادہ سے زیادہ 25 پھیلائے گئے نوڈ شناخت کنندگان دیے جا سکتے ہیں۔</value>
+  </data>
+    <data name="ExplorationPinnedInvalid" xml:space="preserve">
+    <value>پن کی گئی پوزیشنیں بہت بڑی ہیں۔</value>
+  </data>
+    <data name="DetailDegree" xml:space="preserve">
+    <value>درجہ {0}</value>
+  </data>
+    <data name="DetailHub" xml:space="preserve">
+    <value>حب</value>
+  </data>
+    <data name="DetailConfirmedDistance" xml:space="preserve">
+    <value>تصدیق شدہ کیس سے {0} ہاپ</value>
+  </data>
+    <data name="DetailOpenCases" xml:space="preserve">
+    <value>{0} کھلے کیس</value>
+  </data>
+    <data name="DetailConfirmedCases" xml:space="preserve">
+    <value>{0} تصدیق شدہ</value>
+  </data>
+    <data name="DetailCollapsed" xml:space="preserve">
+    <value>{0} نوڈز سمیٹے گئے</value>
+  </data>
+</root>

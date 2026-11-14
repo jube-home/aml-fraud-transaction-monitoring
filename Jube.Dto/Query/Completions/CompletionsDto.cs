@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,30 +23,39 @@ namespace Jube.Dto.Query.Completions
 {
     [Description("A single code completion entry describing a payload field or inline script property that " +
                  "can be referenced in a filter or expression. Read-only.")]
+    [MessagePackObject]
     public class CompletionDto
     {
         [Description("Value inserted when the completion is chosen, e.g. Payload.Amount.")]
+        [Key(0)]
         public string? Value { get; set; }
 
         [Description("Display name of the completion, e.g. Payload.Amount.")]
+        [Key(1)]
         public string? Name { get; set; }
 
         [Description("Meta text shown beside the completion, as name:dataType.")]
+        [Key(2)]
         public string? Meta { get; set; }
 
         [Description("Ranking score of the completion; always 1000.")]
+        [Key(3)]
         public int Score { get; set; }
 
         [Description("Filter builder data type: string, integer, double, datetime or boolean.")]
+        [Key(4)]
         public string? DataType { get; set; }
 
         [Description("Group the completion belongs to, e.g. Payload.")]
+        [Key(5)]
         public string? Group { get; set; }
 
         [Description("PostgreSQL JSON path expression used to filter on the field.")]
+        [Key(6)]
         public string? Field { get; set; }
 
         [Description("Dot separated JSON path of the field within the archived payload.")]
+        [Key(7)]
         public string? XPath { get; set; }
     }
 }

@@ -7,7 +7,10 @@ grand_parent: Configuration
 ---
 
 # Working Case Form Journal
-Forms are used to capture structured data and invoke certain automations using the HTTP Endpoint and Notification Functionality.  The data captured during form invocation, which is documented in a separate configuration section of this documentation,  is available for end user review in its entirety.
+
+Forms are used to capture structured data and invoke certain automations using the HTTP Endpoint and Notification
+Functionality. The data captured during form invocation, which is documented in a separate configuration section of this
+documentation, is available for end user review in its entirety.
 
 Navigate to a case record via either Fetch or Skim:
 
@@ -21,9 +24,11 @@ Click on the Case Forms Journal Tab:
 
 ![Image](ExposedCaseFormsJournalTab.png)
 
-The documentation elsewhere shows the creation of a Cases Workflows Form and the invocation of that, henceforth there exists an entry for that execution.
+The documentation elsewhere shows the creation of a Cases Workflows Form and the invocation of that, henceforth there
+exists an entry for that execution.
 
-The grid is hierarchical in nature, thus clicking on the expansion icon on the left hand side, at the row level, will proceed to expand to reveal the form element entries and values:
+The grid is hierarchical in nature, thus clicking on the expansion icon on the left hand side, at the row level, will
+proceed to expand to reveal the form element entries and values:
 
 ![Image](LocationOfExpandForGrid.png)
 
@@ -31,4 +36,13 @@ Clicking on the expand icon will expose all of the values available after the fo
 
 ![Image](ExpandedCasesFormValues.png)
 
-Notice how the elements of the form have been merged into the case creation payload, which happened during the submission of the form and before any Notification or HTTP Endpoint invocation,  such that all these elements are available for tokenization for those processes.  Given the structured nature of the data capture,  it is simple to produce rich reporting based on the data submissions,  although the most powerful use case for Cases Workflows Forms is for the purposes of integration and automation via HTTP Endpoint.
+Notice how the elements of the form have been merged into the case creation payload, which happened during the
+submission of the form and before any Notification or HTTP Endpoint invocation, such that all these elements are
+available for tokenization for those processes. Given the structured nature of the data capture, it is simple to produce
+rich reporting based on the data submissions, although the most powerful use case for Cases Workflows Forms is for the
+purposes of integration and automation via HTTP Endpoint.
+
+## Vue case page (case-record review)
+
+<!-- TODO(docs): the screenshots and tab names above are from the Razor UI and are stale; the case page is now one scrolling story with sections 1 Dashboard, 2 Summary, 3 Journal, 4 Network, 5 Notes and research, 6 Events, 7 Forms, 8 Messages and a Decide column on the right -->
+<!-- TODO(screenshot): file=case-record-forms.png route=/cases/:caseId state="Case page showing the forms area as described on this page" -->

@@ -21,7 +21,7 @@ public static class MonitoringPayloads
 {
     private static readonly string[] sqlSeeds =
     [
-        "' OR '1'='1", "' OR 1=1--", "1; DROP TABLE \"RedisSlowOperation\";--",
+        "' OR '1'='1", "' OR 1=1--", "1; DROP TABLE \"RespSlowOperation\";--",
         "' UNION SELECT NULL,NULL,version()--", "'; SELECT pg_sleep(8);--", "1 AND (SELECT 1 FROM pg_sleep(8))",
         "\" OR \"\"=\"", "') OR ('1'='1", "$$;select pg_sleep(8);$$", "'||(SELECT pg_sleep(8))||'", "admin'--",
         "1' ORDER BY 99--", "'; COPY (SELECT '') TO PROGRAM 'id';--", "' AND 1=CAST((SELECT current_user) AS int)--",

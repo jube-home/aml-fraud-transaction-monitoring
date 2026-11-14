@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double ModifiedZScore(this double @this, double median, double medianAbsoluteDeviation)
+        [Description("A robust z-score from the median and the median absolute deviation, unmoved by outliers.")]
+        public static double ModifiedZScore(this double @this,
+            [Description("The median the value is measured from.")] double median,
+            [Description("The median absolute deviation the distance is measured in.")] double medianAbsoluteDeviation)
         {
             return CalculationSupport.Finite(0.6745 * (@this - median) / medianAbsoluteDeviation);
         }

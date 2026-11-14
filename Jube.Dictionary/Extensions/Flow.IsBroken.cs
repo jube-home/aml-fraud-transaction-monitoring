@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("True when the pipeline has decided broken.")]
         public static bool IsBroken<T>(this Flow<T> flow)
         {
             return flow.Outcome == FlowOutcome.Broken;

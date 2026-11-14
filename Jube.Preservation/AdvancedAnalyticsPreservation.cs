@@ -208,12 +208,12 @@ namespace Jube.Preservation
                 RequireDefined(trainedModel.KindId, "TrainedModels.Kind");
                 RequireDefined(trainedModel.SourceId, "TrainedModels.Source");
                 RequireFlag(trainedModel.Active, "TrainedModels.Active");
-                RequireParent(instanceIds, trainedModel.AdvancedAnalyticsInstanceId, "TrainedModels", "instance");
+                RequireParent(instanceIds, trainedModel.AskJoobyAnalyticsInstanceId, "TrainedModels", "instance");
             }
 
             foreach (var version in versions)
             {
-                RequireParent(trainedModelById, version.AdvancedAnalyticsTrainedModelId, "TrainedModelVersions",
+                RequireParent(trainedModelById, version.AskJoobyAnalyticsTrainedModelId, "TrainedModelVersions",
                     "trained model");
 
                 if (version.VersionNumber < 1)
@@ -221,7 +221,7 @@ namespace Jube.Preservation
                     throw Invalid("TrainedModelVersions contains a version number below 1.");
                 }
 
-                if (!versionNumbers.Add((version.AdvancedAnalyticsTrainedModelId, version.VersionNumber)))
+                if (!versionNumbers.Add((version.AskJoobyAnalyticsTrainedModelId, version.VersionNumber)))
                 {
                     throw Invalid("TrainedModelVersions contains a version number more than once for one model.");
                 }
@@ -235,7 +235,7 @@ namespace Jube.Preservation
             foreach (var trainedModel in trainedModels.Where(w => w.ActiveVersionId.HasValue))
             {
                 if (!versionById.TryGetValue(trainedModel.ActiveVersionId!.Value, out var activeVersion)
-                    || activeVersion.AdvancedAnalyticsTrainedModelId != trainedModel.Id)
+                    || activeVersion.AskJoobyAnalyticsTrainedModelId != trainedModel.Id)
                 {
                     throw Invalid(
                         "TrainedModels contains an active version that is not a version of that trained model.");
@@ -244,7 +244,7 @@ namespace Jube.Preservation
 
             foreach (var run in runs)
             {
-                RequireParent(instanceIds, run.AdvancedAnalyticsInstanceId, "TrainingRuns", "instance");
+                RequireParent(instanceIds, run.AskJoobyAnalyticsInstanceId, "TrainingRuns", "instance");
                 RequireDefined(run.KindId, "TrainingRuns.Kind");
                 RequireDefined(run.JobMode, "TrainingRuns.JobMode");
                 RequireDefined(run.StatusId, "TrainingRuns.Status");
@@ -342,10 +342,10 @@ namespace Jube.Preservation
             foreach (var run in runs)
             {
                 var oldId = run.Id;
-                var newInstanceId = newInstanceIds[run.AdvancedAnalyticsInstanceId];
+                var newInstanceId = newInstanceIds[run.AskJoobyAnalyticsInstanceId];
 
                 run.Guid = runGuids.Next(run.Guid);
-                run.AdvancedAnalyticsInstanceId = newInstanceId;
+                run.AskJoobyAnalyticsInstanceId = newInstanceId;
                 run.InputPointer = null;
                 run.HeartbeatDate = null;
                 run.ClaimedBy = null;
@@ -363,7 +363,7 @@ namespace Jube.Preservation
                 var oldId = trial.Id;
                 var oldRunId = trial.AdvancedAnalyticsTrainingRunId;
 
-                trial.AdvancedAnalyticsInstanceId = runInstanceIds[oldRunId];
+                trial.AskJoobyAnalyticsInstanceId = runInstanceIds[oldRunId];
                 trial.AdvancedAnalyticsTrainingRunId = newRunIds[oldRunId];
                 trial.StatusId = Terminal(trial.StatusId);
 
@@ -374,7 +374,7 @@ namespace Jube.Preservation
             {
                 var oldRunId = step.AdvancedAnalyticsTrainingRunId;
 
-                step.AdvancedAnalyticsInstanceId = runInstanceIds[oldRunId];
+                step.AskJoobyAnalyticsInstanceId = runInstanceIds[oldRunId];
                 step.AdvancedAnalyticsTrainingRunId = newRunIds[oldRunId];
                 step.StatusId = Terminal(step.StatusId);
 
@@ -385,7 +385,7 @@ namespace Jube.Preservation
             {
                 var oldRunId = variable.AdvancedAnalyticsTrainingRunId;
 
-                variable.AdvancedAnalyticsInstanceId = runInstanceIds[oldRunId];
+                variable.AskJoobyAnalyticsInstanceId = runInstanceIds[oldRunId];
                 variable.AdvancedAnalyticsTrainingRunId = newRunIds[oldRunId];
 
                 await repository.InsertVariableAsync(variable, token).ConfigureAwait(false);
@@ -395,7 +395,7 @@ namespace Jube.Preservation
             {
                 var oldRunId = iteration.AdvancedAnalyticsTrainingRunId;
 
-                iteration.AdvancedAnalyticsInstanceId = runInstanceIds[oldRunId];
+                iteration.AskJoobyAnalyticsInstanceId = runInstanceIds[oldRunId];
                 iteration.AdvancedAnalyticsTrainingRunId = newRunIds[oldRunId];
 
                 iteration.AdvancedAnalyticsTrainingRunTrialId = iteration.AdvancedAnalyticsTrainingRunTrialId.HasValue
@@ -409,7 +409,7 @@ namespace Jube.Preservation
             {
                 var oldRunId = metric.AdvancedAnalyticsTrainingRunId;
 
-                metric.AdvancedAnalyticsInstanceId = runInstanceIds[oldRunId];
+                metric.AskJoobyAnalyticsInstanceId = runInstanceIds[oldRunId];
                 metric.AdvancedAnalyticsTrainingRunId = newRunIds[oldRunId];
 
                 metric.AdvancedAnalyticsTrainingRunTrialId = metric.AdvancedAnalyticsTrainingRunTrialId.HasValue
@@ -423,7 +423,7 @@ namespace Jube.Preservation
             {
                 var oldRunId = curvePoint.AdvancedAnalyticsTrainingRunId;
 
-                curvePoint.AdvancedAnalyticsInstanceId = runInstanceIds[oldRunId];
+                curvePoint.AskJoobyAnalyticsInstanceId = runInstanceIds[oldRunId];
                 curvePoint.AdvancedAnalyticsTrainingRunId = newRunIds[oldRunId];
 
                 await repository.InsertCurvePointAsync(curvePoint, token).ConfigureAwait(false);
@@ -441,7 +441,7 @@ namespace Jube.Preservation
                 var oldId = trainedModel.Id;
 
                 trainedModel.Guid = trainedModelGuids.Next(trainedModel.Guid);
-                trainedModel.AdvancedAnalyticsInstanceId = newInstanceIds[trainedModel.AdvancedAnalyticsInstanceId];
+                trainedModel.AskJoobyAnalyticsInstanceId = newInstanceIds[trainedModel.AskJoobyAnalyticsInstanceId];
 
                 newTrainedModelIds[oldId] = await repository.InsertTrainedModelAsync(trainedModel, token)
                     .ConfigureAwait(false);
@@ -454,7 +454,7 @@ namespace Jube.Preservation
                 var oldId = version.Id;
 
                 version.Guid = versionGuids.Next(version.Guid);
-                version.AdvancedAnalyticsTrainedModelId = newTrainedModelIds[version.AdvancedAnalyticsTrainedModelId];
+                version.AskJoobyAnalyticsTrainedModelId = newTrainedModelIds[version.AskJoobyAnalyticsTrainedModelId];
 
                 version.AdvancedAnalyticsTrainingRunId = version.AdvancedAnalyticsTrainingRunId.HasValue
                                                          && newRunIds.TryGetValue(

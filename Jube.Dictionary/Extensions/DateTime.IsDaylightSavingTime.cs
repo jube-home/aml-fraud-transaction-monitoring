@@ -11,7 +11,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Boolean IsDaylightSavingTime(this DateTime time, DaylightTime daylightTimes)
+        [Description("Checks if the date is within a daylight saving time period.")]
+        public static Boolean IsDaylightSavingTime(this DateTime time,
+            [Description("A daylight saving time period.")] DaylightTime daylightTimes)
         {
             return TimeZone.IsDaylightSavingTime(time, daylightTimes);
         }

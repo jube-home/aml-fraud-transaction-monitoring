@@ -15,6 +15,7 @@ namespace Jube.Resources
 {
     public sealed class CaseWorkflowXPathResources
     {
+        public const string RoleIdInvalid = nameof(RoleIdInvalid);
         public const string PermissionDenied = nameof(PermissionDenied);
         public const string NotAuthenticated = nameof(NotAuthenticated);
         public const string NotFound = nameof(NotFound);
@@ -30,8 +31,11 @@ namespace Jube.Resources
         public const string BoldLineFormatBackColorRequired = nameof(BoldLineFormatBackColorRequired);
         public const string RegularExpressionRequired = nameof(RegularExpressionRequired);
         public const string RegularExpressionMaxLength = nameof(RegularExpressionMaxLength);
+        public const string RegularExpressionInvalid = nameof(RegularExpressionInvalid);
         public const string ConditionalFormatForeColorRequired = nameof(ConditionalFormatForeColorRequired);
         public const string ConditionalFormatBackColorRequired = nameof(ConditionalFormatBackColorRequired);
         public const string ColorInvalid = nameof(ColorInvalid);
+        public const string SourceRequired = nameof(SourceRequired);
+        public const string SourceNotFound = nameof(SourceNotFound);
     }
 }

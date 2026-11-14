@@ -14,7 +14,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using Jube.Cache;
-using Jube.Cache.Redis;
+using Jube.Cache.Resp;
 using log4net;
 using StackExchange.Redis;
 
@@ -25,35 +25,37 @@ namespace Jube.Test.Infrastructure
         private static readonly ConnectionMultiplexer inertMultiplexer =
             ConnectionMultiplexer.Connect("127.0.0.1:59999,abortConnect=false,connectTimeout=100,connectRetry=0");
 
-        public static CacheService Create(out FakeHybridResilientRedisDatabase redis, ILog? log = null,
+        public static CacheService Create(out FakeHybridResilientRespDatabase resp, ILog? log = null,
             string postgresConnectionString = "unused-postgres-connection-string")
         {
-            redis = new FakeHybridResilientRedisDatabase();
+            resp = new FakeHybridResilientRespDatabase();
             log ??= TestLog.NoOp;
 
             var cacheService = (CacheService)RuntimeHelpers.GetUninitializedObject(typeof(CacheService));
 
-            cacheService.ResilientRedisResilientRedisDatabase = redis;
+            cacheService.ResilientRespResilientRespDatabase = resp;
 
             cacheService.CacheActivationCaseIdempotencyRepository =
-                new CacheActivationCaseIdempotencyRepository(redis, log);
+                new CacheActivationCaseIdempotencyRepository(resp, log);
             cacheService.CacheActivationNotificationIdempotencyRepository =
-                new CacheActivationNotificationIdempotencyRepository(redis, log);
-            cacheService.CacheTtlCounterIdempotencyRepository = new CacheTtlCounterIdempotencyRepository(redis, log);
-            cacheService.CacheTtlCounterEntryRepository = new CacheTtlCounterEntryRepository(redis, log);
-            cacheService.CacheTtlCounterRepository = new CacheTtlCounterRepository(redis, log);
-            cacheService.CacheRateLimitRepository = new CacheRateLimitRepository(redis, log);
+                new CacheActivationNotificationIdempotencyRepository(resp, log);
+            cacheService.CacheTtlCounterIdempotencyRepository = new CacheTtlCounterIdempotencyRepository(resp, log);
+            cacheService.CacheTtlCounterEntryRepository = new CacheTtlCounterEntryRepository(resp, log);
+            cacheService.CacheTtlCounterRepository = new CacheTtlCounterRepository(resp, log);
+            cacheService.CacheRateLimitRepository = new CacheRateLimitRepository(resp, log);
             cacheService.CacheActivationWatcherPublishSubscribe =
-                new CacheActivationWatcherPublishSubscribe(redis, log);
-            cacheService.CacheSanctionRepository = new CacheSanctionRepository(redis, log);
-            cacheService.CacheReferenceDateRepository = new CacheReferenceDateRepository(redis, log);
+                new CacheActivationWatcherPublishSubscribe(resp, log);
+            cacheService.CacheSanctionRepository = new CacheSanctionRepository(resp, log);
+            cacheService.CacheReferenceDateRepository = new CacheReferenceDateRepository(resp, log);
+            cacheService.CacheActivationWatcherLastLocationRepository =
+                new CacheActivationWatcherLastLocationRepository(resp, log);
 
             cacheService.CachePayloadLatestRepository =
-                new CachePayloadLatestRepository(postgresConnectionString, redis, log);
+                new CachePayloadLatestRepository(postgresConnectionString, resp, log);
 
-            cacheService.CacheWalRepository = new CacheWalRepository(redis, log);
+            cacheService.CacheWalRepository = new CacheWalRepository(resp, log);
 
-            cacheService.CachePayloadRepository = new CachePayloadRepository(inertMultiplexer, redis,
+            cacheService.CachePayloadRepository = new CachePayloadRepository(inertMultiplexer, resp,
                 postgresConnectionString, log, false, true, 10_000_000,
                 false, false, false,
                 TimeSpan.FromHours(1), false);

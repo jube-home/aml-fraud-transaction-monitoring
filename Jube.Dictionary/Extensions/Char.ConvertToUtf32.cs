@@ -7,7 +7,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Int32 ConvertToUtf32(this Char highSurrogate, Char lowSurrogate)
+        [Description("Converts a UTF-16 surrogate pair into a Unicode code point.")]
+        public static Int32 ConvertToUtf32(this Char highSurrogate,
+            [Description("A low surrogate code unit (U+DC00 through U+DFFF).")] Char lowSurrogate)
         {
             return char.ConvertToUtf32(highSurrogate, lowSurrogate);
         }

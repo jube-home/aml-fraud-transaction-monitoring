@@ -22,6 +22,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
     using System.Collections.Generic;
     using AdvancedAnalytics.Models;
     using Exhaustive.Models;
+    using GraphRecall;
+    using Svirfd;
     using Models;
     using Models.EntityAnalysisModelInlineScript;
     using EntityAnalysisModelDictionary = Models.EntityAnalysisModelDictionary;
@@ -42,6 +44,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
         public List<ExhaustiveSearchInstance> ExhaustiveModels { get; init; } = [];
         public IReadOnlyList<AdvancedAnalyticsModel> AdvancedAnalyticsModels { get; init; } = [];
         public List<EntityAnalysisModelRequestXPath> EntityAnalysisModelRequestXPaths { get; init; } = [];
+        public GraphRecallPlan GraphRecall { get; init; } = GraphRecallPlan.Empty;
+        public SvirfdPlan Svirfd { get; init; } = SvirfdPlan.Empty;
 
         public List<EntityAnalysisModelAbstractionCalculation> EntityAnalysisModelAbstractionCalculations
         {
@@ -52,6 +56,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
         public List<EntityAnalysisModelInlineFunction> EntityAnalysisModelInlineFunctions { get; init; } = [];
         public List<EntityAnalysisModelInlineScript> EntityAnalysisModelInlineScripts { get; init; } = [];
         public List<EntityAnalysisModelTag> EntityAnalysisModelTags { get; init; } = [];
+        public List<EntityAnalysisModelResponseElevationRange> EntityAnalysisModelResponseElevationRanges { get; init; } = [];
         public Dictionary<string, DistinctSearchKey> DistinctSearchKeys { get; init; } = new();
         public Dictionary<int, string> ParseIndexCache { get; init; } = new();
         public Dictionary<string, List<string>> EntityAnalysisModelLists { get; init; } = new();

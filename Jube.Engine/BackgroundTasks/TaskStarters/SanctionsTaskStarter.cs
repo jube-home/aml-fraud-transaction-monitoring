@@ -16,9 +16,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Jube.Case.Outbound;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
@@ -34,8 +34,6 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
     public class SanctionsTaskStarter(Context.Context context)
     {
-        private static readonly HttpClient client = new();
-
         public async Task StartAsync()
         {
             try
@@ -56,8 +54,10 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                         var changeMarker = await ReadChangeMarkerSafelyAsync(dbContext).ConfigureAwait(false);
 
                         await LoadSanctionsStopTokensAsync(context, dbContext).ConfigureAwait(false);
+                        await LoadSanctionExemptionsAsync(context, dbContext).ConfigureAwait(false);
                         await LoadSanctionsEntriesAsync(context, dbContext).ConfigureAwait(false);
                         await LoadSanctionsFromFilesAsync(context, dbContext).ConfigureAwait(false);
+                        await RunRescreenAsync(context, dbContext).ConfigureAwait(false);
                         context.Sanctions.SanctionsLoadedForStartup = true;
 
                         try
@@ -185,6 +185,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                     context.Services.DynamicEnvironment.AppSettings("ConnectionString"), context.Services.Log);
 
+                await LoadSanctionExemptionsAsync(context, dbContext).ConfigureAwait(false);
+
                 var marker = await ChangeMarkerReader(dbContext, token).ConfigureAwait(false);
 
                 if (marker == lastMarker)
@@ -194,6 +196,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
                 await LoadSanctionsStopTokensAsync(context, dbContext).ConfigureAwait(false);
                 await LoadSanctionsEntriesAsync(context, dbContext).ConfigureAwait(false);
+                await RunRescreenAsync(context, dbContext).ConfigureAwait(false);
                 Interlocked.Increment(ref lightRefreshCount);
 
                 if (context.Services.Log.IsInfoEnabled)
@@ -335,16 +338,12 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
                                 try
                                 {
-                                    using var response = await client
-                                        .GetAsync(processSanctionEntriesSource.HttpLocation,
-                                            context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
-                                    response.EnsureSuccessStatusCode();
-
-                                    var stream = await response.Content
-                                        .ReadAsStreamAsync(context.Services.TaskCoordinator.CancellationToken)
+                                    await using var stream = await SanctionListDownloader.DownloadAsync(
+                                            GuardedHttpEndpoint.For(context.Services.DynamicEnvironment),
+                                            processSanctionEntriesSource.HttpLocation,
+                                            SanctionListDownloader.MaximumBytes, SanctionListDownloader.Timeout,
+                                            context.Services.TaskCoordinator.CancellationToken)
                                         .ConfigureAwait(false);
-
-                                    await using var stream1 = stream.ConfigureAwait(false);
 
                                     if (context.Services.Log.IsInfoEnabled)
                                     {
@@ -369,9 +368,11 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                                         context, dbContext, tfp, processSanctionEntriesSource,
                                         processSanctionEntriesSource.Skip, import.Id).ConfigureAwait(false);
 
-                                    var removedCount = await ReconcileSourceAsync(context, dbContext,
-                                            processSanctionEntriesSource.SanctionEntrySourceId, result.Hashes)
-                                        .ConfigureAwait(false);
+                                    var removedCount = result.Completed
+                                        ? await ReconcileSourceAsync(context, dbContext,
+                                                processSanctionEntriesSource.SanctionEntrySourceId, result.Hashes)
+                                            .ConfigureAwait(false)
+                                        : 0;
 
                                     await CompleteImportAsync(dbContext, import, result, inserted, revived, unchanged,
                                             removedCount, context.Services.TaskCoordinator.CancellationToken)
@@ -412,6 +413,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                                             var inserted = 0;
                                             var revived = 0;
                                             var unchanged = 0;
+                                            var allCompleted = true;
 
                                             foreach (var fileWithinLoop in files)
                                             {
@@ -437,6 +439,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                                                                 processSanctionEntriesSource.Skip, import.Id)
                                                             .ConfigureAwait(false);
 
+                                                    allCompleted &= result.Completed;
                                                     seenHashes.UnionWith(result.Hashes);
                                                     totalRows += result.TotalRows;
                                                     rejectedRows += result.RejectedRows;
@@ -456,7 +459,10 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                                                             $"Sanctions Loader: Is about to delete {fileWithinLoop}.");
                                                     }
 
-                                                    File.Delete(fileWithinLoop);
+                                                    if (result.Completed)
+                                                    {
+                                                        File.Delete(fileWithinLoop);
+                                                    }
 
                                                     if (context.Services.Log.IsInfoEnabled)
                                                     {
@@ -466,6 +472,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                                                 }
                                                 catch (Exception ex) when (ex is not OperationCanceledException)
                                                 {
+                                                    allCompleted = false;
+
                                                     if (context.Services.Log.IsInfoEnabled)
                                                     {
                                                         context.Services.Log.Info(
@@ -474,13 +482,15 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                                                 }
                                             }
 
-                                            var removedCount = await ReconcileSourceAsync(context, dbContext,
-                                                    processSanctionEntriesSource.SanctionEntrySourceId, seenHashes)
-                                                .ConfigureAwait(false);
+                                            var removedCount = allCompleted
+                                                ? await ReconcileSourceAsync(context, dbContext,
+                                                        processSanctionEntriesSource.SanctionEntrySourceId, seenHashes)
+                                                    .ConfigureAwait(false)
+                                                : 0;
 
                                             await CompleteImportAsync(dbContext, import,
                                                     new SanctionEntryFileImportResult(seenHashes, totalRows,
-                                                        rejectedRows),
+                                                        rejectedRows, allCompleted),
                                                     inserted, revived, unchanged, removedCount,
                                                     context.Services.TaskCoordinator.CancellationToken)
                                                 .ConfigureAwait(false);
@@ -613,6 +623,10 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                             record.Delimiter.HasValue ? record.Delimiter.Value.ToString() : ",";
 
                         sanctionEntriesSource.Skip = record.Skip ?? 0;
+                        sanctionEntriesSource.AliasIndex = record.AliasIndex;
+                        sanctionEntriesSource.AliasSeparator = record.AliasSeparator;
+                        sanctionEntriesSource.FilterIndex = record.FilterIndex;
+                        sanctionEntriesSource.FilterValues = record.FilterValues;
 
                         if (record.MultiPartStringIndex != null)
                         {
@@ -642,6 +656,87 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             return sanctionEntriesSources;
         }
 
+        private static async Task RunRescreenAsync(Context.Context context, DbContext dbContext)
+        {
+            var environment = context.Services.DynamicEnvironment;
+
+            if (!environment.AppSettings("EnableSanctionRescreen").Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            try
+            {
+                var token = context.Services.TaskCoordinator.CancellationToken;
+                var repository = new SanctionRescreenRepository(dbContext);
+                var watermark = await repository.GetWatermarkAsync(token).ConfigureAwait(false);
+                var latest = await repository.GetMaxEntryImportIdAsync(token).ConfigureAwait(false);
+
+                if (watermark < 0)
+                {
+                    var first = await repository.InsertRunAsync(latest, token).ConfigureAwait(false);
+                    await repository.CompleteRunAsync(first, token).ConfigureAwait(false);
+
+                    context.Services.Log.Info(
+                        $"Sanctions Rescreen: switched on, so the existing list ({latest}) is the starting point and only later changes are rescreened.");
+
+                    return;
+                }
+
+                if (latest <= watermark)
+                {
+                    return;
+                }
+
+                var changed = (await repository.ListEntryIdsChangedAfterAsync(watermark, token).ConfigureAwait(false))
+                    .ToHashSet();
+
+                var checks = new List<RescreenCheck>();
+
+                foreach (var model in context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels
+                             .ActiveEntityAnalysisModels.Values)
+                {
+                    foreach (var check in model.Snapshot.EntityAnalysisModelSanctions)
+                    {
+                        checks.Add(new RescreenCheck(model.Instance.TenantRegistryId, model.Instance.Id,
+                            check.MultipartStringDataName, check.Distance, check.MaxDistanceRatio,
+                            check.MaxCoverageRatio, check.MatchAlgorithmId, check.MinimumSimilarity,
+                            check.Transliterate));
+                    }
+                }
+
+                var run = await SanctionRescreen.RunAsync(dbContext, checks.Distinct().ToList(),
+                    context.Sanctions.SanctionsEntries, changed, context.Sanctions.SanctionsStopTokens,
+                    int.Parse(environment.AppSettings("SanctionRescreenDays")),
+                    int.Parse(environment.AppSettings("SanctionRescreenMaximumNames")), DateTime.UtcNow, latest, token)
+                    .ConfigureAwait(false);
+
+                context.Services.Log.Info(
+                    $"Sanctions Rescreen: {run.EntriesConsidered} changed entries against {run.NamesScreened} recently screened names found {run.Hits} new matches.");
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                context.Services.Log.Error($"Sanctions Rescreen: has produced an error {ex}");
+            }
+        }
+
+        private static async Task LoadSanctionExemptionsAsync(Context.Context context, DbContext dbContext)
+        {
+            try
+            {
+                var approved = await new SanctionExemptionRepository(dbContext)
+                    .ListApprovedAsync(context.Services.TaskCoordinator.CancellationToken).ConfigureAwait(false);
+
+                SanctionExemptionSet.Shared.Replace(approved.Select(a => new ApprovedSanctionExemption(a.Id,
+                    a.TenantRegistryId, a.NameKey, a.SanctionEntrySourceId, a.SanctionEntryReference,
+                    a.ExpiryDate)));
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                context.Services.Log.Error($"Sanctions Cache Loader: the exemptions could not be loaded as {ex}");
+            }
+        }
+
         private static async Task LoadSanctionsStopTokensAsync(Context.Context context, DbContext dbContext)
         {
             try
@@ -663,35 +758,32 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                         "Sanctions Cache Loader: Has executed a reader to return all Stop Tokens for the Sanctions Cache.");
                 }
 
+                var liveStopTokens = new List<(string Token, byte Category)>();
+
                 foreach (var record in records)
                 {
                     context.Services.TaskCoordinator.CancellationToken.ThrowIfCancellationRequested();
 
-                    try
+                    if (string.IsNullOrWhiteSpace(record.Token))
                     {
-                        if (string.IsNullOrWhiteSpace(record.Token))
+                        if (context.Services.Log.IsDebugEnabled)
                         {
-                            if (context.Services.Log.IsDebugEnabled)
-                            {
-                                context.Services.Log.Debug(
-                                    $"Sanctions Cache Loader: Stop Token id {record.Id} is null or whitespace and has been skipped.");
-                            }
-
-                            continue;
+                            context.Services.Log.Debug(
+                                $"Sanctions Cache Loader: Stop Token id {record.Id} is null or whitespace and has been skipped.");
                         }
 
-                        context.Sanctions.SanctionsStopTokens.TryAdd(record.Token, record.CategoryId ?? 1);
+                        continue;
                     }
-                    catch (Exception ex) when (ex is not OperationCanceledException)
-                    {
-                        context.Services.Log.Error($"Sanctions Cache Loader: has created an error as {ex}.");
-                    }
+
+                    liveStopTokens.Add((record.Token, record.CategoryId ?? 1));
                 }
+
+                SanctionStopTokenSynchroniser.Synchronise(context.Sanctions.SanctionsStopTokens, liveStopTokens);
 
                 if (context.Services.Log.IsDebugEnabled)
                 {
                     context.Services.Log.Debug(
-                        $"Sanctions Cache Loader: Has loaded {context.Sanctions.SanctionsStopTokens} Stop Tokens for the Sanctions Cache.");
+                        $"Sanctions Cache Loader: Has loaded {context.Sanctions.SanctionsStopTokens.Count} Stop Tokens for the Sanctions Cache.");
                 }
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
@@ -742,7 +834,12 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             import.UnchangedCount = unchanged;
             import.RemovedCount = removed;
             import.RejectedCount = result.RejectedRows;
-            import.Successful = 1;
+            import.Successful = (byte)(result.Completed ? 1 : 0);
+
+            if (!result.Completed)
+            {
+                import.ErrorMessage = "The list could not be read to the end; nothing was delisted.";
+            }
 
             return new SanctionEntryImportRepository(dbContext).UpdateAsync(import, token);
         }
@@ -771,6 +868,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             var result = await SanctionEntryFileImporter.ImportAsync(tfp,
                 processSanctionEntriesSource.SanctionEntrySourceId,
                 processSanctionEntriesSource.MultiPartStringIndex, processSanctionEntriesSource.ReferenceIndex, skip,
+                processSanctionEntriesSource.FileOptions,
                 async (record, token) =>
                 {
                     var insert = new Data.Poco.SanctionEntry
@@ -782,7 +880,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                         SanctionEntryHash = record.Hash
                     };
 
-                    var (persisted, outcome) = await repository.UpsertAsync(insert, token).ConfigureAwait(false);
+                    var (persisted, outcome) = await repository.UpsertAsync(insert, token, sanctionEntryImportId)
+                        .ConfigureAwait(false);
 
                     switch (outcome)
                     {

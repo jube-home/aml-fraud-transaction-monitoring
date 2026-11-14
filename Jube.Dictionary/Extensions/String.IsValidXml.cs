@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Whether the text is well-formed XML without a DTD.")]
         public static bool IsValidXml(this string? @this)
         {
             return StructuredDataSupport.ParseXml(@this) is not null;

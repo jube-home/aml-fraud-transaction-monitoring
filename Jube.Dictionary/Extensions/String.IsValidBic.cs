@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Checks if the string is a well-formed 8 or 11 character SWIFT/BIC code.")]
         public static bool IsValidBic(this string? @this)
         {
             if (string.IsNullOrWhiteSpace(@this))

@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchEmailDomainInList(IEnumerable<string> list)
+            [Description("True when: the domain of the email is an entry of the List token. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchEmailDomainInList([Description("The List token whose entries the email's domain is compared with.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringEmailDomainInList(flow.Value, list));
             }
 
-            public Flow<string?> RejectEmailDomainInList(IEnumerable<string> list)
+            [Description("True when: the domain of the email is an entry of the List token. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectEmailDomainInList([Description("The List token whose entries the email's domain is compared with.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringEmailDomainInList(flow.Value, list));
             }
 
-            public Flow<string?> BreakEmailDomainInList(IEnumerable<string> list)
+            [Description("True when: the domain of the email is an entry of the List token. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakEmailDomainInList([Description("The List token whose entries the email's domain is compared with.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringEmailDomainInList(flow.Value, list));
             }
 
-            public Flow<string?> RequireEmailDomainInList(IEnumerable<string> list)
+            [Description("True when: the domain of the email is an entry of the List token. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireEmailDomainInList([Description("The List token whose entries the email's domain is compared with.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringEmailDomainInList(flow.Value, list));
             }
 
-            public Flow<string?> EnsureEmailDomainInList(IEnumerable<string> list)
+            [Description("True when: the domain of the email is an entry of the List token. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureEmailDomainInList([Description("The List token whose entries the email's domain is compared with.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchEmailDomainInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: the domain of the email is an entry of the List token. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchEmailDomainInList([Description("The List token whose entries the email's domain is compared with.")] IEnumerable<string> list)
             {
                 return value.Start().MatchEmailDomainInList(list);
             }
 
-            public Flow<string?> RejectEmailDomainInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: the domain of the email is an entry of the List token. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectEmailDomainInList([Description("The List token whose entries the email's domain is compared with.")] IEnumerable<string> list)
             {
                 return value.Start().RejectEmailDomainInList(list);
             }
 
-            public Flow<string?> BreakEmailDomainInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: the domain of the email is an entry of the List token. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakEmailDomainInList([Description("The List token whose entries the email's domain is compared with.")] IEnumerable<string> list)
             {
                 return value.Start().BreakEmailDomainInList(list);
             }
 
-            public Flow<string?> RequireEmailDomainInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: the domain of the email is an entry of the List token. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireEmailDomainInList([Description("The List token whose entries the email's domain is compared with.")] IEnumerable<string> list)
             {
                 return value.Start().RequireEmailDomainInList(list);
             }
 
-            public Flow<string?> EnsureEmailDomainInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: the domain of the email is an entry of the List token. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureEmailDomainInList([Description("The List token whose entries the email's domain is compared with.")] IEnumerable<string> list)
             {
                 return value.Start().EnsureEmailDomainInList(list);
             }

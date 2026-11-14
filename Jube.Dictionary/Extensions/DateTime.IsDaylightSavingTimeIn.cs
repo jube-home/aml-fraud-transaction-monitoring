@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsDaylightSavingTimeIn(this DateTime @this, string? zoneId)
+        [Description("Whether daylight saving is in force in an IANA time zone at a UTC instant.")]
+        public static bool IsDaylightSavingTimeIn(this DateTime @this,
+            [Description("The IANA or Windows time zone id, for example Europe/London.")] string? zoneId)
         {
             var zone = TimeZoneSupport.Find(zoneId);
 

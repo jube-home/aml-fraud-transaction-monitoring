@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
+            [Description("True when: non-empty, digits only. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsNumeric()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringIsNumeric(flow.Value));
             }
 
+            [Description("True when: non-empty, digits only. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsNumeric()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringIsNumeric(flow.Value));
             }
 
+            [Description("True when: non-empty, digits only. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsNumeric()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringIsNumeric(flow.Value));
             }
 
+            [Description("True when: non-empty, digits only. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsNumeric()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringIsNumeric(flow.Value));
             }
 
+            [Description("True when: non-empty, digits only. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsNumeric()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
+            [Description("Begins a pipeline from the value. True when: non-empty, digits only. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsNumeric()
             {
                 return value.Start().MatchIsNumeric();
             }
 
+            [Description("Begins a pipeline from the value. True when: non-empty, digits only. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsNumeric()
             {
                 return value.Start().RejectIsNumeric();
             }
 
+            [Description("Begins a pipeline from the value. True when: non-empty, digits only. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsNumeric()
             {
                 return value.Start().BreakIsNumeric();
             }
 
+            [Description("Begins a pipeline from the value. True when: non-empty, digits only. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsNumeric()
             {
                 return value.Start().RequireIsNumeric();
             }
 
+            [Description("Begins a pipeline from the value. True when: non-empty, digits only. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsNumeric()
             {
                 return value.Start().EnsureIsNumeric();

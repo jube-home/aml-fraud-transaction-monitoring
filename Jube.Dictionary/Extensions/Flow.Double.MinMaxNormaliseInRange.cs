@@ -17,35 +17,55 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchMinMaxNormaliseInRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (1) is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMinMaxNormaliseInRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleMinMaxNormaliseInRange(flow.Value, minimum, maximum, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectMinMaxNormaliseInRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (1) is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMinMaxNormaliseInRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleMinMaxNormaliseInRange(flow.Value, minimum, maximum, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakMinMaxNormaliseInRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (1) is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMinMaxNormaliseInRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleMinMaxNormaliseInRange(flow.Value, minimum, maximum, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireMinMaxNormaliseInRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (1) is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMinMaxNormaliseInRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleMinMaxNormaliseInRange(flow.Value, minimum, maximum, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureMinMaxNormaliseInRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (1) is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMinMaxNormaliseInRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +75,47 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchMinMaxNormaliseInRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (1) is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMinMaxNormaliseInRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchMinMaxNormaliseInRange(minimum, maximum, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectMinMaxNormaliseInRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (1) is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMinMaxNormaliseInRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectMinMaxNormaliseInRange(minimum, maximum, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakMinMaxNormaliseInRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (1) is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMinMaxNormaliseInRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakMinMaxNormaliseInRange(minimum, maximum, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireMinMaxNormaliseInRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (1) is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMinMaxNormaliseInRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireMinMaxNormaliseInRange(minimum, maximum, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureMinMaxNormaliseInRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (1) is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMinMaxNormaliseInRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureMinMaxNormaliseInRange(minimum, maximum, lowerBound, upperBound);
             }

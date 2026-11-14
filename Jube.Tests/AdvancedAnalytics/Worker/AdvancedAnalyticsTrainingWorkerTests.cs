@@ -26,6 +26,7 @@ using Jube.Test.AdvancedAnalytics.Slice;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using Jube.Service.Repository.AdvancedAnalyticsTrainingRun.Models;
@@ -114,7 +115,7 @@ namespace Jube.Test.AdvancedAnalytics.Worker
             var run = await RunWorkerToCompletionAsync(submission.RunId);
             run.StatusId.Should().Be(AdvancedAnalyticsStatus.Succeeded);
 
-            var versionRepository = new AdvancedAnalyticsTrainedModelVersionRepository(Db, TenantA, Permitted);
+            var versionRepository = new AskJoobyAnalyticsTrainedModelVersionRepository(Db, TenantA, Permitted);
             var fromWorker = await versionRepository.GetByRunIdAsync(run.Id);
             var fromSync = await versionRepository.GetByRunIdAsync(synchronous.RunId);
 
@@ -151,7 +152,7 @@ namespace Jube.Test.AdvancedAnalytics.Worker
             (await RunAsync(cached.RunId)).StatusId.Should().Be(AdvancedAnalyticsStatus.Succeeded);
             (await RunAsync(inline.RunId)).StatusId.Should().Be(AdvancedAnalyticsStatus.Succeeded);
 
-            var versions = new AdvancedAnalyticsTrainedModelVersionRepository(Db, TenantA, Permitted);
+            var versions = new AskJoobyAnalyticsTrainedModelVersionRepository(Db, TenantA, Permitted);
 
             (await versions.GetByRunIdAsync(cached.RunId))!.ModelJson.Should()
                 .Be((await versions.GetByRunIdAsync(inline.RunId))!.ModelJson);
@@ -241,7 +242,7 @@ namespace Jube.Test.AdvancedAnalytics.Worker
             run.CompletedDate.Should().NotBeNull();
             (await VersionCountAsync(run.Id)).Should().Be(0);
 
-            (await Db.AdvancedAnalyticsTrainedModel.CountAsync(w => w.AdvancedAnalyticsInstanceId == instanceId))
+            (await Db.AskJoobyAnalyticsTrainedModel.CountAsync(w => w.AskJoobyAnalyticsInstanceId == instanceId))
                 .Should().Be(0);
 
             var trial = (await new AdvancedAnalyticsTrainingRunTrialRepository(Db, TenantA, Permitted)
@@ -349,7 +350,7 @@ namespace Jube.Test.AdvancedAnalytics.Worker
             run.Error.Should().NotBeNullOrWhiteSpace();
             (await VersionCountAsync(run.Id)).Should().Be(0);
 
-            (await Db.AdvancedAnalyticsTrainedModel.CountAsync(w => w.AdvancedAnalyticsInstanceId == instanceId))
+            (await Db.AskJoobyAnalyticsTrainedModel.CountAsync(w => w.AskJoobyAnalyticsInstanceId == instanceId))
                 .Should().Be(0);
         }
 

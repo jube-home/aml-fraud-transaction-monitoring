@@ -24,12 +24,22 @@ namespace Jube.Engine.BackgroundTasks.Context.Models
     public class Tasks
     {
         public Task SanctionsTask { get; set; }
+        public Task GraphRecallTask { get; set; }
         public EntityAnalysisModelManager.EntityAnalysisModelManager EntityAnalysisModelManager { get; set; }
         public Task EntityAnalysisModelManagerTask { get; set; }
         public Task AmqpTask { get; set; }
         public Task NotificationsViaAmqp { get; set; }
         public Task NotificationsViaConcurrentQueueTask { get; set; }
+        public Task WebhooksViaAmqp { get; set; }
+        public Task WebhooksViaConcurrentQueueTask { get; set; }
         public Task CaseAutomationTask { get; set; }
+        public Task CaseRiskTask { get; set; }
+        public Task CaseChecklistSlaSweepTask { get; set; }
+        public Task CaseServiceLevelSweepTask { get; set; }
+        public Task RetentionPurgeTask { get; set; }
+        public Task ErasureExecutionTask { get; set; }
+        public Task CaseDigestTask { get; set; }
+        public Task CaseEscalationTask { get; set; }
 
         // ReSharper disable once CollectionNeverQueried.Global
         public List<Task> AsyncHttpContextCorrelationTasks { get; } = [];

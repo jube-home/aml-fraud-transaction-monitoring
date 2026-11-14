@@ -30,7 +30,13 @@ namespace Jube.Service.Query.CaseNoteByCaseKeyValue
             ActionId = source.ActionId,
             Action = source.Action,
             PriorityId = source.PriorityId,
-            Priority = source.Priority
+            Priority = source.Priority,
+            SourceId = source.SourceId,
+            KindId = source.KindId,
+            IsFinding = source.IsFinding,
+            Version = source.Version,
+            SupersedesNoteId = source.SupersedesNoteId,
+            AskJoobyConversationId = source.AskJoobyConversationId
         };
 
         public static List<CaseNoteByCaseKeyValueDto> ToDto(IEnumerable<DataDto> source) =>

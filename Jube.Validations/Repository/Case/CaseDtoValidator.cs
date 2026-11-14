@@ -35,6 +35,14 @@ namespace Jube.Validations.Repository.Case
                 .InclusiveBetween((byte)0, (byte)4)
                 .WithErrorCode("ClosedStatusIdInclusiveBetween");
 
+            RuleFor(p => p.ClosedReasonId)
+                .InclusiveBetween((byte)0, (byte)8)
+                .WithErrorCode("ClosedReasonIdInclusiveBetween");
+
+            RuleFor(p => p.ClosedReasonNote)
+                .MaximumLength(1000)
+                .WithErrorCode("ClosedReasonNoteMaximumLength");
+
             RuleFor(p => p.LockedUser)
                 .NotEmpty()
                 .When(w => w.Locked)
@@ -53,14 +61,10 @@ namespace Jube.Validations.Repository.Case
                 .WithErrorCode("DiaryDateNotEmpty");
 
             RuleFor(p => p.Rating)
-                .InclusiveBetween((byte)1, (byte)5)
+                .InclusiveBetween((byte)0, (byte)5)
                 .WithMessage(_ => localiser[CaseResources.RatingRequired])
                 .WithErrorCode("RatingInclusiveBetween");
 
-            RuleFor(p => p.Payload)
-                .NotEmpty()
-                .WithMessage(_ => localiser[CaseResources.PayloadRequired])
-                .WithErrorCode("PayloadNotEmpty");
         }
     }
 }

@@ -7,6 +7,8 @@ parent: Concepts
 
 # Maker Checker
 
+<!-- TODO(docs): read in full against the SPA ApprovalPanel; Razor-era wording may remain. -->
+
 Jube loads model configuration into the invoke engine from the database, filtered on `Active`. Maker checker separates
 changing configuration from releasing it. A **maker** edits; a **checker** approves; only approved configuration reaches
 the engine. Every change is recorded as a version, and the version history is available for every approvable entity.
@@ -20,12 +22,21 @@ Every entity the model synchronisation loads:
 
 Model, Lists and List Values, Dictionaries and Dictionary KVPs, Request XPaths, Inline Scripts (the model-level wiring),
 Inline Functions, Gateway Rules, Sanctions, Abstraction Rules, Abstraction Calculations, TTL Counters, HTTP Adaptations,
-Exhaustive Search Instances, Activation Rules and Tags.
+Graph Recall entities, Exhaustive Search Instances, Activation Rules and Tags.
+
+**Force overrides** are also approvable, at the model level (approval kind 22) and against a named Activation Rule
+(approval kind 23). Only Force rows are governed: a Suppress override stays outside approval. A Force override takes
+effect only once approved, an edit to its Delete Expiry Date or its removal is a new version that needs approval while
+the last approved version stays in force, and the maker of a version is the person who last changed it. The engine
+loads Suppress overrides directly and Force overrides through the approved version only. See Activation Rules Override.
+
+<!-- TODO(docs): Owner to read the Force override paragraph above against the other approvable kinds and confirm where it belongs in this page. -->
 
 Outside approval:
 
-- **Suppression** and **activation rule suppression** are operational actions taken by case workers against live
-  traffic, not configuration changes. They take effect immediately and are not approval-gated.
+- **Suppress overrides** (the Suppress kind of override, and the Suppression a case worker makes against live traffic)
+  are operational actions, not configuration changes. They take effect immediately and are not approval-gated. The
+  Force kind is governed, as above.
 - **The global `EntityAnalysisInlineScript`** is a program unit, compiled and deployed through the code release process.
   Wiring a global script into a model is `EntityAnalysisModelInlineScript`, which is approvable.
 - **Reprocessing rules** and **case workflow** entities are not loaded by the model synchronisation, so they are not
@@ -180,6 +191,9 @@ exist in another tenant.
 
 ## Pages
 
+<!-- TODO(screenshot): file=model-advanced-analytics-approval-panel.png route=/models/:id state="Approval panel with one approval of two recorded and history open" -->
+<!-- TODO(docs): Approval widget and Model tree sentences describe the Kendo UI; verify against the Vue port. -->
+
 - **Approval widget.** Each approvable frame shows the entity's approval state, its progress towards
   `ApprovalsRequired`, the approval history and the version history. A checker can approve or reject with a note.
 - **Model tree.** Pending entities are coloured orange, and rejected versions purple, for callers who may view pending
@@ -195,6 +209,8 @@ exist in another tenant.
 
 ## Edge behaviour
 
+<!-- TODO(docs): add that changing the output flags of an Advanced Analytics instance now opens an approval cycle. -->
+
 - Inline script properties are not checked by the approval pre-flight. They carry no version and default to approved.
 - The live dictionary of active models is updated by the synchronisation thread without a lock, and request threads
   enumerate it while that update runs.
@@ -202,7 +218,8 @@ exist in another tenant.
   generation.
 - List and dictionary content is outside the synchronisation watermark. A content change that writes no approval row and
   no schedule change is picked up at the next full synchronisation rather than by the gate.
-- A bulk approval commits each item as it goes. If an item is deleted concurrently, the items before it stay approved and
+- A bulk approval commits each item as it goes. If an item is deleted concurrently, the items before it stay approved
+  and
   the call returns not found.
 - Synchronisation steps other than the API user sync log and continue on error. The API user sync fails the cycle, so a
   tenant whose API user sync fails permanently holds up the other tenants in the same poll.

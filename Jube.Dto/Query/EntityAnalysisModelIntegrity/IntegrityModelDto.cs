@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,12 +22,14 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.EntityAnalysisModelIntegrity
 {
     [Description("A model of the caller's tenant that can be checked.")]
+    [MessagePackObject]
     public class IntegrityModelDto
     {
-        [Description("The model's id.")] public int Id { get; set; }
-        [Description("The model's name.")] public string? Name { get; set; }
+        [Description("The model's id.")] [Key(0)] public int Id { get; set; }
+        [Description("The model's name.")] [Key(1)] public string? Name { get; set; }
 
         [Description("Whether the model is active.")]
+        [Key(2)]
         public bool Active { get; set; }
     }
 }

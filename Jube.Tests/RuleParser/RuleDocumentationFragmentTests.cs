@@ -93,6 +93,11 @@ namespace Jube.Test.RuleParser
 
         private static int RuleTypeFor(string text)
         {
+            if (Regex.IsMatch(text, @"Cursor\.|Exit For|Continue For|^\s*(Dim|Static)\s", RegexOptions.Multiline))
+            {
+                return RuleParse.AbstractionRule;
+            }
+
             return Regex.IsMatch(text,
                 @"TTLCounter\.|Abstraction\.|AbstractionCalculation\.|Sanction\.|Dictionary\.|List\.|Activation\.|HTTPAdaptation\.|ExhaustiveAdaptation\.")
                 ? RuleParse.ActivationRule

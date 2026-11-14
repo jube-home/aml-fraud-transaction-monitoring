@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Returns the first non-zero digit of the value, ignoring sign and magnitude, the input to a Benford's Law check. Zero, infinity and NaN give 0.")]
         public static int LeadingSignificantDigit(this double @this)
         {
             var value = Math.Abs(@this);

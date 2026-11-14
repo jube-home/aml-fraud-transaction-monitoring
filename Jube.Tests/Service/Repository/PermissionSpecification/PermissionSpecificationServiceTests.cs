@@ -254,6 +254,18 @@ namespace Jube.Test.Service.Repository.PermissionSpecification
         }
 
         [Fact]
+        public async Task TheTelemetrySpecificationsAreLabelledRetiredBecauseTheRoutesAreLandlordOnlyAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
+            var all = await service.GetAsync();
+
+            all.Should().Contain(d => d.Id == 42 && d.Name.StartsWith("Retired"));
+            all.Should().Contain(d => d.Id == 43 && d.Name.StartsWith("Retired"));
+        }
+
+        [Fact]
         public async Task CatalogueIsNotTenantScopedAndIsIdenticalFromEveryTenantAsync()
         {
             await using var dbContext = fx.GetDbContext();

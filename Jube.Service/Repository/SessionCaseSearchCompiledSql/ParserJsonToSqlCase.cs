@@ -236,6 +236,7 @@ internal sealed class ParserJsonToSqlCase
             "Id" => name,
             "EntityAnalysisModelInstanceEntryGuid" => name,
             "DiaryDate" => name,
+            "DiaryTypeId" => name,
             "CaseWorkflowId" => name,
             "CaseWorkflowStatusGuid" => name,
             "CreatedDate" => name,

@@ -38,7 +38,7 @@ namespace Jube.Service.Agent.AdvancedAnalyticsTools
             "Cancelled, then call GetAdvancedAnalyticsTrainingRunResult. Training never makes the resulting version " +
             "live.")]
         public async Task<TrainingRunSubmissionView> SubmitRandomForestClassifierTrainingAsync(
-            [Description("Numeric identifier of the Advanced Analytics instance the run and its model belong to.")]
+            [Description("Numeric identifier of the AskJooby Analytics instance the run and its model belong to.")]
             int instanceId,
             [Description(
                 "Name of the model the trained version is filed under. An existing model of that name receives a new version; otherwise a model is created.")]
@@ -96,7 +96,7 @@ namespace Jube.Service.Agent.AdvancedAnalyticsTools
         {
             var submission = await service.SubmitTrainingAsync(new AdvancedAnalyticsRandomForestClassifierTrainingDto
             {
-                AdvancedAnalyticsInstanceId = instanceId,
+                AskJoobyAnalyticsInstanceId = instanceId,
                 ModelName = modelName,
                 CorrelationKey = correlationKey,
                 VariableNames = variableNames,

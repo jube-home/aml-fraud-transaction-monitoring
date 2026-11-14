@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchInverseRatioOfAbove(double other, double bound)
+            [Description("True when: the other value over this value is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchInverseRatioOfAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleInverseRatioOfAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> RejectInverseRatioOfAbove(double other, double bound)
+            [Description("True when: the other value over this value is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectInverseRatioOfAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleInverseRatioOfAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> BreakInverseRatioOfAbove(double other, double bound)
+            [Description("True when: the other value over this value is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakInverseRatioOfAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleInverseRatioOfAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> RequireInverseRatioOfAbove(double other, double bound)
+            [Description("True when: the other value over this value is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireInverseRatioOfAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleInverseRatioOfAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> EnsureInverseRatioOfAbove(double other, double bound)
+            [Description("True when: the other value over this value is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureInverseRatioOfAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchInverseRatioOfAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the other value over this value is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchInverseRatioOfAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchInverseRatioOfAbove(other, bound);
             }
 
-            public Flow<double> RejectInverseRatioOfAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the other value over this value is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectInverseRatioOfAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectInverseRatioOfAbove(other, bound);
             }
 
-            public Flow<double> BreakInverseRatioOfAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the other value over this value is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakInverseRatioOfAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakInverseRatioOfAbove(other, bound);
             }
 
-            public Flow<double> RequireInverseRatioOfAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the other value over this value is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireInverseRatioOfAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireInverseRatioOfAbove(other, bound);
             }
 
-            public Flow<double> EnsureInverseRatioOfAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the other value over this value is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureInverseRatioOfAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureInverseRatioOfAbove(other, bound);
             }

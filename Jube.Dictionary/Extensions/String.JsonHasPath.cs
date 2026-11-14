@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool JsonHasPath(this string? @this, string? path)
+        [Description("Whether a path exists and is not null.")]
+        public static bool JsonHasPath(this string? @this, [Description("The path, for example $.a.b.")] string? path)
         {
             var root = StructuredDataSupport.Parse(@this);
 

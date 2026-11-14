@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Decides broken, if nothing has decided yet.")]
         public static Flow<T> Break<T>(this Flow<T> flow)
         {
             return flow.IsDecided ? flow : flow.Decide(FlowOutcome.Broken);

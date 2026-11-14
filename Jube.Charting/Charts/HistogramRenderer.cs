@@ -136,6 +136,23 @@ namespace Jube.Charting.Charts
             canvas.Baseline(plot.Bottom);
             var baseline = yScale.Map(0);
 
+            for (var ri = 0; ri < spec.References.Count; ri++)
+            {
+                var reference = spec.References[ri];
+                var rx = xScale.Map(reference.X);
+
+                if (!double.IsFinite(rx) || reference.X < xMin || reference.X > xMax)
+                {
+                    continue;
+                }
+
+                canvas.W.Open("line", ("class", "ref"), ("x1", Num.F(rx)), ("y1", Num.F(plot.Top)),
+                    ("x2", Num.F(rx)), ("y2", Num.F(plot.Bottom)));
+                canvas.W.Element("title", reference.Label + ": " + NumberFormat.Value(reference.X));
+                canvas.W.Close();
+                canvas.Text(rx, plot.Top + 10 + ri * 12, reference.Label, "tk ctr");
+            }
+
             for (var si = 0; si < series.Count; si++)
             {
                 canvas.OpenSeries(si);

@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -30,15 +31,19 @@ namespace Jube.Dto.AskJoobyConversation
                  "finished was Jooby asking a multiple-choice clarifying question -- see Options/" +
                  "AllowFreeText -- sent once, live only, for the same reason as Suggestions; the question " +
                  "text itself is the ordinary \"Text\" reply and is persisted/replayed normally).")]
+    [MessagePackObject]
     public class AskJoobyStreamItemDto
     {
+        [Key(0)]
         public string Kind { get; set; } = "Text";
+        [Key(1)]
         public string Text { get; set; } = string.Empty;
 
         [Description("Kinds \"Thinking\", \"Step\", \"Thought\" and \"Delegation\" only: which Joobrik " +
                      "produced it, e.g. \"Model Risk (Zigneff)\", or null for the top-level Worker. Several " +
                      "Joobriks reason at once during a fan out, so a reasoning pass has to be attributable " +
                      "to one of them or their chunks interleave into a single unreadable block.")]
+        [Key(2)]
         public string? AgentLabel { get; set; }
 
         [Description("Kinds \"Step\", \"Delegation\", \"Handoff\", \"Guard\", \"Validation\" and " +
@@ -46,57 +51,77 @@ namespace Jube.Dto.AskJoobyConversation
                      "caller who wants to see behind the pill. Persisted on the underlying AskJoobyMessage " +
                      "and replayed unchanged from history; the complete, untruncated exchange is kept " +
                      "separately on AskJoobyToolCall and rendered in the chat audit, which is the real record.")]
+        [Key(3)]
         public string? Detail { get; set; }
 
         [Description("Kind \"Step\" only: the AgentToolIcon id of the icon drawn beside the pill for the tool " +
                      "it narrates, e.g. the id of Database for RunSqlQuery. Null when the step is not a tool call.")]
+        [Key(4)]
         public int? IconId { get; set; }
 
         [Description("Kind \"Suggestions\" only: the short follow-up prompts themselves.")]
+        [Key(5)]
         public List<string> Suggestions { get; set; } = [];
 
         [Description("Kind \"Clarification\" only: the selectable option labels.")]
+        [Key(6)]
         public List<string> Options { get; set; } = [];
 
         [Description("Kind \"Clarification\" only: whether the caller may also answer with free text " +
                      "instead of picking an option.")]
+        [Key(7)]
         public bool AllowFreeText { get; set; } = true;
 
         [Description("Kind \"Text\" for a completed Assistant reply only: the AskJoobyMessage Id this reply " +
                      "was saved as, for submitting thumbs-up/down feedback against it.")]
+        [Key(8)]
         public int? MessageId { get; set; }
 
         [Description("Kind \"Text\" for a completed Assistant reply only: files a tool created and attached " +
                      "to this reply (e.g. ExportCachedTableToCsv), if any -- shown as a download link, same " +
                      "as a message's Attachments in AskJoobyConversationEntryDto.")]
+        [Key(9)]
         public List<AskJoobyMessageAttachmentDto> Attachments { get; set; } = [];
 
         [Description("Kind \"Stats\" only: tokens sent to the model, summed across every model call the reply " +
                      "made (including Joobrik delegations).")]
+        [Key(10)]
         public int? InputTokens { get; set; }
 
         [Description("Kind \"Stats\" only: tokens the model generated, summed the same way as InputTokens.")]
+        [Key(11)]
         public int? OutputTokens { get; set; }
 
         [Description("Kind \"Stats\" only: how many of InputTokens the provider served from its prompt " +
                      "cache, summed the same way. Zero means every call reported a miss.")]
+        [Key(12)]
         public int? CachedInputTokens { get; set; }
 
         [Description("Kind \"Stats\" only: wall-clock milliseconds the reply took to produce, start to finish.")]
+        [Key(13)]
         public long? DurationMs { get; set; }
 
         [Description("Kind \"Stats\" only, and only when EnableAskJoobyCostBanner is on: how many Joobriks " +
                      "this reply spawned, including the top-level Worker run itself.")]
+        [Key(14)]
         public int? JoobrikCount { get; set; }
 
         [Description("Kind \"Stats\" only, same gating as JoobrikCount: how many distinct Joobrik types are " +
                      "among those runs.")]
+        [Key(15)]
         public int? DistinctJoobrikCount { get; set; }
 
         [Description("Kind \"Stats\" only, same gating as JoobrikCount: the reply's reconstituted all-up " +
                      "cost (model tokens, embedding tokens and reranker documents, each priced off " +
                      "AskJoobyEndpointFee/AskJoobyRerankFee and summed). Null when a rate is missing for " +
                      "something this reply used, not zero.")]
+        [Key(16)]
         public double? TotalCost { get; set; }
+
+        [Description("Kind \"Approval\" only: the id to send back to the Approvals endpoint to approve or decline " +
+                     "the change Jooby was held back from making. Text is the localised summary, AgentLabel the " +
+                     "tool name and Detail the exact arguments, so the caller sees precisely what would change.")]
+        [Key(17)]
+        public string? ApprovalId { get; set; }
     }
 }

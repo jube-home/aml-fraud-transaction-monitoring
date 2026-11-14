@@ -46,7 +46,7 @@ namespace Jube.Test.RuleParser
             data.TryAdd("Amount", amount);
 
             return match(data, new Dictionary<string, List<string>>(), new PooledDictionary<string, double>(),
-                TestLog.NoOp);
+                null, TestLog.NoOp);
         }
 
         [Theory]

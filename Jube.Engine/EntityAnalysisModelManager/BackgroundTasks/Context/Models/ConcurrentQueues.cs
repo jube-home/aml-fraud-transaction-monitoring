@@ -21,7 +21,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.Context.Models
     using System;
     using System.Collections.Concurrent;
     using System.Threading.Tasks;
-    using Cache.Redis.Callback;
+    using Cache.Resp.Callback;
     using Data.Poco;
     using EntityAnalysisModelInvoke.Context;
     using EntityAnalysisModelInvoke.Models;
@@ -36,6 +36,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.Context.Models
             new ConcurrentQueue<ActivationWatcher>();
 
         public ConcurrentQueue<Notification> PendingNotifications { get; set; }
+        public ConcurrentQueue<Webhook> PendingWebhooks { get; set; }
 
         public ConcurrentDictionary<Guid, TaskCompletionSource<Callback>> Callbacks { get; } =
             new ConcurrentDictionary<Guid, TaskCompletionSource<Callback>>();

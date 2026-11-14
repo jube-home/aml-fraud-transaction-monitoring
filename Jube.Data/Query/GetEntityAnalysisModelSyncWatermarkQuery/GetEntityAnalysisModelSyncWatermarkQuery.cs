@@ -19,6 +19,7 @@ namespace Jube.Data.Query.GetEntityAnalysisModelSyncWatermarkQuery
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Jube.Data.Query.GetEntityAnalysisModelSyncWatermarkQuery.Models;
     using Jube.Data.Query.Models;
 

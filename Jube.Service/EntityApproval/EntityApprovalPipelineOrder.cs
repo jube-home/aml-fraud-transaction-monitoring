@@ -38,9 +38,14 @@ namespace Jube.Service.EntityApproval
             EntityApprovalKind.EntityAnalysisModelAbstractionRule,
             EntityApprovalKind.EntityAnalysisModelAbstractionCalculation,
             EntityApprovalKind.ExhaustiveSearchInstance,
-            EntityApprovalKind.AdvancedAnalyticsInstance,
+            EntityApprovalKind.AskJoobyAnalyticsInstance,
             EntityApprovalKind.EntityAnalysisModelHttpAdaptation,
+            EntityApprovalKind.EntityAnalysisModelGraphRecall,
+            EntityApprovalKind.EntityAnalysisModelSvirfd,
+            EntityApprovalKind.EntityAnalysisModelResponseElevationRange,
             EntityApprovalKind.EntityAnalysisModelActivationRule,
+            EntityApprovalKind.EntityAnalysisModelOverride,
+            EntityApprovalKind.EntityAnalysisModelActivationRuleOverride,
             EntityApprovalKind.EntityAnalysisModelTag
         ];
 
@@ -53,11 +58,13 @@ namespace Jube.Service.EntityApproval
 
         public static List<EntityApprovalSubject> Order(IEnumerable<EntityApprovalSubject> subjects)
         {
-            return subjects
-                .OrderBy(s => Rank(s.Kind))
-                .ThenBy(s => s.Name, StringComparer.Ordinal)
-                .ThenBy(s => s.EntityId)
-                .ToList();
+            return
+            [
+                .. subjects
+                    .OrderBy(s => Rank(s.Kind))
+                    .ThenBy(s => s.Name, StringComparer.Ordinal)
+                    .ThenBy(s => s.EntityId)
+            ];
         }
     }
 }

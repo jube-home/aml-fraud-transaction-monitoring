@@ -53,7 +53,8 @@ namespace Jube.Test.Exhaustive
                 ["ExhaustiveTopologyExplorationEpochs"] = "2",
                 ["ExhaustiveTopologyFinalisationEpochs"] = "2",
                 ["ExhaustiveActivationFunctionExplorationEpochs"] = "3",
-                ["ExhaustiveSimulationsCount"] = "50"
+                ["ExhaustiveSimulationsCount"] = "50",
+                ["ExhaustiveChallengerModelBaseProbability"] = "0"
             });
 
             return new Training(LogManager.GetLogger(typeof(RecallChainTests)), environment,

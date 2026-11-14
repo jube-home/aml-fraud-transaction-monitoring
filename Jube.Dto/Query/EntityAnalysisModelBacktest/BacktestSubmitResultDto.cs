@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Validation;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,15 +23,19 @@ using Jube.Dto.Validation;
 namespace Jube.Dto.Query.EntityAnalysisModelBacktest
 {
     [Description("The outcome of submitting a backtest: the instance when the request is valid, otherwise why not.")]
+    [MessagePackObject]
     public class BacktestSubmitResultDto
     {
         [Description("True when the backtest was submitted.")]
+        [Key(0)]
         public bool Valid { get; set; }
 
         [Description("The submitted instance.")]
+        [Key(1)]
         public BacktestInstanceDto? Instance { get; set; }
 
         [Description("Why the request was refused, as for an immediate backtest.")]
+        [Key(2)]
         public List<ValidationErrorDto> Errors { get; set; } = [];
     }
 }

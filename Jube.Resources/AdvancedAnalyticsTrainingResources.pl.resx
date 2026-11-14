@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Nie masz uprawnień do wykonania tej czynności.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Aby wykonać tę czynność, musisz być zalogowany do dzierżawcy.</value>
+  </data>
+    <data name="InstanceNotFound" xml:space="preserve">
+    <value>Nie znaleziono instancji AskJooby Analytics.</value>
+  </data>
+    <data name="InstanceIdInvalid" xml:space="preserve">
+    <value>Wymagana jest prawidłowa instancja.</value>
+  </data>
+    <data name="ModelNameRequired" xml:space="preserve">
+    <value>Nazwa modelu jest wymagana.</value>
+  </data>
+    <data name="ModelNameMaxLength" xml:space="preserve">
+    <value>Nazwa modelu może mieć co najwyżej {0} znaków.</value>
+  </data>
+    <data name="CorrelationKeyMaxLength" xml:space="preserve">
+    <value>Klucz korelacji może mieć co najwyżej {0} znaków.</value>
+  </data>
+    <data name="InputsRequired" xml:space="preserve">
+    <value>Wymagany jest co najmniej jeden wiersz danych wejściowych.</value>
+  </data>
+    <data name="InputsTooManyRows" xml:space="preserve">
+    <value>Jednorazowo można trenować na nie więcej niż {0} wierszach.</value>
+  </data>
+    <data name="VariablesRequired" xml:space="preserve">
+    <value>Wymagana jest co najmniej jedna nazwa zmiennej.</value>
+  </data>
+    <data name="VariablesTooMany" xml:space="preserve">
+    <value>Jednorazowo można użyć nie więcej niż {0} zmiennych.</value>
+  </data>
+    <data name="VariableNameBlank" xml:space="preserve">
+    <value>Każda nazwa zmiennej musi być niepusta.</value>
+  </data>
+    <data name="VariableNamesNotUnique" xml:space="preserve">
+    <value>Nazwy zmiennych muszą być unikalne.</value>
+  </data>
+    <data name="RowLengthMismatch" xml:space="preserve">
+    <value>Każdy wiersz danych wejściowych musi zawierać dokładnie jedną wartość na każdą nazwę zmiennej.</value>
+  </data>
+    <data name="LabelsLengthMismatch" xml:space="preserve">
+    <value>Na każdy wiersz danych wejściowych musi przypadać dokładnie jedna etykieta.</value>
+  </data>
+    <data name="LabelsNotBinary" xml:space="preserve">
+    <value>Każda etykieta musi mieć wartość 0 lub 1.</value>
+  </data>
+    <data name="FractionRange" xml:space="preserve">
+    <value>Ułamki walidacyjny i testowy muszą być każdy nie mniejsze niż 0 i mniejsze niż 1.</value>
+  </data>
+    <data name="FractionsTooLarge" xml:space="preserve">
+    <value>Ułamki walidacyjny i testowy łącznie nie mogą przekraczać 0,9.</value>
+  </data>
+    <data name="RidgeInvalid" xml:space="preserve">
+    <value>Siła regularyzacji grzbietowej musi być skończona i nieujemna.</value>
+  </data>
+    <data name="BaseRateInvalid" xml:space="preserve">
+    <value>Poziom bazowy musi mieścić się ściśle między 0 a 1.</value>
+  </data>
+    <data name="ThresholdInvalid" xml:space="preserve">
+    <value>Próg decyzyjny musi mieścić się między 0 a 1.</value>
+  </data>
+    <data name="IterationsInvalid" xml:space="preserve">
+    <value>Maksymalna liczba iteracji musi wynosić co najmniej 1.</value>
+  </data>
+    <data name="ToleranceInvalid" xml:space="preserve">
+    <value>Tolerancja musi być dodatnia i skończona.</value>
+  </data>
+    <data name="CostsBothOrNeither" xml:space="preserve">
+    <value>Podaj oba koszty albo żadnego.</value>
+  </data>
+    <data name="CostsInvalid" xml:space="preserve">
+    <value>Koszty muszą być skończone i dodatnie.</value>
+  </data>
+    <data name="TrainingFailedUnexpectedly" xml:space="preserve">
+    <value>Przebieg trenowania zakończył się nieoczekiwanym błędem.</value>
+  </data>
+    <data name="TrainingCancelled" xml:space="preserve">
+    <value>Przebieg trenowania został anulowany.</value>
+  </data>
+    <data name="ProcessingTypeIdsRequired" xml:space="preserve">
+    <value>Dla każdej zmiennej wymagany jest typ przetwarzania.</value>
+  </data>
+    <data name="ProcessingTypeIdsMismatch" xml:space="preserve">
+    <value>Na każdą nazwę zmiennej musi przypadać dokładnie jeden typ przetwarzania.</value>
+  </data>
+    <data name="ProcessingTypeIdsInvalid" xml:space="preserve">
+    <value>Każdy typ przetwarzania musi mieć wartość od 1 do 7 lub 99.</value>
+  </data>
+    <data name="RunNotFound" xml:space="preserve">
+    <value>Nie znaleziono przebiegu trenowania.</value>
+  </data>
+    <data name="DatasetInputNotSupported" xml:space="preserve">
+    <value>Dane wejściowe trenowania w postaci zbioru danych nie są jeszcze obsługiwane.</value>
+  </data>
+    <data name="InlineTooManyRows" xml:space="preserve">
+    <value>Dane wejściowe podane bezpośrednio są ograniczone do {0} wierszy. Umieść większe dane w pamięci podręcznej i prześlij wskaźnik do pamięci podręcznej.</value>
+  </data>
+    <data name="InlineTooLarge" xml:space="preserve">
+    <value>Dane wejściowe podane bezpośrednio są ograniczone do {0} bajtów. Umieść większe dane w pamięci podręcznej i prześlij wskaźnik do pamięci podręcznej.</value>
+  </data>
+    <data name="OnlineTooManyRows" xml:space="preserve">
+    <value>Natychmiastowy przebieg trenowania jest ograniczony do {0} wierszy. W przypadku większych danych użyj operacji przesłania.</value>
+  </data>
+    <data name="CachePointerRequired" xml:space="preserve">
+    <value>Dla danych wejściowych z pamięci podręcznej wymagany jest wskaźnik do pamięci podręcznej.</value>
+  </data>
+    <data name="CachePointerNotFound" xml:space="preserve">
+    <value>Dane wejściowe z pamięci podręcznej wygasły lub nie istnieją.</value>
+  </data>
+    <data name="CacheShapeMismatch" xml:space="preserve">
+    <value>Tabela w pamięci podręcznej musi mieć jedną kolumnę na każdą nazwę zmiennej oraz kolumnę etykiet.</value>
+  </data>
+    <data name="InputKindInvalid" xml:space="preserve">
+    <value>Rodzaj danych wejściowych trenowania nie jest rozpoznawany.</value>
+  </data>
+    <data name="OutputsRequired" xml:space="preserve">
+    <value>Wymagana jest co najmniej jedna wartość wyjściowa.</value>
+  </data>
+    <data name="OutputsLengthMismatch" xml:space="preserve">
+    <value>Na każdy wiersz danych wejściowych musi przypadać dokładnie jedna wartość wyjściowa.</value>
+  </data>
+    <data name="OutputsNotFinite" xml:space="preserve">
+    <value>Każda wartość wyjściowa musi być liczbą skończoną.</value>
+  </data>
+    <data name="ClustersInvalid" xml:space="preserve">
+    <value>Liczba klastrów musi wynosić co najmniej 1 i nie więcej niż liczba wierszy.</value>
+  </data>
+    <data name="VarianceThresholdInvalid" xml:space="preserve">
+    <value>Próg wariancji musi być ściśle większy niż 0 i nie większy niż 1.</value>
+  </data>
+    <data name="MaximumComponentsInvalid" xml:space="preserve">
+    <value>Maksymalna liczba składowych musi wynosić co najmniej 1.</value>
+  </data>
+    <data name="ComponentsInvalid" xml:space="preserve">
+    <value>Liczba składowych musi wynosić co najmniej 1 i nie więcej niż liczba wierszy.</value>
+  </data>
+    <data name="LabelsRequired" xml:space="preserve">
+    <value>Wymagana jest co najmniej jedna etykieta, po jednej na każdy wiersz danych wejściowych.</value>
+  </data>
+    <data name="LabelsBothClassesRequired" xml:space="preserve">
+    <value>W etykietach muszą występować obie klasy.</value>
+  </data>
+    <data name="HiddenUnitsInvalid" xml:space="preserve">
+    <value>Liczba jednostek ukrytych musi wynosić co najmniej 1 i nie więcej niż {0}.</value>
+  </data>
+    <data name="EpochsInvalid" xml:space="preserve">
+    <value>Liczba epok musi wynosić co najmniej 1 i nie więcej niż {0}.</value>
+  </data>
+    <data name="LearningRateInvalid" xml:space="preserve">
+    <value>Współczynnik uczenia musi być skończony i dodatni.</value>
+  </data>
+    <data name="TreeCountInvalid" xml:space="preserve">
+    <value>Liczba drzew musi wynosić co najmniej 1.</value>
+  </data>
+    <data name="MaxDepthInvalid" xml:space="preserve">
+    <value>Maksymalna głębokość musi wynosić co najmniej 1.</value>
+  </data>
+    <data name="MinLeafSizeInvalid" xml:space="preserve">
+    <value>Minimalny rozmiar liścia musi wynosić co najmniej 1.</value>
+  </data>
+    <data name="FeatureFractionInvalid" xml:space="preserve">
+    <value>Ułamek cech musi mieścić się między 0 (domyślnie pierwiastek kwadratowy) a 1.</value>
+  </data>
+    <data name="SampleFractionInvalid" xml:space="preserve">
+    <value>Ułamek próbki musi być większy niż 0 i nie większy niż 1.</value>
+  </data>
+    <data name="DecisionThresholdInvalid" xml:space="preserve">
+    <value>Próg decyzyjny musi mieścić się ściśle między 0 a 1.</value>
+  </data>
+    <data name="MinimumLeafSizeInvalid" xml:space="preserve">
+    <value>Minimalny rozmiar liścia musi wynosić co najmniej 1.</value>
+  </data>
+    <data name="VarianceRegularisationInvalid" xml:space="preserve">
+    <value>Regularyzacja wariancji musi być skończona i nieujemna.</value>
+  </data>
+    <data name="NeighbourCountInvalid" xml:space="preserve">
+    <value>Liczba sąsiadów musi wynosić co najmniej 1 i nie więcej niż liczba wierszy treningowych.</value>
+  </data>
+    <data name="SmoothingInvalid" xml:space="preserve">
+    <value>Stała wygładzania musi być skończona i nieujemna.</value>
+  </data>
+    <data name="ComplexityInvalid" xml:space="preserve">
+    <value>Złożoność musi być skończona i ściśle dodatnia.</value>
+  </data>
+    <data name="KernelInvalid" xml:space="preserve">
+    <value>Jądro musi być jedną z rozpoznawanych funkcji jądra.</value>
+  </data>
+    <data name="GammaInvalid" xml:space="preserve">
+    <value>Parametr gamma musi być skończony i nieujemny.</value>
+  </data>
+    <data name="DegreeInvalid" xml:space="preserve">
+    <value>Stopień wielomianu musi wynosić co najmniej 1.</value>
+  </data>
+    <data name="SubsampleSizeInvalid" xml:space="preserve">
+    <value>Rozmiar podpróbki musi wynosić co najmniej 2.</value>
+  </data>
+    <data name="NuInvalid" xml:space="preserve">
+    <value>Nu musi być skończone i mieścić się ściśle między 0 a 1.</value>
+  </data>
+    <data name="BatchSizeInvalid" xml:space="preserve">
+    <value>Rozmiar partii musi wynosić co najmniej 1 i nie więcej niż liczba wierszy treningowych.</value>
+  </data>
+    <data name="InitializationBatchSizeInvalid" xml:space="preserve">
+    <value>Rozmiar partii inicjalizacji, jeśli został podany, musi wynosić co najmniej tyle, ile klastrów.</value>
+  </data>
+    <data name="NumberOfInitializationsInvalid" xml:space="preserve">
+    <value>Liczba inicjalizacji musi wynosić co najmniej 1.</value>
+  </data>
+    <data name="BandwidthInvalid" xml:space="preserve">
+    <value>Szerokość pasma musi być skończona i większa niż zero.</value>
+  </data>
+    <data name="MaxNeighboursInvalid" xml:space="preserve">
+    <value>Maksymalna liczba sąsiadów nie może być ujemna.</value>
+  </data>
+</root>

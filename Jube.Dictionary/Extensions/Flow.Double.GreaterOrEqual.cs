@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchGreaterOrEqual(double other)
+            [Description("True when: the value is greater than or equal to the argument. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchGreaterOrEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleGreaterOrEqual(flow.Value, other));
             }
 
-            public Flow<double> RejectGreaterOrEqual(double other)
+            [Description("True when: the value is greater than or equal to the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectGreaterOrEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleGreaterOrEqual(flow.Value, other));
             }
 
-            public Flow<double> BreakGreaterOrEqual(double other)
+            [Description("True when: the value is greater than or equal to the argument. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakGreaterOrEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleGreaterOrEqual(flow.Value, other));
             }
 
-            public Flow<double> RequireGreaterOrEqual(double other)
+            [Description("True when: the value is greater than or equal to the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireGreaterOrEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleGreaterOrEqual(flow.Value, other));
             }
 
-            public Flow<double> EnsureGreaterOrEqual(double other)
+            [Description("True when: the value is greater than or equal to the argument. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureGreaterOrEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchGreaterOrEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value is greater than or equal to the argument. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchGreaterOrEqual([Description("The other number.")] double other)
             {
                 return value.Start().MatchGreaterOrEqual(other);
             }
 
-            public Flow<double> RejectGreaterOrEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value is greater than or equal to the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectGreaterOrEqual([Description("The other number.")] double other)
             {
                 return value.Start().RejectGreaterOrEqual(other);
             }
 
-            public Flow<double> BreakGreaterOrEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value is greater than or equal to the argument. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakGreaterOrEqual([Description("The other number.")] double other)
             {
                 return value.Start().BreakGreaterOrEqual(other);
             }
 
-            public Flow<double> RequireGreaterOrEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value is greater than or equal to the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireGreaterOrEqual([Description("The other number.")] double other)
             {
                 return value.Start().RequireGreaterOrEqual(other);
             }
 
-            public Flow<double> EnsureGreaterOrEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value is greater than or equal to the argument. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureGreaterOrEqual([Description("The other number.")] double other)
             {
                 return value.Start().EnsureGreaterOrEqual(other);
             }

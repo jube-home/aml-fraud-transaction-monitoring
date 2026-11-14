@@ -49,10 +49,9 @@ namespace Jube.App.Code
 #pragma warning restore VSTHRD002
         }
 
-        public bool Landlord
-        {
-            get { return permissionValidationDto.Landlord; }
-        }
+        public bool Landlord => permissionValidationDto.Landlord;
+
+        public bool ActiveUser => permissionValidationDto.ActiveUser;
 
         public bool Validate(int[] testPermissionSpecifications)
         {

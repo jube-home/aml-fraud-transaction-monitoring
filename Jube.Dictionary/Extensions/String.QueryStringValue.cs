@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string QueryStringValue(this string? @this, string? key)
+        [Description("The decoded value of a named parameter in a URL or query string, otherwise empty.")]
+        public static string QueryStringValue(this string? @this,
+            [Description("The name of the query string parameter.")] string? key)
         {
             var value = @this ?? "";
             var questionMark = value.IndexOf('?');

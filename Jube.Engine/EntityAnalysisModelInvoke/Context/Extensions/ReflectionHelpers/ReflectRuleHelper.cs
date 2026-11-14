@@ -13,7 +13,9 @@
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHelpers
 {
+    using AbstractionRulesWithSearchKeys;
     using Dictionary;
+    using global::Svirfd;
     using EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
     using log4net;
     using Models.Payload.EntityAnalysisModelInstanceEntryPayload;
@@ -23,10 +25,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
         public static bool Execute(EntityAnalysisModelAbstractionRule abstractionRule,
             Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.ModelSnapshot snapshot,
             DictionaryNoBoxing<string> fields,
-            PooledDictionary<string, double> entityInstanceEntryDictionaryKvPs, ILog log)
+            PooledDictionary<string, double> entityInstanceEntryDictionaryKvPs,
+            PooledDictionary<string, IpResponse> svirfd, AbstractionCursor cursor, ILog log)
         {
-            var matched = abstractionRule.AbstractionRuleCompileDelegate(fields,
-                snapshot.EntityAnalysisModelLists, entityInstanceEntryDictionaryKvPs, log);
+            var matched = AbstractionCursorRunner.Single(abstractionRule.AbstractionRuleCompileDelegate, cursor,
+                fields, snapshot.EntityAnalysisModelLists, entityInstanceEntryDictionaryKvPs, svirfd, log);
 
             return matched;
         }
@@ -40,10 +43,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
             var matched = activationRule.ActivationRuleCompileDelegate(payload.Payload,
                 payload.TtlCounter, payload.Abstraction,
                 payload.HttpAdaptation, payload.ExhaustiveAdaptation, payload.AdvancedAnalyticsAdaptation,
+                payload.Graph,
                 snapshot.EntityAnalysisModelLists,
                 payload.AbstractionCalculation,
                 payload.Sanction, entityInstanceEntryDictionaryKvPs,
                 payload.Activation.Keys,
+                payload.Svirfd,
                 log);
 
             return matched;
@@ -59,7 +64,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
                 payload.TtlCounter, payload.Abstraction,
                 snapshot.EntityAnalysisModelLists,
                 payload.AbstractionCalculation, payload.Sanction,
-                entityInstanceEntryDictionaryKvPs, log);
+                entityInstanceEntryDictionaryKvPs, payload.Svirfd, log);
 
             return matched;
         }
@@ -70,7 +75,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
             PooledDictionary<string, double> entityInstanceEntryDictionaryKvPs, ILog log)
         {
             var matched = entityAnalysisModelInlineFunction.FunctionCalculationCompileDelegate(payload.Payload,
-                snapshot.EntityAnalysisModelLists, entityInstanceEntryDictionaryKvPs, log);
+                snapshot.EntityAnalysisModelLists, entityInstanceEntryDictionaryKvPs, payload.Svirfd, log);
 
             return matched;
         }

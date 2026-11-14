@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,21 +22,31 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.EntityAnalysisModelIntegrity
 {
     [Description("The model's dependency graph as nodes and edges, ready to draw.")]
+    [MessagePackObject]
     public class ModelGraphDto
     {
-        [Description("The entities.")] public List<ModelGraphNodeDto> Nodes { get; set; } = [];
+        [Description("The entities.")] [Key(0)] public List<ModelGraphNodeDto> Nodes { get; set; } = [];
 
         [Description("The uses between them.")]
+        [Key(1)]
         public List<ModelGraphEdgeDto> Edges { get; set; } = [];
 
         [Description("True when the graph had more than MaxNodes nodes and the least connected were left out; " +
                      "focus on an entity to see its neighbourhood.")]
+        [Key(2)]
         public bool Truncated { get; set; }
 
         [Description("The most nodes returned.")]
+        [Key(3)]
         public int MaxNodes { get; set; }
 
         [Description("The node the graph was centred on, when one was given.")]
+        [Key(4)]
         public string? Focus { get; set; }
+
+        [Description("When more entities than this are connected, the diagram groups each kind into one box with " +
+                     "a count until it is expanded; entities with findings are always drawn on their own.")]
+        [Key(5)]
+        public int CollapseAbove { get; set; }
     }
 }

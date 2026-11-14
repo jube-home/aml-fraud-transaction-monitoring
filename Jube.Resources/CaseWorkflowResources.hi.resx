@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>आपके पास यह कार्रवाई करने की अनुमति नहीं है।</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>यह कार्रवाई करने के लिए आपका टेनेंट में साइन इन होना आवश्यक है।</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>केस वर्कफ़्लो नहीं मिला।</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>मान्य पैरेंट मॉडल आवश्यक है।</value>
+  </data>
+    <data name="EntityAnalysisModelNotFound" xml:space="preserve">
+    <value>संदर्भित मॉडल आपके टेनेंट में नहीं मिला।</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>नाम आवश्यक है।</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>नाम {0} वर्णों से अधिक नहीं हो सकता।</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>यह नाम पहले से मौजूद है।</value>
+  </data>
+    <data name="DescriptionMaxLength" xml:space="preserve">
+    <value>विवरण {0} वर्णों से अधिक नहीं हो सकता।</value>
+  </data>
+    <data name="VisualisationRegistryGuidRequired" xml:space="preserve">
+    <value>विज़ुअलाइज़ेशन सक्षम होने पर विज़ुअलाइज़ेशन आवश्यक है।</value>
+  </data>
+    <data name="VisualisationRegistryNotFound" xml:space="preserve">
+    <value>विज़ुअलाइज़ेशन नहीं मिला।</value>
+  </data>
+    <data name="RiskKappaOutOfRange" xml:space="preserve">
+    <value>रैंकिंग डैम्पिंग 0 से ऊपर और 1 से अधिक नहीं होनी चाहिए।</value>
+  </data>
+    <data name="RiskRhoOutOfRange" xml:space="preserve">
+    <value>अतिव्यापी साक्ष्य के लिए रैंकिंग भार 0 और 1 के बीच होना चाहिए।</value>
+  </data>
+    <data name="RiskPriorStrengthOutOfRange" xml:space="preserve">
+    <value>रैंकिंग पूर्व दर की शक्ति 0 से ऊपर और 10000 से अधिक नहीं होनी चाहिए।</value>
+  </data>
+    <data name="RiskBaseRatePriorOutOfRange" xml:space="preserve">
+    <value>रैंकिंग पूर्व दर 0.001 और 0.999 के बीच होनी चाहिए।</value>
+  </data>
+    <data name="DailyGoalOutOfRange" xml:space="preserve">
+    <value>दैनिक लक्ष्य 1 और 1000 केसों के बीच होना चाहिए।</value>
+  </data>
+    <data name="RiskDeadlineLaneDaysOutOfRange" xml:space="preserve">
+    <value>रैंकिंग समय-सीमा विंडो 0 और 365 दिनों के बीच होनी चाहिए।</value>
+  </data>
+    <data name="RiskKeyHistoryHalfLifeOutOfRange" xml:space="preserve">
+    <value>रैंकिंग कुंजी इतिहास की अर्ध-आयु 0 से ऊपर और 3650 दिनों से अधिक नहीं होनी चाहिए।</value>
+  </data>
+    <data name="RiskImpactWeightsInvalid" xml:space="preserve">
+    <value>रैंकिंग प्रभाव भार अल्पविराम से अलग की गई पाँच धनात्मक, बढ़ती संख्याएँ होनी चाहिए।</value>
+  </data>
+    <data name="RiskMoneyBandsInvalid" xml:space="preserve">
+    <value>रैंकिंग धन बैंड अल्पविराम से अलग की गई चार धनात्मक, बढ़ती संख्याएँ होनी चाहिए।</value>
+  </data>
+    <data name="RiskImpactWeightsTooLong" xml:space="preserve">
+    <value>रैंकिंग प्रभाव भार 200 अक्षरों से अधिक नहीं होने चाहिए।</value>
+  </data>
+    <data name="RiskMoneyBandsTooLong" xml:space="preserve">
+    <value>रैंकिंग राशि बैंड 200 अक्षरों से अधिक नहीं होने चाहिए।</value>
+  </data>
+    <data name="RiskQaSampleRateOutOfRange" xml:space="preserve">
+    <value>गुणवत्ता समीक्षा नमूना दर 0 और 0.5 के बीच होनी चाहिए।</value>
+  </data>
+    <data name="GraphRegistryGuidRequired" xml:space="preserve">
+    <value>ग्राफ़ सक्षम होने पर ग्राफ़ रजिस्ट्री आवश्यक है।</value>
+  </data>
+    <data name="GraphRegistryNotFound" xml:space="preserve">
+    <value>ग्राफ़ रजिस्ट्री नहीं मिली।</value>
+  </data>
+</root>

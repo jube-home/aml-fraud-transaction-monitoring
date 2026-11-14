@@ -21,7 +21,7 @@ namespace Jube.AskJooby.Observability
         private static readonly string[] repeatable =
         [
             "ListQueryableTables", "SearchRag", "InspectDataSchema", "PreviewDataRows",
-            "QueryCachedData", "ValidateSqlQuery", "ExplainSqlQuery", "InspectTableStatistics",
+            "QueryCachedData", "ValidateSqlQuery", "ValidateRScript", "ExplainSqlQuery", "InspectTableStatistics",
             "AnalyseQueryHistory", "SearchCompactedHistory", "GetDemoDataset", "Recall",
             "FindGraphWorkflow", "GetGraphWorkflow"
         ];

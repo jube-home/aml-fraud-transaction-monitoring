@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using FluentValidation.Results;
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
@@ -225,6 +227,8 @@ namespace Jube.Service.OpenTelemetryExclude
                     throw new DtoValidationException(results);
                 }
 
+                await EnsureNameIsUniqueAsync(model, token).ConfigureAwait(false);
+
                 var saved = await repository.InsertAsync(OpenTelemetryExcludeMapper.ToPoco(model), token)
                     .ConfigureAwait(false);
 
@@ -234,7 +238,7 @@ namespace Jube.Service.OpenTelemetryExclude
 
                 if (log.IsInfoEnabled)
                 {
-                    log.Info($"OpenTelemetryExclude.Create: created Id={saved.Id} user={userName}");
+                    log.Info($"OpenTelemetryExclude.Create: created Id={saved.Id} name={saved.Name} active={saved.Active} user={userName}");
                 }
 
                 return saved;
@@ -341,6 +345,8 @@ namespace Jube.Service.OpenTelemetryExclude
                     throw new DtoValidationException(results);
                 }
 
+                await EnsureNameIsUniqueAsync(model, token).ConfigureAwait(false);
+
                 ExcludePoco saved;
 
                 try
@@ -363,7 +369,7 @@ namespace Jube.Service.OpenTelemetryExclude
 
                 if (log.IsInfoEnabled)
                 {
-                    log.Info($"OpenTelemetryExclude.Update: updated Id={saved.Id} user={userName}");
+                    log.Info($"OpenTelemetryExclude.Update: updated Id={saved.Id} name={saved.Name} active={saved.Active} user={userName}");
                 }
 
                 return saved;
@@ -388,6 +394,12 @@ namespace Jube.Service.OpenTelemetryExclude
                 op.Outcome("locked");
                 throw;
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
@@ -469,6 +481,24 @@ namespace Jube.Service.OpenTelemetryExclude
                 log.Error($"OpenTelemetryExclude.Delete: unexpected failure id={id} user={userName}", ex);
                 throw;
             }
+        }
+
+        private async Task EnsureNameIsUniqueAsync(OpenTelemetryExcludeDto model, CancellationToken token)
+        {
+            if (!await repository.NameExistsAsync(model.Name!, model.Id, token).ConfigureAwait(false))
+            {
+                return;
+            }
+
+            var failure = new ValidationFailure(nameof(OpenTelemetryExcludeDto.Name),
+                strings[OpenTelemetryExcludeResources.NameDuplicate]) { ErrorCode = "NameDuplicate" };
+
+            if (log.IsWarnEnabled)
+            {
+                log.Warn($"OpenTelemetryExclude: duplicate name refused id={model.Id} user={userName}");
+            }
+
+            throw new DtoValidationException(new ValidationResult([failure]));
         }
 
         private void EnsurePermitted(string op)

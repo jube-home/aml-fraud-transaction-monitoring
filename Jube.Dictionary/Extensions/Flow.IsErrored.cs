@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("True when a step of the pipeline could not evaluate.")]
         public static bool IsErrored<T>(this Flow<T> flow)
         {
             return flow.Outcome == FlowOutcome.Errored;

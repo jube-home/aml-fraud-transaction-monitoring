@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static int WholeYearsBetween(this DateTime @this, DateTime other)
+        [Description("Completed years to another date.")]
+        public static int WholeYearsBetween(this DateTime @this, [Description("The other date.")] DateTime other)
         {
             return @this.WholeMonthsBetween(other) / 12;
         }

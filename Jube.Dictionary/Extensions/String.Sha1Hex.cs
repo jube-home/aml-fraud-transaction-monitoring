@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Lower-case hex SHA-1 digest, for matching legacy values only.")]
         public static string Sha1Hex(this string? @this)
         {
             return Convert.ToHexStringLower(SHA1.HashData(Encoding.UTF8.GetBytes(@this ?? "")));

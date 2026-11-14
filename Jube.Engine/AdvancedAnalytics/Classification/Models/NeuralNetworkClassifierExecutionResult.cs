@@ -28,9 +28,9 @@ namespace Jube.Engine.AdvancedAnalytics.Classification.Models
         public Guid RunGuid { get; init; }
         public AdvancedAnalyticsStatus Status { get; init; }
         public string Error { get; init; }
-        public AdvancedAnalyticsTrainedModel Model { get; init; }
+        public AskJoobyAnalyticsTrainedModel Model { get; init; }
         public bool CreatedModel { get; init; }
-        public AdvancedAnalyticsTrainedModelVersion Version { get; init; }
+        public AskJoobyAnalyticsTrainedModelVersion Version { get; init; }
         public NeuralNetworkClassifierResult Result { get; init; }
     }
 }

@@ -13,7 +13,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -29,68 +28,40 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             @"^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) \w+ \[(\d+)\] (\w+):\s*(.*)$",
             RegexOptions.Compiled);
 
-        private NpgsqlConnection connection;
         private string currentFileName;
         private long currentOffset;
         private bool initialized;
         public bool LoggingCollectorOff { get; private set; }
 
-        public async ValueTask DisposeAsync()
+        public ValueTask DisposeAsync()
         {
-            if (connection != null)
-            {
-                await connection.DisposeAsync().ConfigureAwait(false);
-            }
+            return ValueTask.CompletedTask;
         }
 
         public Task<List<PostgresLogEntry>> SampleAsync(CancellationToken token = default)
         {
-            return WithConnectionAsync(() => SampleCoreAsync(token), token);
+            return WithConnectionAsync(connection => SampleCoreAsync(connection, token), token);
         }
 
-        private async Task<T> WithConnectionAsync<T>(Func<Task<T>> action, CancellationToken token)
+        private async Task<T> WithConnectionAsync<T>(Func<NpgsqlConnection, Task<T>> action, CancellationToken token)
         {
-            try
-            {
-                if (connection is not { State: ConnectionState.Open })
-                {
-                    if (connection != null)
-                    {
-                        await connection.DisposeAsync().ConfigureAwait(false);
-                    }
+            await using var connection = new NpgsqlConnection(connectionString);
 
-                    connection = new NpgsqlConnection(connectionString);
-                    await connection.OpenAsync(token).ConfigureAwait(false);
-                }
+            await connection.OpenAsync(token).ConfigureAwait(false);
 
-                return await action().ConfigureAwait(false);
-            }
-            catch (Exception) when (token.IsCancellationRequested)
-            {
-                throw;
-            }
-            catch (Exception)
-            {
-                if (connection != null)
-                {
-                    await connection.DisposeAsync().ConfigureAwait(false);
-                    connection = null;
-                }
-
-                throw;
-            }
+            return await action(connection).ConfigureAwait(false);
         }
 
-        private async Task<List<PostgresLogEntry>> SampleCoreAsync(CancellationToken token)
+        private async Task<List<PostgresLogEntry>> SampleCoreAsync(NpgsqlConnection connection, CancellationToken token)
         {
-            LoggingCollectorOff = !await IsLoggingCollectorOnAsync(token).ConfigureAwait(false);
+            LoggingCollectorOff = !await IsLoggingCollectorOnAsync(connection, token).ConfigureAwait(false);
 
             if (LoggingCollectorOff)
             {
                 return null;
             }
 
-            var (fileName, size) = await GetLatestLogFileAsync(token).ConfigureAwait(false);
+            var (fileName, size) = await GetLatestLogFileAsync(connection, token).ConfigureAwait(false);
 
             if (fileName == null)
             {
@@ -121,7 +92,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
                 return null;
             }
 
-            var delta = await ReadLogDeltaAsync(fileName, currentOffset, size - currentOffset, token)
+            var delta = await ReadLogDeltaAsync(connection, fileName, currentOffset, size - currentOffset, token)
                 .ConfigureAwait(false);
 
             currentOffset = size;
@@ -129,7 +100,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             return string.IsNullOrEmpty(delta) ? null : ParseEntries(delta);
         }
 
-        private async Task<bool> IsLoggingCollectorOnAsync(CancellationToken token)
+        private async Task<bool> IsLoggingCollectorOnAsync(NpgsqlConnection connection, CancellationToken token)
         {
             await using var command =
                 new NpgsqlCommand("SELECT current_setting('logging_collector')", connection);
@@ -139,7 +110,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             return string.Equals(result, "on", StringComparison.OrdinalIgnoreCase);
         }
 
-        private async Task<(string FileName, long Size)> GetLatestLogFileAsync(CancellationToken token)
+        private async Task<(string FileName, long Size)> GetLatestLogFileAsync(NpgsqlConnection connection,
+            CancellationToken token)
         {
             await using var command =
                 new NpgsqlCommand("SELECT name, size FROM pg_ls_logdir() ORDER BY modification DESC LIMIT 1",
@@ -155,7 +127,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             return (reader.GetString(0), reader.GetInt64(1));
         }
 
-        private async Task<string> ReadLogDeltaAsync(string fileName, long offset, long length,
+        private async Task<string> ReadLogDeltaAsync(NpgsqlConnection connection,
+            string fileName, long offset, long length,
             CancellationToken token)
         {
             await using var command =

@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
-            public Flow<DateTime> MatchMoreThanMinutesAfter(DateTime other, double minutes)
+            [Description("True when: more than the minutes after the argument. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchMoreThanMinutesAfter([Description("The other date.")] DateTime other,
+                [Description("The number of minutes.")] double minutes)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeMoreThanMinutesAfter(flow.Value, other, minutes));
             }
 
-            public Flow<DateTime> RejectMoreThanMinutesAfter(DateTime other, double minutes)
+            [Description("True when: more than the minutes after the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectMoreThanMinutesAfter([Description("The other date.")] DateTime other,
+                [Description("The number of minutes.")] double minutes)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeMoreThanMinutesAfter(flow.Value, other, minutes));
             }
 
-            public Flow<DateTime> BreakMoreThanMinutesAfter(DateTime other, double minutes)
+            [Description("True when: more than the minutes after the argument. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakMoreThanMinutesAfter([Description("The other date.")] DateTime other,
+                [Description("The number of minutes.")] double minutes)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeMoreThanMinutesAfter(flow.Value, other, minutes));
             }
 
-            public Flow<DateTime> RequireMoreThanMinutesAfter(DateTime other, double minutes)
+            [Description("True when: more than the minutes after the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireMoreThanMinutesAfter([Description("The other date.")] DateTime other,
+                [Description("The number of minutes.")] double minutes)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeMoreThanMinutesAfter(flow.Value, other, minutes));
             }
 
-            public Flow<DateTime> EnsureMoreThanMinutesAfter(DateTime other, double minutes)
+            [Description("True when: more than the minutes after the argument. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureMoreThanMinutesAfter([Description("The other date.")] DateTime other,
+                [Description("The number of minutes.")] double minutes)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
-            public Flow<DateTime> MatchMoreThanMinutesAfter(DateTime other, double minutes)
+            [Description("Begins a pipeline from the value. True when: more than the minutes after the argument. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchMoreThanMinutesAfter([Description("The other date.")] DateTime other,
+                [Description("The number of minutes.")] double minutes)
             {
                 return value.Start().MatchMoreThanMinutesAfter(other, minutes);
             }
 
-            public Flow<DateTime> RejectMoreThanMinutesAfter(DateTime other, double minutes)
+            [Description("Begins a pipeline from the value. True when: more than the minutes after the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectMoreThanMinutesAfter([Description("The other date.")] DateTime other,
+                [Description("The number of minutes.")] double minutes)
             {
                 return value.Start().RejectMoreThanMinutesAfter(other, minutes);
             }
 
-            public Flow<DateTime> BreakMoreThanMinutesAfter(DateTime other, double minutes)
+            [Description("Begins a pipeline from the value. True when: more than the minutes after the argument. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakMoreThanMinutesAfter([Description("The other date.")] DateTime other,
+                [Description("The number of minutes.")] double minutes)
             {
                 return value.Start().BreakMoreThanMinutesAfter(other, minutes);
             }
 
-            public Flow<DateTime> RequireMoreThanMinutesAfter(DateTime other, double minutes)
+            [Description("Begins a pipeline from the value. True when: more than the minutes after the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireMoreThanMinutesAfter([Description("The other date.")] DateTime other,
+                [Description("The number of minutes.")] double minutes)
             {
                 return value.Start().RequireMoreThanMinutesAfter(other, minutes);
             }
 
-            public Flow<DateTime> EnsureMoreThanMinutesAfter(DateTime other, double minutes)
+            [Description("Begins a pipeline from the value. True when: more than the minutes after the argument. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureMoreThanMinutesAfter([Description("The other date.")] DateTime other,
+                [Description("The number of minutes.")] double minutes)
             {
                 return value.Start().EnsureMoreThanMinutesAfter(other, minutes);
             }

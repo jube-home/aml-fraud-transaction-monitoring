@@ -37,8 +37,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(8)] public int? InheritedId { get; set; }
         [Column] [Nullable] [Key(9)] public int? Version { get; set; }
 
-        [Association(ThisKey = "EntityAnalysisModelListId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "EntityAnalysisModelListId", OtherKey = "Id", CanBeNull = true)]
         [Key(10)]
         public EntityAnalysisModelList EntityAnalysisModelList { get; set; }
 

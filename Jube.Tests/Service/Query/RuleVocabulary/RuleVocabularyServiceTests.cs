@@ -89,6 +89,62 @@ namespace Jube.Test.Service.Query.RuleVocabulary
         }
 
         [Fact]
+        public async Task TheWholeVocabularyOffersTheCursorWordsOnlyWhenAskedForAbstractionRulesAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await ServiceAsync(dbContext);
+
+            var general = await service.GetAllAsync();
+            var abstraction = await service.GetAllAsync(Jube.Parser.RuleParse.AbstractionRule);
+            var activation = await service.GetAllAsync(Jube.Parser.RuleParse.ActivationRule);
+
+            general.Select(w => w.Name).Should().NotContain(["Cursor", "Exit For", "Continue For"]);
+            activation.Select(w => w.Name).Should().Equal(general.Select(w => w.Name));
+
+            abstraction.Select(w => w.Name).Should().Contain(["Cursor", "Exit For", "Continue For", "Position"]);
+
+            abstraction.Single(w => w.Name == "Position").Overloads.Single().Signature.Should()
+                .Be("Cursor.Position As Integer");
+        }
+
+        [Fact]
+        public async Task TheAgentToolsOfferTheCursorWordsWhenToldTheRuleIsAnAbstractionRuleAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await ServiceAsync(dbContext);
+
+            var general = await service.ListAsync("cursor");
+            var abstraction = await service.ListAsync("cursor", ruleParseTypeId: Jube.Parser.RuleParse.AbstractionRule);
+
+            general.Items.Should().NotContain(w => w.Name == "Cursor");
+            abstraction.Items.Should().Contain(w => w.Name == "Cursor");
+
+            var described = await service.DescribeAsync("Position", Jube.Parser.RuleParse.AbstractionRule);
+
+            described.Description.Should().Contain("One-based position");
+            await Assert.ThrowsAsync<NotFoundException>(() => service.DescribeAsync("Position"));
+        }
+
+        [Fact]
+        public async Task DescribeCarriesTheDescriptionOfTheFunctionEachOverloadAndEachParameterAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await ServiceAsync(dbContext);
+
+            var isMatch = await service.DescribeAsync("IsMatch");
+
+            isMatch.Description.Should()
+                .Be("Checks if the string matches a regular expression; matching is limited to 250 ms.");
+
+            var withOptions = isMatch.Overloads.Single(o => o.Parameters.Count == 2);
+
+            withOptions.Description.Should()
+                .Be("Checks if the string matches a regex with options; matching is limited to 250 ms.");
+
+            withOptions.Parameters[0].Description.Should().Be("The regular expression pattern to match.");
+        }
+
+        [Fact]
         public async Task NoPermissionIsForbiddenAsync()
         {
             await using var dbContext = fx.GetDbContext();

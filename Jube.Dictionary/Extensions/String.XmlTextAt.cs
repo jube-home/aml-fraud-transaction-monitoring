@@ -17,7 +17,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string XmlTextAt(this string? @this, string? xpath)
+        [Description("Text of the first node selected by an XPath expression, otherwise empty; DTDs and entities are refused.")]
+        public static string XmlTextAt(this string? @this, [Description("The XPath to the text.")] string? xpath)
         {
             var document = StructuredDataSupport.ParseXml(@this);
 

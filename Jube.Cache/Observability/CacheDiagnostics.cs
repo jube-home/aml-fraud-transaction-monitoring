@@ -24,11 +24,11 @@ namespace Jube.Cache.Observability
         private static readonly string Version = Asm.Version?.ToString() ?? "0.0.0";
         private static readonly Meter Meter = new(Name, Version);
 
-        private static readonly Counter<long> RedisCallCount =
-            Meter.CreateCounter<long>("jube.cache.redis.call.count", "{call}");
+        private static readonly Counter<long> RespCallCount =
+            Meter.CreateCounter<long>("jube.cache.resp.call.count", "{call}");
 
-        private static readonly Histogram<double> RedisCallDuration =
-            Meter.CreateHistogram<double>("jube.cache.redis.call.duration", "ms");
+        private static readonly Histogram<double> RespCallDuration =
+            Meter.CreateHistogram<double>("jube.cache.resp.call.duration", "ms");
 
         private static long inFlightCount;
         public static long InFlightCallCount => Interlocked.Read(ref inFlightCount);
@@ -89,8 +89,8 @@ namespace Jube.Cache.Observability
         private static void Record(string call, double elapsedMilliseconds)
         {
             var tags = new TagList { { "call", call } };
-            RedisCallCount.Add(1, tags);
-            RedisCallDuration.Record(elapsedMilliseconds, tags);
+            RespCallCount.Add(1, tags);
+            RespCallDuration.Record(elapsedMilliseconds, tags);
 
             CacheCallCounters.CacheCallCounters.Record(call, elapsedMilliseconds);
         }

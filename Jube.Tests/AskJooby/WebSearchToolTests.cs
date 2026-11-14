@@ -70,6 +70,21 @@ namespace Jube.Test.AskJooby
         }
 
         [Fact]
+        public async Task OversizedSnippetsPagesAndAnswersAreTruncatedBeforeTheyReachTheModelAsync()
+        {
+            var client = new FakeWebSearchClient(new WebSearchResponse(new string('a', 50000),
+                [new WebSearchResult("A", "https://a.test", new string('b', 50000), 0.9, null, new string('c', 90000))],
+                "{}"));
+
+            var result = await new WebSearchTool(client).SearchWeb("jube.io");
+
+            result.Length.Should().BeLessThan(4000 + 4000 + 12000 + 2000);
+            result.Should().NotContain(new string('b', 4001));
+            result.Should().NotContain(new string('c', 12001));
+            result.Should().NotContain(new string('a', 4001));
+        }
+
+        [Fact]
         public async Task PassesTheConfiguredDefaultMaxResultsThroughAsync()
         {
             var client = new FakeWebSearchClient(new WebSearchResponse(null, [], "{}"));

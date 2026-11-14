@@ -21,5 +21,6 @@ namespace Jube.Preservation.Models
     public class ImportOptions
     {
         public string? Password { get; set; }
+        public long MaximumDecompressedBytes { get; set; } = 1_073_741_824;
     }
 }

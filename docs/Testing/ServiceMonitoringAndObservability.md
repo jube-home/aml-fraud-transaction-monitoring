@@ -359,7 +359,8 @@ tests. Category: Service. Collection: Database.
 
 ### EntityAnalysisModelAsynchronousQueueBalanceServiceTests
 
-`Jube.Test.Service.EntityAnalysisModelAsynchronousQueueBalance.EntityAnalysisModelAsynchronousQueueBalanceServiceTests` — 20 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.EntityAnalysisModelAsynchronousQueueBalance.EntityAnalysisModelAsynchronousQueueBalanceServiceTests` —
+20 tests. Category: Service. Collection: Database.
 
 | Test                                                           | Kind   | Verifies                                                           |
 |----------------------------------------------------------------|--------|--------------------------------------------------------------------|
@@ -422,7 +423,8 @@ Category: Service. Collection: Database.
 
 ### EntityAnalysisModelResponseTimePipelineCounterServiceTests
 
-`Jube.Test.Service.EntityAnalysisModelResponseTimePipelineCounter.EntityAnalysisModelResponseTimePipelineCounterServiceTests` — 20 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.EntityAnalysisModelResponseTimePipelineCounter.EntityAnalysisModelResponseTimePipelineCounterServiceTests` —
+20 tests. Category: Service. Collection: Database.
 
 | Test                                                           | Kind   | Verifies                                                           |
 |----------------------------------------------------------------|--------|--------------------------------------------------------------------|
@@ -451,7 +453,8 @@ Category: Service. Collection: Database.
 
 ### EntityAnalysisModelStagePerformanceCounterServiceTests
 
-`Jube.Test.Service.EntityAnalysisModelStagePerformanceCounter.EntityAnalysisModelStagePerformanceCounterServiceTests` — 20 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.EntityAnalysisModelStagePerformanceCounter.EntityAnalysisModelStagePerformanceCounterServiceTests` —
+20 tests. Category: Service. Collection: Database.
 
 | Test                                                           | Kind   | Verifies                                                           |
 |----------------------------------------------------------------|--------|--------------------------------------------------------------------|
@@ -510,7 +513,7 @@ tests. Category: Service. Collection: Database.
 
 ### EntityAnalysisModelTtlCounterServiceTests
 
-`Jube.Test.Service.EntityAnalysisModelTtlCounter.EntityAnalysisModelTtlCounterServiceTests` — 52 tests. Category:
+`Jube.Test.Service.EntityAnalysisModelTtlCounter.EntityAnalysisModelTtlCounterServiceTests` — 53 tests. Category:
 Service. Collection: Database.
 
 | Test                                                                                  | Kind   | Verifies                                                                                    |
@@ -532,6 +535,7 @@ Service. Collection: Database.
 | `DuplicateNameWithinSameModelFailsButDifferentModelSucceedsAsync`                     | Fact   | Duplicate name within same model fails but different model succeeds.                        |
 | `DuplicateNameDifferingOnlyByCaseWithinSameModelFailsAsync`                           | Fact   | Duplicate name differing only by case within same model fails.                              |
 | `InvalidEntityAnalysisModelIdIsRejectedAsync`                                         | Fact   | Invalid entity analysis model id is rejected.                                               |
+| `InsertUnderASoftDeletedModelIsRejectedAsync`                                         | Fact   | Insert under a soft-deleted parent Model is rejected.                                       |
 | `TtlCounterDataNameRequiredRejectsEmptyAsync`                                         | Fact   | Ttl counter data name required rejects empty.                                               |
 | `InvalidTtlCounterIntervalIsRejectedAsync`                                            | Fact   | Invalid ttl counter interval is rejected.                                                   |
 | `TtlCounterValueNegativeIsRejectedAsync`                                              | Fact   | Ttl counter value negative is rejected.                                                     |
@@ -764,42 +768,56 @@ Collection: OtlpDispatchCounters.
 
 ### OpenTelemetryExcludeServiceTests
 
-`Jube.Test.Service.OpenTelemetryExclude.OpenTelemetryExcludeServiceTests` — 9 tests. Category: Service. Collection:
+`Jube.Test.Service.OpenTelemetryExclude.OpenTelemetryExcludeServiceTests` — 17 tests. Category: Service. Collection:
 Database.
 
-| Test                                                   | Kind | Verifies                                               |
-|--------------------------------------------------------|------|--------------------------------------------------------|
-| `InsertPersistsAndReturnsVersionOneAsync`              | Fact | Insert persists and returns version one.               |
-| `GetAllReturnsCreatedRowAndGetByIdReturnsItAsync`      | Fact | Get all returns created row and get by id returns it.  |
-| `UpdateChangesFieldsAndIncrementsVersionAsync`         | Fact | Update changes fields and increments version.          |
-| `DeleteSoftDeletesRowAsync`                            | Fact | Delete soft deletes row.                               |
-| `UpdateOnLockedRowThrowsLockedExceptionAsync`          | Fact | Update on locked row throws locked exception.          |
-| `DeleteOnLockedRowThrowsLockedExceptionAsync`          | Fact | Delete on locked row throws locked exception.          |
-| `InsertWithEmptyNameIsRejectedAsync`                   | Fact | Insert with empty name is rejected.                    |
-| `InsertByUserWithoutPermissionThrowsForbiddenAsync`    | Fact | Insert by user without permission throws forbidden.    |
-| `NonLandlordHoldingEverySpecificationIsForbiddenAsync` | Fact | Non landlord holding every specification is forbidden. |
+| Test                                                                                   | Kind   | Verifies                                                                                       |
+|----------------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------------|
+| `InsertPersistsAndReturnsVersionOneAsync`                                              | Fact   | Insert persists and returns version one.                                                       |
+| `GetAllReturnsCreatedRowAndGetByIdReturnsItAsync`                                      | Fact   | Get all returns created row and get by id returns it.                                          |
+| `UpdateChangesFieldsAndIncrementsVersionAsync`                                         | Fact   | Update changes fields and increments version.                                                  |
+| `DeleteSoftDeletesRowAsync`                                                            | Fact   | Delete soft deletes row.                                                                       |
+| `UpdateOnLockedRowThrowsLockedExceptionAsync`                                          | Fact   | Update on locked row throws locked exception.                                                  |
+| `DeleteOnLockedRowThrowsLockedExceptionAsync`                                          | Fact   | Delete on locked row throws locked exception.                                                  |
+| `InsertWithEmptyNameIsRejectedAsync`                                                   | Fact   | Insert with empty name is rejected.                                                            |
+| `InsertByUserWithoutPermissionThrowsForbiddenAsync`                                    | Fact   | Insert by user without permission throws forbidden.                                            |
+| `NonLandlordHoldingEverySpecificationIsForbiddenAsync`                                 | Fact   | Non landlord holding every specification is forbidden.                                         |
+| `EveryVerbIsRefusedToANonLandlordHoldingEveryPermissionAsync`                          | Fact   | Every verb is refused to a non landlord holding every permission.                              |
+| `ARefusedNonLandlordWritesAForbiddenAuditLineAndNoRowAsync`                            | Fact   | A refused non landlord writes a forbidden audit line and no row.                               |
+| `EveryMutationWritesOneAuditLineNamingTheActorAndTheRowAsync`                          | Fact   | Every mutation writes one audit line naming the actor and the row.                             |
+| `OrdinaryInstrumentNamesAreAcceptedAsync`                                              | Theory | Ordinary instrument names are accepted.                                                        |
+| `InsertWithAForeignPaddedOrDirectionalCharacterNameFailsValidationAndWritesNoRowAsync` | Theory | Insert with a foreign padded or directional character name fails validation and writes no row. |
+| `ANameCanBeReusedOnceTheRowThatHeldItIsDeletedAsync`                                   | Fact   | A name can be reused once the row that held it is deleted.                                     |
+| `UpdateKeepingItsOwnNameIsNotADuplicateButRenamingOntoAnotherRowIsAsync`               | Fact   | Update keeping its own name is not a duplicate but renaming onto another row is.               |
+| `InsertWithADuplicateNameIgnoringCaseIsRejectedAndWritesNoRowAsync`                    | Fact   | Insert with a duplicate name ignoring case is rejected and writes no row.                      |
 
 ## Open telemetry log counter
 
 ### OpenTelemetryLogCounterServiceTests
 
-`Jube.Test.Service.OpenTelemetryLogCounter.OpenTelemetryLogCounterServiceTests` — 12 tests. Category: Service.
+`Jube.Test.Service.OpenTelemetryLogCounter.OpenTelemetryLogCounterServiceTests` — 18 tests. Category: Service.
 Collection: Database.
 
-| Test                                                   | Kind | Verifies                                               |
-|--------------------------------------------------------|------|--------------------------------------------------------|
-| `InsertPersistsAndReturnsVersionOneAsync`              | Fact | Insert persists and returns version one.               |
-| `GetAllReturnsCreatedRowAndGetByIdReturnsItAsync`      | Fact | Get all returns created row and get by id returns it.  |
-| `UpdateChangesFieldsAndIncrementsVersionAsync`         | Fact | Update changes fields and increments version.          |
-| `DeleteSoftDeletesRowAsync`                            | Fact | Delete soft deletes row.                               |
-| `DeleteOnMissingIdThrowsNotFoundAsync`                 | Fact | Delete on missing id throws not found.                 |
-| `UpdateOnLockedRowThrowsLockedExceptionAsync`          | Fact | Update on locked row throws locked exception.          |
-| `DeleteOnLockedRowThrowsLockedExceptionAsync`          | Fact | Delete on locked row throws locked exception.          |
-| `InsertWithEmptyNameIsRejectedAsync`                   | Fact | Insert with empty name is rejected.                    |
-| `InsertWithInvalidRegexIsRejectedAsync`                | Fact | Insert with invalid regex is rejected.                 |
-| `InsertByUnauthenticatedUserThrowsAsync`               | Fact | Insert by unauthenticated user throws.                 |
-| `InsertByUserWithoutPermissionThrowsForbiddenAsync`    | Fact | Insert by user without permission throws forbidden.    |
-| `NonLandlordHoldingEverySpecificationIsForbiddenAsync` | Fact | Non landlord holding every specification is forbidden. |
+| Test                                                                     | Kind   | Verifies                                                                         |
+|--------------------------------------------------------------------------|--------|----------------------------------------------------------------------------------|
+| `InsertPersistsAndReturnsVersionOneAsync`                                | Fact   | Insert persists and returns version one.                                         |
+| `GetAllReturnsCreatedRowAndGetByIdReturnsItAsync`                        | Fact   | Get all returns created row and get by id returns it.                            |
+| `UpdateChangesFieldsAndIncrementsVersionAsync`                           | Fact   | Update changes fields and increments version.                                    |
+| `DeleteSoftDeletesRowAsync`                                              | Fact   | Delete soft deletes row.                                                         |
+| `DeleteOnMissingIdThrowsNotFoundAsync`                                   | Fact   | Delete on missing id throws not found.                                           |
+| `UpdateOnLockedRowThrowsLockedExceptionAsync`                            | Fact   | Update on locked row throws locked exception.                                    |
+| `DeleteOnLockedRowThrowsLockedExceptionAsync`                            | Fact   | Delete on locked row throws locked exception.                                    |
+| `InsertWithEmptyNameIsRejectedAsync`                                     | Fact   | Insert with empty name is rejected.                                              |
+| `InsertWithInvalidRegexIsRejectedAsync`                                  | Fact   | Insert with invalid regex is rejected.                                           |
+| `InsertByUnauthenticatedUserThrowsAsync`                                 | Fact   | Insert by unauthenticated user throws.                                           |
+| `InsertByUserWithoutPermissionThrowsForbiddenAsync`                      | Fact   | Insert by user without permission throws forbidden.                              |
+| `NonLandlordHoldingEverySpecificationIsForbiddenAsync`                   | Fact   | Non landlord holding every specification is forbidden.                           |
+| `EveryVerbIsRefusedToANonLandlordHoldingEveryPermissionAsync`            | Fact   | Every verb is refused to a non landlord holding every permission.                |
+| `EveryMutationWritesOneAuditLineNamingTheActorAndTheRowAsync`            | Fact   | Every mutation writes one audit line naming the actor and the row.               |
+| `UncompilablePatternsAreRefusedWithTheRegexInvalidCodeAsync`             | Theory | Uncompilable patterns are refused with the regex invalid code.                   |
+| `CatastrophicAndBacktrackingPatternsAreSavedAndStayBoundedAsync`         | Theory | Catastrophic and backtracking patterns are saved and stay bounded.               |
+| `UpdateKeepingItsOwnNameIsNotADuplicateButRenamingOntoAnotherRowIsAsync` | Fact   | Update keeping its own name is not a duplicate but renaming onto another row is. |
+| `InsertWithADuplicateNameIgnoringCaseIsRejectedAndWritesNoRowAsync`      | Fact   | Insert with a duplicate name ignoring case is rejected and writes no row.        |
 
 ## Open telemetry metric
 
@@ -1127,9 +1145,9 @@ Collection: Database.
 
 ## Redis call counter
 
-### RedisCallCounterServiceTests
+### RespCallCounterServiceTests
 
-`Jube.Test.Service.RedisCallCounter.RedisCallCounterServiceTests` — 19 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.RespCallCounter.RespCallCounterServiceTests` — 19 tests. Category: Service. Collection: Database.
 
 | Test                                                           | Kind   | Verifies                                                           |
 |----------------------------------------------------------------|--------|--------------------------------------------------------------------|
@@ -1155,9 +1173,9 @@ Collection: Database.
 
 ## Redis connection event
 
-### RedisConnectionEventServiceTests
+### RespConnectionEventServiceTests
 
-`Jube.Test.Service.RedisConnectionEvent.RedisConnectionEventServiceTests` — 19 tests. Category: Service. Collection:
+`Jube.Test.Service.RespConnectionEvent.RespConnectionEventServiceTests` — 19 tests. Category: Service. Collection:
 Database.
 
 | Test                                                           | Kind   | Verifies                                                           |
@@ -1184,9 +1202,9 @@ Database.
 
 ## Redis connection multiplexer metric
 
-### RedisConnectionMultiplexerMetricServiceTests
+### RespConnectionMultiplexerMetricServiceTests
 
-`Jube.Test.Service.RedisConnectionMultiplexerMetric.RedisConnectionMultiplexerMetricServiceTests` — 19 tests. Category:
+`Jube.Test.Service.RespConnectionMultiplexerMetric.RespConnectionMultiplexerMetricServiceTests` — 19 tests. Category:
 Service. Collection: Database.
 
 | Test                                                           | Kind   | Verifies                                                           |
@@ -1213,9 +1231,9 @@ Service. Collection: Database.
 
 ## Redis key activity
 
-### RedisKeyActivityRepositoryTests
+### RespKeyActivityRepositoryTests
 
-`Jube.Test.Service.RedisKeyActivity.RedisKeyActivityRepositoryTests` — 2 tests. Category: Service.
+`Jube.Test.Service.RespKeyActivity.RespKeyActivityRepositoryTests` — 2 tests. Category: Service.
 
 | Test                                                                               | Kind | Verifies                                                                                  |
 |------------------------------------------------------------------------------------|------|-------------------------------------------------------------------------------------------|
@@ -1224,9 +1242,9 @@ Service. Collection: Database.
 
 ## Redis metric
 
-### RedisMetricServiceTests
+### RespMetricServiceTests
 
-`Jube.Test.Service.RedisMetric.RedisMetricServiceTests` — 22 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.RespMetric.RespMetricServiceTests` — 22 tests. Category: Service. Collection: Database.
 
 | Test                                                                     | Kind   | Verifies                                                                        |
 |--------------------------------------------------------------------------|--------|---------------------------------------------------------------------------------|
@@ -1255,9 +1273,9 @@ Service. Collection: Database.
 
 ## Redis sentinel event
 
-### RedisSentinelEventServiceTests
+### RespSentinelEventServiceTests
 
-`Jube.Test.Service.RedisSentinelEvent.RedisSentinelEventServiceTests` — 18 tests. Category: Service. Collection:
+`Jube.Test.Service.RespSentinelEvent.RespSentinelEventServiceTests` — 18 tests. Category: Service. Collection:
 Database.
 
 | Test                                                           | Kind   | Verifies                                                           |
@@ -1283,9 +1301,9 @@ Database.
 
 ## Redis sentinel status
 
-### RedisSentinelStatusServiceTests
+### RespSentinelStatusServiceTests
 
-`Jube.Test.Service.RedisSentinelStatus.RedisSentinelStatusServiceTests` — 20 tests. Category: Service. Collection:
+`Jube.Test.Service.RespSentinelStatus.RespSentinelStatusServiceTests` — 20 tests. Category: Service. Collection:
 Database.
 
 | Test                                                             | Kind   | Verifies                                                           |
@@ -1313,9 +1331,9 @@ Database.
 
 ## Redis slow operation
 
-### RedisSlowOperationServiceTests
+### RespSlowOperationServiceTests
 
-`Jube.Test.Service.RedisSlowOperation.RedisSlowOperationServiceTests` — 21 tests. Category: Service. Collection:
+`Jube.Test.Service.RespSlowOperation.RespSlowOperationServiceTests` — 21 tests. Category: Service. Collection:
 Database.
 
 | Test                                                            | Kind   | Verifies                                                           |
@@ -1341,3 +1359,58 @@ Database.
 | `ListTotalReflectsFullFilteredCountEvenWhenTakeIsSmallerAsync`  | Fact   | List total reflects full filtered count even when take is smaller. |
 | `ListStatisticsComputesExactValuesForDurationMicrosecondsAsync` | Fact   | List statistics computes exact values for duration microseconds.   |
 | `ListStatisticsIncludesEveryContinuousMeasuredColumnAsync`      | Fact   | List statistics includes every continuous measured column.         |
+
+### LogCounterRuleCacheTests
+
+`Jube.Test.Engine.Observability.LogCounterRuleCacheTests` — 13 tests. Category: Unit.
+
+| Test                                                               | Kind   | Verifies                                                                    |
+|--------------------------------------------------------------------|--------|-----------------------------------------------------------------------------|
+| `AMatchingLineIncrementsTheRuleCounterOncePerLine`                 | Fact   | A matching line increments the rule counter once per line.                  |
+| `AnExcludedRuleNeverCreatesOrIncrementsItsCounter`                 | Fact   | An excluded rule never creates or increments its counter.                   |
+| `LiftingTheExclusionResumesCounting`                               | Fact   | Lifting the exclusion resumes counting.                                     |
+| `ARuleRemovedFromTheDefinitionsStopsCounting`                      | Fact   | A rule removed from the definitions stops counting.                         |
+| `InvalidBlankAndNullDefinitionsAreSkippedWithoutBlockingValidOnes` | Fact   | Invalid blank and null definitions are skipped without blocking valid ones. |
+| `NullAndEmptyTextAreIgnored`                                       | Fact   | Null and empty text are ignored.                                            |
+| `AnUnchangedRuleKeepsItsCompiledMatcherAcrossARefresh`             | Fact   | An unchanged rule keeps its compiled matcher across a refresh.              |
+| `ARuleSuspendsAfterFiveConsecutiveTimeoutsAndResumesOnRefresh`     | Fact   | A rule suspends after five consecutive timeouts and resumes on refresh.     |
+| `ACompletedMatchResetsTheConsecutiveTimeoutRun`                    | Fact   | A completed match resets the consecutive timeout run.                       |
+| `CatastrophicPatternsAreMatchedInLinearTime`                       | Theory | Catastrophic patterns are matched in linear time.                           |
+| `PatternsNeedingBacktrackingFallBackToABoundedMatcher`             | Theory | Patterns needing backtracking fall back to a bounded matcher.               |
+| `InvalidPatternsAreRefused`                                        | Theory | Invalid patterns are refused.                                               |
+| `EveryCreatedMatcherCarriesTheBoundedTimeout`                      | Fact   | Every created matcher carries the bounded timeout.                          |
+
+### LogCounterRuleSetTests
+
+`Jube.Test.Engine.Observability.LogCounterRuleSetTests` — 4 tests. Category: Unit.
+
+| Test                                                            | Kind | Verifies                                                                  |
+|-----------------------------------------------------------------|------|---------------------------------------------------------------------------|
+| `EveryMatchingRuleReportsItsNameAndSkippedRulesAreNotEvaluated` | Fact | Every matching rule reports its name and skipped rules are not evaluated. |
+| `InvalidAndBlankDefinitionsAreWarnedOrSkippedAndTheRestKept`    | Fact | Invalid and blank definitions are warned or skipped and the rest kept.    |
+| `NullOrEmptyTextMatchesNothing`                                 | Fact | Null or empty text matches nothing.                                       |
+| `AnUnchangedDefinitionIsReusedAndAChangedOneReplaced`           | Fact | An unchanged definition is reused and a changed one replaced.             |
+
+### OpenTelemetryExcludeCacheTests
+
+`Jube.Test.Engine.Observability.OpenTelemetryExcludeCacheTests` — 6 tests. Category: Unit.
+
+| Test                                                               | Kind   | Verifies                                                                      |
+|--------------------------------------------------------------------|--------|-------------------------------------------------------------------------------|
+| `NothingIsExcludedBeforeTheFirstRefresh`                           | Fact   | Nothing is excluded before the first refresh.                                 |
+| `AnAppliedNameIsExcludedIgnoringCase`                              | Fact   | An applied name is excluded ignoring case.                                    |
+| `OnlyTheFullNameMatchesAndWildcardsAreLiteral`                     | Theory | Only the full name matches and wildcards are literal.                         |
+| `AWildcardRowExcludesOnlyAnInstrumentLiterallyNamedThat`           | Fact   | A wildcard row excludes only an instrument literally named that.              |
+| `ApplyingANewListReplacesTheOldOneSoDeletedExclusionsStopApplying` | Fact   | Applying a new list replaces the old one so deleted exclusions stop applying. |
+| `NullAndEmptyRowsAreDropped`                                       | Fact   | Null and empty rows are dropped.                                              |
+
+### ListenerConsoleTextTests
+
+`Jube.Test.Service.Observability.ListenerConsoleTextTests` — 4 tests. Category: Unit.
+
+| Test                                                                    | Kind   | Verifies                                                                        |
+|-------------------------------------------------------------------------|--------|---------------------------------------------------------------------------------|
+| `ControlSeparatorAndDirectionalCharactersNeverReachTheConsoleLiterally` | Theory | Control separator and directional characters never reach the console literally. |
+| `OrdinaryTextIncludingUnicodeLettersIsUnchanged`                        | Fact   | Ordinary text including unicode letters is unchanged.                           |
+| `NullAndEmptyBecomeEmpty`                                               | Fact   | Null and empty become empty.                                                    |
+| `EscapedProtobufStringsKeepTheirValuesButLoseTheirLineBreaks`           | Fact   | Escaped protobuf strings keep their values but lose their line breaks.          |

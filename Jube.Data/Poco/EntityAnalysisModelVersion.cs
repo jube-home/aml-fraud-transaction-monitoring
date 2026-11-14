@@ -69,5 +69,6 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(40)] public double? SamplePercentage { get; set; }
         [Column] [Nullable] [Key(41)] public byte? EnableLogsWarnThreshold { get; set; }
         [Column] [Nullable] [Key(42)] public byte? EnableLogs { get; set; }
+        [Column] [Nullable] [Key(43)] public byte? EnablePayloadJObject { get; set; }
     }
 }

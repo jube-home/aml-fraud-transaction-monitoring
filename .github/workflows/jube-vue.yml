@@ -1,0 +1,38 @@
+name: Jube.App Vue
+
+on:
+  push:
+    paths:
+      - 'Jube.App/Vue/**'
+      - '.github/workflows/jube-vue.yml'
+  pull_request:
+    paths:
+      - 'Jube.App/Vue/**'
+      - '.github/workflows/jube-vue.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Jube.App/Vue
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: Jube.App/Vue/package-lock.json
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run lint:eslint
+      - run: npm run type-check
+      - run: npm run test:unit
+      - run: npm run build-only
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+        env:
+          CI: 'true'

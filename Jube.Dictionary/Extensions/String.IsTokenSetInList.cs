@@ -18,7 +18,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsTokenSetInList(this string? @this, IEnumerable<string>? list, double threshold)
+        [Description("True when: the share of an entry's words that are found, allowing typos and missing words.")]
+        public static bool IsTokenSetInList(this string? @this,
+            [Description("The List token whose entries are compared.")] IEnumerable<string>? list,
+            [Description("The share of matching words from 0 to 1 that counts.")] double threshold)
         {
             return FuzzyListMatcher.Any(@this, list, FuzzyOptions.For(FuzzyAlgorithm.TokenSet, threshold));
         }

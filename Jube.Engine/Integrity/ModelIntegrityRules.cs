@@ -29,7 +29,9 @@ namespace Jube.Engine.Integrity
         string EntityKind,
         int? EntityId,
         string EntityName,
-        string Message);
+        string Message,
+        string MessageKey = null,
+        IReadOnlyList<string> Arguments = null);
 
     public sealed record CompileStatus(
         string Kind,
@@ -66,7 +68,7 @@ namespace Jube.Engine.Integrity
         [
             ModelEntityKind.List, ModelEntityKind.Dictionary, ModelEntityKind.TtlCounter,
             ModelEntityKind.AbstractionRule, ModelEntityKind.AbstractionCalculation, ModelEntityKind.InlineFunction,
-            ModelEntityKind.HttpAdaptation, ModelEntityKind.ExhaustiveAdaptation
+            ModelEntityKind.HttpAdaptation, ModelEntityKind.ExhaustiveAdaptation, ModelEntityKind.Svirfd
         ];
 
         private static readonly HashSet<string> loadedKinds =
@@ -90,7 +92,9 @@ namespace Jube.Engine.Integrity
                     $"{Describe(dangling)} names {Qualified(dangling)}, which does not exist" +
                     (dangling.Dependent.Active
                         ? ", so it will not work."
-                        : "; it is inactive, so this only matters if it is activated."));
+                        : "; it is inactive, so this only matters if it is activated."),
+                    "DependencyDangling" + (dangling.Dependent.Active ? "Active" : "Inactive") + Form(dangling),
+                    Arguments(dangling, Qualified(dangling)));
             }
 
             foreach (var inactive in graph.OnInactiveTargets().OrderBy(d => d.Dependent.Kind)
@@ -99,7 +103,9 @@ namespace Jube.Engine.Integrity
                 yield return Check(IntegrityCode.DependencyOnInactive, IntegritySeverity.Warning, Dependencies,
                     inactive.Dependent,
                     $"{Describe(inactive)} uses {inactive.Target.Kind} {inactive.Target.Name}, which is inactive, " +
-                    "so the engine does not load it and the use will not work.");
+                    "so the engine does not load it and the use will not work.",
+                    "DependencyOnInactive" + Form(inactive),
+                    Arguments(inactive, inactive.Target.Kind.ToString(), inactive.Target.Name));
             }
 
             foreach (var unapproved in graph.OnUnapprovedTargets().OrderBy(d => d.Dependent.Kind)
@@ -108,14 +114,17 @@ namespace Jube.Engine.Integrity
                 yield return Check(IntegrityCode.DependencyOnUnapproved, IntegritySeverity.Warning, Dependencies,
                     unapproved.Dependent,
                     $"{Describe(unapproved)} uses {unapproved.Target.Kind} {unapproved.Target.Name}, which is not " +
-                    "yet approved, so the engine does not run it and the use will not work until it is.");
+                    "yet approved, so the engine does not run it and the use will not work until it is.",
+                    "DependencyOnUnapproved" + Form(unapproved),
+                    Arguments(unapproved, unapproved.Target.Kind.ToString(), unapproved.Target.Name));
             }
 
             foreach (var unused in graph.Unreferenced(unreferencedKinds).Where(e => e.Active)
                          .OrderBy(e => e.Kind).ThenBy(e => e.Name))
             {
                 yield return Check(IntegrityCode.EntityUnreferenced, IntegritySeverity.Info, Dependencies, unused,
-                    $"{unused.Kind} {unused.Name} is active but nothing in the model uses it.");
+                    $"{unused.Kind} {unused.Name} is active but nothing in the model uses it.",
+                    "EntityUnreferenced", [unused.Kind.ToString(), unused.Name]);
             }
         }
 
@@ -129,7 +138,11 @@ namespace Jube.Engine.Integrity
                 yield return new IntegrityCheck(IntegrityCode.EngineCompileFailed, IntegritySeverity.Error,
                     Compilation, status.Kind, status.Id, status.Name,
                     $"The engine could not compile {status.Kind} {status.Name} at its last synchronisation, so it " +
-                    $"is not running: {status.CompileError ?? "no error was recorded"}.");
+                    $"is not running: {status.CompileError ?? "no error was recorded"}.",
+                    status.CompileError == null ? "EngineCompileFailedNoError" : "EngineCompileFailed",
+                    status.CompileError == null
+                        ? [status.Kind, status.Name]
+                        : [status.Kind, status.Name, status.CompileError]);
             }
         }
 
@@ -142,14 +155,16 @@ namespace Jube.Engine.Integrity
             if (!modelActive)
             {
                 yield return new IntegrityCheck(IntegrityCode.ModelInactive, IntegritySeverity.Info, Configuration,
-                    null, null, null, "The model is inactive, so the engine does not load or invoke it.");
+                    null, null, null, "The model is inactive, so the engine does not load or invoke it.",
+                    "ModelInactive", []);
             }
 
             if (!graph.Entities.Any(e => e.Kind == ModelEntityKind.ActivationRule && e.Active))
             {
                 yield return new IntegrityCheck(IntegrityCode.NoActiveActivationRules, IntegritySeverity.Info,
                     Configuration, null, null, null,
-                    "The model has no active activation rules, so no transaction can activate.");
+                    "The model has no active activation rules, so no transaction can activate.",
+                    "NoActiveActivationRules", []);
             }
 
             if (!enableTtlCounter)
@@ -160,7 +175,7 @@ namespace Jube.Engine.Integrity
                     yield return Check(IntegrityCode.TtlCountersDisabled, IntegritySeverity.Warning, Configuration,
                         counter,
                         $"TTL counters are disabled for the model, so the engine neither increments nor reads " +
-                        $"{counter.Name}; rules see it as 0.");
+                        $"{counter.Name}; rules see it as 0.", "TtlCountersDisabled", [counter.Name]);
                 }
             }
 
@@ -177,12 +192,18 @@ namespace Jube.Engine.Integrity
                         Configuration, nameof(ModelEntityKind.AbstractionRule), rule.Id, rule.Name,
                         $"The search key {rule.SearchKey} has no TTL, so the engine limits the abstraction rule's " +
                         $"{rule.Value} {rule.Interval} window to the reference date alone and it aggregates almost " +
-                        "nothing.")
+                        "nothing.", "SearchKeyTtlCollapsesWindow",
+                        [rule.SearchKey, rule.Value.ToString(), rule.Interval])
                     : new IntegrityCheck(IntegrityCode.SearchKeyTtlShortensWindow, IntegritySeverity.Warning,
                         Configuration, nameof(ModelEntityKind.AbstractionRule), rule.Id, rule.Name,
                         $"The search key {rule.SearchKey} keeps history for {rule.SearchKeyTtlValue} " +
                         $"{rule.SearchKeyTtlInterval}, which is shorter than the rule's {rule.Value} " +
-                        $"{rule.Interval}, so the engine silently uses the shorter window.");
+                        $"{rule.Interval}, so the engine silently uses the shorter window.",
+                        "SearchKeyTtlShortensWindow",
+                        [
+                            rule.SearchKey, rule.SearchKeyTtlValue.ToString(), rule.SearchKeyTtlInterval,
+                            rule.Value.ToString(), rule.Interval
+                        ]);
             }
         }
 
@@ -199,13 +220,13 @@ namespace Jube.Engine.Integrity
                 checks.Add(new IntegrityCheck(IntegrityCode.EngineStateUnavailable, IntegritySeverity.Info, Engine,
                     null, null, null,
                     "No engine runs in this process and no engine has recorded what it loaded for this model, so " +
-                    "what the engine is running cannot be checked."));
+                    "what the engine is running cannot be checked.", "EngineStateUnavailable", []));
             }
 
             if (observation.Nodes.Count == 0)
             {
                 checks.Add(new IntegrityCheck(IntegrityCode.EngineNoNodes, IntegritySeverity.Warning, Engine, null,
-                    null, null, "No engine instance has synchronised this tenant's models."));
+                    null, null, "No engine instance has synchronised this tenant's models.", "EngineNoNodes", []));
             }
 
             var retention = TimeSpan.FromMinutes(EngineInstanceLiveness.RetentionMinutes);
@@ -218,7 +239,9 @@ namespace Jube.Engine.Integrity
                     null, node.Instance,
                     $"Engine instance {node.Instance} last reported at {Format(node.HeartbeatDate)} and is not running. " +
                     $"It is removed at the next synchronisation, or drops out of this list at " +
-                    $"{Format(node.HeartbeatDate!.Value.Add(retention))} if no synchronisation runs."));
+                    $"{Format(node.HeartbeatDate!.Value.Add(retention))} if no synchronisation runs.",
+                    "EngineNodeStale",
+                    [node.Instance, Format(node.HeartbeatDate), Format(node.HeartbeatDate!.Value.Add(retention))]));
             }
 
             if (!modelActive || observation.Source == EngineStateSourceKind.Unavailable)
@@ -242,7 +265,8 @@ namespace Jube.Engine.Integrity
                 {
                     checks.Add(new IntegrityCheck(IntegrityCode.EngineModelNotStarted, IntegritySeverity.Warning,
                         Engine, null, null, state.Instance,
-                        $"Engine instance {state.Instance} has loaded the model but not started it."));
+                        $"Engine instance {state.Instance} has loaded the model but not started it.",
+                        "EngineModelNotStarted", [state.Instance]));
                 }
 
                 var loaded = state.Loaded.Where(l => loadedKinds.Contains(l.Kind)).ToList();
@@ -256,7 +280,8 @@ namespace Jube.Engine.Integrity
                         checks.Add(new IntegrityCheck(IntegrityCode.EntityPendingApproval, IntegritySeverity.Info,
                             Engine, missing.Kind, missing.Id, missing.Name,
                             $"{missing.Kind} {missing.Name} is waiting for approval, so engine instance " +
-                            $"{state.Instance} does not run it yet."));
+                            $"{state.Instance} does not run it yet.", "EntityPendingApprovalWaiting",
+                            [missing.Kind, missing.Name, state.Instance]));
 
                         continue;
                     }
@@ -264,7 +289,8 @@ namespace Jube.Engine.Integrity
                     checks.Add(new IntegrityCheck(IntegrityCode.EngineEntityNotLoaded, IntegritySeverity.Warning,
                         Engine, missing.Kind, missing.Id, missing.Name,
                         $"{missing.Kind} {missing.Name} is approved and active but engine instance {state.Instance} " +
-                        "has not loaded it: synchronise the model, and check that it compiles."));
+                        "has not loaded it: synchronise the model, and check that it compiles.",
+                        "EngineEntityNotLoaded", [missing.Kind, missing.Name, state.Instance]));
                 }
 
                 foreach (var stale in loaded.Where(l => !activeKeys.Contains((l.Kind, l.Id)))
@@ -275,7 +301,8 @@ namespace Jube.Engine.Integrity
                         checks.Add(new IntegrityCheck(IntegrityCode.EntityPendingApproval, IntegritySeverity.Info,
                             Engine, stale.Kind, stale.Id, stale.Name,
                             $"{stale.Kind} {stale.Name} has a change waiting for approval, so engine instance " +
-                            $"{state.Instance} is still running the last approved version."));
+                            $"{state.Instance} is still running the last approved version.",
+                            "EntityPendingApprovalChanged", [stale.Kind, stale.Name, state.Instance]));
 
                         continue;
                     }
@@ -283,28 +310,44 @@ namespace Jube.Engine.Integrity
                     checks.Add(new IntegrityCheck(IntegrityCode.EngineEntityStale, IntegritySeverity.Warning, Engine,
                         stale.Kind, stale.Id, stale.Name,
                         $"Engine instance {state.Instance} is still running {stale.Kind} {stale.Name}, which is no " +
-                        "longer active; synchronise the model to unload it."));
+                        "longer active; synchronise the model to unload it.",
+                        "EngineEntityStale", [state.Instance, stale.Kind, stale.Name]));
                 }
             }
 
             var loadedInstances = observation.States.Select(s => s.Instance).ToHashSet(StringComparer.Ordinal);
 
-            foreach (var node in observation.Nodes.Where(n => !loadedInstances.Contains(n.Instance))
+            foreach (var node in observation.Nodes.Where(n => !loadedInstances.Contains(n.Instance)
+                                                                  && n.HeartbeatDate is { } reported
+                                                                  && now - reported <= heartbeatTolerance)
                          .OrderBy(n => n.Instance, StringComparer.Ordinal))
             {
                 checks.Add(new IntegrityCheck(IntegrityCode.EngineModelNotLoaded, IntegritySeverity.Warning, Engine,
                     null, null, node.Instance,
-                    $"Engine instance {node.Instance} has not loaded the model; synchronise it."));
+                    $"Engine instance {node.Instance} has not loaded the model; synchronise it.",
+                    "EngineModelNotLoaded", [node.Instance]));
             }
 
             return checks;
         }
 
         private static IntegrityCheck Check(IntegrityCode code, IntegritySeverity severity, string category,
-            ModelEntity entity, string message)
+            ModelEntity entity, string message, string messageKey, IReadOnlyList<string> arguments)
         {
             return new IntegrityCheck(code, severity, category, entity.Kind.ToString(), entity.Id, entity.Name,
-                message);
+                message, messageKey, arguments);
+        }
+
+        private static string Form(ModelDependency dependency)
+        {
+            return dependency.Kind == ModelDependencyKind.RuleText ? "RuleText" : "Setting";
+        }
+
+        private static IReadOnlyList<string> Arguments(ModelDependency dependency, params string[] rest)
+        {
+            return dependency.Kind == ModelDependencyKind.RuleText
+                ? [dependency.Dependent.Kind.ToString(), dependency.Dependent.Name, .. rest]
+                : [dependency.Kind.ToString(), dependency.Dependent.Kind.ToString(), dependency.Dependent.Name, .. rest];
         }
 
         private static string Describe(ModelDependency dependency)

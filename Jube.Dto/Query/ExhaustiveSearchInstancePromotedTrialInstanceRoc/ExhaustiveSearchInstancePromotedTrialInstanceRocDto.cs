@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,18 +21,23 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstanceRoc
 {
+    [MessagePackObject]
     public class ExhaustiveSearchInstancePromotedTrialInstanceRocDto
     {
         [Description("Identifier of this ROC curve point.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("Classification score threshold at which this point was evaluated.")]
+        [Key(1)]
         public double Score { get; set; }
 
         [Description("False positive rate at this threshold: FalsePositive / (FalsePositive + TrueNegative).")]
+        [Key(2)]
         public double Fpr { get; set; }
 
         [Description("True positive rate at this threshold: TruePositive / (TruePositive + FalseNegative).")]
+        [Key(3)]
         public double Tpr { get; set; }
     }
 }

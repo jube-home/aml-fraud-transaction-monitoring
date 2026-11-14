@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Checks if the character is a separator character.")]
         public static Boolean IsSeparator(this Char c)
         {
             return char.IsSeparator(c);

@@ -189,7 +189,8 @@ namespace Jube.Service.Query.EntityAnalysisModelTimeWindow
 
                 var settings = AbstractionSettings.FromRecord(rule.Id, rule.Name, rule.SearchKey,
                     rule.SearchFunctionKey, rule.SearchFunctionTypeId, rule.SearchInterval, rule.SearchValue,
-                    rule.Offset == 1, rule.OffsetTypeId, rule.OffsetValue);
+                    rule.Offset == 1, rule.OffsetTypeId, rule.OffsetValue, rule.IterationOrderId,
+                    rule.SearchFunctionParameters);
 
                 var ttlInterval = searchKey?.SearchKeyTtlInterval ?? "d";
                 var ttlValue = searchKey?.SearchKeyTtlIntervalValue ?? 0;

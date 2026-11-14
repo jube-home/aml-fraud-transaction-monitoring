@@ -18,10 +18,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Dictionary;
-using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHelpers;
+using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRulesWithSearchKeys;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
+using Jube.GraphRecallProtocol;
 using Jube.HttpAdaptationProtocol;
 using Microsoft.VisualBasic;
 
@@ -152,6 +153,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                                 AdvancedAnalyticsAdaptation =
                                     new PooledDictionary<string, double>(entityAnalysisModel.Snapshot
                                         .AdvancedAnalyticsModels.Count),
+                                Graph = new PooledDictionary<string, GraphEntity>(entityAnalysisModel.Snapshot
+                                    .GraphRecall.Entities.Count),
                                 InvokeTaskPerformance = new InvokeTaskPerformance()
                             };
 
@@ -311,7 +314,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
 
             try
             {
-                var logicHashMatches = new Dictionary<string, List<DictionaryNoBoxing<string>>>();
+                var now = DateTime.UtcNow;
+
+                var resolver = new AbstractionMatchResolver(documents, null,
+                    entityAnalysisModel.Snapshot.EntityAnalysisModelLists, null, null,
+                    entityAnalysisModel.Services.Log);
 
                 if (entityAnalysisModel.Services.Log.IsInfoEnabled)
                 {
@@ -338,53 +345,18 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ab
                                 $"Abstraction Rule Caching: For model {entityAnalysisModel.Instance.Id} and grouping key {distinctSearchKey.SearchKey} is checking is abstraction rule {evaluateAbstractionRule.Id} will be used to filter for matches.  As some rule logic can be common across a number of rules,  a check will be made to see if this logic has already been executed using the hash of the rule logic as {evaluateAbstractionRule.LogicHash}.");
                         }
 
-                        List<DictionaryNoBoxing<string>> matches;
-
-                        if (logicHashMatches.TryGetValue(evaluateAbstractionRule.LogicHash, out var match))
-                        {
-                            matches = match;
-
-                            if (entityAnalysisModel.Services.Log.IsInfoEnabled)
-                            {
-                                entityAnalysisModel.Services.Log.Info(
-                                    $"Abstraction Rule Caching: For model {entityAnalysisModel.Instance.Id} and grouping key {distinctSearchKey.SearchKey} is checking is abstraction rule {evaluateAbstractionRule.Id} will be used to filter for matches.  Rule logic as {evaluateAbstractionRule.LogicHash} has already been executed so it will simply return the {matches.Count} records already having been matched on this logic.");
-                            }
-                        }
-                        else
-                        {
-                            if (entityAnalysisModel.Services.Log.IsInfoEnabled)
-                            {
-                                entityAnalysisModel.Services.Log.Info(
-                                    $"Abstraction Rule Caching: For model {entityAnalysisModel.Instance.Id} and grouping key {distinctSearchKey.SearchKey} is checking is abstraction rule {evaluateAbstractionRule.Id} will be used to filter for matches.  Rule logic as {evaluateAbstractionRule.LogicHash} has not already been executed so it be filtered using the rule logic.");
-                            }
-
-                            matches = documents.FindAll(x =>
-                                ReflectRuleHelper.Execute(evaluateAbstractionRule, entityAnalysisModel.Snapshot, x,
-                                    null,
-                                    entityAnalysisModel.Services.Log));
-
-                            logicHashMatches.Add(evaluateAbstractionRule.LogicHash, matches);
-
-                            if (entityAnalysisModel.Services.Log.IsInfoEnabled)
-                            {
-                                entityAnalysisModel.Services.Log.Info(
-                                    $"Abstraction Rule Caching: For model {entityAnalysisModel.Instance.Id} and grouping key {distinctSearchKey.SearchKey} is checking is abstraction rule {evaluateAbstractionRule.Id} will be used to filter for matches.  Rule logic as {evaluateAbstractionRule.LogicHash} has been executed for the first time and returned {matches.Count} records already.  It has been added to the cache using the logic hash as a key.");
-                            }
-                        }
-
                         var historyThresholdDate =
                             DateAndTime.DateAdd(evaluateAbstractionRule.AbstractionRuleAggregationFunctionIntervalType,
-                                evaluateAbstractionRule.AbstractionHistoryIntervalValue * -1, DateTime.UtcNow);
+                                evaluateAbstractionRule.AbstractionHistoryIntervalValue * -1, now);
+
+                        var finalMatches = resolver.Resolve(evaluateAbstractionRule, "CreatedDate",
+                            historyThresholdDate, now, out var matched, out var reused);
 
                         if (entityAnalysisModel.Services.Log.IsInfoEnabled)
                         {
                             entityAnalysisModel.Services.Log.Info(
-                                $"Abstraction Rule Caching: For model {entityAnalysisModel.Instance.Id} and grouping key {distinctSearchKey.SearchKey} is checking is abstraction rule {evaluateAbstractionRule.Id} will be used to filter for matches.  Rule logic as {evaluateAbstractionRule.LogicHash}, {matches.Count} records will be filtered based on the history criteria.  It has been added to the cache using the logic hash as a key.  The interval for the rule logic is {evaluateAbstractionRule.AbstractionHistoryIntervalType} and the value is {evaluateAbstractionRule.AbstractionHistoryIntervalValue}.  Records will be return where the date is between {historyThresholdDate} and now.");
+                                $"Abstraction Rule Caching: For model {entityAnalysisModel.Instance.Id} and grouping key {distinctSearchKey.SearchKey} abstraction rule {evaluateAbstractionRule.Id} with rule logic {evaluateAbstractionRule.LogicHash} matched {matched} records (reused from the logic cache: {reused}).  The interval for the rule logic is {evaluateAbstractionRule.AbstractionHistoryIntervalType} and the value is {evaluateAbstractionRule.AbstractionHistoryIntervalValue}.  Records are returned where the date is between {historyThresholdDate} and {now}.");
                         }
-
-                        var finalMatches = matches.FindAll(x =>
-                            x["CreatedDate"].AsDateTime() >= historyThresholdDate &&
-                            x["CreatedDate"].AsDateTime() <= DateTime.UtcNow);
 
                         abstractionRuleMatches.TryAdd(evaluateAbstractionRule.Id, []);
                         abstractionRuleMatches[evaluateAbstractionRule.Id] = finalMatches;

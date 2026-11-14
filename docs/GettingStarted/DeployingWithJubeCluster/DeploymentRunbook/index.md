@@ -38,7 +38,7 @@ primary/replica routing decision by polling each Patroni node's own REST API (`G
 port 8008) rather than guessing from a raw TCP check - this is Patroni's own recommended integration pattern, since
 only Patroni itself reliably knows which node currently holds the lease.
 
-**Redis traffic bypasses HAProxy entirely.** Jube's `RedisConnectionString` points directly at the five Sentinels
+**Redis traffic bypasses HAProxy entirely.** Jube's `RespConnectionString` points directly at the five Sentinels
 (`sentinel1:26379,...,serviceName=redis-master,...`), using StackExchange.Redis's native Sentinel-aware connection
 mode: the client asks the Sentinel quorum who the current master is, connects there, and re-asks automatically on a
 failover. This is the standard client-side pattern for Redis Sentinel high availability, and is arguably a better
@@ -125,7 +125,7 @@ command. `no-appendfsync-on-rewrite yes` avoids a further fsync stall while the 
 background. `io-threads 4` with `io-threads-do-reads yes` parallelises Redis's normally single-threaded network I/O
 across threads, worthwhile on the multi-core hosts this cluster runs on under concurrent load. `protected-mode no`
 is safe specifically *because* `requirepass`/`masterauth` are always set (via the wrapper command, from the
-`REDIS_PASSWORD` secret) and the network is already confined to the private overlay - protected mode exists to stop
+`RESP_PASSWORD` secret) and the network is already confined to the private overlay - protected mode exists to stop
 an accidentally-unauthenticated instance being reachable from anywhere, which doesn't apply here since both of the
 conditions it guards against are independently already covered.
 
@@ -159,8 +159,8 @@ disposable and rebuildable would be pure overhead with no corresponding benefit.
 `jube-jobs` is the only service with `EnableMigration`, `EnableReprocessing`, `EnableSanctionLoader`,
 `CachePruneServer`, `EnableTtlCounter`, `EnableSearchKeyCache`, `EnableCasesAutomation` and `EnableCallback` all set
 to `True`; `jube-api` and `jube-ui` have every one of those `False`. This isn't an oversight - several of these are
-documented as safe to run on only one instance at a time (
-see [Environment Variables](../../../Concepts/EnvironmentVariables/index.html)),
+documented as safe to run on only one instance at a time
+(see [Environment Variables](../../../Concepts/EnvironmentVariables/index.html)),
 and letting every scaled `jube-api`/`jube-ui` replica also run background processing would mean N copies of the same
 job racing each other. `jube-jobs` is deployed as a singleton for exactly this reason; `jube-api`/`jube-ui` are the
 stateless, horizontally-scaled request handlers.
@@ -283,9 +283,9 @@ sudo chown 70:70 /mnt/pgbackrest
 sudo chcon -Rt container_file_t /mnt/pgbackrest
 
 # Redis
-sudo mkdir -p /mnt/redis
-sudo chown 999:999 /mnt/redis
-sudo chcon -Rt container_file_t /mnt/redis
+sudo mkdir -p /mnt/garnet
+sudo chown 999:999 /mnt/garnet
+sudo chcon -Rt container_file_t /mnt/garnet
 ```
 
 ### SSL Offloading
@@ -311,8 +311,8 @@ Every credential the cluster needs - Postgres passwords, the Redis password, `JW
 and etcd's own `ETCD_ROOT_PASSWORD`/`PATRONI_ETCD3_PASSWORD` - is generated locally and
 loaded into Docker Swarm's own secret store (`docker secret
 create`), never written into `docker-compose.yml` or an Environment Variable directly. For the Jube application
-services, Jube's own `[@Key@]` tokenisation (
-see [Environment Variables](../../../Concepts/EnvironmentVariables/index.html))
+services, Jube's own `[@Key@]` tokenisation
+(see [Environment Variables](../../../Concepts/EnvironmentVariables/index.html))
 resolves each Environment Variable's `[@SECRET_NAME@]` placeholder against the mounted secret file at container
 start, so the secret value itself is never visible in `docker service inspect`, container environment listings, or
 this compose file. This list is just what this particular cluster deployment happens to need, not a fixed or
@@ -369,8 +369,8 @@ service's inspected configuration.
 
 ### On All Nodes
 
-From the cluster directory (`Jube.Cluster/`, where the distributed archive's `Images/` folder lands), load images
-**on every host**:
+From the cluster directory (`Jube.Cluster/`, where the distributed archive's `Images/` folder lands), load images **on
+every host**:
 
 ```bash
 docker load -i Images/jube.etcd:<sha>.tar
@@ -451,9 +451,11 @@ docker node update --label-add zone=host3 <hostname3>
 Validate the labels landed correctly:
 
 {% raw %}
+
 ```bash
 docker node ls -q | xargs docker node inspect -f '{{ .ID }} [{{ .Description.Hostname }}]: {{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}'
 ```
+
 {% endraw %}
 
 > If running on a single host for evaluation, comment out the placement constraints in the compose file's Jube
@@ -507,7 +509,8 @@ into the `PasswordAsymmetricEncryptionPublicKey` Environment Variable for
 placeholder) before the first deploy - this is the one manual step. Without it,
 `PasswordAsymmetricEncryption=True` (set by default in the compose file for `jube-api`/`jube-ui`) will fail to
 start, since [Jube refuses to start with RSA password encryption enabled and either key
-missing](../../../Concepts/EnvironmentVariables/index.html). `ENCRYPTION_KEY` and `PASSWORD_ASYMMETRIC_ENCRYPTION_PRIVATE_KEY`
+missing](../../../Concepts/EnvironmentVariables/index.html). `ENCRYPTION_KEY` and
+`PASSWORD_ASYMMETRIC_ENCRYPTION_PRIVATE_KEY`
 require no such manual step - both flow into `jube-api`/`jube-jobs`/`jube-ui` automatically via the `[@Key@]` Docker
 Secrets tokenisation pattern (see [Environment Variables](../../../Concepts/EnvironmentVariables/index.html)), the same
 as the passwords and `JWT_KEY`/`API_HMAC_KEY` above.
@@ -617,7 +620,8 @@ docker exec -it $(docker ps -q -f name=patroni1) \
 Run the least-privilege database user setup **before** scaling Jube up - `jube-api`/`jube-jobs`/`jube-ui` connect as
 `jube_app`/`jube_reporting`/`jube_migration`/`jube_purge` from the moment they start, and those users don't exist until
 this script creates them (mirroring the same `service`/`reporting` least-privilege split as the single-node
-[`CreateUsers.sql`](../../CreateUsers.sql) referenced from [Deploying with Docker](../../DeployingWithDocker/index.html) -
+[`CreateUsers.sql`](../../CreateUsers.sql) referenced
+from [Deploying with Docker](../../DeployingWithDocker/index.html) -
 `jube_migration` gets DDL rights, `jube_app` gets DML only (no `DELETE`), `jube_reporting` gets read-only, and
 `jube_purge` gets `SELECT`/`DELETE` on only the fixed list of tables `InfrastructureHealthMetricsPurgeStarter`
 chunk-deletes from, for `jube-jobs`'s `PurgeConnectionString`):
@@ -774,15 +778,23 @@ docker stack deploy -c docker-compose.yml jube-cluster
 
 ### Host-Exposed Ports
 
-| Port   | Service        | Reachable via              | Exposed?    | Reason                               |
-|--------|----------------|----------------------------|-------------|--------------------------------------|
-| `5432` | PostgreSQL R/W | HAProxy → patroni1/2/3/4   | ⚠️ Dev only | Remove in production                 |
-| `5433` | PostgreSQL R/O | HAProxy → patroni1/2/3/4   | ⚠️ Dev only | Remove in production                 |
-| `7000` | HAProxy Stats  | haproxy                    | ✅ Always    | Ops monitoring dashboard             |
-| `5001` | Jube UI        | jube-ui                    | ✅ Always    | Web interface                        |
-| `5002` | Jube API       | jube-api                   | ✅ Always    | Public API (maps to 5001 internally) |
+| Port   | Service        | Reachable via            | Exposed?    | Reason                               |
+|--------|----------------|--------------------------|-------------|--------------------------------------|
+| `5432` | PostgreSQL R/W | HAProxy → patroni1/2/3/4 | ⚠️ Dev only | Remove in production                 |
+| `5433` | PostgreSQL R/O | HAProxy → patroni1/2/3/4 | ⚠️ Dev only | Remove in production                 |
+| `7000` | HAProxy Stats  | haproxy                  | ✅ Always   | Ops monitoring dashboard             |
+| `5001` | Jube UI        | jube-ui                  | ✅ Always   | Web interface                        |
+| `5002` | Jube API       | jube-api                 | ✅ Always   | Public API (maps to 5001 internally) |
 
 > In production, remove the two dev-only Postgres entries from the compose file's `ports:` block entirely.
+
+### Production hardening: mock endpoints
+
+The compose files in `Jube.Cluster` set `EnableMockEndpoints=False` on jube-ui, jube-api and jube-jobs, so the
+anonymous HTTP Adaptation test doubles under `/api/MockHttpAdaptation/*` are not mapped. The mock RSA MFA verifier at
+`/api/Mfa` additionally needs `EnableMockMfaEndpoint=True`, which defaults to False and must stay False in production.
+The seeded example model's adaptation targets a mock endpoint, so on a cluster either repoint or disable it. See
+[Environment Variables](../../Concepts/EnvironmentVariables/index.html).
 > Application services on the Swarm network reach Postgres via `haproxy:5432`/`haproxy:5433` regardless.
 
 Unlike Postgres, Redis has no host-published port and no HAProxy entry at all in this topology - clients (including
@@ -798,7 +810,7 @@ known management IPs, before exposing the cluster more broadly.
 
 | Port    | Service           | Reason                                                                                                |
 |---------|-------------------|-------------------------------------------------------------------------------------------------------|
-| `2379`  | etcd client API   | Cluster consensus - no external access needed; client auth is mandatory regardless (see above)         |
+| `2379`  | etcd client API   | Cluster consensus - no external access needed; client auth is mandatory regardless (see above)        |
 | `2380`  | etcd peer traffic | etcd-to-etcd peering only                                                                             |
 | `5432`  | Patroni direct    | Application traffic must flow through HAProxy                                                         |
 | `8008`  | Patroni REST API  | HAProxy health checks only                                                                            |
@@ -882,6 +894,7 @@ docker volume prune
 ## Diagnostics — Network
 
 {% raw %}
+
 ```bash
 # Overlay networks
 docker network ls --filter driver=overlay
@@ -902,6 +915,7 @@ ip addr show
 # A container's internal overlay IP
 docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container-id>
 ```
+
 {% endraw %}
 
 > Containers are reachable via the published host IP and port. Internal `10.x.x.x` overlay addresses are not

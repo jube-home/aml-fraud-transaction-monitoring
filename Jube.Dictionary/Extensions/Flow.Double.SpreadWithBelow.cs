@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchSpreadWithBelow(double bound, params double[] others)
+            [Description("True when: the gap between the largest and smallest of the value and the others is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchSpreadWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleSpreadWithBelow(flow.Value, bound, others));
             }
 
-            public Flow<double> RejectSpreadWithBelow(double bound, params double[] others)
+            [Description("True when: the gap between the largest and smallest of the value and the others is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectSpreadWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleSpreadWithBelow(flow.Value, bound, others));
             }
 
-            public Flow<double> BreakSpreadWithBelow(double bound, params double[] others)
+            [Description("True when: the gap between the largest and smallest of the value and the others is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakSpreadWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleSpreadWithBelow(flow.Value, bound, others));
             }
 
-            public Flow<double> RequireSpreadWithBelow(double bound, params double[] others)
+            [Description("True when: the gap between the largest and smallest of the value and the others is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireSpreadWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleSpreadWithBelow(flow.Value, bound, others));
             }
 
-            public Flow<double> EnsureSpreadWithBelow(double bound, params double[] others)
+            [Description("True when: the gap between the largest and smallest of the value and the others is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureSpreadWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchSpreadWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the gap between the largest and smallest of the value and the others is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchSpreadWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().MatchSpreadWithBelow(bound, others);
             }
 
-            public Flow<double> RejectSpreadWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the gap between the largest and smallest of the value and the others is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectSpreadWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RejectSpreadWithBelow(bound, others);
             }
 
-            public Flow<double> BreakSpreadWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the gap between the largest and smallest of the value and the others is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakSpreadWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().BreakSpreadWithBelow(bound, others);
             }
 
-            public Flow<double> RequireSpreadWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the gap between the largest and smallest of the value and the others is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireSpreadWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RequireSpreadWithBelow(bound, others);
             }
 
-            public Flow<double> EnsureSpreadWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the gap between the largest and smallest of the value and the others is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureSpreadWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().EnsureSpreadWithBelow(bound, others);
             }

@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
+            [Description("True when: null or fails the Luhn checksum. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsNotValidLuhn()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringIsNotValidLuhn(flow.Value));
             }
 
+            [Description("True when: null or fails the Luhn checksum. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsNotValidLuhn()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringIsNotValidLuhn(flow.Value));
             }
 
+            [Description("True when: null or fails the Luhn checksum. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsNotValidLuhn()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringIsNotValidLuhn(flow.Value));
             }
 
+            [Description("True when: null or fails the Luhn checksum. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsNotValidLuhn()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringIsNotValidLuhn(flow.Value));
             }
 
+            [Description("True when: null or fails the Luhn checksum. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsNotValidLuhn()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
+            [Description("Begins a pipeline from the value. True when: null or fails the Luhn checksum. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsNotValidLuhn()
             {
                 return value.Start().MatchIsNotValidLuhn();
             }
 
+            [Description("Begins a pipeline from the value. True when: null or fails the Luhn checksum. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsNotValidLuhn()
             {
                 return value.Start().RejectIsNotValidLuhn();
             }
 
+            [Description("Begins a pipeline from the value. True when: null or fails the Luhn checksum. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsNotValidLuhn()
             {
                 return value.Start().BreakIsNotValidLuhn();
             }
 
+            [Description("Begins a pipeline from the value. True when: null or fails the Luhn checksum. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsNotValidLuhn()
             {
                 return value.Start().RequireIsNotValidLuhn();
             }
 
+            [Description("Begins a pipeline from the value. True when: null or fails the Luhn checksum. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsNotValidLuhn()
             {
                 return value.Start().EnsureIsNotValidLuhn();

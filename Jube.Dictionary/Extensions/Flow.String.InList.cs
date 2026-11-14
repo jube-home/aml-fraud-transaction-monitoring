@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchInList(IEnumerable<string> list)
+            [Description("True when: a member of the List token, case sensitive. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringInList(flow.Value, list));
             }
 
-            public Flow<string?> RejectInList(IEnumerable<string> list)
+            [Description("True when: a member of the List token, case sensitive. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringInList(flow.Value, list));
             }
 
-            public Flow<string?> BreakInList(IEnumerable<string> list)
+            [Description("True when: a member of the List token, case sensitive. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringInList(flow.Value, list));
             }
 
-            public Flow<string?> RequireInList(IEnumerable<string> list)
+            [Description("True when: a member of the List token, case sensitive. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringInList(flow.Value, list));
             }
 
-            public Flow<string?> EnsureInList(IEnumerable<string> list)
+            [Description("True when: a member of the List token, case sensitive. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: a member of the List token, case sensitive. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().MatchInList(list);
             }
 
-            public Flow<string?> RejectInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: a member of the List token, case sensitive. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RejectInList(list);
             }
 
-            public Flow<string?> BreakInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: a member of the List token, case sensitive. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().BreakInList(list);
             }
 
-            public Flow<string?> RequireInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: a member of the List token, case sensitive. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RequireInList(list);
             }
 
-            public Flow<string?> EnsureInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: a member of the List token, case sensitive. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().EnsureInList(list);
             }

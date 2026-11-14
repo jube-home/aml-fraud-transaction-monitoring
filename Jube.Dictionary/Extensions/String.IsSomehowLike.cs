@@ -19,12 +19,15 @@ namespace Jube.Dictionary.Extensions
     {
         extension(string? @this)
         {
-            public bool IsSomehowLike(string? other)
+            [Description("True when: fuzzily like a single value, using the default profile.")]
+            public bool IsSomehowLike([Description("The text the value is compared with.")] string? other)
             {
                 return other is not null && FuzzyListMatcher.Any(@this, new[] { other }, FuzzyOptions.Default);
             }
 
-            public bool IsSomehowLike(string? other, string? options)
+            [Description("True when: fuzzily like a single value, using an options string.")]
+            public bool IsSomehowLike([Description("The text the value is compared with.")] string? other,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return other is not null && FuzzyListMatcher.Any(@this, new[] { other }, FuzzyOptions.Parse(options));
             }

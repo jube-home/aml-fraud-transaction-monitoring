@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace Jube.Data.Repository
 {
@@ -26,17 +27,17 @@ namespace Jube.Data.Repository
     {
         private const int GuidChunkSize = 500;
 
-        public Task<List<AdvancedAnalyticsInstance>> ListInstancesAsync(CancellationToken token = default)
+        public Task<List<AskJoobyAnalyticsInstance>> ListInstancesAsync(CancellationToken token = default)
         {
-            return dbContext.AdvancedAnalyticsInstance
+            return dbContext.AskJoobyAnalyticsInstance
                 .Where(w => w.TenantRegistryId == tenantRegistryId && w.Deleted == 0)
                 .OrderBy(o => o.Id).ToListAsync(token);
         }
 
-        public Task<List<AdvancedAnalyticsTrainedModel>> ListTrainedModelsAsync(
+        public Task<List<AskJoobyAnalyticsTrainedModel>> ListTrainedModelsAsync(
             CancellationToken token = default)
         {
-            return dbContext.AdvancedAnalyticsTrainedModel
+            return dbContext.AskJoobyAnalyticsTrainedModel
                 .Where(w => w.TenantRegistryId == tenantRegistryId && w.Deleted == 0)
                 .OrderBy(o => o.Id).ToListAsync(token);
         }
@@ -53,7 +54,7 @@ namespace Jube.Data.Repository
         {
             var now = DateTime.UtcNow;
 
-            await dbContext.AdvancedAnalyticsTrainedModel
+            await dbContext.AskJoobyAnalyticsTrainedModel
                 .Where(w => w.TenantRegistryId == tenantRegistryId && w.Deleted == 0)
                 .Set(s => s.Active, (byte)0)
                 .Set(s => s.Deleted, (byte)1)
@@ -68,7 +69,7 @@ namespace Jube.Data.Repository
                 .Set(s => s.DeletedUser, userName)
                 .UpdateAsync(token).ConfigureAwait(false);
 
-            await dbContext.AdvancedAnalyticsInstance
+            await dbContext.AskJoobyAnalyticsInstance
                 .Where(w => w.TenantRegistryId == tenantRegistryId && w.Deleted == 0)
                 .Set(s => s.Active, (byte)0)
                 .Set(s => s.Deleted, (byte)1)
@@ -80,21 +81,21 @@ namespace Jube.Data.Repository
         public Task<HashSet<Guid>> InstanceGuidsInUseAsync(IReadOnlyCollection<Guid> guids,
             CancellationToken token = default)
         {
-            return GuidsInUseAsync(guids, chunk => dbContext.AdvancedAnalyticsInstance
+            return GuidsInUseAsync(guids, chunk => dbContext.AskJoobyAnalyticsInstance
                 .Where(w => chunk.Contains(w.Guid)).Select(s => s.Guid).ToListAsync(token));
         }
 
         public Task<HashSet<Guid>> TrainedModelGuidsInUseAsync(IReadOnlyCollection<Guid> guids,
             CancellationToken token = default)
         {
-            return GuidsInUseAsync(guids, chunk => dbContext.AdvancedAnalyticsTrainedModel
+            return GuidsInUseAsync(guids, chunk => dbContext.AskJoobyAnalyticsTrainedModel
                 .Where(w => chunk.Contains(w.Guid)).Select(s => s.Guid).ToListAsync(token));
         }
 
         public Task<HashSet<Guid>> TrainedModelVersionGuidsInUseAsync(IReadOnlyCollection<Guid> guids,
             CancellationToken token = default)
         {
-            return GuidsInUseAsync(guids, chunk => dbContext.AdvancedAnalyticsTrainedModelVersion
+            return GuidsInUseAsync(guids, chunk => dbContext.AskJoobyAnalyticsTrainedModelVersion
                 .Where(w => chunk.Contains(w.Guid)).Select(s => s.Guid).ToListAsync(token));
         }
 
@@ -105,7 +106,7 @@ namespace Jube.Data.Repository
                 .Where(w => chunk.Contains(w.Guid)).Select(s => s.Guid).ToListAsync(token));
         }
 
-        public async Task<int> InsertInstanceAsync(AdvancedAnalyticsInstance model, int? entityAnalysisModelId,
+        public async Task<int> InsertInstanceAsync(AskJoobyAnalyticsInstance model, int? entityAnalysisModelId,
             CancellationToken token = default)
         {
             model.TenantRegistryId = tenantRegistryId;
@@ -122,7 +123,7 @@ namespace Jube.Data.Repository
             return model.Id;
         }
 
-        public async Task<int> InsertTrainedModelAsync(AdvancedAnalyticsTrainedModel model,
+        public async Task<int> InsertTrainedModelAsync(AskJoobyAnalyticsTrainedModel model,
             CancellationToken token = default)
         {
             model.TenantRegistryId = tenantRegistryId;
@@ -140,7 +141,7 @@ namespace Jube.Data.Repository
             return model.Id;
         }
 
-        public async Task<int> InsertTrainedModelVersionAsync(AdvancedAnalyticsTrainedModelVersion model,
+        public async Task<int> InsertTrainedModelVersionAsync(AskJoobyAnalyticsTrainedModelVersion model,
             CancellationToken token = default)
         {
             model.TenantRegistryId = tenantRegistryId;
@@ -218,13 +219,13 @@ namespace Jube.Data.Repository
         public async Task SetTrainedModelActiveVersionAsync(int trainedModelId, int versionId, bool active,
             CancellationToken token = default)
         {
-            var records = await dbContext.AdvancedAnalyticsTrainedModel
+            var records = await dbContext.AskJoobyAnalyticsTrainedModel
                 .Where(w => w.Id == trainedModelId
                             && w.TenantRegistryId == tenantRegistryId
                             && w.Deleted == 0
-                            && dbContext.AdvancedAnalyticsTrainedModelVersion.Any(v =>
+                            && dbContext.AskJoobyAnalyticsTrainedModelVersion.Any(v =>
                                 v.Id == versionId
-                                && v.AdvancedAnalyticsTrainedModelId == w.Id
+                                && v.AskJoobyAnalyticsTrainedModelId == w.Id
                                 && v.TenantRegistryId == tenantRegistryId))
                 .Set(s => s.ActiveVersionId, versionId)
                 .Set(s => s.Active, (byte)(active ? 1 : 0))

@@ -15,12 +15,14 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static Flow<double> Plus(this Flow<double> flow, double amount)
+        [Description("Replaces the value being tested with the value plus the argument.")]
+        public static Flow<double> Plus(this Flow<double> flow, [Description("The amount to add.")] double amount)
         {
             return flow.Carry(flow.Value + amount);
         }
 
-        public static double Plus(this double value, double amount)
+        [Description("The value plus the argument, NaN if undefined.")]
+        public static double Plus(this double value, [Description("The amount to add.")] double amount)
         {
             return CalculationSupport.Finite(value + amount);
         }

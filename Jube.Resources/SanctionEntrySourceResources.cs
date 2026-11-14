@@ -18,6 +18,8 @@ namespace Jube.Resources
         public const string PermissionDenied = nameof(PermissionDenied);
         public const string NotAuthenticated = nameof(NotAuthenticated);
         public const string FileRequired = nameof(FileRequired);
+        public const string ImportFailed = nameof(ImportFailed);
+        public const string FileTooLarge = nameof(FileTooLarge);
         public const string SanctionEntrySourceNotFound = nameof(SanctionEntrySourceNotFound);
     }
 }

@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<int> flow)
         {
-            public Flow<int> MatchOutsideRange(int minimum, int maximum)
+            [Description("True when: below the minimum or above the maximum. Decides matched if so; otherwise continues.")]
+            public Flow<int> MatchOutsideRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.Int32OutsideRange(flow.Value, minimum, maximum));
             }
 
-            public Flow<int> RejectOutsideRange(int minimum, int maximum)
+            [Description("True when: below the minimum or above the maximum. Decides rejected if so; otherwise continues.")]
+            public Flow<int> RejectOutsideRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.Int32OutsideRange(flow.Value, minimum, maximum));
             }
 
-            public Flow<int> BreakOutsideRange(int minimum, int maximum)
+            [Description("True when: below the minimum or above the maximum. Decides broken if so; otherwise continues.")]
+            public Flow<int> BreakOutsideRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.Int32OutsideRange(flow.Value, minimum, maximum));
             }
 
-            public Flow<int> RequireOutsideRange(int minimum, int maximum)
+            [Description("True when: below the minimum or above the maximum. Continues if so; otherwise decides rejected.")]
+            public Flow<int> RequireOutsideRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.Int32OutsideRange(flow.Value, minimum, maximum));
             }
 
-            public Flow<int> EnsureOutsideRange(int minimum, int maximum)
+            [Description("True when: below the minimum or above the maximum. Continues if so; otherwise decides broken.")]
+            public Flow<int> EnsureOutsideRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(int value)
         {
-            public Flow<int> MatchOutsideRange(int minimum, int maximum)
+            [Description("Begins a pipeline from the value. True when: below the minimum or above the maximum. Decides matched if so; otherwise continues.")]
+            public Flow<int> MatchOutsideRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return value.Start().MatchOutsideRange(minimum, maximum);
             }
 
-            public Flow<int> RejectOutsideRange(int minimum, int maximum)
+            [Description("Begins a pipeline from the value. True when: below the minimum or above the maximum. Decides rejected if so; otherwise continues.")]
+            public Flow<int> RejectOutsideRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return value.Start().RejectOutsideRange(minimum, maximum);
             }
 
-            public Flow<int> BreakOutsideRange(int minimum, int maximum)
+            [Description("Begins a pipeline from the value. True when: below the minimum or above the maximum. Decides broken if so; otherwise continues.")]
+            public Flow<int> BreakOutsideRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return value.Start().BreakOutsideRange(minimum, maximum);
             }
 
-            public Flow<int> RequireOutsideRange(int minimum, int maximum)
+            [Description("Begins a pipeline from the value. True when: below the minimum or above the maximum. Continues if so; otherwise decides rejected.")]
+            public Flow<int> RequireOutsideRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return value.Start().RequireOutsideRange(minimum, maximum);
             }
 
-            public Flow<int> EnsureOutsideRange(int minimum, int maximum)
+            [Description("Begins a pipeline from the value. True when: below the minimum or above the maximum. Continues if so; otherwise decides broken.")]
+            public Flow<int> EnsureOutsideRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return value.Start().EnsureOutsideRange(minimum, maximum);
             }

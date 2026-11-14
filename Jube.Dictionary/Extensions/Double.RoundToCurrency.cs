@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double RoundToCurrency(this double @this, string? currencyCode)
+        [Description("Rounds to the ISO 4217 precision of a currency code with decimal arithmetic; NaN for an unknown code.")]
+        public static double RoundToCurrency(this double @this,
+            [Description("The ISO 4217 currency code whose minor unit decides the decimal places.")] string? currencyCode)
         {
             var exponent = currencyCode.CurrencyMinorUnitExponent();
 

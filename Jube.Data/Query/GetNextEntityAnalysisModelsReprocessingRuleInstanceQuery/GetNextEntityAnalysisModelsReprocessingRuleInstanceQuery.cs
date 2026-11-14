@@ -20,20 +20,37 @@ namespace Jube.Data.Query.GetNextEntityAnalysisModelsReprocessingRuleInstanceQue
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
 
     public class GetNextEntityAnalysisModelsReprocessingRuleInstanceQuery(DbContext dbContext)
     {
+        public static readonly TimeSpan DefaultStaleAfter = TimeSpan.FromMinutes(30);
+
         public async Task<GetNextEntityAnalysisModelsReprocessingRuleInstanceQueryDto> ExecuteAsync(
-            int entityAnalysisModelId, CancellationToken token = default)
+            int entityAnalysisModelId, CancellationToken token = default, TimeSpan? staleAfter = null)
         {
             await dbContext.BeginTransactionAsync(IsolationLevel.Serializable, token);
 
             try
             {
+                var cutoff = DateTime.UtcNow - (staleAfter ?? DefaultStaleAfter);
+
+                await dbContext.EntityAnalysisModelReprocessingRuleInstance
+                    .Where(w => (w.StatusId == 1 || w.StatusId == 2 || w.StatusId == 3)
+                                && (w.Deleted == 0 || w.Deleted == null)
+                                && w.EntityAnalysisModelReprocessingRule.EntityAnalysisModelId ==
+                                entityAnalysisModelId
+                                && (w.UpdatedDate == null || w.UpdatedDate < cutoff)
+                                && (w.StartedDate == null || w.StartedDate < cutoff))
+                    .Set(s => s.StatusId, Convert.ToByte(0))
+                    .UpdateAsync(token);
+
                 var query = await dbContext.EntityAnalysisModelReprocessingRuleInstance
                     .Where(w => w.StatusId == 0
                                 && (w.Deleted == 0 || w.Deleted == null)
                                 && w.EntityAnalysisModelReprocessingRule.Active == 1
+                                && (w.EntityAnalysisModelReprocessingRule.Deleted == 0
+                                    || w.EntityAnalysisModelReprocessingRule.Deleted == null)
                                 && w.EntityAnalysisModelReprocessingRule.EntityAnalysisModelId ==
                                 entityAnalysisModelId)
                     .OrderBy(o => o.EntityAnalysisModelReprocessingRule.Priority)
@@ -65,6 +82,7 @@ namespace Jube.Data.Query.GetNextEntityAnalysisModelsReprocessingRuleInstanceQue
                             query.Id)
                         .Set(s => s.StatusId, Convert.ToByte(1))
                         .Set(s => s.StartedDate, DateTime.UtcNow)
+                        .Set(s => s.UpdatedDate, DateTime.UtcNow)
                         .UpdateAsync(token);
                 }
 

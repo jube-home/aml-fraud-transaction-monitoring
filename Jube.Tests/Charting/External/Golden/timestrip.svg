@@ -1,0 +1,300 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc" viewBox="0 0 640 100" preserveAspectRatio="xMidYMid meet" role="img"
+     aria-labelledby="jc-589d7474-t jc-589d7474-d">
+    <title id="jc-589d7474-t">Movements per hour</title>
+    <desc id="jc-589d7474-d">Time strip of 87 movements in 24 bins from 2026-03-02 00:00 to 2026-03-03 00:00.</desc>
+    <text class="ttl" x="16" y="32">Movements per hour</text>
+    <g class="sr s0">
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 00:00 to 2026-03-02 01:00, Movements: 2" data-bin="0" data-from="1772409600"
+           data-to="1772413200">
+            <title>2026-03-02 00:00 to 2026-03-02 01:00, Movements: 2</title>
+            <rect class="bar m" x="16.5" y="75.43" width="24.33" height="4.57"/>
+            <g class="tt">
+                <rect class="tb" x="16" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="26" y="70">2026-03-02 00:00 to 2026-03-02 01:00</text>
+                <rect class="tsw s0" x="26" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="40" y="87">Movements: 2</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 01:00 to 2026-03-02 02:00, Movements: 0" data-bin="1" data-from="1772413200"
+           data-to="1772416800">
+            <title>2026-03-02 01:00 to 2026-03-02 02:00, Movements: 0</title>
+            <rect class="bar m" x="41.83" y="80" width="24.33" height="0"/>
+            <g class="tt">
+                <rect class="tb" x="16" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="26" y="70">2026-03-02 01:00 to 2026-03-02 02:00</text>
+                <rect class="tsw s0" x="26" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="40" y="87">Movements: 0</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 02:00 to 2026-03-02 03:00, Movements: 1" data-bin="2" data-from="1772416800"
+           data-to="1772420400">
+            <title>2026-03-02 02:00 to 2026-03-02 03:00, Movements: 1</title>
+            <rect class="bar m" x="67.17" y="77.71" width="24.33" height="2.29"/>
+            <g class="tt">
+                <rect class="tb" x="16" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="26" y="70">2026-03-02 02:00 to 2026-03-02 03:00</text>
+                <rect class="tsw s0" x="26" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="40" y="87">Movements: 1</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 03:00 to 2026-03-02 04:00, Movements: 4" data-bin="3" data-from="1772420400"
+           data-to="1772424000">
+            <title>2026-03-02 03:00 to 2026-03-02 04:00, Movements: 4</title>
+            <rect class="bar m" x="92.5" y="70.86" width="24.33" height="9.14"/>
+            <g class="tt">
+                <rect class="tb" x="16" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="26" y="70">2026-03-02 03:00 to 2026-03-02 04:00</text>
+                <rect class="tsw s0" x="26" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="40" y="87">Movements: 4</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 04:00 to 2026-03-02 05:00, Movements: 9" data-bin="4" data-from="1772424000"
+           data-to="1772427600">
+            <title>2026-03-02 04:00 to 2026-03-02 05:00, Movements: 9</title>
+            <rect class="bar m" x="117.83" y="59.43" width="24.33" height="20.57"/>
+            <g class="tt">
+                <rect class="tb" x="16" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="26" y="70">2026-03-02 04:00 to 2026-03-02 05:00</text>
+                <rect class="tsw s0" x="26" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="40" y="87">Movements: 9</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 05:00 to 2026-03-02 06:00, Movements: 14" data-bin="5" data-from="1772427600"
+           data-to="1772431200">
+            <title>2026-03-02 05:00 to 2026-03-02 06:00, Movements: 14</title>
+            <rect class="bar m" x="143.17" y="48" width="24.33" height="32"/>
+            <g class="tt">
+                <rect class="tb" x="35.18" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="45.18" y="70">2026-03-02 05:00 to 2026-03-02 06:00</text>
+                <rect class="tsw s0" x="45.18" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="59.18" y="87">Movements: 14</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 06:00 to 2026-03-02 07:00, Movements: 7" data-bin="6" data-from="1772431200"
+           data-to="1772434800">
+            <title>2026-03-02 06:00 to 2026-03-02 07:00, Movements: 7</title>
+            <rect class="bar m" x="168.5" y="64" width="24.33" height="16"/>
+            <g class="tt">
+                <rect class="tb" x="60.51" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="70.51" y="70">2026-03-02 06:00 to 2026-03-02 07:00</text>
+                <rect class="tsw s0" x="70.51" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="84.51" y="87">Movements: 7</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 07:00 to 2026-03-02 08:00, Movements: 3" data-bin="7" data-from="1772434800"
+           data-to="1772438400">
+            <title>2026-03-02 07:00 to 2026-03-02 08:00, Movements: 3</title>
+            <rect class="bar m" x="193.83" y="73.14" width="24.33" height="6.86"/>
+            <g class="tt">
+                <rect class="tb" x="85.84" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="95.84" y="70">2026-03-02 07:00 to 2026-03-02 08:00</text>
+                <rect class="tsw s0" x="95.84" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="109.84" y="87">Movements: 3</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 08:00 to 2026-03-02 09:00, Movements: 1" data-bin="8" data-from="1772438400"
+           data-to="1772442000">
+            <title>2026-03-02 08:00 to 2026-03-02 09:00, Movements: 1</title>
+            <rect class="bar m" x="219.17" y="77.71" width="24.33" height="2.29"/>
+            <g class="tt">
+                <rect class="tb" x="111.18" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="121.18" y="70">2026-03-02 08:00 to 2026-03-02 09:00</text>
+                <rect class="tsw s0" x="121.18" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="135.18" y="87">Movements: 1</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 09:00 to 2026-03-02 10:00, Movements: 0" data-bin="9" data-from="1772442000"
+           data-to="1772445600">
+            <title>2026-03-02 09:00 to 2026-03-02 10:00, Movements: 0</title>
+            <rect class="bar m" x="244.5" y="80" width="24.33" height="0"/>
+            <g class="tt">
+                <rect class="tb" x="136.51" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="146.51" y="70">2026-03-02 09:00 to 2026-03-02 10:00</text>
+                <rect class="tsw s0" x="146.51" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="160.51" y="87">Movements: 0</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 10:00 to 2026-03-02 11:00, Movements: 0" data-bin="10" data-from="1772445600"
+           data-to="1772449200">
+            <title>2026-03-02 10:00 to 2026-03-02 11:00, Movements: 0</title>
+            <rect class="bar m" x="269.83" y="80" width="24.33" height="0"/>
+            <g class="tt">
+                <rect class="tb" x="161.84" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="171.84" y="70">2026-03-02 10:00 to 2026-03-02 11:00</text>
+                <rect class="tsw s0" x="171.84" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="185.84" y="87">Movements: 0</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 11:00 to 2026-03-02 12:00, Movements: 2" data-bin="11" data-from="1772449200"
+           data-to="1772452800">
+            <title>2026-03-02 11:00 to 2026-03-02 12:00, Movements: 2</title>
+            <rect class="bar m" x="295.17" y="75.43" width="24.33" height="4.57"/>
+            <g class="tt">
+                <rect class="tb" x="187.18" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="197.18" y="70">2026-03-02 11:00 to 2026-03-02 12:00</text>
+                <rect class="tsw s0" x="197.18" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="211.18" y="87">Movements: 2</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 12:00 to 2026-03-02 13:00, Movements: 5" data-bin="12" data-from="1772452800"
+           data-to="1772456400">
+            <title>2026-03-02 12:00 to 2026-03-02 13:00, Movements: 5</title>
+            <rect class="bar m" x="320.5" y="68.57" width="24.33" height="11.43"/>
+            <g class="tt">
+                <rect class="tb" x="212.51" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="222.51" y="70">2026-03-02 12:00 to 2026-03-02 13:00</text>
+                <rect class="tsw s0" x="222.51" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="236.51" y="87">Movements: 5</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 13:00 to 2026-03-02 14:00, Movements: 11" data-bin="13" data-from="1772456400"
+           data-to="1772460000">
+            <title>2026-03-02 13:00 to 2026-03-02 14:00, Movements: 11</title>
+            <rect class="bar m" x="345.83" y="54.86" width="24.33" height="25.14"/>
+            <g class="tt">
+                <rect class="tb" x="237.84" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="247.84" y="70">2026-03-02 13:00 to 2026-03-02 14:00</text>
+                <rect class="tsw s0" x="247.84" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="261.84" y="87">Movements: 11</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 14:00 to 2026-03-02 15:00, Movements: 6" data-bin="14" data-from="1772460000"
+           data-to="1772463600">
+            <title>2026-03-02 14:00 to 2026-03-02 15:00, Movements: 6</title>
+            <rect class="bar m" x="371.17" y="66.29" width="24.33" height="13.71"/>
+            <g class="tt">
+                <rect class="tb" x="263.18" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="273.18" y="70">2026-03-02 14:00 to 2026-03-02 15:00</text>
+                <rect class="tsw s0" x="273.18" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="287.18" y="87">Movements: 6</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 15:00 to 2026-03-02 16:00, Movements: 2" data-bin="15" data-from="1772463600"
+           data-to="1772467200">
+            <title>2026-03-02 15:00 to 2026-03-02 16:00, Movements: 2</title>
+            <rect class="bar m" x="396.5" y="75.43" width="24.33" height="4.57"/>
+            <g class="tt">
+                <rect class="tb" x="288.51" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="298.51" y="70">2026-03-02 15:00 to 2026-03-02 16:00</text>
+                <rect class="tsw s0" x="298.51" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="312.51" y="87">Movements: 2</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 16:00 to 2026-03-02 17:00, Movements: 1" data-bin="16" data-from="1772467200"
+           data-to="1772470800">
+            <title>2026-03-02 16:00 to 2026-03-02 17:00, Movements: 1</title>
+            <rect class="bar m" x="421.83" y="77.71" width="24.33" height="2.29"/>
+            <g class="tt">
+                <rect class="tb" x="313.84" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="323.84" y="70">2026-03-02 16:00 to 2026-03-02 17:00</text>
+                <rect class="tsw s0" x="323.84" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="337.84" y="87">Movements: 1</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 17:00 to 2026-03-02 18:00, Movements: 0" data-bin="17" data-from="1772470800"
+           data-to="1772474400">
+            <title>2026-03-02 17:00 to 2026-03-02 18:00, Movements: 0</title>
+            <rect class="bar m" x="447.17" y="80" width="24.33" height="0"/>
+            <g class="tt">
+                <rect class="tb" x="339.18" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="349.18" y="70">2026-03-02 17:00 to 2026-03-02 18:00</text>
+                <rect class="tsw s0" x="349.18" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="363.18" y="87">Movements: 0</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 18:00 to 2026-03-02 19:00, Movements: 1" data-bin="18" data-from="1772474400"
+           data-to="1772478000">
+            <title>2026-03-02 18:00 to 2026-03-02 19:00, Movements: 1</title>
+            <rect class="bar m" x="472.5" y="77.71" width="24.33" height="2.29"/>
+            <g class="tt">
+                <rect class="tb" x="364.51" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="374.51" y="70">2026-03-02 18:00 to 2026-03-02 19:00</text>
+                <rect class="tsw s0" x="374.51" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="388.51" y="87">Movements: 1</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 19:00 to 2026-03-02 20:00, Movements: 3" data-bin="19" data-from="1772478000"
+           data-to="1772481600">
+            <title>2026-03-02 19:00 to 2026-03-02 20:00, Movements: 3</title>
+            <rect class="bar m" x="497.83" y="73.14" width="24.33" height="6.86"/>
+            <g class="tt">
+                <rect class="tb" x="383.69" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="393.69" y="70">2026-03-02 19:00 to 2026-03-02 20:00</text>
+                <rect class="tsw s0" x="393.69" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="407.69" y="87">Movements: 3</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 20:00 to 2026-03-02 21:00, Movements: 8" data-bin="20" data-from="1772481600"
+           data-to="1772485200">
+            <title>2026-03-02 20:00 to 2026-03-02 21:00, Movements: 8</title>
+            <rect class="bar m" x="523.17" y="61.71" width="24.33" height="18.29"/>
+            <g class="tt">
+                <rect class="tb" x="383.69" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="393.69" y="70">2026-03-02 20:00 to 2026-03-02 21:00</text>
+                <rect class="tsw s0" x="393.69" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="407.69" y="87">Movements: 8</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 21:00 to 2026-03-02 22:00, Movements: 4" data-bin="21" data-from="1772485200"
+           data-to="1772488800">
+            <title>2026-03-02 21:00 to 2026-03-02 22:00, Movements: 4</title>
+            <rect class="bar m" x="548.5" y="70.86" width="24.33" height="9.14"/>
+            <g class="tt">
+                <rect class="tb" x="383.69" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="393.69" y="70">2026-03-02 21:00 to 2026-03-02 22:00</text>
+                <rect class="tsw s0" x="393.69" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="407.69" y="87">Movements: 4</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 22:00 to 2026-03-02 23:00, Movements: 2" data-bin="22" data-from="1772488800"
+           data-to="1772492400">
+            <title>2026-03-02 22:00 to 2026-03-02 23:00, Movements: 2</title>
+            <rect class="bar m" x="573.83" y="75.43" width="24.33" height="4.57"/>
+            <g class="tt">
+                <rect class="tb" x="383.69" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="393.69" y="70">2026-03-02 22:00 to 2026-03-02 23:00</text>
+                <rect class="tsw s0" x="393.69" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="407.69" y="87">Movements: 2</text>
+            </g>
+        </g>
+        <g class="mk s0" tabindex="0" role="graphics-symbol"
+           aria-label="2026-03-02 23:00 to 2026-03-03 00:00, Movements: 1" data-bin="23" data-from="1772492400"
+           data-to="1772496000">
+            <title>2026-03-02 23:00 to 2026-03-03 00:00, Movements: 1</title>
+            <rect class="bar m" x="599.17" y="77.71" width="24.33" height="2.29"/>
+            <g class="tt">
+                <rect class="tb" x="383.69" y="52" width="240.31" height="44" rx="6"/>
+                <text class="tx b" x="393.69" y="70">2026-03-02 23:00 to 2026-03-03 00:00</text>
+                <rect class="tsw s0" x="393.69" y="78" width="9" height="9" rx="2"/>
+                <text class="tx" x="407.69" y="87">Movements: 1</text>
+            </g>
+        </g>
+    </g>
+    <line class="ax" x1="16" y1="80" x2="624" y2="80"/>
+    <text class="tk" x="16" y="94">00:00</text>
+    <text class="tk ctr" x="320" y="94">12:00</text>
+    <text class="tk end" x="624" y="94">00:00</text>
+</svg>

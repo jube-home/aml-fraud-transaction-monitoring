@@ -26,6 +26,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
             {
                 Id = rulePoco.Id,
                 Name = rulePoco.Name,
+                Sql = rulePoco.Sql,
                 Active = rulePoco.Active == 1,
                 Locked = rulePoco.Locked == 1,
                 Html = rulePoco.Html,
@@ -45,8 +46,10 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
 
         public static RulePoco ToPoco(CaseWorkflowDisplayDto dto) => new()
         {
+            Version = dto.Version,
             Id = dto.Id,
             Name = dto.Name,
+            Sql = dto.Sql,
             Active = (byte)(dto.Active ? 1 : 0),
             Locked = (byte)(dto.Locked ? 1 : 0),
             Html = dto.Html,

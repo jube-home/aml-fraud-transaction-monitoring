@@ -26,6 +26,7 @@ using Jube.Service.Authentication.Models;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 using AuthService = Jube.Service.Authentication.AuthenticationLoginService;
 

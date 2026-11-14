@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Nie masz uprawnień do wykonania tej czynności.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Aby wykonać tę czynność, musisz być zalogowany do dzierżawcy.</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>Wymagany jest prawidłowy model.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>Nazwa jest wymagana.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Nazwa może mieć co najwyżej {0} znaków.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Ta nazwa już istnieje.</value>
+  </data>
+    <data name="MinimumRange" xml:space="preserve">
+    <value>Pierwszy poziom nie może być ujemny.</value>
+  </data>
+    <data name="MaximumRange" xml:space="preserve">
+    <value>Ostatni poziom nie może być niższy niż pierwszy.</value>
+  </data>
+    <data name="RangeOverlaps" xml:space="preserve">
+    <value>Ten zakres pokrywa się z zakresem o nazwie {0}.</value>
+  </data>
+    <data name="DeclineAndHold" xml:space="preserve">
+    <value>Zakres nie może jednocześnie odrzucać i wstrzymywać; odrzucenie nigdy nie wstrzymuje.</value>
+  </data>
+    <data name="ColourInvalid" xml:space="preserve">
+    <value>Kolor musi być wartością szesnastkową, taką jak #A1B2C3.</value>
+  </data>
+    <data name="ContentMaxLength" xml:space="preserve">
+    <value>Treść może mieć co najwyżej {0} znaków.</value>
+  </data>
+    <data name="RedirectMaxLength" xml:space="preserve">
+    <value>Przekierowanie może mieć co najwyżej {0} znaków.</value>
+  </data>
+    <data name="HttpEndpointRequired" xml:space="preserve">
+    <value>Adres URL webhooka jest wymagany, gdy webhook jest włączony.</value>
+  </data>
+    <data name="HttpEndpointInvalid" xml:space="preserve">
+    <value>Webhook musi być bezwzględnym adresem URL http lub https, w którym schemat, host i port są zapisane literalnie, a tokeny występują tylko w ścieżce i zapytaniu.</value>
+  </data>
+    <data name="HttpEndpointMaxLength" xml:space="preserve">
+    <value>Adres URL webhooka może mieć co najwyżej {0} znaków.</value>
+  </data>
+    <data name="HttpEndpointHostBlocked" xml:space="preserve">
+    <value>Adres webhooka jest zablokowany przez politykę hostów wychodzących: wskazuje adres pętli zwrotnej, link-local, metadanych, prywatny, współdzielony, unique-local lub zarezerwowany, localhost albo schemat inny niż http lub https. Zaufany wewnętrzny odbiornik należy wpisać w JUBE_HOOK_ALLOWED_HOSTS lub JUBE_HOOK_ALLOWED_CIDRS.</value>
+  </data>
+    <data name="HttpEndpointTypeIdInvalid" xml:space="preserve">
+    <value>Metoda webhooka musi być POST lub GET.</value>
+  </data>
+    <data name="HttpEndpointHeaderRequired" xml:space="preserve">
+    <value>Nazwa nagłówka poświadczeń jest wymagana, gdy podano zmienną poświadczeń.</value>
+  </data>
+    <data name="HttpEndpointHeaderInvalid" xml:space="preserve">
+    <value>Nazwa nagłówka poświadczeń musi być zwykłą nazwą nagłówka, a nie zarezerwowaną.</value>
+  </data>
+    <data name="HttpEndpointCredentialRequired" xml:space="preserve">
+    <value>Zmienna poświadczeń jest wymagana, gdy podano nazwę nagłówka poświadczeń.</value>
+  </data>
+    <data name="HttpEndpointCredentialInvalid" xml:space="preserve">
+    <value>Zmienna poświadczeń musi być nazwą zmiennej środowiskowej zaczynającą się od JUBE_HOOK_, po której następują wielkie litery, cyfry lub podkreślenia.</value>
+  </data>
+    <data name="NotificationTypeIdInvalid" xml:space="preserve">
+    <value>Kanał powiadomień musi być Email lub SMS.</value>
+  </data>
+    <data name="NotificationDestinationRequired" xml:space="preserve">
+    <value>Miejsce docelowe jest wymagane, gdy powiadomienie jest włączone.</value>
+  </data>
+    <data name="NotificationDestinationMaxLength" xml:space="preserve">
+    <value>Miejsce docelowe może mieć co najwyżej {0} znaków.</value>
+  </data>
+    <data name="NotificationSubjectMaxLength" xml:space="preserve">
+    <value>Temat może mieć co najwyżej {0} znaków.</value>
+  </data>
+    <data name="NotificationBodyMaxLength" xml:space="preserve">
+    <value>Treść wiadomości może mieć co najwyżej {0} znaków.</value>
+  </data>
+</root>

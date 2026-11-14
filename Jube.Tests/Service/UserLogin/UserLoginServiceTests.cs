@@ -13,17 +13,23 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
+using Jube.Service.Agent.Models;
+using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.Exceptions.UserLogin;
+using Jube.Service.Observability;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.UserLogin;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -129,6 +135,26 @@ namespace Jube.Test.Service.UserLogin
             result.Rows[0].AuthenticationScheme.Should().Be("OAuth / OpenID Connect");
             result.Rows[0].FailureReason.Should().Be("OAuth: local token validation failed");
             result.Rows[0].FailureMessage.Should().Be("token expired");
+        }
+
+        [Theory]
+        [InlineData(1, 11, "Multi-factor authentication code was not accepted")]
+        [InlineData(2, 11, "Multi-factor authentication code was not accepted")]
+        [InlineData(1, 7, "Multi-factor authentication code was not accepted")]
+        [InlineData(2, 7, "Multi-factor authentication code was not accepted")]
+        [InlineData(3, 7, "OAuth: no usable identity claim in principal payload")]
+        public async Task ListDescribesMfaFailureApartFromTheOAuthClaimFailureAsync(int authenticationTypeId,
+            int failureTypeId, string expected)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var user = $"{DatabaseFixture.Prefix}User{Guid.NewGuid():N}";
+
+            await CreateSampleAsync(dbContext, user, 1, authenticationTypeId, failureTypeId);
+
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var result = await service.ListAsync(search: user);
+
+            result.Rows.Should().ContainSingle().Which.FailureReason.Should().Be(expected);
         }
 
         [Fact]
@@ -374,6 +400,55 @@ namespace Jube.Test.Service.UserLogin
             var result = await service.ListAsync(search: user);
 
             result.Statistics.Columns.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task ListEmitsOneAuditLineAndOneSpanAndNoChangeEventAsync()
+        {
+            var activities = new List<Activity>();
+            using var listener = new ActivityListener();
+            listener.ShouldListenTo = s => s.Name == ServiceDiagnostics.Name;
+            listener.Sample = (ref _) => ActivitySamplingResult.AllData;
+            listener.ActivityStopped = activities.Add;
+            ActivitySource.AddActivityListener(listener);
+
+            await using var dbContext = fx.GetDbContext();
+            var auditLog = new TestLog();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, auditLog: auditLog);
+
+            await service.ListAsync();
+
+            auditLog.Entries.Should().ContainSingle().Which.Message.Should()
+                .Contain("area=UserLogin").And.Contain("op=List").And.Contain("outcome=ok");
+
+            activities.Should().ContainSingle(a => a.OperationName == "UserLogin.List")
+                .Which.GetTagItem("jube.outcome").Should().Be("ok");
+        }
+
+        [Fact]
+        public async Task ForbiddenListIsAuditedAsForbiddenAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var auditLog = new TestLog();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission, auditLog: auditLog);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ListAsync());
+
+            auditLog.Entries.Should().ContainSingle().Which.Message.Should().Contain("outcome=forbidden");
+        }
+
+        [Fact]
+        public void ToolIsDeclaredOnTheServiceMethodAndPublishedByTheCatalogue()
+        {
+            var attribute = typeof(UserLoginService).GetMethod(nameof(UserLoginService.ListAsync))
+                .Required().GetCustomAttribute<ServiceOperationAttribute>().Required();
+            attribute.Name.Should().Be("UserLoginList");
+            attribute.Kind.Should().Be(OperationKind.Read);
+            attribute.Idempotent.Should().BeTrue();
+
+            var names = ServiceToolCatalogue.All.Select(t => t.Name).ToList();
+            names.Should().OnlyHaveUniqueItems();
+            names.Should().Contain("UserLoginList");
         }
     }
 }

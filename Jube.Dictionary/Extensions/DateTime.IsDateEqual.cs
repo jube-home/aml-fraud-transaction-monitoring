@@ -6,7 +6,8 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static bool IsDateEqual(this DateTime date, DateTime dateToCompare)
+        [Description("Checks if two dates have the same date part.")]
+        public static bool IsDateEqual(this DateTime date, [Description("The date to compare.")] DateTime dateToCompare)
         {
             return date.Date == dateToCompare.Date;
         }

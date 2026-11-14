@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Parses the text as an ISO 8601 date and time, treated as UTC.")]
         public static DateTime ToIsoDateTime(this string @this)
         {
             return DateTime.Parse(@this, CultureInfo.InvariantCulture,

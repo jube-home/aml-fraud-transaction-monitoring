@@ -25,7 +25,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
     using EntityAnalysisModelInvoke.Context;
     using EntityAnalysisModelInvoke.Models;
     using EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
-    using Jube.Cache.Redis.Callback;
+    using Jube.Cache.Resp.Callback;
     using Jube.Engine.BackgroundTasks.TaskStarters.Models;
 
     public class ConcurrentQueues
@@ -34,6 +34,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
         public ConcurrentQueue<Context> PendingEntityInvoke = new ConcurrentQueue<Context>();
         public ConcurrentQueue<TagMessage> PendingTagging { get; set; } = new ConcurrentQueue<TagMessage>();
         public ConcurrentQueue<Notification> PendingNotifications { get; set; }
+        public ConcurrentQueue<Webhook> PendingWebhooks { get; set; }
 
         public ConcurrentQueue<ActivationWatcher> PersistToActivationWatcherAsync { get; set; } =
             new ConcurrentQueue<ActivationWatcher>();

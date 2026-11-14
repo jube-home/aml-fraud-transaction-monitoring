@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchContainsAllIgnoreCase(params string[] values)
+            [Description("True when: contains every listed string, ignoring case. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsAllIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringContainsAllIgnoreCase(flow.Value, values));
             }
 
-            public Flow<string?> RejectContainsAllIgnoreCase(params string[] values)
+            [Description("True when: contains every listed string, ignoring case. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsAllIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringContainsAllIgnoreCase(flow.Value, values));
             }
 
-            public Flow<string?> BreakContainsAllIgnoreCase(params string[] values)
+            [Description("True when: contains every listed string, ignoring case. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsAllIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringContainsAllIgnoreCase(flow.Value, values));
             }
 
-            public Flow<string?> RequireContainsAllIgnoreCase(params string[] values)
+            [Description("True when: contains every listed string, ignoring case. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsAllIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringContainsAllIgnoreCase(flow.Value, values));
             }
 
-            public Flow<string?> EnsureContainsAllIgnoreCase(params string[] values)
+            [Description("True when: contains every listed string, ignoring case. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsAllIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchContainsAllIgnoreCase(params string[] values)
+            [Description("Begins a pipeline from the value. True when: contains every listed string, ignoring case. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsAllIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return value.Start().MatchContainsAllIgnoreCase(values);
             }
 
-            public Flow<string?> RejectContainsAllIgnoreCase(params string[] values)
+            [Description("Begins a pipeline from the value. True when: contains every listed string, ignoring case. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsAllIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return value.Start().RejectContainsAllIgnoreCase(values);
             }
 
-            public Flow<string?> BreakContainsAllIgnoreCase(params string[] values)
+            [Description("Begins a pipeline from the value. True when: contains every listed string, ignoring case. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsAllIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return value.Start().BreakContainsAllIgnoreCase(values);
             }
 
-            public Flow<string?> RequireContainsAllIgnoreCase(params string[] values)
+            [Description("Begins a pipeline from the value. True when: contains every listed string, ignoring case. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsAllIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return value.Start().RequireContainsAllIgnoreCase(values);
             }
 
-            public Flow<string?> EnsureContainsAllIgnoreCase(params string[] values)
+            [Description("Begins a pipeline from the value. True when: contains every listed string, ignoring case. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsAllIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return value.Start().EnsureContainsAllIgnoreCase(values);
             }

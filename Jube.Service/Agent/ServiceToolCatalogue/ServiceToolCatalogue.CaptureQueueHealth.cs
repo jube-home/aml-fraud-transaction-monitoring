@@ -25,7 +25,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "CaptureQueueHealthList", OperationKind.Read, true, false,
                     "Lists per-cycle depth and dropped-count snapshots for every bounded in-memory capture " +
                     "queue in the observability suite (ModelInvokeWarning, CaseCreationWarning, " +
-                    "ArchiverWarning, RedisSentinelEvent, RedisConnectionEvent, OpenTelemetryMetric), one row " +
+                    "ArchiverWarning, RespSentinelEvent, RespConnectionEvent, OpenTelemetryMetric), one row " +
                     "per queue every ~60 seconds regardless of activity. Any non-zero DroppedCount means real " +
                     "data was silently discarded because a queue hit capacity -- the first thing to check when " +
                     "an expected event or warning seems to be missing. Not scoped to any tenant. Also accepts " +

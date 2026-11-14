@@ -23,6 +23,10 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
             tools.AddRange(
             [
                 new ServiceToolDescriptor(
+                    "VisualisationRegistryDatasourceCommandExecutionCard", OperationKind.Read, true, false,
+                    "Returns the card for a Visualisation Registry Datasource the caller may see: its chart drawn as an SVG, the rows only when its grid is on, and its state.",
+                    VisualisationRegistryDatasourceCommandExecutionService.RequiredPermissions),
+                new ServiceToolDescriptor(
                     "VisualisationRegistryDatasourceCommandExecutionExecute", OperationKind.Read, true,
                     false,
                     "Executes a Visualisation Registry Datasource command with caller-supplied parameter values and returns its rows.",

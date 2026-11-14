@@ -24,7 +24,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
             [
                 new ServiceToolDescriptor(
                     "CaseEventByCaseKeyValueGet", OperationKind.Read, true, false,
-                    "Lists the audit events of a case identified by case key and case key value, newest first.",
+                    "Lists the audit events of a case identified by case key and case key value, newest first. Each event carries CaseEventTypeId and the raw Before and After values, never display text: dates are ISO 8601 UTC, diary types and closed statuses are integer enumeration ids, status moves (types 9 and 17) are status Guids, and the checklist events (21 to 28) carry the item name and a detail sentence.",
                     CaseEventByCaseKeyValueService.RequiredPermissions)
             ]);
         }

@@ -35,6 +35,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Infrastructure.Reactivity;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
@@ -56,6 +57,8 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
 
         private readonly List<int> createdIds = [];
         private readonly List<int> createdModelIds = [];
+        private readonly List<int> createdRangeIds = [];
+        private readonly List<int> createdWorkflowIds = [];
         private int tenantRegistryId;
 
         public async Task InitializeAsync()
@@ -84,6 +87,21 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
 
                 await dbContext.GetTable<Data.Poco.EntityAnalysisModelActivationRule>().Where(w => w.Id == id)
                     .DeleteAsync();
+            }
+
+            foreach (var rangeId in createdRangeIds)
+            {
+                await dbContext.GetTable<EntityAnalysisModelResponseElevationRangeVersion>()
+                    .Where(w => w.EntityAnalysisModelResponseElevationRangeId == rangeId).DeleteAsync();
+
+                await dbContext.GetTable<Data.Poco.EntityAnalysisModelResponseElevationRange>().Where(w => w.Id == rangeId)
+                    .DeleteAsync();
+            }
+
+            foreach (var workflowId in createdWorkflowIds)
+            {
+                await dbContext.CaseWorkflowStatus.Where(w => w.CaseWorkflowId == workflowId).DeleteAsync();
+                await dbContext.CaseWorkflow.Where(w => w.Id == workflowId).DeleteAsync();
             }
 
             foreach (var modelId in createdModelIds)
@@ -137,6 +155,24 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
             };
         }
 
+        private async Task CreateRangeAsync(DbContext dbContext, int modelId, int minimum, int maximum,
+            bool active = true)
+        {
+            var saved = await new EntityAnalysisModelResponseElevationRangeRepository(dbContext,
+                fx.Seed.UserWithPermission).InsertAsync(new Data.Poco.EntityAnalysisModelResponseElevationRange
+            {
+                EntityAnalysisModelId = modelId,
+                Name = UniqueName("Range"),
+                Minimum = minimum,
+                Maximum = maximum,
+                Active = (byte)(active ? 1 : 0),
+                Locked = 0,
+                Deleted = 0
+            });
+
+            createdRangeIds.Add(saved.Id);
+        }
+
         private static string UniqueName(string label)
         {
             return $"{DatabaseFixture.Prefix}{label}{Guid.NewGuid():N}"[..40];
@@ -157,6 +193,62 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
             saved.CreatedUser.Should().Be(fx.Seed.UserWithPermission);
             saved.CreatedDate.Should().NotBeNull();
             saved.CreatedDate!.Value.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
+        }
+
+        [Fact]
+        public async Task SavingAThresholdVariantCreatesAShadowRuleCopiedFromTheBaseAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var baseDto = NewDto(modelId, UniqueName("Base"));
+            baseDto.Priority = 7;
+            var baseRule = await service.InsertAsync(baseDto);
+            createdIds.Add(baseRule.Id);
+
+            var created = await service.SaveShadowVariantAsync(new ShadowVariantRequestDto
+            {
+                BaseRuleId = baseRule.Id, Placeholder = "{{threshold}}", Value = "2500.5",
+                RuleText = "If (1 > {{threshold}}) Then\n   Return True\nEnd If"
+            });
+            createdIds.Add(created.Id);
+
+            created.Name.Should().EndWith(" shadow 2500.5");
+
+            var saved = (await service.GetByIdAsync(created.Id))!;
+            saved.Shadow.Should().BeTrue();
+            saved.RuleScriptTypeId.Should().Be(2);
+            saved.CoderRuleScript.Should().Contain("1 > 2500.5").And.NotContain("{{threshold}}");
+            saved.Priority.Should().Be(7);
+            saved.EvaluationCounter.Should().Be(0);
+
+            var original = (await service.GetByIdAsync(baseRule.Id))!;
+            original.Shadow.Should().BeFalse();
+            original.Name.Should().Be(baseDto.Name);
+        }
+
+        [Fact]
+        public async Task SavingAThresholdVariantRefusesABadPlaceholderValueOrBaseAndNeedsPermissionAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var baseRule = await service.InsertAsync(NewDto(modelId, UniqueName("Base")));
+            createdIds.Add(baseRule.Id);
+
+            ShadowVariantRequestDto Request(string text = "Return {{t}}", string value = "5", int id = 0) =>
+                new() { BaseRuleId = id == 0 ? baseRule.Id : id, Placeholder = "{{t}}", Value = value, RuleText = text };
+
+            await FluentActions.Awaiting(() => service.SaveShadowVariantAsync(Request("Return 1")))
+                .Should().ThrowAsync<ArgumentException>();
+            await FluentActions.Awaiting(() => service.SaveShadowVariantAsync(Request(value: "five")))
+                .Should().ThrowAsync<ArgumentException>();
+            await FluentActions.Awaiting(() => service.SaveShadowVariantAsync(Request(id: int.MaxValue)))
+                .Should().ThrowAsync<NotFoundException>();
+
+            var without = await BuildServiceAsync(dbContext, fx.Seed.UserWithoutPermission);
+            await FluentActions.Awaiting(() => without.SaveShadowVariantAsync(Request()))
+                .Should().ThrowAsync<ForbiddenException>();
         }
 
         [Fact]
@@ -589,23 +681,89 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
             var dto = NewDto(modelId, UniqueName("ElevationNoWatcher"));
             dto.EnableResponseElevation = true;
             dto.SendToActivationWatcher = false;
+            dto.ResponseElevation = 3;
+            await CreateRangeAsync(dbContext, modelId, 1, 5);
 
             var saved = await service.InsertAsync(dto);
             createdIds.Add(saved.Id);
         }
 
         [Fact]
-        public async Task NotificationDestinationRequiredWhenEnableNotificationTrueAsync()
+        public async Task ResponseElevationOutsideEveryActiveRangeIsRejectedAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
-            var dto = NewDto(modelId, UniqueName("NoNotificationDestination"));
-            dto.EnableNotification = true;
-            dto.NotificationTypeId = 1;
+            await CreateRangeAsync(dbContext, modelId, 1, 5);
+            await CreateRangeAsync(dbContext, modelId, 20, 30, false);
+            var dto = NewDto(modelId, UniqueName("ElevationOutside"));
+            dto.EnableResponseElevation = true;
 
-            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
-            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "NotificationDestinationNotEmpty");
+            foreach (var level in new[] { 0, 6, 25 })
+            {
+                dto.ResponseElevation = level;
+
+                var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+                ex.Result.Errors.Should().Contain(e => e.ErrorCode == "ResponseElevationRangeNotFound");
+            }
+        }
+
+        [Fact]
+        public async Task ResponseElevationInsideAnActiveRangeIsAcceptedAndStoredAsAnIntegerAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            await CreateRangeAsync(dbContext, modelId, 10, 19);
+            var dto = NewDto(modelId, UniqueName("ElevationInside"));
+            dto.EnableResponseElevation = true;
+            dto.ResponseElevation = 17;
+
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+
+            saved.ResponseElevation.Should().Be(17);
+        }
+
+        [Fact]
+        public async Task ResponseElevationIsNotCheckedAgainstRangesWhileElevationIsOffAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(modelId, UniqueName("ElevationOff"));
+            dto.EnableResponseElevation = false;
+            dto.ResponseElevation = 99;
+
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+        }
+
+        [Fact]
+        public async Task LegacyNotificationColumnsSurviveAnUpdateThatCannotSetThemAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(modelId, UniqueName("LegacyNotification"));
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+
+            await dbContext.GetTable<Data.Poco.EntityAnalysisModelActivationRule>().Where(w => w.Id == saved.Id)
+                .Set(s => s.EnableNotification, (byte)1)
+                .Set(s => s.NotificationDestination, "legacy@example.com")
+                .UpdateAsync();
+
+            dto.Id = saved.Id;
+            dto.Version = saved.Version.GetValueOrDefault();
+            dto.Priority += 1;
+            await service.UpdateAsync(dto);
+
+            var row = await dbContext.GetTable<Data.Poco.EntityAnalysisModelActivationRule>()
+                .FirstAsync(f => f.Id == saved.Id);
+
+            row.EnableNotification.Should().Be(1);
+            row.NotificationDestination.Should().Be("legacy@example.com");
         }
 
         [Fact]
@@ -681,7 +839,6 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
             var dto = NewDto(modelId, saved.Name);
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
-            dto.Version = 999;
             dto.UpdatedUser = "also-tampered";
 
             var updated = await service.UpdateAsync(dto);
@@ -1150,6 +1307,221 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
 
             var oversized = await service.ListAsync(10_000);
             oversized.Items.Count.Should().BeLessThanOrEqualTo(200);
+        }
+
+        private async Task<(Guid WorkflowGuid, Guid StatusGuid)> CreateCaseWorkflowAsync(DbContext dbContext,
+            int modelId)
+        {
+            var workflowGuid = Guid.NewGuid();
+            var statusGuid = Guid.NewGuid();
+
+            var workflowId = await dbContext.InsertWithInt32IdentityAsync(new CaseWorkflow
+            {
+                Name = UniqueName("Workflow"),
+                EntityAnalysisModelId = modelId,
+                Guid = workflowGuid,
+                Active = 1,
+                Deleted = 0
+            });
+            createdWorkflowIds.Add(workflowId);
+
+            await dbContext.InsertAsync(new CaseWorkflowStatus
+            {
+                Name = UniqueName("Status"),
+                CaseWorkflowId = workflowId,
+                Guid = statusGuid,
+                Active = 1,
+                Deleted = 0
+            });
+
+            return (workflowGuid, statusGuid);
+        }
+
+        [Fact]
+        public async Task CaseWorkflowStatusOfTheSelectedModelIsAcceptedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (workflowGuid, statusGuid) = await CreateCaseWorkflowAsync(dbContext, modelId);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var dto = NewDto(modelId, UniqueName("OwnWorkflow"));
+            dto.EnableCaseWorkflow = true;
+            dto.CaseWorkflowGuid = workflowGuid;
+            dto.CaseWorkflowStatusGuid = statusGuid;
+            dto.CaseKey = "AccountId";
+
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+
+            saved.CaseWorkflowGuid.Should().Be(workflowGuid);
+        }
+
+        [Fact]
+        public async Task UnknownCaseWorkflowGuidsAreRefusedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var dto = NewDto(modelId, UniqueName("UnknownWorkflow"));
+            dto.EnableCaseWorkflow = true;
+            dto.CaseWorkflowGuid = Guid.NewGuid();
+            dto.CaseWorkflowStatusGuid = Guid.NewGuid();
+            dto.CaseKey = "AccountId";
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "CaseWorkflowStatusGuidNotFound");
+        }
+
+        [Fact]
+        public async Task ACaseWorkflowOfAnotherTenantCannotBeReferencedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var tenantAModelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (tenantAWorkflowGuid, tenantAStatusGuid) = await CreateCaseWorkflowAsync(dbContext, tenantAModelId);
+            var tenantBModelId = await CreateParentModelAsync(dbContext, fx.Seed.UserTenantB);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserTenantB);
+
+            var dto = NewDto(tenantBModelId, UniqueName("ForeignWorkflow"));
+            dto.EnableCaseWorkflow = true;
+            dto.CaseWorkflowGuid = tenantAWorkflowGuid;
+            dto.CaseWorkflowStatusGuid = tenantAStatusGuid;
+            dto.CaseKey = "AccountId";
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "CaseWorkflowStatusGuidNotFound");
+        }
+
+        [Fact]
+        public async Task ACaseWorkflowOfAnotherModelInTheSameTenantCannotBeReferencedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelAId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var modelBId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var (workflowBGuid, statusBGuid) = await CreateCaseWorkflowAsync(dbContext, modelBId);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var dto = NewDto(modelAId, UniqueName("CrossModelWorkflow"));
+            dto.EnableCaseWorkflow = true;
+            dto.CaseWorkflowGuid = workflowBGuid;
+            dto.CaseWorkflowStatusGuid = statusBGuid;
+            dto.CaseKey = "AccountId";
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "CaseWorkflowStatusGuidNotFound");
+        }
+
+        [Fact]
+        public async Task UpdateCannotMoveARuleToAnotherModelAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelAId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var modelBId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(modelAId, UniqueName("Anchored")));
+            createdIds.Add(saved.Id);
+
+            var moved = (await service.GetByIdAsync(saved.Id))!;
+            moved.EntityAnalysisModelId = modelBId;
+            await service.UpdateAsync(moved);
+
+            var stored = await dbContext.GetTable<Data.Poco.EntityAnalysisModelActivationRule>()
+                .FirstAsync(w => w.Id == saved.Id);
+            stored.EntityAnalysisModelId.Should().Be(modelAId);
+        }
+
+        [Fact]
+        public async Task CountersSuppliedByTheClientAreIgnoredOnInsertAndUpdateAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var dto = NewDto(modelId, UniqueName("ForgedCounters"));
+            dto.ActivationCounter = 999;
+            dto.EvaluationCounter = 999;
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+
+            var afterInsert = await dbContext.GetTable<Data.Poco.EntityAnalysisModelActivationRule>()
+                .FirstAsync(w => w.Id == saved.Id);
+            afterInsert.ActivationCounter.Should().Be(0);
+            afterInsert.EvaluationCounter.Should().Be(0);
+
+            await dbContext.GetTable<Data.Poco.EntityAnalysisModelActivationRule>()
+                .Where(w => w.Id == saved.Id)
+                .Set(s => s.ActivationCounter, 5L)
+                .Set(s => s.EvaluationCounter, 10L)
+                .Set(s => s.ForcedActivationCounter, 2L)
+                .UpdateAsync();
+
+            var update = (await service.GetByIdAsync(saved.Id))!;
+            update.ActivationCounter = 0;
+            update.EvaluationCounter = 123456;
+            await service.UpdateAsync(update);
+
+            var afterUpdate = await dbContext.GetTable<Data.Poco.EntityAnalysisModelActivationRule>()
+                .FirstAsync(w => w.Id == saved.Id);
+            afterUpdate.ActivationCounter.Should().Be(5);
+            afterUpdate.EvaluationCounter.Should().Be(10);
+            afterUpdate.ForcedActivationCounter.Should().Be(2);
+        }
+
+        [Fact]
+        public async Task ResubmitOfRejectedVersionBumpsVersionArchivesOldAndRecordsTheCallerAsMakerAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(modelId, UniqueName("ResubmitRejected")));
+            createdIds.Add(saved.Id);
+
+            await EntityApprovalSeed.RejectAsync(dbContext, EntityApprovalKind.EntityAnalysisModelActivationRule, saved.Id, 1, tenantRegistryId);
+
+            var resubmitted = await service.ResubmitAsync(saved.Id);
+
+            resubmitted.Version.Should().Be(2);
+            resubmitted.Name.Should().Be(saved.Name);
+            resubmitted.CreatedUser.Should().Be(fx.Seed.UserWithPermission,
+                "the main row CreatedUser is the maker of the current version for separation of duties");
+
+            var auditRows = await dbContext.GetTable<EntityAnalysisModelActivationRuleVersion>()
+                .Where(w => w.EntityAnalysisModelActivationRuleId == saved.Id).CountAsync();
+            auditRows.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task RetractOfRejectedEditRestoresLastApprovedContentAndCarriesTheApprovalAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var insertDto = NewDto(modelId, UniqueName("RetractEdit"));
+            insertDto.Priority = 3;
+            var saved = await service.InsertAsync(insertDto);
+            createdIds.Add(saved.Id);
+
+            await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModelActivationRule, saved.Id, 1, tenantRegistryId);
+
+            var updateDto = NewDto(modelId, saved.Name);
+            updateDto.Id = saved.Id;
+            updateDto.Priority = 9;
+            await service.UpdateAsync(updateDto);
+
+            await EntityApprovalSeed.RejectAsync(dbContext, EntityApprovalKind.EntityAnalysisModelActivationRule, saved.Id, 2, tenantRegistryId);
+
+            var retracted = await service.RetractAsync(saved.Id);
+
+            retracted.Version.Should().Be(3);
+            retracted.Priority.Should().Be(3, "retracting abandons the rejected edit and restores approved content");
+
+            var carried = await dbContext.EntityApproval.CountAsync(w =>
+                w.EntityApprovalKindId == (int)EntityApprovalKind.EntityAnalysisModelActivationRule
+                && w.EntityId == saved.Id && w.EntityVersion == 3
+                && w.StateId == (int)EntityApprovalState.Approved && w.CarriedForwardFromVersion == 1);
+            carried.Should().BeGreaterThan(0, "the approval of the restored baseline is carried onto the new version");
         }
     }
 }

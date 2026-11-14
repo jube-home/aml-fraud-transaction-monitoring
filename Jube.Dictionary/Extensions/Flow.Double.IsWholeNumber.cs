@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
+            [Description("True when: the value has no fractional part. Decides matched if so; otherwise continues.")]
             public Flow<double> MatchIsWholeNumber()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleIsWholeNumber(flow.Value));
             }
 
+            [Description("True when: the value has no fractional part. Decides rejected if so; otherwise continues.")]
             public Flow<double> RejectIsWholeNumber()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleIsWholeNumber(flow.Value));
             }
 
+            [Description("True when: the value has no fractional part. Decides broken if so; otherwise continues.")]
             public Flow<double> BreakIsWholeNumber()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleIsWholeNumber(flow.Value));
             }
 
+            [Description("True when: the value has no fractional part. Continues if so; otherwise decides rejected.")]
             public Flow<double> RequireIsWholeNumber()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleIsWholeNumber(flow.Value));
             }
 
+            [Description("True when: the value has no fractional part. Continues if so; otherwise decides broken.")]
             public Flow<double> EnsureIsWholeNumber()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
+            [Description("Begins a pipeline from the value. True when: the value has no fractional part. Decides matched if so; otherwise continues.")]
             public Flow<double> MatchIsWholeNumber()
             {
                 return value.Start().MatchIsWholeNumber();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value has no fractional part. Decides rejected if so; otherwise continues.")]
             public Flow<double> RejectIsWholeNumber()
             {
                 return value.Start().RejectIsWholeNumber();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value has no fractional part. Decides broken if so; otherwise continues.")]
             public Flow<double> BreakIsWholeNumber()
             {
                 return value.Start().BreakIsWholeNumber();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value has no fractional part. Continues if so; otherwise decides rejected.")]
             public Flow<double> RequireIsWholeNumber()
             {
                 return value.Start().RequireIsWholeNumber();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value has no fractional part. Continues if so; otherwise decides broken.")]
             public Flow<double> EnsureIsWholeNumber()
             {
                 return value.Start().EnsureIsWholeNumber();

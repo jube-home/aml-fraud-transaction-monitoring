@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static Flow<int> FuzzyMatchCount(this Flow<string?> flow, IEnumerable<string>? list, string? options)
+        [Description("Replaces the value being tested with how many entries of the List token pass the fuzzy match.")]
+        public static Flow<int> FuzzyMatchCount(this Flow<string?> flow,
+            [Description("The List token whose entries are compared.")] IEnumerable<string>? list,
+            [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
         {
             if (flow.IsDecided)
             {

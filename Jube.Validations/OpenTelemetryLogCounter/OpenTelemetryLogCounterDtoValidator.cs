@@ -11,8 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-using System.Text.RegularExpressions;
 using FluentValidation;
+using Jube.Data.Helpers;
 using Jube.Dto.OpenTelemetryLogCounter;
 using Jube.Resources;
 using Microsoft.Extensions.Localization;
@@ -23,7 +23,6 @@ namespace Jube.Validations.OpenTelemetryLogCounter
     {
         private const int MaxNameLength = 255;
         private const int MaxRegexLength = 2000;
-        private static readonly TimeSpan regexMatchTimeout = TimeSpan.FromSeconds(1);
 
         public OpenTelemetryLogCounterDtoValidator(IStringLocalizer localiser)
         {
@@ -62,7 +61,7 @@ namespace Jube.Validations.OpenTelemetryLogCounter
 
             try
             {
-                _ = new Regex(pattern, RegexOptions.None, regexMatchTimeout);
+                _ = LogCounterRegex.Create(pattern);
 
                 return true;
             }

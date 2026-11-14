@@ -8,6 +8,8 @@ grand_parent: Configuration
 
 # Exhaustive Adaptation Training Configuration
 
+<!-- TODO(docs): this page predates the Vue port and describes the Razor layout (tabs, grids, buttons); re-read it against the Exhaustive pages under Models and correct names, positions and labels. -->
+
 Exhaustive training is controlled by several Environment Variables, however the defaults are adequate in most use cases.
 Exhaustive models are otherwise given some basic training parameters which specify if Anomaly detection is to be used
 and the extent to which other class data is to be enriched into the anomlous classifications.
@@ -39,12 +41,14 @@ The documentation as follows assumes that the demonstration dataset is being use
 Before a model can be recalled it must be trained. To configure an Exhaustive model for training navigate Models >>
 Machine Learning >> Exhaustive Adaptation:
 
-![ExhaustiveTrainingTopOfTree.png](ExhaustiveTrainingTopOfTree.png)
+<!-- TODO(screenshot): file=model-exhaustive-exhaustive-training-top-of-tree.png route=/models state="TrainingConfiguration: replace the Razor-era image ExhaustiveTrainingTopOfTree.png with the Vue Exhaustive page" -->
+![ExhaustiveTrainingTopOfTree.png](model-exhaustive-exhaustive-training-top-of-tree.png)
 
 Click on the model to create an Exhaustive Adaptation which will expose an empty page for the model configuration
 parameters:
 
-![EmptyExhaustive.png](EmptyExhaustive.png)
+<!-- TODO(screenshot): file=model-exhaustive-empty-exhaustive.png route=/models state="TrainingConfiguration: replace the Razor-era image EmptyExhaustive.png with the Vue Exhaustive page" -->
+![EmptyExhaustive.png](model-exhaustive-empty-exhaustive.png)
 
 The page accepts the following parameters:
 
@@ -75,7 +79,8 @@ has picked it up for training it becomes read-only for the remainder of its life
 
 Complete the parameters to training a model based confirmed fraud via Tag, as follows:
 
-![ExampleExhaustive.png](ExampleExhaustive.png)
+<!-- TODO(screenshot): file=model-exhaustive-example-exhaustive.png route=/models state="TrainingConfiguration: replace the Razor-era image ExampleExhaustive.png with the Vue Exhaustive page" -->
+![ExampleExhaustive.png](model-exhaustive-example-exhaustive.png)
 
 Scroll down and click Add to not only create a version of the Exhaustive model but instruct the training of the model by
 the background thread. The default status will by "Awaiting Server" with the background thread updating the following
@@ -96,34 +101,90 @@ status as progress:
 
 The Refresh button exists to update the page. Click the Refresh button to observe the most recent training status:
 
-![UpdatedStatus.png](UpdatedStatus.png)
+<!-- TODO(screenshot): file=model-exhaustive-updated-status.png route=/models state="TrainingConfiguration: replace the Razor-era image UpdatedStatus.png with the Vue Exhaustive page" -->
+![UpdatedStatus.png](model-exhaustive-updated-status.png)
 
-![AnotherStatus.png](AnotherStatus.png)
+<!-- TODO(screenshot): file=model-exhaustive-another-status.png route=/models state="TrainingConfiguration: replace the Razor-era image AnotherStatus.png with the Vue Exhaustive page" -->
+![AnotherStatus.png](model-exhaustive-another-status.png)
 
 After the model has been picked up for training it can no longer be updated.
 
 Upon status Training Neural Networks and Performing Evolution having been reached, the model tabs will be exposed:
 
-![LocationOfModelTabs.png](LocationOfModelTabs.png)
+<!-- TODO(screenshot): file=model-exhaustive-location-of-model-tabs.png route=/models state="TrainingConfiguration: replace the Razor-era image LocationOfModelTabs.png with the Vue Exhaustive page" -->
+![LocationOfModelTabs.png](model-exhaustive-location-of-model-tabs.png)
 
 The page will not automatically refresh as the training process takes some time and the page requests are extensive.
 Clicking the Refresh button will allow for monitoring of exploration:
 
-![Evolution.png](Evolution.png)
+<!-- TODO(screenshot): file=model-exhaustive-evolution.png route=/models state="TrainingConfiguration: replace the Razor-era image Evolution.png with the Vue Exhaustive page" -->
+![Evolution.png](model-exhaustive-evolution.png)
 
 During evolution, the number of attempted Neural Network topologies is recorded, alongside the best score and the number
 of topologies since best (being the last topology having been promoted):
 
-![Best.png](Best.png)
+<!-- TODO(screenshot): file=model-exhaustive-best.png route=/models state="TrainingConfiguration: replace the Razor-era image Best.png with the Vue Exhaustive page" -->
+![Best.png](model-exhaustive-best.png)
 
 Training can take several hours or days depending on dataset size. The training will terminate at the point there have
 been more than a certain number of topologies tried since best (which is a setting available in the Environment
 Variables) else will continue to evolve better scores for simpler topology, being plotted as a learning curve:
 
-![Image](Evolution.png)
+<!-- TODO(screenshot): file=model-exhaustive-evolution.png route=/models state="TrainingConfiguration: replace the Razor-era image Evolution.png with the Vue Exhaustive page" -->
+![Image](model-exhaustive-evolution.png)
 
 Each promoted model is available for detailed inspection.
 
 Notice the availability of a Guid which can be used for direct recall of the model via HTTP:
 
-![GuidLocation.png](GuidLocation.png)
+<!-- TODO(screenshot): file=model-exhaustive-guid-location.png route=/models state="TrainingConfiguration: replace the Razor-era image GuidLocation.png with the Vue Exhaustive page" -->
+![GuidLocation.png](model-exhaustive-guid-location.png)
+
+## Class Definition filter: validation and execution
+
+The Archive Filter is built in the Query Builder, which stores three things on the Exhaustive Adaptation: the builder
+definition (Filter JSON), the generated SQL condition (Filter SQL) and the SQL parameter values (Filter Tokens, a JSON
+array). Filter SQL and Filter Tokens are generated by the browser and stored as supplied, so the server never trusts
+them. They are checked twice.
+
+When the Exhaustive Adaptation is saved the Filter SQL is refused unless it is a plain boolean expression of at most
+65,536 characters. It is refused when it contains a semicolon, a backslash, a dollar sign, a NUL or other control
+character, a comment (`--`, `/*`, `*/`), an `E'...'` escape string, unbalanced parentheses or quotes, or any of these
+words outside a quoted value: select, union, intersect, except, from, into, copy, insert, update, delete, drop, alter,
+create, truncate, grant, revoke, call, do, execute, set, with, values, returning, window, offset, limit, order, group,
+having, for, any `pg_` or `lo_` function, `current_setting`, `version()` or a cast to `regclass`. Filter Tokens must be
+a
+JSON array of at most 1 MB.
+
+When training runs, the condition is placed inside a fixed statement that reads only the Archive (or demonstration, or
+uploaded dataset) rows of the Exhaustive Adaptation's own model or dataset, and the whole statement is parsed again and
+refused unless it is a single read-only SELECT that calls no denied function (names beginning `pg_`, `lo_`,
+`set_config`, `dblink`, `repeat` and others). It runs in a read-only transaction with a 30 second statement timeout and
+a 5 second lock timeout, so a stored filter cannot modify data, read another table, or run unbounded.
+
+<!-- TODO(docs): confirm the list of refused words and the 30 second and 5 second timeouts against the current settings before publishing; the lists live in FilterSqlText.cs and PostgresSqlValidator.cs. -->
+
+## Uploaded datasets
+
+When the data source is Uploaded Dataset a CSV or JSON file is uploaded, its columns are profiled, and the mapping is
+confirmed before the dataset can be selected. The upload is bounded by the following environment variables (defaults
+shown): ExhaustiveDatasetUploadMaxBytes (50 MB), ExhaustiveDatasetUploadMaxRows (1,000,000) and
+ExhaustiveDatasetUploadMaxColumns (500). JSON is read with a nesting limit of 8 levels. A dataset can only be selected
+by
+an Exhaustive Adaptation of the same tenant, only one of a CSV and a JSON dataset may be selected, and a dataset used
+by an Exhaustive Adaptation that has not finished training cannot be changed or deleted.
+
+<!-- TODO(screenshot): file=model-exhaustive-dataset-upload.png route=/models state="Exhaustive Adaptation page, data source Uploaded Dataset, a CSV just uploaded with the column mapping table" -->
+<!-- TODO(docs): describe the upload, column mapping (include, variable name, processing type) and delete steps from the Vue DatasetUpload component once the page has been walked through. -->
+
+## Permissions and security
+
+The Exhaustive Adaptation page, its charts and the datasets all need permission 16. Making a promoted model active or
+inactive needs permission 14, so a user who can only view training results cannot promote a model. Every request is
+scoped to the caller's tenant. The trained network is stored as JSON; when the engine loads it only types from the
+neural
+network library itself (plus numbers, text and arrays) may be named in the stored type information, anything else is
+ignored and the model does not score.
+
+<!-- TODO(docs): confirm with the owner that promotion is intended to need permission 14 rather than 16 and whether promotion should go through maker-checker approval. -->
+

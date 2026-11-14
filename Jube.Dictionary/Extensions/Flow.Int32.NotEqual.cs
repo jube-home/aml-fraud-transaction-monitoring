@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<int> flow)
         {
-            public Flow<int> MatchNotEqual(int other)
+            [Description("True when: differs from the argument. Decides matched if so; otherwise continues.")]
+            public Flow<int> MatchNotEqual([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.Int32NotEqual(flow.Value, other));
             }
 
-            public Flow<int> RejectNotEqual(int other)
+            [Description("True when: differs from the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<int> RejectNotEqual([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.Int32NotEqual(flow.Value, other));
             }
 
-            public Flow<int> BreakNotEqual(int other)
+            [Description("True when: differs from the argument. Decides broken if so; otherwise continues.")]
+            public Flow<int> BreakNotEqual([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.Int32NotEqual(flow.Value, other));
             }
 
-            public Flow<int> RequireNotEqual(int other)
+            [Description("True when: differs from the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<int> RequireNotEqual([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.Int32NotEqual(flow.Value, other));
             }
 
-            public Flow<int> EnsureNotEqual(int other)
+            [Description("True when: differs from the argument. Continues if so; otherwise decides broken.")]
+            public Flow<int> EnsureNotEqual([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(int value)
         {
-            public Flow<int> MatchNotEqual(int other)
+            [Description("Begins a pipeline from the value. True when: differs from the argument. Decides matched if so; otherwise continues.")]
+            public Flow<int> MatchNotEqual([Description("The other integer.")] int other)
             {
                 return value.Start().MatchNotEqual(other);
             }
 
-            public Flow<int> RejectNotEqual(int other)
+            [Description("Begins a pipeline from the value. True when: differs from the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<int> RejectNotEqual([Description("The other integer.")] int other)
             {
                 return value.Start().RejectNotEqual(other);
             }
 
-            public Flow<int> BreakNotEqual(int other)
+            [Description("Begins a pipeline from the value. True when: differs from the argument. Decides broken if so; otherwise continues.")]
+            public Flow<int> BreakNotEqual([Description("The other integer.")] int other)
             {
                 return value.Start().BreakNotEqual(other);
             }
 
-            public Flow<int> RequireNotEqual(int other)
+            [Description("Begins a pipeline from the value. True when: differs from the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<int> RequireNotEqual([Description("The other integer.")] int other)
             {
                 return value.Start().RequireNotEqual(other);
             }
 
-            public Flow<int> EnsureNotEqual(int other)
+            [Description("Begins a pipeline from the value. True when: differs from the argument. Continues if so; otherwise decides broken.")]
+            public Flow<int> EnsureNotEqual([Description("The other integer.")] int other)
             {
                 return value.Start().EnsureNotEqual(other);
             }

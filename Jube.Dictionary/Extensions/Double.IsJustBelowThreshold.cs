@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsJustBelowThreshold(this double @this, double threshold, double marginPercent)
+        [Description("Checks if the value is below a threshold but within a percentage margin of it, a classic structuring/smurfing indicator.")]
+        public static bool IsJustBelowThreshold(this double @this,
+            [Description("The threshold (e.g. a reporting limit).")] double threshold,
+            [Description("The margin below the threshold, as a percentage of it.")] double marginPercent)
         {
             if (@this >= threshold)
             {

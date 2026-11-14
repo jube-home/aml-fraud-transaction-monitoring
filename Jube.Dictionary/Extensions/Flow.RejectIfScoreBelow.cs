@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static Flow<T> RejectIfScoreBelow<T>(this Flow<T> flow, double threshold)
+        [Description("Decides rejected when the accumulated score is below the threshold; otherwise continues.")]
+        public static Flow<T> RejectIfScoreBelow<T>(this Flow<T> flow,
+            [Description("The score the pipeline must be below.")] double threshold)
         {
             return flow.Apply(FlowKind.Reject, flow.Score < threshold);
         }

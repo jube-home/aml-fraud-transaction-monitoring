@@ -28,7 +28,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 context.Services.Parser.EntityAnalysisModelRequestXPaths =
                     new Dictionary<string, EntityAnalysisModelRequestXPath>();
 
-                foreach (var (key, value) in context.EntityAnalysisModels.ActiveEntityAnalysisModels)
+                foreach (var (key, value) in context.ModelsInScope())
                 {
                     context.Services.CancellationToken.ThrowIfCancellationRequested();
 
@@ -185,6 +185,16 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                         {
                                             context.Services.Log.Debug(
                                                 $"Entity Start: Entity Model {key} and Default Value {entityAnalysisModelRequestXPath.Id} set DEFAULT Default String value as {entityAnalysisModelRequestXPath.DefaultValue}.");
+                                        }
+
+                                        break;
+                                    case 8:
+                                        entityAnalysisModelRequestXPath.DefaultValue = "default";
+
+                                        if (context.Services.Log.IsDebugEnabled)
+                                        {
+                                            context.Services.Log.Debug(
+                                                $"Entity Start: Entity Model {key} and Default Value {entityAnalysisModelRequestXPath.Id} set DEFAULT Default IP value as {entityAnalysisModelRequestXPath.DefaultValue}.");
                                         }
 
                                         break;

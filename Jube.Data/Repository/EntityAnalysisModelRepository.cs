@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using Jube.Data.Query.GetApprovedEntityQuery;
 using Jube.Data.Repository.Models;
 
@@ -25,6 +26,7 @@ namespace Jube.Data.Repository
     using Context;
     using Extensions;
     using LinqToDB;
+    using LinqToDB.Async;
     using Microsoft.Extensions.Logging.Abstractions;
     using Poco;
 
@@ -88,14 +90,14 @@ namespace Jube.Data.Repository
         public Task<EntityAnalysisModel> GetByIdAsync(int id, CancellationToken token = default)
         {
             return dbContext.EntityAnalysisModel.FirstOrDefaultAsync(w
-                => (w.TenantRegistryId == tenantRegistryId || !w.TenantRegistryId.HasValue)
+                => (w.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
                    && w.Id == id, token);
         }
 
         public Task<EntityAnalysisModel> GetByGuidAsync(Guid guid, CancellationToken token = default)
         {
             return dbContext.EntityAnalysisModel.FirstOrDefaultAsync(w
-                => (w.TenantRegistryId == tenantRegistryId || !w.TenantRegistryId.HasValue)
+                => (w.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
                    && w.Guid == guid && (w.Deleted == null || w.Deleted == 0), token);
         }
 
@@ -113,11 +115,13 @@ namespace Jube.Data.Repository
 
         public async Task<EntityAnalysisModel> UpdateAsync(EntityAnalysisModel model, CancellationToken token = default)
         {
-            var existing = await dbContext.EntityAnalysisModel
-                .FirstOrDefaultAsync(w => w.Id
-                                          == model.Id
-                                          && (w.TenantRegistryId == tenantRegistryId || !w.TenantRegistryId.HasValue)
-                                          && (w.Locked == 0 || w.Locked == null), token);
+            var existing = tenantRegistryId.HasValue
+                ? await dbContext.EntityAnalysisModel
+                    .FirstOrDefaultAsync(w => w.Id
+                                              == model.Id
+                                              && w.TenantRegistryId == tenantRegistryId
+                                              && (w.Locked == 0 || w.Locked == null), token)
+                : null;
 
             if (existing == null)
             {
@@ -129,11 +133,13 @@ namespace Jube.Data.Repository
             model.CreatedDate = existing.CreatedDate;
             model.UpdatedUser = userName;
             model.UpdatedDate = DateTime.UtcNow;
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
             model.Version = existing.Version + 1;
             model.Deleted = 0;
             model.DeletedDate = null;
             model.DeletedUser = null;
             model.Guid = existing.Guid;
+            model.ImportId = existing.ImportId;
 
             await dbContext.UpdateAsync(model, token: token);
 
@@ -150,6 +156,11 @@ namespace Jube.Data.Repository
             }
 
             return model;
+        }
+
+        public Task<EntityAnalysisModel> UnlockAsync(int id, CancellationToken token = default)
+        {
+            return dbContext.InTransactionAsync(() => UnlockVersionedAsync(id, token), token);
         }
 
         public Task DeleteAsync(int id, CancellationToken token = default)
@@ -184,13 +195,15 @@ namespace Jube.Data.Repository
                 .ExecuteAsync(current, approvalsRequired, token).ConfigureAwait(false);
         }
 
-        private async Task DeleteVersionedAsync(int id, CancellationToken token)
+        private async Task<EntityAnalysisModel> UnlockVersionedAsync(int id, CancellationToken token)
         {
-            var existing = await dbContext.EntityAnalysisModel
-                .FirstOrDefaultAsync(w => (w.TenantRegistryId == tenantRegistryId || !w.TenantRegistryId.HasValue)
-                                          && w.Id == id
-                                          && (w.Deleted == 0 || w.Deleted == null)
-                                          && (w.Locked == 0 || w.Locked == null), token);
+            var existing = tenantRegistryId.HasValue
+                ? await dbContext.EntityAnalysisModel
+                    .FirstOrDefaultAsync(w => w.TenantRegistryId == tenantRegistryId
+                                              && w.Id == id
+                                              && (w.Deleted == 0 || w.Deleted == null)
+                                              && w.Locked == 1, token)
+                : null;
 
             if (existing == null)
             {
@@ -207,7 +220,55 @@ namespace Jube.Data.Repository
             await dbContext.InsertAsync(audit, token: token);
 
             var records = await dbContext.EntityAnalysisModel
-                .Where(d => (d.TenantRegistryId == tenantRegistryId || !d.TenantRegistryId.HasValue)
+                .Where(d => d.TenantRegistryId == tenantRegistryId
+                            && d.Id == id
+                            && (d.Deleted == 0 || d.Deleted == null)
+                            && d.Locked == 1)
+                .Set(s => s.Locked, Convert.ToByte(0))
+                .Set(s => s.UpdatedDate, DateTime.UtcNow)
+                .Set(s => s.UpdatedUser, userName)
+                .Set(s => s.Version, (existing.Version ?? 1) + 1)
+                .UpdateAsync(token);
+
+            if (records == 0)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            existing.Locked = Convert.ToByte(0);
+            existing.UpdatedDate = DateTime.UtcNow;
+            existing.UpdatedUser = userName;
+            existing.Version = (existing.Version ?? 1) + 1;
+
+            return existing;
+        }
+
+        private async Task DeleteVersionedAsync(int id, CancellationToken token)
+        {
+            var existing = tenantRegistryId.HasValue
+                ? await dbContext.EntityAnalysisModel
+                    .FirstOrDefaultAsync(w => w.TenantRegistryId == tenantRegistryId
+                                              && w.Id == id
+                                              && (w.Deleted == 0 || w.Deleted == null)
+                                              && (w.Locked == 0 || w.Locked == null), token)
+                : null;
+
+            if (existing == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            var mapper = new Mapper(new MapperConfiguration(
+                cfg => { cfg.CreateMap<EntityAnalysisModel, EntityAnalysisModelVersion>(); },
+                NullLoggerFactory.Instance));
+
+            var audit = mapper.Map<EntityAnalysisModelVersion>(existing);
+            audit.EntityAnalysisModelId = existing.Id;
+
+            await dbContext.InsertAsync(audit, token: token);
+
+            var records = await dbContext.EntityAnalysisModel
+                .Where(d => d.TenantRegistryId == tenantRegistryId
                             && d.Id == id
                             && (d.Deleted == 0 || d.Deleted == null)
                             && (d.Locked == 0 || d.Locked == null))

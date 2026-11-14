@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
+            [Description("True when: non-empty and one repeated character. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsAllSameCharacter()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringIsAllSameCharacter(flow.Value));
             }
 
+            [Description("True when: non-empty and one repeated character. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsAllSameCharacter()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringIsAllSameCharacter(flow.Value));
             }
 
+            [Description("True when: non-empty and one repeated character. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsAllSameCharacter()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringIsAllSameCharacter(flow.Value));
             }
 
+            [Description("True when: non-empty and one repeated character. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsAllSameCharacter()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringIsAllSameCharacter(flow.Value));
             }
 
+            [Description("True when: non-empty and one repeated character. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsAllSameCharacter()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
+            [Description("Begins a pipeline from the value. True when: non-empty and one repeated character. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsAllSameCharacter()
             {
                 return value.Start().MatchIsAllSameCharacter();
             }
 
+            [Description("Begins a pipeline from the value. True when: non-empty and one repeated character. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsAllSameCharacter()
             {
                 return value.Start().RejectIsAllSameCharacter();
             }
 
+            [Description("Begins a pipeline from the value. True when: non-empty and one repeated character. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsAllSameCharacter()
             {
                 return value.Start().BreakIsAllSameCharacter();
             }
 
+            [Description("Begins a pipeline from the value. True when: non-empty and one repeated character. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsAllSameCharacter()
             {
                 return value.Start().RequireIsAllSameCharacter();
             }
 
+            [Description("Begins a pipeline from the value. True when: non-empty and one repeated character. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsAllSameCharacter()
             {
                 return value.Start().EnsureIsAllSameCharacter();

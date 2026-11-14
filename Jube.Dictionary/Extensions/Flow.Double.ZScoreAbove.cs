@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchZScoreAbove(double mean, double standardDeviation, double threshold)
+            [Description("True when: the z-score against the mean and standard deviation is above the threshold. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchZScoreAbove([Description("The mean of the population.")] double mean,
+                [Description("The standard deviation of the population.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleZScoreAbove(flow.Value, mean, standardDeviation, threshold));
             }
 
-            public Flow<double> RejectZScoreAbove(double mean, double standardDeviation, double threshold)
+            [Description("True when: the z-score against the mean and standard deviation is above the threshold. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectZScoreAbove([Description("The mean of the population.")] double mean,
+                [Description("The standard deviation of the population.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleZScoreAbove(flow.Value, mean, standardDeviation, threshold));
             }
 
-            public Flow<double> BreakZScoreAbove(double mean, double standardDeviation, double threshold)
+            [Description("True when: the z-score against the mean and standard deviation is above the threshold. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakZScoreAbove([Description("The mean of the population.")] double mean,
+                [Description("The standard deviation of the population.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleZScoreAbove(flow.Value, mean, standardDeviation, threshold));
             }
 
-            public Flow<double> RequireZScoreAbove(double mean, double standardDeviation, double threshold)
+            [Description("True when: the z-score against the mean and standard deviation is above the threshold. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireZScoreAbove([Description("The mean of the population.")] double mean,
+                [Description("The standard deviation of the population.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleZScoreAbove(flow.Value, mean, standardDeviation, threshold));
             }
 
-            public Flow<double> EnsureZScoreAbove(double mean, double standardDeviation, double threshold)
+            [Description("True when: the z-score against the mean and standard deviation is above the threshold. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureZScoreAbove([Description("The mean of the population.")] double mean,
+                [Description("The standard deviation of the population.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchZScoreAbove(double mean, double standardDeviation, double threshold)
+            [Description("Begins a pipeline from the value. True when: the z-score against the mean and standard deviation is above the threshold. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchZScoreAbove([Description("The mean of the population.")] double mean,
+                [Description("The standard deviation of the population.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return value.Start().MatchZScoreAbove(mean, standardDeviation, threshold);
             }
 
-            public Flow<double> RejectZScoreAbove(double mean, double standardDeviation, double threshold)
+            [Description("Begins a pipeline from the value. True when: the z-score against the mean and standard deviation is above the threshold. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectZScoreAbove([Description("The mean of the population.")] double mean,
+                [Description("The standard deviation of the population.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return value.Start().RejectZScoreAbove(mean, standardDeviation, threshold);
             }
 
-            public Flow<double> BreakZScoreAbove(double mean, double standardDeviation, double threshold)
+            [Description("Begins a pipeline from the value. True when: the z-score against the mean and standard deviation is above the threshold. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakZScoreAbove([Description("The mean of the population.")] double mean,
+                [Description("The standard deviation of the population.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return value.Start().BreakZScoreAbove(mean, standardDeviation, threshold);
             }
 
-            public Flow<double> RequireZScoreAbove(double mean, double standardDeviation, double threshold)
+            [Description("Begins a pipeline from the value. True when: the z-score against the mean and standard deviation is above the threshold. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireZScoreAbove([Description("The mean of the population.")] double mean,
+                [Description("The standard deviation of the population.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return value.Start().RequireZScoreAbove(mean, standardDeviation, threshold);
             }
 
-            public Flow<double> EnsureZScoreAbove(double mean, double standardDeviation, double threshold)
+            [Description("Begins a pipeline from the value. True when: the z-score against the mean and standard deviation is above the threshold. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureZScoreAbove([Description("The mean of the population.")] double mean,
+                [Description("The standard deviation of the population.")] double standardDeviation,
+                [Description("The z-score the value is tested against.")] double threshold)
             {
                 return value.Start().EnsureZScoreAbove(mean, standardDeviation, threshold);
             }

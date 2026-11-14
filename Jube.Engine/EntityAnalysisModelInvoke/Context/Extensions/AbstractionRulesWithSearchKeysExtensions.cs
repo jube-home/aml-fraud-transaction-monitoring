@@ -18,7 +18,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Jube.Cache;
-using Jube.Cache.Redis.Models;
+using Jube.Cache.Resp.Models;
 using Jube.Data.Poco;
 using Jube.Dictionary;
 using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRulesWithSearchKeys;
@@ -239,7 +239,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
             await Task.WhenAll(sortedSetFetchTasks).ConfigureAwait(false);
 
-            var distinctRedisValues = sortedSetKeysByGroupingKey.Values
+            var distinctRespValues = sortedSetKeysByGroupingKey.Values
                 .SelectMany(x => x)
                 .Select(x => x.ToString())
                 .Distinct()
@@ -247,13 +247,13 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 .ToList();
 
             context.TraceLog(
-                $"has {distinctRedisValues.Count} distinct payload keys across all grouping keys. Fetching batch.");
+                $"has {distinctRespValues.Count} distinct payload keys across all grouping keys. Fetching batch.");
 
             var payloadMap = await context.EntityAnalysisModel.Services.CacheService.CachePayloadRepository
                 .GetPayloadBatchAsync(
                     context.EntityAnalysisModel.Instance.TenantRegistryId,
                     context.EntityAnalysisModel.Instance.Guid,
-                    distinctRedisValues,
+                    distinctRespValues,
                     context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid)
                 .ConfigureAwait(false);
 

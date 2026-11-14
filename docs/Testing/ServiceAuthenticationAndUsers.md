@@ -30,7 +30,7 @@ Tests of authentication, login and logout, role grants and the user-facing secur
 | `UserWithNoTenantMembership_CanStillAuthenticateAsync`                                             | Fact   | User with no tenant membership can still authenticate.                                                   |
 | `UserInBothTenants_AuthenticatesOnceAsync`                                                         | Fact   | User in both tenants authenticates once.                                                                 |
 | `UserOfTenantB_AuthenticatesWithoutTenantContextAsync`                                             | Fact   | User of tenant b authenticates without tenant context.                                                   |
-| `UserOfADisabledTenant_CanStillAuthenticateAsync`                                                  | Theory | User of a disabled tenant can still authenticate.                                                        |
+| `UserOfALockedTenant_CanStillAuthenticateAsync`                                                    | Fact   | User of a locked (not inactive or deleted) tenant can still authenticate.                                |
 | `UserWhoseRoleIsDeleted_CanStillAuthenticateAsync`                                                 | Fact   | User whose role is deleted can still authenticate.                                                       |
 | `ACorruptOrMissingStoredHash_NeverAuthenticates_UnderTheRealArgon2SchemeAsync`                     | Theory | A corrupt or missing stored hash never authenticates under the real argon2 scheme.                       |
 | `TwoUsersWithDifferentPasswords_CannotUseEachOthersPasswordAsync`                                  | Fact   | Two users with different passwords cannot use each others password.                                      |
@@ -77,60 +77,64 @@ Tests of authentication, login and logout, role grants and the user-facing secur
 
 ### AuthenticationEndpointTests
 
-`Jube.Test.Service.Authentication.AuthenticationEndpointTests` — 50 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Authentication.AuthenticationEndpointTests` — 54 tests. Category: Service. Collection: Database.
 
-| Test                                                                                     | Kind   | Verifies                                                                                       |
-|------------------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------------|
-| `ExactlyTheFiveLegacyRoutesAndLogout_AreMapped_WithTheirVerbsAsync`                      | Fact   | Exactly the five legacy routes and logout are mapped with their verbs.                         |
-| `AnonymousEndpointsStayAnonymous_AndTheOthersStayProtectedAsync`                         | Theory | Anonymous endpoints stay anonymous and the others stay protected.                              |
-| `TheNegotiateRoutes_AreBoundToTheNegotiateSchemeOnlyAsync`                               | Theory | The negotiate routes are bound to the negotiate scheme only.                                   |
-| `ChangePassword_UsesTheDefaultSchemeAuthorisationAsync`                                  | Fact   | Change password uses the default scheme authorisation.                                         |
-| `NothingInTheAuthenticationAreaIsExposedToTheAgentToolCatalogue`                         | Fact   | Nothing in the authentication area is exposed to the agent tool catalogue.                     |
-| `WrongVerbs_Are405_AndReachNoLogicAsync`                                                 | Theory | Wrong verbs are405 and reach no logic.                                                         |
-| `UnknownRoutes_Are404Async`                                                              | Theory | Unknown routes are404.                                                                         |
-| `RoutingIsCaseInsensitive_AsTheLegacyControllerRoutesWereAsync`                          | Fact   | Routing is case insensitive as the legacy controller routes were.                              |
-| `ACorrectLogin_Is200_WithATokenBodyAndExactlyOneHttpOnlyCookieAsync`                     | Fact   | A correct login is200 with a token body and exactly one http only cookie.                      |
-| `TheIssuedToken_AuthenticatesLaterRequests_ViaBearerAndViaCookieAsync`                   | Fact   | The issued token authenticates later requests via bearer and via cookie.                       |
-| `ARejectedToken_CannotReachChangePasswordAsync`                                          | Theory | A rejected token cannot reach change password.                                                 |
-| `AMalformedBearerToken_Is401OnProtectedRoutes_AndAnonymousRoutesProceedAsAnonymousAsync` | Theory | A malformed bearer token is401 on protected routes and anonymous routes proceed as anonymous.  |
-| `AMalformedCookieToken_IsTreatedTheSameAsync`                                            | Theory | A malformed cookie token is treated the same.                                                  |
-| `AnUnacceptableToken_NeverBreaksAnAnonymousRoute_AndLeaksNoExceptionDetailAsync`         | Theory | An unacceptable token never breaks an anonymous route and leaks no exception detail.           |
-| `NoCredentialsAtAll_On_ChangePassword_Is401WithAnEmptyBodyAsync`                         | Fact   | No credentials at all on change password is401 with an empty body.                             |
-| `EveryFailedLoginReason_LooksIdenticalOnTheWireAsync`                                    | Theory | Every failed login reason looks identical on the wire.                                         |
-| `Weakness_TheWireDiffersForAUserWithoutAPasswordExpiry_403VersusTheUsual401Async`        | Fact   | Weakness the wire differs for a user without a password expiry 403 versus the usual401.        |
-| `AnExpiredPassword_IsA403_WithoutCookiesAsync`                                           | Fact   | An expired password is a 403 without cookies.                                                  |
-| `ANewStrongPassword_WithTheOldOne_Is200_AndTheNewOneWorksAsync`                          | Fact   | A new strong password with the old one is200 and the new one works.                            |
-| `AWeakNewPassword_Is400_WithTheErrorsArrayTheUiReadsAsync`                               | Fact   | A weak new password is400 with the errors array the ui reads.                                  |
-| `ValidationFailures_Are400_WithABodyMatchingTheLegacyNewtonsoftShapeAsync`               | Theory | Validation failures are400 with a body matching the legacy newtonsoft shape.                   |
-| `TheSuccessBody_MatchesTheLegacyNewtonsoftShapeAsync`                                    | Fact   | The success body matches the legacy newtonsoft shape.                                          |
-| `WhenAnotherSchemeIsActive_LoginAndTheWireProbe_Are404Async`                             | Theory | When another scheme is active login and the wire probe are404.                                 |
-| `AnAlreadyAuthenticatedCaller_GetsATokenForTheCredentialsSubmitted_NotForTheCallerAsync` | Fact   | An already authenticated caller gets a token for the credentials submitted not for the caller. |
-| `ParallelLoginsOverHttp_AllGetTheirAnswers_AndWrongOnesNeverSucceedAsync`                | Fact   | Parallel logins over http all get their answers and wrong ones never succeed.                  |
-| `WirePasswordHash_Is200_WithTheFlagInAJsonBodyAsync`                                     | Theory | Wire password hash is200 with the flag in a json body.                                         |
-| `WirePasswordHash_UnknownAndMissingNamesAsync`                                           | Theory | Wire password hash unknown and missing names.                                                  |
-| `ChangePassword_WithAValidToken_Is200WithAnEmptyBody_AndChangesTheHashAsync`             | Fact   | Change password with a valid token is200 with an empty body and changes the hash.              |
-| `ChangePassword_WithTheWrongCurrentPassword_Is401Async`                                  | Fact   | Change password with the wrong current password is401.                                         |
-| `ChangePassword_WeakNew_Is400_WithTheErrorsArrayAsync`                                   | Fact   | Change password weak new is400 with the errors array.                                          |
-| `ChangePassword_IsForbidden_WhenNegotiateOwnsIdentityAsync`                              | Fact   | Change password is forbidden when negotiate owns identity.                                     |
-| `ChangePassword_ForAValidTokenWhoseUserNoLongerExists_Is401WithNoDetailAsync`            | Fact   | Change password for a valid token whose user no longer exists is401 with no detail.            |
-| `TheLoginHistoryRemoteIp_IsTheConnectionAddress_NeverTheBodyOrAForwardedHeaderAsync`     | Fact   | The login history remote ip is the connection address never the body or a forwarded header.    |
-| `MalformedJsonOrWrongShapes_Are400_AndTouchNothingAsync`                                 | Theory | Malformed json or wrong shapes are400 and touch nothing.                                       |
-| `AnEmptyOrNullBody_Is400_WithNoDetail_AndTouchesNothingAsync`                            | Theory | An empty or null body is400 with no detail and touches nothing.                                |
-| `ChangePassword_WithNoRecognisedProperties_Is400_NotA500Async`                           | Fact   | Change password with no recognised properties is400 not a 500.                                 |
-| `WirePasswordHash_IgnoresUnrecognisedProperties_AndAnswersFalseForNoUserNameAsync`       | Fact   | Wire password hash ignores unrecognised properties and answers false for no user name.         |
-| `ANonJsonContentType_Is415_AndTouchesNothingAsync`                                       | Theory | A non json content type is415 and touches nothing.                                             |
-| `APostWithNoBodyAtAll_Is400_WithoutTouchingTheDatabaseAsync`                             | Fact   | A post with no body at all is400 without touching the database.                                |
-| `UnknownAndExtraJsonProperties_AreIgnored_AndCaseInsensitiveNamesBindAsync`              | Fact   | Unknown and extra json properties are ignored and case insensitive names bind.                 |
-| `AHugeBody_OfTwoMegabytes_IsRejectedOrFailsClosed_NeverAuthenticatingAsync`              | Fact   | A huge body of two megabytes is rejected or fails closed never authenticating.                 |
-| `ByNegotiate_WithAnEstablishedIdentity_Is200_WithTheSessionCookieAsync`                  | Fact   | By negotiate with an established identity is200 with the session cookie.                       |
-| `ByNegotiate_WithoutAnIdentity_ChallengesWith401AndWwwAuthenticateNegotiateAsync`        | Theory | By negotiate without an identity challenges with401 and www authenticate negotiate.            |
-| `ByNegotiate_AnUnknownIdentity_Is403Async`                                               | Fact   | By negotiate an unknown identity is403.                                                        |
-| `ByNegotiate_WhenNegotiateIsNotEnabled_Is404_EvenWithAnIdentityHeaderAsync`              | Fact   | By negotiate when negotiate is not enabled is404 even with an identity header.                 |
-| `ByNegotiate_TheHybridJwtIsNotAcceptedInPlaceOfANegotiateIdentityAsync`                  | Fact   | By negotiate the hybrid jwt is not accepted in place of a negotiate identity.                  |
-| `ByNegotiate_WithMfaEnabled_Is202WithAnEmptyBody_AndThePostFlowCompletesAsync`           | Fact   | By negotiate with mfa enabled is202 with an empty body and the post flow completes.            |
-| `WhenTheNegotiateSchemeIsNotRegistered_TheRoutesFailWith500NotAnAccidentalOpenAsync`     | Fact   | When the negotiate scheme is not registered the routes fail with500 not an accidental open.    |
-| `UserNamePassword_WithMfa_RightCode200_WrongCode401_MissingCode400Async`                 | Fact   | User name password with mfa right code200 wrong code401 missing code400.                       |
-| `AProviderOutage_DuringMfa_Is500_AndNeverAnAuthenticationAsync`                          | Fact   | A provider outage during mfa is500 and never an authentication.                                |
+| Test                                                                                     | Kind   | Verifies                                                                                        |
+|------------------------------------------------------------------------------------------|--------|-------------------------------------------------------------------------------------------------|
+| `ExactlyTheLegacyRoutesLogoutAndTheTwoSingleSignOnRoutes_AreMapped_WithTheirVerbsAsync`  | Fact   | Exactly the legacy routes logout and the two single sign on routes are mapped with their verbs. |
+| `AnonymousEndpointsStayAnonymous_AndTheOthersStayProtectedAsync`                         | Theory | Anonymous endpoints stay anonymous and the others stay protected.                               |
+| `TheNegotiateRoutes_AreBoundToTheNegotiateSchemeOnlyAsync`                               | Theory | The negotiate routes are bound to the negotiate scheme only.                                    |
+| `ChangePassword_UsesTheDefaultSchemeAuthorisationAsync`                                  | Fact   | Change password uses the default scheme authorisation.                                          |
+| `NothingInTheAuthenticationAreaIsExposedToTheAgentToolCatalogue`                         | Fact   | Nothing in the authentication area is exposed to the agent tool catalogue.                      |
+| `WrongVerbs_Are405_AndReachNoLogicAsync`                                                 | Theory | Wrong verbs are405 and reach no logic.                                                          |
+| `UnknownRoutes_Are404Async`                                                              | Theory | Unknown routes are404.                                                                          |
+| `RoutingIsCaseInsensitive_AsTheLegacyControllerRoutesWereAsync`                          | Fact   | Routing is case insensitive as the legacy controller routes were.                               |
+| `ACorrectLogin_Is200_WithATokenBodyAndExactlyOneHttpOnlyCookieAsync`                     | Fact   | A correct login is200 with a token body and exactly one http only cookie.                       |
+| `TheIssuedToken_AuthenticatesLaterRequests_ViaBearerAndViaCookieAsync`                   | Fact   | The issued token authenticates later requests via bearer and via cookie.                        |
+| `ARejectedToken_CannotReachChangePasswordAsync`                                          | Theory | A rejected token cannot reach change password.                                                  |
+| `AMalformedBearerToken_Is401OnProtectedRoutes_AndAnonymousRoutesProceedAsAnonymousAsync` | Theory | A malformed bearer token is401 on protected routes and anonymous routes proceed as anonymous.   |
+| `AMalformedCookieToken_IsTreatedTheSameAsync`                                            | Theory | A malformed cookie token is treated the same.                                                   |
+| `AnUnacceptableToken_NeverBreaksAnAnonymousRoute_AndLeaksNoExceptionDetailAsync`         | Theory | An unacceptable token never breaks an anonymous route and leaks no exception detail.            |
+| `NoCredentialsAtAll_On_ChangePassword_Is401WithAnEmptyBodyAsync`                         | Fact   | No credentials at all on change password is401 with an empty body.                              |
+| `EveryFailedLoginReason_LooksIdenticalOnTheWireAsync`                                    | Theory | Every failed login reason looks identical on the wire.                                          |
+| `Weakness_TheWireDiffersForAUserWithoutAPasswordExpiry_403VersusTheUsual401Async`        | Fact   | Weakness the wire differs for a user without a password expiry versus the usual401.             |
+| `AnExpiredPassword_IsA403_WithoutCookiesAsync`                                           | Fact   | An expired password is a403 without cookies.                                                    |
+| `ANewStrongPassword_WithTheOldOne_Is200_AndTheNewOneWorksAsync`                          | Fact   | A new strong password with the old one is200 and the new one works.                             |
+| `AWeakNewPassword_Is400_WithTheErrorsArrayTheUiReadsAsync`                               | Fact   | A weak new password is400 with the errors array the ui reads.                                   |
+| `ValidationFailures_Are400_WithABodyMatchingTheLegacyNewtonsoftShapeAsync`               | Theory | Validation failures are400 with a body matching the legacy newtonsoft shape.                    |
+| `TheSuccessBody_MatchesTheLegacyNewtonsoftShapeAsync`                                    | Fact   | The success body matches the legacy newtonsoft shape.                                           |
+| `Methods_ReportsNoSingleSignOnByDefaultAsync`                                            | Fact   | Methods reports no single sign on by default.                                                   |
+| `Methods_ReportsTheSchemeThatIsOn_AndNeedsNoSessionAsync`                                | Theory | Methods reports the scheme that is on and needs no session.                                     |
+| `OAuthChallenge_IsNotFoundWhenOAuthIsOffAsync`                                           | Fact   | O auth challenge is not found when o auth is off.                                               |
+| `OAuthChallenge_RefusesWhenOAuthAndNegotiateAreBothOnAsync`                              | Fact   | O auth challenge refuses when o auth and negotiate are both on.                                 |
+| `WhenAnotherSchemeIsActive_LoginAndTheWireProbe_Are404Async`                             | Theory | When another scheme is active login and the wire probe are404.                                  |
+| `AnAlreadyAuthenticatedCaller_GetsATokenForTheCredentialsSubmitted_NotForTheCallerAsync` | Fact   | An already authenticated caller gets a token for the credentials submitted not for the caller.  |
+| `ParallelLoginsOverHttp_AllGetTheirAnswers_AndWrongOnesNeverSucceedAsync`                | Fact   | Parallel logins over http all get their answers and wrong ones never succeed.                   |
+| `WirePasswordHash_Is200_WithTheFlagInAJsonBodyAsync`                                     | Theory | Wire password hash is200 with the flag in a json body.                                          |
+| `WirePasswordHash_UnknownAndMissingNamesAsync`                                           | Theory | Wire password hash unknown and missing names.                                                   |
+| `ChangePassword_WithAValidToken_Is200WithAnEmptyBody_AndChangesTheHashAsync`             | Fact   | Change password with a valid token is200 with an empty body and changes the hash.               |
+| `ChangePassword_WithTheWrongCurrentPassword_Is401Async`                                  | Fact   | Change password with the wrong current password is401.                                          |
+| `ChangePassword_WeakNew_Is400_WithTheErrorsArrayAsync`                                   | Fact   | Change password weak new is400 with the errors array.                                           |
+| `ChangePassword_IsForbidden_WhenNegotiateOwnsIdentityAsync`                              | Fact   | Change password is forbidden when negotiate owns identity.                                      |
+| `ChangePassword_ForAValidTokenWhoseUserNoLongerExists_Is401WithNoDetailAsync`            | Fact   | Change password for a valid token whose user no longer exists is401 with no detail.             |
+| `TheLoginHistoryRemoteIp_IsTheConnectionAddress_NeverTheBodyOrAForwardedHeaderAsync`     | Fact   | The login history remote ip is the connection address never the body or a forwarded header.     |
+| `MalformedJsonOrWrongShapes_Are400_AndTouchNothingAsync`                                 | Theory | Malformed json or wrong shapes are400 and touch nothing.                                        |
+| `AnEmptyOrNullBody_Is400_WithNoDetail_AndTouchesNothingAsync`                            | Theory | An empty or null body is400 with no detail and touches nothing.                                 |
+| `ChangePassword_WithNoRecognisedProperties_Is400_NotA500Async`                           | Fact   | Change password with no recognised properties is400 not a500.                                   |
+| `WirePasswordHash_IgnoresUnrecognisedProperties_AndAnswersFalseForNoUserNameAsync`       | Fact   | Wire password hash ignores unrecognised properties and answers false for no user name.          |
+| `ANonJsonContentType_Is415_AndTouchesNothingAsync`                                       | Theory | A non json content type is415 and touches nothing.                                              |
+| `APostWithNoBodyAtAll_Is400_WithoutTouchingTheDatabaseAsync`                             | Fact   | A post with no body at all is400 without touching the database.                                 |
+| `UnknownAndExtraJsonProperties_AreIgnored_AndCaseInsensitiveNamesBindAsync`              | Fact   | Unknown and extra json properties are ignored and case insensitive names bind.                  |
+| `AHugeBody_OfTwoMegabytes_IsRejectedOrFailsClosed_NeverAuthenticatingAsync`              | Fact   | A huge body of two megabytes is rejected or fails closed never authenticating.                  |
+| `ByNegotiate_WithAnEstablishedIdentity_Is200_WithTheSessionCookieAsync`                  | Fact   | By negotiate with an established identity is200 with the session cookie.                        |
+| `ByNegotiate_WithoutAnIdentity_ChallengesWith401AndWwwAuthenticateNegotiateAsync`        | Theory | By negotiate without an identity challenges with401 and www authenticate negotiate.             |
+| `ByNegotiate_AnUnknownIdentity_Is403Async`                                               | Fact   | By negotiate an unknown identity is403.                                                         |
+| `ByNegotiate_WhenNegotiateIsNotEnabled_Is404_EvenWithAnIdentityHeaderAsync`              | Fact   | By negotiate when negotiate is not enabled is404 even with an identity header.                  |
+| `ByNegotiate_TheHybridJwtIsNotAcceptedInPlaceOfANegotiateIdentityAsync`                  | Fact   | By negotiate the hybrid jwt is not accepted in place of a negotiate identity.                   |
+| `ByNegotiate_WithMfaEnabled_Is202WithAnEmptyBody_AndThePostFlowCompletesAsync`           | Fact   | By negotiate with mfa enabled is202 with an empty body and the post flow completes.             |
+| `WhenTheNegotiateSchemeIsNotRegistered_TheRoutesFailWith500NotAnAccidentalOpenAsync`     | Fact   | When the negotiate scheme is not registered the routes fail with500 not an accidental open.     |
+| `UserNamePassword_WithMfa_RightCode200_WrongCode401_MissingCode400Async`                 | Fact   | User name password with mfa right code200 wrong code401 missing code400.                        |
+| `AProviderOutage_DuringMfa_Is500_AndNeverAnAuthenticationAsync`                          | Fact   | A provider outage during mfa is500 and never an authentication.                                 |
 
 ### AuthenticationLockoutTests
 
@@ -140,7 +144,6 @@ Tests of authentication, login and logout, role grants and the user-facing secur
 |----------------------------------------------------------------------------------------------------|--------|---------------------------------------------------------------------------------------------------------------|
 | `TheAccountLocksExactlyOnTheNthWrongPassword_WhereNIsPasswordAttemptsAsync`                        | Theory | The account locks exactly on the nth wrong password where n is password attempts.                             |
 | `WithTheDefaultOfThree_TheThirdWrongPasswordLocks_NotTheFifthAsync`                                | Fact   | With the default of three the third wrong password locks not the fifth.                                       |
-| `ANonPositiveThreshold_LocksOnTheVeryFirstFailure_AndNeverVerifiesAgainstTheRealHashTwiceAsync`    | Theory | A non positive threshold locks on the very first failure and never verifies against the real hash twice.      |
 | `OnceLocked_EvenTheCorrectPasswordIsRefused_WithNoRealHashWork_AndTheCounterStopsMovingAsync`      | Fact   | Once locked even the correct password is refused with no real hash work and the counter stops moving.         |
 | `ALockoutDoesNotExpireBeforeTheConfiguredWindowAsync`                                              | Fact   | A lockout does not expire before the configured window.                                                       |
 | `ALockoutAutomaticallyExpiresAfterTheConfiguredWindowAsync`                                        | Fact   | A lockout automatically expires after the configured window.                                                  |
@@ -165,6 +168,7 @@ Tests of authentication, login and logout, role grants and the user-facing secur
 | `ParallelMixOfRightAndWrong_OnlyTheRightOnesCanSucceed_AndNoneAreForgedAsync`                      | Fact   | Parallel mix of right and wrong only the right ones can succeed and none are forged.                          |
 | `ParallelFailuresAgainstDifferentUsers_AreCountedExactlyAndDoNotBleedAsync`                        | Fact   | Parallel failures against different users are counted exactly and do not bleed.                               |
 | `SequentialLoginsAfterAParallelBurst_BehaveAsLockedAsync`                                          | Fact   | Sequential logins after a parallel burst behave as locked.                                                    |
+| `ANonPositiveThreshold_LocksOnTheVeryFirstFailure_AndNeverVerifiesAgainstTheRealHashTwiceAsync`    | Theory | A non positive threshold locks on the very first failure and never verifies against the real hash twice.      |
 
 ### AuthenticationLogoutServiceTests
 
@@ -195,7 +199,6 @@ Tests of authentication, login and logout, role grants and the user-facing secur
 | `MfaRequired_AWrongCode_IsUnauthorised_AndIssuesNothingAsync`                                         | Fact   | Mfa required a wrong code is unauthorised and issues nothing.                                                    |
 | `AWrongMfaCode_IsCountedAsAFailure_AndDoesNotCommitTheSuccessOrResetTheCounterAsync`                  | Fact   | A wrong mfa code is counted as a failure and does not commit the success or reset the counter.                   |
 | `ACorrectMfaCode_CompletesTheLogin_WritesTheSuccessRecord_AndResetsTheCounterAsync`                   | Fact   | A correct mfa code completes the login writes the success record and resets the counter.                         |
-| `MfaGuessing_LocksTheAccountOnTheThirdWrongCode_AndALockedAccountRejectsTheRightCodeAndPasswordAsync` | Fact   | Mfa guessing locks the account on the third wrong code and a locked account rejects the right code and password. |
 | `AlternatingRightPasswordAndWrongCode_CannotDodgeTheCounterAsync`                                     | Fact   | Alternating right password and wrong code cannot dodge the counter.                                              |
 | `MixedPasswordAndMfaFailures_ShareOneCounterAsync`                                                    | Fact   | Mixed password and mfa failures share one counter.                                                               |
 | `AProviderOutage_GivesTheReservedAttemptBack_SoItIsNotCountedAgainstTheUserAsync`                     | Fact   | A provider outage gives the reserved attempt back so it is not counted against the user.                         |
@@ -220,6 +223,7 @@ Tests of authentication, login and logout, role grants and the user-facing secur
 | `NegotiateWithMfa_AnUnknownIdentity_IsForbidden_BeforeMfaIsConsultedAsync`                            | Fact   | Negotiate with mfa an unknown identity is forbidden before mfa is consulted.                                     |
 | `NegotiateWithMfa_AProviderFailure_PropagatesAsync`                                                   | Fact   | Negotiate with mfa a provider failure propagates.                                                                |
 | `NegotiateWithoutMfa_IssuesCookiesStraightAway_AndSuppliedCodesAreIgnoredAsync`                       | Fact   | Negotiate without mfa issues cookies straight away and supplied codes are ignored.                               |
+| `MfaGuessing_LocksTheAccountOnTheThirdWrongCode_AndALockedAccountRejectsTheRightCodeAndPasswordAsync` | Fact   | Mfa guessing locks the account on the third wrong code and a locked account rejects the right code and password. |
 
 ### AuthenticationNegotiateTests
 
@@ -246,7 +250,7 @@ Tests of authentication, login and logout, role grants and the user-facing secur
 
 ### AuthenticationPasswordLoginTests
 
-`Jube.Test.Service.Authentication.AuthenticationPasswordLoginTests` — 24 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Authentication.AuthenticationPasswordLoginTests` — 25 tests. Category: Service. Collection: Database.
 
 | Test                                                                                                      | Kind   | Verifies                                                                                                           |
 |-----------------------------------------------------------------------------------------------------------|--------|--------------------------------------------------------------------------------------------------------------------|
@@ -259,7 +263,6 @@ Tests of authentication, login and logout, role grants and the user-facing secur
 | `HostileUserName_IsJustAnUnknownUser_AndTheRealUserIsUntouchedAsync`                                      | Theory | Hostile user name is just an unknown user and the real user is untouched.                                          |
 | `HostilePassword_IsJustAWrongPasswordAsync`                                                               | Theory | Hostile password is just a wrong password.                                                                         |
 | `UserNameWithANulByte_IsRejected_AndNothingIsRecordedAsync`                                               | Fact   | User name with a nul byte is rejected and nothing is recorded.                                                     |
-| `OneMegabyteUserName_IsUnauthorised_ButLeavesNoLoginHistory_BecauseTheIndexRowLimitRejectsTheInsertAsync` | Fact   | One megabyte user name is unauthorised but leaves no login history because the index row limit rejects the insert. |
 | `Weakness_AHundredKilobyteUserName_IsPersistedInFullInTheLoginHistoryAsync`                               | Fact   | Weakness a hundred kilobyte user name is persisted in full in the login history.                                   |
 | `OneMegabytePassword_IsJustAWrongPasswordAsync`                                                           | Fact   | One megabyte password is just a wrong password.                                                                    |
 | `UnicodeUserNameAndPassword_AuthenticateExactlyAsync`                                                     | Theory | Unicode user name and password authenticate exactly.                                                               |
@@ -268,13 +271,14 @@ Tests of authentication, login and logout, role grants and the user-facing secur
 | `PasswordMatchingIsExact_CaseSensitiveAsync`                                                              | Fact   | Password matching is exact case sensitive.                                                                         |
 | `AuthenticatedIdentityOnTheRequest_WinsOverTheSubmittedUserNameAsync`                                     | Fact   | Authenticated identity on the request wins over the submitted user name.                                           |
 | `UnparsablePasswordAttemptsSetting_MakesEveryLoginFail_EvenTheCorrectOneAsync`                            | Theory | Unparsable password attempts setting makes every login fail even the correct one.                                  |
-| `AnEmptyPasswordAttemptsSetting_IsUnsetAndFallsBackToTheDefault_SoTheCorrectLoginSucceedsAsync` | Fact | An empty password attempts setting is unset and falls back to the default so the correct login succeeds. |
+| `AnEmptyPasswordAttemptsSetting_IsUnsetAndFallsBackToTheDefault_SoTheCorrectLoginSucceedsAsync`           | Fact   | An empty password attempts setting is unset and falls back to the default so the correct login succeeds.           |
 | `ThePasswordHashingKeyFromTheEnvironmentIsWhatVerifyReceivesAsync`                                        | Fact   | The password hashing key from the environment is what verify receives.                                             |
 | `ASpoofedBodyRemoteIp_NeverReachesTheLoginHistory_TheConnectionAddressDoesAsync`                          | Fact   | A spoofed body remote ip never reaches the login history the connection address does.                              |
 | `ASpoofedBodyRemoteIp_IsIgnoredOnFailuresToo_AndWhenTheConnectionHasNoneItIsNullAsync`                    | Theory | A spoofed body remote ip is ignored on failures too and when the connection has none it is null.                   |
 | `ACancelledToken_AbortsBeforeAnyCredentialWorkAsync`                                                      | Fact   | A cancelled token aborts before any credential work.                                                               |
 | `EachLoginWritesExactlyOneAuditLine_WithAnonymousActor_AndNoCredentialsAsync`                             | Fact   | Each login writes exactly one audit line with anonymous actor and no credentials.                                  |
 | `OAuthOrNegotiateEnabled_HidesTheUserNamePasswordRouteAsync`                                              | Fact   | O auth or negotiate enabled hides the user name password route.                                                    |
+| `OneMegabyteUserName_IsUnauthorised_ButLeavesNoLoginHistory_BecauseTheIndexRowLimitRejectsTheInsertAsync` | Fact   | One megabyte user name is unauthorised but leaves no login history because the index row limit rejects the insert. |
 
 ### AuthenticationPasswordSchemeTests
 
@@ -382,6 +386,48 @@ Database.
 | `TheWindowResetsOnceItHasElapsed`                   | Fact | The window resets once it has elapsed.                     |
 | `ANullOrEmptyRemoteIpIsNeverThrottled`              | Fact | A null or empty remote ip is never throttled.              |
 
+### TenantLockoutTests
+
+`Jube.Test.Service.Authentication.TenantLockoutTests` — 11 tests. Category: Service. Collection: Database.
+
+| Test                                                                                 | Kind   | Verifies                                                                           |
+|--------------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------|
+| `SignIn_ForADisabledTenant_IsTheSameUnauthorisedOutcomeAsBadCredentialsAsync`        | Theory | Sign-in for an inactive or deleted tenant is the plain Unauthorized outcome.       |
+| `SignIn_ForADisabledTenant_DoesDummyHashWorkOnly_SoTimingDoesNotRevealTheStateAsync` | Theory | Same single dummy hash verification and failure type as an inactive user.          |
+| `NegotiateSignIn_ForADisabledTenant_IsRefusedAsync`                                  | Theory | Negotiate sign-in is refused for an inactive or deleted tenant.                    |
+| `SignIn_ReturnsOnceTheTenantIsReactivatedAsync`                                      | Fact   | Sign-in works again after reactivation.                                            |
+| `SignIn_IsUnaffectedForAUserOfAnotherTenantAsync`                                    | Fact   | A user of another tenant is unaffected.                                            |
+| `SignIn_IsNeverRefusedForALandlordTenantAsync`                                       | Theory | A landlord tenant is never locked out by this rule.                                |
+| `AnExistingSession_IsBlockedTheMomentTheTenantIsDisabledAsync`                       | Theory | The per-request revocation check and the sweeper state report blocked immediately. |
+| `AnExistingSession_IsLiveAgainOnceTheTenantIsReactivatedAsync`                       | Fact   | The session is live again after reactivation.                                      |
+| `AnExistingSession_OfAnotherTenantOrALandlordIsNeverBlockedAsync`                    | Fact   | Other tenants and landlord sessions are never blocked.                             |
+| `Permissions_AreEmptyAndTheUserInactive_WhileTheTenantIsDisabledAsync`               | Theory | Permission lookup returns nothing and ActiveUser false for a disabled tenant.      |
+| `Permissions_AreKeptForALandlordTenantAndForAnotherTenantAsync`                      | Fact   | Landlord and other tenant keep their permissions.                                  |
+
+### PermissionValidationTenantTests
+
+`Jube.Test.Service.Authentication.PermissionValidationTenantTests` — 5 tests. Category: Service. Collection: Database.
+
+| Test                                                                | Kind | Verifies                                                                   |
+|---------------------------------------------------------------------|------|----------------------------------------------------------------------------|
+| `PermissionsCarryTheTenantTheUserIsInAsync`                         | Fact | Permissions carry the tenant the user is in (feeds the Me endpoint).       |
+| `AUserWithNoTenantRowReportsTenantZeroAsync`                        | Fact | A user with no tenant row reports tenant zero.                             |
+| `ALandlordWithAnInactiveRoleHasNoPermissionsAndIsNotALandlordAsync` | Fact | A landlord with an inactive role has no permissions and is not a landlord. |
+| `ALandlordWithAnActiveRoleStillHasEveryPermissionAsync`             | Fact | A landlord with an active role still has every permission.                 |
+| `ANonLandlordWithAnInactiveRoleStillHasNoPermissionsAsync`          | Fact | A non-landlord with an inactive role has no permissions.                   |
+
+### RoleAllocationEffectTests
+
+`Jube.Test.Service.Authentication.RoleAllocationEffectTests` — 5 tests. Category: Service. Collection: Database.
+
+| Test                                                                  | Kind   | Verifies                                                                                                                                                         |
+|-----------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `AnActiveRoleWithAnActiveGrantYieldsExactlyTheGrantedPermissionAsync` | Fact   | An active role with an active grant resolves to exactly the granted permission, for an active, non-landlord user.                                                |
+| `ADeactivatedOrDeletedRoleOrGrantRemovesThePermissionAsync`           | Theory | A role that is inactive or deleted, or a grant that is inactive or deleted, resolves to no permission (four cases); role states also clear the active-user flag. |
+| `DeactivatingTheRoleRevokesImmediatelyAndReactivatingRestoresAsync`   | Fact   | Deactivating the role revokes at once, reactivating restores.                                                                                                    |
+| `LockingARoleOrAGrantFreezesEditingButDoesNotRevokeAsync`             | Fact   | A locked role and a locked grant still grant the permission; lock is an edit freeze.                                                                             |
+| `AUserReceivesOnlyTheGrantsOfItsOwnRoleAsync`                         | Fact   | Two users in two roles receive only their own role's grants.                                                                                                     |
+
 ### OAuthPromptSelectorTests
 
 `Jube.Test.Service.Authentication.OAuthPromptSelectorTests` — 3 tests. Category: Unit.
@@ -469,29 +515,33 @@ Database.
 
 ### UserLoginServiceTests
 
-`Jube.Test.Service.UserLogin.UserLoginServiceTests` — 19 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.UserLogin.UserLoginServiceTests` — 23 tests. Category: Service. Collection: Database.
 
-| Test                                                           | Kind   | Verifies                                                           |
-|----------------------------------------------------------------|--------|--------------------------------------------------------------------|
-| `ListReturnsMostRecentFirstAndProjectsFieldsAsync`             | Fact   | List returns most recent first and projects fields.                |
-| `ListDescribesOAuthFailureWithMessageAsync`                    | Fact   | List describes o auth failure with message.                        |
-| `ListClampsTakeToOneHundredThousandAsync`                      | Fact   | List clamps take to one hundred thousand.                          |
-| `ListWithoutPermissionThrowsForbiddenAsync`                    | Fact   | List without permission throws forbidden.                          |
-| `CreateWithNullUserNameThrowsNotAuthenticatedAsync`            | Fact   | Create with null user name throws not authenticated.               |
-| `CreateWithUnknownTenantThrowsNotAuthenticatedAsync`           | Fact   | Create with unknown tenant throws not authenticated.               |
-| `ListFiltersByDateRangeAsync`                                  | Fact   | List filters by date range.                                        |
-| `ListFiltersBySearchAsync`                                     | Fact   | List filters by search.                                            |
-| `ListWithZeroSamplePercentageExcludesEveryMatchingRowAsync`    | Fact   | List with zero sample percentage excludes every matching row.      |
-| `ListWithHundredSamplePercentageIncludesEveryMatchingRowAsync` | Fact   | List with hundred sample percentage includes every matching row.   |
-| `ListIsScopedToTheCallersTenantAsync`                          | Fact   | List is scoped to the callers tenant.                              |
-| `AttemptsAgainstUnknownNamesAreVisibleToALandlordOnlyAsync`    | Fact   | Attempts against unknown names are visible to a landlord only.     |
-| `LandlordSeesTheLoginAttemptsOfEveryTenantAsync`               | Fact   | Landlord sees the login attempts of every tenant.                  |
-| `ListSortsByCreatedUserAscendingAndDescendingAsync`            | Fact   | List sorts by created user ascending and descending.               |
-| `ListSortDirectionIsCaseInsensitiveForAscendingAsync`          | Theory | List sort direction is case insensitive for ascending.             |
-| `ListWithGarbageSortDirectionFallsBackToDescendingAsync`       | Fact   | List with garbage sort direction falls back to descending.         |
-| `ListWithUnrecognisedSortFieldFallsBackToMostRecentFirstAsync` | Fact   | List with unrecognised sort field falls back to most recent first. |
-| `ListTotalReflectsFullFilteredCountEvenWhenTakeIsSmallerAsync` | Fact   | List total reflects full filtered count even when take is smaller. |
-| `ListStatisticsIsEmptyForThisDtoAsync`                         | Fact   | List statistics is empty for this dto.                             |
+| Test                                                           | Kind   | Verifies                                                               |
+|----------------------------------------------------------------|--------|------------------------------------------------------------------------|
+| `ListReturnsMostRecentFirstAndProjectsFieldsAsync`             | Fact   | List returns most recent first and projects fields.                    |
+| `ListDescribesOAuthFailureWithMessageAsync`                    | Fact   | List describes o auth failure with message.                            |
+| `ListDescribesMfaFailureApartFromTheOAuthClaimFailureAsync`    | Theory | List describes MFA failure apart from the o auth claim failure.        |
+| `ListClampsTakeToOneHundredThousandAsync`                      | Fact   | List clamps take to one hundred thousand.                              |
+| `ListWithoutPermissionThrowsForbiddenAsync`                    | Fact   | List without permission throws forbidden.                              |
+| `CreateWithNullUserNameThrowsNotAuthenticatedAsync`            | Fact   | Create with null user name throws not authenticated.                   |
+| `CreateWithUnknownTenantThrowsNotAuthenticatedAsync`           | Fact   | Create with unknown tenant throws not authenticated.                   |
+| `ListFiltersByDateRangeAsync`                                  | Fact   | List filters by date range.                                            |
+| `ListFiltersBySearchAsync`                                     | Fact   | List filters by search.                                                |
+| `ListWithZeroSamplePercentageExcludesEveryMatchingRowAsync`    | Fact   | List with zero sample percentage excludes every matching row.          |
+| `ListWithHundredSamplePercentageIncludesEveryMatchingRowAsync` | Fact   | List with hundred sample percentage includes every matching row.       |
+| `ListIsScopedToTheCallersTenantAsync`                          | Fact   | List is scoped to the callers tenant.                                  |
+| `AttemptsAgainstUnknownNamesAreVisibleToALandlordOnlyAsync`    | Fact   | Attempts against unknown names are visible to a landlord only.         |
+| `LandlordSeesTheLoginAttemptsOfEveryTenantAsync`               | Fact   | Landlord sees the login attempts of every tenant.                      |
+| `ListSortsByCreatedUserAscendingAndDescendingAsync`            | Fact   | List sorts by created user ascending and descending.                   |
+| `ListSortDirectionIsCaseInsensitiveForAscendingAsync`          | Theory | List sort direction is case insensitive for ascending.                 |
+| `ListWithGarbageSortDirectionFallsBackToDescendingAsync`       | Fact   | List with garbage sort direction falls back to descending.             |
+| `ListWithUnrecognisedSortFieldFallsBackToMostRecentFirstAsync` | Fact   | List with unrecognised sort field falls back to most recent first.     |
+| `ListTotalReflectsFullFilteredCountEvenWhenTakeIsSmallerAsync` | Fact   | List total reflects full filtered count even when take is smaller.     |
+| `ListStatisticsIsEmptyForThisDtoAsync`                         | Fact   | List statistics is empty for this dto.                                 |
+| `ListEmitsOneAuditLineAndOneSpanAndNoChangeEventAsync`         | Fact   | List emits one audit line and one span and no change event.            |
+| `ForbiddenListIsAuditedAsForbiddenAsync`                       | Fact   | Forbidden list is audited as forbidden.                                |
+| `ToolIsDeclaredOnTheServiceMethodAndPublishedByTheCatalogue`   | Fact   | Tool is declared on the service method and published by the catalogue. |
 
 ## User logout
 
@@ -528,3 +578,99 @@ Database.
 | `ListEmitsOneAuditLineAndOneSpanAndNoChangeEventAsync`         | Fact   | List emits one audit line and one span and no change event.            |
 | `ForbiddenListIsAuditedAsForbiddenAsync`                       | Fact   | Forbidden list is audited as forbidden.                                |
 | `ToolIsDeclaredOnTheServiceMethodAndPublishedByTheCatalogue`   | Fact   | Tool is declared on the service method and published by the catalogue. |
+
+### PrivilegeEscalationServiceTests
+
+`Jube.Test.Service.Security.PrivilegeEscalationServiceTests` — 28 tests. Category: Service. Collection: Database.
+
+| Test                                                                                   | Kind | Verifies                                                              |
+|----------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------|
+| `GrantOfAPermissionTheCallerLacksIsRefusedAndWritesNoRowAsync`                         | Fact | Grant of a permission the caller lacks is refused and writes no row.  |
+| `GrantOfAPermissionTheCallerHoldsIsAllowedAsync`                                       | Fact | Grant of a held permission is allowed.                                |
+| `SelfGrantOfAPermissionToTheCallersOwnRoleIsRefusedWhenTheCallerLacksItAsync`          | Fact | Self grant to the caller's own role is refused.                       |
+| `UpdateOfAGrantToAPermissionTheCallerLacksIsRefusedAsync`                              | Fact | Updating a grant to a lacking permission is refused.                  |
+| `UpdateOfAnExistingGrantOfAPermissionTheCallerLacksIsRefusedAsync`                     | Fact | Updating an existing grant of a lacking permission is refused.        |
+| `DeleteOfAGrantOfAPermissionTheCallerLacksIsRefusedAndTheRowSurvivesAsync`             | Fact | Deleting a lacking grant is refused and the row survives.             |
+| `DeleteOfAGrantOfAPermissionTheCallerHoldsIsAllowedAsync`                              | Fact | Deleting a held grant is allowed.                                     |
+| `LandlordMayGrantAnyPermissionAsync`                                                   | Fact | The landlord is exempt from the grant rule.                           |
+| `GrantRefusalIsGenericAndNamesNeitherThePermissionNorTheRoleAsync`                     | Fact | Grant refusal message is the localised generic one.                   |
+| `CreatingAUserInARoleCarryingAPermissionTheCallerLacksIsRefusedAsync`                  | Fact | Creating a user in a higher role is refused.                          |
+| `CreatingAUserInARoleWithEqualOrFewerPermissionsIsAllowedAsync`                        | Fact | Equal or lower roles may be assigned on create.                       |
+| `ChangingAUsersRoleToOneCarryingAPermissionTheCallerLacksIsRefusedAsync`               | Fact | Moving a user to a higher role is refused.                            |
+| `ChangingAUsersRoleToOneWithEqualOrFewerPermissionsIsAllowedAsync`                     | Fact | Moving a user to an equal or lower role is allowed.                   |
+| `AssigningOneselfARoleCarryingAPermissionTheCallerLacksIsRefusedAsync`                 | Fact | Self-promotion is refused.                                            |
+| `PasswordResetForAUserWithPermissionsBeyondTheCallersIsRefusedAsync`                   | Fact | Password reset for a more privileged user is refused.                 |
+| `PasswordResetForAUserWithEqualOrFewerPermissionsAndForOneselfIsAllowedAsync`          | Fact | Password reset for equal, lower and self is allowed.                  |
+| `LandlordMayResetThePasswordOfAnyUserOfItsTenantAsync`                                 | Fact | The landlord is exempt from the password rule.                        |
+| `UserRefusalIsGenericAndNamesNeitherThePermissionNorTheTargetAsync`                    | Fact | User refusal message is generic.                                      |
+| `ApiKeyForAUserWithPermissionsBeyondTheCallersIsRefusedAndNothingIsStoredAsync`        | Fact | API key for a more privileged user is refused and nothing stored.     |
+| `ApiKeyForAUserWithEqualOrFewerPermissionsAndForOneselfIsAllowedAsync`                 | Fact | API key for equal, lower and self is allowed.                         |
+| `LandlordMayMintAnApiKeyForAnyUserOfItsTenantAsync`                                    | Fact | The landlord is exempt from the API key rule.                         |
+| `ProfileEditOfAMorePrivilegedUserWithoutChangingTheirRoleIsRefusedAsync`               | Fact | Editing or deactivating a more privileged user is refused.            |
+| `ProfileEditOfAnEqualOrLowerUserAndOfOneselfIsAllowedAsync`                            | Fact | Editing an equal, lower or own user is allowed.                       |
+| `DeleteAndSessionRevocationOfAMorePrivilegedUserAreRefusedAsync`                       | Fact | Deleting and revoking sessions of a more privileged user are refused. |
+| `DeleteOfALowerUserIsAllowedAndLandlordMayDeleteAnyUserOfItsTenantAsync`               | Fact | Lower user deletable, landlord exempt.                                |
+| `ApiKeyRevocationForAMorePrivilegedUserIsRefusedAndForALowerUserAllowedAsync`          | Fact | API key revocation bounded by the target's permissions.               |
+| `RenamingOrDeactivatingARoleCarryingAPermissionTheCallerLacksIsRefusedAsync`           | Fact | Role update and delete refused for a higher role.                     |
+| `RenamingAndDeletingARoleWithEqualOrFewerPermissionsIsAllowedAndLandlordIsExemptAsync` | Fact | Equal, lower, own and landlord role edits allowed.                    |
+
+### ReprocessingPermissionEscalationTests
+
+`Jube.Test.Service.Security.ReprocessingPermissionEscalationTests` — 5 tests.
+Category: Service. Collection: Database.
+
+| Test                                                                            | Kind   | Verifies                                                                                 |
+|---------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------|
+| `AnAdministratorHoldingTheOriginalPermissionButNotTheNewOneCannotGrantItAsync`  | Theory | An administrator holding the original permission but not the new one cannot grant it.    |
+| `AnAdministratorHoldingTheNewPermissionCanGrantItButNotTheOtherNewOneAsync`     | Theory | An administrator holding the new permission can grant it but not the other new one.      |
+| `SelfGrantOfTheNewPermissionIsRefusedWhenTheAdministratorLacksItAsync`          | Theory | Self grant of the new permission is refused when the administrator lacks it.             |
+| `AUserAdministratorWithoutTheNewPermissionCannotPutAUserInARoleCarryingItAsync` | Theory | A user administrator without the new permission cannot put a user in a role carrying it. |
+| `AUserAdministratorHoldingAllThreeCanPutAUserInARoleCarryingAllThreeAsync`      | Fact   | A user administrator holding all three can put a user in a role carrying all three.      |
+
+<!-- TODO(docs): owner to confirm this catalogue entry after the first run of the new tests (they were written, not run). -->
+
+### TotpAuthenticatorTests
+
+`Jube.Test.Mfa.TotpAuthenticatorTests` — 11 tests. Category: Unit.
+
+| Test                                                           | Kind   | Verifies                                                                 |
+|----------------------------------------------------------------|--------|--------------------------------------------------------------------------|
+| `TheRfc6238TestVectorsVerifyAtTheirOwnTime`                    | Theory | The RFC 6238 test vectors verify at their own time.                      |
+| `ACodeFromTheNeighbouringStepIsAcceptedToAllowForClockDrift`   | Fact   | A code from the neighbouring step is accepted to allow for clock drift.  |
+| `ACodeFurtherAwayThanOneStepIsRefused`                         | Fact   | A code further away than one step is refused.                            |
+| `ACodeCanNeverBeUsedTwice`                                     | Fact   | A code can never be used twice.                                          |
+| `ACodeThatIsNotSixAsciiDigitsIsRefusedWithoutCalculating`      | Theory | A code that is not six ASCII digits is refused without calculating.      |
+| `AGeneratedSecretIsTwentyRandomBytes`                          | Fact   | A generated secret is twenty random bytes.                               |
+| `TheProvisioningUriCarriesTheIssuerAccountSecretAndParameters` | Fact   | The provisioning URI carries the issuer, account, secret and parameters. |
+| `ASecretProtectedUnderAKeyComesBackUnderThatKeyOnly`           | Fact   | A secret protected under a key comes back under that key only.           |
+| `ProtectingTheSameSecretTwiceGivesDifferentCiphertext`         | Fact   | Protecting the same secret twice gives different ciphertext.             |
+| `ATamperedProtectedSecretIsRefused`                            | Fact   | A tampered protected secret is refused.                                  |
+| `ABlankKeyIsRefusedSoNoSecretIsEverProtectedWithoutOne`        | Theory | A blank key is refused so no secret is ever protected without one.       |
+
+### AuthenticationTotpTests
+
+`Jube.Test.Service.Authentication.AuthenticationTotpTests` — 9 tests. Category: Service.
+
+| Test                                                                         | Kind   | Verifies                                                                           |
+|------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------|
+| `ACorrectPasswordReturnsAnOtpauthLinkAndStoresAnEncryptedPendingSecretAsync` | Fact   | A correct password returns an otpauth link and stores an encrypted pending secret. |
+| `AWrongPasswordRevealsNothingAndStoresNothingAsync`                          | Fact   | A wrong password reveals nothing and stores nothing.                               |
+| `EnrolmentCountsWrongPasswordsTowardsTheAccountLockoutAsync`                 | Fact   | Enrolment counts wrong passwords towards the account lockout.                      |
+| `ASecondEnrolmentBeforeTheFirstCodeReplacesThePendingSecretAsync`            | Fact   | A second enrolment before the first code replaces the pending secret.              |
+| `AUserWhoHasProvedTheirAuthenticatorCannotEnrolAgainWithJustAPasswordAsync`  | Fact   | A user who has proved their authenticator cannot enrol again with just a password. |
+| `EnrolmentIsNotFoundUnlessMfaWithTotpIsOnAsync`                              | Theory | Enrolment is not found unless MFA with Totp is on.                                 |
+| `EnrolmentWithNoEncryptionKeyConfiguredFailsAndStoresNothingAsync`           | Fact   | Enrolment with no encryption key configured fails and stores nothing.              |
+| `TheRepositoryAcceptsAStepOnceAndMarksTheUserEnrolledAsync`                  | Fact   | The repository accepts a step once and marks the user enrolled.                    |
+| `ResettingClearsTheSecretSoTheUserCanEnrolAgainAsync`                        | Fact   | Resetting clears the secret so the user can enrol again.                           |
+
+### TotpMfaVerifierTests
+
+`Jube.Test.Service.Authentication.TotpMfaVerifierTests` — 5 tests. Category: Service.
+
+| Test                                                                  | Kind | Verifies                                                                      |
+|-----------------------------------------------------------------------|------|-------------------------------------------------------------------------------|
+| `AUserWithNoAuthenticatorCannotPassAsync`                             | Fact | A user with no authenticator cannot pass.                                     |
+| `TheFirstValidCodeCompletesSetUpAndTheSameCodeCannotBeUsedAgainAsync` | Fact | The first valid code completes set up and the same code cannot be used again. |
+| `AWrongCodeIsRefusedAndDoesNotCompleteSetUpAsync`                     | Fact | A wrong code is refused and does not complete set up.                         |
+| `ACodeForAnotherUsersSecretIsRefusedAsync`                            | Fact | A code for another user secret is refused.                                    |
+| `AWrongEncryptionKeyFailsClosedWithoutThrowingAsync`                  | Fact | A wrong or blank encryption key fails closed without throwing.                |

@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchPercentOfOutsideRange(double total, double lowerBound, double upperBound)
+            [Description("True when: the value as a percentage of the total is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentOfOutsideRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoublePercentOfOutsideRange(flow.Value, total, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectPercentOfOutsideRange(double total, double lowerBound, double upperBound)
+            [Description("True when: the value as a percentage of the total is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentOfOutsideRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoublePercentOfOutsideRange(flow.Value, total, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakPercentOfOutsideRange(double total, double lowerBound, double upperBound)
+            [Description("True when: the value as a percentage of the total is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentOfOutsideRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoublePercentOfOutsideRange(flow.Value, total, lowerBound, upperBound));
             }
 
-            public Flow<double> RequirePercentOfOutsideRange(double total, double lowerBound, double upperBound)
+            [Description("True when: the value as a percentage of the total is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentOfOutsideRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoublePercentOfOutsideRange(flow.Value, total, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsurePercentOfOutsideRange(double total, double lowerBound, double upperBound)
+            [Description("True when: the value as a percentage of the total is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentOfOutsideRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchPercentOfOutsideRange(double total, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value as a percentage of the total is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentOfOutsideRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchPercentOfOutsideRange(total, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectPercentOfOutsideRange(double total, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value as a percentage of the total is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentOfOutsideRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectPercentOfOutsideRange(total, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakPercentOfOutsideRange(double total, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value as a percentage of the total is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentOfOutsideRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakPercentOfOutsideRange(total, lowerBound, upperBound);
             }
 
-            public Flow<double> RequirePercentOfOutsideRange(double total, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value as a percentage of the total is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentOfOutsideRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequirePercentOfOutsideRange(total, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsurePercentOfOutsideRange(double total, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value as a percentage of the total is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentOfOutsideRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsurePercentOfOutsideRange(total, lowerBound, upperBound);
             }

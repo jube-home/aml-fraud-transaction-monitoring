@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Anda tidak memiliki izin untuk melakukan tindakan ini.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Anda harus masuk ke sebuah tenant untuk melakukan tindakan ini.</value>
+  </data>
+    <data name="ModelNotFound" xml:space="preserve">
+    <value>Model Analisis Entitas tidak ditemukan.</value>
+  </data>
+    <data name="RuleTypeInvalid" xml:space="preserve">
+    <value>Jenis aturan {0} tidak dapat di-backtest; gunakan GatewayRule, ActivationRule, atau ReprocessingRule.</value>
+  </data>
+    <data name="RangeInvalid" xml:space="preserve">
+    <value>Tanggal mulai harus lebih awal dari tanggal akhir.</value>
+  </data>
+    <data name="InstanceNotFound" xml:space="preserve">
+    <value>Backtest tidak ditemukan.</value>
+  </data>
+    <data name="RuleTextRequired" xml:space="preserve">
+    <value>Aturan untuk di-backtest diperlukan.</value>
+  </data>
+    <data name="ArchiveNotFound" xml:space="preserve">
+    <value>Transaksi tidak ada di arsip model ini.</value>
+  </data>
+    <data name="LimitTooLarge" xml:space="preserve">
+    <value>Backtest langsung membaca paling banyak {0} transaksi; kirim sebagai backtest latar belakang untuk membaca lebih banyak.</value>
+  </data>
+    <data name="ResultUnavailable" xml:space="preserve">
+    <value>Backtest berstatus {0} dan belum memiliki hasil.</value>
+  </data>
+    <data name="OnlineTimeLimit" xml:space="preserve">
+    <value>Backtest langsung berhenti setelah {0} detik; persempit rentang atau turunkan batas, atau kirim sebagai backtest latar belakang.</value>
+  </data>
+    <data name="PendingLimitModel" xml:space="preserve">
+    <value>Model ini sudah memiliki {0} backtest yang menunggu atau berjalan; tunggu satu selesai atau hentikan satu sebelum mengirim yang lain.</value>
+  </data>
+    <data name="PendingLimitTenant" xml:space="preserve">
+    <value>Organisasi Anda sudah memiliki {0} backtest yang menunggu atau berjalan; tunggu satu selesai atau hentikan satu sebelum mengirim yang lain.</value>
+  </data>
+    <data name="PlaceholderNotInRule" xml:space="preserve">
+    <value>Teks aturan harus memuat tempat penampung.</value>
+  </data>
+    <data name="CandidatesInvalid" xml:space="preserve">
+    <value>Berikan 1 hingga {0} nilai kandidat, masing-masing berupa angka biasa.</value>
+  </data>
+</root>

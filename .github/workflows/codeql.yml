@@ -24,6 +24,8 @@ jobs:
         include:
           - language: csharp
             build-mode: none
+          - language: javascript-typescript
+            build-mode: none
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7

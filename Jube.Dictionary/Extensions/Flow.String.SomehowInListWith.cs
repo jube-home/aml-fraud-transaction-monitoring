@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("True when: fuzzily in the List token using an options string. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringSomehowInListWith(flow.Value, list, options));
             }
 
-            public Flow<string?> RejectSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("True when: fuzzily in the List token using an options string. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringSomehowInListWith(flow.Value, list, options));
             }
 
-            public Flow<string?> BreakSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("True when: fuzzily in the List token using an options string. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringSomehowInListWith(flow.Value, list, options));
             }
 
-            public Flow<string?> RequireSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("True when: fuzzily in the List token using an options string. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringSomehowInListWith(flow.Value, list, options));
             }
 
-            public Flow<string?> EnsureSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("True when: fuzzily in the List token using an options string. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("Begins a pipeline from the value. True when: fuzzily in the List token using an options string. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return value.Start().MatchSomehowInListWith(list, options);
             }
 
-            public Flow<string?> RejectSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("Begins a pipeline from the value. True when: fuzzily in the List token using an options string. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return value.Start().RejectSomehowInListWith(list, options);
             }
 
-            public Flow<string?> BreakSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("Begins a pipeline from the value. True when: fuzzily in the List token using an options string. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return value.Start().BreakSomehowInListWith(list, options);
             }
 
-            public Flow<string?> RequireSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("Begins a pipeline from the value. True when: fuzzily in the List token using an options string. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return value.Start().RequireSomehowInListWith(list, options);
             }
 
-            public Flow<string?> EnsureSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("Begins a pipeline from the value. True when: fuzzily in the List token using an options string. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return value.Start().EnsureSomehowInListWith(list, options);
             }

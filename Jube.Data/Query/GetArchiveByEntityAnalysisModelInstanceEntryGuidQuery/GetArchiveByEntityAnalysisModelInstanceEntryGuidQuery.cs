@@ -18,6 +18,7 @@ namespace Jube.Data.Query.GetArchiveByEntityAnalysisModelInstanceEntryGuidQuery
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
 
     public class GetArchiveByEntityAnalysisModelInstanceEntryGuidQuery(DbContext dbContext)

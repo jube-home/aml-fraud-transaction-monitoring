@@ -19,34 +19,44 @@ namespace Jube.Service.Authentication
     using System.Text.RegularExpressions;
     using Data.Context;
     using Data.Poco;
+    using Data.Query.GetUserTenantEnabledQuery;
     using Data.Repository;
     using Dto.Authentication;
     using Exceptions.Authentication;
     using Interfaces;
+    using Jube.Resources;
+    using Microsoft.Extensions.Localization;
 
     public class Authentication(
         DbContext dbContext,
         bool passwordAsymmetricEncryption = false,
         string? passwordAsymmetricEncryptionPrivateKey = null,
         IPasswordHashScheme? passwordHashScheme = null,
-        TimeProvider? timeProvider = null)
+        TimeProvider? timeProvider = null,
+        IStringLocalizer? localiser = null)
     {
         private readonly IPasswordHashScheme hashScheme = passwordHashScheme ?? new Argon2PasswordHashScheme();
         private readonly TimeProvider clock = timeProvider ?? TimeProvider.System;
         private const int MinLength = 12;
         private const int MaxLength = 128;
 
-        private static readonly (Func<string, bool> Test, string Message)[] rules =
+        private static readonly (Func<string, bool> Test, string Key, object[] Arguments, string Fallback)[] rules =
         [
-            (p => p.Length >= MinLength, $"At least {MinLength} characters"),
-            (p => p.Length <= MaxLength, $"No more than {MaxLength} characters"),
-            (p => p.Any(char.IsUpper), "At least one uppercase letter"),
-            (p => p.Any(char.IsLower), "At least one lowercase letter"),
-            (p => p.Any(char.IsDigit), "At least one number"),
-            (p => p.Any(c => !char.IsLetterOrDigit(c)), "At least one special character"),
-            (p => !Regex.IsMatch(p, @"(.)\1{2,}"), "No character repeated more than twice consecutively"),
+            (p => p.Length >= MinLength, AuthenticationResources.PasswordMinLength, [MinLength],
+                $"At least {MinLength} characters"),
+            (p => p.Length <= MaxLength, AuthenticationResources.PasswordMaxLength, [MaxLength],
+                $"No more than {MaxLength} characters"),
+            (p => p.Any(char.IsUpper), AuthenticationResources.PasswordUppercase, [],
+                "At least one uppercase letter"),
+            (p => p.Any(char.IsLower), AuthenticationResources.PasswordLowercase, [],
+                "At least one lowercase letter"),
+            (p => p.Any(char.IsDigit), AuthenticationResources.PasswordDigit, [], "At least one number"),
+            (p => p.Any(c => !char.IsLetterOrDigit(c)), AuthenticationResources.PasswordSpecial, [],
+                "At least one special character"),
+            (p => !Regex.IsMatch(p, @"(.)\1{2,}"), AuthenticationResources.PasswordRepeated, [],
+                "No character repeated more than twice consecutively"),
             (p => !Regex.IsMatch(p, @"^(password|123456|qwerty)", RegexOptions.IgnoreCase),
-                "Cannot start with common patterns")
+                AuthenticationResources.PasswordCommonPattern, [], "Cannot start with common patterns")
         ];
 
         public async Task<bool> IsWirePasswordHashAsync(string userName, CancellationToken token = default)
@@ -85,7 +95,8 @@ namespace Jube.Service.Authentication
                 throw new NoUserException();
             }
 
-            if (userRegistry.Active != 1)
+            if (userRegistry.Active != 1
+                || !await new GetUserTenantEnabledQuery(dbContext).ExecuteAsync(userRegistry.RoleRegistryGuid, token))
             {
                 await LogLoginFailedAsync(userLogin, userRegistry.Name, 2, authenticationMethod, token);
                 throw new NotActiveException();
@@ -122,7 +133,7 @@ namespace Jube.Service.Authentication
         }
 
         public const string DummyPassword = "not-a-real-password-dummy-work-only";
-        private const int MfaFailureType = 7;
+        private const int MfaFailureType = 11;
         private static readonly ConcurrentDictionary<(Type, string), string> dummyHashes = new();
 
         public async Task AuthenticateByUserNamePasswordAsync(AuthenticationRequestDto authenticationRequestDto,
@@ -149,7 +160,8 @@ namespace Jube.Service.Authentication
                 throw new NoUserException();
             }
 
-            if (userRegistry.Active != 1)
+            if (userRegistry.Active != 1
+                || !await new GetUserTenantEnabledQuery(dbContext).ExecuteAsync(userRegistry.RoleRegistryGuid, token))
             {
                 DoEquivalentHashWork(authenticationRequestDto.Password, passwordHashingKey);
                 await LogLoginFailedAsync(userLogin, userRegistry.Name, 2, authenticationMethod, token);
@@ -399,7 +411,7 @@ namespace Jube.Service.Authentication
             {
                 var errors = new List<string>
                 {
-                    "Missing New Password."
+                    Localise(AuthenticationResources.MissingNewPassword, [], "Missing New Password.")
                 };
 
                 throw new PasswordStrengthException(errors);
@@ -456,11 +468,16 @@ namespace Jube.Service.Authentication
             return Encoding.UTF8.GetString(decryptedBytes);
         }
 
-        private static void ValidatePasswordStrength(string password)
+        private string Localise(string key, object[] arguments, string fallback)
+        {
+            return localiser == null ? fallback : localiser[key, arguments].Value;
+        }
+
+        private void ValidatePasswordStrength(string password)
         {
             var failures = rules
                 .Where(rule => !rule.Test(password))
-                .Select(rule => rule.Message)
+                .Select(rule => Localise(rule.Key, rule.Arguments, rule.Fallback))
                 .ToList();
 
             if (failures.Count > 0)

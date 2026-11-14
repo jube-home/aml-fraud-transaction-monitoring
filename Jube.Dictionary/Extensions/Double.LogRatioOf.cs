@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double LogRatioOf(this double @this, double denominator)
+        [Description("The natural log of the value over the denominator, symmetric for increases and decreases.")]
+        public static double LogRatioOf(this double @this,
+            [Description("The number the value is divided by.")] double denominator)
         {
             return CalculationSupport.Finite(Math.Log(@this / denominator));
         }

@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The Luhn check digit that completes a digit string, or -1 for non-digits.")]
         public static int LuhnCheckDigit(this string? @this)
         {
             var digits = (@this ?? "").Replace(" ", "");

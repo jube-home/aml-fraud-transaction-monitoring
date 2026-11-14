@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté pour effectuer cette action.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>La conversation est introuvable.</value>
+  </data>
+    <data name="TitleMaxLength" xml:space="preserve">
+    <value>Le titre ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="FileNotFound" xml:space="preserve">
+    <value>Le fichier est introuvable.</value>
+  </data>
+    <data name="FileTooLarge" xml:space="preserve">
+    <value>Les fichiers ne doivent pas dépasser {0} Mo.</value>
+  </data>
+    <data name="FileTypeNotAllowed" xml:space="preserve">
+    <value>Ce type de fichier n'est pas autorisé.</value>
+  </data>
+    <data name="EmptyReply" xml:space="preserve">
+    <value>Jooby a eu un trou de mémoire -- pas de chance. Essayez de poser à nouveau la question ou de la reformuler.</value>
+  </data>
+    <data name="NoInferenceBackend" xml:space="preserve">
+    <value>Je suis Jooby. Il y a {0} Bites dans le Pasture, {1} Trails parcourus, {2} Saltlicks déposés, {3} Joobriks spécialistes à disposition et {4} Yokes à l'attelage -- mais aucun moteur d'inférence n'est actuellement configuré, donc rien de tout cela ne fonctionne encore. Tout ce que vous pouvez faire dans les écrans de Jube, je peux aussi le faire ici, chaque étape étant validée par la plateforme avant de vous parvenir : j'accède directement à la couche de services de cette plateforme et, lorsqu'aucun outil ne convient, je trouve un moyen de rester dans l'enclos -- du vrai SQL sur la base de données, réécrit selon ce que vous êtes autorisé à voir, un bac à sable R renforcé pour le calcul occasionnel, voire une recherche web ou une consultation de registres d'entreprises lorsque j'ai besoin d'un regard extérieur. Je consigne ce que je trouve au Salt Lick pour la prochaine fois. Pointez AskJoobyApiEndpoint et AskJoobyModel vers OpenRouter et saisissez votre clé dans AskJoobyApiKey -- c'est toute la configuration, et les fournisseurs se disputent votre budget de jetons sur leur marché au comptant dès le premier appel. La souveraineté exige votre propre serveur d'inférence ? Azure AI Foundry, Model Studio d'Alibaba Cloud, n'importe quel hébergement autonome -- les mêmes trois paramètres, pointés vers celui-ci. Dans les deux cas, définissez EnableAskJooby sur True et je serai prêt avant que vous n'ayez fini de taper.</value>
+  </data>
+    <data name="StreamFailed" xml:space="preserve">
+    <value>La réponse n'a pas pu être menée à terme. Veuillez réessayer.</value>
+  </data>
+    <data name="ApprovalSummary" xml:space="preserve">
+    <value>Jooby souhaite effectuer une modification à l'aide de {0} et a d'abord besoin de votre approbation. Rien n'a encore été modifié.</value>
+  </data>
+    <data name="ApprovalNotFound" xml:space="preserve">
+    <value>Cette demande d'approbation est introuvable ou a déjà fait l'objet d'une décision.</value>
+  </data>
+    <data name="RateLimited" xml:space="preserve">
+    <value>Vous envoyez des messages trop rapidement ou trop de réponses sont en cours. Veuillez patienter un instant et réessayer.</value>
+  </data>
+</root>

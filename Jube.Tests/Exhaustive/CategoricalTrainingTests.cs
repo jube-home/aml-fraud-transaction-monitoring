@@ -29,6 +29,7 @@ using Jube.Engine.Helpers;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using LinqToDB.Data;
 using log4net;
 using Newtonsoft.Json.Linq;
@@ -211,7 +212,8 @@ namespace Jube.Test.Exhaustive
                 ["ExhaustiveTopologyExplorationEpochs"] = "2",
                 ["ExhaustiveTopologyFinalisationEpochs"] = "2",
                 ["ExhaustiveActivationFunctionExplorationEpochs"] = "3",
-                ["ExhaustiveSimulationsCount"] = "50"
+                ["ExhaustiveSimulationsCount"] = "50",
+                ["ExhaustiveChallengerModelBaseProbability"] = "0"
             });
 
             var training = new Training(LogManager.GetLogger(typeof(CategoricalTrainingTests)), environment,
@@ -278,7 +280,7 @@ namespace Jube.Test.Exhaustive
 
             var model = SyncExhaustiveSearchInstancesExtensions.BuildExhaustiveModel(
                 await db.ExhaustiveSearchInstance.FirstAsync(w => w.Id == instance.Id),
-                new ExhaustiveSearchInstancePromotedTrialInstance { Json = trial.Json },
+                new ExhaustiveSearchInstancePromotedTrialInstance { Json = trial.Json, KindId = trial.KindId },
                 rows, helper.DeserializeTopologyNetworkJsonSerializerSettings);
 
             model.NetworkVariablesInOrder.Should().HaveCount(rows.Count);

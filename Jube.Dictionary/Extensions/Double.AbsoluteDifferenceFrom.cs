@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double AbsoluteDifferenceFrom(this double @this, double other)
+        [Description("The size of the gap between the value and the other.")]
+        public static double AbsoluteDifferenceFrom(this double @this, [Description("The other number.")] double other)
         {
             return CalculationSupport.Finite(Math.Abs(@this - other));
         }

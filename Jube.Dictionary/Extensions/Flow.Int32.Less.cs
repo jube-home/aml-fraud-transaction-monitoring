@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<int> flow)
         {
-            public Flow<int> MatchLess(int other)
+            [Description("True when: less than the argument. Decides matched if so; otherwise continues.")]
+            public Flow<int> MatchLess([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.Int32Less(flow.Value, other));
             }
 
-            public Flow<int> RejectLess(int other)
+            [Description("True when: less than the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<int> RejectLess([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.Int32Less(flow.Value, other));
             }
 
-            public Flow<int> BreakLess(int other)
+            [Description("True when: less than the argument. Decides broken if so; otherwise continues.")]
+            public Flow<int> BreakLess([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.Int32Less(flow.Value, other));
             }
 
-            public Flow<int> RequireLess(int other)
+            [Description("True when: less than the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<int> RequireLess([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.Int32Less(flow.Value, other));
             }
 
-            public Flow<int> EnsureLess(int other)
+            [Description("True when: less than the argument. Continues if so; otherwise decides broken.")]
+            public Flow<int> EnsureLess([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(int value)
         {
-            public Flow<int> MatchLess(int other)
+            [Description("Begins a pipeline from the value. True when: less than the argument. Decides matched if so; otherwise continues.")]
+            public Flow<int> MatchLess([Description("The other integer.")] int other)
             {
                 return value.Start().MatchLess(other);
             }
 
-            public Flow<int> RejectLess(int other)
+            [Description("Begins a pipeline from the value. True when: less than the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<int> RejectLess([Description("The other integer.")] int other)
             {
                 return value.Start().RejectLess(other);
             }
 
-            public Flow<int> BreakLess(int other)
+            [Description("Begins a pipeline from the value. True when: less than the argument. Decides broken if so; otherwise continues.")]
+            public Flow<int> BreakLess([Description("The other integer.")] int other)
             {
                 return value.Start().BreakLess(other);
             }
 
-            public Flow<int> RequireLess(int other)
+            [Description("Begins a pipeline from the value. True when: less than the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<int> RequireLess([Description("The other integer.")] int other)
             {
                 return value.Start().RequireLess(other);
             }
 
-            public Flow<int> EnsureLess(int other)
+            [Description("Begins a pipeline from the value. True when: less than the argument. Continues if so; otherwise decides broken.")]
+            public Flow<int> EnsureLess([Description("The other integer.")] int other)
             {
                 return value.Start().EnsureLess(other);
             }

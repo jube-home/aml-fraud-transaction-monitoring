@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<int> flow)
         {
+            [Description("True when: greater than zero. Decides matched if so; otherwise continues.")]
             public Flow<int> MatchIsPositive()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.Int32IsPositive(flow.Value));
             }
 
+            [Description("True when: greater than zero. Decides rejected if so; otherwise continues.")]
             public Flow<int> RejectIsPositive()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.Int32IsPositive(flow.Value));
             }
 
+            [Description("True when: greater than zero. Decides broken if so; otherwise continues.")]
             public Flow<int> BreakIsPositive()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.Int32IsPositive(flow.Value));
             }
 
+            [Description("True when: greater than zero. Continues if so; otherwise decides rejected.")]
             public Flow<int> RequireIsPositive()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.Int32IsPositive(flow.Value));
             }
 
+            [Description("True when: greater than zero. Continues if so; otherwise decides broken.")]
             public Flow<int> EnsureIsPositive()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(int value)
         {
+            [Description("Begins a pipeline from the value. True when: greater than zero. Decides matched if so; otherwise continues.")]
             public Flow<int> MatchIsPositive()
             {
                 return value.Start().MatchIsPositive();
             }
 
+            [Description("Begins a pipeline from the value. True when: greater than zero. Decides rejected if so; otherwise continues.")]
             public Flow<int> RejectIsPositive()
             {
                 return value.Start().RejectIsPositive();
             }
 
+            [Description("Begins a pipeline from the value. True when: greater than zero. Decides broken if so; otherwise continues.")]
             public Flow<int> BreakIsPositive()
             {
                 return value.Start().BreakIsPositive();
             }
 
+            [Description("Begins a pipeline from the value. True when: greater than zero. Continues if so; otherwise decides rejected.")]
             public Flow<int> RequireIsPositive()
             {
                 return value.Start().RequireIsPositive();
             }
 
+            [Description("Begins a pipeline from the value. True when: greater than zero. Continues if so; otherwise decides broken.")]
             public Flow<int> EnsureIsPositive()
             {
                 return value.Start().EnsureIsPositive();

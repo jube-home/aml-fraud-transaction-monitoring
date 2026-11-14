@@ -12,6 +12,9 @@
  */
 
 using System.ComponentModel;
+using Jube.Dto.Forms;
+using Jube.Dto.Options;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,33 +23,49 @@ using System.ComponentModel;
 
 namespace Jube.Dto.ModelInvokeWarning
 {
+    [GridEndpoint("ModelInvokeWarning", Title = "Model invoke warning", DefaultSort = "occurredDate")]
+    [GridFilter(Param = "entityAnalysisModelGuid", Label = "Model", Lookup = "EntityAnalysisModel")]
+    [GridSearch(Label = "Model or message contains")]
+    [MessagePackObject]
     public sealed record ModelInvokeWarningDto(
-        [property: Description("Server-assigned identifier of the row, most recent first when listed.")]
+        [property: Key(0)] [property: Description("Server-assigned identifier of the row, most recent first when listed.")]
+        [property: ListColumn(Hidden = true)]
         int Id,
-        [property: Description("UTC timestamp the warn threshold was crossed during the invocation.")]
+        [property: Key(1)] [property: Description("UTC timestamp the warn threshold was crossed during the invocation.")]
+        [property: ListColumn(Order = 10)]
+        [property: GridTimeRange]
         DateTime OccurredDate,
-        [property: Description("Guid of the model that raised this warning.")]
+        [property: Key(2)] [property: Description("Guid of the model that raised this warning.")]
+        [property: ListColumn(Hidden = true)]
         Guid EntityAnalysisModelGuid,
-        [property: Description("Name of the model that raised this warning, at the time it was raised.")]
+        [property: Key(3)] [property: Description("Name of the model that raised this warning, at the time it was raised.")]
+        [property: ListColumn(Order = 20, Title = "Model")]
         string EntityAnalysisModelName,
-        [property:
+        [property: Key(4)] [property:
             Description(
                 "Guid of the specific invocation (EntityAnalysisModelInstanceEntry) this warning belongs to -- correlates back to the same invocation's own logs/archive if still retained.")]
+        [property: ListColumn(Hidden = true)]
         Guid EntityAnalysisModelInstanceEntryGuid,
-        [property:
+        [property: Key(5)] [property:
             Description(
                 "The trace point's message text, identical to what would appear in the invocation's own captured logs.")]
+        [property: ListColumn(Order = 30)]
         string Message,
-        [property: Description("Microseconds elapsed in the invocation when this trace point was reached.")]
+        [property: Key(6)] [property: Description("Microseconds elapsed in the invocation when this trace point was reached.")]
+        [property: ListColumn(Order = 50, Title = "Elapsed", Unit = "µs", Format = GridFormat.Integer)]
         long ElapsedMicroseconds,
-        [property:
+        [property: Key(7)] [property:
             Description(
                 "Microseconds since the previously captured trace point for this invocation -- the gap that crossed Warn Threshold Milliseconds.")]
+        [property: ListColumn(Order = 40, Title = "Gap", Unit = "µs", Format = GridFormat.Integer)]
         long SinceLastEntryMicroseconds,
-        [property: Description("Managed thread ID the trace point ran on.")]
+        [property: Key(8)] [property: Description("Managed thread ID the trace point ran on.")]
+        [property: ListColumn(Order = 60, Title = "Thread")]
         int ThreadId,
-        [property: Description("UTC timestamp this row was flushed to the database.")]
+        [property: Key(9)] [property: Description("UTC timestamp this row was flushed to the database.")]
+        [property: ListColumn(Order = 80, Title = "Flushed Date")]
         DateTime CreatedDate,
-        [property: Description("Hostname of the Jube node that captured this warning.")]
+        [property: Key(10)] [property: Description("Hostname of the Jube node that captured this warning.")]
+        [property: ListColumn(Order = 70)]
         string Instance);
 }

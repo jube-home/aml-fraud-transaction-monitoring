@@ -13,7 +13,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Query.GetPostgresStatementStatisticsQuery.Models;
@@ -47,55 +46,26 @@ namespace Jube.Data.Query.GetPostgresStatementStatisticsQuery
                                                         ORDER BY s.total_exec_time DESC
                                                         """;
 
-        private NpgsqlConnection connection;
-
-        public async ValueTask DisposeAsync()
+        public ValueTask DisposeAsync()
         {
-            if (connection != null)
-            {
-                await connection.DisposeAsync().ConfigureAwait(false);
-            }
+            return ValueTask.CompletedTask;
         }
 
         public Task<List<PostgresStatementStatisticRow>> ExecuteAsync(CancellationToken token = default)
         {
-            return WithConnectionAsync(() => GetStatementStatisticsCoreAsync(token), token);
+            return WithConnectionAsync(connection => GetStatementStatisticsCoreAsync(connection, token), token);
         }
 
-        private async Task<T> WithConnectionAsync<T>(Func<Task<T>> action, CancellationToken token)
+        private async Task<T> WithConnectionAsync<T>(Func<NpgsqlConnection, Task<T>> action, CancellationToken token)
         {
-            try
-            {
-                if (connection is not { State: ConnectionState.Open })
-                {
-                    if (connection != null)
-                    {
-                        await connection.DisposeAsync().ConfigureAwait(false);
-                    }
+            await using var connection = new NpgsqlConnection(connectionString);
 
-                    connection = new NpgsqlConnection(connectionString);
-                    await connection.OpenAsync(token).ConfigureAwait(false);
-                }
+            await connection.OpenAsync(token).ConfigureAwait(false);
 
-                return await action().ConfigureAwait(false);
-            }
-            catch (Exception) when (token.IsCancellationRequested)
-            {
-                throw;
-            }
-            catch (Exception)
-            {
-                if (connection != null)
-                {
-                    await connection.DisposeAsync().ConfigureAwait(false);
-                    connection = null;
-                }
-
-                throw;
-            }
+            return await action(connection).ConfigureAwait(false);
         }
 
-        private async Task<List<PostgresStatementStatisticRow>> GetStatementStatisticsCoreAsync(
+        private async Task<List<PostgresStatementStatisticRow>> GetStatementStatisticsCoreAsync(NpgsqlConnection connection,
             CancellationToken token)
         {
             var results = new List<PostgresStatementStatisticRow>();

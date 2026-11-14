@@ -10,7 +10,10 @@
 .github/
 docs/
 *.png
+!Jube.App/Vue/public/**/*.png
 *.md
 !README.md
 **/node_modules/
 **/.DS_Store
+Jube.App/wwwroot/assets/
+Jube.App/wwwroot/index.html

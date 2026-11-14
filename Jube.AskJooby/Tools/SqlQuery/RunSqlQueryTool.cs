@@ -95,14 +95,16 @@ namespace Jube.AskJooby.Tools.SqlQuery
         }
 
         [Description(
-            "Checks a SELECT without running it: the statement is planned, which resolves every table, " +
-            "column, function and type in it, and then thrown away, so nothing is read and nothing is " +
-            "cached. Use it when you have written SQL against a schema you worked out rather than one you " +
-            "have already queried successfully -- a misspelled column or a type that will not compare comes " +
-            "back here as the exact database error, with no round trip spent fetching rows you were never " +
-            "going to get. It cannot tell you whether the query answers your question, only that the " +
-            "database understands it. An unregistered table is refused here exactly as it would be on " +
-            "execution.")]
+            "CALL THIS BEFORE RunSqlQuery, always: RunSqlQuery refuses a statement that has not been validated " +
+            "in this conversation. Checks a SELECT without running it. Every table, column, alias, function, " +
+            "type and clause in the statement is checked against the schema you are permitted to use, and " +
+            "the database is consulted only for what that check cannot decide. Each finding names a code, a " +
+            "message, the line and column, and where one exists a \"did you mean\" drawn from names you may " +
+            "use. Findings are authoritative: fix exactly what each one names, validate again, and loop until " +
+            "it comes back clean; never retry an unchanged statement and never guess at other names. A " +
+            "database rejection carries only its SQLSTATE, never error text, and means the validator missed " +
+            "something -- report it as it is. It cannot tell you whether the query answers your question, only " +
+            "that it is sound. An unregistered table is refused here exactly as it would be on execution.")]
         public async Task<string> ValidateSqlQuery(
             [Description(
                 "A single, complete, read-only SELECT statement, written exactly as you would pass it to " +
@@ -129,7 +131,7 @@ namespace Jube.AskJooby.Tools.SqlQuery
 
             var state = validation.SqlState is null ? string.Empty : $" [{validation.SqlState}]";
 
-            return $"Not valid{state}: {validation.Error}";
+            return $"Not valid{state}: {validation.Error} Fix exactly what is named and validate again.";
         }
 
         [Description(
@@ -162,8 +164,8 @@ namespace Jube.AskJooby.Tools.SqlQuery
             }
             catch (Exception ex)
             {
-                return $"Cannot plan this query: {ex.Message}. Try ValidateSqlQuery to see what the "
-                       + "database objects to.";
+                return
+                    "Cannot plan this query. Call ValidateSqlQuery with this statement and fix every finding it reports.";
             }
 
             var builder = new StringBuilder();
@@ -320,6 +322,8 @@ namespace Jube.AskJooby.Tools.SqlQuery
         }
 
         [Description(
+            "VALIDATE FIRST: call ValidateSqlQuery with exactly this statement and fix every finding before " +
+            "you call this; it refuses a statement that has not been validated in this conversation. " +
             "A FALLBACK, not your first reach. Where a bound operation exists for what you want -- one of " +
             "the several hundred the specialist Joobriks hold, which read the same data through the " +
             "platform's own typed query methods -- use that instead, or delegate to the Joobrik that " +

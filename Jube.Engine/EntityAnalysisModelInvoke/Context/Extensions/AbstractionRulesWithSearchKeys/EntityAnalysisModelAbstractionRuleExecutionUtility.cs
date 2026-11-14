@@ -18,7 +18,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Jube.Dictionary;
-using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHelpers;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
@@ -70,8 +69,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
                     Context.TraceLog(
                         $"has created a filter for cache where {DistinctSearchKey.SearchKey} has added the current transaction to the records, so there are now {documents.Count} records for evaluation. The records will now be matched against the Abstraction rules where this {DistinctSearchKey.SearchKey} is expressed and the rule is marked as a history rule (else it will be done later as a basic rule). Elapsed {sw.ElapsedMilliseconds}.");
 
-                    var logicHashMatches = new Dictionary<string, List<DictionaryNoBoxing<string>>>();
                     var abstractionRuleMatches = new Dictionary<int, List<DictionaryNoBoxing<string>>>();
+
+                    var resolver = new AbstractionMatchResolver(documents, CachePayloadDocument,
+                        Context.Snapshot.EntityAnalysisModelLists, EntityInstanceEntryDictionaryKvPs,
+                        Context.EntityAnalysisModelInstanceEntryPayload.Svirfd, Log);
 
                     var rulesToEvaluate = Context.Snapshot.ModelAbstractionRules
                         .FindAll(x => x.SearchKey == DistinctSearchKey.SearchKey && x.Search);
@@ -83,30 +85,23 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
                             Context.TraceLog(
                                 $"will process Abstraction Rule {evaluateAbstractionRule.Id}. Elapsed {sw.ElapsedMilliseconds}.");
 
-                            if (!logicHashMatches.TryGetValue(evaluateAbstractionRule.LogicHash, out var matches))
+                            var fromDate = GetFromDate(evaluateAbstractionRule);
+
+                            var finalMatches = resolver.Resolve(evaluateAbstractionRule,
+                                EntityAnalysisModel.References.ReferenceDateName, fromDate,
+                                EntityAnalysisModelInstanceEntryPayload.ReferenceDate, out var matched,
+                                out var reused);
+
+                            if (reused)
                             {
-                                matches = documents.FindAll(x => ReflectRuleHelper.Execute(
-                                    evaluateAbstractionRule,
-                                    Context.Snapshot, x,
-                                    EntityInstanceEntryDictionaryKvPs, Log));
-
-                                logicHashMatches.Add(evaluateAbstractionRule.LogicHash, matches);
-
                                 Context.TraceLog(
-                                    $"abstraction rule id {evaluateAbstractionRule.Id} logic hash {evaluateAbstractionRule.LogicHash} run now and added to logic cache - {matches.Count} matched. Elapsed {sw.ElapsedMilliseconds}.");
+                                    $"abstraction rule id {evaluateAbstractionRule.Id} reuse matches from logic cache [{matched}] for logic hash {evaluateAbstractionRule.LogicHash}. Elapsed {sw.ElapsedMilliseconds}.");
                             }
                             else
                             {
                                 Context.TraceLog(
-                                    $"abstraction rule id {evaluateAbstractionRule.Id} reuse matches from logic cache [{matches.Count}] for logic hash {evaluateAbstractionRule.LogicHash}. Elapsed {sw.ElapsedMilliseconds}.");
+                                    $"abstraction rule id {evaluateAbstractionRule.Id} logic hash {evaluateAbstractionRule.LogicHash} run now and added to logic cache - {matched} matched. Elapsed {sw.ElapsedMilliseconds}.");
                             }
-
-                            var fromDate = GetFromDate(evaluateAbstractionRule);
-
-                            var finalMatches = matches.FindAll(x =>
-                                x[EntityAnalysisModel.References.ReferenceDateName].AsDateTime() >= fromDate &&
-                                x[EntityAnalysisModel.References.ReferenceDateName].AsDateTime() <=
-                                EntityAnalysisModelInstanceEntryPayload.ReferenceDate);
 
                             abstractionRuleMatches[evaluateAbstractionRule.Id] = finalMatches;
 

@@ -40,9 +40,11 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(11)] public DateTime? DeletedDate { get; set; }
         [Column] [Nullable] [Key(12)] public string DeletedUser { get; set; }
         [Column] [Nullable] [Key(13)] public byte? Deleted { get; set; }
+        [Column] [Nullable] [Key(15)] public int? CaseNoteId { get; set; }
+        [Column] [Nullable] [Key(16)] public int? CaseResearchId { get; set; }
+        [Column] [Nullable] [Key(17)] public string Hash { get; set; }
 
-        [Association(ThisKey = "CaseId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "CaseId", OtherKey = "Id", CanBeNull = true)]
         [Key(14)]
         public Case Case { get; set; }
     }

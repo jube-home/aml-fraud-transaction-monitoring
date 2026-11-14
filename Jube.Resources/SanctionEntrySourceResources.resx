@@ -45,6 +45,12 @@
     <data name="FileRequired" xml:space="preserve">
     <value>A file is required.</value>
   </data>
+    <data name="ImportFailed" xml:space="preserve">
+    <value>The file could not be read to the end, so the import was recorded as unsuccessful and no entries were removed.</value>
+  </data>
+    <data name="FileTooLarge" xml:space="preserve">
+    <value>The file is larger than the maximum permitted size of {0} MiB.</value>
+  </data>
     <data name="SanctionEntrySourceNotFound" xml:space="preserve">
     <value>Could not locate Sanction Entry Source.</value>
   </data>

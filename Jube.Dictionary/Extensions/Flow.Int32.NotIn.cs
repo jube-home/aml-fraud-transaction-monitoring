@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<int> flow)
         {
-            public Flow<int> MatchNotIn(params int[] values)
+            [Description("True when: none of the listed integers. Decides matched if so; otherwise continues.")]
+            public Flow<int> MatchNotIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.Int32NotIn(flow.Value, values));
             }
 
-            public Flow<int> RejectNotIn(params int[] values)
+            [Description("True when: none of the listed integers. Decides rejected if so; otherwise continues.")]
+            public Flow<int> RejectNotIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.Int32NotIn(flow.Value, values));
             }
 
-            public Flow<int> BreakNotIn(params int[] values)
+            [Description("True when: none of the listed integers. Decides broken if so; otherwise continues.")]
+            public Flow<int> BreakNotIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.Int32NotIn(flow.Value, values));
             }
 
-            public Flow<int> RequireNotIn(params int[] values)
+            [Description("True when: none of the listed integers. Continues if so; otherwise decides rejected.")]
+            public Flow<int> RequireNotIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.Int32NotIn(flow.Value, values));
             }
 
-            public Flow<int> EnsureNotIn(params int[] values)
+            [Description("True when: none of the listed integers. Continues if so; otherwise decides broken.")]
+            public Flow<int> EnsureNotIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(int value)
         {
-            public Flow<int> MatchNotIn(params int[] values)
+            [Description("Begins a pipeline from the value. True when: none of the listed integers. Decides matched if so; otherwise continues.")]
+            public Flow<int> MatchNotIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return value.Start().MatchNotIn(values);
             }
 
-            public Flow<int> RejectNotIn(params int[] values)
+            [Description("Begins a pipeline from the value. True when: none of the listed integers. Decides rejected if so; otherwise continues.")]
+            public Flow<int> RejectNotIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return value.Start().RejectNotIn(values);
             }
 
-            public Flow<int> BreakNotIn(params int[] values)
+            [Description("Begins a pipeline from the value. True when: none of the listed integers. Decides broken if so; otherwise continues.")]
+            public Flow<int> BreakNotIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return value.Start().BreakNotIn(values);
             }
 
-            public Flow<int> RequireNotIn(params int[] values)
+            [Description("Begins a pipeline from the value. True when: none of the listed integers. Continues if so; otherwise decides rejected.")]
+            public Flow<int> RequireNotIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return value.Start().RequireNotIn(values);
             }
 
-            public Flow<int> EnsureNotIn(params int[] values)
+            [Description("Begins a pipeline from the value. True when: none of the listed integers. Continues if so; otherwise decides broken.")]
+            public Flow<int> EnsureNotIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return value.Start().EnsureNotIn(values);
             }

@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,29 +23,37 @@ namespace Jube.Dto.Repository.Preservation
 {
     [Description("Options for exporting (or previewing) the calling tenant's configuration into a Jube " +
                  "Export Model Package (.jemp).")]
+    [MessagePackObject]
     public class ImportExportOptionsDto
     {
         [Description("Password used to encrypt the exported package. Required again to import it.")]
+        [Key(0)]
         public string? Password { get; set; }
 
         [Description("Include Exhaustive Search Instances.")]
+        [Key(1)]
         public bool Exhaustive { get; set; }
 
         [Description("Include Lists and their values.")]
+        [Key(2)]
         public bool Lists { get; set; }
 
         [Description("Include Dictionaries and their Key Value Pairs.")]
+        [Key(3)]
         public bool Dictionaries { get; set; }
 
         [Description("Include Visualisations.")]
+        [Key(4)]
         public bool Visualisations { get; set; }
 
         [Description("Include Roles and their Permissions (not honoured by the peek operation, as legacy).")]
+        [Key(5)]
         public bool Roles { get; set; }
 
         [Description(
-            "Include Advanced Analytics instances, trained models with their versions and the training history. " +
+            "Include AskJooby Analytics instances, trained models with their versions and the training history. " +
             "The expiring cache is never included.")]
+        [Key(6)]
         public bool AdvancedAnalytics { get; set; }
     }
 }

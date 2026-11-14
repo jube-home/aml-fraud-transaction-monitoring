@@ -68,9 +68,9 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch6
                         continue;
                     }
 
-                    if (cacheService.ResilientRedisResilientRedisDatabase != null)
+                    if (cacheService.ResilientRespResilientRespDatabase != null)
                     {
-                        cacheService.ResilientRedisResilientRedisDatabase.KeyRename(key, newKey);
+                        cacheService.ResilientRespResilientRespDatabase.KeyRename(key, newKey);
                     }
                 }
                 catch (Exception ex)

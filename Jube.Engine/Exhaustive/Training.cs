@@ -187,7 +187,7 @@ namespace Jube.Engine.Exhaustive
                 return false;
             }
 
-            if (!await new PrepareStage(log, seeded).ExecuteAsync(run).ConfigureAwait(false))
+            if (!await new PrepareStage(log, seeded, environment).ExecuteAsync(run).ConfigureAwait(false))
             {
                 return false;
             }
@@ -263,7 +263,7 @@ namespace Jube.Engine.Exhaustive
 
         internal double[][] NormaliseData(Dictionary<int, Variable> variables, double[][] data)
         {
-            return new Normalisation(log).NormaliseData(variables, data);
+            return new Normalisation(log, environment).NormaliseData(variables, data);
         }
 
         internal static double[][] OnlyOutputWithClassificationForData(int classCount, double[] outputs,

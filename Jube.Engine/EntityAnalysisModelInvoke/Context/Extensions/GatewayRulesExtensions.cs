@@ -84,6 +84,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                             context.EntityAnalysisModelInstanceEntryPayload.Payload,
                             context.Snapshot.EntityAnalysisModelLists,
                             context.EntityAnalysisModelInstanceEntryPayload.Dictionary,
+                            context.EntityAnalysisModelInstanceEntryPayload.Svirfd,
                             context.Log);
                     });
 

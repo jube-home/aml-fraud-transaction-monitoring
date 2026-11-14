@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("URL-safe Base64 of the UTF-8 bytes, without padding.")]
         public static string EncodeBase64Url(this string? @this)
         {
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(@this ?? "")).TrimEnd('=').Replace('+', '-')

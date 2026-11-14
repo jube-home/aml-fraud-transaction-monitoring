@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double ShareOfSumWith(this double @this, double other)
+        [Description("The value's share of the value plus the other (a decline ratio is declined over declined plus approved).")]
+        public static double ShareOfSumWith(this double @this, [Description("The other number.")] double other)
         {
             return CalculationSupport.Finite(@this / (@this + other));
         }

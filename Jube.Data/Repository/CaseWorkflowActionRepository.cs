@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ using AutoMapper;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Async;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Jube.Data.Repository
@@ -209,12 +211,17 @@ namespace Jube.Data.Repository
                 throw new KeyNotFoundException();
             }
 
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
+
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
             model.CreatedUser = existing.CreatedUser;
             model.CreatedDate = existing.CreatedDate;
             model.UpdatedUser = userName;
             model.UpdatedDate = DateTime.UtcNow;
+            model.ImportId = existing.ImportId;
+            model.CaseWorkflowId = existing.CaseWorkflowId;
+            model.InheritedId = existing.InheritedId;
 
             await dbContext.UpdateAsync(model, token: token);
 

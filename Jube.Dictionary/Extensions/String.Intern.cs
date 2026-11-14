@@ -6,6 +6,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Retrieves the system's reference to the string.")]
         public static String Intern(this String str)
         {
             return string.Intern(str);

@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Whether the text is well-formed JSON of at most 1,000,000 characters and 64 levels.")]
         public static bool IsValidJson(this string? @this)
         {
             return StructuredDataSupport.Parse(@this) is not null || (@this ?? "").Trim() == "null";

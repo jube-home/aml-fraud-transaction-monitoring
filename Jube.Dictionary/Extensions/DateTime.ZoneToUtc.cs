@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static DateTime ZoneToUtc(this DateTime @this, string? zoneId)
+        [Description("The UTC value for a wall-clock time in an IANA time zone; throws for an unknown zone or a skipped local time.")]
+        public static DateTime ZoneToUtc(this DateTime @this,
+            [Description("The IANA or Windows time zone id, for example Europe/London.")] string? zoneId)
         {
             var zone = TimeZoneSupport.Find(zoneId) ??
                        throw new TimeZoneNotFoundException($"Unknown time zone '{zoneId}'.");

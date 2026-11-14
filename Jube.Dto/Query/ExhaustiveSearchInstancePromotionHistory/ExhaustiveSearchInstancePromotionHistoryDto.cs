@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,31 +24,40 @@ namespace Jube.Dto.Query.ExhaustiveSearchInstancePromotionHistory
     [Description("One promotion in the history of an Exhaustive Search Instance: the moment a trial topology was " +
                  "promoted as the best model so far, with its score, topology complexity and the number of trial " +
                  "instances that were explored since the previous promotion. The serialised network is not included.")]
+    [MessagePackObject]
     public class ExhaustiveSearchInstancePromotionHistoryDto
     {
         [Description("Server-assigned integer identifier of the promoted trial instance.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("Identifier of the Exhaustive Search Instance Trial Instance the promotion was made from.")]
+        [Key(1)]
         public int ExhaustiveSearchInstanceTrialInstanceId { get; set; }
 
         [Description("Score of the promoted trial instance. Zero if the stored value is not a finite number.")]
+        [Key(2)]
         public double Score { get; set; }
 
         [Description("Topology complexity of the promoted trial instance: the total number of neurons.")]
+        [Key(3)]
         public int TopologyComplexity { get; set; }
 
         [Description("UTC date and time of the promotion. The time axis of the promotion history.")]
+        [Key(4)]
         public DateTime CreatedDate { get; set; }
 
         [Description("True when this promotion is the currently active model of the search instance.")]
+        [Key(5)]
         public bool Active { get; set; }
 
         [Description("Number of trial instances explored since the previous promotion, including the promoted " +
                      "one. For the first promotion, every trial instance up to and including it.")]
+        [Key(6)]
         public int TrialInstances { get; set; }
 
         [Description("Cumulative number of trial instances explored up to and including the promoted one.")]
+        [Key(7)]
         public int TrialInstancesToDate { get; set; }
     }
 }

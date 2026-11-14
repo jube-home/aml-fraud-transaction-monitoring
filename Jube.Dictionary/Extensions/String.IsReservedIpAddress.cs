@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Whether the address is reserved: unspecified, loopback, link-local, multicast, documentation or benchmarking ranges.")]
         public static bool IsReservedIpAddress(this string? @this)
         {
             return NetworkAddressSupport.TryParseAddress(@this, out var address) &&

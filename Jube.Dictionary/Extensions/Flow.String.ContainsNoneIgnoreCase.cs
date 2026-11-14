@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchContainsNoneIgnoreCase(params string[] values)
+            [Description("True when: present and contains none of the listed strings, ignoring case. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsNoneIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringContainsNoneIgnoreCase(flow.Value, values));
             }
 
-            public Flow<string?> RejectContainsNoneIgnoreCase(params string[] values)
+            [Description("True when: present and contains none of the listed strings, ignoring case. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsNoneIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringContainsNoneIgnoreCase(flow.Value, values));
             }
 
-            public Flow<string?> BreakContainsNoneIgnoreCase(params string[] values)
+            [Description("True when: present and contains none of the listed strings, ignoring case. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsNoneIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringContainsNoneIgnoreCase(flow.Value, values));
             }
 
-            public Flow<string?> RequireContainsNoneIgnoreCase(params string[] values)
+            [Description("True when: present and contains none of the listed strings, ignoring case. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsNoneIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringContainsNoneIgnoreCase(flow.Value, values));
             }
 
-            public Flow<string?> EnsureContainsNoneIgnoreCase(params string[] values)
+            [Description("True when: present and contains none of the listed strings, ignoring case. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsNoneIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchContainsNoneIgnoreCase(params string[] values)
+            [Description("Begins a pipeline from the value. True when: present and contains none of the listed strings, ignoring case. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsNoneIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return value.Start().MatchContainsNoneIgnoreCase(values);
             }
 
-            public Flow<string?> RejectContainsNoneIgnoreCase(params string[] values)
+            [Description("Begins a pipeline from the value. True when: present and contains none of the listed strings, ignoring case. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsNoneIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return value.Start().RejectContainsNoneIgnoreCase(values);
             }
 
-            public Flow<string?> BreakContainsNoneIgnoreCase(params string[] values)
+            [Description("Begins a pipeline from the value. True when: present and contains none of the listed strings, ignoring case. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsNoneIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return value.Start().BreakContainsNoneIgnoreCase(values);
             }
 
-            public Flow<string?> RequireContainsNoneIgnoreCase(params string[] values)
+            [Description("Begins a pipeline from the value. True when: present and contains none of the listed strings, ignoring case. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsNoneIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return value.Start().RequireContainsNoneIgnoreCase(values);
             }
 
-            public Flow<string?> EnsureContainsNoneIgnoreCase(params string[] values)
+            [Description("Begins a pipeline from the value. True when: present and contains none of the listed strings, ignoring case. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsNoneIgnoreCase([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return value.Start().EnsureContainsNoneIgnoreCase(values);
             }

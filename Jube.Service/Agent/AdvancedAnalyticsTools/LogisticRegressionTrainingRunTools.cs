@@ -28,7 +28,7 @@ namespace Jube.Service.Agent.AdvancedAnalyticsTools
             "Give the rows inline (up to a configured cap) or a cache pointer to a stored table whose last column is the label. " +
             "To follow the run, call GetTrainingRunStatus with the returned run id until it reports Succeeded, Failed or Cancelled, then call GetTrainingRunResult. Training never makes the resulting version live.")]
         public Task<TrainingRunSubmissionView> SubmitLogisticRegressionTrainingAsync(
-            [Description("Numeric identifier of the Advanced Analytics instance the run and its model belong to.")]
+            [Description("Numeric identifier of the AskJooby Analytics instance the run and its model belong to.")]
             int instanceId,
             [Description(
                 "Name of the model the trained version is filed under. An existing model of that name receives a new version; otherwise a model is created.")]

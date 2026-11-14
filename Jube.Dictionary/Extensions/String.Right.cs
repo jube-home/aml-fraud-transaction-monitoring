@@ -4,7 +4,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string Right(this string @this, int length)
+        [Description("Gets the right part of the string.")]
+        public static string Right(this string @this, [Description("The length of the right part to get.")] int length)
         {
             return @this.Substring(@this.Length - length);
         }

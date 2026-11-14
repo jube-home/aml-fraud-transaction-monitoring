@@ -22,6 +22,7 @@ namespace Jube.Data.Query.GetCaseWorkflowFormEntryByCaseKeyValueQuery
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
 
     public class GetCaseWorkflowFormEntryByCaseKeyValueQuery(DbContext dbContext, string userName)
     {
@@ -29,7 +30,7 @@ namespace Jube.Data.Query.GetCaseWorkflowFormEntryByCaseKeyValueQuery
             string value, CancellationToken token = default)
         {
             var query = from c in dbContext.Case
-                from n in dbContext.CaseWorkflowFormEntry.InnerJoin(w => w.CaseId == c.Id)
+                from n in dbContext.CaseWorkflowFormEntry.InnerJoin(w => w.CaseId == c.Id && w.CaseKey == key && w.CaseKeyValue == value)
                 from a in dbContext.CaseWorkflowForm.InnerJoin(w => w.Id == n.CaseWorkflowFormId)
                 from i in dbContext.CaseWorkflow.InnerJoin(w =>
                     w.Guid == c.CaseWorkflowGuid && (w.Deleted == 0 || w.Deleted == null))
@@ -51,6 +52,13 @@ namespace Jube.Data.Query.GetCaseWorkflowFormEntryByCaseKeyValueQuery
                                   .Any(u => u.RoleRegistryGuid == rr.Guid && u.Name == userName)))
                       && dbContext.CaseWorkflowStatusRole
                           .Where(r => r.CaseWorkflowStatusGuid == s.Guid
+                                      && (r.Deleted == 0 || r.Deleted == null))
+                          .Any(r => dbContext.RoleRegistry
+                              .Where(rr => rr.Guid == r.RoleRegistryGuid && (rr.Deleted == 0 || rr.Deleted == null))
+                              .Any(rr => dbContext.UserRegistry
+                                  .Any(u => u.RoleRegistryGuid == rr.Guid && u.Name == userName)))
+                      && dbContext.CaseWorkflowFormRole
+                          .Where(r => r.CaseWorkflowFormGuid == a.Guid
                                       && (r.Deleted == 0 || r.Deleted == null))
                           .Any(r => dbContext.RoleRegistry
                               .Where(rr => rr.Guid == r.RoleRegistryGuid && (rr.Deleted == 0 || rr.Deleted == null))

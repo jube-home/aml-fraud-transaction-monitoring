@@ -19,6 +19,7 @@ namespace Jube.Data.Query.GetArchiveRangeAndCountsQuery
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
 
     public class GetArchiveRangeAndCountsQuery(DbContext dbContext)
     {

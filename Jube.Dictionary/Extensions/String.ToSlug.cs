@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Lower-case ASCII letters and digits joined by hyphens.")]
         public static string ToSlug(this string? @this)
         {
             var folded = FuzzyNormaliser.FoldDiacritics(@this ?? "").ToLowerInvariant();

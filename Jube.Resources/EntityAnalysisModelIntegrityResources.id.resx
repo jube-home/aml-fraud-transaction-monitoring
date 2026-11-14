@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Anda tidak memiliki izin untuk melakukan tindakan ini.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Anda harus masuk ke sebuah tenant untuk melakukan tindakan ini.</value>
+  </data>
+    <data name="ModelNotFound" xml:space="preserve">
+    <value>Model Analisis Entitas tidak ditemukan.</value>
+  </data>
+    <data name="EntityNotFound" xml:space="preserve">
+    <value>Tidak ditemukan {0} dengan id {1} dalam model ini.</value>
+  </data>
+    <data name="Title_DependencyDangling" xml:space="preserve">
+    <value>Menggunakan nama yang tidak ada</value>
+  </data>
+    <data name="Title_DependencyOnInactive" xml:space="preserve">
+    <value>Menggunakan entitas yang tidak aktif</value>
+  </data>
+    <data name="Title_DependencyOnUnapproved" xml:space="preserve">
+    <value>Menggunakan entitas yang belum disetujui</value>
+  </data>
+    <data name="Title_EntityPendingApproval" xml:space="preserve">
+    <value>Diubah dan menunggu persetujuan</value>
+  </data>
+    <data name="Title_EntityUnreferenced" xml:space="preserve">
+    <value>Tidak digunakan oleh apa pun</value>
+  </data>
+    <data name="Title_EngineCompileFailed" xml:space="preserve">
+    <value>Tidak berhasil dikompilasi di mesin</value>
+  </data>
+    <data name="Title_ModelInactive" xml:space="preserve">
+    <value>Model tidak aktif</value>
+  </data>
+    <data name="Title_NoActiveActivationRules" xml:space="preserve">
+    <value>Tidak ada aturan aktivasi yang aktif</value>
+  </data>
+    <data name="Title_TtlCountersDisabled" xml:space="preserve">
+    <value>Penghitung TTL dinonaktifkan</value>
+  </data>
+    <data name="Title_SearchKeyTtlShortensWindow" xml:space="preserve">
+    <value>Riwayat kunci pencarian lebih pendek dari jendela aturan</value>
+  </data>
+    <data name="Title_SearchKeyTtlCollapsesWindow" xml:space="preserve">
+    <value>Kunci pencarian tidak menyimpan riwayat untuk jendela aturan</value>
+  </data>
+    <data name="Title_EngineStateUnavailable" xml:space="preserve">
+    <value>Status mesin tidak tersedia</value>
+  </data>
+    <data name="Title_EngineNoNodes" xml:space="preserve">
+    <value>Tidak ada instans mesin yang menyinkronkan</value>
+  </data>
+    <data name="Title_EngineNodeStale" xml:space="preserve">
+    <value>Instans mesin berhenti melapor</value>
+  </data>
+    <data name="Title_EngineModelNotLoaded" xml:space="preserve">
+    <value>Model tidak dimuat oleh instans mesin</value>
+  </data>
+    <data name="Title_EngineModelNotStarted" xml:space="preserve">
+    <value>Model dimuat tetapi belum dimulai</value>
+  </data>
+    <data name="Title_EngineEntityNotLoaded" xml:space="preserve">
+    <value>Tidak dimuat oleh instans mesin</value>
+  </data>
+    <data name="Title_EngineEntityStale" xml:space="preserve">
+    <value>Mesin masih menjalankan entitas yang tidak lagi aktif</value>
+  </data>
+    <data name="Message_DependencyDanglingActiveRuleText" xml:space="preserve">
+    <value>Teks aturan {0} {1} menyebut {2}, yang tidak ada, sehingga tidak akan berfungsi.</value>
+  </data>
+    <data name="Message_DependencyDanglingInactiveRuleText" xml:space="preserve">
+    <value>Teks aturan {0} {1} menyebut {2}, yang tidak ada; tidak aktif, sehingga hanya berarti jika diaktifkan.</value>
+  </data>
+    <data name="Message_DependencyDanglingActiveSetting" xml:space="preserve">
+    <value>Pengaturan {0} dari {1} {2} menyebut {3}, yang tidak ada, sehingga tidak akan berfungsi.</value>
+  </data>
+    <data name="Message_DependencyDanglingInactiveSetting" xml:space="preserve">
+    <value>Pengaturan {0} dari {1} {2} menyebut {3}, yang tidak ada; tidak aktif, sehingga hanya berarti jika diaktifkan.</value>
+  </data>
+    <data name="Message_DependencyOnInactiveRuleText" xml:space="preserve">
+    <value>Teks aturan {0} {1} menggunakan {2} {3}, yang tidak aktif, sehingga mesin tidak memuatnya dan penggunaan itu tidak akan berfungsi.</value>
+  </data>
+    <data name="Message_DependencyOnInactiveSetting" xml:space="preserve">
+    <value>Pengaturan {0} dari {1} {2} menggunakan {3} {4}, yang tidak aktif, sehingga mesin tidak memuatnya dan penggunaan itu tidak akan berfungsi.</value>
+  </data>
+    <data name="Message_DependencyOnUnapprovedRuleText" xml:space="preserve">
+    <value>Teks aturan {0} {1} menggunakan {2} {3}, yang belum disetujui, sehingga mesin tidak menjalankannya dan penggunaan itu tidak akan berfungsi sampai disetujui.</value>
+  </data>
+    <data name="Message_DependencyOnUnapprovedSetting" xml:space="preserve">
+    <value>Pengaturan {0} dari {1} {2} menggunakan {3} {4}, yang belum disetujui, sehingga mesin tidak menjalankannya dan penggunaan itu tidak akan berfungsi sampai disetujui.</value>
+  </data>
+    <data name="Message_EntityUnreferenced" xml:space="preserve">
+    <value>{0} {1} aktif tetapi tidak ada yang menggunakannya dalam model.</value>
+  </data>
+    <data name="Message_EngineCompileFailed" xml:space="preserve">
+    <value>Mesin tidak dapat mengompilasi {0} {1} pada sinkronisasi terakhir, sehingga tidak berjalan: {2}.</value>
+  </data>
+    <data name="Message_EngineCompileFailedNoError" xml:space="preserve">
+    <value>Mesin tidak dapat mengompilasi {0} {1} pada sinkronisasi terakhir, sehingga tidak berjalan: tidak ada kesalahan yang dicatat.</value>
+  </data>
+    <data name="Message_ModelInactive" xml:space="preserve">
+    <value>Model tidak aktif, sehingga mesin tidak memuat atau memanggilnya.</value>
+  </data>
+    <data name="Message_NoActiveActivationRules" xml:space="preserve">
+    <value>Model tidak memiliki aturan aktivasi yang aktif, sehingga tidak ada transaksi yang dapat teraktivasi.</value>
+  </data>
+    <data name="Message_TtlCountersDisabled" xml:space="preserve">
+    <value>Penghitung TTL dinonaktifkan untuk model, sehingga mesin tidak menaikkan maupun membaca {0}; aturan melihatnya sebagai 0.</value>
+  </data>
+    <data name="Message_SearchKeyTtlCollapsesWindow" xml:space="preserve">
+    <value>Kunci pencarian {0} tidak memiliki TTL, sehingga mesin membatasi jendela {1} {2} aturan abstraksi hanya pada tanggal referensi dan hampir tidak mengagregasi apa pun.</value>
+  </data>
+    <data name="Message_SearchKeyTtlShortensWindow" xml:space="preserve">
+    <value>Kunci pencarian {0} menyimpan riwayat selama {1} {2}, yang lebih pendek dari {3} {4} milik aturan, sehingga mesin diam-diam memakai jendela yang lebih pendek.</value>
+  </data>
+    <data name="Message_EngineStateUnavailable" xml:space="preserve">
+    <value>Tidak ada mesin yang berjalan dalam proses ini dan tidak ada mesin yang mencatat apa yang dimuat untuk model ini, sehingga apa yang dijalankan mesin tidak dapat diperiksa.</value>
+  </data>
+    <data name="Message_EngineNoNodes" xml:space="preserve">
+    <value>Tidak ada instans mesin yang menyinkronkan model tenant ini.</value>
+  </data>
+    <data name="Message_EngineNodeStale" xml:space="preserve">
+    <value>Instans mesin {0} terakhir melapor pada {1} dan tidak berjalan. Instans ini dihapus pada sinkronisasi berikutnya, atau keluar dari daftar ini pada {2} jika tidak ada sinkronisasi.</value>
+  </data>
+    <data name="Message_EngineModelNotStarted" xml:space="preserve">
+    <value>Instans mesin {0} telah memuat model tetapi belum memulainya.</value>
+  </data>
+    <data name="Message_EntityPendingApprovalWaiting" xml:space="preserve">
+    <value>{0} {1} menunggu persetujuan, sehingga instans mesin {2} belum menjalankannya.</value>
+  </data>
+    <data name="Message_EntityPendingApprovalChanged" xml:space="preserve">
+    <value>{0} {1} memiliki perubahan yang menunggu persetujuan, sehingga instans mesin {2} masih menjalankan versi terakhir yang disetujui.</value>
+  </data>
+    <data name="Message_EngineEntityNotLoaded" xml:space="preserve">
+    <value>{0} {1} telah disetujui dan aktif tetapi instans mesin {2} belum memuatnya: sinkronkan model, dan periksa apakah berhasil dikompilasi.</value>
+  </data>
+    <data name="Message_EngineEntityStale" xml:space="preserve">
+    <value>Instans mesin {0} masih menjalankan {1} {2}, yang tidak lagi aktif; sinkronkan model untuk melepasnya.</value>
+  </data>
+    <data name="Message_EngineModelNotLoaded" xml:space="preserve">
+    <value>Instans mesin {0} belum memuat model; sinkronkan.</value>
+  </data>
+</root>

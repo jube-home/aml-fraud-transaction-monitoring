@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static int FiscalYear(this DateTime @this, int fiscalYearStartMonth)
+        [Description("The fiscal year, named for the calendar year it ends in, for a fiscal year starting in a given month.")]
+        public static int FiscalYear(this DateTime @this,
+            [Description("The month the fiscal year starts in, 1 to 12.")] int fiscalYearStartMonth)
         {
             if (fiscalYearStartMonth is < 1 or > 12)
             {

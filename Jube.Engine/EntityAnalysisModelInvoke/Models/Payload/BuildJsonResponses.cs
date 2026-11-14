@@ -19,6 +19,8 @@ using Jube.Dictionary;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using Jube.Svirfd;
+
 namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload
 {
     public static class BuildJsonResponses
@@ -69,6 +71,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload
             AddHttpAdaptationToJObject(context, jObject);
             AddExhaustiveAdaptationToJObject(context, jObject);
             AddAdvancedAnalyticsAdaptationToJObject(context, jObject);
+            AddGraphToJObject(context, jObject, serializer);
+            AddSvirfdToJObject(context, jObject);
             AddActivationToJObject(context, jObject);
             AddInvokeTaskPerformanceToJObject(context, jObject, serializer);
             AddLogsToJObject(context, jObject, serializer);
@@ -399,6 +403,50 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload
                 {
                     modelsJObject.Add(new JProperty(model.Name, value));
                 }
+            }
+        }
+
+        private static void AddGraphToJObject(Context.Context context, JObject jObject, JsonSerializer serializer)
+        {
+            var entities = context.Snapshot.GraphRecall.Entities.Where(w => w.ResponsePayload).ToArray();
+
+            if (entities.Length == 0)
+            {
+                return;
+            }
+
+            var graphJObject = new JObject();
+            jObject.Add("Graph", graphJObject);
+
+            foreach (var entity in entities)
+            {
+                if (context.EntityAnalysisModelInstanceEntryPayload.Graph.TryGetValue(entity.Name, out var value) &&
+                    value != null)
+                {
+                    graphJObject.Add(new JProperty(entity.Name, JObject.FromObject(value, serializer)));
+                }
+            }
+        }
+
+        private static void AddSvirfdToJObject(Context.Context context, JObject jObject)
+        {
+            var entities = context.Snapshot.Svirfd.Entities.Where(w => w.ResponsePayload).ToArray();
+
+            if (entities.Length == 0)
+            {
+                return;
+            }
+
+            var svirfdJObject = new JObject();
+            jObject.Add("Svirfd", svirfdJObject);
+
+            foreach (var entity in entities)
+            {
+                svirfdJObject.Add(new JProperty(entity.Name,
+                    context.EntityAnalysisModelInstanceEntryPayload.Svirfd.TryGetValue(entity.Name, out var record) &&
+                    record != null
+                        ? JObject.Parse(SvirfdJson.Serialize(record))
+                        : null));
             }
         }
 

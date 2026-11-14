@@ -17,7 +17,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static int RegexMatchCount(this string? @this, string pattern)
+        [Description("Number of matches of a pattern, with a 250 ms match time limit.")]
+        public static int RegexMatchCount(this string? @this, [Description("The regular expression.")] string pattern)
         {
             return Regex.Matches(@this ?? "", pattern, RegexOptions.None, RegexSupport.matchTimeout).Count;
         }

@@ -35,6 +35,9 @@ namespace Jube.App.Middlewares
                 sizeFeature.MaxRequestBodySize = maxRequestBodySize;
             }
 
+            var inspectedLimit = Math.Max(MaxInspectedBodyBytes,
+                endpointMetadata?.GetMetadata<IRequestSizeLimitMetadata>()?.MaxRequestBodySize ?? 0);
+
             var accepts = endpointMetadata?.GetMetadata<IAcceptsMetadata>();
 
             if (accepts != null
@@ -55,14 +58,14 @@ namespace Jube.App.Middlewares
                                                        || HttpMethods.IsPatch(request.Method))
                 && (request.ContentLength is null || request.ContentLength > 0))
             {
-                if (request.ContentLength > MaxInspectedBodyBytes)
+                if (request.ContentLength > inspectedLimit)
                 {
                     context.Response.StatusCode = StatusCodes.Status413PayloadTooLarge;
 
                     return;
                 }
 
-                request.EnableBuffering(bufferThreshold: 30 * 1024, bufferLimit: MaxInspectedBodyBytes + 32 * 1024L);
+                request.EnableBuffering(bufferThreshold: 30 * 1024, bufferLimit: inspectedLimit + 32 * 1024L);
 
                 using var memory = new MemoryStream(request.ContentLength.HasValue
                     ? (int)request.ContentLength.Value
@@ -73,7 +76,7 @@ namespace Jube.App.Middlewares
 
                 while ((count = await request.Body.ReadAsync(chunk.AsMemory(), context.RequestAborted)) > 0)
                 {
-                    if (memory.Length + count > MaxInspectedBodyBytes)
+                    if (memory.Length + count > inspectedLimit)
                     {
                         context.Response.StatusCode = StatusCodes.Status413PayloadTooLarge;
 

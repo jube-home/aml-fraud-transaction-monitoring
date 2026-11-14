@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>Le crochet de libération est introuvable.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>Un nom est requis.</value>
+  </data>
+    <data name="CaseWorkflowNotFound" xml:space="preserve">
+    <value>Le flux de travail de dossiers est introuvable.</value>
+  </data>
+    <data name="NameTooLong" xml:space="preserve">
+    <value>Le nom ne doit pas dépasser 256 caractères.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Un point d'accroche de libération portant ce nom existe déjà dans le flux de travail de dossier.</value>
+  </data>
+    <data name="SourceFieldInvalid" xml:space="preserve">
+    <value>Le champ source doit être un simple nom de champ de la charge utile.</value>
+  </data>
+    <data name="SourceValueRequired" xml:space="preserve">
+    <value>Une valeur source est requise lorsqu'un champ source est indiqué.</value>
+  </data>
+    <data name="SourceValueWithoutField" xml:space="preserve">
+    <value>Une valeur source nécessite un champ source.</value>
+  </data>
+    <data name="SourceValueTooLong" xml:space="preserve">
+    <value>La valeur source ne doit pas dépasser 200 caractères.</value>
+  </data>
+    <data name="ReleaseUrlRequired" xml:space="preserve">
+    <value>Une URL de libération est requise.</value>
+  </data>
+    <data name="ReleaseUrlInvalid" xml:space="preserve">
+    <value>L'URL de libération doit être une URL http ou https absolue dont le schéma, l'hôte et le port sont écrits littéralement, avec des jetons uniquement dans le chemin et la requête.</value>
+  </data>
+    <data name="ReleaseUrlHostBlocked" xml:space="preserve">
+    <value>L'URL de libération est bloquée par la politique des hôtes sortants : Il désigne une adresse de bouclage, de liaison locale, de métadonnées, privée, partagée, locale unique ou réservée, localhost, ou un schéma autre que http ou https. Indiquez un récepteur interne de confiance dans JUBE_HOOK_ALLOWED_HOSTS ou JUBE_HOOK_ALLOWED_CIDRS.</value>
+  </data>
+    <data name="RefuseUrlHostBlocked" xml:space="preserve">
+    <value>L'URL de refus est bloquée par la politique des hôtes sortants : Il désigne une adresse de bouclage, de liaison locale, de métadonnées, privée, partagée, locale unique ou réservée, localhost, ou un schéma autre que http ou https. Indiquez un récepteur interne de confiance dans JUBE_HOOK_ALLOWED_HOSTS ou JUBE_HOOK_ALLOWED_CIDRS.</value>
+  </data>
+    <data name="RefuseUrlInvalid" xml:space="preserve">
+    <value>L'URL de refus doit être une URL http ou https absolue dont le schéma, l'hôte et le port sont écrits littéralement, avec des jetons uniquement dans le chemin et la requête.</value>
+  </data>
+    <data name="HttpEndpointTypeIdInvalid" xml:space="preserve">
+    <value>La méthode doit être POST ou GET.</value>
+  </data>
+    <data name="HeaderRequired" xml:space="preserve">
+    <value>Le nom de l'en-tête d'identification est requis lorsqu'une variable d'identification est indiquée.</value>
+  </data>
+    <data name="HeaderInvalid" xml:space="preserve">
+    <value>Le nom de l'en-tête d'identification doit être un simple nom d'en-tête et non un nom réservé.</value>
+  </data>
+    <data name="CredentialRequired" xml:space="preserve">
+    <value>La variable d'identification est requise lorsqu'un nom d'en-tête d'identification est indiqué.</value>
+  </data>
+    <data name="CredentialInvalid" xml:space="preserve">
+    <value>La variable d'identification doit être un nom de variable d'environnement commençant par JUBE_HOOK_ suivi de lettres majuscules, de chiffres ou de traits de soulignement.</value>
+  </data>
+    <data name="BodyTooLong" xml:space="preserve">
+    <value>Le corps ne doit pas dépasser 8000 caractères.</value>
+  </data>
+    <data name="BodyOnlyForPost" xml:space="preserve">
+    <value>Un corps ne peut être envoyé qu'avec POST.</value>
+  </data>
+    <data name="TokenUnknown" xml:space="preserve">
+    <value>Le jeton {0} ne peut pas être utilisé par ce point d'accroche de libération.</value>
+  </data>
+</root>

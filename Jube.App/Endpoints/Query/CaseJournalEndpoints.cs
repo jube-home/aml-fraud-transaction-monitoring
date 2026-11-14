@@ -24,8 +24,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace Jube.App.Endpoints.Query
 {
@@ -34,13 +32,6 @@ namespace Jube.App.Endpoints.Query
         private const int MaximumLimit = 1000;
         private const string Base = "/api/GetCaseJournalQuery";
 
-        private static readonly JsonSerializerSettings serializerSettings = new()
-        {
-            ContractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new CamelCaseNamingStrategy()
-            }
-        };
 
         public static void MapCaseJournalEndpoints(this IEndpointRouteBuilder endpoints)
         {
@@ -91,8 +82,15 @@ namespace Jube.App.Endpoints.Query
                     activationsOnly,
                     responseElevation, token);
 
-                return TypedResults.Content(JsonConvert.SerializeObject(result, serializerSettings),
-                    "application/json");
+                return TypedResults.Ok(result);
+            }
+            catch (DtoValidationException ex)
+            {
+                return TypedResults.BadRequest(ex.Result);
+            }
+            catch (NotFoundException)
+            {
+                return TypedResults.NotFound();
             }
             catch (NotAuthenticatedException)
             {

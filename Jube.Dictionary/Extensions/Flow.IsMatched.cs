@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("True when the pipeline has decided matched.")]
         public static bool IsMatched<T>(this Flow<T> flow)
         {
             return flow.Outcome == FlowOutcome.Matched;

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>ამ მოქმედების შესასრულებლად უფლება არ გაქვთ.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>ამ მოქმედების შესასრულებლად უნდა იყოთ შესული ტენანტში.</value>
+  </data>
+    <data name="WorkflowNotFound" xml:space="preserve">
+    <value>საქმის workflow ვერ მოიძებნა ან მასზე წვდომა არ გაქვთ.</value>
+  </data>
+    <data name="KeyRequired" xml:space="preserve">
+    <value>ჟურნალს დასაწყვილებლად payload-ის ველის სახელი სჭირდება.</value>
+  </data>
+    <data name="ValueRequired" xml:space="preserve">
+    <value>ჟურნალს დასაწყვილებლად მნიშვნელობა სჭირდება.</value>
+  </data>
+    <data name="KeyInvalid" xml:space="preserve">
+    <value>payload-ის ველის სახელი უნდა იყოს არაუმეტეს 256 სიმბოლოსი და არ უნდა შეიცავდეს მართვის სიმბოლოებს.</value>
+  </data>
+    <data name="LensInvalid" xml:space="preserve">
+    <value>ლინზა უნდა იყოს payload, rules, features, models ან sanctions.</value>
+  </data>
+    <data name="LimitInvalid" xml:space="preserve">
+    <value>ლიმიტი უნდა იყოს 1-დან 5000-მდე.</value>
+  </data>
+    <data name="PeriodInvalid" xml:space="preserve">
+    <value>„დან“ უნდა იყოს „მდე“-მდე ადრე, ხოლო ფანჯარა — არაუმეტეს 3660 დღისა.</value>
+  </data>
+    <data name="SectionInvalid" xml:space="preserve">
+    <value>სექცია უნდა იყოს ერთ-ერთი: summary, notable, progression, distributions, velocity, gaps, novelty, counterparties, correlation, drift ან peers.</value>
+  </data>
+    <data name="TransactionNotFound" xml:space="preserve">
+    <value>ტრანზაქცია ამ საქმის workflow-ისთვის ვერ მოიძებნა.</value>
+  </data>
+    <data name="TransactionIdInvalid" xml:space="preserve">
+    <value>ტრანზაქციის იდენტიფიკატორი უნდა იყოს ნულზე მეტი.</value>
+  </data>
+    <data name="TagTransactionsInvalid" xml:space="preserve">
+    <value>საჭიროა ერთიდან 500-მდე ტრანზაქცია და არცერთი არ უნდა მეორდებოდეს.</value>
+  </data>
+    <data name="TagChangeRequired" xml:space="preserve">
+    <value>საჭიროა მინიმუმ ერთი ტეგი დასამატებლად ან მოსაშორებლად.</value>
+  </data>
+    <data name="TagNameInvalid" xml:space="preserve">
+    <value>ტეგის სახელი უნდა შეიცავდეს ტექსტს და იყოს არაუმეტეს 256 სიმბოლოსი.</value>
+  </data>
+    <data name="TagUnknown" xml:space="preserve">
+    <value>დასამატებელი ყველა ტეგი უნდა იყოს workflow-ის მოდელის აქტიური ტეგი.</value>
+  </data>
+    <data name="TagLimitInvalid" xml:space="preserve">
+    <value>ერთდროულად შეიძლება დაემატოს, მოშორდეს ან შენარჩუნდეს არაუმეტეს 20 ტეგი.</value>
+  </data>
+    <data name="PinTransactionsInvalid" xml:space="preserve">
+    <value>საჭიროა ერთიდან 50-მდე ტრანზაქცია და არცერთი არ უნდა მეორდებოდეს.</value>
+  </data>
+    <data name="TravelLimitInvalid" xml:space="preserve">
+    <value>სიჩქარის ლიმიტი უნდა იყოს 1-დან 10 000 კილომეტრამდე საათში, ხოლო უმოკლესი მონაკვეთი — 0-დან 20 000 კილომეტრამდე.</value>
+  </data>
+    <data name="ReplayNotFound" xml:space="preserve">
+    <value>შენახული გადათამაშება ამ საქმეზე ვერ მოიძებნა.</value>
+  </data>
+    <data name="ReplayNameInvalid" xml:space="preserve">
+    <value>გადათამაშებას სჭირდება 1-დან 100 სიმბოლომდე სახელი.</value>
+  </data>
+    <data name="ReplayWindowInvalid" xml:space="preserve">
+    <value>გადათამაშება უკან იხედება 7, 30, 90 ან 365 დღით.</value>
+  </data>
+    <data name="ReplayLimitInvalid" xml:space="preserve">
+    <value>საქმეს შეიძლება ჰქონდეს არაუმეტეს 10 შენახული გადათამაშება.</value>
+  </data>
+    <data name="PinLimitInvalid" xml:space="preserve">
+    <value>საქმეს შეიძლება ჰქონდეს არაუმეტეს 50 მიმაგრებული ტრანზაქცია.</value>
+  </data>
+    <data name="CaseNotFound" xml:space="preserve">
+    <value>საქმე ვერ მოიძებნა.</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>საქმე დაბლოკილია სხვა მომხმარებლისთვის.</value>
+  </data>
+    <data name="FilterInvalid" xml:space="preserve">
+    <value>ფილტრი არასწორია. მას სჭირდება წესების ჯგუფი, რომელთაგან თითოეულს აქვს მოდელის ველი, ველზე მორგებული ოპერატორი და ველის ტიპის მნიშვნელობა.</value>
+  </data>
+    <data name="FilterUnreadable" xml:space="preserve">
+    <value>ფილტრის გამოყენება ვერ მოხერხდა, რადგან შენახული მნიშვნელობა ვერ იკითხება იმ ველის ტიპად, რომელსაც ედარებოდა.</value>
+  </data>
+    <data name="MergeInvalid" xml:space="preserve">
+    <value>შერწყმას სჭირდება JSON მასივი არაუმეტეს სამი ობიექტით, თითოეული გასაღებითა და მნიშვნელობით, საქმის გასაღების გარდა.</value>
+  </data>
+    <data name="TagJobTooManyMatches" xml:space="preserve">
+    <value>ძალიან ბევრი ტრანზაქცია ემთხვევა და ერთ დავალებაში მათი მონიშვნა შეუძლებელია. შეავიწროვეთ ხედი და სცადეთ ხელახლა.</value>
+  </data>
+    <data name="TagJobNoMatches" xml:space="preserve">
+    <value>არცერთი ტრანზაქცია არ ემთხვევა ხედს.</value>
+  </data>
+    <data name="TagJobNotFound" xml:space="preserve">
+    <value>მონიშვნის დავალება ვერ მოიძებნა.</value>
+  </data>
+    <data name="TagJobNotUndoable" xml:space="preserve">
+    <value>გაუქმება შესაძლებელია მხოლოდ დასრულებული მონიშვნისა, რომელმაც რაიმე შეცვალა და უკვე არ გაუქმებულა.</value>
+  </data>
+    <data name="TagJobActiveLimit" xml:space="preserve">
+    <value>ძალიან ბევრი ჯგუფური მონიშვნის დავალება უკვე რიგშია ან სრულდება. დაელოდეთ ერთის დასრულებას ან გააუქმეთ ერთი და სცადეთ ხელახლა.</value>
+  </data>
+    <data name="KeyNotArchiveKey" xml:space="preserve">
+    <value>გასაღები არ არის workflow-ის მოდელზე Archive Key-ად მონიშნული ველი, ამიტომ მისი ტრანზაქციების მოძიება შეუძლებელია. მონიშნეთ ველი Archive Key-ად მოდელის request XPath-ში ან აირჩიეთ სხვა გასაღები.</value>
+  </data>
+    <data name="KeyValueInvalid" xml:space="preserve">
+    <value>მნიშვნელობა ვერ იკითხება გასაღების ველის მონაცემთა ტიპად.</value>
+  </data>
+    <data name="KeyNotLookupable" xml:space="preserve">
+    <value>გასაღების ველი დაშიფრულია შემთხვევითი ვექტორით, ამიტომ მისი მნიშვნელობების მოძიება შეუძლებელია.</value>
+  </data>
+    <data name="LaneOperatorNotAllowed" xml:space="preserve">
+    <value>დიაპაზონის ოპერატორი დაშვებულია მხოლოდ რიცხვით ან თარიღის გასაღებზე; ტექსტური ან ლოგიკური გასაღები მხოლოდ ტოლობით ემთხვევა.</value>
+  </data>
+    <data name="CaseKeyNotArchiveKey" xml:space="preserve">
+    <value>საქმის გასაღები არ არის workflow-ის მოდელზე Archive Key-ად მონიშნული ველი, ამიტომ ამ საქმის ჟურნალის წაკითხვა შეუძლებელია. მონიშნეთ ველი Archive Key-ად მოდელის request XPath-ში და ისტორიისთვის გაუშვით archive key მიგრაციის სკრიპტი.</value>
+  </data>
+</root>

@@ -16,6 +16,8 @@
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable RedundantAttributeUsageProperty
 
+using MessagePack;
+
 namespace Jube.Service.Agent.AdvancedAnalyticsTools.RelationshipsAndRegression.Models
 {
     public enum CorrelationMethod
@@ -38,210 +40,224 @@ namespace Jube.Service.Agent.AdvancedAnalyticsTools.RelationshipsAndRegression.M
         EqualFrequency = 1
     }
 
+    [MessagePackObject]
     public sealed record CorrelationCoefficientResult
     {
-        public string Method { get; init; } = string.Empty;
-        public double Coefficient { get; init; }
-        public double CoefficientOfDetermination { get; init; }
-        public int PairCount { get; init; }
-        public int MissingPairsDropped { get; init; }
-        public string StatisticName { get; init; } = string.Empty;
-        public double Statistic { get; init; }
-        public double DegreesOfFreedom { get; init; }
-        public double PValue { get; init; }
-        public double ConfidenceLevel { get; init; }
-        public double ConfidenceLower { get; init; }
-        public double ConfidenceUpper { get; init; }
-        public string Interpretation { get; init; } = string.Empty;
+        [Key(0)] public string Method { get; init; } = string.Empty;
+        [Key(1)] public double Coefficient { get; init; }
+        [Key(2)] public double CoefficientOfDetermination { get; init; }
+        [Key(3)] public int PairCount { get; init; }
+        [Key(4)] public int MissingPairsDropped { get; init; }
+        [Key(5)] public string StatisticName { get; init; } = string.Empty;
+        [Key(6)] public double Statistic { get; init; }
+        [Key(7)] public double DegreesOfFreedom { get; init; }
+        [Key(8)] public double PValue { get; init; }
+        [Key(9)] public double ConfidenceLevel { get; init; }
+        [Key(10)] public double ConfidenceLower { get; init; }
+        [Key(11)] public double ConfidenceUpper { get; init; }
+        [Key(12)] public string Interpretation { get; init; } = string.Empty;
     }
 
+    [MessagePackObject]
     public sealed record KendallTauResult
     {
-        public string Variant { get; init; } = string.Empty;
-        public double Tau { get; init; }
-        public double TauA { get; init; }
-        public double TauB { get; init; }
-        public double TauC { get; init; }
-        public long ConcordantPairs { get; init; }
-        public long DiscordantPairs { get; init; }
-        public long PairsTiedInXOnly { get; init; }
-        public long PairsTiedInYOnly { get; init; }
-        public long PairsTiedInBoth { get; init; }
-        public int PairCount { get; init; }
-        public int MissingPairsDropped { get; init; }
-        public double ZStatistic { get; init; }
-        public double PValue { get; init; }
-        public double ConfidenceLevel { get; init; }
-        public double ConfidenceLower { get; init; }
-        public double ConfidenceUpper { get; init; }
-        public string Interpretation { get; init; } = string.Empty;
+        [Key(0)] public string Variant { get; init; } = string.Empty;
+        [Key(1)] public double Tau { get; init; }
+        [Key(2)] public double TauA { get; init; }
+        [Key(3)] public double TauB { get; init; }
+        [Key(4)] public double TauC { get; init; }
+        [Key(5)] public long ConcordantPairs { get; init; }
+        [Key(6)] public long DiscordantPairs { get; init; }
+        [Key(7)] public long PairsTiedInXOnly { get; init; }
+        [Key(8)] public long PairsTiedInYOnly { get; init; }
+        [Key(9)] public long PairsTiedInBoth { get; init; }
+        [Key(10)] public int PairCount { get; init; }
+        [Key(11)] public int MissingPairsDropped { get; init; }
+        [Key(12)] public double ZStatistic { get; init; }
+        [Key(13)] public double PValue { get; init; }
+        [Key(14)] public double ConfidenceLevel { get; init; }
+        [Key(15)] public double ConfidenceLower { get; init; }
+        [Key(16)] public double ConfidenceUpper { get; init; }
+        [Key(17)] public string Interpretation { get; init; } = string.Empty;
     }
 
+    [MessagePackObject]
     public sealed record PointBiserialResult
     {
-        public string Method { get; init; } = string.Empty;
-        public double Coefficient { get; init; }
-        public double TStatistic { get; init; }
-        public double DegreesOfFreedom { get; init; }
-        public double PValue { get; init; }
-        public double ConfidenceLevel { get; init; }
-        public double ConfidenceLower { get; init; }
-        public double ConfidenceUpper { get; init; }
-        public int Group1Count { get; init; }
-        public int Group0Count { get; init; }
-        public double Group1Mean { get; init; }
-        public double Group0Mean { get; init; }
-        public double PooledStandardDeviation { get; init; }
-        public int MissingPairsDropped { get; init; }
-        public string Interpretation { get; init; } = string.Empty;
+        [Key(0)] public string Method { get; init; } = string.Empty;
+        [Key(1)] public double Coefficient { get; init; }
+        [Key(2)] public double TStatistic { get; init; }
+        [Key(3)] public double DegreesOfFreedom { get; init; }
+        [Key(4)] public double PValue { get; init; }
+        [Key(5)] public double ConfidenceLevel { get; init; }
+        [Key(6)] public double ConfidenceLower { get; init; }
+        [Key(7)] public double ConfidenceUpper { get; init; }
+        [Key(8)] public int Group1Count { get; init; }
+        [Key(9)] public int Group0Count { get; init; }
+        [Key(10)] public double Group1Mean { get; init; }
+        [Key(11)] public double Group0Mean { get; init; }
+        [Key(12)] public double PooledStandardDeviation { get; init; }
+        [Key(13)] public int MissingPairsDropped { get; init; }
+        [Key(14)] public string Interpretation { get; init; } = string.Empty;
     }
 
+    [MessagePackObject]
     public sealed record CorrelationPair
     {
-        public string VariableA { get; init; } = string.Empty;
-        public string VariableB { get; init; } = string.Empty;
-        public double Coefficient { get; init; }
-        public double PValue { get; init; }
-        public double AdjustedPValue { get; init; }
-        public int PairCount { get; init; }
+        [Key(0)] public string VariableA { get; init; } = string.Empty;
+        [Key(1)] public string VariableB { get; init; } = string.Empty;
+        [Key(2)] public double Coefficient { get; init; }
+        [Key(3)] public double PValue { get; init; }
+        [Key(4)] public double AdjustedPValue { get; init; }
+        [Key(5)] public int PairCount { get; init; }
     }
 
+    [MessagePackObject]
     public sealed record CorrelationMatrixResult
     {
-        public string Method { get; init; } = string.Empty;
-        public string[] Variables { get; init; } = Array.Empty<string>();
-        public double[][] Coefficients { get; init; } = Array.Empty<double[]>();
-        public double[][] PValues { get; init; } = Array.Empty<double[]>();
-        public int[][] PairCounts { get; init; } = Array.Empty<int[]>();
-        public int RowsUsed { get; init; }
-        public int RowsDropped { get; init; }
-        public CorrelationPair[] StrongestPairs { get; init; } = Array.Empty<CorrelationPair>();
-        public int TotalPairs { get; init; }
+        [Key(0)] public string Method { get; init; } = string.Empty;
+        [Key(1)] public string[] Variables { get; init; } = Array.Empty<string>();
+        [Key(2)] public double[][] Coefficients { get; init; } = Array.Empty<double[]>();
+        [Key(3)] public double[][] PValues { get; init; } = Array.Empty<double[]>();
+        [Key(4)] public int[][] PairCounts { get; init; } = Array.Empty<int[]>();
+        [Key(5)] public int RowsUsed { get; init; }
+        [Key(6)] public int RowsDropped { get; init; }
+        [Key(7)] public CorrelationPair[] StrongestPairs { get; init; } = Array.Empty<CorrelationPair>();
+        [Key(8)] public int TotalPairs { get; init; }
     }
 
+    [MessagePackObject]
     public sealed record CovarianceMatrixResult
     {
-        public string[] Variables { get; init; } = Array.Empty<string>();
-        public double[][] Covariance { get; init; } = Array.Empty<double[]>();
-        public double[] Means { get; init; } = Array.Empty<double>();
-        public double[] Variances { get; init; } = Array.Empty<double>();
-        public double[] StandardDeviations { get; init; } = Array.Empty<double>();
-        public double TotalVariance { get; init; }
-        public double GeneralisedVariance { get; init; }
-        public int RowsUsed { get; init; }
-        public int RowsDropped { get; init; }
-        public bool Unbiased { get; init; }
+        [Key(0)] public string[] Variables { get; init; } = Array.Empty<string>();
+        [Key(1)] public double[][] Covariance { get; init; } = Array.Empty<double[]>();
+        [Key(2)] public double[] Means { get; init; } = Array.Empty<double>();
+        [Key(3)] public double[] Variances { get; init; } = Array.Empty<double>();
+        [Key(4)] public double[] StandardDeviations { get; init; } = Array.Empty<double>();
+        [Key(5)] public double TotalVariance { get; init; }
+        [Key(6)] public double GeneralisedVariance { get; init; }
+        [Key(7)] public int RowsUsed { get; init; }
+        [Key(8)] public int RowsDropped { get; init; }
+        [Key(9)] public bool Unbiased { get; init; }
     }
 
+    [MessagePackObject]
     public sealed record PartialCorrelationResult
     {
-        public string Method { get; init; } = string.Empty;
-        public double Coefficient { get; init; }
-        public double ZeroOrderCorrelation { get; init; }
-        public int PairCount { get; init; }
-        public int ControlCount { get; init; }
-        public double DegreesOfFreedom { get; init; }
-        public double TStatistic { get; init; }
-        public double PValue { get; init; }
-        public double ConfidenceLevel { get; init; }
-        public double ConfidenceLower { get; init; }
-        public double ConfidenceUpper { get; init; }
-        public int RowsDropped { get; init; }
-        public string Interpretation { get; init; } = string.Empty;
+        [Key(0)] public string Method { get; init; } = string.Empty;
+        [Key(1)] public double Coefficient { get; init; }
+        [Key(2)] public double ZeroOrderCorrelation { get; init; }
+        [Key(3)] public int PairCount { get; init; }
+        [Key(4)] public int ControlCount { get; init; }
+        [Key(5)] public double DegreesOfFreedom { get; init; }
+        [Key(6)] public double TStatistic { get; init; }
+        [Key(7)] public double PValue { get; init; }
+        [Key(8)] public double ConfidenceLevel { get; init; }
+        [Key(9)] public double ConfidenceLower { get; init; }
+        [Key(10)] public double ConfidenceUpper { get; init; }
+        [Key(11)] public int RowsDropped { get; init; }
+        [Key(12)] public string Interpretation { get; init; } = string.Empty;
     }
 
+    [MessagePackObject]
     public sealed record PartialCorrelationMatrixResult
     {
-        public string[] Variables { get; init; } = Array.Empty<string>();
-        public double[][] Coefficients { get; init; } = Array.Empty<double[]>();
-        public double[][] PValues { get; init; } = Array.Empty<double[]>();
-        public double DegreesOfFreedom { get; init; }
-        public int RowsUsed { get; init; }
-        public int RowsDropped { get; init; }
+        [Key(0)] public string[] Variables { get; init; } = Array.Empty<string>();
+        [Key(1)] public double[][] Coefficients { get; init; } = Array.Empty<double[]>();
+        [Key(2)] public double[][] PValues { get; init; } = Array.Empty<double[]>();
+        [Key(3)] public double DegreesOfFreedom { get; init; }
+        [Key(4)] public int RowsUsed { get; init; }
+        [Key(5)] public int RowsDropped { get; init; }
     }
 
+    [MessagePackObject]
     public sealed record MutualInformationResult
     {
-        public double MutualInformationNats { get; init; }
-        public double MutualInformationBits { get; init; }
-        public double NormalisedMutualInformation { get; init; }
-        public double EntropyXBits { get; init; }
-        public double EntropyYBits { get; init; }
-        public double JointEntropyBits { get; init; }
-        public int BinsX { get; init; }
-        public int BinsY { get; init; }
-        public int PairCount { get; init; }
-        public int MissingPairsDropped { get; init; }
-        public double GStatistic { get; init; }
-        public double DegreesOfFreedom { get; init; }
-        public double PValue { get; init; }
-        public bool BiasCorrected { get; init; }
+        [Key(0)] public double MutualInformationNats { get; init; }
+        [Key(1)] public double MutualInformationBits { get; init; }
+        [Key(2)] public double NormalisedMutualInformation { get; init; }
+        [Key(3)] public double EntropyXBits { get; init; }
+        [Key(4)] public double EntropyYBits { get; init; }
+        [Key(5)] public double JointEntropyBits { get; init; }
+        [Key(6)] public int BinsX { get; init; }
+        [Key(7)] public int BinsY { get; init; }
+        [Key(8)] public int PairCount { get; init; }
+        [Key(9)] public int MissingPairsDropped { get; init; }
+        [Key(10)] public double GStatistic { get; init; }
+        [Key(11)] public double DegreesOfFreedom { get; init; }
+        [Key(12)] public double PValue { get; init; }
+        [Key(13)] public bool BiasCorrected { get; init; }
     }
 
+    [MessagePackObject]
     public sealed record PredictorInformationScore
     {
-        public string Variable { get; init; } = string.Empty;
-        public double MutualInformationBits { get; init; }
-        public double NormalisedMutualInformation { get; init; }
-        public double PValue { get; init; }
-        public double AdjustedPValue { get; init; }
-        public int PairCount { get; init; }
-        public int Rank { get; init; }
+        [Key(0)] public string Variable { get; init; } = string.Empty;
+        [Key(1)] public double MutualInformationBits { get; init; }
+        [Key(2)] public double NormalisedMutualInformation { get; init; }
+        [Key(3)] public double PValue { get; init; }
+        [Key(4)] public double AdjustedPValue { get; init; }
+        [Key(5)] public int PairCount { get; init; }
+        [Key(6)] public int Rank { get; init; }
     }
 
+    [MessagePackObject]
     public sealed record PredictorCorrelationScore
     {
-        public string Variable { get; init; } = string.Empty;
-        public double Coefficient { get; init; }
-        public double PValue { get; init; }
-        public double AdjustedPValue { get; init; }
-        public int PairCount { get; init; }
-        public int Rank { get; init; }
+        [Key(0)] public string Variable { get; init; } = string.Empty;
+        [Key(1)] public double Coefficient { get; init; }
+        [Key(2)] public double PValue { get; init; }
+        [Key(3)] public double AdjustedPValue { get; init; }
+        [Key(4)] public int PairCount { get; init; }
+        [Key(5)] public int Rank { get; init; }
     }
 
+    [MessagePackObject]
     public sealed record CorrelationRatioResult
     {
-        public double Eta { get; init; }
-        public double EtaSquared { get; init; }
-        public double AdjustedEtaSquared { get; init; }
-        public double FStatistic { get; init; }
-        public double DegreesOfFreedomBetween { get; init; }
-        public double DegreesOfFreedomWithin { get; init; }
-        public double PValue { get; init; }
-        public int GroupCount { get; init; }
-        public int PairCount { get; init; }
-        public int MissingPairsDropped { get; init; }
-        public double[] GroupMeans { get; init; } = Array.Empty<double>();
-        public int[] GroupSizes { get; init; } = Array.Empty<int>();
-        public int[] GroupLabels { get; init; } = Array.Empty<int>();
+        [Key(0)] public double Eta { get; init; }
+        [Key(1)] public double EtaSquared { get; init; }
+        [Key(2)] public double AdjustedEtaSquared { get; init; }
+        [Key(3)] public double FStatistic { get; init; }
+        [Key(4)] public double DegreesOfFreedomBetween { get; init; }
+        [Key(5)] public double DegreesOfFreedomWithin { get; init; }
+        [Key(6)] public double PValue { get; init; }
+        [Key(7)] public int GroupCount { get; init; }
+        [Key(8)] public int PairCount { get; init; }
+        [Key(9)] public int MissingPairsDropped { get; init; }
+        [Key(10)] public double[] GroupMeans { get; init; } = Array.Empty<double>();
+        [Key(11)] public int[] GroupSizes { get; init; } = Array.Empty<int>();
+        [Key(12)] public int[] GroupLabels { get; init; } = Array.Empty<int>();
     }
 
+    [MessagePackObject]
     public sealed record CorrelationComparisonResult
     {
-        public double Correlation1 { get; init; }
-        public double Correlation2 { get; init; }
-        public double FisherZ1 { get; init; }
-        public double FisherZ2 { get; init; }
-        public double ZStatistic { get; init; }
-        public double PValue { get; init; }
-        public double DifferenceInFisherZ { get; init; }
-        public double ConfidenceLower { get; init; }
-        public double ConfidenceUpper { get; init; }
-        public double ConfidenceLevel { get; init; }
+        [Key(0)] public double Correlation1 { get; init; }
+        [Key(1)] public double Correlation2 { get; init; }
+        [Key(2)] public double FisherZ1 { get; init; }
+        [Key(3)] public double FisherZ2 { get; init; }
+        [Key(4)] public double ZStatistic { get; init; }
+        [Key(5)] public double PValue { get; init; }
+        [Key(6)] public double DifferenceInFisherZ { get; init; }
+        [Key(7)] public double ConfidenceLower { get; init; }
+        [Key(8)] public double ConfidenceUpper { get; init; }
+        [Key(9)] public double ConfidenceLevel { get; init; }
     }
 
+    [MessagePackObject]
     public sealed record CorrelationSummaryIntervalResult
     {
-        public double Correlation { get; init; }
-        public int SampleSize { get; init; }
-        public double TStatistic { get; init; }
-        public double DegreesOfFreedom { get; init; }
-        public double PValue { get; init; }
-        public double FisherZ { get; init; }
-        public double StandardErrorOfZ { get; init; }
-        public double ConfidenceLevel { get; init; }
-        public double ConfidenceLower { get; init; }
-        public double ConfidenceUpper { get; init; }
-        public double SmallestSignificantCorrelation { get; init; }
+        [Key(0)] public double Correlation { get; init; }
+        [Key(1)] public int SampleSize { get; init; }
+        [Key(2)] public double TStatistic { get; init; }
+        [Key(3)] public double DegreesOfFreedom { get; init; }
+        [Key(4)] public double PValue { get; init; }
+        [Key(5)] public double FisherZ { get; init; }
+        [Key(6)] public double StandardErrorOfZ { get; init; }
+        [Key(7)] public double ConfidenceLevel { get; init; }
+        [Key(8)] public double ConfidenceLower { get; init; }
+        [Key(9)] public double ConfidenceUpper { get; init; }
+        [Key(10)] public double SmallestSignificantCorrelation { get; init; }
     }
 }

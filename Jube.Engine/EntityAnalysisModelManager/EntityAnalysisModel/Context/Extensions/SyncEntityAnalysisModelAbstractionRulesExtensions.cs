@@ -19,6 +19,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
     using System.Text;
     using System.Threading.Tasks;
     using AutoMapper.Internal;
+    using Analytics.Aggregation;
     using Data.Repository;
     using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
     using Jube.Engine.EntityAnalysisModelManager.Helpers;
@@ -35,7 +36,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
             {
                 context.Services.Parser.EntityAnalysisModelsAbstractionRule = [];
 
-                foreach (var (key, value) in context.EntityAnalysisModels.ActiveEntityAnalysisModels)
+                foreach (var (key, value) in context.ModelsInScope())
                 {
                     context.Services.CancellationToken.ThrowIfCancellationRequested();
 
@@ -432,6 +433,20 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 }
                             }
 
+                            modelAbstractionRule.IterationOrderType = record.IterationOrderId ?? 1;
+
+                            try
+                            {
+                                modelAbstractionRule.AggregationFunction = AggregationParameters.Bind(
+                                    modelAbstractionRule.AbstractionRuleAggregationFunctionType,
+                                    record.SearchFunctionParameters);
+                            }
+                            catch (ArgumentException ex)
+                            {
+                                context.Services.Log.Error(
+                                    $"Entity Start: Entity Model {key} and Abstraction Rule {modelAbstractionRule.Id} has function parameters that could not be bound, so the rule will aggregate to zero: {ex.Message}");
+                            }
+
                             context.Services.CancellationToken.ThrowIfCancellationRequested();
 
                             var hasRuleScript = false;
@@ -445,7 +460,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             {
                                 parsedRule.OriginalRuleText = record.BuilderRuleScript;
                                 parsedRule = context.Services.Parser.TranslateFromDotNotation(parsedRule, true);
-                                parsedRule = context.Services.Parser.Parse(parsedRule);
+                                parsedRule = context.Services.Parser.Parse(parsedRule, true);
 
                                 if (parsedRule.ErrorSpans.Count == 0)
                                 {
@@ -463,7 +478,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             {
                                 parsedRule.OriginalRuleText = record.CoderRuleScript;
                                 parsedRule = context.Services.Parser.TranslateFromDotNotation(parsedRule);
-                                parsedRule = context.Services.Parser.Parse(parsedRule);
+                                parsedRule = context.Services.Parser.Parse(parsedRule, true);
 
                                 if (parsedRule.ErrorSpans.Count == 0)
                                 {
@@ -479,11 +494,21 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 }
                             }
 
+                            modelAbstractionRule.UsesCursor = parsedRule.UsesCursor;
+
                             if (modelAbstractionRule.Search)
                             {
                                 if (shadowDistinctSearchKeys.ContainsKey(modelAbstractionRule.SearchKey))
                                 {
-                                    if (!shadowDistinctSearchKeys[modelAbstractionRule.SearchKey]
+                                    if (string.IsNullOrEmpty(modelAbstractionRule.SearchFunctionKey))
+                                    {
+                                        if (context.Services.Log.IsDebugEnabled)
+                                        {
+                                            context.Services.Log.Debug(
+                                                $"Entity Start: Entity Model {key} and Abstraction Rule Model {modelAbstractionRule.Id} has no function key, so no column is added to the select for it.");
+                                        }
+                                    }
+                                    else if (!shadowDistinctSearchKeys[modelAbstractionRule.SearchKey]
                                             .SelectedPayloadData.ContainsKey(modelAbstractionRule.SearchFunctionKey))
                                     {
                                         if (context.Services.Log.IsDebugEnabled)
@@ -562,7 +587,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             }
 
                             var abstractionRuleScript = new StringBuilder(
-                                EngineRuleWrapper.AbstractionRule(modelAbstractionRule.AbstractionRuleScript).Text);
+                                EngineRuleWrapper.AbstractionRule(modelAbstractionRule.AbstractionRuleScript,
+                                    variables: parsedRule.Variables).Text);
 
                             if (context.Services.Log.IsDebugEnabled)
                             {
@@ -624,7 +650,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 [
                                     Path.Combine(context.Paths.BinaryPath ?? throw new InvalidOperationException(),
                                         "log4net.dll"),
-                                    Path.Combine(context.Paths.BinaryPath, "Jube.Dictionary.dll")
+                                    Path.Combine(context.Paths.BinaryPath, "Jube.Dictionary.dll"),
+                                    Path.Combine(context.Paths.BinaryPath, "Svirfd.dll"),
+                                    Path.Combine(context.Paths.BinaryPath, "Jube.Svirfd.dll")
                                 ], Compile.Language.Vb);
 
                                 if (context.Services.Log.IsDebugEnabled)
@@ -691,7 +719,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             }
 
                             modelAbstractionRule.LogicHash =
-                                HashHelper.GetHash(modelAbstractionRule.AbstractionRuleScript);
+                                HashHelper.GetHash(modelAbstractionRule.AbstractionRuleScript +
+                                                   RuleVariableEmitter.Signature(parsedRule.Variables));
 
                             if (context.Services.Log.IsDebugEnabled)
                             {

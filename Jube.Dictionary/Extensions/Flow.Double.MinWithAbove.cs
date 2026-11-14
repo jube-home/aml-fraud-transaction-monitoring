@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchMinWithAbove(double bound, params double[] others)
+            [Description("True when: the smallest of the value and the others is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMinWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleMinWithAbove(flow.Value, bound, others));
             }
 
-            public Flow<double> RejectMinWithAbove(double bound, params double[] others)
+            [Description("True when: the smallest of the value and the others is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMinWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleMinWithAbove(flow.Value, bound, others));
             }
 
-            public Flow<double> BreakMinWithAbove(double bound, params double[] others)
+            [Description("True when: the smallest of the value and the others is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMinWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleMinWithAbove(flow.Value, bound, others));
             }
 
-            public Flow<double> RequireMinWithAbove(double bound, params double[] others)
+            [Description("True when: the smallest of the value and the others is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMinWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleMinWithAbove(flow.Value, bound, others));
             }
 
-            public Flow<double> EnsureMinWithAbove(double bound, params double[] others)
+            [Description("True when: the smallest of the value and the others is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMinWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchMinWithAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the smallest of the value and the others is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMinWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().MatchMinWithAbove(bound, others);
             }
 
-            public Flow<double> RejectMinWithAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the smallest of the value and the others is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMinWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RejectMinWithAbove(bound, others);
             }
 
-            public Flow<double> BreakMinWithAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the smallest of the value and the others is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMinWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().BreakMinWithAbove(bound, others);
             }
 
-            public Flow<double> RequireMinWithAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the smallest of the value and the others is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMinWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RequireMinWithAbove(bound, others);
             }
 
-            public Flow<double> EnsureMinWithAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the smallest of the value and the others is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMinWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().EnsureMinWithAbove(bound, others);
             }

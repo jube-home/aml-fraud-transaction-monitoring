@@ -38,7 +38,7 @@ namespace Jube.Test.AskJooby
                 "where \"AccountId\" = @AccountId order by \"Frequency\" desc", allowed);
 
             rewritten.Should().Contain("@AccountId");
-            rewritten.Should().Contain("SELECT t0.* FROM \"ExampleCustomerCaseManagement\" t0");
+            rewritten.Should().Contain("SELECT t0.* FROM public.\"ExampleCustomerCaseManagement\" t0");
         }
 
         [Fact]

@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Concatenates a collection of strings.")]
         public static string Concatenate(this IEnumerable<string> @this)
         {
             var sb = new StringBuilder();
@@ -19,7 +20,9 @@ namespace Jube.Dictionary.Extensions
             return sb.ToString();
         }
 
-        public static string Concatenate<T>(this IEnumerable<T> source, Func<T, string> func)
+        [Description("Concatenates the text the function returns for each item.")]
+        public static string Concatenate<T>(this IEnumerable<T> source,
+            [Description("The function that gives the text for each item.")] Func<T, string> func)
         {
             var sb = new StringBuilder();
 

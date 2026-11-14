@@ -50,18 +50,19 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelHistorySimulation
                 NullLoggerFactory.Instance);
 
         private readonly List<int> createdModelIds = [];
+        private readonly CancellationTokenProvider cancellation = new();
         private CacheService cache = null!;
         private TaskCoordinator coordinator = null!;
 
         public Task InitializeAsync()
         {
-            coordinator = new TaskCoordinator(new CancellationTokenProvider(), TestLog.NoOp);
+            coordinator = new TaskCoordinator(cancellation, TestLog.NoOp);
 
             cache = new CacheService(
-                Environment.GetEnvironmentVariable("JubeTestRedisConnectionString") ?? "localhost,defaultDatabase=1",
+                Environment.GetEnvironmentVariable("JubeTestRespConnectionString") ?? "localhost,defaultDatabase=1",
                 Environment.GetEnvironmentVariable("JubeTestConnectionString") ?? string.Empty,
                 new ConcurrentDictionary<Guid,
-                    TaskCompletionSource<global::Jube.Cache.Redis.Callback.Callback>>(), 3000, false, false,
+                    TaskCompletionSource<global::Jube.Cache.Resp.Callback.Callback>>(), 3000, false, false,
                 50_000_000, false, false, false, false, TimeSpan.FromDays(1), false, TestLog.NoOp);
 
             return cache.StartAsync(coordinator, static (_, _) => { });
@@ -69,6 +70,12 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelHistorySimulation
 
         public async Task DisposeAsync()
         {
+            cancellation.Cancel();
+            if (cache.ConnectionMultiplexer != null)
+            {
+                await cache.ConnectionMultiplexer.DisposeAsync();
+            }
+
             await using var dbContext = fx.GetDbContext();
 
             foreach (var id in createdModelIds)

@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Checks if the string is null, empty, or whitespace.")]
         public static Boolean IsNullOrWhiteSpace(this String value)
         {
             return string.IsNullOrWhiteSpace(value);

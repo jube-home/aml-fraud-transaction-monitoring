@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Returns the uppercased first letter of each whitespace-separated word.")]
         public static string InitialsOf(this string? @this)
         {
             var value = @this ?? "";

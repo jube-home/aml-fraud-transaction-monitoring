@@ -26,6 +26,7 @@ using Jube.Test.AdvancedAnalytics.Worker;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 using Jube.Service.Repository.AdvancedAnalyticsTrainingRun.Models;
 
@@ -68,7 +69,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
 
             var submission = await service.SubmitTrainingAsync(new PrincipalComponentTrainingDto
             {
-                AdvancedAnalyticsInstanceId = instance.Id,
+                AskJoobyAnalyticsInstanceId = instance.Id,
                 ModelName = modelName,
                 VariableNames = ["x0", "x1"],
                 ProcessingTypeIds = [1, 1],
@@ -99,25 +100,25 @@ namespace Jube.Test.AdvancedAnalytics.Service
             result.Activated.Should().BeFalse();
 
             var versionRow =
-                await Db.AdvancedAnalyticsTrainedModelVersion.FirstAsync(w => w.Id == result.TrainedModelVersionId);
+                await Db.AskJoobyAnalyticsTrainedModelVersion.FirstAsync(w => w.Id == result.TrainedModelVersionId);
             versionRow.ModelJson.Should().Contain("PrincipalComponentPipeline");
             versionRow.MetricsJson.Should().NotBeNullOrWhiteSpace();
 
-            var trainedModelRepository = new AdvancedAnalyticsTrainedModelRepository(Db, TenantA, Permitted);
+            var trainedModelRepository = new AskJoobyAnalyticsTrainedModelRepository(Db, TenantA, Permitted);
 
             await trainedModelRepository.SetActiveVersionAsync(result.TrainedModelId!.Value,
                 result.TrainedModelVersionId!.Value);
 
             await trainedModelRepository.SetActiveAsync(result.TrainedModelId.Value, true);
 
-            var trainedModelRow = await Db.AdvancedAnalyticsTrainedModel.FirstAsync(w => w.Id == result.TrainedModelId);
+            var trainedModelRow = await Db.AskJoobyAnalyticsTrainedModel.FirstAsync(w => w.Id == result.TrainedModelId);
             trainedModelRow.Active.Should().Be(1);
             trainedModelRow.ActiveVersionId.Should().Be(result.TrainedModelVersionId);
             trainedModelRow.KindId.Should().Be(AdvancedAnalyticsKind.DimensionReducer);
 
-            var instanceRow = await Db.AdvancedAnalyticsInstance.FirstAsync(w => w.Id == instance.Id);
+            var instanceRow = await Db.AskJoobyAnalyticsInstance.FirstAsync(w => w.Id == instance.Id);
 
-            var syncedModel = SyncAdvancedAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(instanceRow,
+            var syncedModel = SyncAskJoobyAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(instanceRow,
                 trainedModelRow, versionRow);
 
             syncedModel.Should().NotBeNull();

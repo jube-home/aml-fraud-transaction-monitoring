@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Checks if the number is prime.")]
         public static bool IsPrime(this Int32 @this)
         {
             if (@this < 2)

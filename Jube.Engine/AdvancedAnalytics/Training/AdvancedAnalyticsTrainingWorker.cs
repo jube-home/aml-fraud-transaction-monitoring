@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using LinqToDB.Async;
 using Jube.Data.Context;
 using Jube.Data.Repository;
 using Jube.Engine.AdvancedAnalytics.Anomaly;
@@ -270,7 +271,7 @@ namespace Jube.Engine.AdvancedAnalytics.Training
                     }
                     finally
                     {
-                        await claimContext.DisposeAsync(token).ConfigureAwait(false);
+                        await claimContext.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 catch
@@ -319,7 +320,7 @@ namespace Jube.Engine.AdvancedAnalytics.Training
             }
             finally
             {
-                await context.DisposeAsync(token).ConfigureAwait(false);
+                await context.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1373,7 +1374,7 @@ namespace Jube.Engine.AdvancedAnalytics.Training
                     log.Warn($"Advanced Analytics Training: run {claimed.Id} left without a terminal status.");
                 }
 
-                await context.DisposeAsync(linked.Token).ConfigureAwait(false);
+                await context.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1604,7 +1605,7 @@ namespace Jube.Engine.AdvancedAnalytics.Training
             }
             finally
             {
-                await context.DisposeAsync(token).ConfigureAwait(false);
+                await context.DisposeAsync().ConfigureAwait(false);
             }
         }
     }

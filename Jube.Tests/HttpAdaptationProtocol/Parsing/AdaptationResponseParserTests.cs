@@ -309,5 +309,18 @@ namespace Jube.Test.HttpAdaptationProtocol.Parsing
             adaptation.Value.Should().Be(0.6);
             adaptation.Error.Should().BeNull();
         }
+
+        [Fact]
+        public void MalformedJsonWarningLogsOnlyTheFirstTwoHundredCharactersOfTheBody()
+        {
+            var log = new TestLog();
+            var body = "{" + new string('x', 5000);
+
+            body.ParseAdaptationResponse(log);
+
+            var warning = log.Entries.Should().ContainSingle(e => e.Level == "WARN").Subject;
+            warning.Message.Should().NotContain(new string('x', 201));
+            warning.Message.Should().Contain(new string('x', 150));
+        }
     }
 }

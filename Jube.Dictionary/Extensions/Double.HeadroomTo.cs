@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double HeadroomTo(this double @this, double limit)
+        [Description("The limit minus the value, the room left.")]
+        public static double HeadroomTo(this double @this, [Description("The limit.")] double limit)
         {
             return CalculationSupport.Finite(limit - @this);
         }

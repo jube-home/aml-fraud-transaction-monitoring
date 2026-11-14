@@ -6,6 +6,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Extracts all UInt64 from the string.")]
         public static ulong[] ExtractManyUInt64(this string @this)
         {
             return Regex.Matches(@this, @"\d+")

@@ -17,35 +17,55 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchRatioOfRatiosAbove(double denominator, double otherNumerator, double otherDenominator, double bound)
+            [Description("True when: the value over its denominator, divided by another numerator over its own denominator is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRatioOfRatiosAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The numerator of the other ratio.")] double otherNumerator,
+                [Description("The denominator of the other ratio.")] double otherDenominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleRatioOfRatiosAbove(flow.Value, denominator, otherNumerator, otherDenominator, bound));
             }
 
-            public Flow<double> RejectRatioOfRatiosAbove(double denominator, double otherNumerator, double otherDenominator, double bound)
+            [Description("True when: the value over its denominator, divided by another numerator over its own denominator is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRatioOfRatiosAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The numerator of the other ratio.")] double otherNumerator,
+                [Description("The denominator of the other ratio.")] double otherDenominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleRatioOfRatiosAbove(flow.Value, denominator, otherNumerator, otherDenominator, bound));
             }
 
-            public Flow<double> BreakRatioOfRatiosAbove(double denominator, double otherNumerator, double otherDenominator, double bound)
+            [Description("True when: the value over its denominator, divided by another numerator over its own denominator is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRatioOfRatiosAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The numerator of the other ratio.")] double otherNumerator,
+                [Description("The denominator of the other ratio.")] double otherDenominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleRatioOfRatiosAbove(flow.Value, denominator, otherNumerator, otherDenominator, bound));
             }
 
-            public Flow<double> RequireRatioOfRatiosAbove(double denominator, double otherNumerator, double otherDenominator, double bound)
+            [Description("True when: the value over its denominator, divided by another numerator over its own denominator is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRatioOfRatiosAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The numerator of the other ratio.")] double otherNumerator,
+                [Description("The denominator of the other ratio.")] double otherDenominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleRatioOfRatiosAbove(flow.Value, denominator, otherNumerator, otherDenominator, bound));
             }
 
-            public Flow<double> EnsureRatioOfRatiosAbove(double denominator, double otherNumerator, double otherDenominator, double bound)
+            [Description("True when: the value over its denominator, divided by another numerator over its own denominator is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRatioOfRatiosAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The numerator of the other ratio.")] double otherNumerator,
+                [Description("The denominator of the other ratio.")] double otherDenominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +75,47 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchRatioOfRatiosAbove(double denominator, double otherNumerator, double otherDenominator, double bound)
+            [Description("Begins a pipeline from the value. True when: the value over its denominator, divided by another numerator over its own denominator is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRatioOfRatiosAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The numerator of the other ratio.")] double otherNumerator,
+                [Description("The denominator of the other ratio.")] double otherDenominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchRatioOfRatiosAbove(denominator, otherNumerator, otherDenominator, bound);
             }
 
-            public Flow<double> RejectRatioOfRatiosAbove(double denominator, double otherNumerator, double otherDenominator, double bound)
+            [Description("Begins a pipeline from the value. True when: the value over its denominator, divided by another numerator over its own denominator is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRatioOfRatiosAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The numerator of the other ratio.")] double otherNumerator,
+                [Description("The denominator of the other ratio.")] double otherDenominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectRatioOfRatiosAbove(denominator, otherNumerator, otherDenominator, bound);
             }
 
-            public Flow<double> BreakRatioOfRatiosAbove(double denominator, double otherNumerator, double otherDenominator, double bound)
+            [Description("Begins a pipeline from the value. True when: the value over its denominator, divided by another numerator over its own denominator is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRatioOfRatiosAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The numerator of the other ratio.")] double otherNumerator,
+                [Description("The denominator of the other ratio.")] double otherDenominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakRatioOfRatiosAbove(denominator, otherNumerator, otherDenominator, bound);
             }
 
-            public Flow<double> RequireRatioOfRatiosAbove(double denominator, double otherNumerator, double otherDenominator, double bound)
+            [Description("Begins a pipeline from the value. True when: the value over its denominator, divided by another numerator over its own denominator is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRatioOfRatiosAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The numerator of the other ratio.")] double otherNumerator,
+                [Description("The denominator of the other ratio.")] double otherDenominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireRatioOfRatiosAbove(denominator, otherNumerator, otherDenominator, bound);
             }
 
-            public Flow<double> EnsureRatioOfRatiosAbove(double denominator, double otherNumerator, double otherDenominator, double bound)
+            [Description("Begins a pipeline from the value. True when: the value over its denominator, divided by another numerator over its own denominator is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRatioOfRatiosAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The numerator of the other ratio.")] double otherNumerator,
+                [Description("The denominator of the other ratio.")] double otherDenominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureRatioOfRatiosAbove(denominator, otherNumerator, otherDenominator, bound);
             }

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Anda tidak memiliki izin untuk melakukan tindakan ini.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Anda harus masuk ke sebuah tenant untuk melakukan tindakan ini.</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>Model yang valid diperlukan.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>Nama diperlukan.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Nama tidak boleh lebih dari {0} karakter.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Nama ini sudah ada.</value>
+  </data>
+    <data name="RuleScriptTypeIdInvalid" xml:space="preserve">
+    <value>Jenis skrip aturan harus Builder atau Coder.</value>
+  </data>
+    <data name="BuilderRuleScriptRequired" xml:space="preserve">
+    <value>Skrip aturan diperlukan.</value>
+  </data>
+    <data name="BuilderRuleScriptMaxLength" xml:space="preserve">
+    <value>Skrip aturan tidak boleh lebih dari {0} karakter.</value>
+  </data>
+    <data name="JsonRequired" xml:space="preserve">
+    <value>Definisi pembuat aturan diperlukan.</value>
+  </data>
+    <data name="CoderRuleScriptRequired" xml:space="preserve">
+    <value>Skrip aturan Coder diperlukan.</value>
+  </data>
+    <data name="CoderRuleScriptMaxLength" xml:space="preserve">
+    <value>Skrip aturan Coder tidak boleh lebih dari {0} karakter.</value>
+  </data>
+    <data name="CaseWorkflowGuidRequired" xml:space="preserve">
+    <value>Alur Kerja Kasus diperlukan saat Kasus diaktifkan.</value>
+  </data>
+    <data name="CaseWorkflowStatusGuidRequired" xml:space="preserve">
+    <value>Status Alur Kerja Kasus diperlukan saat Kasus diaktifkan.</value>
+  </data>
+    <data name="CaseKeyRequired" xml:space="preserve">
+    <value>Kunci Kasus diperlukan saat Kasus diaktifkan.</value>
+  </data>
+    <data name="CaseKeyMaxLength" xml:space="preserve">
+    <value>Kunci Kasus tidak boleh lebih dari {0} karakter.</value>
+  </data>
+    <data name="BypassSuspendSampleRange" xml:space="preserve">
+    <value>Sampel lewati penangguhan harus antara 0 dan 1.</value>
+  </data>
+    <data name="BypassSuspendIntervalInvalid" xml:space="preserve">
+    <value>Interval lewati penangguhan harus Menit, Jam, Hari, atau Bulan.</value>
+  </data>
+    <data name="BypassSuspendValueRange" xml:space="preserve">
+    <value>Nilai lewati penangguhan tidak boleh negatif.</value>
+  </data>
+    <data name="ResponseElevationRange" xml:space="preserve">
+    <value>Peningkatan respons tidak boleh negatif.</value>
+  </data>
+    <data name="ResponseElevationContentMaxLength" xml:space="preserve">
+    <value>Konten peningkatan respons tidak boleh lebih dari {0} karakter.</value>
+  </data>
+    <data name="ResponseElevationRedirectMaxLength" xml:space="preserve">
+    <value>Pengalihan peningkatan respons tidak boleh lebih dari {0} karakter.</value>
+  </data>
+    <data name="ResponseElevationKeyRequired" xml:space="preserve">
+    <value>Kunci peningkatan respons diperlukan saat mengirim ke Activation Watcher.</value>
+  </data>
+    <data name="ResponseElevationForeColorRequired" xml:space="preserve">
+    <value>Warna latar depan diperlukan saat mengirim ke Activation Watcher.</value>
+  </data>
+    <data name="ResponseElevationForeColorInvalid" xml:space="preserve">
+    <value>Warna latar depan harus berupa nilai heksadesimal, misalnya #0000FF.</value>
+  </data>
+    <data name="ResponseElevationBackColorRequired" xml:space="preserve">
+    <value>Warna latar belakang diperlukan saat mengirim ke Activation Watcher.</value>
+  </data>
+    <data name="ResponseElevationBackColorInvalid" xml:space="preserve">
+    <value>Warna latar belakang harus berupa nilai heksadesimal, misalnya #FF0000.</value>
+  </data>
+    <data name="EntityAnalysisModelGuidTtlCounterRequired" xml:space="preserve">
+    <value>Model diperlukan saat Tambah Penghitung TTL diaktifkan.</value>
+  </data>
+    <data name="EntityAnalysisModelTtlCounterGuidRequired" xml:space="preserve">
+    <value>Penghitung TTL diperlukan saat Tambah Penghitung TTL diaktifkan.</value>
+  </data>
+    <data name="EntityAnalysisModelTtlCounterGuidNotFound" xml:space="preserve">
+    <value>Penghitung TTL yang akan ditambah tidak ditemukan di Model yang dipilih.</value>
+  </data>
+    <data name="CaseWorkflowStatusGuidNotFound" xml:space="preserve">
+    <value>Status Alur Kerja Kasus tidak ditemukan dalam Alur Kerja Kasus pada Model yang dipilih.</value>
+  </data>
+    <data name="ActivationSampleRange" xml:space="preserve">
+    <value>Sampel aktivasi harus antara 0 dan 1.</value>
+  </data>
+    <data name="PriorityRange" xml:space="preserve">
+    <value>Prioritas tidak boleh negatif.</value>
+  </data>
+    <data name="JsonInvalid" xml:space="preserve">
+    <value>Definisi pembuat aturan harus berupa JSON yang valid dengan ukuran tidak lebih dari 1 MB.</value>
+  </data>
+    <data name="ResponseElevationRangeNotFound" xml:space="preserve">
+    <value>Peningkatan respons harus berada dalam Rentang Peningkatan Respons aktif dari Model.</value>
+  </data>
+</root>

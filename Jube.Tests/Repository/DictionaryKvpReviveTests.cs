@@ -20,6 +20,7 @@ using Jube.Data.Poco;
 using Jube.Data.Repository;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 
 namespace Jube.Test.Repository

@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,16 +22,20 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.QueryBuilder
 {
     [Description("A value an operator takes.")]
+    [MessagePackObject]
     public class BuilderOperatorArgumentDto
     {
         [Description("What the value is, e.g. threshold.")]
+        [Key(0)]
         public string Name { get; set; } = string.Empty;
 
         [Description("value (the field's own type), number, integer, text, date, list (a model list) or field " +
                      "(another field of the same type).")]
+        [Key(1)]
         public string Kind { get; set; } = string.Empty;
 
         [Description("True when several values are given, separated by commas.")]
+        [Key(2)]
         public bool Many { get; set; }
     }
 }

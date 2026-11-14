@@ -13,7 +13,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Poco;
@@ -77,63 +76,33 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
                                                 FROM pg_stat_replication
                                                 """;
 
-        private NpgsqlConnection connection;
         private (long BlksHit, long BlksRead)? lastSample;
 
-        public async ValueTask DisposeAsync()
+        public ValueTask DisposeAsync()
         {
-            if (connection != null)
-            {
-                await connection.DisposeAsync().ConfigureAwait(false);
-            }
+            return ValueTask.CompletedTask;
         }
 
         public Task<PostgresMetric> SampleAsync(CancellationToken token = default)
         {
-            return WithConnectionAsync(() => SampleCoreAsync(token), token);
+            return WithConnectionAsync(connection => SampleCoreAsync(connection, token), token);
         }
 
         public Task<List<PostgresReplicationStatus>> SampleReplicationAsync(CancellationToken token = default)
         {
-            return WithConnectionAsync(() => SampleReplicationCoreAsync(token), token);
+            return WithConnectionAsync(connection => SampleReplicationCoreAsync(connection, token), token);
         }
 
-        private async Task<T> WithConnectionAsync<T>(Func<Task<T>> action, CancellationToken token)
+        private async Task<T> WithConnectionAsync<T>(Func<NpgsqlConnection, Task<T>> action, CancellationToken token)
         {
-            try
-            {
-                if (connection is { State: ConnectionState.Open })
-                {
-                    return await action().ConfigureAwait(false);
-                }
+            await using var connection = new NpgsqlConnection(connectionString);
 
-                if (connection != null)
-                {
-                    await connection.DisposeAsync().ConfigureAwait(false);
-                }
+            await connection.OpenAsync(token).ConfigureAwait(false);
 
-                connection = new NpgsqlConnection(connectionString);
-                await connection.OpenAsync(token).ConfigureAwait(false);
-
-                return await action().ConfigureAwait(false);
-            }
-            catch (Exception) when (token.IsCancellationRequested)
-            {
-                throw;
-            }
-            catch (Exception)
-            {
-                if (connection != null)
-                {
-                    await connection.DisposeAsync().ConfigureAwait(false);
-                    connection = null;
-                }
-
-                throw;
-            }
+            return await action(connection).ConfigureAwait(false);
         }
 
-        private async Task<PostgresMetric> SampleCoreAsync(CancellationToken token)
+        private async Task<PostgresMetric> SampleCoreAsync(NpgsqlConnection connection, CancellationToken token)
         {
             await using var command = new NpgsqlCommand(StatsQuery, connection);
             await using var reader = await command.ExecuteReaderAsync(token).ConfigureAwait(false);
@@ -196,7 +165,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters.Metrics
             };
         }
 
-        private async Task<List<PostgresReplicationStatus>> SampleReplicationCoreAsync(CancellationToken token)
+        private async Task<List<PostgresReplicationStatus>> SampleReplicationCoreAsync(NpgsqlConnection connection,
+            CancellationToken token)
         {
             var results = new List<PostgresReplicationStatus>();
 

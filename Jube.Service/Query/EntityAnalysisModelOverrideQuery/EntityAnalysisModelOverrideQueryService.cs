@@ -55,6 +55,8 @@ namespace Jube.Service.Query.EntityAnalysisModelOverrideQuery
 
         public static IReadOnlyList<int> RequiredPermissions => permissions;
 
+        public int ApprovalsRequired { get; set; } = 1;
+
         public static Task<EntityAnalysisModelOverrideQueryService> CreateAsync(DbContext dbContext,
             string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -131,7 +133,8 @@ namespace Jube.Service.Query.EntityAnalysisModelOverrideQuery
                 var query = new GetEntityAnalysisModelOverrideQuery(dbContext, userName);
 
                 var dtos = EntityAnalysisModelOverrideQueryMapper.ToDto(
-                    await query.ExecuteAsync(overrideKey, overrideKeyValue, token).ConfigureAwait(false));
+                    await query.ExecuteAsync(overrideKey, overrideKeyValue, ApprovalsRequired, token)
+                        .ConfigureAwait(false));
                 op.Rows(dtos.Count);
 
                 if (log.IsDebugEnabled)

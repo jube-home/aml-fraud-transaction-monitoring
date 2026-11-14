@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
+            [Description("True when: the value is neither infinite nor NaN. Decides matched if so; otherwise continues.")]
             public Flow<double> MatchIsFinite()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleIsFinite(flow.Value));
             }
 
+            [Description("True when: the value is neither infinite nor NaN. Decides rejected if so; otherwise continues.")]
             public Flow<double> RejectIsFinite()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleIsFinite(flow.Value));
             }
 
+            [Description("True when: the value is neither infinite nor NaN. Decides broken if so; otherwise continues.")]
             public Flow<double> BreakIsFinite()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleIsFinite(flow.Value));
             }
 
+            [Description("True when: the value is neither infinite nor NaN. Continues if so; otherwise decides rejected.")]
             public Flow<double> RequireIsFinite()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleIsFinite(flow.Value));
             }
 
+            [Description("True when: the value is neither infinite nor NaN. Continues if so; otherwise decides broken.")]
             public Flow<double> EnsureIsFinite()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
+            [Description("Begins a pipeline from the value. True when: the value is neither infinite nor NaN. Decides matched if so; otherwise continues.")]
             public Flow<double> MatchIsFinite()
             {
                 return value.Start().MatchIsFinite();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is neither infinite nor NaN. Decides rejected if so; otherwise continues.")]
             public Flow<double> RejectIsFinite()
             {
                 return value.Start().RejectIsFinite();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is neither infinite nor NaN. Decides broken if so; otherwise continues.")]
             public Flow<double> BreakIsFinite()
             {
                 return value.Start().BreakIsFinite();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is neither infinite nor NaN. Continues if so; otherwise decides rejected.")]
             public Flow<double> RequireIsFinite()
             {
                 return value.Start().RequireIsFinite();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is neither infinite nor NaN. Continues if so; otherwise decides broken.")]
             public Flow<double> EnsureIsFinite()
             {
                 return value.Start().EnsureIsFinite();

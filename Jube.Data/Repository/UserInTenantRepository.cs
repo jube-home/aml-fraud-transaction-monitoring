@@ -20,6 +20,7 @@ namespace Jube.Data.Repository
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
 
     public class UserInTenantRepository
@@ -78,7 +79,7 @@ namespace Jube.Data.Repository
         public Task<bool> ExistsTenantRegistryAsync(int tenantRegistryId, CancellationToken token = default)
         {
             return dbContext.TenantRegistry.AnyAsync(w =>
-                w.Id == tenantRegistryId && (w.Deleted == 0 || w.Deleted == null), token);
+                w.Id == tenantRegistryId && w.Active == 1 && (w.Deleted == 0 || w.Deleted == null), token);
         }
 
         public UserInTenant GetCurrentTenantRegistry()

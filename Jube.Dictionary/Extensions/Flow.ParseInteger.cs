@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Replaces the value being tested with the text read as an integer using the invariant culture; text that is not an integer errors the pipeline rather than throwing.")]
         public static Flow<int> ParseInteger(this Flow<string?> flow)
         {
             if (flow.IsDecided)
@@ -29,6 +30,7 @@ namespace Jube.Dictionary.Extensions
                 : flow.Carry(0).Decide(FlowOutcome.Errored, "Value could not be parsed as an integer.");
         }
 
+        [Description("Begins a pipeline from the value. Replaces the value being tested with the text read as an integer using the invariant culture; text that is not an integer errors the pipeline rather than throwing.")]
         public static Flow<int> ParseInteger(this string? value)
         {
             return value.Start().ParseInteger();

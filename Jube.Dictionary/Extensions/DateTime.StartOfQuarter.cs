@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Midnight on the first day of the calendar quarter.")]
         public static DateTime StartOfQuarter(this DateTime @this)
         {
             return new DateTime(@this.Year, (@this.Month - 1) / 3 * 3 + 1, 1, 0, 0, 0, @this.Kind);

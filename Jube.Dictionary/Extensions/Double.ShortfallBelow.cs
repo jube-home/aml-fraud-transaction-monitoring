@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double ShortfallBelow(this double @this, double minimum)
+        [Description("How far the value is under the minimum, zero when at or above it.")]
+        public static double ShortfallBelow(this double @this, [Description("The lower bound.")] double minimum)
         {
             return CalculationSupport.Finite(Math.Max(0, minimum - @this));
         }

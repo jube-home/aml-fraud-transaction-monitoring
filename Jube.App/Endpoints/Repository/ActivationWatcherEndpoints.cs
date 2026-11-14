@@ -12,10 +12,12 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Context;
+using Jube.Dto.Repository.ActivationWatcher;
 using Jube.Service.Exceptions.Repository.ActivationWatcher;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Repository.ActivationWatcher;
@@ -38,11 +40,12 @@ namespace Jube.App.Endpoints.Repository
                 .WithTags("ActivationWatcher");
 
             group.MapGet("Replay", ReplayAsync)
+                .Produces<IReadOnlyList<ActivationWatcherDto>>()
                 .WithName("ActivationWatcherReplay");
         }
 
         private static async Task<IResult> ReplayAsync(
-            DateTimeOffset? dateFrom, DateTimeOffset? dateTo, HttpContext httpContext,
+            DateTimeOffset? dateFrom, DateTimeOffset? dateTo, string? key, string? keyValue, HttpContext httpContext,
             ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
             CancellationToken token)
@@ -62,7 +65,7 @@ namespace Jube.App.Endpoints.Repository
                 var service = await ActivationWatcherService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
 
-                var rows = await service.ReplayAsync(dateFrom, dateTo, token);
+                var rows = await service.ReplayAsync(dateFrom, dateTo, key, keyValue, token);
 
                 return TypedResults.Ok(rows);
             }

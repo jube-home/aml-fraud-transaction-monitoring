@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("True when the pipeline has decided rejected.")]
         public static bool IsRejected<T>(this Flow<T> flow)
         {
             return flow.Outcome == FlowOutcome.Rejected;

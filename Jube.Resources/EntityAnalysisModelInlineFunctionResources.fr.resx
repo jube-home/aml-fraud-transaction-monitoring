@@ -39,4 +39,31 @@
     <data name="NameRequired" xml:space="preserve">
     <value>Un nom est requis.</value>
   </data>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>Un modèle valide est requis.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Le nom ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Ce nom existe déjà.</value>
+  </data>
+    <data name="ReturnDataTypeIdInvalid" xml:space="preserve">
+    <value>Le type de données de retour doit être String, Integer, Float, Date ou Boolean (chaîne, entier, flottant, date ou booléen).</value>
+  </data>
+    <data name="FunctionScriptRequired" xml:space="preserve">
+    <value>Un script de fonction est requis.</value>
+  </data>
+    <data name="FunctionScriptMaxLength" xml:space="preserve">
+    <value>Le script de fonction ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="EncryptionIdInvalid" xml:space="preserve">
+    <value>L'option de chiffrement doit être None, Deterministic ou Random (aucun, déterministe ou aléatoire).</value>
+  </data>
 </root>

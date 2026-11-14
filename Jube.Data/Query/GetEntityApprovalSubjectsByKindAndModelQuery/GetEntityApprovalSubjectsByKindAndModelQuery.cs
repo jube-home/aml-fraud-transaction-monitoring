@@ -22,6 +22,7 @@ namespace Jube.Data.Query.GetEntityApprovalSubjectsByKindAndModelQuery
     using Context;
     using EntityApproval;
     using LinqToDB;
+    using LinqToDB.Async;
     using Models;
 
     public sealed class GetEntityApprovalSubjectsByKindAndModelQuery(DbContext dbContext, int tenantRegistryId)

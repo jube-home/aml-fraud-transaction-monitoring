@@ -6,7 +6,8 @@ namespace Jube.Dictionary.Extensions
     {
         extension(string @this)
         {
-            public bool ContainsAny(params string[] values)
+            [Description("Checks if the string contains any of the specified substrings.")]
+            public bool ContainsAny([Description("The substrings to search for.")] params string[] values)
             {
                 foreach (var value in values)
                 {
@@ -19,7 +20,9 @@ namespace Jube.Dictionary.Extensions
                 return false;
             }
 
-            public bool ContainsAny(StringComparison comparisonType, params string[] values)
+            [Description("Checks if the string contains any substrings with comparison rules.")]
+            public bool ContainsAny([Description("The type of comparison to use.")] StringComparison comparisonType,
+                [Description("The substrings to search for.")] params string[] values)
             {
                 foreach (var value in values)
                 {

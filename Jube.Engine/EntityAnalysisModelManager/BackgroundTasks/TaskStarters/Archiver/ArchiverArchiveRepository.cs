@@ -84,6 +84,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Ar
                         .ConfigureAwait(false);
 #pragma warning restore CA2016
 
+                    Jube.Engine.Graph.GraphBuildQueue.Enqueue(bulkInsertMessageBuffer.ArchiveKeys
+                        .Select(k => k.EntityAnalysisModelInstanceEntryGuid).Distinct());
                     bulkInsertMessageBuffer.ArchiveKeys.Clear();
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)

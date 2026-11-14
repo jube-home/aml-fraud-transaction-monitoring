@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static Flow<T> CapScore<T>(this Flow<T> flow, double maximum)
+        [Description("Limits the pipeline's score to the maximum.")]
+        public static Flow<T> CapScore<T>(this Flow<T> flow,
+            [Description("The most the score may reach.")] double maximum)
         {
             return flow.IsDecided || flow.Score <= maximum ? flow : flow.WithScore(maximum);
         }

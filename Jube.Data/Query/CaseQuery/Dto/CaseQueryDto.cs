@@ -53,6 +53,8 @@ namespace Jube.Data.Query.CaseQuery.Dto
         public List<GetCaseByIdActivationDto> Activation { get; set; }
         public bool EnableVisualisation { get; set; }
         public Guid VisualisationRegistryGuid { get; set; }
+        public bool EnableGraph { get; set; }
+        public Guid? GraphRegistryGuid { get; set; }
         public int EntityAnalysisModelId { get; set; }
     }
 }

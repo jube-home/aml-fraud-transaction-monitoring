@@ -18,7 +18,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsLevenshteinInList(this string? @this, IEnumerable<string>? list, int maxDistance)
+        [Description("True when: within the edit distance of an entry (insertions, deletions, substitutions).")]
+        public static bool IsLevenshteinInList(this string? @this,
+            [Description("The List token whose entries are compared.")] IEnumerable<string>? list,
+            [Description("The most edits allowed.")] int maxDistance)
         {
             return FuzzyListMatcher.Any(@this, list, FuzzyOptions.For(FuzzyAlgorithm.Levenshtein, maxDistance));
         }

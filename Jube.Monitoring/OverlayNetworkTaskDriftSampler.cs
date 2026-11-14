@@ -24,6 +24,7 @@ namespace Jube.Monitoring
             "jube-ui", "jube-api", "haproxy",
             "patroni1", "patroni2", "patroni3", "patroni4",
             "redis-master", "redis-replica1", "redis-replica2", "redis-replica3",
+            "garnet1", "garnet2", "garnet3", "garnet4",
             "sentinel1", "sentinel2", "sentinel3", "sentinel4", "sentinel5",
             "etcd1", "etcd2", "etcd3", "etcd4", "etcd5"
         ];

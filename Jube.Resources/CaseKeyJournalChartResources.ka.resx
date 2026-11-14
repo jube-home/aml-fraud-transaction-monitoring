@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="WeekdayMon" xml:space="preserve">
+        <value>ორშ</value>
+    </data>
+    <data name="WeekdayTue" xml:space="preserve">
+        <value>სამ</value>
+    </data>
+    <data name="WeekdayWed" xml:space="preserve">
+        <value>ოთხ</value>
+    </data>
+    <data name="WeekdayThu" xml:space="preserve">
+        <value>ხუთ</value>
+    </data>
+    <data name="WeekdayFri" xml:space="preserve">
+        <value>პარ</value>
+    </data>
+    <data name="WeekdaySat" xml:space="preserve">
+        <value>შაბ</value>
+    </data>
+    <data name="WeekdaySun" xml:space="preserve">
+        <value>კვ</value>
+    </data>
+    <data name="BucketHour" xml:space="preserve">
+        <value>საათი</value>
+    </data>
+    <data name="BucketDay" xml:space="preserve">
+        <value>დღე</value>
+    </data>
+    <data name="BucketWeek" xml:space="preserve">
+        <value>კვირა</value>
+    </data>
+    <data name="BucketMonth" xml:space="preserve">
+        <value>თვე</value>
+    </data>
+    <data name="ProgressionTitle" xml:space="preserve">
+        <value>{0} დროში</value>
+    </data>
+    <data name="ProgressionSubtitle" xml:space="preserve">
+        <value>მედიანა თითო {0}-ზე, უახლესი {1}</value>
+    </data>
+    <data name="DistributionTitle" xml:space="preserve">
+        <value>{0}-ის განაწილება</value>
+    </data>
+    <data name="DistributionSubtitle" xml:space="preserve">
+        <value>უახლესი მნიშვნელობა, {0}, {2} ტრანზაქციიდან {1}-ე პერცენტილზეა</value>
+    </data>
+    <data name="Transactions" xml:space="preserve">
+        <value>ტრანზაქციები</value>
+    </data>
+    <data name="VelocityTitle" xml:space="preserve">
+        <value>როდის ხდება ტრანზაქციები</value>
+    </data>
+    <data name="VelocitySubtitle" xml:space="preserve">
+        <value>კვირის დღისა და საათის მიხედვით (UTC)</value>
+    </data>
+    <data name="Hour" xml:space="preserve">
+        <value>საათი</value>
+    </data>
+    <data name="Weekday" xml:space="preserve">
+        <value>კვირის დღე</value>
+    </data>
+    <data name="GapsTitle" xml:space="preserve">
+        <value>დრო ტრანზაქციებს შორის</value>
+    </data>
+    <data name="GapsSubtitle" xml:space="preserve">
+        <value>რამდენ ხანს იყო გასაღები უმოქმედო თითოეულ ტრანზაქციამდე</value>
+    </data>
+    <data name="CounterpartiesTitle" xml:space="preserve">
+        <value>{0}-ის კონტრაგენტები</value>
+    </data>
+    <data name="CounterpartiesSubtitle" xml:space="preserve">
+        <value>{0} განსხვავებული, {1} ახალი ბოლო 30 დღეში</value>
+    </data>
+    <data name="CorrelationTitle" xml:space="preserve">
+        <value>როგორ მოძრაობს მაჩვენებლები ერთად</value>
+    </data>
+    <data name="CorrelationSubtitle" xml:space="preserve">
+        <value>პირსონის კორელაცია, -1-დან 1-მდე</value>
+    </data>
+    <data name="DriftTitle" xml:space="preserve">
+        <value>დრეიფი ადრინდელ და ბოლო ისტორიას შორის</value>
+    </data>
+    <data name="DriftSubtitle" xml:space="preserve">
+        <value>მანძილი ორ ნახევარს შორის; კრიტიკულ მნიშვნელობაზე მაღალი ნიშნავს დრეიფს</value>
+    </data>
+    <data name="Distance" xml:space="preserve">
+        <value>მანძილი</value>
+    </data>
+    <data name="Critical" xml:space="preserve">
+        <value>კრიტიკული</value>
+    </data>
+    <data name="ContributionMoved" xml:space="preserve">
+        <value>{0}: რამ შეცვალა ქულა</value>
+    </data>
+    <data name="ContributionPushed" xml:space="preserve">
+        <value>{0}: რამ გაზარდა ქულა</value>
+    </data>
+    <data name="BaseSubtitle" xml:space="preserve">
+        <value>საბაზო მნიშვნელობიდან {0}</value>
+    </data>
+    <data name="InSpace" xml:space="preserve">
+        <value> {0}-ში</value>
+    </data>
+    <data name="HiddenInputs" xml:space="preserve">
+        <value>; {0} შესატანი დამალულია</value>
+    </data>
+    <data name="BaseValue" xml:space="preserve">
+        <value>საბაზო მნიშვნელობა</value>
+    </data>
+    <data name="VisibleInputs" xml:space="preserve">
+        <value>ხილული შესატანები</value>
+    </data>
+    <data name="Score" xml:space="preserve">
+        <value>ქულა</value>
+    </data>
+    <data name="RelativeContributions" xml:space="preserve">
+        <value>ფარდობითი წვლილი</value>
+    </data>
+    <data name="ByMethod" xml:space="preserve">
+        <value> {0}-ის მიხედვით</value>
+    </data>
+    <data name="NotAdditive" xml:space="preserve">
+        <value>, არა ადიტიური</value>
+    </data>
+    <data name="Contribution" xml:space="preserve">
+        <value>წვლილი</value>
+    </data>
+    <data name="GaugeThreshold" xml:space="preserve">
+        <value>ზღვარი {0}</value>
+    </data>
+    <data name="GaugeNoThreshold" xml:space="preserve">
+        <value>ზღვარი არ არის გამოცხადებული</value>
+    </data>
+    <data name="GaugeCalibrated" xml:space="preserve">
+        <value>დაკალიბრებული ალბათობა {0} · {1} · {2}</value>
+    </data>
+    <data name="GaugeScore" xml:space="preserve">
+        <value>ქულა {0} (არა ალბათობა) · {1}</value>
+    </data>
+    <data name="DriversMoved" xml:space="preserve">
+        <value>რამ შეცვალა {0}</value>
+    </data>
+    <data name="DriversPushed" xml:space="preserve">
+        <value>რამ გაზარდა {0}</value>
+    </data>
+    <data name="RelativeNotAdditive" xml:space="preserve">
+        <value>ფარდობითი წვლილი, არა ადიტიური</value>
+    </data>
+    <data name="OtherInputs" xml:space="preserve">
+        <value>{0} სხვა შესატანი</value>
+    </data>
+    <data name="CalibrationTitle" xml:space="preserve">
+        <value>{0}: ნიშნავდა თუ არა ქულა იმას, რასაც ამბობდა</value>
+    </data>
+    <data name="CalibrationValidated" xml:space="preserve">
+        <value>დადასტურებულია {0} საქმეზე</value>
+    </data>
+    <data name="CalibrationExpected" xml:space="preserve">
+        <value>მოსალოდნელი დაკვირვებულთან შედარებით</value>
+    </data>
+</root>

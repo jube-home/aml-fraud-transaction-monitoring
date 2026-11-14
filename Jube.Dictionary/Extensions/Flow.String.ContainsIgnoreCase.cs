@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchContainsIgnoreCase(string? substring)
+            [Description("True when: contains the substring, ignoring case. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsIgnoreCase([Description("The text looked for inside the value.")] string? substring)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringContainsIgnoreCase(flow.Value, substring));
             }
 
-            public Flow<string?> RejectContainsIgnoreCase(string? substring)
+            [Description("True when: contains the substring, ignoring case. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsIgnoreCase([Description("The text looked for inside the value.")] string? substring)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringContainsIgnoreCase(flow.Value, substring));
             }
 
-            public Flow<string?> BreakContainsIgnoreCase(string? substring)
+            [Description("True when: contains the substring, ignoring case. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsIgnoreCase([Description("The text looked for inside the value.")] string? substring)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringContainsIgnoreCase(flow.Value, substring));
             }
 
-            public Flow<string?> RequireContainsIgnoreCase(string? substring)
+            [Description("True when: contains the substring, ignoring case. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsIgnoreCase([Description("The text looked for inside the value.")] string? substring)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringContainsIgnoreCase(flow.Value, substring));
             }
 
-            public Flow<string?> EnsureContainsIgnoreCase(string? substring)
+            [Description("True when: contains the substring, ignoring case. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsIgnoreCase([Description("The text looked for inside the value.")] string? substring)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchContainsIgnoreCase(string? substring)
+            [Description("Begins a pipeline from the value. True when: contains the substring, ignoring case. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsIgnoreCase([Description("The text looked for inside the value.")] string? substring)
             {
                 return value.Start().MatchContainsIgnoreCase(substring);
             }
 
-            public Flow<string?> RejectContainsIgnoreCase(string? substring)
+            [Description("Begins a pipeline from the value. True when: contains the substring, ignoring case. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsIgnoreCase([Description("The text looked for inside the value.")] string? substring)
             {
                 return value.Start().RejectContainsIgnoreCase(substring);
             }
 
-            public Flow<string?> BreakContainsIgnoreCase(string? substring)
+            [Description("Begins a pipeline from the value. True when: contains the substring, ignoring case. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsIgnoreCase([Description("The text looked for inside the value.")] string? substring)
             {
                 return value.Start().BreakContainsIgnoreCase(substring);
             }
 
-            public Flow<string?> RequireContainsIgnoreCase(string? substring)
+            [Description("Begins a pipeline from the value. True when: contains the substring, ignoring case. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsIgnoreCase([Description("The text looked for inside the value.")] string? substring)
             {
                 return value.Start().RequireContainsIgnoreCase(substring);
             }
 
-            public Flow<string?> EnsureContainsIgnoreCase(string? substring)
+            [Description("Begins a pipeline from the value. True when: contains the substring, ignoring case. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsIgnoreCase([Description("The text looked for inside the value.")] string? substring)
             {
                 return value.Start().EnsureContainsIgnoreCase(substring);
             }

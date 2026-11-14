@@ -13,18 +13,17 @@
 
 using System.Collections.Concurrent;
 using System.Diagnostics.Metrics;
-using System.Text.RegularExpressions;
 using Jube.Data.Context;
+using Jube.Data.Helpers;
 using Jube.Data.Repository;
 
 namespace Jube.Monitoring
 {
     public sealed class LogCounterMatcher(Meter meter)
     {
-        private static readonly TimeSpan regexMatchTimeout = TimeSpan.FromSeconds(1);
         private readonly ConcurrentDictionary<string, Counter<long>> counters = new(StringComparer.Ordinal);
-        private HashSet<string> excludedNames = [];
-        private (string Name, Regex Regex)[] rules = [];
+        private volatile HashSet<string> excludedNames = [];
+        private readonly LogCounterRuleSet ruleSet = new();
 
         public async Task RefreshAsync(DbContext dbContext, CancellationToken token)
         {
@@ -32,30 +31,12 @@ namespace Jube.Monitoring
             var excludeRepository = new OpenTelemetryExcludeRepository(dbContext);
 
             var rows = await logCounterRepository.GetAllActiveAsync(token).ConfigureAwait(false);
-            var refreshedRules = new List<(string Name, Regex Regex)>(rows.Count);
 
-            foreach (var row in rows)
-            {
-                if (string.IsNullOrEmpty(row.Name) || string.IsNullOrEmpty(row.Regex))
-                {
-                    continue;
-                }
-
-                try
-                {
-                    refreshedRules.Add((row.Name, new Regex(row.Regex, RegexOptions.Compiled, regexMatchTimeout)));
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(
-                        $"Jube.Monitoring LogCounterMatcher: rule '{row.Name}' has an invalid Regex and was skipped: {ex.Message}");
-                }
-            }
-
-            rules = refreshedRules.ToArray();
+            ruleSet.Apply(rows.Select(r => (r.Name, r.Regex)),
+                message => Console.WriteLine($"Jube.Monitoring LogCounterMatcher: {message}"));
 
             var excludeRows = await excludeRepository.GetAllActiveAsync(token).ConfigureAwait(false);
-            var refreshedExcludes = new HashSet<string>(StringComparer.Ordinal);
+            var refreshedExcludes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var row in excludeRows)
             {
@@ -70,37 +51,13 @@ namespace Jube.Monitoring
 
         public void CheckAndIncrement(string? text)
         {
-            if (string.IsNullOrEmpty(text))
-            {
-                return;
-            }
+            ruleSet.Match(text!, name => excludedNames.Contains(name), Increment,
+                message => Console.WriteLine($"Jube.Monitoring LogCounterMatcher: {message}"));
+        }
 
-            foreach (var rule in rules)
-            {
-                bool isMatch;
-
-                try
-                {
-                    isMatch = rule.Regex.IsMatch(text);
-                }
-                catch (RegexMatchTimeoutException)
-                {
-                    continue;
-                }
-
-                if (!isMatch || excludedNames.Contains(rule.Name))
-                {
-                    continue;
-                }
-
-                var counter = counters.GetOrAdd(
-                    rule.Name,
-                    static (name, meterState) => meterState.CreateCounter<long>(name),
-                    meter
-                );
-
-                counter.Add(1);
-            }
+        private void Increment(string name)
+        {
+            counters.GetOrAdd(name, static (key, meterState) => meterState.CreateCounter<long>(key), meter).Add(1);
         }
     }
 }

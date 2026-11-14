@@ -20,5 +20,6 @@ namespace Jube.Engine.Sanctions.Models
 {
     using System.Collections.Generic;
 
-    public sealed record SanctionEntryFileImportResult(HashSet<string> Hashes, int TotalRows, int RejectedRows);
+    public sealed record SanctionEntryFileImportResult(HashSet<string> Hashes, int TotalRows, int RejectedRows,
+        bool Completed = true);
 }

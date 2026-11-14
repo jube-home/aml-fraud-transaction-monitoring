@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,17 +22,25 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.RuleVocabulary
 {
     [Description("A word rule text may use, with every way to call it when it is a function.")]
+    [MessagePackObject]
     public class RuleWordDto
     {
         [Description("The word, as rule text should spell it; matching ignores case.")]
+        [Key(0)]
         public string Name { get; set; } = string.Empty;
 
         [Description("Keyword (built into the rule language), AllowedWord (allowed by this installation), Function " +
                      "(a rule function called on a value) or CuratedExpression (a named expression called on a " +
                      "string).")]
+        [Key(1)]
         public string Kind { get; set; } = string.Empty;
 
         [Description("For a function or curated expression, every way to call it.")]
+        [Key(2)]
         public List<RuleWordOverloadDto> Overloads { get; set; } = [];
+
+        [Description("What the word means in a rule, in a sentence, when one is recorded; otherwise null.")]
+        [Key(3)]
+        public string? Description { get; set; }
     }
 }

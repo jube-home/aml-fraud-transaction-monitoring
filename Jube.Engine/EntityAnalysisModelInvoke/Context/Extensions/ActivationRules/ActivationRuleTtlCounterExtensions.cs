@@ -78,6 +78,17 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                     return;
                 }
 
+                var incrementValue = ResolveIncrementValue(foundTtlCounter,
+                    context.EntityAnalysisModelInstanceEntryPayload.Payload);
+
+                if (foundTtlCounter.EnableSum && (!double.IsFinite(incrementValue) || incrementValue < 0))
+                {
+                    context.TraceLog(
+                        $"will not increment TTL counter {foundTtlCounter.Name} as the sum value {incrementValue} from {foundTtlCounter.TtlCounterDataValue} is negative or not a finite number.");
+
+                    return;
+                }
+
                 if (context.Environment.AppSettings("ActivationRuleIdempotency")
                     .Equals("True", StringComparison.OrdinalIgnoreCase))
                 {
@@ -85,9 +96,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                             .CheckAndClaimIdempotencyAsync(
                                 context.EntityAnalysisModel.Instance.TenantRegistryId,
                                 context.EntityAnalysisModel.Instance.Guid,
+                                foundTtlCounter.Guid,
                                 context.EntityAnalysisModelInstanceEntryPayload
-                                    .EntityAnalysisModelInstanceEntryGuid,
-                                foundTtlCounter.Guid))
+                                    .EntityAnalysisModelInstanceEntryGuid))
                     {
                         context.TraceLog(
                             $"has built a TTL Counter insert payload of TTLCounterName as {foundTtlCounter.Name}, TTLCounterDataName as {foundTtlCounter.TtlCounterDataName} and TTLCounterDataNameValue as {context.EntityAnalysisModelInstanceEntryPayload.Payload[foundTtlCounter.TtlCounterDataName]} but failed idempotency check.");
@@ -103,9 +114,6 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
 
                 context.TraceLog(
                     $"has built a TTL Counter insert payload of TTLCounterName as {foundTtlCounter.Name}, TTLCounterDataName as {foundTtlCounter.TtlCounterDataName} and TTLCounterDataNameValue as {context.EntityAnalysisModelInstanceEntryPayload.Payload[foundTtlCounter.TtlCounterDataName]}. Is about to insert the entry.");
-
-                var incrementValue = ResolveIncrementValue(foundTtlCounter,
-                    context.EntityAnalysisModelInstanceEntryPayload.Payload);
 
                 if (foundTtlCounter.EnableSum)
                 {
@@ -152,7 +160,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
                         .CacheTtlCounterRepository
                         .IncrementTtlCounterCacheAsync(
                             context.EntityAnalysisModel.Instance.TenantRegistryId,
-                            context.EntityAnalysisModel.Instance.Guid,
+                            evaluateActivationRule.EntityAnalysisModelGuidTtlCounter,
                             foundTtlCounter.TtlCounterDataName,
                             payloadValue.AsString(),
                             foundTtlCounter.Guid, incrementValue,

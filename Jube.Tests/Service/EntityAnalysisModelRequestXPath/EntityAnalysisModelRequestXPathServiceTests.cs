@@ -35,6 +35,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModelRequestXPath.Models;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
@@ -634,7 +635,6 @@ namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
             var dto = NewDto(modelId, saved.Name);
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
-            dto.Version = 999;
             dto.UpdatedUser = "also-tampered";
 
             var updated = await service.UpdateAsync(dto);
@@ -1095,6 +1095,26 @@ namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
 
             var oversized = await service.ListAsync(10_000);
             oversized.Items.Count.Should().BeLessThanOrEqualTo(200);
+        }
+
+        [Theory]
+        [InlineData("$.a[?(@.b =~ /(a+)+$/)]")]
+        [InlineData("$..[?(@.name=~/^(a|aa)+$/i)]")]
+        public async Task AnXPathUsingTheRegularExpressionOperatorIsRefusedAndNothingIsStoredAsync(string xPath)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var name = UniqueName("Regex");
+            var dto = NewDto(modelId, name);
+            dto.XPath = xPath;
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "XPathRegexNotPermitted");
+
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelRequestXpath>().CountAsync(w => w.Name == name))
+                .Should().Be(0);
         }
     }
 }

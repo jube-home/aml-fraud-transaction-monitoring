@@ -21,6 +21,7 @@ using Jube.Data.Repository;
 using Jube.Engine.Exhaustive.Algorithms;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using Npgsql;
 using Xunit;
 
@@ -267,6 +268,45 @@ namespace Jube.Test.Exhaustive
                 .Deleted.Should().Be(1);
             (await db.GetTable<ExhaustiveSearchInstanceTrialInstanceVariable>().FirstAsync(w => w.Id == otherRow.Id))
                 .Deleted.Should().NotBe(1);
+        }
+
+        [Fact]
+        public async Task ReselectingTrialVariables_NeverLeavesTheSoftDeletedRowsInThePromotedVariableListTheEngineLoadsAsync()
+        {
+            var (instanceId, _) = await NewInstanceAsync();
+            await using var db = fx.GetDbContext();
+            var recorder = new DbTrialRecorder(db, new ExhaustiveSearchInstanceRepository(db), instanceId);
+
+            var variable = await db.InsertWithInt32IdentityAsync(new ExhaustiveSearchInstanceVariable
+            {
+                ExhaustiveSearchInstanceId = instanceId,
+                Name = "a",
+                VariableSequence = 0
+            });
+
+            var trial = await recorder.InsertTrialInstanceAsync(new ExhaustiveSearchInstanceTrialInstance
+            {
+                ExhaustiveSearchInstanceId = instanceId,
+                CreatedDate = DateTime.UtcNow
+            });
+
+            for (var selection = 0; selection < 2; selection++)
+            {
+                await recorder.DeleteTrialVariablesAsync(trial.Id);
+
+                await recorder.InsertTrialVariableAsync(new ExhaustiveSearchInstanceTrialInstanceVariable
+                {
+                    ExhaustiveSearchInstanceTrialInstanceId = trial.Id,
+                    ExhaustiveSearchInstanceVariableId = variable,
+                    VariableSequence = 0
+                });
+            }
+
+            var loaded = await new Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery
+                    .GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery(db)
+                .ExecuteByExhaustiveSearchInstanceTrialInstanceIdAsync(trial.Id);
+
+            loaded.Should().HaveCount(1);
         }
 
         [Fact]

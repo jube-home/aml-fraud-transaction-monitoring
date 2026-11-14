@@ -17,7 +17,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static DateTime? ToDateTimeWithFormat(this string? @this, string? format)
+        [Description("Parses text with an exact invariant-culture pattern as UTC, or Nothing when it does not match.")]
+        public static DateTime? ToDateTimeWithFormat(this string? @this,
+            [Description("The .NET date format the text is in.")] string? format)
         {
             if (string.IsNullOrWhiteSpace(format))
             {

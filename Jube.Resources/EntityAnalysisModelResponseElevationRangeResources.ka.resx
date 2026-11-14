@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>ამ მოქმედების შესასრულებლად უფლება არ გაქვთ.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>ამ მოქმედების შესასრულებლად უნდა იყოთ შესული ტენანტში.</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>საჭიროა სწორი მოდელი.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>სახელი სავალდებულოა.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>სახელი არ უნდა აღემატებოდეს {0} სიმბოლოს.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>ეს სახელი უკვე არსებობს.</value>
+  </data>
+    <data name="MinimumRange" xml:space="preserve">
+    <value>პირველი დონე არ შეიძლება იყოს უარყოფითი.</value>
+  </data>
+    <data name="MaximumRange" xml:space="preserve">
+    <value>ბოლო დონე არ შეიძლება იყოს პირველ დონეზე დაბალი.</value>
+  </data>
+    <data name="RangeOverlaps" xml:space="preserve">
+    <value>ეს დიაპაზონი ემთხვევა დიაპაზონს სახელად {0}.</value>
+  </data>
+    <data name="DeclineAndHold" xml:space="preserve">
+    <value>დიაპაზონი ერთდროულად ვერ უარყოფს და ვერ დააკავებს; უარყოფა არასდროს აკავებს.</value>
+  </data>
+    <data name="ColourInvalid" xml:space="preserve">
+    <value>ფერი უნდა იყოს თექვსმეტობითი მნიშვნელობა, მაგალითად #A1B2C3.</value>
+  </data>
+    <data name="ContentMaxLength" xml:space="preserve">
+    <value>შინაარსი არ უნდა აღემატებოდეს {0} სიმბოლოს.</value>
+  </data>
+    <data name="RedirectMaxLength" xml:space="preserve">
+    <value>გადამისამართება არ უნდა აღემატებოდეს {0} სიმბოლოს.</value>
+  </data>
+    <data name="HttpEndpointRequired" xml:space="preserve">
+    <value>ვებჰუკის URL სავალდებულოა ვებჰუკის ჩართვისას.</value>
+  </data>
+    <data name="HttpEndpointInvalid" xml:space="preserve">
+    <value>ვებჰუკი უნდა იყოს აბსოლუტური http ან https URL, რომლის სქემა, ჰოსტი და პორტი პირდაპირაა ჩაწერილი, ხოლო ტოკენები მხოლოდ ბილიკსა და მოთხოვნაში.</value>
+  </data>
+    <data name="HttpEndpointMaxLength" xml:space="preserve">
+    <value>ვებჰუკის URL არ უნდა აღემატებოდეს {0} სიმბოლოს.</value>
+  </data>
+    <data name="HttpEndpointHostBlocked" xml:space="preserve">
+    <value>ვებჰუკის მისამართი დაბლოკილია გამავალი ჰოსტების პოლიტიკით: ის მიუთითებს loopback, link-local, მეტამონაცემების, კერძო, გაზიარებულ, unique-local ან დაცულ მისამართზე, localhost-ზე ან http-სა და https-ისგან განსხვავებულ სქემაზე. სანდო შიდა მიმღები ჩაწერეთ JUBE_HOOK_ALLOWED_HOSTS ან JUBE_HOOK_ALLOWED_CIDRS ცვლადში.</value>
+  </data>
+    <data name="HttpEndpointTypeIdInvalid" xml:space="preserve">
+    <value>ვებჰუკის მეთოდი უნდა იყოს POST ან GET.</value>
+  </data>
+    <data name="HttpEndpointHeaderRequired" xml:space="preserve">
+    <value>ავტორიზაციის ჰედერის სახელი სავალდებულოა, როცა მითითებულია ავტორიზაციის ცვლადი.</value>
+  </data>
+    <data name="HttpEndpointHeaderInvalid" xml:space="preserve">
+    <value>ავტორიზაციის ჰედერის სახელი უნდა იყოს ჩვეულებრივი ჰედერის სახელი და არა დაცული.</value>
+  </data>
+    <data name="HttpEndpointCredentialRequired" xml:space="preserve">
+    <value>ავტორიზაციის ცვლადი სავალდებულოა, როცა მითითებულია ავტორიზაციის ჰედერის სახელი.</value>
+  </data>
+    <data name="HttpEndpointCredentialInvalid" xml:space="preserve">
+    <value>ავტორიზაციის ცვლადი უნდა იყოს გარემოს ცვლადის სახელი, რომელიც იწყება JUBE_HOOK_-ით და მას მოსდევს დიდი ასოები, ციფრები ან ქვედა ტირეები.</value>
+  </data>
+    <data name="NotificationTypeIdInvalid" xml:space="preserve">
+    <value>შეტყობინების არხი უნდა იყოს Email ან SMS.</value>
+  </data>
+    <data name="NotificationDestinationRequired" xml:space="preserve">
+    <value>დანიშნულება სავალდებულოა შეტყობინების ჩართვისას.</value>
+  </data>
+    <data name="NotificationDestinationMaxLength" xml:space="preserve">
+    <value>დანიშნულება არ უნდა აღემატებოდეს {0} სიმბოლოს.</value>
+  </data>
+    <data name="NotificationSubjectMaxLength" xml:space="preserve">
+    <value>თემა არ უნდა აღემატებოდეს {0} სიმბოლოს.</value>
+  </data>
+    <data name="NotificationBodyMaxLength" xml:space="preserve">
+    <value>ტექსტი არ უნდა აღემატებოდეს {0} სიმბოლოს.</value>
+  </data>
+</root>

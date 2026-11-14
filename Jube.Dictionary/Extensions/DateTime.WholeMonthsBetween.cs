@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static int WholeMonthsBetween(this DateTime @this, DateTime other)
+        [Description("Completed calendar months to another date, clamping month ends as AddMonths does.")]
+        public static int WholeMonthsBetween(this DateTime @this, [Description("The other date.")] DateTime other)
         {
             var start = @this <= other ? @this : other;
             var end = @this <= other ? other : @this;

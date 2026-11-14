@@ -44,7 +44,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(10)] public int? Version { get; set; }
 
         [Association(ThisKey = "EntityAnalysisModelDictionaryId", OtherKey = "Id",
-            CanBeNull = true, Relationship = Relationship.ManyToOne)]
+            CanBeNull = true)]
         [Key(11)]
         public EntityAnalysisModelDictionary EntityAnalysisModelDictionary { get; set; }
 

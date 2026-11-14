@@ -8,12 +8,14 @@ namespace Jube.Dictionary.Extensions
     {
         extension(string @this)
         {
+            [Description("Converts the string to title case.")]
             public string ToTitleCase()
             {
                 return new CultureInfo("en-US").TextInfo.ToTitleCase(@this);
             }
 
-            public string ToTitleCase(CultureInfo cultureInfo)
+            [Description("Converts to title case using specified culture.")]
+            public string ToTitleCase([Description("Information describing the culture.")] CultureInfo cultureInfo)
             {
                 return cultureInfo.TextInfo.ToTitleCase(@this);
             }

@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,12 +22,15 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.EntityAnalysisModelInvocationContext
 {
     [Description("A request to build a context from a transaction's request JSON, as the model would receive it.")]
+    [MessagePackObject]
     public class InvocationContextFromRequestJsonDto
     {
         [Description("Id of the Entity Analysis Model; must belong to the caller's tenant.")]
+        [Key(0)]
         public int EntityAnalysisModelId { get; set; }
 
         [Description("The request JSON exactly as it would be posted to the model's invoke endpoint.")]
+        [Key(1)]
         public string? RequestJson { get; set; }
     }
 }

@@ -54,8 +54,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(18)] public int? ReprocessingValue { get; set; }
         [Column] [Nullable] [Key(19)] public string ReprocessingInterval { get; set; }
 
-        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true)]
         [Key(20)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
     }

@@ -18,10 +18,39 @@
 
 namespace Jube.Engine.Sanctions.Models
 {
+    using System.Linq;
+    using Jube.Dictionary.Extensions;
+
     public class SanctionEntry
     {
         public int SanctionEntryId { get; set; }
-        public string[] SanctionElementValue { get; set; }
+        private string[] elementValue;
+        private volatile string[] tokens;
+
+        public string[] SanctionElementValue
+        {
+            get => elementValue;
+            set
+            {
+                elementValue = value;
+                tokens = null;
+                latinTokens = null;
+            }
+        }
+
+        public string[] Tokens => tokens ??= elementValue
+            .SelectMany(SanctionTextFolding.Tokens)
+            .Distinct()
+            .ToArray();
+
+        private volatile string[] latinTokens;
+
+        public string[] LatinTokens => latinTokens ??= elementValue
+            .Select(v => v.TransliterateToLatin())
+            .SelectMany(SanctionTextFolding.Tokens)
+            .Distinct()
+            .ToArray();
+
         public int SanctionEntrySourceId { get; set; }
         public string SanctionEntryReference { get; set; }
     }

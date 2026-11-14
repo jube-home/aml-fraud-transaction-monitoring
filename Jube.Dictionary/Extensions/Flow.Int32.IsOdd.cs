@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<int> flow)
         {
+            [Description("True when: an odd number. Decides matched if so; otherwise continues.")]
             public Flow<int> MatchIsOdd()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.Int32IsOdd(flow.Value));
             }
 
+            [Description("True when: an odd number. Decides rejected if so; otherwise continues.")]
             public Flow<int> RejectIsOdd()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.Int32IsOdd(flow.Value));
             }
 
+            [Description("True when: an odd number. Decides broken if so; otherwise continues.")]
             public Flow<int> BreakIsOdd()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.Int32IsOdd(flow.Value));
             }
 
+            [Description("True when: an odd number. Continues if so; otherwise decides rejected.")]
             public Flow<int> RequireIsOdd()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.Int32IsOdd(flow.Value));
             }
 
+            [Description("True when: an odd number. Continues if so; otherwise decides broken.")]
             public Flow<int> EnsureIsOdd()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(int value)
         {
+            [Description("Begins a pipeline from the value. True when: an odd number. Decides matched if so; otherwise continues.")]
             public Flow<int> MatchIsOdd()
             {
                 return value.Start().MatchIsOdd();
             }
 
+            [Description("Begins a pipeline from the value. True when: an odd number. Decides rejected if so; otherwise continues.")]
             public Flow<int> RejectIsOdd()
             {
                 return value.Start().RejectIsOdd();
             }
 
+            [Description("Begins a pipeline from the value. True when: an odd number. Decides broken if so; otherwise continues.")]
             public Flow<int> BreakIsOdd()
             {
                 return value.Start().BreakIsOdd();
             }
 
+            [Description("Begins a pipeline from the value. True when: an odd number. Continues if so; otherwise decides rejected.")]
             public Flow<int> RequireIsOdd()
             {
                 return value.Start().RequireIsOdd();
             }
 
+            [Description("Begins a pipeline from the value. True when: an odd number. Continues if so; otherwise decides broken.")]
             public Flow<int> EnsureIsOdd()
             {
                 return value.Start().EnsureIsOdd();

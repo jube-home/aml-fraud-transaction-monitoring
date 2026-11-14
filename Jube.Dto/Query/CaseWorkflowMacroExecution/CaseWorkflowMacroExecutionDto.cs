@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,12 +22,15 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.CaseWorkflowMacroExecution
 {
     [Description("Request to execute a case workflow macro against a case. The same shape is echoed back on success.")]
+    [MessagePackObject]
     public class CaseWorkflowMacroExecutionDto
     {
         [Description("Integer identifier of the case the macro is executed against.")]
+        [Key(0)]
         public int CaseId { get; set; }
 
         [Description("Integer identifier of the active case workflow macro to execute.")]
+        [Key(1)]
         public int CaseWorkflowMacroId { get; set; }
     }
 }

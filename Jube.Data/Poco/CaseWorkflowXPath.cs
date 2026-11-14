@@ -52,17 +52,20 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(23)] public string BoldLineFormatBackColor { get; set; }
         [Column] [Nullable] [Key(24)] public byte? BoldLineMatched { get; set; }
 
-        [Association(ThisKey = "CaseWorkflowId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "CaseWorkflowId", OtherKey = "Id", CanBeNull = true)]
         [Key(25)]
         public CaseWorkflow CaseWorkflow { get; set; }
 
         [Column] [Nullable] [Key(26)] public Guid Guid { get; set; }
         [Column] [Nullable] [Key(27)] public int? ImportId { get; set; }
 
-        [Association(ThisKey = "Guid", OtherKey = "CaseWorkflowXPathGuid", CanBeNull = false,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Guid", OtherKey = "CaseWorkflowXPathGuid", CanBeNull = false)]
         [Key(28)]
         public CaseWorkflowXPathRole CaseWorkflowXPathRole { get; set; }
+
+        [Column] [Key(29)] public byte RoleId { get; set; }
+        [Column] [Key(30)] public byte Segment { get; set; }
+        [Column] [Nullable] [Key(31)] public byte? SourceKindId { get; set; }
+        [Column] [Nullable] [Key(32)] public Guid? SourceGuid { get; set; }
     }
 }

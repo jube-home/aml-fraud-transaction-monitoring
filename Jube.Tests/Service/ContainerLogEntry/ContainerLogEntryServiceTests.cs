@@ -162,8 +162,8 @@ namespace Jube.Test.Service.ContainerLogEntry
 
             var oldDate = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             var newDate = DateTime.UtcNow;
-            await CreateEntryAsync(dbContext, "redis", ContainerLogStreamType.Stdout, uniqueMessage, oldDate);
-            await CreateEntryAsync(dbContext, "redis", ContainerLogStreamType.Stdout, uniqueMessage2, newDate);
+            await CreateEntryAsync(dbContext, "resp", ContainerLogStreamType.Stdout, uniqueMessage, oldDate);
+            await CreateEntryAsync(dbContext, "resp", ContainerLogStreamType.Stdout, uniqueMessage2, newDate);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(from: newDate.AddMinutes(-1), search: DatabaseFixture.Prefix);
@@ -254,8 +254,8 @@ namespace Jube.Test.Service.ContainerLogEntry
 
             var twoHoursAgo = DateTime.UtcNow.AddHours(-2);
             var justNow = DateTime.UtcNow;
-            await CreateEntryAsync(dbContext, "redis", ContainerLogStreamType.Stdout, uniqueMessage, twoHoursAgo);
-            await CreateEntryAsync(dbContext, "redis", ContainerLogStreamType.Stdout, uniqueMessage2, justNow);
+            await CreateEntryAsync(dbContext, "resp", ContainerLogStreamType.Stdout, uniqueMessage, twoHoursAgo);
+            await CreateEntryAsync(dbContext, "resp", ContainerLogStreamType.Stdout, uniqueMessage2, justNow);
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
             var result = await service.ListAsync(search: DatabaseFixture.Prefix);

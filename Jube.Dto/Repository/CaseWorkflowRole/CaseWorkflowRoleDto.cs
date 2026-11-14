@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,15 +21,19 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Repository.CaseWorkflowRole
 {
+    [MessagePackObject]
     public class CaseWorkflowRoleDto
     {
         [Description("Server-assigned identifier. Read-only.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("Guid of the Case Workflow this grant applies to.")]
+        [Key(1)]
         public Guid CaseWorkflowGuid { get; set; }
 
         [Description("Guid of the Role Registry entry being granted access to the Case Workflow.")]
+        [Key(2)]
         public Guid RoleRegistryGuid { get; set; }
     }
 }

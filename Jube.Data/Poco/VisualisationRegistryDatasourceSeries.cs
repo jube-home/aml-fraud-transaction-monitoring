@@ -31,8 +31,12 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(3)] public int DataTypeId { get; set; }
 
         [Association(ThisKey = "VisualisationRegistryDatasourceId", OtherKey = "Id",
-            CanBeNull = true, Relationship = Relationship.ManyToOne)]
+            CanBeNull = true)]
         [Key(4)]
         public VisualisationRegistryDatasource VisualisationRegistryDatasource { get; set; }
+
+        [Column] [Key(5)] public int Ordinal { get; set; }
+        [Column] [Nullable] [Key(6)] public int? RoleId { get; set; }
+        [Column] [Nullable] [Key(7)] public int? RoleOrder { get; set; }
     }
 }

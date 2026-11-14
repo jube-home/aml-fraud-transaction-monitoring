@@ -17,6 +17,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Context;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariableQuery
 {
@@ -51,10 +52,10 @@ namespace Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceVariab
                     .Where(w3 => w3.Id == v.CategoricalFieldId).DefaultIfEmpty()
                 where (t.Removed == 0 || t.Removed == null)
                       && t.ExhaustiveSearchInstanceTrialInstanceId == promotedExhaustiveSearchInstanceTrialInstanceId
+                      && (t.Deleted == 0 || t.Deleted == null)
+                      && (v.Deleted == 0 || v.Deleted == null)
                       && (!tenantRestricted
                           || (v.ExhaustiveSearchInstance.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
-                              && (t.Deleted == 0 || t.Deleted == null)
-                              && (v.Deleted == 0 || v.Deleted == null)
                               && (v.ExhaustiveSearchInstance.Deleted == 0
                                   || v.ExhaustiveSearchInstance.Deleted == null)))
                 orderby t.VariableSequence

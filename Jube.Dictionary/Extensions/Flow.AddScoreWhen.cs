@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static Flow<T> AddScoreWhen<T>(this Flow<T> flow, bool condition, double weight)
+        [Description("Adds the weight to the pipeline's score only if the condition is true.")]
+        public static Flow<T> AddScoreWhen<T>(this Flow<T> flow,
+            [Description("The condition that must hold for the score to change.")] bool condition,
+            [Description("How much to add to the score; negative subtracts.")] double weight)
         {
             return flow.IsDecided || !condition ? flow : flow.WithScore(flow.Score + weight);
         }

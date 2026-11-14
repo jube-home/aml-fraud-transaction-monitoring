@@ -43,7 +43,7 @@
     <value>You must be signed in to a tenant to perform this action.</value>
   </data>
     <data name="InstanceNotFound" xml:space="preserve">
-    <value>The Advanced Analytics instance was not found.</value>
+    <value>The AskJooby Analytics instance was not found.</value>
   </data>
     <data name="InstanceIdInvalid" xml:space="preserve">
     <value>A valid instance is required.</value>

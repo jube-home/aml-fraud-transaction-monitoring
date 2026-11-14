@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
-            public Flow<DateTime> MatchMoreThanDaysAfter(DateTime other, double days)
+            [Description("True when: more than the days after the argument. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchMoreThanDaysAfter([Description("The other date.")] DateTime other,
+                [Description("The number of days.")] double days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeMoreThanDaysAfter(flow.Value, other, days));
             }
 
-            public Flow<DateTime> RejectMoreThanDaysAfter(DateTime other, double days)
+            [Description("True when: more than the days after the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectMoreThanDaysAfter([Description("The other date.")] DateTime other,
+                [Description("The number of days.")] double days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeMoreThanDaysAfter(flow.Value, other, days));
             }
 
-            public Flow<DateTime> BreakMoreThanDaysAfter(DateTime other, double days)
+            [Description("True when: more than the days after the argument. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakMoreThanDaysAfter([Description("The other date.")] DateTime other,
+                [Description("The number of days.")] double days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeMoreThanDaysAfter(flow.Value, other, days));
             }
 
-            public Flow<DateTime> RequireMoreThanDaysAfter(DateTime other, double days)
+            [Description("True when: more than the days after the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireMoreThanDaysAfter([Description("The other date.")] DateTime other,
+                [Description("The number of days.")] double days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeMoreThanDaysAfter(flow.Value, other, days));
             }
 
-            public Flow<DateTime> EnsureMoreThanDaysAfter(DateTime other, double days)
+            [Description("True when: more than the days after the argument. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureMoreThanDaysAfter([Description("The other date.")] DateTime other,
+                [Description("The number of days.")] double days)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
-            public Flow<DateTime> MatchMoreThanDaysAfter(DateTime other, double days)
+            [Description("Begins a pipeline from the value. True when: more than the days after the argument. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchMoreThanDaysAfter([Description("The other date.")] DateTime other,
+                [Description("The number of days.")] double days)
             {
                 return value.Start().MatchMoreThanDaysAfter(other, days);
             }
 
-            public Flow<DateTime> RejectMoreThanDaysAfter(DateTime other, double days)
+            [Description("Begins a pipeline from the value. True when: more than the days after the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectMoreThanDaysAfter([Description("The other date.")] DateTime other,
+                [Description("The number of days.")] double days)
             {
                 return value.Start().RejectMoreThanDaysAfter(other, days);
             }
 
-            public Flow<DateTime> BreakMoreThanDaysAfter(DateTime other, double days)
+            [Description("Begins a pipeline from the value. True when: more than the days after the argument. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakMoreThanDaysAfter([Description("The other date.")] DateTime other,
+                [Description("The number of days.")] double days)
             {
                 return value.Start().BreakMoreThanDaysAfter(other, days);
             }
 
-            public Flow<DateTime> RequireMoreThanDaysAfter(DateTime other, double days)
+            [Description("Begins a pipeline from the value. True when: more than the days after the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireMoreThanDaysAfter([Description("The other date.")] DateTime other,
+                [Description("The number of days.")] double days)
             {
                 return value.Start().RequireMoreThanDaysAfter(other, days);
             }
 
-            public Flow<DateTime> EnsureMoreThanDaysAfter(DateTime other, double days)
+            [Description("Begins a pipeline from the value. True when: more than the days after the argument. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureMoreThanDaysAfter([Description("The other date.")] DateTime other,
+                [Description("The number of days.")] double days)
             {
                 return value.Start().EnsureMoreThanDaysAfter(other, days);
             }

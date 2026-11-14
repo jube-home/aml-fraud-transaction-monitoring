@@ -93,6 +93,8 @@ namespace Jube.HttpAdaptationProtocol
             public const string TtlCounter = "TtlCounter";
             public const string Dictionary = "Dictionary";
             public const string Sanction = "Sanction";
+            public const string Graph = "Graph";
+            public const string Svirfd = "Svirfd";
         }
     }
 }

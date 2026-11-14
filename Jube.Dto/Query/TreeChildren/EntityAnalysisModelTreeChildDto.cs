@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Interfaces;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,25 +24,32 @@ namespace Jube.Dto.Query.TreeChildren
 {
     [Description("A child node of a model tree (Entity Analysis Model children such as rules, tags, lists, " +
                  "dictionaries). Colour is 'green' for an active node and 'red' otherwise.")]
+    [MessagePackObject]
     public class EntityAnalysisModelTreeChildDto : ITreeChild
     {
         [Description("Integer Id of the parent Entity Analysis Model; null for nodes addressed by model Guid.")]
+        [Key(0)]
         public int? EntityAnalysisModelId { get; set; }
 
         [Description("Guid of the parent Entity Analysis Model; only set for the List and Dictionary nodes.")]
+        [Key(1)]
         public Guid? EntityAnalysisModelGuid { get; set; }
 
         [Description("Integer Id of the child row.")]
+        [Key(2)]
         public int Key { get; set; }
 
         [Description("Name of the child row.")]
+        [Key(3)]
         public string? Name { get; set; }
 
         [Description("'green' when the child is active, otherwise 'red'.")]
+        [Key(4)]
         public string? Color { get; set; }
 
         [Description(
             "True when the child row is deleted. A deleted row stays in the tree so it can be opened and restored.")]
+        [Key(5)]
         public bool Deleted { get; set; }
     }
 }

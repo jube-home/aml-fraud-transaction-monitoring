@@ -8,6 +8,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Gets the Unicode category of a character.")]
         public static UnicodeCategory GetUnicodeCategory(this Char c)
         {
             return char.GetUnicodeCategory(c);

@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using Jube.Data.Poco;
+using Jube.Dictionary;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 
@@ -23,6 +24,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction.Extensions
     {
         public static class ArchiveKeyExtensions
         {
+            public const byte RequestXPathProcessingTypeId = 1;
+
             public static void AddArchiveKey(
                 this List<ArchiveKey> reportDatabaseValues,
                 EntityAnalysisModelRequestXPath xPath,
@@ -31,19 +34,19 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction.Extensions
                 int? valueInt = null,
                 double? valueFloat = null,
                 DateTime? valueDate = null,
-                bool? valueBool = null,
-                bool isReprocess = false)
+                bool? valueBool = null)
             {
-                if (!xPath.ReportTable || isReprocess)
+                if (!xPath.ReportTable)
                 {
                     return;
                 }
 
                 var key = new ArchiveKey
                 {
-                    ProcessingTypeId = 1,
+                    ProcessingTypeId = RequestXPathProcessingTypeId,
                     Key = xPath.Name,
-                    EntityAnalysisModelInstanceEntryGuid = payload.EntityAnalysisModelInstanceEntryGuid
+                    EntityAnalysisModelInstanceEntryGuid = payload.EntityAnalysisModelInstanceEntryGuid,
+                    Version = 1
                 };
 
                 if (valueString != null)
@@ -68,6 +71,35 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction.Extensions
                 }
 
                 reportDatabaseValues.Add(key);
+            }
+
+            public static void AddArchiveKey(
+                this List<ArchiveKey> reportDatabaseValues,
+                EntityAnalysisModelRequestXPath xPath,
+                EntityAnalysisModelInstanceEntryPayload payload,
+                InternalValue value)
+            {
+                switch (value.Type)
+                {
+                    case InternalValue.ValueType.String:
+                        reportDatabaseValues.AddArchiveKey(xPath, payload, value.AsString());
+                        break;
+                    case InternalValue.ValueType.Int:
+                        reportDatabaseValues.AddArchiveKey(xPath, payload, valueInt: value.AsInt());
+                        break;
+                    case InternalValue.ValueType.Double:
+                        reportDatabaseValues.AddArchiveKey(xPath, payload, valueFloat: value.AsDouble());
+                        break;
+                    case InternalValue.ValueType.Bool:
+                        reportDatabaseValues.AddArchiveKey(xPath, payload, valueBool: value.AsBool());
+                        break;
+                    case InternalValue.ValueType.DateTime:
+                        reportDatabaseValues.AddArchiveKey(xPath, payload, valueDate: value.AsDateTime());
+                        break;
+                    case InternalValue.ValueType.Guid:
+                        reportDatabaseValues.AddArchiveKey(xPath, payload, value.AsGuid().ToString());
+                        break;
+                }
             }
         }
     }

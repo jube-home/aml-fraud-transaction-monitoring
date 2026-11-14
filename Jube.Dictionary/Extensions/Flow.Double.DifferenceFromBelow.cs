@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchDifferenceFromBelow(double other, double bound)
+            [Description("True when: the value minus the other is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleDifferenceFromBelow(flow.Value, other, bound));
             }
 
-            public Flow<double> RejectDifferenceFromBelow(double other, double bound)
+            [Description("True when: the value minus the other is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleDifferenceFromBelow(flow.Value, other, bound));
             }
 
-            public Flow<double> BreakDifferenceFromBelow(double other, double bound)
+            [Description("True when: the value minus the other is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleDifferenceFromBelow(flow.Value, other, bound));
             }
 
-            public Flow<double> RequireDifferenceFromBelow(double other, double bound)
+            [Description("True when: the value minus the other is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleDifferenceFromBelow(flow.Value, other, bound));
             }
 
-            public Flow<double> EnsureDifferenceFromBelow(double other, double bound)
+            [Description("True when: the value minus the other is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchDifferenceFromBelow(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the value minus the other is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchDifferenceFromBelow(other, bound);
             }
 
-            public Flow<double> RejectDifferenceFromBelow(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the value minus the other is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectDifferenceFromBelow(other, bound);
             }
 
-            public Flow<double> BreakDifferenceFromBelow(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the value minus the other is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakDifferenceFromBelow(other, bound);
             }
 
-            public Flow<double> RequireDifferenceFromBelow(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the value minus the other is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireDifferenceFromBelow(other, bound);
             }
 
-            public Flow<double> EnsureDifferenceFromBelow(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the value minus the other is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureDifferenceFromBelow(other, bound);
             }

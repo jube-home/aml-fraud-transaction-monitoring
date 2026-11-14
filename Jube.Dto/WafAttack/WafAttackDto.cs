@@ -12,6 +12,8 @@
  */
 
 using System.ComponentModel;
+using Jube.Dto.Forms;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,33 +22,51 @@ using System.ComponentModel;
 
 namespace Jube.Dto.WafAttack
 {
+    [GridEndpoint("WafAttack", Title = "Waf attack", DefaultSort = "createdDate")]
+    [GridSearch(Label = "Value, route, signature, category contains")]
+    [MessagePackObject]
     public sealed record WafAttackDto(
-        [property: Description("Server-assigned identifier of the row, most recent first when listed.")]
+        [property: Key(0)] [property: Description("Server-assigned identifier of the row, most recent first when listed.")]
+        [property: ListColumn(Hidden = true)]
         long Id,
-        [property: Description("UTC timestamp the match was captured.")]
+        [property: Key(1)] [property: Description("UTC timestamp the match was captured.")]
+        [property: ListColumn(Order = 10)]
+        [property: GridTimeRange]
         DateTime CreatedDate,
-        [property: Description("The transport the request arrived over: Http or WebSocket.")]
+        [property: Key(2)] [property: Description("The transport the request arrived over: Http or WebSocket.")]
+        [property: ListColumn(Order = 110)]
         string Transport,
-        [property: Description("The request route the match occurred on.")]
+        [property: Key(3)] [property: Description("The request route the match occurred on.")]
+        [property: ListColumn(Order = 50)]
         string Route,
-        [property: Description("The HTTP method.")]
+        [property: Key(4)] [property: Description("The HTTP method.")]
+        [property: ListColumn(Order = 60)]
         string Method,
-        [property: Description("Remote IP address of the caller, when known.")]
+        [property: Key(5)] [property: Description("Remote IP address of the caller, when known.")]
+        [property: ListColumn(Order = 100)]
         string RemoteIp,
-        [property: Description("Authenticated username of the caller, when known.")]
+        [property: Key(6)] [property: Description("Authenticated username of the caller, when known.")]
+        [property: ListColumn(Order = 90, Title = "User")]
         string UserName,
-        [property: Description("Name of the WafSignature that matched.")]
+        [property: Key(7)] [property: Description("Name of the WafSignature that matched.")]
+        [property: ListColumn(Order = 30, Title = "Signature")]
         string SignatureName,
-        [property: Description("OWASP category of the matched signature.")]
+        [property: Key(8)] [property: Description("OWASP category of the matched signature.")]
+        [property: ListColumn(Order = 40)]
         string Category,
-        [property: Description("JSON path or field name that carried the matched value.")]
+        [property: Key(9)] [property: Description("JSON path or field name that carried the matched value.")]
+        [property: ListColumn(Order = 70)]
         string MatchedField,
-        [property: Description("Truncated copy of the value that matched the signature's pattern.")]
+        [property: Key(10)] [property: Description("Truncated copy of the value that matched the signature's pattern.")]
+        [property: ListColumn(Order = 80)]
         string MatchedValue,
-        [property: Description("The action taken: Dropped (request refused) or Detected (request continued).")]
+        [property: Key(11)] [property: Description("The action taken: Dropped (request refused) or Detected (request continued).")]
+        [property: ListColumn(Order = 20)]
         string Action,
-        [property: Description("Correlation id (trace identifier or connection id) of the originating request.")]
+        [property: Key(12)] [property: Description("Correlation id (trace identifier or connection id) of the originating request.")]
+        [property: ListColumn(Hidden = true)]
         string CorrelationId,
-        [property: Description("Hostname of the node that flushed this row.")]
+        [property: Key(13)] [property: Description("Hostname of the node that flushed this row.")]
+        [property: ListColumn(Order = 120)]
         string Instance);
 }

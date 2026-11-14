@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchGeometricMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the geometric mean of the value and another, for growth factors and multiples is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchGeometricMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleGeometricMeanWithInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectGeometricMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the geometric mean of the value and another, for growth factors and multiples is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectGeometricMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleGeometricMeanWithInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakGeometricMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the geometric mean of the value and another, for growth factors and multiples is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakGeometricMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleGeometricMeanWithInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireGeometricMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the geometric mean of the value and another, for growth factors and multiples is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireGeometricMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleGeometricMeanWithInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureGeometricMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the geometric mean of the value and another, for growth factors and multiples is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureGeometricMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchGeometricMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the geometric mean of the value and another, for growth factors and multiples is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchGeometricMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchGeometricMeanWithInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectGeometricMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the geometric mean of the value and another, for growth factors and multiples is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectGeometricMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectGeometricMeanWithInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakGeometricMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the geometric mean of the value and another, for growth factors and multiples is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakGeometricMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakGeometricMeanWithInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireGeometricMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the geometric mean of the value and another, for growth factors and multiples is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireGeometricMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireGeometricMeanWithInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureGeometricMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the geometric mean of the value and another, for growth factors and multiples is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureGeometricMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureGeometricMeanWithInRange(other, lowerBound, upperBound);
             }

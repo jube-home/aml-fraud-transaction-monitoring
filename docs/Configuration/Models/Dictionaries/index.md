@@ -43,10 +43,12 @@ Dictionary and KVP value pairs will be available for model invocation almost str
 
 Navigate to the Dictionary page from the main menu:
 
+<!-- TODO(screenshot): file=model-references-dictionary-in-menu-header.png route=/models/references/dictionaries state="replace the Razor-era image DictionaryInMenuHeader.png with the Vue UI showing the same step" -->
 ![Image](DictionaryInMenuHeader.png)
 
 Click on the tree node in the top left hand corner of the screen to create a new Dictionary collection definition:
 
+<!-- TODO(screenshot): file=model-references-empty-dictionary-definition.png route=/models/references/dictionaries state="replace the Razor-era image EmptyDictionaryDefinition.png with the Vue UI showing the same step" -->
 ![Image](EmptyDictionaryDefinition.png)
 
 The Dictionary has the following properties:
@@ -63,30 +65,36 @@ accepted Value (it is not treated as an empty entry).
 
 Complete the page with the details as above or as below:
 
+<!-- TODO(screenshot): file=model-references-template-values-for-dictionary-definition.png route=/models/references/dictionaries state="replace the Razor-era image TemplateValuesForDictionaryDefinition.png with the Vue UI showing the same step" -->
 ![Image](TemplateValuesForDictionaryDefinition.png)
 
 Click Add to create the container for the Key Value Pairs:
 
+<!-- TODO(screenshot): file=model-references-added-dictionary-definition-for-key-value-pairs.png route=/models/references/dictionaries state="replace the Razor-era image AddedDictionaryDefinitionForKeyValuePairs.png with the Vue UI showing the same step" -->
 ![Image](AddedDictionaryDefinitionForKeyValuePairs.png)
 
 Locate the the Add Value button:
 
+<!-- TODO(screenshot): file=model-references-add-value-button.png route=/models/references/dictionaries state="replace the Razor-era image AddValueButton.png with the Vue UI showing the same step" -->
 ![Image](AddValueButton.png)
 
 Click the Add Value button to expose the Key Value template:
 
+<!-- TODO(screenshot): file=model-references-exposed-key-value-pair-template.png route=/models/references/dictionaries state="replace the Razor-era image ExposedKeyValuePairTemplate.png with the Vue UI showing the same step" -->
 ![Image](ExposedKeyValuePairTemplate.png)
 
 Upon clicking the Add Value button, the template for the creation of Key Value Pairs will be exposed. The left most
 value is the Key. The Key is the value that will be matched with the payload, the value is what will be returned for
 availability to further processing. Complete the Key with the AccountID value in the transaction payload (e.g. Test1):
 
+<!-- TODO(screenshot): file=model-references-complete-key-template.png route=/models/references/dictionaries state="replace the Razor-era image CompleteKeyTemplate.png with the Vue UI showing the same step" -->
 ![Image](CompleteKeyTemplate.png)
 
 The right most value is the value that will be returned as a consequence of the lookup AccountID = Test1 (in this
 example 123456.78). Complete the Value with 1234567.89, which will represent the Credit Limit being looked up for this
 example:
 
+<!-- TODO(screenshot): file=model-references-complete-value-template.png route=/models/references/dictionaries state="replace the Razor-era image CompleteValueTemplate.png with the Vue UI showing the same step" -->
 ![Image](CompleteValueTemplate.png)
 
 The Key Value Pair entry form also exposes an optional Delete Expiry Date field, using a date and time picker.
@@ -110,20 +118,24 @@ in the meantime. Once a deletion is approved, the same Key may be added again li
 
 Commit by clicking on the Tick icon:
 
+<!-- TODO(screenshot): file=model-references-tick-confirm-button.png route=/models/references/dictionaries state="replace the Razor-era image TickConfirmButton.png with the Vue UI showing the same step" -->
 ![Image](TickConfirmButton.png)
 
 Or to cancel the creation of the Value click the opposing icon:
 
+<!-- TODO(screenshot): file=model-references-circle-cancel-button.png route=/models/references/dictionaries state="replace the Razor-era image CircleCancelButton.png with the Vue UI showing the same step" -->
 ![Image](CircleCancelButton.png)
 
 Upon the successful commit of the Key Value, it will appear updated:
 
+<!-- TODO(screenshot): file=model-references-updated-key-value-pair-for-dictionary.png route=/models/references/dictionaries state="replace the Razor-era image UpdatedKeyValuePairForDictionary.png with the Vue UI showing the same step" -->
 ![Image](UpdatedKeyValuePairForDictionary.png)
 
 Keeping in mind that explicit synchronisation is not required, repeat the HTTP POST to
 endpoint [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc)
 for response as follows:
 
+<!-- TODO(screenshot): file=model-references-k-v-p-returned-in-response-payload.png route=/models/references/dictionaries state="replace the Razor-era image KVPReturnedInResponsePayload.png with the Vue UI showing the same step" -->
 ![Image](KVPReturnedInResponsePayload.png)
 
 Keep in mind that the AccountId in the POST body was of key Test1, the value of 123456.789 has been returned by matching
@@ -155,16 +167,34 @@ Key is still considered to exist until that deletion is actually approved.
 
 The control to upload a file is the button Select Files:
 
+<!-- TODO(screenshot): file=model-references-select-files-button.png route=/models/references/dictionaries state="replace the Razor-era image SelectFilesButton.png with the Vue UI showing the same step" -->
 ![Image](SelectFilesButton.png)
 
 Either drag the file to the area show above, or click the button titled Select files, navigating to the file:
 
+<!-- TODO(screenshot): file=model-references-file-selection-of-example-c-s-v.png route=/models/references/dictionaries state="replace the Razor-era image FileSelectionOfExampleCSV.png with the Vue UI showing the same step" -->
 ![Image](FileSelectionOfExampleCSV.png)
 
 Clicking Open, which will happen implicitly if the file has been dragged and dropped, will both upload the file and
 process, adding each row as a new Dictionary Key Value pair:
 
+<!-- TODO(screenshot): file=model-references-merged-file-on-key.png route=/models/references/dictionaries state="replace the Razor-era image MergedFileOnKey.png with the Vue UI showing the same step" -->
 ![Image](MergedFileOnKey.png)
 
 In the event of a conflict on the key, as here, it will be updated, otherwise inserted (subject to the uniqueness and
 pending-deletion rules described above).
+
+## Permissions and security
+
+<!-- TODO(docs): confirm the permission number and wording against the running menu and the Roles page -->
+Reading and writing this area requires permission 4. A user without it receives 403, and an unauthenticated request
+receives 401. Every mutation also needs the antiforgery token for cookie sessions.
+
+<!-- TODO(docs): owner to review this security paragraph, it was written from code, not from a running system -->
+Dictionaries and their key value pairs are scoped to the caller's tenant through the parent Model; a foreign Dictionary
+id behaves like a missing one. CSV cells are stored as data (formula and markup keys included) and file names are
+sanitised and never used as paths.
+
+<!-- TODO(docs): changes are subject to maker-checker approval when ApprovalsRequired is on; describe the Approvals tab, Resubmit and Retract for Dictionaries from the real UI -->
+<!-- TODO(docs): every statement above about the Razor-era page layout (tree on the left, Add button, version pane) may be stale after the Vue port; re-read the whole page against the new UI -->
+<!-- TODO(docs): add the Arabic and Urdu right-to-left note: identifiers, paths and code stay left-to-right inside right-to-left text -->

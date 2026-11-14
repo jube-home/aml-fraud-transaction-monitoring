@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -19,7 +20,9 @@ using System.Threading.Tasks;
 using FluentValidation.Results;
 using Jube.Data.Context;
 using Jube.Dto.EntityAnalysisModelOverride;
+using Jube.Dto.EntityApproval;
 using Jube.Service.EntityAnalysisModelOverride;
+using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Exceptions.EntityAnalysisModelOverride;
 using Jube.Service.Reactivity.Interfaces;
 using log4net;
@@ -74,6 +77,18 @@ namespace Jube.App.Endpoints
                 .Produces((int)HttpStatusCode.OK)
                 .Produces((int)HttpStatusCode.NoContent)
                 .WithName("EntityAnalysisModelOverrideDelete");
+
+            group.MapPost("{id:int}/Resubmit", ResubmitAsync)
+                .Produces<EntityAnalysisModelOverrideDto>()
+                .Produces((int)HttpStatusCode.BadRequest)
+                .Produces((int)HttpStatusCode.NoContent)
+                .WithName("EntityAnalysisModelOverrideResubmit");
+
+            group.MapPost("{id:int}/Retract", RetractAsync)
+                .Produces<EntityAnalysisModelOverrideDto>()
+                .Produces((int)HttpStatusCode.BadRequest)
+                .Produces((int)HttpStatusCode.NoContent)
+                .WithName("EntityAnalysisModelOverrideRetract");
         }
 
         private static async Task<IResult> GetAsync(
@@ -384,6 +399,22 @@ namespace Jube.App.Endpoints
 
                 return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
             }
+            catch (VersionConflictException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}: 409 user={user} supplied={ex.SuppliedVersion} current={ex.CurrentVersion}");
+                }
+
+                return TypedResults.Conflict(new
+                {
+                    code = "VersionConflict",
+                    message = ex.Message,
+                    suppliedVersion = ex.SuppliedVersion,
+                    currentVersion = ex.CurrentVersion
+                });
+            }
+
             catch (OperationCanceledException)
             {
                 if (log.IsDebugEnabled)
@@ -541,6 +572,80 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"DELETE {Base}/{id}: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        private static Task<IResult> ResubmitAsync(int id, [FromBody] EntityApprovalActionRequestDto body,
+            HttpContext httpContext, ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            CancellationToken token)
+        {
+            return ActAsync("Resubmit", id, httpContext, log, dynamicEnvironment, stringLocalizerFactory,
+                serviceChangeBus, (service) => service.ResubmitAsync(id, body?.Note, token), token);
+        }
+
+        private static Task<IResult> RetractAsync(int id, [FromBody] EntityApprovalActionRequestDto body,
+            HttpContext httpContext, ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            CancellationToken token)
+        {
+            return ActAsync("Retract", id, httpContext, log, dynamicEnvironment, stringLocalizerFactory,
+                serviceChangeBus, (service) => service.RetractAsync(id, body?.Note, token), token);
+        }
+
+        private static async Task<IResult> ActAsync(string verb, int id, HttpContext httpContext, ILog log,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            Func<EntityAnalysisModelOverrideService, Task<EntityAnalysisModelOverrideDto>> action,
+            CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var service = await EntityAnalysisModelOverrideService.CreateAsync(dbContext, user, log,
+                    stringLocalizerFactory, serviceChangeBus, token);
+
+                return TypedResults.Ok(await action(service));
+            }
+            catch (NotAuthenticatedException)
+            {
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/{id}/{verb}: 403 user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (ApprovalRefusedException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/{id}/{verb}: 400 user={user} reason={ex.Message}");
+                }
+
+                return TypedResults.BadRequest(new { message = ex.Message, reasons = ex.Reasons });
+            }
+            catch (NotFoundException)
+            {
+                return TypedResults.NoContent();
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {Base}/{id}/{verb}: 500 user={user}", e);
 
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }

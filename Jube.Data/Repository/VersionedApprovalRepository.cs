@@ -22,6 +22,7 @@ namespace Jube.Data.Repository
     using AutoMapper;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Microsoft.Extensions.Logging.Abstractions;
     using Models;
     using Poco;

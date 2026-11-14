@@ -1,0 +1,515 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc-f1a0f54a" viewBox="0 0 665 398" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-f1a0f54a-t jc-f1a0f54a-d">
+    <title id="jc-f1a0f54a-t">Funds flow</title>
+    <desc id="jc-f1a0f54a-d">Flow graph diagram with 7 nodes and 9 directed edges in 3 lanes; edge thickness shows
+        amount.
+    </desc>
+    <style>
+        .jc-f1a0f54a{display:block;width:100%;height:auto;max-width:100%;direction:ltr;color-scheme:light;--jc-surface:#fcfcfb;--jc-text:#0b0b0b;--jc-text2:#52514e;--jc-muted:#66655f;--jc-grid:#e8e7e3;--jc-axis:#b3b2ab;--jc-tip:#ffffff;--jc-c0:#2a78d6;--jc-ct0:#0b0b0b;--jc-c1:#eb6834;--jc-ct1:#0b0b0b;--jc-c2:#1baf7a;--jc-ct2:#0b0b0b;--jc-c3:#eda100;--jc-ct3:#0b0b0b;--jc-c4:#e87ba4;--jc-ct4:#0b0b0b;--jc-c5:#008300;--jc-ct5:#fcfcfb;--jc-c6:#4a3aa7;--jc-ct6:#fcfcfb;--jc-c7:#e34948;--jc-ct7:#0b0b0b;--jc-q0:#cde2fb;--jc-qt0:#0b0b0b;--jc-q1:#9ec5f4;--jc-qt1:#0b0b0b;--jc-q2:#86b6ef;--jc-qt2:#0b0b0b;--jc-q3:#6da7ec;--jc-qt3:#0b0b0b;--jc-q4:#3987e5;--jc-qt4:#0b0b0b;--jc-q5:#2a78d6;--jc-qt5:#0b0b0b;--jc-q6:#1c5cab;--jc-qt6:#fcfcfb;--jc-q7:#184f95;--jc-qt7:#fcfcfb;--jc-q8:#0d366b;--jc-qt8:#fcfcfb;--jc-d0:#1c5cab;--jc-dt0:#fcfcfb;--jc-d1:#4679b8;--jc-dt1:#0b0b0b;--jc-d2:#7197c5;--jc-dt2:#0b0b0b;--jc-d3:#9bb4d2;--jc-dt3:#0b0b0b;--jc-d4:#c6d2df;--jc-dt4:#0b0b0b;--jc-d5:#f0efec;--jc-dt5:#0b0b0b;--jc-d6:#e7cbc8;--jc-dt6:#0b0b0b;--jc-d7:#dea7a4;--jc-dt7:#0b0b0b;--jc-d8:#d48281;--jc-dt8:#0b0b0b;--jc-d9:#cb5e5d;--jc-dt9:#0b0b0b;--jc-d10:#c23a39;--jc-dt10:#fcfcfb;font-family:system-ui,-apple-system,'Segoe
+        UI',Roboto,'Helvetica Neue',Arial,'Noto Sans','Noto Sans Arabic','Noto Nastaliq Urdu','Noto Sans
+        Devanagari','Noto Sans Georgian',sans-serif;font-size:12px}@media
+        (prefers-color-scheme:dark){:root:not([data-theme="light"])
+        .jc-f1a0f54a:not([data-theme="light"]),.jc-f1a0f54a:root:not([data-theme="light"]){color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}}:root[data-theme="dark"]
+        .jc-f1a0f54a:not([data-theme="light"]),.jc-f1a0f54a[data-theme="dark"]{color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}.jc-f1a0f54a
+        text{fill:var(--jc-text);font-size:12px}.jc-f1a0f54a .bg{fill:var(--jc-surface)}.jc-f1a0f54a
+        .ttl{font-size:16px;font-weight:600}.jc-f1a0f54a .sub{fill:var(--jc-text2)}.jc-f1a0f54a
+        .tk{fill:var(--jc-muted);font-size:11px}.jc-f1a0f54a .at{fill:var(--jc-text2);font-weight:500}.jc-f1a0f54a
+        .gl{stroke:var(--jc-grid);stroke-width:1;fill:none}.jc-f1a0f54a
+        .ax{stroke:var(--jc-axis);stroke-width:1;fill:none}.jc-f1a0f54a
+        .ref{stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:5 4;fill:none}.jc-f1a0f54a .ref.s0,.jc-f1a0f54a
+        .ref.s1,.jc-f1a0f54a .ref.s2,.jc-f1a0f54a .ref.s3,.jc-f1a0f54a .ref.s4,.jc-f1a0f54a .ref.s5,.jc-f1a0f54a
+        .ref.s6,.jc-f1a0f54a .ref.s7{stroke:var(--sc)}.jc-f1a0f54a
+        .band{fill:var(--jc-muted);fill-opacity:.12;stroke:none}.jc-f1a0f54a
+        .and{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:1.5}.jc-f1a0f54a
+        .ant{font-size:11px;paint-order:stroke;stroke:var(--jc-surface);stroke-width:3px;stroke-linejoin:round}.jc-f1a0f54a
+        .box{fill:var(--sc);fill-opacity:.3;stroke:var(--sc);stroke-width:1.5}.jc-f1a0f54a .wh,.jc-f1a0f54a
+        .wk{stroke:var(--sc);stroke-width:1.5;fill:none}.jc-f1a0f54a
+        .med{stroke:var(--jc-text);stroke-width:2.5}.jc-f1a0f54a
+        .out{fill:none;stroke:var(--sc);stroke-width:1.5}.jc-f1a0f54a
+        .cd{fill:var(--sc);stroke:var(--sc);stroke-width:1.5}.jc-f1a0f54a .cd.hollow{fill:var(--jc-surface)}.jc-f1a0f54a
+        .conn{stroke:var(--jc-muted);stroke-width:1;stroke-dasharray:2 3;fill:none}.jc-f1a0f54a
+        .ar.off{fill-opacity:0}.jc-f1a0f54a .ring{font-size:10px}.jc-f1a0f54a
+        .gtrack{fill:var(--jc-grid);stroke:none}.jc-f1a0f54a .needle{fill:var(--jc-text);stroke:none}.jc-f1a0f54a
+        .hub{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:2}.jc-f1a0f54a
+        .tgt{stroke:var(--jc-text);stroke-width:3;stroke-linecap:round}.jc-f1a0f54a
+        .big{font-size:28px;font-weight:600}.jc-f1a0f54a .rg0,.jc-f1a0f54a .rg1,.jc-f1a0f54a
+        .rg2{fill:var(--jc-muted);stroke:none}.jc-f1a0f54a .rg0{fill-opacity:.1}.jc-f1a0f54a
+        .rg1{fill-opacity:.2}.jc-f1a0f54a .rg2{fill-opacity:.32}.jc-f1a0f54a
+        .tgroup{fill:var(--sc);fill-opacity:.12;stroke:var(--jc-surface);stroke-width:2}.jc-f1a0f54a
+        .bar.part{fill-opacity:.35}.jc-f1a0f54a .lgt{fill:var(--jc-text2)}.jc-f1a0f54a
+        .sw{fill:var(--sc);transform-box:fill-box;transform-origin:center}.jc-f1a0f54a
+        .hit{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-f1a0f54a
+        .ln{fill:none;stroke:var(--sc);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.jc-f1a0f54a
+        .ar{fill:var(--sc);fill-opacity:.28;stroke:none}.jc-f1a0f54a .bar{fill:var(--sc)}.jc-f1a0f54a
+        .ov{fill:var(--sc);fill-opacity:.55;stroke:var(--sc);stroke-width:1}.jc-f1a0f54a
+        .pt{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-f1a0f54a
+        .bub{fill:var(--sc);fill-opacity:.6;stroke:var(--sc);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-f1a0f54a
+        .sl{fill:var(--sc);stroke:var(--jc-surface);stroke-width:2}.jc-f1a0f54a
+        .eb{stroke:var(--jc-text2);stroke-width:1.5;fill:none}.jc-f1a0f54a
+        .pt.h{fill-opacity:0;stroke-opacity:0}.jc-f1a0f54a .mk:hover .pt.h,.jc-f1a0f54a .mk:focus-visible
+        .pt.h{fill-opacity:1;stroke-opacity:1}.jc-f1a0f54a .pt.sm{fill-opacity:.55;stroke:none}.jc-f1a0f54a
+        .na{fill:var(--jc-grid)}.jc-f1a0f54a .mk:hover .sl,.jc-f1a0f54a .mk:focus-visible
+        .sl{transform:translate(var(--dx,0),var(--dy,0))}.jc-f1a0f54a
+        .cell{stroke:var(--jc-surface);stroke-width:2}.jc-f1a0f54a
+        .vl{stroke:var(--jc-text2);stroke-width:1;stroke-dasharray:3 3;opacity:0;transition:opacity .15s}.jc-f1a0f54a
+        .cx{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;opacity:0;transition:opacity .15s}.jc-f1a0f54a
+        .mkr{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-f1a0f54a
+        .lbl{font-size:11px;font-weight:500;pointer-events:none}.jc-f1a0f54a .ctr{text-anchor:middle}.jc-f1a0f54a
+        .end{text-anchor:end}.jc-f1a0f54a .mid{dominant-baseline:central}.jc-f1a0f54a .mk{outline:none}.jc-f1a0f54a
+        .m,.jc-f1a0f54a .pt,.jc-f1a0f54a .bub,.jc-f1a0f54a .bar,.jc-f1a0f54a .ov,.jc-f1a0f54a .sl,.jc-f1a0f54a
+        .cell{transition:opacity .15s ease,stroke-width .15s ease,transform .15s ease,fill-opacity .15s
+        ease}.jc-f1a0f54a .mk:hover .m,.jc-f1a0f54a .mk:focus-visible
+        .m{stroke:var(--jc-text);stroke-width:2}.jc-f1a0f54a .mk:hover .pt,.jc-f1a0f54a .mk:focus-visible
+        .pt{transform:scale(1.6)}.jc-f1a0f54a .mk:hover .bub,.jc-f1a0f54a .mk:focus-visible
+        .bub{transform:scale(1.08);fill-opacity:.85}.jc-f1a0f54a .mk:hover .bar,.jc-f1a0f54a .mk:focus-visible
+        .bar{filter:none;stroke:var(--jc-text);stroke-width:2}.jc-f1a0f54a .mk:hover .ov,.jc-f1a0f54a .mk:focus-visible
+        .ov{fill-opacity:.85;stroke-width:2}.jc-f1a0f54a .mk:hover .sl,.jc-f1a0f54a .mk:focus-visible
+        .sl{stroke:var(--jc-text);stroke-width:2.5}.jc-f1a0f54a .mk:hover .box,.jc-f1a0f54a .mk:focus-visible
+        .box{fill-opacity:.55;stroke-width:2.5}.jc-f1a0f54a .mk:hover .wk,.jc-f1a0f54a .mk:focus-visible
+        .wk,.jc-f1a0f54a .mk:hover .cd,.jc-f1a0f54a .mk:focus-visible .cd{stroke-width:2.5}.jc-f1a0f54a .mk:hover
+        .cell,.jc-f1a0f54a .mk:focus-visible .cell{stroke:var(--jc-text);stroke-width:2.5}.jc-f1a0f54a .mk:hover
+        .vl,.jc-f1a0f54a .mk:focus-visible .vl,.jc-f1a0f54a .mk:hover .cx,.jc-f1a0f54a .mk:focus-visible
+        .cx{opacity:1}.jc-f1a0f54a .mk:hover .mkr,.jc-f1a0f54a .mk:focus-visible .mkr{stroke-width:3}.jc-f1a0f54a
+        .tt{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s}.jc-f1a0f54a
+        .mk:hover .tt,.jc-f1a0f54a .mk:focus-visible .tt{opacity:1;visibility:visible}.jc-f1a0f54a
+        .tb{fill:var(--jc-tip);stroke:var(--jc-axis);stroke-width:1}.jc-f1a0f54a
+        .tx{fill:var(--jc-text);font-size:12px}.jc-f1a0f54a .tx.b{font-weight:600}.jc-f1a0f54a
+        .tsw{fill:var(--sc)}.jc-f1a0f54a .lg{cursor:default;transition:opacity .15s ease}.jc-f1a0f54a .lg:hover
+        .lgt{fill:var(--jc-text)}.jc-f1a0f54a .sr{transition:opacity .15s ease}.jc-f1a0f54a:has(.mk:hover)
+        .mk:not(:hover) .m,.jc-f1a0f54a:has(.mk:hover) .mk:not(:hover) .pt,.jc-f1a0f54a:has(.mk:hover) .mk:not(:hover)
+        .bub,.jc-f1a0f54a:has(.mk:hover) .mk:not(:hover) .bar,.jc-f1a0f54a:has(.mk:hover) .mk:not(:hover)
+        .ov,.jc-f1a0f54a:has(.mk:hover) .mk:not(:hover) .cell{opacity:.4}.jc-f1a0f54a:has(.mk:focus-visible)
+        .mk:not(:focus-visible) .m{opacity:.4}.jc-f1a0f54a .s0{--sc:var(--jc-c0)}.jc-f1a0f54a .s0
+        .on{fill:var(--jc-ct0)}.jc-f1a0f54a:has(.lg.s0:hover) .sr:not(.s0){opacity:.16}.jc-f1a0f54a:has(.sr.s0:hover)
+        .sr:not(.s0){opacity:.3}.jc-f1a0f54a:has(.sr.s0:hover) .lg:not(.s0){opacity:.4}.jc-f1a0f54a:has(.sr.s0:hover)
+        .lg.s0 .sw{transform:scale(1.35)}.jc-f1a0f54a:has(.lg.s0:hover) .lg.s0 .sw{transform:scale(1.35)}.jc-f1a0f54a
+        .s1{--sc:var(--jc-c1)}.jc-f1a0f54a .s1 .on{fill:var(--jc-ct1)}.jc-f1a0f54a:has(.lg.s1:hover)
+        .sr:not(.s1){opacity:.16}.jc-f1a0f54a:has(.sr.s1:hover) .sr:not(.s1){opacity:.3}.jc-f1a0f54a:has(.sr.s1:hover)
+        .lg:not(.s1){opacity:.4}.jc-f1a0f54a:has(.sr.s1:hover) .lg.s1
+        .sw{transform:scale(1.35)}.jc-f1a0f54a:has(.lg.s1:hover) .lg.s1 .sw{transform:scale(1.35)}.jc-f1a0f54a
+        .s2{--sc:var(--jc-c2)}.jc-f1a0f54a .s2 .on{fill:var(--jc-ct2)}.jc-f1a0f54a:has(.lg.s2:hover)
+        .sr:not(.s2){opacity:.16}.jc-f1a0f54a:has(.sr.s2:hover) .sr:not(.s2){opacity:.3}.jc-f1a0f54a:has(.sr.s2:hover)
+        .lg:not(.s2){opacity:.4}.jc-f1a0f54a:has(.sr.s2:hover) .lg.s2
+        .sw{transform:scale(1.35)}.jc-f1a0f54a:has(.lg.s2:hover) .lg.s2 .sw{transform:scale(1.35)}.jc-f1a0f54a
+        .s3{--sc:var(--jc-c3)}.jc-f1a0f54a .s3 .on{fill:var(--jc-ct3)}.jc-f1a0f54a:has(.lg.s3:hover)
+        .sr:not(.s3){opacity:.16}.jc-f1a0f54a:has(.sr.s3:hover) .sr:not(.s3){opacity:.3}.jc-f1a0f54a:has(.sr.s3:hover)
+        .lg:not(.s3){opacity:.4}.jc-f1a0f54a:has(.sr.s3:hover) .lg.s3
+        .sw{transform:scale(1.35)}.jc-f1a0f54a:has(.lg.s3:hover) .lg.s3 .sw{transform:scale(1.35)}.jc-f1a0f54a
+        .s4{--sc:var(--jc-c4)}.jc-f1a0f54a .s4 .on{fill:var(--jc-ct4)}.jc-f1a0f54a:has(.lg.s4:hover)
+        .sr:not(.s4){opacity:.16}.jc-f1a0f54a:has(.sr.s4:hover) .sr:not(.s4){opacity:.3}.jc-f1a0f54a:has(.sr.s4:hover)
+        .lg:not(.s4){opacity:.4}.jc-f1a0f54a:has(.sr.s4:hover) .lg.s4
+        .sw{transform:scale(1.35)}.jc-f1a0f54a:has(.lg.s4:hover) .lg.s4 .sw{transform:scale(1.35)}.jc-f1a0f54a
+        .s5{--sc:var(--jc-c5)}.jc-f1a0f54a .s5 .on{fill:var(--jc-ct5)}.jc-f1a0f54a:has(.lg.s5:hover)
+        .sr:not(.s5){opacity:.16}.jc-f1a0f54a:has(.sr.s5:hover) .sr:not(.s5){opacity:.3}.jc-f1a0f54a:has(.sr.s5:hover)
+        .lg:not(.s5){opacity:.4}.jc-f1a0f54a:has(.sr.s5:hover) .lg.s5
+        .sw{transform:scale(1.35)}.jc-f1a0f54a:has(.lg.s5:hover) .lg.s5 .sw{transform:scale(1.35)}.jc-f1a0f54a
+        .s6{--sc:var(--jc-c6)}.jc-f1a0f54a .s6 .on{fill:var(--jc-ct6)}.jc-f1a0f54a:has(.lg.s6:hover)
+        .sr:not(.s6){opacity:.16}.jc-f1a0f54a:has(.sr.s6:hover) .sr:not(.s6){opacity:.3}.jc-f1a0f54a:has(.sr.s6:hover)
+        .lg:not(.s6){opacity:.4}.jc-f1a0f54a:has(.sr.s6:hover) .lg.s6
+        .sw{transform:scale(1.35)}.jc-f1a0f54a:has(.lg.s6:hover) .lg.s6 .sw{transform:scale(1.35)}.jc-f1a0f54a
+        .s7{--sc:var(--jc-c7)}.jc-f1a0f54a .s7 .on{fill:var(--jc-ct7)}.jc-f1a0f54a:has(.lg.s7:hover)
+        .sr:not(.s7){opacity:.16}.jc-f1a0f54a:has(.sr.s7:hover) .sr:not(.s7){opacity:.3}.jc-f1a0f54a:has(.sr.s7:hover)
+        .lg:not(.s7){opacity:.4}.jc-f1a0f54a:has(.sr.s7:hover) .lg.s7
+        .sw{transform:scale(1.35)}.jc-f1a0f54a:has(.lg.s7:hover) .lg.s7 .sw{transform:scale(1.35)}@media
+        (prefers-reduced-motion:reduce){.jc-f1a0f54a,.jc-f1a0f54a
+        *{transition:none!important;animation:none!important}}.jc-f1a0f54a .q0{fill:var(--jc-q0)}.jc-f1a0f54a
+        .qt0{fill:var(--jc-qt0)}.jc-f1a0f54a .q1{fill:var(--jc-q1)}.jc-f1a0f54a .qt1{fill:var(--jc-qt1)}.jc-f1a0f54a
+        .q2{fill:var(--jc-q2)}.jc-f1a0f54a .qt2{fill:var(--jc-qt2)}.jc-f1a0f54a .q3{fill:var(--jc-q3)}.jc-f1a0f54a
+        .qt3{fill:var(--jc-qt3)}.jc-f1a0f54a .q4{fill:var(--jc-q4)}.jc-f1a0f54a .qt4{fill:var(--jc-qt4)}.jc-f1a0f54a
+        .q5{fill:var(--jc-q5)}.jc-f1a0f54a .qt5{fill:var(--jc-qt5)}.jc-f1a0f54a .q6{fill:var(--jc-q6)}.jc-f1a0f54a
+        .qt6{fill:var(--jc-qt6)}.jc-f1a0f54a .q7{fill:var(--jc-q7)}.jc-f1a0f54a .qt7{fill:var(--jc-qt7)}.jc-f1a0f54a
+        .q8{fill:var(--jc-q8)}.jc-f1a0f54a .qt8{fill:var(--jc-qt8)}.jc-f1a0f54a .d0{fill:var(--jc-d0)}.jc-f1a0f54a
+        .dt0{fill:var(--jc-dt0)}.jc-f1a0f54a .d1{fill:var(--jc-d1)}.jc-f1a0f54a .dt1{fill:var(--jc-dt1)}.jc-f1a0f54a
+        .d2{fill:var(--jc-d2)}.jc-f1a0f54a .dt2{fill:var(--jc-dt2)}.jc-f1a0f54a .d3{fill:var(--jc-d3)}.jc-f1a0f54a
+        .dt3{fill:var(--jc-dt3)}.jc-f1a0f54a .d4{fill:var(--jc-d4)}.jc-f1a0f54a .dt4{fill:var(--jc-dt4)}.jc-f1a0f54a
+        .d5{fill:var(--jc-d5)}.jc-f1a0f54a .dt5{fill:var(--jc-dt5)}.jc-f1a0f54a .d6{fill:var(--jc-d6)}.jc-f1a0f54a
+        .dt6{fill:var(--jc-dt6)}.jc-f1a0f54a .d7{fill:var(--jc-d7)}.jc-f1a0f54a .dt7{fill:var(--jc-dt7)}.jc-f1a0f54a
+        .d8{fill:var(--jc-d8)}.jc-f1a0f54a .dt8{fill:var(--jc-dt8)}.jc-f1a0f54a .d9{fill:var(--jc-d9)}.jc-f1a0f54a
+        .dt9{fill:var(--jc-dt9)}.jc-f1a0f54a .d10{fill:var(--jc-d10)}.jc-f1a0f54a .dt10{fill:var(--jc-dt10)}.jc-f1a0f54a
+        .nb{fill:var(--jc-surface);stroke:var(--sc,var(--jc-axis));stroke-width:2}.jc-f1a0f54a
+        .nt{fill:var(--sc,var(--jc-muted));fill-opacity:.2;stroke:none}.jc-f1a0f54a .nb.dash{stroke-dasharray:4
+        3}.jc-f1a0f54a .nd,.jc-f1a0f54a .eg,.jc-f1a0f54a .pn{transition:opacity .15s ease}.jc-f1a0f54a .mk:hover
+        .nb,.jc-f1a0f54a .mk:focus-visible .nb{stroke:var(--jc-text);stroke-width:3.5}.jc-f1a0f54a
+        .ep{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:.68;transition:stroke-opacity .15s
+        ease}.jc-f1a0f54a .ep.en{stroke:var(--jc-axis)}.jc-f1a0f54a
+        .ep.et{stroke:var(--jc-muted);stroke-opacity:.5}.jc-f1a0f54a .vt{fill:var(--jc-grid)}.jc-f1a0f54a
+        .nt.lf{fill-opacity:.38}.jc-f1a0f54a .ep.ed{stroke-dasharray:5 4}.jc-f1a0f54a
+        .eh{fill:none;stroke:transparent;stroke-width:12;pointer-events:stroke}.jc-f1a0f54a .eg:hover .ep,.jc-f1a0f54a
+        .eg:focus-visible .ep{stroke-opacity:1}.jc-f1a0f54a .ah{fill:var(--jc-text2);stroke:none}.jc-f1a0f54a .mk:hover
+        .ah,.jc-f1a0f54a .mk:focus-visible .ah{fill:var(--jc-text)}.jc-f1a0f54a
+        .hl{fill:var(--jc-text);fill-opacity:0;stroke:none;transition:fill-opacity .15s ease}.jc-f1a0f54a .mk:hover
+        .hl,.jc-f1a0f54a .mk:focus-visible .hl{fill-opacity:.07}.jc-f1a0f54a
+        .hb{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-f1a0f54a .mk:hover .bs,.jc-f1a0f54a .mk:focus-visible
+        .bs{stroke:var(--jc-text);stroke-width:2}.jc-f1a0f54a
+        .sh{fill:var(--jc-text);fill-opacity:.05;stroke:none}.jc-f1a0f54a
+        .key{font-size:11px;fill:var(--jc-text2)}.jc-f1a0f54a .kn{font-size:10.5px;fill:var(--jc-muted)}.jc-f1a0f54a
+        .ph{font-size:12px;font-weight:600}.jc-f1a0f54a .pf{fill:none;stroke:var(--jc-grid);stroke-width:1}.jc-f1a0f54a
+        .tps{pointer-events:none}.jc-f1a0f54a .dsh{stroke-dasharray:3 3}.jc-f1a0f54a
+        .ln.thin{stroke-width:1.5}.jc-f1a0f54a .ln.hi{stroke-width:2.5}.jc-f1a0f54a
+        .rb{fill:var(--sc);fill-opacity:.85;stroke:none}.jc-f1a0f54a .mk:hover .rb,.jc-f1a0f54a .mk:focus-visible
+        .rb{fill-opacity:1;stroke:var(--jc-text);stroke-width:1.5}.jc-f1a0f54a
+        .ci{stroke:var(--sc);stroke-width:2;fill:none;stroke-linecap:round}.jc-f1a0f54a
+        .dmd{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5}.jc-f1a0f54a
+        .dmd.hollow{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-f1a0f54a .mk:hover .dmd,.jc-f1a0f54a
+        .mk:focus-visible .dmd{stroke:var(--jc-text);stroke-width:2.5}.jc-f1a0f54a .mk:hover .ci,.jc-f1a0f54a
+        .mk:focus-visible .ci{stroke-width:3}.jc-f1a0f54a
+        .tri{fill:var(--jc-surface);stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:3 2}.jc-f1a0f54a .mk:hover
+        .tri,.jc-f1a0f54a .mk:focus-visible .tri{stroke:var(--jc-text);stroke-width:2.5}.jc-f1a0f54a
+        .cl{fill:var(--sc)}.jc-f1a0f54a .db{fill:var(--sc);fill-opacity:.42;stroke:var(--sc);stroke-width:1}.jc-f1a0f54a
+        .ax.dsh{stroke-dasharray:3 3}.jc-f1a0f54a .sd0{stroke:var(--jc-d0)}.jc-f1a0f54a
+        .sd1{stroke:var(--jc-d1)}.jc-f1a0f54a .sd2{stroke:var(--jc-d2)}.jc-f1a0f54a
+        .sd3{stroke:var(--jc-d3)}.jc-f1a0f54a .sd4{stroke:var(--jc-d4)}.jc-f1a0f54a
+        .sd5{stroke:var(--jc-d5)}.jc-f1a0f54a .sd6{stroke:var(--jc-d6)}.jc-f1a0f54a
+        .sd7{stroke:var(--jc-d7)}.jc-f1a0f54a .sd8{stroke:var(--jc-d8)}.jc-f1a0f54a
+        .sd9{stroke:var(--jc-d9)}.jc-f1a0f54a .sd10{stroke:var(--jc-d10)}.jc-f1a0f54a:has(.eg:hover)
+        .eg:not(:hover){opacity:.12}.jc-f1a0f54a:has(.eg:hover) .nd{opacity:.45}.jc-f1a0f54a:has(.lg.s0:hover)
+        .nd:not(.s0){opacity:.2}.jc-f1a0f54a:has(.lg.s0:hover) .eg{opacity:.3}.jc-f1a0f54a:has(.lg.s1:hover)
+        .nd:not(.s1){opacity:.2}.jc-f1a0f54a:has(.lg.s1:hover) .eg{opacity:.3}.jc-f1a0f54a:has(.lg.s2:hover)
+        .nd:not(.s2){opacity:.2}.jc-f1a0f54a:has(.lg.s2:hover) .eg{opacity:.3}.jc-f1a0f54a:has(.lg.s3:hover)
+        .nd:not(.s3){opacity:.2}.jc-f1a0f54a:has(.lg.s3:hover) .eg{opacity:.3}.jc-f1a0f54a:has(.lg.s4:hover)
+        .nd:not(.s4){opacity:.2}.jc-f1a0f54a:has(.lg.s4:hover) .eg{opacity:.3}.jc-f1a0f54a:has(.lg.s5:hover)
+        .nd:not(.s5){opacity:.2}.jc-f1a0f54a:has(.lg.s5:hover) .eg{opacity:.3}.jc-f1a0f54a:has(.lg.s6:hover)
+        .nd:not(.s6){opacity:.2}.jc-f1a0f54a:has(.lg.s6:hover) .eg{opacity:.3}.jc-f1a0f54a:has(.lg.s7:hover)
+        .nd:not(.s7){opacity:.2}.jc-f1a0f54a:has(.lg.s7:hover) .eg{opacity:.3}.jc-f1a0f54a
+        [data-hidden]{opacity:.08;pointer-events:none}.jc-f1a0f54a [data-selected]
+        .ep{stroke:var(--jc-text);stroke-opacity:1;stroke-width:3px}.jc-f1a0f54a [data-selected]
+        .nb{stroke:var(--jc-text);stroke-width:3.5}.jc-f1a0f54a [data-kind="hexagon"]
+        .nt{fill:var(--jc-c3);fill-opacity:.4}.jc-f1a0f54a [data-kind="stack"]
+        .nt{fill-opacity:.32}.jc-f1a0f54a:has(.mk.x0:hover,.mk.x0:focus-visible) .tp.tx0
+        .tt{opacity:1;visibility:visible}.jc-f1a0f54a:has(.mk.x1:hover,.mk.x1:focus-visible) .tp.tx1
+        .tt{opacity:1;visibility:visible}.jc-f1a0f54a:has(.mk.x2:hover,.mk.x2:focus-visible) .tp.tx2
+        .tt{opacity:1;visibility:visible}.jc-f1a0f54a:has(.mk.x3:hover,.mk.x3:focus-visible) .tp.tx3
+        .tt{opacity:1;visibility:visible}.jc-f1a0f54a:has(.mk.x5:hover,.mk.x5:focus-visible) .tp.tx5
+        .tt{opacity:1;visibility:visible}.jc-f1a0f54a:has(.mk.x6:hover,.mk.x6:focus-visible) .tp.tx6
+        .tt{opacity:1;visibility:visible}.jc-f1a0f54a:has(.mk.x7:hover,.mk.x7:focus-visible) .tp.tx7
+        .tt{opacity:1;visibility:visible}.jc-f1a0f54a:has(.mk.x8:hover,.mk.x8:focus-visible) .tp.tx8
+        .tt{opacity:1;visibility:visible}.jc-f1a0f54a:has(.mk.n0:hover,.mk.n0:focus-visible) .tp.tn0
+        .tt{opacity:1;visibility:visible}.jc-f1a0f54a:has(.nd.n0:hover,.nd.n0:focus-visible)
+        .nd:not(.n0):not(.j0){opacity:.22}.jc-f1a0f54a:has(.nd.n0:hover,.nd.n0:focus-visible)
+        .eg:not(.e0){opacity:.07}.jc-f1a0f54a:has(.nd.n0:hover,.nd.n0:focus-visible) .eg.e0
+        .ep{stroke-opacity:1}.jc-f1a0f54a:has(.mk.n1:hover,.mk.n1:focus-visible) .tp.tn1
+        .tt{opacity:1;visibility:visible}.jc-f1a0f54a:has(.nd.n1:hover,.nd.n1:focus-visible)
+        .nd:not(.n1):not(.j1){opacity:.22}.jc-f1a0f54a:has(.nd.n1:hover,.nd.n1:focus-visible)
+        .eg:not(.e1){opacity:.07}.jc-f1a0f54a:has(.nd.n1:hover,.nd.n1:focus-visible) .eg.e1
+        .ep{stroke-opacity:1}.jc-f1a0f54a:has(.mk.n2:hover,.mk.n2:focus-visible) .tp.tn2
+        .tt{opacity:1;visibility:visible}.jc-f1a0f54a:has(.nd.n2:hover,.nd.n2:focus-visible)
+        .nd:not(.n2):not(.j2){opacity:.22}.jc-f1a0f54a:has(.nd.n2:hover,.nd.n2:focus-visible)
+        .eg:not(.e2){opacity:.07}.jc-f1a0f54a:has(.nd.n2:hover,.nd.n2:focus-visible) .eg.e2
+        .ep{stroke-opacity:1}.jc-f1a0f54a:has(.mk.n3:hover,.mk.n3:focus-visible) .tp.tn3
+        .tt{opacity:1;visibility:visible}.jc-f1a0f54a:has(.nd.n3:hover,.nd.n3:focus-visible)
+        .nd:not(.n3):not(.j3){opacity:.22}.jc-f1a0f54a:has(.nd.n3:hover,.nd.n3:focus-visible)
+        .eg:not(.e3){opacity:.07}.jc-f1a0f54a:has(.nd.n3:hover,.nd.n3:focus-visible) .eg.e3
+        .ep{stroke-opacity:1}.jc-f1a0f54a:has(.mk.n4:hover,.mk.n4:focus-visible) .tp.tn4
+        .tt{opacity:1;visibility:visible}.jc-f1a0f54a:has(.nd.n4:hover,.nd.n4:focus-visible)
+        .nd:not(.n4):not(.j4){opacity:.22}.jc-f1a0f54a:has(.nd.n4:hover,.nd.n4:focus-visible)
+        .eg:not(.e4){opacity:.07}.jc-f1a0f54a:has(.nd.n4:hover,.nd.n4:focus-visible) .eg.e4
+        .ep{stroke-opacity:1}.jc-f1a0f54a:has(.mk.n5:hover,.mk.n5:focus-visible) .tp.tn5
+        .tt{opacity:1;visibility:visible}.jc-f1a0f54a:has(.nd.n5:hover,.nd.n5:focus-visible)
+        .nd:not(.n5):not(.j5){opacity:.22}.jc-f1a0f54a:has(.nd.n5:hover,.nd.n5:focus-visible)
+        .eg:not(.e5){opacity:.07}.jc-f1a0f54a:has(.nd.n5:hover,.nd.n5:focus-visible) .eg.e5
+        .ep{stroke-opacity:1}.jc-f1a0f54a:has(.mk.n6:hover,.mk.n6:focus-visible) .tp.tn6
+        .tt{opacity:1;visibility:visible}.jc-f1a0f54a:has(.nd.n6:hover,.nd.n6:focus-visible)
+        .nd:not(.n6):not(.j6){opacity:.22}.jc-f1a0f54a:has(.nd.n6:hover,.nd.n6:focus-visible)
+        .eg:not(.e6){opacity:.07}.jc-f1a0f54a:has(.nd.n6:hover,.nd.n6:focus-visible) .eg.e6 .ep{stroke-opacity:1}
+    </style>
+    <rect class="bg" x="0" y="0" width="665" height="398" rx="8"/>
+    <text class="ttl" x="16" y="32">Funds flow</text>
+    <text class="sub" x="16" y="50">Lanes by institution, columns by first movement</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="62" width="57.12" height="18"/>
+        <rect class="sw" x="16" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="75">Bank A</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="89.12" y="62" width="57.12" height="18"/>
+        <rect class="sw" x="91.12" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="109.12" y="75">Bank B</text>
+    </g>
+    <g class="lg s2">
+        <rect class="hit" x="164.24" y="62" width="51.36" height="18"/>
+        <rect class="sw" x="166.24" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="184.24" y="75">Mules</text>
+    </g>
+    <g transform="translate(22 90)">
+        <defs>
+            <marker id="jc-f1a0f54a-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9"
+                    markerUnits="userSpaceOnUse" orient="auto">
+                <path class="ah" d="M0 0L10 5L0 10Z"/>
+            </marker>
+        </defs>
+        <text class="key end mid" x="54.01" y="24">Bank A</text>
+        <line class="gl" x1="62.01" y1="24" x2="614.01" y2="24"/>
+        <text class="key end mid" x="54.01" y="116">Bank B</text>
+        <line class="gl" x1="62.01" y1="116" x2="614.01" y2="116"/>
+        <text class="key end mid" x="54.01" y="208">Mules</text>
+        <line class="gl" x1="62.01" y1="208" x2="614.01" y2="208"/>
+        <text class="tk ctr" x="110.01" y="260">09:00</text>
+        <text class="tk ctr" x="186.01" y="260">09:00</text>
+        <text class="tk ctr" x="262.01" y="260">09:20</text>
+        <text class="tk ctr" x="338.01" y="260">09:25</text>
+        <text class="tk ctr" x="414.01" y="260">10:00</text>
+        <text class="tk ctr" x="490.01" y="260">11:10</text>
+        <text class="tk ctr" x="566.01" y="260">12:00</text>
+        <g class="mk x0 eg e0 e1" tabindex="0" role="graphics-symbol"
+           aria-label="Victim to Account A2, Amount: 4500, Events: 3, First: 2026-03-02 09:00, Last: 2026-03-02 09:05"
+           data-from="a1" data-to="a2" data-edge="p1" data-kind="directed" data-first="1772442000"
+           data-last="1772442300">
+            <title>Victim to Account A2, Amount: 4500, Events: 3, First: 2026-03-02 09:00, Last: 2026-03-02 09:05
+            </title>
+            <path class="eh" d="M124.13 18.94Q148.01 7.28 171.89 18.94"/>
+            <path class="ep et" d="M124.13 18.94Q148.01 7.28 171.89 18.94" style="stroke-width:4.5"
+                  marker-end="url(#jc-f1a0f54a-ar)"/>
+            <text class="ant ctr" x="148.01" y="-5.89">×3 4500</text>
+        </g>
+        <g class="mk x1 eg e1 e2" tabindex="0" role="graphics-symbol"
+           aria-label="Account A2 to Account B1, Amount: 3000, First: 2026-03-02 09:20" data-from="a2" data-to="b1"
+           data-edge="p2" data-kind="directed" data-first="1772443200" data-last="1772443200">
+            <title>Account A2 to Account B1, Amount: 3000, First: 2026-03-02 09:20</title>
+            <path class="eh" d="M192.98 37.28Q212.97 79.12 250.28 106.65"/>
+            <path class="ep et" d="M192.98 37.28Q212.97 79.12 250.28 106.65" style="stroke-width:3.3"
+                  marker-end="url(#jc-f1a0f54a-ar)"/>
+            <text class="ant ctr" x="217.3" y="70.54">3000</text>
+        </g>
+        <g class="mk x2 eg e1 e3" tabindex="0" role="graphics-symbol"
+           aria-label="Account A2 to Account B2, Amount: 1400, First: 2026-03-02 09:25" data-from="a2" data-to="b2"
+           data-edge="p3" data-kind="directed" data-first="1772443500" data-last="1772443500">
+            <title>Account A2 to Account B2, Amount: 1400, First: 2026-03-02 09:25</title>
+            <path class="eh" d="M196.87 34.35Q250.97 88.24 323.81 111.17"/>
+            <path class="ep et" d="M196.87 34.35Q250.97 88.24 323.81 111.17" style="stroke-width:2.02"
+                  marker-end="url(#jc-f1a0f54a-ar)"/>
+            <text class="ant ctr" x="255.66" y="75.5">1400</text>
+        </g>
+        <g class="mk x3 eg e2 e4" tabindex="0" role="graphics-symbol"
+           aria-label="Account B1 to Mule 1, Amount: 3000, Events: 2, First: 2026-03-02 10:00, Last: 2026-03-02 11:00"
+           data-from="b1" data-to="m1" data-edge="p4" data-kind="directed" data-first="1772445600"
+           data-last="1772449200">
+            <title>Account B1 to Mule 1, Amount: 3000, Events: 2, First: 2026-03-02 10:00, Last: 2026-03-02 11:00
+            </title>
+            <path class="eh" d="M272.87 126.35Q326.97 180.24 399.81 203.17"/>
+            <path class="ep et" d="M272.87 126.35Q326.97 180.24 399.81 203.17" style="stroke-width:3.3"
+                  marker-end="url(#jc-f1a0f54a-ar)"/>
+            <text class="ant ctr" x="331.66" y="167.5">×2 3000</text>
+        </g>
+        <g class="mk x5 eg e3 e5" tabindex="0" role="graphics-symbol"
+           aria-label="Account B2 to Mule 2, Amount: 1350, First: 2026-03-02 11:10" data-from="b2" data-to="m2"
+           data-edge="p6" data-kind="directed" data-first="1772449800" data-last="1772449800">
+            <title>Account B2 to Mule 2, Amount: 1350, First: 2026-03-02 11:10</title>
+            <path class="eh" d="M348.87 126.35Q402.97 180.24 475.81 203.17"/>
+            <path class="ep et" d="M348.87 126.35Q402.97 180.24 475.81 203.17" style="stroke-width:1.98"
+                  marker-end="url(#jc-f1a0f54a-ar)"/>
+            <text class="ant ctr" x="407.66" y="167.5">1350</text>
+        </g>
+        <g class="mk x6 eg e4 e6" tabindex="0" role="graphics-symbol"
+           aria-label="Mule 1 to Exchange, Amount: 2950, Events: 2, First: 2026-03-02 12:00" data-from="m1" data-to="x1"
+           data-edge="p7" data-kind="directed" data-first="1772452800" data-last="1772452800">
+            <title>Mule 1 to Exchange, Amount: 2950, Events: 2, First: 2026-03-02 12:00</title>
+            <path class="eh" d="M427.94 202.43Q490.01 174.56 552.08 202.43"/>
+            <path class="ep et" d="M427.94 202.43Q490.01 174.56 552.08 202.43" style="stroke-width:3.26"
+                  marker-end="url(#jc-f1a0f54a-ar)"/>
+            <text class="ant ctr" x="490.01" y="183.5">×2 2950</text>
+        </g>
+        <g class="mk x7 eg e5 e6" tabindex="0" role="graphics-symbol"
+           aria-label="Mule 2 to Exchange, Amount: 1300, First: 2026-03-02 12:30" data-from="m2" data-to="x1"
+           data-edge="p8" data-kind="directed" data-first="1772454600" data-last="1772454600">
+            <title>Mule 2 to Exchange, Amount: 1300, First: 2026-03-02 12:30</title>
+            <path class="eh" d="M504.13 202.94Q528.01 191.28 551.89 202.94"/>
+            <path class="ep et" d="M504.13 202.94Q528.01 191.28 551.89 202.94" style="stroke-width:1.94"
+                  marker-end="url(#jc-f1a0f54a-ar)"/>
+            <text class="ant ctr" x="528.01" y="192.11">1300</text>
+        </g>
+        <g class="mk x8 eg e5 e4" tabindex="0" role="graphics-symbol"
+           aria-label="Mule 2 to Mule 1, Amount: 50, First: 2026-03-02 13:00" data-from="m2" data-to="m1" data-edge="p9"
+           data-kind="directed" data-first="1772456400" data-last="1772456400">
+            <title>Mule 2 to Mule 1, Amount: 50, First: 2026-03-02 13:00</title>
+            <path class="eh" d="M475.89 213.06Q452.01 224.72 428.13 213.06"/>
+            <path class="ep et" d="M475.89 213.06Q452.01 224.72 428.13 213.06" style="stroke-width:0.94"
+                  marker-end="url(#jc-f1a0f54a-ar)"/>
+            <text class="ant ctr" x="452.01" y="227.89">50</text>
+        </g>
+        <g class="mk n0 nd s0 j1" tabindex="0" role="graphics-symbol"
+           aria-label="Victim, Bank A, Edges in: 0, out: 1, First seen: 2026-03-02 09:00, 3" data-node="a1"
+           data-kind="circle" data-first="1772442000">
+            <title>Victim, Bank A, Edges in: 0, out: 1, First seen: 2026-03-02 09:00, 3</title>
+            <circle class="nb" cx="110.01" cy="24" r="14"/>
+            <circle class="nt" cx="110.01" cy="24" r="14"/>
+            <text class="lbl ctr" x="110.01" y="50">Victim</text>
+            <rect class="nb" x="120.01" y="5" width="14" height="14" rx="7"/>
+            <text class="lbl ctr mid fs10" x="127.01" y="12">3</text>
+        </g>
+        <g class="mk n1 nd s0 j0 j2 j3" tabindex="0" role="graphics-symbol"
+           aria-label="Account A2, Bank A, Edges in: 1, out: 2" data-node="a2" data-kind="circle">
+            <title>Account A2, Bank A, Edges in: 1, out: 2</title>
+            <circle class="nb" cx="186.01" cy="24" r="14"/>
+            <circle class="nt" cx="186.01" cy="24" r="14"/>
+            <text class="lbl ctr" x="186.01" y="50">Account A2</text>
+        </g>
+        <g class="mk n2 nd s1 j1 j4" tabindex="0" role="graphics-symbol"
+           aria-label="Account B1, Bank B, Edges in: 1, out: 1" data-node="b1" data-kind="circle">
+            <title>Account B1, Bank B, Edges in: 1, out: 1</title>
+            <circle class="nb" cx="262.01" cy="116" r="14"/>
+            <circle class="nt" cx="262.01" cy="116" r="14"/>
+            <text class="lbl ctr" x="262.01" y="142">Account B1</text>
+        </g>
+        <g class="mk n3 nd s1 j1 j5" tabindex="0" role="graphics-symbol"
+           aria-label="Account B2, Bank B, Edges in: 1, out: 1" data-node="b2" data-kind="circle">
+            <title>Account B2, Bank B, Edges in: 1, out: 1</title>
+            <circle class="nb" cx="338.01" cy="116" r="14"/>
+            <circle class="nt" cx="338.01" cy="116" r="14"/>
+            <text class="lbl ctr" x="338.01" y="142">Account B2</text>
+        </g>
+        <g class="mk n4 nd s2 j2 j5 j6" tabindex="0" role="graphics-symbol"
+           aria-label="Mule 1, Mules, Edges in: 2, out: 1, ★" data-node="m1" data-kind="circle">
+            <title>Mule 1, Mules, Edges in: 2, out: 1, ★</title>
+            <circle class="nb" cx="414.01" cy="208" r="14"/>
+            <circle class="nt" cx="414.01" cy="208" r="14"/>
+            <text class="lbl ctr" x="414.01" y="234">Mule 1</text>
+            <rect class="nb" x="424.01" y="189" width="14" height="14" rx="7"/>
+            <text class="lbl ctr mid fs10" x="431.01" y="196">★</text>
+        </g>
+        <g class="mk n5 nd s2 j3 j4 j6" tabindex="0" role="graphics-symbol"
+           aria-label="Mule 2, Mules, Edges in: 1, out: 2" data-node="m2" data-kind="circle">
+            <title>Mule 2, Mules, Edges in: 1, out: 2</title>
+            <circle class="nb" cx="490.01" cy="208" r="14"/>
+            <circle class="nt" cx="490.01" cy="208" r="14"/>
+            <text class="lbl ctr" x="490.01" y="234">Mule 2</text>
+        </g>
+        <g class="mk n6 nd s2 j4 j5" tabindex="0" role="graphics-symbol"
+           aria-label="Exchange, Mules, Edges in: 2, out: 0" data-node="x1" data-kind="triangle">
+            <title>Exchange, Mules, Edges in: 2, out: 0</title>
+            <path class="nb" d="M566.01 194L579.31 216.4L552.71 216.4Z"/>
+            <path class="nt" d="M566.01 194L579.31 216.4L552.71 216.4Z"/>
+            <text class="lbl ctr" x="566.01" y="234">Exchange</text>
+        </g>
+    </g>
+    <text class="kn" x="22" y="375">thickness = amount</text>
+    <g class="tps">
+        <g class="tp tx0">
+            <g class="tt">
+                <rect class="tb" x="180.01" y="50.61" width="147.68" height="95" rx="6"/>
+                <text class="tx b" x="190.01" y="68.61">Victim to Account A2</text>
+                <text class="tx" x="190.01" y="85.61">Amount: 4500</text>
+                <text class="tx" x="190.01" y="102.61">Events: 3</text>
+                <text class="tx" x="190.01" y="119.61">First: 2026-03-02 09:00</text>
+                <text class="tx" x="190.01" y="136.61">Last: 2026-03-02 09:05</text>
+            </g>
+        </g>
+        <g class="tp tx1">
+            <g class="tt">
+                <rect class="tb" x="249.3" y="130.04" width="171.62" height="61" rx="6"/>
+                <text class="tx b" x="259.3" y="148.04">Account A2 to Account B1</text>
+                <text class="tx" x="259.3" y="165.04">Amount: 3000</text>
+                <text class="tx" x="259.3" y="182.04">First: 2026-03-02 09:20</text>
+            </g>
+        </g>
+        <g class="tp tx2">
+            <g class="tt">
+                <rect class="tb" x="287.66" y="135" width="171.62" height="61" rx="6"/>
+                <text class="tx b" x="297.66" y="153">Account A2 to Account B2</text>
+                <text class="tx" x="297.66" y="170">Amount: 1400</text>
+                <text class="tx" x="297.66" y="187">First: 2026-03-02 09:25</text>
+            </g>
+        </g>
+        <g class="tp tx3">
+            <g class="tt">
+                <rect class="tb" x="363.66" y="210" width="147.68" height="95" rx="6"/>
+                <text class="tx b" x="373.66" y="228">Account B1 to Mule 1</text>
+                <text class="tx" x="373.66" y="245">Amount: 3000</text>
+                <text class="tx" x="373.66" y="262">Events: 2</text>
+                <text class="tx" x="373.66" y="279">First: 2026-03-02 10:00</text>
+                <text class="tx" x="373.66" y="296">Last: 2026-03-02 11:00</text>
+            </g>
+        </g>
+        <g class="tp tx5">
+            <g class="tt">
+                <rect class="tb" x="439.66" y="227" width="147.68" height="61" rx="6"/>
+                <text class="tx b" x="449.66" y="245">Account B2 to Mule 2</text>
+                <text class="tx" x="449.66" y="262">Amount: 1350</text>
+                <text class="tx" x="449.66" y="279">First: 2026-03-02 11:10</text>
+            </g>
+        </g>
+        <g class="tp tx6">
+            <g class="tt">
+                <rect class="tb" x="354.33" y="234.5" width="147.68" height="78" rx="6"/>
+                <text class="tx b" x="364.33" y="252.5">Mule 1 to Exchange</text>
+                <text class="tx" x="364.33" y="269.5">Amount: 2950</text>
+                <text class="tx" x="364.33" y="286.5">Events: 2</text>
+                <text class="tx" x="364.33" y="303.5">First: 2026-03-02 12:00</text>
+            </g>
+        </g>
+        <g class="tp tx7">
+            <g class="tt">
+                <rect class="tb" x="392.33" y="251.61" width="147.68" height="61" rx="6"/>
+                <text class="tx b" x="402.33" y="269.61">Mule 2 to Exchange</text>
+                <text class="tx" x="402.33" y="286.61">Amount: 1300</text>
+                <text class="tx" x="402.33" y="303.61">First: 2026-03-02 12:30</text>
+            </g>
+        </g>
+        <g class="tp tx8">
+            <g class="tt">
+                <rect class="tb" x="484.01" y="273.39" width="147.68" height="61" rx="6"/>
+                <text class="tx b" x="494.01" y="291.39">Mule 2 to Mule 1</text>
+                <text class="tx" x="494.01" y="308.39">Amount: 50</text>
+                <text class="tx" x="494.01" y="325.39">First: 2026-03-02 13:00</text>
+            </g>
+        </g>
+        <g class="tp tn0">
+            <g class="tt">
+                <rect class="tb" x="156.01" y="66.5" width="176.96" height="95" rx="6"/>
+                <text class="tx b" x="166.01" y="84.5">Victim</text>
+                <text class="tx" x="166.01" y="101.5">Bank A</text>
+                <text class="tx" x="166.01" y="118.5">Edges in: 0, out: 1</text>
+                <text class="tx" x="166.01" y="135.5">First seen: 2026-03-02 09:00</text>
+                <text class="tx" x="166.01" y="152.5">3</text>
+            </g>
+        </g>
+        <g class="tp tn1">
+            <g class="tt">
+                <rect class="tb" x="232.01" y="83.5" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="242.01" y="101.5">Account A2</text>
+                <text class="tx" x="242.01" y="118.5">Bank A</text>
+                <text class="tx" x="242.01" y="135.5">Edges in: 1, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn2">
+            <g class="tt">
+                <rect class="tb" x="308.01" y="175.5" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="318.01" y="193.5">Account B1</text>
+                <text class="tx" x="318.01" y="210.5">Bank B</text>
+                <text class="tx" x="318.01" y="227.5">Edges in: 1, out: 1</text>
+            </g>
+        </g>
+        <g class="tp tn3">
+            <g class="tt">
+                <rect class="tb" x="384.01" y="175.5" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="394.01" y="193.5">Account B2</text>
+                <text class="tx" x="394.01" y="210.5">Bank B</text>
+                <text class="tx" x="394.01" y="227.5">Edges in: 1, out: 1</text>
+            </g>
+        </g>
+        <g class="tp tn4">
+            <g class="tt">
+                <rect class="tb" x="460.01" y="259" width="116.96" height="78" rx="6"/>
+                <text class="tx b" x="470.01" y="277">Mule 1</text>
+                <text class="tx" x="470.01" y="294">Mules</text>
+                <text class="tx" x="470.01" y="311">Edges in: 2, out: 1</text>
+                <text class="tx" x="470.01" y="328">★</text>
+            </g>
+        </g>
+        <g class="tp tn5">
+            <g class="tt">
+                <rect class="tb" x="399.05" y="267.5" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="409.05" y="285.5">Mule 2</text>
+                <text class="tx" x="409.05" y="302.5">Mules</text>
+                <text class="tx" x="409.05" y="319.5">Edges in: 1, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn6">
+            <g class="tt">
+                <rect class="tb" x="475.05" y="267.5" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="485.05" y="285.5">Exchange</text>
+                <text class="tx" x="485.05" y="302.5">Mules</text>
+                <text class="tx" x="485.05" y="319.5">Edges in: 2, out: 0</text>
+            </g>
+        </g>
+    </g>
+</svg>

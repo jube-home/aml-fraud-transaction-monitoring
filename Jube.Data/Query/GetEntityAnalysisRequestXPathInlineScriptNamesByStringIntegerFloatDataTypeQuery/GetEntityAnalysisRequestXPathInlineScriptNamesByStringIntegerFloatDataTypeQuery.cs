@@ -54,7 +54,7 @@ namespace Jube.Data.Query.GetEntityAnalysisRequestXPathInlineScriptNamesByString
             var entityAnalysisInlineScriptRepository = new EntityAnalysisInlineScriptRepository(dbContext);
 
             var entityAnalysisModelRequestXpaths = await entityAnalysisModelRequestXpath
-                .GetByEntityAnalysisModelIdByDataTypeAsync(entityAnalysisModelId, token, 1, 3);
+                .GetByEntityAnalysisModelIdByDataTypeAsync(entityAnalysisModelId, token, 1, 3, 8);
 
             entityAnalysisModelRequestXpaths = entityAnalysisModelRequestXpaths.Where(w => w.Active == 1);
 

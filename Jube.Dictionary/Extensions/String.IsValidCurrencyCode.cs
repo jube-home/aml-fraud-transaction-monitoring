@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Whether the text is an active ISO 4217 currency code.")]
         public static bool IsValidCurrencyCode(this string? @this)
         {
             return IsoReferenceData.currencyExponents.ContainsKey((@this ?? "").Trim());

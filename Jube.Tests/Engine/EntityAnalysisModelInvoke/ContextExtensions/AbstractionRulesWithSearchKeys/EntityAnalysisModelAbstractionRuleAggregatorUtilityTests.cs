@@ -116,6 +116,35 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.ContextExtensions.Abstracti
         }
 
         [Fact]
+        public void AggregateReturnsTheCursorResultCarriedByTheScanForTheCursorResultFunction()
+        {
+            var rule = NewRule(46, null!);
+            var scanned = new AbstractionMatchList { CursorResult = 12.5 };
+            var matches = new ConcurrentDictionary<int, List<DictionaryNoBoxing<string>>> { [rule.Id] = scanned };
+
+            var result = EntityAnalysisModelAbstractionRuleAggregatorUtility.Aggregate(
+                NewPayload(), matches, rule, TestLog.NoOp);
+
+            result.Should().Be(12.5);
+        }
+
+        [Fact]
+        public void AggregateReturnsZeroForTheCursorResultFunctionWhenTheMatchesDidNotComeFromACursorScan()
+        {
+            var rule = NewRule(46, null!);
+
+            var matches = new ConcurrentDictionary<int, List<DictionaryNoBoxing<string>>>
+            {
+                [rule.Id] = [Doc(("Amount", 10d))]
+            };
+
+            var result = EntityAnalysisModelAbstractionRuleAggregatorUtility.Aggregate(
+                NewPayload(), matches, rule, TestLog.NoOp);
+
+            result.Should().Be(0);
+        }
+
+        [Fact]
         public void AggregateReturnsZeroWhenTheMatchedListForTheRuleIsPresentButEmpty()
         {
             var rule = NewRule(1);

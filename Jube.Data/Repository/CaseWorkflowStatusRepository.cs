@@ -1,3 +1,4 @@
+using Jube.Data.Concurrency;
 /* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
@@ -20,6 +21,7 @@ namespace Jube.Data.Repository
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
 
     public class CaseWorkflowStatusRepository
@@ -201,6 +203,8 @@ namespace Jube.Data.Repository
                 throw new KeyNotFoundException();
             }
 
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
+
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
             model.CreatedUser = existing.CreatedUser;
@@ -208,6 +212,7 @@ namespace Jube.Data.Repository
             model.UpdatedUser = userName;
             model.UpdatedDate = DateTime.UtcNow;
             model.ImportId = existing.ImportId;
+            model.CaseWorkflowId = existing.CaseWorkflowId;
 
             await dbContext.UpdateAsync(model, token: token);
 
@@ -223,6 +228,7 @@ namespace Jube.Data.Repository
                 UpdatedDate = existing.UpdatedDate,
                 UpdatedUser = existing.UpdatedUser,
                 Version = existing.Version,
+                Sql = existing.Sql,
                 ForeColor = existing.ForeColor,
                 BackColor = existing.BackColor,
                 EnableHttpEndpoint = existing.EnableHttpEndpoint,
@@ -234,6 +240,8 @@ namespace Jube.Data.Repository
                 NotificationSubject = existing.NotificationSubject,
                 NotificationBody = existing.NotificationBody,
                 Priority = existing.Priority,
+                OutcomeId = existing.OutcomeId,
+                MaxDwellMinutes = existing.MaxDwellMinutes,
             };
 
             await dbContext.InsertAsync(audit, token: token);

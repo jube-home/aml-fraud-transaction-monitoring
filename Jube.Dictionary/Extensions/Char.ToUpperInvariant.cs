@@ -6,6 +6,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Converts the character to uppercase using invariant culture rules.")]
         public static Char ToUpperInvariant(this Char c)
         {
             return char.ToUpperInvariant(c);

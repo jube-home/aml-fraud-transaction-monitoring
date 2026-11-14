@@ -13,6 +13,7 @@
 
 using Jube.Data.Repository.Models;
 using System;
+using Jube.Data.Reporting.Check;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Concurrent;
@@ -34,7 +35,7 @@ using Jube.App.Code.ServiceChange;
 using Jube.App.Code.Waf;
 using Jube.App.Code.Watcher;
 using Jube.App.Endpoints;
-using Jube.App.Endpoints.AdvancedAnalytics;
+using Jube.App.Endpoints.AskJoobyAnalytics;
 using Jube.App.Endpoints.Mocks;
 using Jube.App.Endpoints.Query;
 using Jube.App.Endpoints.Repository;
@@ -42,6 +43,7 @@ using Jube.App.Endpoints.VersionHistory;
 using Jube.App.Middlewares;
 using Jube.App.Middlewares.Extensions;
 using Jube.App.Middlewares.Models;
+using Jube.App.Wire;
 using Jube.AskJooby.Agents;
 using Jube.AskJooby.Guidance;
 using Jube.AskJooby.Guidance.Interfaces;
@@ -50,13 +52,16 @@ using Jube.AskJooby.Routing.Interfaces;
 using Jube.AskJooby.Security;
 using Jube.AskJooby.Security.Models;
 using Jube.Cache;
+using Jube.Cache.Resp.Interfaces;
 using Jube.Cache.Observability;
-using Jube.Cache.Redis.Callback;
+using Jube.Cache.Resp.Callback;
 using Jube.Data.Context;
 using Jube.Data.Observability;
+using Jube.Data.Reporting;
 using Jube.Data.Observability.NpgsqlEventCounterBridge;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
+using Jube.Dto.Forms;
 using Jube.Engine.BackgroundTasks.TaskStarters.Metrics.OpenTelemetry;
 using Jube.Engine.EntityAnalysisModelInvoke.ImplicitAsync;
 using Jube.Engine.EntityAnalysisModelInvoke.ImplicitAsync.Interfaces;
@@ -72,13 +77,17 @@ using Jube.Service.AskJoobyOpenCorporates;
 using Jube.Service.AskJoobyRagChunk;
 using Jube.Service.AskJoobyRagChunk.Interfaces;
 using Jube.Service.AskJoobyWebSearch;
+using Jube.Service.Query.CaseNarrative.Interfaces;
 using Jube.Service.Authentication;
 using Jube.Service.Observability;
 using Jube.Service.Observability.OtlpDispatchCounters;
+using Jube.Service.Query.FormModel;
+using Jube.Service.Query.GridModel;
 using Jube.Service.Reactivity;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.TaskCancellation;
 using Jube.TaskCancellation.Interfaces;
+using Jube.Validations.EntityAnalysisModelTag;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -86,6 +95,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -117,12 +127,26 @@ namespace Jube.App
         public void ConfigureServices(IServiceCollection services)
         {
             var dynamicEnvironment = AddSingletonForDynamicEnvironmentAndLogging(services, out var log);
+            WarnOnReportConnection(dynamicEnvironment, log);
+            Engine.CaseEscalation.CaseStatusDispatchRegistry.Current =
+                new Service.CaseDispatch.ServiceCaseStatusDispatcher();
+            Engine.CaseEscalation.CaseChecklistBypassRegistry.Current =
+                new Service.Query.CaseChecklist.ServiceCaseChecklistBypass(dynamicEnvironment, log);
             var cancellationTokenProvider = AddSingletonForCancellationToken(services);
             var taskCoordinator = AddSingletonForTaskCoordinator(services, cancellationTokenProvider, log);
             var contractResolver = AddSingletonForJsonSerializationHelper(services);
 
+            services.AddSingleton(FormModelRegistry.Build(typeof(FormEndpointAttribute).Assembly,
+                typeof(EntityAnalysisModelTagDtoValidator).Assembly));
+            services.AddSingleton(GridModelRegistry.Build(typeof(GridEndpointAttribute).Assembly));
+
             ConfigureThreadPool(dynamicEnvironment, log);
             ValidateConnectionToPostgres(dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            SqlSchemaSnapshotCache.DefaultConnectionString =
+                dynamicEnvironment.AppSettings("ReportConnectionString") ??
+                dynamicEnvironment.AppSettings("ConnectionString");
+            SqlSchemaSnapshotCache.Invalidate();
 
             var callbacks = AddSingletonForCallbacks(services);
             var watcherStreamRegistry = AddSingletonForWatcherStreamRegistry(services, log);
@@ -143,14 +167,53 @@ namespace Jube.App
             var logCounterRuleCache = AddSingletonForLogCounterRuleCache(services, log, dynamicEnvironment,
                 taskCoordinator, openTelemetryExcludeCache);
 
+            var svirfdHost = AddSingletonForSvirfd(services, dynamicEnvironment, log);
+
             AddSingletonForEngine(services, dynamicEnvironment, log, rabbitMqConnection, cacheService, contractResolver,
-                taskCoordinator, implicitAsyncInvocationTracker, openTelemetryExcludeCache, logCounterRuleCache);
+                taskCoordinator, implicitAsyncInvocationTracker, openTelemetryExcludeCache, logCounterRuleCache,
+                svirfdHost);
 
             AddSingletonForIdentity(services);
             AddSingletonForLoginSourceIpThrottle(services);
             AddSingletonForGlobalHttpRequestSourceIpThrottle(services);
             ConfigureAuthentication(services, dynamicEnvironment, log);
             AddGenericServicesRequired(services, watcherStreamRegistry, serviceChangeStreamRegistry);
+
+            WireOptions.TryParse(dynamicEnvironment.AppSettings("WireSerialisationMode"), out var wireMode);
+            WireOptions.TryParseCompression(dynamicEnvironment.AppSettings("WireMessagePackCompression"),
+                out var wireCompression);
+            var wireGeneratedDecoders = !"False".Equals(dynamicEnvironment.AppSettings("WireGeneratedDecoders"),
+                StringComparison.OrdinalIgnoreCase);
+
+            if ("True".Equals(dynamicEnvironment.AppSettings("WireEnvelopeEncryption"),
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                var wireCipher = new WireCipher(dynamicEnvironment.AppSettings("WireEnvelopeEncryptionPrivateKey"),
+                    dynamicEnvironment.AppSettings("WireEnvelopeEncryptionPublicKey"));
+
+                services.AddSingleton(wireCipher);
+                services.AddSingleton<ICacheWireReplayRepository>(cacheService.CacheWireReplayRepository);
+                services.AddSingleton(TimeProvider.System);
+                services.AddSingleton(new WireOptions(wireMode, wireCipher.PublicKey, wireCompression,
+                    wireGeneratedDecoders));
+            }
+            else
+            {
+                services.AddSingleton(new WireOptions(wireMode, compression: wireCompression,
+                    generatedDecoders: wireGeneratedDecoders));
+            }
+
+            WireOptions.TryParseHttpCompression(dynamicEnvironment.AppSettings("WireHttpCompression"),
+                out var wireHttpCompression);
+            WireOptions.TryParseHttpCompressionLevel(dynamicEnvironment.AppSettings("WireHttpCompressionLevel"),
+                out var wireHttpCompressionLevel);
+
+            if (wireHttpCompression != WireHttpCompressionKind.None)
+            {
+                services.AddWireHttpCompression(wireHttpCompression, wireHttpCompressionLevel,
+                    wireCompression == WireCompression.Lz4);
+            }
+
             AddDataProtection(services, dynamicEnvironment);
             AddSwagger(services);
             AddSingletonForServiceChangeBus(services, dynamicEnvironment, cacheService, serviceChangeStreamRegistry);
@@ -174,7 +237,7 @@ namespace Jube.App
                 "Microsoft.AspNetCore.Authentication", "Microsoft.AspNetCore.Authorization",
                 "OpenTelemetry.Instrumentation.Process");
 
-            RedisCommandMetricBridge.Start();
+            RespCommandMetricBridge.Start();
             DataDiagnostics.Start();
             NpgsqlEventCounterBridge.Start();
 
@@ -226,16 +289,28 @@ namespace Jube.App
                     appBuilder => appBuilder.UseHttpsRedirection()
                 );
 
+                if (WireOptions.TryParseHttpCompression(dynamicEnvironment.AppSettings("WireHttpCompression"),
+                        out var httpCompression) && httpCompression != WireHttpCompressionKind.None)
+                {
+                    app.UseResponseCompression();
+                }
+
                 app.UseMiddleware<RequestHardeningMiddleware>();
                 app.UseRouting();
 
-                app.UseRequestLocalization(new RequestLocalizationOptions()
-                    .SetDefaultCulture("en")
-                    .AddSupportedCultures("en")
-                    .AddSupportedUICultures("en"));
+                app.UseRequestLocalization(RequestLocalisation.Options());
+
+                app.UseMiddleware<VersionConflictMiddleware>();
 
                 app.UseAuthentication();
                 app.UseAuthorization();
+                if ("True".Equals(dynamicEnvironment.AppSettings("WireEnvelopeEncryption"),
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    app.UseMiddleware<WireEncryptionMiddleware>();
+                }
+
+                app.UseMiddleware<MessagePackRequestMiddleware>();
                 app.UseMiddleware<EmptyBodyGuardMiddleware>();
                 app.UseMiddleware<WafMiddleware>();
 
@@ -257,7 +332,7 @@ namespace Jube.App
                                        lifetime.ApplicationStopping.IsCancellationRequested,
                     branch => branch.UseConditionalConnectionCloseWhenStopping());
 
-                app.UseWhen(context => context.Request.Path.StartsWithSegments("/Account"), appBuilder =>
+                app.UseWhen(context => context.Request.Path.StartsWithSegments("/login"), appBuilder =>
                 {
                     appBuilder.Use(async (context, next) =>
                     {
@@ -290,7 +365,7 @@ namespace Jube.App
                         if (!request.Path.StartsWithSegments("/api"))
                         {
                             response.Redirect(
-                                $"/Account/Login?RedirectUrl={Uri.EscapeDataString(request.Path + request.QueryString)}");
+                                $"/login?redirect={Uri.EscapeDataString(request.Path + request.QueryString)}");
                         }
 
                         return Task.CompletedTask;
@@ -312,7 +387,24 @@ namespace Jube.App
                 app.UseWhen(
                     httpContext =>
                         !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
-                    appBuilder => appBuilder.UseStaticFiles()
+                    appBuilder => appBuilder.UseMiddleware<ClientBuildAssetMiddleware>()
+                );
+
+                app.UseWhen(
+                    httpContext =>
+                        !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
+                    appBuilder => appBuilder.UseStaticFiles(new StaticFileOptions
+                    {
+                        OnPrepareResponse = staticFileContext =>
+                        {
+                            if (staticFileContext.Context.Request.Path.StartsWithSegments("/assets",
+                                    StringComparison.OrdinalIgnoreCase))
+                            {
+                                staticFileContext.Context.Response.Headers.CacheControl =
+                                    "public, max-age=31536000, immutable";
+                            }
+                        }
+                    })
                 );
 
                 app.UseWhen(
@@ -349,185 +441,286 @@ namespace Jube.App
 
                 app.UseEndpoints(endpoints =>
                 {
-                    endpoints.MapRazorPages();
                     endpoints.MapControllers();
-                    endpoints.MapAntiforgeryTokenEndpoints();
-                    endpoints.MapEntityAnalysisModelEndpoints();
-                    endpoints.MapEntityAnalysisModelRequestXPathEndpoints();
-                    endpoints.MapEntityAnalysisModelInlineFunctionEndpoints();
-                    endpoints.MapEntityAnalysisModelInlineScriptEndpoints();
-                    endpoints.MapEntityAnalysisModelGatewayRuleEndpoints();
-                    endpoints.MapEntityAnalysisModelSanctionEndpoints();
-                    endpoints.MapEntityAnalysisModelTagEndpoints();
-                    endpoints.MapEntityApprovalEndpoints();
-                    endpoints.MapVersionHistoryEndpoints();
-                    endpoints.MapEntityAnalysisModelStagePerformanceCounterEndpoints();
-                    endpoints.MapEntityAnalysisModelIntegrityEndpoints();
-                    endpoints.MapQueryBuilderEndpoints();
-                    endpoints.MapEntityAnalysisModelEngineStateEndpoints();
-                    endpoints.MapEntityAnalysisModelDependencyGraphEndpoints();
-                    endpoints.MapEntityAnalysisModelDependencyEndpoints();
-                    endpoints.MapEntityAnalysisModelBacktestEndpoints();
-                    endpoints.MapEntityAnalysisModelResponseTimePipelineCounterEndpoints();
-                    endpoints.MapEntityAnalysisModelTaskPerformanceCounterEndpoints();
-                    endpoints.MapApplicationLogEntryEndpoints();
-                    endpoints.MapWafAttackEndpoints();
-                    endpoints.MapDotNetRuntimeMetricEndpoints();
-                    endpoints.MapPostgresMetricEndpoints();
-                    endpoints.MapRedisMetricEndpoints();
-                    endpoints.MapRedisSlowOperationEndpoints();
-                    endpoints.MapRedisConnectionMultiplexerMetricEndpoints();
-                    endpoints.MapPostgresTableStatisticsEndpoints();
-                    endpoints.MapPostgresIndexStatisticsEndpoints();
-                    endpoints.MapPostgresReplicationStatusEndpoints();
-                    endpoints.MapPostgresLogEntryEndpoints();
-                    endpoints.MapContainerLogEntryEndpoints();
-                    endpoints.MapDockerEventEndpoints();
-                    endpoints.MapRedisSentinelStatusEndpoints();
-                    endpoints.MapRedisSentinelEventEndpoints();
-                    endpoints.MapModelInvokeWarningEndpoints();
-                    endpoints.MapArchiverStagePerformanceCounterEndpoints();
-                    endpoints.MapCaseCreationStagePerformanceCounterEndpoints();
-                    endpoints.MapCaseCreationWarningEndpoints();
-                    endpoints.MapArchiverWarningEndpoints();
-                    endpoints.MapCaptureQueueHealthEndpoints();
-                    endpoints.MapRedisConnectionEventEndpoints();
-                    endpoints.MapRedisCallCounterEndpoints();
-                    endpoints.MapEtcdMemberStatusEndpoints();
-                    endpoints.MapPatroniMemberStatusEndpoints();
-                    endpoints.MapEtcdClusterEventEndpoints();
-                    endpoints.MapPatroniClusterEventEndpoints();
-                    endpoints.MapDockerContainerMetricEndpoints();
-                    endpoints.MapDockerHostMetricEndpoints();
-                    endpoints.MapHaProxyServerStatusEndpoints();
-                    endpoints.MapHaProxyReachabilityProbeEndpoints();
-                    endpoints.MapOverlayNetworkTaskDriftEndpoints();
-                    endpoints.MapOpenTelemetryMetricEndpoints();
-                    endpoints.MapOpenTelemetryLogCounterEndpoints();
-                    endpoints.MapOpenTelemetryExcludeEndpoints();
-                    endpoints.MapOtlpDispatchCounterEndpoints();
-                    endpoints.MapUserLoginEndpoints();
-                    endpoints.MapUserLogoutEndpoints();
-                    endpoints.MapActivationWatcherEndpoints();
-                    endpoints.MapWatcherStreamEndpoints();
-                    endpoints.MapServiceChangeStreamEndpoints();
-                    endpoints.MapPostgresActivityEndpoints();
-                    endpoints.MapPostgresStatementStatisticsEndpoints();
-                    endpoints.MapEntityAnalysisModelAbstractionRuleEndpoints();
-                    endpoints.MapEntityAnalysisModelAbstractionCalculationEndpoints();
-                    endpoints.MapEntityAnalysisModelHttpAdaptationEndpoints();
-                    endpoints.MapExhaustiveSearchInstanceEndpoints();
-                    endpoints.MapExhaustiveInstanceDatasetEndpoints();
-                    endpoints.MapAdvancedAnalyticsInstanceEndpoints();
-                    endpoints.MapAdvancedAnalyticsModelEndpoints();
-                    endpoints.MapChartsEndpoints();
-                    endpoints.MapEntityAnalysisModelActivationRuleEndpoints();
-                    endpoints.MapEntityAnalysisInlineScriptEndpoints();
-                    endpoints.MapEntityAnalysisModelTtlCounterEndpoints();
-                    endpoints.MapEntityAnalysisModelListEndpoints();
-                    endpoints.MapEntityAnalysisModelListValueEndpoints();
-                    endpoints.MapEntityAnalysisModelDictionaryEndpoints();
-                    endpoints.MapEntityAnalysisModelDictionaryKvpEndpoints();
-                    endpoints.MapEntityAnalysisModelOverrideEndpoints();
-                    endpoints.MapEntityAnalysisModelActivationRuleOverrideEndpoints();
-                    endpoints.MapEntityAnalysisModelReprocessingRuleEndpoints();
-                    endpoints.MapEntityAnalysisModelReprocessingRuleInstanceEndpoints();
-                    endpoints.MapHttpProcessingCounterEndpoints();
-                    endpoints.MapEntityAnalysisAsynchronousQueueBalanceEndpoints();
-                    endpoints.MapEntityAnalysisModelAsynchronousQueueBalanceEndpoints();
-                    endpoints.MapEntityAnalysisModelProcessingCounterEndpoints();
-                    endpoints.MapArchiveEndpoints();
-                    endpoints.MapCaseEndpoints();
-                    endpoints.MapCaseFileEndpoints();
-                    endpoints.MapCaseNoteEndpoints();
-                    endpoints.MapCaseWorkflowEndpoints();
-                    endpoints.MapCaseWorkflowActionEndpoints();
-                    endpoints.MapCaseWorkflowActionRoleEndpoints();
-                    endpoints.MapCaseWorkflowDisplayEndpoints();
-                    endpoints.MapCaseWorkflowDisplayRoleEndpoints();
-                    endpoints.MapCaseWorkflowFilterEndpoints();
-                    endpoints.MapCaseWorkflowFilterRoleEndpoints();
-                    endpoints.MapCaseWorkflowFormEndpoints();
-                    endpoints.MapCaseWorkflowFormEntryEndpoints();
-                    endpoints.MapCaseWorkflowFormEntryValueEndpoints();
-                    endpoints.MapCaseWorkflowFormRoleEndpoints();
-                    endpoints.MapCaseWorkflowMacroEndpoints();
-                    endpoints.MapCaseWorkflowMacroRoleEndpoints();
-                    endpoints.MapCaseWorkflowPriorityEndpoints();
-                    endpoints.MapCaseWorkflowRoleEndpoints();
-                    endpoints.MapCaseWorkflowStatusEndpoints();
-                    endpoints.MapCaseWorkflowStatusRoleEndpoints();
-                    endpoints.MapCaseWorkflowXPathEndpoints();
-                    endpoints.MapCaseWorkflowXPathRoleEndpoints();
-                    endpoints.MapEntityAnalysisModelRoleEndpoints();
-                    endpoints.MapEntityAnalysisModelSynchronisationScheduleEndpoints();
-                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceEndpoints();
-                    endpoints.MapPermissionSpecificationEndpoints();
-                    endpoints.MapRoleRegistryEndpoints();
-                    endpoints.MapRoleRegistryPermissionEndpoints();
-                    endpoints.MapSanctionEntrySourceEndpoints();
-                    endpoints.MapTenantRegistryEndpoints();
-                    endpoints.MapUserInTenantEndpoints();
-                    endpoints.MapUserRegistryEndpoints();
-                    endpoints.MapUserRegistryApiKeyEndpoints();
-                    endpoints.MapVisualisationRegistryEndpoints();
-                    endpoints.MapVisualisationRegistryDatasourceEndpoints();
-                    endpoints.MapVisualisationRegistryDatasourceRoleEndpoints();
-                    endpoints.MapVisualisationRegistryDatasourceSeriesEndpoints();
-                    endpoints.MapVisualisationRegistryParameterEndpoints();
-                    endpoints.MapVisualisationRegistryParameterRoleEndpoints();
-                    endpoints.MapVisualisationRegistryRoleEndpoints();
-                    endpoints.MapCaseByCaseKeyValueEndpoints();
-                    endpoints.MapCaseByIdEndpoints();
-                    endpoints.MapCaseBySessionCaseSearchCompileEndpoints();
-                    endpoints.MapCaseEventByCaseKeyValueEndpoints();
-                    endpoints.MapCaseJournalEndpoints();
-                    endpoints.MapCaseNoteByCaseKeyValueEndpoints();
-                    endpoints.MapCaseWorkflowFormEntryByCaseKeyValueEndpoints();
-                    endpoints.MapEntityAnalysisModelActivationRuleOverrideQueryEndpoints();
-                    endpoints.MapEntityAnalysisModelSampleEndpoints();
-                    endpoints.MapEntityAnalysisModelOverrideQueryEndpoints();
-                    endpoints.MapEntityAnalysisModelSynchronisationNodeStatusEntriesEndpoints();
-                    endpoints.MapEntityAnalysisPotentialMultiPartStringNamesEndpoints();
-                    endpoints.MapEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeEndpoints();
-                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceConfusionEndpoints();
-                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramEndpoints();
-                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceLearningCurveEndpoints();
-                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstancePredictedActualEndpoints();
-                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceQueryEndpoints();
-                    endpoints.MapExhaustiveSearchInstancePromotionHistoryEndpoints();
-                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceRocEndpoints();
-                    endpoints.MapExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionEndpoints();
-                    endpoints.MapExhaustiveSearchInstanceTrialInstanceListQueryEndpoints();
-                    endpoints.MapExhaustiveSearchInstanceTrialInstanceVariableEndpoints();
-                    endpoints.MapExhaustiveSearchInstanceTrialInstanceVariableVarianceEndpoints();
-                    endpoints.MapExhaustiveSearchInstanceVariableEndpoints();
-                    endpoints.MapVisualisationRegistryDatasourceCommandExecutionEndpoints();
-                    endpoints.MapTreeChildrenEndpoints();
-                    endpoints.MapSessionCaseJournalEndpoints();
-                    endpoints.MapSessionCaseSearchCompiledSqlEndpoints();
-                    endpoints.MapPreservationEndpoints();
-                    endpoints.MapPreservationSnapshotEndpoints();
-                    endpoints.MapReadyEndpoints();
-                    endpoints.MapAuthenticationEndpoints();
+
+                    var wire = endpoints.MapGroup(string.Empty)
+                        .AddEndpointFilter<MessagePackResponseFilter>()
+                        .AllowMessagePack("True".Equals(dynamicEnvironment.AppSettings("WireEnvelopeEncryption"),
+                            StringComparison.OrdinalIgnoreCase));
+                    wire.MapAntiforgeryTokenEndpoints();
+                    wire.MapWireSchemaEndpoints();
+                    wire.MapMeEndpoints();
+                    wire.MapUserNotificationEndpoints();
+                    wire.MapCaseBulkEndpoints();
+                    wire.MapSanctionExemptionEndpoints();
+                    wire.MapCaseLinkEndpoints();
+                    wire.MapCaseAgentRunEndpoints();
+                    wire.MapCaseQaReviewEndpoints();
+                    wire.MapCaseAnalystAssessmentEndpoints();
+                    wire.MapCaseAgentReplayEndpoints();
+                    wire.MapEntityRiskRatingEndpoints();
+                    wire.MapGraphEntityMatchEndpoints();
+                    wire.MapInboundQueueEndpoints();
+                    wire.MapCaseReportEndpoints();
+                    wire.MapCaseReportProfileEndpoints();
+                    wire.MapErasureEndpoints();
+                    wire.MapModelGovernanceEndpoints();
+                    wire.MapEntityAnalysisModelEndpoints();
+                    wire.MapEntityAnalysisModelRequestXPathEndpoints();
+                    wire.MapEntityAnalysisModelInlineFunctionEndpoints();
+                    wire.MapEntityAnalysisModelInlineScriptEndpoints();
+                    wire.MapEntityAnalysisModelGatewayRuleEndpoints();
+                    wire.MapEntityAnalysisModelSanctionEndpoints();
+                    wire.MapEntityAnalysisModelTagEndpoints();
+                    wire.MapEntityAnalysisModelResponseElevationRangeEndpoints();
+                    wire.MapEntityApprovalEndpoints();
+                    wire.MapVersionHistoryEndpoints();
+                    wire.MapEntityAnalysisModelStagePerformanceCounterEndpoints();
+                    wire.MapEntityAnalysisModelIntegrityEndpoints();
+                    wire.MapQueryBuilderEndpoints();
+                    wire.MapEntityAnalysisModelEngineStateEndpoints();
+                    wire.MapEntityAnalysisModelDependencyGraphEndpoints();
+                    wire.MapEntityAnalysisModelDependencyEndpoints();
+                    wire.MapEntityAnalysisModelBacktestEndpoints();
+                    wire.MapEntityAnalysisModelResponseTimePipelineCounterEndpoints();
+                    wire.MapEntityAnalysisModelTaskPerformanceCounterEndpoints();
+                    wire.MapApplicationLogEntryEndpoints();
+                    wire.MapWafAttackEndpoints();
+                    wire.MapDotNetRuntimeMetricEndpoints();
+                    wire.MapPostgresMetricEndpoints();
+                    wire.MapRespMetricEndpoints();
+                    wire.MapRespSlowOperationEndpoints();
+                    wire.MapRespConnectionMultiplexerMetricEndpoints();
+                    wire.MapPostgresTableStatisticsEndpoints();
+                    wire.MapPostgresIndexStatisticsEndpoints();
+                    wire.MapPostgresReplicationStatusEndpoints();
+                    wire.MapPostgresLogEntryEndpoints();
+                    wire.MapContainerLogEntryEndpoints();
+                    wire.MapDockerEventEndpoints();
+                    wire.MapRespSentinelStatusEndpoints();
+                    wire.MapRespSentinelEventEndpoints();
+                    wire.MapModelInvokeWarningEndpoints();
+                    wire.MapArchiverStagePerformanceCounterEndpoints();
+                    wire.MapCaseCreationStagePerformanceCounterEndpoints();
+                    wire.MapCaseCreationWarningEndpoints();
+                    wire.MapArchiverWarningEndpoints();
+                    wire.MapCaptureQueueHealthEndpoints();
+                    wire.MapRespConnectionEventEndpoints();
+                    wire.MapRespCallCounterEndpoints();
+                    wire.MapEtcdMemberStatusEndpoints();
+                    wire.MapPatroniMemberStatusEndpoints();
+                    wire.MapEtcdClusterEventEndpoints();
+                    wire.MapPatroniClusterEventEndpoints();
+                    wire.MapDockerContainerMetricEndpoints();
+                    wire.MapDockerHostMetricEndpoints();
+                    wire.MapHaProxyServerStatusEndpoints();
+                    wire.MapHaProxyReachabilityProbeEndpoints();
+                    wire.MapOverlayNetworkTaskDriftEndpoints();
+                    wire.MapOpenTelemetryMetricEndpoints();
+                    wire.MapOpenTelemetryLogCounterEndpoints();
+                    wire.MapOpenTelemetryExcludeEndpoints();
+                    wire.MapOtlpDispatchCounterEndpoints();
+                    wire.MapUserLoginEndpoints();
+                    wire.MapUserLogoutEndpoints();
+                    wire.MapActivationWatcherEndpoints();
+                    wire.MapWatcherStreamEndpoints();
+                    wire.MapServiceChangeStreamEndpoints();
+                    wire.MapPostgresActivityEndpoints();
+                    wire.MapPostgresStatementStatisticsEndpoints();
+                    wire.MapEntityAnalysisModelAbstractionRuleEndpoints();
+                    wire.MapEntityAnalysisModelAbstractionCalculationEndpoints();
+                    wire.MapEntityAnalysisModelHttpAdaptationEndpoints();
+                    wire.MapExhaustiveSearchInstanceEndpoints();
+                    wire.MapExhaustiveInstanceDatasetEndpoints();
+                    wire.MapAskJoobyAnalyticsInstanceEndpoints();
+                    wire.MapAskJoobyAnalyticsModelEndpoints();
+                    wire.MapChartsEndpoints();
+                    wire.MapEntityAnalysisModelActivationRuleEndpoints();
+                    wire.MapEntityAnalysisInlineScriptEndpoints();
+                    wire.MapEntityAnalysisModelTtlCounterEndpoints();
+                    wire.MapEntityAnalysisModelListEndpoints();
+                    wire.MapEntityAnalysisModelListValueEndpoints();
+                    wire.MapEntityAnalysisModelDictionaryEndpoints();
+                    wire.MapEntityAnalysisModelDictionaryKvpEndpoints();
+                    wire.MapEntityAnalysisModelOverrideEndpoints();
+                    wire.MapEntityAnalysisModelActivationRuleOverrideEndpoints();
+                    wire.MapEntityAnalysisModelReprocessingRuleEndpoints();
+                    wire.MapEntityAnalysisModelReprocessingRuleInstanceEndpoints();
+                    wire.MapHttpProcessingCounterEndpoints();
+                    wire.MapEntityAnalysisAsynchronousQueueBalanceEndpoints();
+                    wire.MapEntityAnalysisModelAsynchronousQueueBalanceEndpoints();
+                    wire.MapEntityAnalysisModelProcessingCounterEndpoints();
+                    wire.MapArchiveEndpoints();
+                    wire.MapCaseEndpoints();
+                    wire.MapCaseFileEndpoints();
+                    wire.MapCaseResearchEndpoints();
+                    wire.MapCaseSuppressionEndpoints();
+                    wire.MapCaseNoteEndpoints();
+                    wire.MapCaseTagEndpoints();
+                    wire.MapEntityAnalysisModelGraphRecallEndpoints();
+                    wire.MapEntityAnalysisModelSvirfdEndpoints();
+                    wire.MapSvirfdEndpoints();
+                    wire.MapCaseWorkflowEndpoints();
+                    wire.MapCaseWorkflowActionEndpoints();
+                    wire.MapCaseWorkflowActionRoleEndpoints();
+                    wire.MapCaseWorkflowDisplayEndpoints();
+                    wire.MapCaseWorkflowDisplayRoleEndpoints();
+                    wire.MapCaseWorkflowFilterEndpoints();
+                    wire.MapCaseWorkflowFilterRoleEndpoints();
+                    wire.MapCaseWorkflowFormEndpoints();
+                    wire.MapCaseWorkflowFormEntryEndpoints();
+                    wire.MapCaseWorkflowFormEntryValueEndpoints();
+                    wire.MapCaseWorkflowFormRoleEndpoints();
+                    wire.MapCaseWorkflowFormValidatorEndpoints();
+                    wire.MapCaseWorkflowChecklistEndpoints();
+                    wire.MapCaseWorkflowChecklistItemEndpoints();
+                    wire.MapCaseWorkflowReleaseHookEndpoints();
+                    wire.MapCaseHoldEndpoints();
+                    wire.MapCaseWorkflowMacroEndpoints();
+                    wire.MapCaseWorkflowMacroRoleEndpoints();
+                    wire.MapCaseWorkflowPriorityEndpoints();
+                    wire.MapCaseWorkflowRoleEndpoints();
+                    wire.MapCaseWorkflowStatusEndpoints();
+                    wire.MapCaseWorkflowStatusRoleEndpoints();
+                    wire.MapCaseWorkflowXPathEndpoints();
+                    wire.MapCaseWorkflowXPathRoleEndpoints();
+                    wire.MapEntityAnalysisModelRoleEndpoints();
+                    wire.MapEntityAnalysisModelSynchronisationScheduleEndpoints();
+                    wire.MapExhaustiveSearchInstancePromotedTrialInstanceEndpoints();
+                    wire.MapPermissionSpecificationEndpoints();
+                    wire.MapRoleRegistryEndpoints();
+                    wire.MapRoleRegistryPermissionEndpoints();
+                    wire.MapSanctionEntrySourceEndpoints();
+                    wire.MapTenantRegistryEndpoints();
+                    wire.MapUserInTenantEndpoints();
+                    wire.MapUserRegistryEndpoints();
+                    wire.MapUserRegistryApiKeyEndpoints();
+                    wire.MapVisualisationRegistryEndpoints();
+                    wire.MapVisualisationRegistryDatasourceEndpoints();
+                    wire.MapVisualisationRegistryDatasourceRoleEndpoints();
+                    wire.MapVisualisationRegistryDatasourceSeriesEndpoints();
+                    wire.MapVisualisationRegistryParameterEndpoints();
+                    wire.MapVisualisationRegistryParameterRoleEndpoints();
+                    wire.MapVisualisationRegistryRoleEndpoints();
+                    wire.MapGraphRegistryEndpoints();
+                    wire.MapGraphRegistryEdgeEndpoints();
+                    wire.MapGraphRegistryRoleEndpoints();
+                    wire.MapCaseByCaseKeyValueEndpoints();
+                    wire.MapCaseByIdEndpoints();
+                    wire.MapCaseBySessionCaseSearchCompileEndpoints();
+                    wire.MapCaseEventByCaseKeyValueEndpoints();
+                    wire.MapCaseJournalEndpoints();
+                    wire.MapCaseNoteByCaseKeyValueEndpoints();
+                    wire.MapCaseWorkflowFormEntryByCaseKeyValueEndpoints();
+                    wire.MapEntityAnalysisModelActivationRuleOverrideQueryEndpoints();
+                    wire.MapEntityAnalysisModelSampleEndpoints();
+                    wire.MapEntityAnalysisModelOverrideQueryEndpoints();
+                    wire.MapEntityAnalysisModelSynchronisationNodeStatusEntriesEndpoints();
+                    wire.MapEntityAnalysisPotentialMultiPartStringNamesEndpoints();
+                    wire.MapEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeEndpoints();
+                    wire.MapExhaustiveSearchInstancePromotedTrialInstanceConfusionEndpoints();
+                    wire.MapExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramEndpoints();
+                    wire.MapExhaustiveSearchInstancePromotedTrialInstanceLearningCurveEndpoints();
+                    wire.MapExhaustiveSearchInstancePromotedTrialInstancePredictedActualEndpoints();
+                    wire.MapExhaustiveSearchInstancePromotedTrialInstanceQueryEndpoints();
+                    wire.MapExhaustiveSearchInstancePromotionHistoryEndpoints();
+                    wire.MapExhaustiveSearchInstancePromotedTrialInstanceRocEndpoints();
+                    wire.MapExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionEndpoints();
+                    wire.MapExhaustiveSearchInstanceTrialInstanceListQueryEndpoints();
+                    wire.MapExhaustiveSearchInstanceTrialInstanceVariableEndpoints();
+                    wire.MapExhaustiveSearchInstanceTrialInstanceVariableVarianceEndpoints();
+                    wire.MapExhaustiveSearchInstanceVariableEndpoints();
+                    wire.MapVisualisationRegistryDatasourceCommandExecutionEndpoints();
+                    wire.MapTreeChildrenEndpoints();
+                    wire.MapSessionCaseJournalEndpoints();
+                    wire.MapSessionCaseSearchCompiledSqlEndpoints();
+                    wire.MapCaseSearchFilterEndpoints();
+                    wire.MapCaseSearchEndpoints();
+                    wire.MapCaseSummaryEndpoints();
+                    wire.MapCaseSimilarityEndpoints();
+                    wire.MapCaseChecklistEndpoints();
+                    wire.MapCaseAnalyticsEndpoints();
+                    wire.MapCaseKeyJournalEndpoints();
+                    wire.MapGraphEndpoints();
+                    wire.MapCaseSuppressionCandidatesEndpoints();
+                    wire.MapCaseSupervisionEndpoints();
+                    wire.MapCaseDiaryEndpoints();
+                    wire.MapPreservationEndpoints();
+                    wire.MapPreservationSnapshotEndpoints();
+                    wire.MapReadyEndpoints();
+                    wire.MapAuthenticationEndpoints();
 
                     if (!"False".Equals(dynamicEnvironment.AppSettings("EnableMockEndpoints"),
                             StringComparison.OrdinalIgnoreCase))
                     {
-                        endpoints.MapMockHttpAdaptationEndpoints();
-                        endpoints.MapMockRsaMfaEndpoints();
+                        wire.MapMockHttpAdaptationEndpoints();
+
+                        if ("True".Equals(dynamicEnvironment.AppSettings("EnableMockMfaEndpoint"),
+                                StringComparison.OrdinalIgnoreCase))
+                        {
+                            wire.MapMockRsaMfaEndpoints();
+                        }
                     }
 
-                    endpoints.MapInvokeEndpoints();
-                    endpoints.MapCompletionsEndpoints();
-                    endpoints.MapIconsEndpoints();
-                    endpoints.MapParserEndpoints();
-                    endpoints.MapCaseWorkflowDisplayExecutionEndpoints();
-                    endpoints.MapCaseWorkflowMacroExecutionEndpoints();
-                    endpoints.MapAskJoobyConversationEndpoints();
-                    endpoints.MapAskJoobyStreamEndpoints();
-                    endpoints.MapAskJoobyFileEndpoints();
-                    endpoints.MapSessionEndpoints();
+                    wire.MapInvokeEndpoints();
+                    wire.MapCompletionsEndpoints();
+                    wire.MapIconsEndpoints();
+                    wire.MapParserEndpoints();
+                    wire.MapRuleVocabularyEndpoints();
+                    wire.MapFormModelEndpoints();
+                    wire.MapGridModelEndpoints();
+                    wire.MapCaseWorkflowDisplayExecutionEndpoints();
+                    wire.MapCaseWorkflowMacroExecutionEndpoints();
+                    wire.MapAskJoobyConversationEndpoints();
+                    wire.MapAskJoobyStreamEndpoints();
+                    wire.MapAskJoobyFileEndpoints();
+                    wire.MapSessionEndpoints();
+
+                    var wireRegistry = app.ApplicationServices.GetRequiredService<WireTypeRegistry>();
+
+                    wireRegistry.Attach(endpoints.DataSources);
+
+                    app.ApplicationServices.GetRequiredService<IHostApplicationLifetime>().ApplicationStarted.Register(
+                        () => Task.Run(() =>
+                        {
+                            wireRegistry.GetSchema();
+                            wireRegistry.GetHead();
+                        }));
+
+                    var webRootFileProvider = app.ApplicationServices
+                        .GetRequiredService<IWebHostEnvironment>().WebRootFileProvider;
+
+                    endpoints.MapFallback("{*path:nonfile}", async context =>
+                    {
+                        var indexFile = webRootFileProvider.GetFileInfo("index.html");
+
+                        if (context.Request.Path.StartsWithSegments("/api", StringComparison.OrdinalIgnoreCase) ||
+                            !indexFile.Exists)
+                        {
+                            context.Response.StatusCode = StatusCodes.Status404NotFound;
+
+                            return;
+                        }
+
+                        context.Response.ContentType = "text/html; charset=utf-8";
+                        context.Response.Headers.CacheControl = "no-cache";
+
+                        var buildId = ClientBuildId.Read(webRootFileProvider);
+
+                        if (ClientAssetStore.IsBuildId(buildId))
+                        {
+                            context.Response.Cookies.Append(ClientAssetStore.BuildCookieName, buildId,
+                                new CookieOptions
+                                {
+                                    Path = "/",
+                                    HttpOnly = true,
+                                    SameSite = SameSiteMode.Lax,
+                                    Secure = context.Request.IsHttps
+                                });
+                        }
+
+                        await context.Response.SendFileAsync(indexFile);
+                    });
                 });
 
                 _ = StartEngineInBackgroundAsync(app, log);
@@ -547,12 +740,15 @@ namespace Jube.App
             {
                 services.AddSingleton<IServiceChangeBus, NullServiceChangeBus>();
 
+                Engine.CaseEscalation.CaseChecklistSlaSweepRegistry.Current =
+                    new Service.Query.CaseChecklist.ServiceCaseChecklistSlaSweep(new NullServiceChangeBus());
+
                 return;
             }
 
             IServiceChangeBus serviceChangeBus =
-                dynamicEnvironment.AppSettings("RedisBackplane").Equals("True", StringComparison.OrdinalIgnoreCase)
-                    ? new RedisServiceChangeBus(cacheService.ConnectionMultiplexer)
+                dynamicEnvironment.AppSettings("RespBackplane").Equals("True", StringComparison.OrdinalIgnoreCase)
+                    ? new RespServiceChangeBus(cacheService.ConnectionMultiplexer)
                     : new InProcessServiceChangeBus();
 
             serviceChangeBus.Subscribe(change =>
@@ -563,7 +759,30 @@ namespace Jube.App
                 return Task.CompletedTask;
             });
 
+            SqlSchemaSnapshotInvalidation.Attach(serviceChangeBus);
+
+            if (dynamicEnvironment.AppSettings("EnableMigration").Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                _ = SqlSchemaSnapshotInvalidation.AnnounceAsync(serviceChangeBus, "Migration");
+            }
+
             services.AddSingleton(serviceChangeBus);
+
+            Engine.CaseEscalation.CaseChecklistSlaSweepRegistry.Current =
+                new Service.Query.CaseChecklist.ServiceCaseChecklistSlaSweep(serviceChangeBus);
+        }
+
+        private static void WarnOnReportConnection(DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            ILog log)
+        {
+            var warning = ReportConnectionAdvice.Warning(ReportConnectionAdvice.Assess(
+                dynamicEnvironment.AppSettings("ReportConnectionString"),
+                dynamicEnvironment.AppSettings("ConnectionString")));
+
+            if (warning != null && log.IsWarnEnabled)
+            {
+                log.Warn(warning);
+            }
         }
 
         private static void AddSingletonForAskJooby(IServiceCollection services,
@@ -776,7 +995,8 @@ namespace Jube.App
                     var endpoint = dynamicEnvironment.AppSettings("AskJoobyWebSearchApiEndpoint");
 
                     services.AddSingleton<IWebSearchClient>(
-                        new TavilyWebSearchClient(new HttpClient(), endpoint, apiKey));
+                        new TavilyWebSearchClient(Service.AskJoobyOutbound.AskJoobyOutboundHttpClient.Create(),
+                            endpoint, apiKey));
 
                     break;
                 default:
@@ -788,6 +1008,21 @@ namespace Jube.App
 
                     break;
             }
+        }
+
+        private static Svirfd.SvirfdHost AddSingletonForSvirfd(IServiceCollection services,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, ILog log)
+        {
+            var settings = Svirfd.SvirfdSettings.From(dynamicEnvironment.AppSettings);
+            var host = new Svirfd.SvirfdHost(settings, new HttpClient { Timeout = Timeout.InfiniteTimeSpan },
+                new Log4NetLogger(log), ResilientHttp.ResilientHttpExecutor.Shared);
+
+            services.AddSingleton(settings);
+            services.AddSingleton(host);
+            services.AddSingleton<Svirfd.Interfaces.ISvirfdLookup>(host);
+            services.AddHostedService<SvirfdStartup>();
+
+            return host;
         }
 
         private static void AddSingletonForAskJoobyOpenCorporates(IServiceCollection services,
@@ -813,7 +1048,9 @@ namespace Jube.App
 
             var endpoint = dynamicEnvironment.AppSettings("AskJoobyOpenCorporatesApiEndpoint");
 
-            services.AddSingleton<IOpenCorporatesClient>(new OpenCorporatesClient(new HttpClient(), endpoint, apiKey));
+            services.AddSingleton<IOpenCorporatesClient>(
+                new OpenCorporatesClient(Service.AskJoobyOutbound.AskJoobyOutboundHttpClient.Create(), endpoint,
+                    apiKey));
         }
 
         private static (string Endpoint, string ApiKey) EmbeddingApiBackendVariables(
@@ -1129,15 +1366,28 @@ namespace Jube.App
             services.AddAuthorization();
             services.AddAntiforgery(options => { options.HeaderName = CookieSessionRequest.AntiforgeryHeaderName; });
             services.AddLocalization();
-            services.AddRazorPages();
             services.AddSingleton<IRevocableConnectionRegistry>(watcherStreamRegistry);
             services.AddSingleton<IRevocableConnectionRegistry>(serviceChangeStreamRegistry);
+            services.AddSingleton<ClientAssetStore>();
+            services.AddHostedService<ClientAssetPublisher>();
             services.AddHostedService<RevokedSessionSweeper>();
+            services.AddHostedService<CaseKeyJournalJobs>();
+            services.AddHostedService<CaseSimilarityJobs>();
+            services.AddHostedService<GraphJobs>();
+            services.AddSingleton<ICaseNarrativeAgent, CaseNarrativeAgent>();
+            services.AddSingleton<Service.Query.CaseTriage.Interfaces.ICaseTriageReplayAgent, CaseTriageReplayAgent>();
+            services.AddHostedService<CaseNarrativeJobs>();
+            services.AddHostedService<ModelDriftJobs>();
+            services.AddHostedService<CaseTriageJobs>();
+            services.AddHostedService<CaseTriageReplayJobs>();
+            services.AddHostedService<EntityRiskReviewJobs>();
             services.AddSingleton<WafRegistry>();
             services.AddSingleton<WafInspector>();
             services.AddHostedService<WafRegistryRefreshService>();
             services.AddHostedService<WafAttackFlushService>();
             services.AddHttpContextAccessor();
+
+            services.AddSingleton<WireTypeRegistry>();
 
             services.ConfigureHttpJsonOptions(options =>
             {
@@ -1165,17 +1415,17 @@ namespace Jube.App
         private static void AddDataProtection(IServiceCollection services,
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment)
         {
-            if (!dynamicEnvironment.AppSettings("DataProtectionRedisBackplane")
+            if (!dynamicEnvironment.AppSettings("DataProtectionRespBackplane")
                     .Equals("True", StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
 
-            var redisConnection =
-                ConnectionMultiplexer.Connect(dynamicEnvironment.AppSettings("RedisConnectionString"));
+            var respConnection =
+                ConnectionMultiplexer.Connect(dynamicEnvironment.AppSettings("RespConnectionString"));
 
             services.AddDataProtection()
-                .PersistKeysToStackExchangeRedis(redisConnection, "Jube:DataProtection:Keys")
+                .PersistKeysToStackExchangeRedis(respConnection, "Jube:DataProtection:Keys")
                 .SetApplicationName("Jube");
         }
 
@@ -1329,7 +1579,7 @@ namespace Jube.App
                                 context.HttpContext.Request.Headers["User-Agent"].ToString(),
                                 8, context.Failure?.Message);
 
-                            context.Response.Redirect("/Account/Login");
+                            context.Response.Redirect("/login");
                             context.HandleResponse();
                         },
 
@@ -1567,7 +1817,8 @@ namespace Jube.App
             , DynamicEnvironment.DynamicEnvironment dynamicEnvironment, ILog log, IConnection rabbitMqConnection,
             CacheService cacheService, JsonSerializationHelper jsonSerializationHelper,
             ITaskCoordinator taskCoordinator, IImplicitAsyncInvocationTracker implicitAsyncInvocationTracker,
-            OpenTelemetryExcludeCache openTelemetryExcludeCache, LogCounterRuleCache logCounterRuleCache)
+            OpenTelemetryExcludeCache openTelemetryExcludeCache, LogCounterRuleCache logCounterRuleCache,
+            Svirfd.SvirfdHost svirfdHost)
         {
             if (!dynamicEnvironment.AppSettings("EnableEngine")
                     .Equals("True", StringComparison.OrdinalIgnoreCase))
@@ -1578,7 +1829,7 @@ namespace Jube.App
             var engine = new Engine.Engine(dynamicEnvironment, log, rabbitMqConnection, cacheService,
                 jsonSerializationHelper, taskCoordinator, implicitAsyncInvocationTracker,
                 dynamicEnvironment.AppSettings("ReportConnectionString"), openTelemetryExcludeCache,
-                logCounterRuleCache);
+                logCounterRuleCache, svirfdHost);
 
             services.AddSingleton(engine);
         }
@@ -1588,6 +1839,16 @@ namespace Jube.App
         {
             var openTelemetryExcludeCache =
                 new OpenTelemetryExcludeCache(dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                openTelemetryExcludeCache.RefreshAsync(CancellationToken.None).GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                log.Error(
+                    $"OpenTelemetryExcludeCache: initial load failed, exclusions apply after the first refresh: {ex.Message}");
+            }
 
             _ = taskCoordinator.RunAsync("OpenTelemetryExcludeCacheTask",
                 _ => openTelemetryExcludeCache.StartAsync(taskCoordinator.CancellationToken));
@@ -1709,30 +1970,30 @@ namespace Jube.App
                 .Equals("True", StringComparison.OrdinalIgnoreCase);
 
             var cacheService =
-                ConnectToRedis(dynamicEnvironment.AppSettings("RedisConnectionString"),
+                ConnectToResp(dynamicEnvironment.AppSettings("RespConnectionString"),
                     dynamicEnvironment.AppSettings("ConnectionString"),
                     callbacks,
                     callbackTimeout,
                     dynamicEnvironment.AppSettings("LocalCache").Equals("True", StringComparison.OrdinalIgnoreCase),
                     dynamicEnvironment.AppSettings("LocalCacheFill").Equals("True", StringComparison.OrdinalIgnoreCase),
                     long.Parse(dynamicEnvironment.AppSettings("LocalCacheBytes")),
-                    dynamicEnvironment.AppSettings("RedisMessagePackCompression")
+                    dynamicEnvironment.AppSettings("RespMessagePackCompression")
                         .Equals("True", StringComparison.OrdinalIgnoreCase),
-                    dynamicEnvironment.AppSettings("RedisStorePayloadCountsAndBytes")
+                    dynamicEnvironment.AppSettings("RespStorePayloadCountsAndBytes")
                         .Equals("True", StringComparison.OrdinalIgnoreCase),
-                    dynamicEnvironment.AppSettings("RedisPublishSubscribeEvents")
+                    dynamicEnvironment.AppSettings("RespPublishSubscribeEvents")
                         .Equals("True", StringComparison.OrdinalIgnoreCase),
-                    dynamicEnvironment.AppSettings("RedisHsetOffloadToPostgres")
+                    dynamicEnvironment.AppSettings("RespHsetOffloadToPostgres")
                         .Equals("True", StringComparison.OrdinalIgnoreCase),
                     lruJournalMaxAgeTimeSpan,
                     activationRuleIdempotency,
                     log,
-                    int.Parse(dynamicEnvironment.AppSettings("RedisSentinelConnectTimeout")),
-                    int.Parse(dynamicEnvironment.AppSettings("RedisSentinelSyncTimeout")),
-                    int.Parse(dynamicEnvironment.AppSettings("RedisSentinelConnectRetry")),
-                    int.Parse(dynamicEnvironment.AppSettings("RedisReconnectRetryBaseDelay")),
-                    int.Parse(dynamicEnvironment.AppSettings("RedisReconnectRetryMaxDelay")),
-                    dynamicEnvironment.AppSettings("RedisBacklogFailFast")
+                    int.Parse(dynamicEnvironment.AppSettings("RespSentinelConnectTimeout")),
+                    int.Parse(dynamicEnvironment.AppSettings("RespSentinelSyncTimeout")),
+                    int.Parse(dynamicEnvironment.AppSettings("RespSentinelConnectRetry")),
+                    int.Parse(dynamicEnvironment.AppSettings("RespReconnectRetryBaseDelay")),
+                    int.Parse(dynamicEnvironment.AppSettings("RespReconnectRetryMaxDelay")),
+                    dynamicEnvironment.AppSettings("RespBacklogFailFast")
                         .Equals("True", StringComparison.OrdinalIgnoreCase));
 
             if (dynamicEnvironment.AppSettings("EnableMigration").Equals("True", StringComparison.OrdinalIgnoreCase))
@@ -1786,12 +2047,11 @@ namespace Jube.App
                         log.Info("Is attempting a connection validation for Postgres.");
                     }
 
-                    var connection = new NpgsqlConnection(connectionString);
-                    var command = new NpgsqlCommand("select true");
+                    using var connection = new NpgsqlConnection(connectionString);
                     connection.Open();
-                    command.Connection = connection;
+
+                    using var command = new NpgsqlCommand("select true", connection);
                     command.ExecuteNonQuery();
-                    connection.Close();
 
                     if (log.IsInfoEnabled)
                     {
@@ -1864,7 +2124,7 @@ namespace Jube.App
             throw new Exception($"Could not connect to RabbitMQ after {retryRabbitMqConnection} attempts.");
         }
 
-        private static CacheService ConnectToRedis(string redisConnectionString,
+        private static CacheService ConnectToResp(string respConnectionString,
             string postgresConnectionString,
             ConcurrentDictionary<Guid, TaskCompletionSource<Callback>> callbacks,
             int callbackTimeout,
@@ -1883,21 +2143,21 @@ namespace Jube.App
             int reconnectRetryMaxDelayMilliseconds,
             bool backlogFailFast)
         {
-            const int retryRedisConnectionRetry = 10;
+            const int retryRespConnectionRetry = 10;
 
-            for (var i = 0; i < retryRedisConnectionRetry; i++)
+            for (var i = 0; i < retryRespConnectionRetry; i++)
             {
                 try
                 {
                     if (log.IsInfoEnabled)
                     {
-                        log.Info("Start: Is going to make a connection to Redis Endpoints string showing " +
+                        log.Info("Start: Is going to make a connection to RESP Endpoints string showing " +
                                  "endpoints and port separated by :,  then combined separated by comma " +
                                  "for example localhost:1234,localhost4321.  Value for parsing is " +
-                                 redisConnectionString + "");
+                                 respConnectionString + "");
                     }
 
-                    var cacheService = new CacheService(redisConnectionString,
+                    var cacheService = new CacheService(respConnectionString,
                         postgresConnectionString, callbacks,
                         callbackTimeout,
                         localCache, localCacheFill,
@@ -1908,7 +2168,7 @@ namespace Jube.App
 
                     if (log.IsInfoEnabled)
                     {
-                        log.Info("Connected to Redis.  Returning connection for startup.");
+                        log.Info("Connected to Resp.  Returning connection for startup.");
                     }
 
                     return cacheService;
@@ -1917,14 +2177,14 @@ namespace Jube.App
                 {
                     if (log.IsInfoEnabled)
                     {
-                        log.Info($"Can't make a connection to Redis after {i} attempt(s) for {ex.Message}.");
+                        log.Info($"Can't make a connection to RESP after {i} attempt(s) for {ex.Message}.");
                     }
 
                     Thread.Sleep(1500);
                 }
             }
 
-            throw new Exception($"Could not connect to Redis after {retryRedisConnectionRetry} attempts.");
+            throw new Exception($"Could not connect to RESP after {retryRespConnectionRetry} attempts.");
         }
 
         private static async Task StartEngineInBackgroundAsync(IApplicationBuilder app, ILog log)

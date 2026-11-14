@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Whether the address is private: RFC 1918, carrier-grade NAT 100.64.0.0/10 or IPv6 unique local.")]
         public static bool IsPrivateIpAddress(this string? @this)
         {
             return NetworkAddressSupport.TryParseAddress(@this, out var address) &&

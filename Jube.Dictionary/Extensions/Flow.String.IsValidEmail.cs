@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
+            [Description("True when: a well formed email address. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsValidEmail()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringIsValidEmail(flow.Value));
             }
 
+            [Description("True when: a well formed email address. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsValidEmail()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringIsValidEmail(flow.Value));
             }
 
+            [Description("True when: a well formed email address. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsValidEmail()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringIsValidEmail(flow.Value));
             }
 
+            [Description("True when: a well formed email address. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsValidEmail()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringIsValidEmail(flow.Value));
             }
 
+            [Description("True when: a well formed email address. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsValidEmail()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
+            [Description("Begins a pipeline from the value. True when: a well formed email address. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsValidEmail()
             {
                 return value.Start().MatchIsValidEmail();
             }
 
+            [Description("Begins a pipeline from the value. True when: a well formed email address. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsValidEmail()
             {
                 return value.Start().RejectIsValidEmail();
             }
 
+            [Description("Begins a pipeline from the value. True when: a well formed email address. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsValidEmail()
             {
                 return value.Start().BreakIsValidEmail();
             }
 
+            [Description("Begins a pipeline from the value. True when: a well formed email address. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsValidEmail()
             {
                 return value.Start().RequireIsValidEmail();
             }
 
+            [Description("Begins a pipeline from the value. True when: a well formed email address. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsValidEmail()
             {
                 return value.Start().EnsureIsValidEmail();

@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchIsRoundAmount(double nearest)
+            [Description("True when: an exact multiple of the rounding unit, for example 1000. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchIsRoundAmount([Description("The multiple to test against (e.g. 100 or 1000).")] double nearest)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleIsRoundAmount(flow.Value, nearest));
             }
 
-            public Flow<double> RejectIsRoundAmount(double nearest)
+            [Description("True when: an exact multiple of the rounding unit, for example 1000. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectIsRoundAmount([Description("The multiple to test against (e.g. 100 or 1000).")] double nearest)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleIsRoundAmount(flow.Value, nearest));
             }
 
-            public Flow<double> BreakIsRoundAmount(double nearest)
+            [Description("True when: an exact multiple of the rounding unit, for example 1000. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakIsRoundAmount([Description("The multiple to test against (e.g. 100 or 1000).")] double nearest)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleIsRoundAmount(flow.Value, nearest));
             }
 
-            public Flow<double> RequireIsRoundAmount(double nearest)
+            [Description("True when: an exact multiple of the rounding unit, for example 1000. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireIsRoundAmount([Description("The multiple to test against (e.g. 100 or 1000).")] double nearest)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleIsRoundAmount(flow.Value, nearest));
             }
 
-            public Flow<double> EnsureIsRoundAmount(double nearest)
+            [Description("True when: an exact multiple of the rounding unit, for example 1000. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureIsRoundAmount([Description("The multiple to test against (e.g. 100 or 1000).")] double nearest)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchIsRoundAmount(double nearest)
+            [Description("Begins a pipeline from the value. True when: an exact multiple of the rounding unit, for example 1000. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchIsRoundAmount([Description("The multiple to test against (e.g. 100 or 1000).")] double nearest)
             {
                 return value.Start().MatchIsRoundAmount(nearest);
             }
 
-            public Flow<double> RejectIsRoundAmount(double nearest)
+            [Description("Begins a pipeline from the value. True when: an exact multiple of the rounding unit, for example 1000. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectIsRoundAmount([Description("The multiple to test against (e.g. 100 or 1000).")] double nearest)
             {
                 return value.Start().RejectIsRoundAmount(nearest);
             }
 
-            public Flow<double> BreakIsRoundAmount(double nearest)
+            [Description("Begins a pipeline from the value. True when: an exact multiple of the rounding unit, for example 1000. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakIsRoundAmount([Description("The multiple to test against (e.g. 100 or 1000).")] double nearest)
             {
                 return value.Start().BreakIsRoundAmount(nearest);
             }
 
-            public Flow<double> RequireIsRoundAmount(double nearest)
+            [Description("Begins a pipeline from the value. True when: an exact multiple of the rounding unit, for example 1000. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireIsRoundAmount([Description("The multiple to test against (e.g. 100 or 1000).")] double nearest)
             {
                 return value.Start().RequireIsRoundAmount(nearest);
             }
 
-            public Flow<double> EnsureIsRoundAmount(double nearest)
+            [Description("Begins a pipeline from the value. True when: an exact multiple of the rounding unit, for example 1000. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureIsRoundAmount([Description("The multiple to test against (e.g. 100 or 1000).")] double nearest)
             {
                 return value.Start().EnsureIsRoundAmount(nearest);
             }

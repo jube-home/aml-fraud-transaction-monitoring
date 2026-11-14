@@ -85,10 +85,12 @@ namespace Jube.Test.Service.Query.Parser
         }
 
         private static Task<ParserService> BuildServiceAsync(DbContext dbContext, string? userName,
-            ILog? log = null, ILog? auditLog = null, IServiceChangeBus? serviceChangeBus = null)
+            ILog? log = null, ILog? auditLog = null, IServiceChangeBus? serviceChangeBus = null,
+            Jube.DynamicEnvironment.DynamicEnvironment? dynamicEnvironment = null)
         {
             return ParserService.CreateAsync(dbContext, userName, log ?? TestLog.NoOp, localizers,
-                serviceChangeBus ?? new NullServiceChangeBus(), auditLog ?? TestLog.NoOp);
+                serviceChangeBus ?? new NullServiceChangeBus(), auditLog ?? TestLog.NoOp,
+                dynamicEnvironment: dynamicEnvironment);
         }
 
         private static ParseRuleRequestDto Req(int modelId, string? text, int type = 2) => new()
@@ -492,6 +494,79 @@ namespace Jube.Test.Service.Query.Parser
             auditLog.Entries.Should().ContainSingle();
             auditLog.Entries[0].Message.Should().Contain("op=Parse");
             bus.Published.Should().BeEmpty();
+        }
+
+        private static Jube.DynamicEnvironment.DynamicEnvironment Limits(int perUser, int perTenant)
+        {
+            return TestDynamicEnvironment.Create(new Dictionary<string, string>
+            {
+                ["ConnectionString"] = Environment.GetEnvironmentVariable("JubeTestConnectionString")!,
+                ["ParseMaxPerUserPerWindow"] = perUser.ToString(),
+                ["ParseMaxPerTenantPerWindow"] = perTenant.ToString(),
+                ["ParseWindowSeconds"] = "600"
+            });
+        }
+
+        [Fact]
+        public async Task AUserWhoParsesMoreOftenThanTheLimitIsRateLimitedWhileAnotherTenantIsNotAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var (user, modelId) = await PermittedUserWithModelAsync(dbContext, ("ParserAmount", 3));
+            var (otherUser, otherModelId) = await PermittedUserWithModelAsync(dbContext, ("ParserAmount", 3));
+            var limits = Limits(2, 1000);
+            var service = await BuildServiceAsync(dbContext, user, dynamicEnvironment: limits);
+            var other = await BuildServiceAsync(dbContext, otherUser, dynamicEnvironment: limits);
+
+            (await service.ParseAsync(Req(modelId, ValidGatewayRule))).Message.Should().Be("Compiled");
+            (await service.ParseAsync(Req(modelId, ValidGatewayRule))).Message.Should().Be("Compiled");
+
+            var ex = await Assert.ThrowsAsync<RateLimitedException>(() =>
+                service.ParseAsync(Req(modelId, ValidGatewayRule)));
+
+            ex.Code.Should().Be("RateLimited");
+            ex.Message.Should().NotBeNullOrWhiteSpace();
+            (await other.ParseAsync(Req(otherModelId, ValidGatewayRule))).Message.Should().Be("Compiled");
+        }
+
+        [Fact]
+        public async Task ATenantsUsersShareTheTenantLimitAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var (user, tenant) = await CreateUserAsync(dbContext, 26);
+            var modelId = await CreateModelAsync(dbContext, tenant, ("ParserAmount", 3));
+            var (otherUser, otherModelId) = await PermittedUserWithModelAsync(dbContext, ("ParserAmount", 3));
+            var limits = Limits(1000, 1);
+            var first = await BuildServiceAsync(dbContext, user, dynamicEnvironment: limits);
+            var other = await BuildServiceAsync(dbContext, otherUser, dynamicEnvironment: limits);
+
+            (await first.ParseAsync(Req(modelId, ValidGatewayRule))).Message.Should().Be("Compiled");
+
+            await Assert.ThrowsAsync<RateLimitedException>(() => first.ParseAsync(Req(modelId, ValidGatewayRule)));
+            (await other.ParseAsync(Req(otherModelId, ValidGatewayRule))).Message.Should().Be("Compiled");
+        }
+
+        [Fact]
+        public async Task TheRateLimitRefusalIsWordedByTheResourcesInTheCallersLanguageAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var (user, modelId) = await PermittedUserWithModelAsync(dbContext, ("ParserAmount", 3));
+            var service = await BuildServiceAsync(dbContext, user, dynamicEnvironment: Limits(1, 1000));
+            var original = System.Globalization.CultureInfo.CurrentUICulture;
+
+            try
+            {
+                System.Globalization.CultureInfo.CurrentUICulture = new System.Globalization.CultureInfo("pl");
+                await service.ParseAsync(Req(modelId, ValidGatewayRule));
+
+                var ex = await Assert.ThrowsAsync<RateLimitedException>(() =>
+                    service.ParseAsync(Req(modelId, ValidGatewayRule)));
+
+                ex.Message.Should().NotBe("Too many rule checks in a short time; wait a moment and try again.");
+            }
+            finally
+            {
+                System.Globalization.CultureInfo.CurrentUICulture = original;
+            }
         }
 
         [Fact]

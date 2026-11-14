@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double CoefficientOfVariation(this double @this, double mean)
+        [Description("The value, as a standard deviation, over the size of the mean.")]
+        public static double CoefficientOfVariation(this double @this,
+            [Description("The mean the value is measured from.")] double mean)
         {
             return CalculationSupport.Finite(@this / Math.Abs(mean));
         }

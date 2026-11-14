@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Du har inte behörighet att arbeta med ärenden.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Autentisering krävs.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>Ärendet hittades inte.</value>
+  </data>
+    <data name="CaseIdInvalid" xml:space="preserve">
+    <value>Ett ärende krävs.</value>
+  </data>
+    <data name="DiaryTypeInvalid" xml:space="preserve">
+    <value>Dagboksposten måste vara av typen granskning, kundsvar, regulatorisk tidsfrist eller betalningsspärr.</value>
+  </data>
+    <data name="DueDateRequired" xml:space="preserve">
+    <value>Datumet då dagboksposten förfaller krävs.</value>
+  </data>
+    <data name="DueDateOutOfRange" xml:space="preserve">
+    <value>Dagboksdatumet måste ligga inom det senaste året eller de kommande tio åren.</value>
+  </data>
+    <data name="CaseNotOpen" xml:space="preserve">
+    <value>Endast ett öppet ärende kan ha en typad dagbokspost. Ett vilande ärende använder sin dagbokspost för att avgöra när det öppnas igen.</value>
+  </data>
+    <data name="LockedByAnotherUser" xml:space="preserve">
+    <value>Ärendet är låst till en annan användare.</value>
+  </data>
+    <data name="DiaryNotSet" xml:space="preserve">
+    <value>Ärendet har ingen dagbokspost att rensa.</value>
+  </data>
+    <data name="CaseChanged" xml:space="preserve">
+    <value>Ärendet ändrades medan begäran gjordes. Kontrollera det och försök igen.</value>
+  </data>
+</root>

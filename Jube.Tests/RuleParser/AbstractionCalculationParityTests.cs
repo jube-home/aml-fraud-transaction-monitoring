@@ -65,7 +65,8 @@ namespace Jube.Test.RuleParser
             rule = parser.WrapAbstractionCalculation(rule, true);
 
             var references = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))
+                .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location) &&
+                            a.GetName().Name?.EndsWith(".resources", StringComparison.Ordinal) != true)
                 .Select(a => a.Location)
                 .ToArray();
 
@@ -100,7 +101,7 @@ namespace Jube.Test.RuleParser
 
             return match(data, Numbers(("Declined", 30), ("Total", 120)), Numbers(("Velocity", 8)),
                 new Dictionary<string, List<string>> { ["Terms"] = ["a"] }, Numbers(("Earlier", 3)),
-                Numbers(("Party", 2)), Numbers(("CountryRisk", 4)), TestLog.NoOp);
+                Numbers(("Party", 2)), Numbers(("CountryRisk", 4)), null, TestLog.NoOp);
         }
 
         [Fact]

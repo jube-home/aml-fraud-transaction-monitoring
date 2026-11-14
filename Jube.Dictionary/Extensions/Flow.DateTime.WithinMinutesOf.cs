@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
-            public Flow<DateTime> MatchWithinMinutesOf(DateTime other, double minutes)
+            [Description("True when: within the minutes of the argument, in either direction. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchWithinMinutesOf([Description("The other date.")] DateTime other,
+                [Description("The number of minutes either side.")] double minutes)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeWithinMinutesOf(flow.Value, other, minutes));
             }
 
-            public Flow<DateTime> RejectWithinMinutesOf(DateTime other, double minutes)
+            [Description("True when: within the minutes of the argument, in either direction. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectWithinMinutesOf([Description("The other date.")] DateTime other,
+                [Description("The number of minutes either side.")] double minutes)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeWithinMinutesOf(flow.Value, other, minutes));
             }
 
-            public Flow<DateTime> BreakWithinMinutesOf(DateTime other, double minutes)
+            [Description("True when: within the minutes of the argument, in either direction. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakWithinMinutesOf([Description("The other date.")] DateTime other,
+                [Description("The number of minutes either side.")] double minutes)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeWithinMinutesOf(flow.Value, other, minutes));
             }
 
-            public Flow<DateTime> RequireWithinMinutesOf(DateTime other, double minutes)
+            [Description("True when: within the minutes of the argument, in either direction. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireWithinMinutesOf([Description("The other date.")] DateTime other,
+                [Description("The number of minutes either side.")] double minutes)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeWithinMinutesOf(flow.Value, other, minutes));
             }
 
-            public Flow<DateTime> EnsureWithinMinutesOf(DateTime other, double minutes)
+            [Description("True when: within the minutes of the argument, in either direction. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureWithinMinutesOf([Description("The other date.")] DateTime other,
+                [Description("The number of minutes either side.")] double minutes)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
-            public Flow<DateTime> MatchWithinMinutesOf(DateTime other, double minutes)
+            [Description("Begins a pipeline from the value. True when: within the minutes of the argument, in either direction. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchWithinMinutesOf([Description("The other date.")] DateTime other,
+                [Description("The number of minutes either side.")] double minutes)
             {
                 return value.Start().MatchWithinMinutesOf(other, minutes);
             }
 
-            public Flow<DateTime> RejectWithinMinutesOf(DateTime other, double minutes)
+            [Description("Begins a pipeline from the value. True when: within the minutes of the argument, in either direction. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectWithinMinutesOf([Description("The other date.")] DateTime other,
+                [Description("The number of minutes either side.")] double minutes)
             {
                 return value.Start().RejectWithinMinutesOf(other, minutes);
             }
 
-            public Flow<DateTime> BreakWithinMinutesOf(DateTime other, double minutes)
+            [Description("Begins a pipeline from the value. True when: within the minutes of the argument, in either direction. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakWithinMinutesOf([Description("The other date.")] DateTime other,
+                [Description("The number of minutes either side.")] double minutes)
             {
                 return value.Start().BreakWithinMinutesOf(other, minutes);
             }
 
-            public Flow<DateTime> RequireWithinMinutesOf(DateTime other, double minutes)
+            [Description("Begins a pipeline from the value. True when: within the minutes of the argument, in either direction. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireWithinMinutesOf([Description("The other date.")] DateTime other,
+                [Description("The number of minutes either side.")] double minutes)
             {
                 return value.Start().RequireWithinMinutesOf(other, minutes);
             }
 
-            public Flow<DateTime> EnsureWithinMinutesOf(DateTime other, double minutes)
+            [Description("Begins a pipeline from the value. True when: within the minutes of the argument, in either direction. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureWithinMinutesOf([Description("The other date.")] DateTime other,
+                [Description("The number of minutes either side.")] double minutes)
             {
                 return value.Start().EnsureWithinMinutesOf(other, minutes);
             }

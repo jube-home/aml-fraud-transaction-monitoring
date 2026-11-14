@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchContainsAllInListIgnoreCase(IEnumerable<string> list)
+            [Description("True when: contains every entry of the List token, ignoring case. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsAllInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringContainsAllInListIgnoreCase(flow.Value, list));
             }
 
-            public Flow<string?> RejectContainsAllInListIgnoreCase(IEnumerable<string> list)
+            [Description("True when: contains every entry of the List token, ignoring case. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsAllInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringContainsAllInListIgnoreCase(flow.Value, list));
             }
 
-            public Flow<string?> BreakContainsAllInListIgnoreCase(IEnumerable<string> list)
+            [Description("True when: contains every entry of the List token, ignoring case. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsAllInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringContainsAllInListIgnoreCase(flow.Value, list));
             }
 
-            public Flow<string?> RequireContainsAllInListIgnoreCase(IEnumerable<string> list)
+            [Description("True when: contains every entry of the List token, ignoring case. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsAllInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringContainsAllInListIgnoreCase(flow.Value, list));
             }
 
-            public Flow<string?> EnsureContainsAllInListIgnoreCase(IEnumerable<string> list)
+            [Description("True when: contains every entry of the List token, ignoring case. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsAllInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchContainsAllInListIgnoreCase(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: contains every entry of the List token, ignoring case. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsAllInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().MatchContainsAllInListIgnoreCase(list);
             }
 
-            public Flow<string?> RejectContainsAllInListIgnoreCase(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: contains every entry of the List token, ignoring case. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsAllInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RejectContainsAllInListIgnoreCase(list);
             }
 
-            public Flow<string?> BreakContainsAllInListIgnoreCase(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: contains every entry of the List token, ignoring case. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsAllInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().BreakContainsAllInListIgnoreCase(list);
             }
 
-            public Flow<string?> RequireContainsAllInListIgnoreCase(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: contains every entry of the List token, ignoring case. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsAllInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RequireContainsAllInListIgnoreCase(list);
             }
 
-            public Flow<string?> EnsureContainsAllInListIgnoreCase(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: contains every entry of the List token, ignoring case. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsAllInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().EnsureContainsAllInListIgnoreCase(list);
             }

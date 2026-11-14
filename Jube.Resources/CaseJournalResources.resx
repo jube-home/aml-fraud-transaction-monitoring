@@ -42,4 +42,13 @@
     <data name="NotAuthenticated" xml:space="preserve">
     <value>You must be signed in to a tenant to perform this action.</value>
   </data>
+    <data name="DrillNameNotArchiveKey" xml:space="preserve">
+    <value>The drill name is not a field flagged Archive Key on the workflow's model, so its transactions cannot be looked up.</value>
+  </data>
+    <data name="DrillValueInvalid" xml:space="preserve">
+    <value>The drill value cannot be read as the data type of the field.</value>
+  </data>
+    <data name="CaseWorkflowNotFound" xml:space="preserve">
+    <value>The Case Workflow was not found.</value>
+  </data>
 </root>

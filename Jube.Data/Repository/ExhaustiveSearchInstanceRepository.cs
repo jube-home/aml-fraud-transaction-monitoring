@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using Jube.Data.Query.GetApprovedEntityQuery;
 using Jube.Data.Repository.Models;
 
@@ -25,6 +26,7 @@ namespace Jube.Data.Repository
     using Context;
     using Extensions;
     using LinqToDB;
+    using LinqToDB.Async;
     using Microsoft.Extensions.Logging.Abstractions;
     using Poco;
     using Jube.Data.Helpers;
@@ -160,6 +162,8 @@ namespace Jube.Data.Repository
             {
                 throw new KeyNotFoundException();
             }
+
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
 
             model.Version = existing.Version + 1;
             model.Deleted = 0;
@@ -378,6 +382,36 @@ namespace Jube.Data.Repository
                 .Set(s => s.Deleted, Convert.ToByte(1))
                 .Set(s => s.DeletedDate, DateTime.UtcNow)
                 .UpdateAsync(token);
+        }
+
+        public async Task<bool> IsLiveAsync(int id, int approvalsRequired = 1, CancellationToken token = default)
+        {
+            var current = await dbContext.ExhaustiveSearchInstance
+                .Where(w => w.Id == id
+                            && (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                                || !tenantRegistryId.HasValue)
+                            && (w.Deleted == 0 || w.Deleted == null))
+                .FirstOrDefaultAsync(token).ConfigureAwait(false);
+
+            if (current == null)
+            {
+                return false;
+            }
+
+            if (current.Active == 1)
+            {
+                return true;
+            }
+
+            if (!current.EntityAnalysisModelId.HasValue)
+            {
+                return false;
+            }
+
+            var approved = await GetApprovedByEntityAnalysisModelIdOrderByIdAsync(current.EntityAnalysisModelId.Value,
+                approvalsRequired, token).ConfigureAwait(false);
+
+            return approved.Any(a => a.Id == id && a.Active == 1);
         }
 
         public async Task<IEnumerable<ExhaustiveSearchInstance>> GetApprovedByEntityAnalysisModelIdOrderByIdAsync(

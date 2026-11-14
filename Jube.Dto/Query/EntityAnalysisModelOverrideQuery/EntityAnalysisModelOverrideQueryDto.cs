@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Overrides;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,25 +22,43 @@ using Jube.Dto.Overrides;
 
 namespace Jube.Dto.Query.EntityAnalysisModelOverrideQuery
 {
+    [MessagePackObject]
     public class EntityAnalysisModelOverrideQueryDto
     {
         [Description("Name of the Entity Analysis Model that has a request XPath named after the queried " +
                      "override key with override enabled.")]
+        [Key(0)]
         public string? Name { get; set; }
 
         [Description("Globally unique identifier of the Entity Analysis Model.")]
+        [Key(1)]
         public Guid EntityAnalysisModelGuid { get; set; }
 
         [Description("True when an active, unexpired override exists for the queried key and key value on " +
                      "this model.")]
+        [Key(2)]
         public bool HasOverride { get; set; }
 
         [Description("Whether the override mutes the Activation Rules' consequences or forces them. " +
                      "Meaningless when Override is false.")]
+        [Key(3)]
         public EntityAnalysisModelOverrideKind OverrideKind { get; set; }
 
         [Description("UTC instant at which the override expires; null when there is no override or it " +
                      "never expires.")]
+        [Key(4)]
         public DateTimeOffset? DeleteExpiryDate { get; set; }
+
+        [Description("Identifier of the Override row behind this model's override, used to look up its approval " +
+                     "state when the Kind is Force. Zero when there is no override.")]
+        [Key(5)]
+        public int OverrideId { get; set; }
+
+        [Description("True when a Force override has been removed but the removal is still awaiting approval, " +
+                     "so the last approved version is still in force. The override is then listed with " +
+                     "HasOverride true and cannot be switched or changed until the removal is approved or " +
+                     "retracted.")]
+        [Key(6)]
+        public bool PendingRemoval { get; set; }
     }
 }

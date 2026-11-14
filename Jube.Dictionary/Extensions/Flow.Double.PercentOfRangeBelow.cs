@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchPercentOfRangeBelow(double minimum, double maximum, double bound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (100) is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentOfRangeBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 100.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoublePercentOfRangeBelow(flow.Value, minimum, maximum, bound));
             }
 
-            public Flow<double> RejectPercentOfRangeBelow(double minimum, double maximum, double bound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (100) is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentOfRangeBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 100.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoublePercentOfRangeBelow(flow.Value, minimum, maximum, bound));
             }
 
-            public Flow<double> BreakPercentOfRangeBelow(double minimum, double maximum, double bound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (100) is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentOfRangeBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 100.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoublePercentOfRangeBelow(flow.Value, minimum, maximum, bound));
             }
 
-            public Flow<double> RequirePercentOfRangeBelow(double minimum, double maximum, double bound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (100) is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentOfRangeBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 100.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoublePercentOfRangeBelow(flow.Value, minimum, maximum, bound));
             }
 
-            public Flow<double> EnsurePercentOfRangeBelow(double minimum, double maximum, double bound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (100) is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentOfRangeBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 100.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchPercentOfRangeBelow(double minimum, double maximum, double bound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (100) is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentOfRangeBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 100.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchPercentOfRangeBelow(minimum, maximum, bound);
             }
 
-            public Flow<double> RejectPercentOfRangeBelow(double minimum, double maximum, double bound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (100) is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentOfRangeBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 100.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectPercentOfRangeBelow(minimum, maximum, bound);
             }
 
-            public Flow<double> BreakPercentOfRangeBelow(double minimum, double maximum, double bound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (100) is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentOfRangeBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 100.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakPercentOfRangeBelow(minimum, maximum, bound);
             }
 
-            public Flow<double> RequirePercentOfRangeBelow(double minimum, double maximum, double bound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (100) is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentOfRangeBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 100.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequirePercentOfRangeBelow(minimum, maximum, bound);
             }
 
-            public Flow<double> EnsurePercentOfRangeBelow(double minimum, double maximum, double bound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (100) is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentOfRangeBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 100.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsurePercentOfRangeBelow(minimum, maximum, bound);
             }

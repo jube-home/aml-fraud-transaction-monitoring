@@ -194,8 +194,12 @@ namespace Jube.Engine.Exhaustive.Extensions
                     }
                 }
 
-                scoreInputs[i] = Standardisation.Resolve(raw, variable.Mean, variable.Sd,
-                    standardise && variable.NormalisationTypeId == 2, out var imputed);
+                var willStandardise = standardise && variable.NormalisationTypeId == 2;
+
+                var resolved = Standardisation.Resolve(raw, variable.Mean, variable.Sd, willStandardise,
+                    out var imputed);
+
+                scoreInputs[i] = willStandardise ? variable.ClampZScore(resolved) : resolved;
 
                 if (imputed)
                 {

@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The last label of a host name or of the domain of an email address, in lower case.")]
         public static string TopLevelDomain(this string? @this)
         {
             var value = (@this ?? "").Trim().TrimEnd('.');

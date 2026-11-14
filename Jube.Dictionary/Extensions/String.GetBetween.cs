@@ -5,7 +5,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string GetBetween(this string @this, string before, string after)
+        [Description("Gets the substring between two specified values.")]
+        public static string GetBetween(this string @this,
+            [Description("The string before to search.")] string before,
+            [Description("The string after to search.")] string after)
         {
             var beforeStartIndex = @this.IndexOf(before, StringComparison.Ordinal);
 

@@ -8,10 +8,12 @@ using Jube.Data.Poco;
 using Jube.Data.Repository;
 using Jube.Dto.EntityAnalysisModelActivationRule;
 using Jube.Service.EntityAnalysisModelActivationRule;
+using Jube.Service.Exceptions.EntityAnalysisModelActivationRule;
 using Jube.Service.Reactivity;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
@@ -50,6 +52,9 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
 
             foreach (var modelId in createdModelIds)
             {
+                await dbContext.GetTable<Data.Poco.EntityAnalysisModelTtlCounter>()
+                    .Where(w => w.EntityAnalysisModelId == modelId).DeleteAsync();
+
                 await dbContext.GetTable<EntityAnalysisModelVersion>().Where(w => w.EntityAnalysisModelId == modelId)
                     .DeleteAsync();
 
@@ -66,8 +71,7 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
             var service = await EntityAnalysisModelActivationRuleService.CreateAsync(dbContext,
                 fx.Seed.UserWithPermission, TestLog.NoOp, localizers, new NullServiceChangeBus(), TestLog.NoOp);
 
-            var modelGuid = Guid.NewGuid();
-            var counterGuid = Guid.NewGuid();
+            var (modelGuid, counterGuid) = await CreateCounterAsync(dbContext, modelId);
 
             var dto = NewDto(modelId, "Probe" + Guid.NewGuid().ToString("N")[..8]);
             dto.EnableTtlCounter = true;
@@ -112,9 +116,93 @@ namespace Jube.Test.Service.EntityAnalysisModelActivationRule
             afterSwitchOff.EntityAnalysisModelTtlCounterGuid.Should().Be(counterGuid);
         }
 
-        private async Task<int> CreateParentModelAsync(DbContext dbContext)
+        [Fact]
+        public async Task UnknownTtlCounterGuidsAreRefusedAsync()
         {
-            var repository = new EntityAnalysisModelRepository(dbContext, fx.Seed.UserWithPermission);
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext);
+            var service = await EntityAnalysisModelActivationRuleService.CreateAsync(dbContext,
+                fx.Seed.UserWithPermission, TestLog.NoOp, localizers, new NullServiceChangeBus(), TestLog.NoOp);
+
+            var dto = NewDto(modelId, "Unknown" + Guid.NewGuid().ToString("N")[..8]);
+            dto.EnableTtlCounter = true;
+            dto.EntityAnalysisModelGuidTtlCounter = Guid.NewGuid();
+            dto.EntityAnalysisModelTtlCounterGuid = Guid.NewGuid();
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "EntityAnalysisModelTtlCounterGuidNotFound");
+        }
+
+        [Fact]
+        public async Task ATtlCounterOfAnotherTenantCannotBeReferencedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var tenantAModelId = await CreateParentModelAsync(dbContext);
+            var (tenantAModelGuid, tenantACounterGuid) = await CreateCounterAsync(dbContext, tenantAModelId);
+
+            var tenantBModelId = await CreateParentModelAsync(dbContext, fx.Seed.UserTenantB);
+            var service = await EntityAnalysisModelActivationRuleService.CreateAsync(dbContext,
+                fx.Seed.UserTenantB, TestLog.NoOp, localizers, new NullServiceChangeBus(), TestLog.NoOp);
+
+            var dto = NewDto(tenantBModelId, "Foreign" + Guid.NewGuid().ToString("N")[..8]);
+            dto.EnableTtlCounter = true;
+            dto.EntityAnalysisModelGuidTtlCounter = tenantAModelGuid;
+            dto.EntityAnalysisModelTtlCounterGuid = tenantACounterGuid;
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "EntityAnalysisModelTtlCounterGuidNotFound");
+        }
+
+        [Fact]
+        public async Task ACounterGuidFromADifferentModelThanTheSelectedModelIsRefusedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelAId = await CreateParentModelAsync(dbContext);
+            var modelBId = await CreateParentModelAsync(dbContext);
+            var (modelAGuid, _) = await CreateCounterAsync(dbContext, modelAId);
+            var (_, counterBGuid) = await CreateCounterAsync(dbContext, modelBId);
+
+            var service = await EntityAnalysisModelActivationRuleService.CreateAsync(dbContext,
+                fx.Seed.UserWithPermission, TestLog.NoOp, localizers, new NullServiceChangeBus(), TestLog.NoOp);
+
+            var dto = NewDto(modelAId, "Mismatch" + Guid.NewGuid().ToString("N")[..8]);
+            dto.EnableTtlCounter = true;
+            dto.EntityAnalysisModelGuidTtlCounter = modelAGuid;
+            dto.EntityAnalysisModelTtlCounterGuid = counterBGuid;
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "EntityAnalysisModelTtlCounterGuidNotFound");
+        }
+
+        private async Task<(Guid ModelGuid, Guid CounterGuid)> CreateCounterAsync(DbContext dbContext,
+            int modelId)
+        {
+            var model = await dbContext.EntityAnalysisModel.FirstAsync(w => w.Id == modelId);
+            var counterGuid = Guid.NewGuid();
+
+            await dbContext.InsertAsync(new Data.Poco.EntityAnalysisModelTtlCounter
+            {
+                Name = $"{DatabaseFixture.Prefix}Counter{counterGuid:N}"[..40],
+                EntityAnalysisModelId = modelId,
+                Guid = counterGuid,
+                Active = 1,
+                Locked = 0,
+                Deleted = 0,
+                Version = 1,
+                CreatedDate = DateTime.UtcNow,
+                CreatedUser = fx.Seed.UserWithPermission,
+                TtlCounterDataName = "AccountId",
+                TtlCounterInterval = "h",
+                TtlCounterValue = 1,
+                ResolutionInterval = "n"
+            });
+
+            return (model.Guid, counterGuid);
+        }
+
+        private async Task<int> CreateParentModelAsync(DbContext dbContext, string? createdUser = null)
+        {
+            var repository = new EntityAnalysisModelRepository(dbContext, createdUser ?? fx.Seed.UserWithPermission);
 
             var saved = await repository.InsertAsync(new Data.Poco.EntityAnalysisModel
             {

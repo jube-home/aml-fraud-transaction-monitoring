@@ -38,5 +38,9 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(9)] public string BackColor { get; set; }
         [Column] [Nullable] [Key(10)] public string ForeColor { get; set; }
         [Column] [Nullable] [Key(11)] public DateTime? CreatedDate { get; set; }
+        [Column] [Nullable] [Key(12)] public double? PreviousLatitude { get; set; }
+        [Column] [Nullable] [Key(13)] public double? PreviousLongitude { get; set; }
+        [Column] [Nullable] [Key(14)] public DateTime? PreviousCreatedDate { get; set; }
+        [Column] [Nullable] [Key(15)] public string ResponseElevationName { get; set; }
     }
 }

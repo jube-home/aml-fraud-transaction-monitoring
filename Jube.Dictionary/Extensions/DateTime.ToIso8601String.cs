@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Round-trip ISO 8601 text, with a Z suffix for UTC values.")]
         public static string ToIso8601String(this DateTime @this)
         {
             return @this.ToString(

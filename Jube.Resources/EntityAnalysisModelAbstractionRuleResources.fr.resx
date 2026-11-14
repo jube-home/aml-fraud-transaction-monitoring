@@ -39,4 +39,67 @@
     <data name="NameRequired" xml:space="preserve">
     <value>Un nom est requis.</value>
   </data>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>Un modèle valide est requis.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Le nom ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Ce nom existe déjà.</value>
+  </data>
+    <data name="RuleScriptTypeIdInvalid" xml:space="preserve">
+    <value>Le type de script de règle doit être Builder ou Coder.</value>
+  </data>
+    <data name="BuilderRuleScriptRequired" xml:space="preserve">
+    <value>Un script de règle est requis.</value>
+  </data>
+    <data name="BuilderRuleScriptMaxLength" xml:space="preserve">
+    <value>Le script de règle ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="JsonRequired" xml:space="preserve">
+    <value>Une définition du générateur de règles est requise.</value>
+  </data>
+    <data name="CoderRuleScriptRequired" xml:space="preserve">
+    <value>Un script de règle Coder est requis.</value>
+  </data>
+    <data name="CoderRuleScriptMaxLength" xml:space="preserve">
+    <value>Le script de règle Coder ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="SearchKeyRequired" xml:space="preserve">
+    <value>Une clé de recherche est requise lorsque Search est activé.</value>
+  </data>
+    <data name="SearchValueRange" xml:space="preserve">
+    <value>La valeur de recherche doit être supérieure ou égale à zéro et respecter la limite de l'intervalle choisi.</value>
+  </data>
+    <data name="SearchIntervalInvalid" xml:space="preserve">
+    <value>L'intervalle de recherche doit être Seconds, Minutes, Hours ou Days (secondes, minutes, heures ou jours).</value>
+  </data>
+    <data name="SearchFunctionTypeIdInvalid" xml:space="preserve">
+    <value>Le type de fonction n'est pas reconnu.</value>
+  </data>
+    <data name="SearchFunctionKeyRequired" xml:space="preserve">
+    <value>Une clé de fonction est requise pour ce type de fonction.</value>
+  </data>
+    <data name="OffsetTypeIdInvalid" xml:space="preserve">
+    <value>Le type de décalage doit être First, Last, Skip First ou Take Last (premier, dernier, ignorer les premiers ou prendre les derniers).</value>
+  </data>
+    <data name="OffsetValueRange" xml:space="preserve">
+    <value>La valeur de décalage doit être comprise entre 0 et 1,000,000.</value>
+  </data>
+    <data name="JsonInvalid" xml:space="preserve">
+    <value>La définition du générateur de règles doit être un JSON valide d'au plus 1 Mo.</value>
+  </data>
+    <data name="IterationOrderIdInvalid" xml:space="preserve">
+    <value>L'ordre d'itération doit être Ascending ou Descending (croissant ou décroissant).</value>
+  </data>
+    <data name="SearchFunctionParametersInvalid" xml:space="preserve">
+    <value>Les paramètres de la fonction ne sont pas valides pour la fonction sélectionnée. {0}</value>
+  </data>
 </root>

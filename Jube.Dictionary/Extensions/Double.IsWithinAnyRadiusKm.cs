@@ -15,8 +15,11 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsWithinAnyRadiusKm(this double latitude, double longitude, IEnumerable<string>? centres,
-            double radiusKm)
+        [Description("True when: the point at the value as latitude and the argument as longitude is within the radius in kilometres of any of the centres given as latitude,longitude text.")]
+        public static bool IsWithinAnyRadiusKm(this double latitude,
+            [Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+            [Description("The centres as latitude,longitude text, usually a List token.")] IEnumerable<string>? centres,
+            [Description("The radius in kilometres.")] double radiusKm)
         {
             if (centres is null)
             {

@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchImbalanceWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchImbalanceWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleImbalanceWithOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectImbalanceWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectImbalanceWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleImbalanceWithOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakImbalanceWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakImbalanceWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleImbalanceWithOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireImbalanceWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireImbalanceWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleImbalanceWithOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureImbalanceWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureImbalanceWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchImbalanceWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchImbalanceWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchImbalanceWithOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectImbalanceWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectImbalanceWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectImbalanceWithOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakImbalanceWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakImbalanceWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakImbalanceWithOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireImbalanceWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireImbalanceWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireImbalanceWithOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureImbalanceWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value) is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureImbalanceWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureImbalanceWithOutsideRange(other, lowerBound, upperBound);
             }

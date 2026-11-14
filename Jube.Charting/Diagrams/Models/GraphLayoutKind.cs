@@ -17,6 +17,9 @@ namespace Jube.Charting.Diagrams.Models
     {
         Auto,
         Layered,
-        Circular
+        Circular,
+        Force,
+        Radial,
+        Flow
     }
 }

@@ -6,7 +6,10 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static bool Between(this Double @this, Double minValue, Double maxValue)
+        [Description("Checks if the value is between two values (exclusive).")]
+        public static bool Between(this Double @this,
+            [Description("The minimum value.")] Double minValue,
+            [Description("The maximum value.")] Double maxValue)
         {
             return minValue.CompareTo(@this) == -1 && @this.CompareTo(maxValue) == -1;
         }

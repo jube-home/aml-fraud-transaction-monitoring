@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double MaxWith(this double @this, params double[]? others)
+        [Description("The largest of the value and the others.")]
+        public static double MaxWith(this double @this, [Description("The other numbers.")] params double[]? others)
         {
             return CalculationSupport.Largest(@this, others);
         }

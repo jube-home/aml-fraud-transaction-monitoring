@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>ამ მოქმედების შესასრულებლად უფლება არ გაქვთ.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>ამ მოქმედების შესასრულებლად თქვენ უნდა იყოთ შესული ტენანტში.</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>საჭიროა სწორი მოდელი.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>სახელი სავალდებულოა.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>სახელი უნდა შედგებოდეს არაუმეტეს {0} სიმბოლოსგან.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>ეს სახელი უკვე არსებობს.</value>
+  </data>
+    <data name="AnomalyProbabilityRange" xml:space="preserve">
+    <value>ანომალიის ალბათობა უნდა იყოს 0-სა და 1-ს შორის.</value>
+  </data>
+    <data name="BootstrapWeightFactorRange" xml:space="preserve">
+    <value>ბუთსტრაპის წონის ფაქტორი უნდა იყოს 0-სა და 1-ს შორის.</value>
+  </data>
+    <data name="ChallengerModelBaseProbabilityRange" xml:space="preserve">
+    <value>ჩელენჯერ მოდელის საბაზისო ალბათობა უნდა იყოს 0-სა და 1-ს შორის.</value>
+  </data>
+    <data name="BaseRateRange" xml:space="preserve">
+    <value>საბაზისო მაჩვენებელი უნდა იყოს 0-ზე მეტი და 1-ზე ნაკლები.</value>
+  </data>
+    <data name="FilterJsonRequired" xml:space="preserve">
+    <value>საჭიროა სასწავლო მონაცემთა ფილტრი.</value>
+  </data>
+    <data name="FilterSqlRequired" xml:space="preserve">
+    <value>საჭიროა სასწავლო მონაცემთა ფილტრი.</value>
+  </data>
+    <data name="FilterTokensRequired" xml:space="preserve">
+    <value>საჭიროა სასწავლო მონაცემთა ფილტრი.</value>
+  </data>
+    <data name="FilterJsonInvalid" xml:space="preserve">
+    <value>ფილტრის განსაზღვრება უნდა იყოს სწორი JSON, არაუმეტეს 1 MB-ისა.</value>
+  </data>
+    <data name="CategoricalOptionsInvalid" xml:space="preserve">
+    <value>კატეგორიული პარამეტრები უნდა იყოს სწორი JSON, არაუმეტეს 1 MB-ისა.</value>
+  </data>
+    <data name="FilterSqlInvalid" xml:space="preserve">
+    <value>ფილტრი უნდა იყოს მარტივი ლოგიკური გამოსახულება ოპერატორების, კომენტარების, ქვეშეკითხვების და დაუბალანსებელი ფრჩხილების გარეშე.</value>
+  </data>
+    <data name="FilterTokensInvalid" xml:space="preserve">
+    <value>ფილტრის ტოკენები უნდა იყოს JSON მასივი.</value>
+  </data>
+    <data name="DataSourceInvalid" xml:space="preserve">
+    <value>მონაცემთა წყარო უნდა იყოს Archive (0), DemoDataset (1) ან UploadedDataset (2).</value>
+  </data>
+    <data name="CalibrationMethodInvalid" xml:space="preserve">
+    <value>კალიბრაციის მეთოდი უნდა იყოს automatic, platt, isotonic ან beta.</value>
+  </data>
+    <data name="DatasetRequired" xml:space="preserve">
+    <value>როდესაც მონაცემთა წყარო არის UploadedDataset, უნდა აირჩეს ატვირთული მონაცემთა ნაკრები.</value>
+  </data>
+    <data name="DatasetAmbiguous" xml:space="preserve">
+    <value>უნდა აირჩეს ზუსტად ერთი: CSV ან JSON მონაცემთა ნაკრები.</value>
+  </data>
+    <data name="DatasetNotFound" xml:space="preserve">
+    <value>არჩეული მონაცემთა ნაკრები არ არსებობს, დადასტურებული არ არის ან თქვენი ტენანტისთვის ხელმისაწვდომი არ არის.</value>
+  </data>
+    <data name="DatasetNotPermitted" xml:space="preserve">
+    <value>მონაცემთა ნაკრების არჩევა შესაძლებელია მხოლოდ მაშინ, როდესაც მონაცემთა წყარო არის UploadedDataset.</value>
+  </data>
+    <data name="DatasetFilterRequired" xml:space="preserve">
+    <value>როდესაც მონაცემთა წყარო არის UploadedDataset, პოზიტიური კლასის დასადგენად უნდა დაყენდეს კლასის განსაზღვრის ფილტრი.</value>
+  </data>
+    <data name="AnomalyContaminationRange" xml:space="preserve">
+    <value>ამ ანომალიის ალგორითმისთვის ანომალიის ალბათობა დაბინძურების წილია და უნდა იყოს 0-ზე მეტი და არაუმეტეს 0.5.</value>
+  </data>
+    <data name="AnomalyAlgorithmInvalid" xml:space="preserve">
+    <value>ანომალიის ალგორითმი ცნობილი ალგორითმი არ არის.</value>
+  </data>
+    <data name="AnomalyParametersInvalid" xml:space="preserve">
+    <value>ანომალიის პარამეტრები არასწორია. {0}</value>
+  </data>
+</root>

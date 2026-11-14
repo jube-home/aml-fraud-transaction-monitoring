@@ -68,8 +68,7 @@ namespace Jube.Data.Poco
         [Key(29)]
         public string FilterTokens { get; set; }
 
-        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true)]
         [Key(30)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
 

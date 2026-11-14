@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="FunnelTitle" xml:space="preserve">
+        <value>არქივიდან გააქტიურებამდე</value>
+    </data>
+    <data name="FunnelSubtitle" xml:space="preserve">
+        <value>წაკითხული ტრანზაქციები, ფილტრის მიერ დატოვებული და წესის მიერ გააქტიურებული</value>
+    </data>
+    <data name="StageRead" xml:space="preserve">
+        <value>წაკითხული</value>
+    </data>
+    <data name="StageKept" xml:space="preserve">
+        <value>ფილტრის მიერ დატოვებული</value>
+    </data>
+    <data name="StageFired" xml:space="preserve">
+        <value>გააქტიურებული</value>
+    </data>
+    <data name="ConfusionTitle" xml:space="preserve">
+        <value>შეცდომების მატრიცა</value>
+    </data>
+    <data name="ConfusionSubtitle" xml:space="preserve">
+        <value>რა გააკეთა წესმა იმასთან შედარებით, რაც ტრანზაქცია იყო</value>
+    </data>
+    <data name="FiredQuestion" xml:space="preserve">
+        <value>გააქტიურდა?</value>
+    </data>
+    <data name="PositiveQuestion" xml:space="preserve">
+        <value>პოზიტიური?</value>
+    </data>
+    <data name="No" xml:space="preserve">
+        <value>არა</value>
+    </data>
+    <data name="Yes" xml:space="preserve">
+        <value>დიახ</value>
+    </data>
+    <data name="Precision" xml:space="preserve">
+        <value>სიზუსტე</value>
+    </data>
+    <data name="Recall" xml:space="preserve">
+        <value>სისრულე</value>
+    </data>
+    <data name="Specificity" xml:space="preserve">
+        <value>სპეციფიკურობა</value>
+    </data>
+    <data name="PositiveRate" xml:space="preserve">
+        <value>პოზიტიურობის მაჩვენებელი</value>
+    </data>
+    <data name="FiredRate" xml:space="preserve">
+        <value>გააქტიურების მაჩვენებელი</value>
+    </data>
+    <data name="RatesTitle" xml:space="preserve">
+        <value>მაჩვენებელი</value>
+    </data>
+    <data name="RatesSubtitle" xml:space="preserve">
+        <value>სიზუსტე, სისრულე და გააქტიურებული და პოზიტიური ტრანზაქციების წილი</value>
+    </data>
+    <data name="Percent" xml:space="preserve">
+        <value>პროცენტი</value>
+    </data>
+    <data name="Rate" xml:space="preserve">
+        <value>მაჩვენებელი</value>
+    </data>
+    <data name="TagsTitle" xml:space="preserve">
+        <value>ტეგები შეფასებულ ტრანზაქციებზე</value>
+    </data>
+    <data name="Transactions" xml:space="preserve">
+        <value>ტრანზაქციები</value>
+    </data>
+</root>

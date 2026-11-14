@@ -14,6 +14,7 @@
 using System.ComponentModel;
 using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -26,22 +27,26 @@ namespace Jube.Dto.EntityAnalysisModelDictionaryKvp
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelDictionaryId))]
     [FormGroup("Value", Order = 10)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
+    [MessagePackObject]
     public class EntityAnalysisModelDictionaryKvpDto : IUpdated, ITreeChild
     {
         [Description("Id of the Dictionary this Key Value Pair belongs to. Set from the parent Dictionary " +
                      "context; not user-editable.")]
+        [Key(0)]
         public int EntityAnalysisModelDictionaryId { get; set; }
 
         [Description("The key matched against the value extracted from the payload's Lookup field during model " +
                      "invocation.")]
-        [FormField(Group = "Value", Order = 10)]
+        [FormField(Group = "Value", Order = 10, Placeholder = "e.g. GB")]
         [ListColumn(Order = 10, Title = "Key")]
+        [Key(1)]
         public string? KvpKey { get; set; }
 
         [Description("The value returned when KvpKey matches the payload's Lookup field value during model " +
                      "invocation.")]
-        [FormField(Group = "Value", Order = 20, Widget = "number")]
+        [FormField(Group = "Value", Order = 20, Widget = "number", Placeholder = "e.g. 12.5")]
         [ListColumn(Order = 20, Title = "Value")]
+        [Key(2)]
         public double? KvpValue { get; set; }
 
         [Description("Timestamp (UTC) after which this Key Value Pair is automatically excluded from lookups " +
@@ -49,46 +54,56 @@ namespace Jube.Dto.EntityAnalysisModelDictionaryKvp
                      "expires. Must be in the future.")]
         [FormField(Group = "Value", Order = 30, Widget = "date")]
         [ListColumn(Order = 30, Title = "Delete Expiry Date")]
+        [Key(3)]
         public DateTimeOffset? DeleteExpiryDate { get; set; }
 
         [Description("Globally-addressable identifier for this row, stable across environments and the form "
                      + "in which every other area refers to it. Server-assigned. Read-only.")]
+        [Key(4)]
         public Guid Guid { get; set; }
 
         [Description("Server-assigned row identifier. Read-only.")]
         [FormField(Group = "Audit", Order = 10, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(5)]
         public int Id { get; set; }
 
         [Description("User who created this Key Value Pair. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 20, ReadOnly = true)]
+        [Key(6)]
         public string? CreatedUser { get; set; }
 
         [Description("Timestamp (UTC) this Key Value Pair was created. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 30, ReadOnly = true, Widget = "date")]
+        [Key(7)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("User who last updated this Key Value Pair. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 40, ReadOnly = true)]
+        [Key(8)]
         public string? UpdatedUser { get; set; }
 
         [Description("Timestamp (UTC) this Key Value Pair was last updated. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 50, ReadOnly = true, Widget = "date")]
+        [Key(9)]
         public DateTimeOffset? UpdatedDate { get; set; }
 
         [Description("Server-assigned optimistic-concurrency version number, incremented on every update. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 60, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(10)]
         public int Version { get; set; }
 
         [Description("User who deleted this Key Value Pair, if soft-deleted. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 70, ReadOnly = true)]
+        [Key(11)]
         public string? DeletedUser { get; set; }
 
         [Description("Timestamp (UTC) this Key Value Pair was soft-deleted, if applicable. Server-assigned. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 80, ReadOnly = true, Widget = "date")]
+        [Key(12)]
         public DateTimeOffset? DeletedDate { get; set; }
     }
 }

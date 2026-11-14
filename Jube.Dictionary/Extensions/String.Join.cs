@@ -9,27 +9,34 @@ namespace Jube.Dictionary.Extensions
     {
         extension(String separator)
         {
-            public String Join(String[] value)
+            [Description("Joins an array of strings with a separator.")]
+            public String Join([Description("An array that contains the elements to concatenate.")] String[] value)
             {
                 return string.Join(separator, value);
             }
 
-            public String Join(object[] values)
+            [Description("Joins a string collection with a separator.")]
+            public String Join([Description("An array that contains the elements to concatenate.")] object[] values)
             {
                 return string.Join(separator, values);
             }
 
-            public String Join<T>(IEnumerable<T> values)
+            [Description("Joins a string collection with a separator.")]
+            public String Join<T>([Description("An array that contains the elements to concatenate.")] IEnumerable<T> values)
             {
                 return string.Join(separator, values);
             }
 
-            public String Join(IEnumerable<String> values)
+            [Description("Joins a string collection with a separator.")]
+            public String Join([Description("An array that contains the elements to concatenate.")] IEnumerable<String> values)
             {
                 return string.Join(separator, values);
             }
 
-            public String Join(String[] value, Int32 startIndex, Int32 count)
+            [Description("Joins a subset of an array with a separator.")]
+            public String Join([Description("An array that contains the elements to concatenate.")] String[] value,
+                [Description("The first element in value to use.")] Int32 startIndex,
+                [Description("The number of elements of value to use.")] Int32 count)
             {
                 return string.Join(separator, value, startIndex, count);
             }

@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Returns the pipeline to undecided and clears the score and label.")]
         public static Flow<T> Reset<T>(this Flow<T> flow)
         {
             return new Flow<T>(flow.Value, FlowOutcome.Undecided, 0, null);

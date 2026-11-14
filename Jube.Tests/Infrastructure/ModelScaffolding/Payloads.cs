@@ -32,7 +32,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             ("CurrencyAmount", "123.45"),
             ("SettlementAmount", "100000"),
             ("AccountCurrency", "566"),
-            ("IP", "123.456.789.200"),
+            ("IP", "8.8.8.8"),
             ("DeviceId", "OlaRoseGoldPhone6"),
             ("ChannelId", "1"),
             ("AppVersionCode", "12.34"),

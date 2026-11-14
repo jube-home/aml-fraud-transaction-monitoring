@@ -62,7 +62,10 @@ namespace Jube.Validations.EntityAnalysisModel
                 .MaximumLength(MaxXPathLength)
                 .WithMessage(_ =>
                     string.Format(localiser[EntityAnalysisModelResources.EntryXPathMaxLength], MaxXPathLength))
-                .WithErrorCode("EntryXPathMaximumLength");
+                .WithErrorCode("EntryXPathMaximumLength")
+                .Must(x => x is null || !x.Contains("=~"))
+                .WithMessage(_ => localiser[EntityAnalysisModelResources.XPathRegexNotPermitted])
+                .WithErrorCode("XPathRegexNotPermitted");
 
             RuleFor(p => p.ReferenceDateName)
                 .NotEmpty()
@@ -86,6 +89,9 @@ namespace Jube.Validations.EntityAnalysisModel
                 .WithMessage(_ => string.Format(localiser[EntityAnalysisModelResources.ReferenceDateXPathMaxLength],
                     MaxXPathLength))
                 .WithErrorCode("ReferenceDateXPathMaximumLength")
+                .Must(x => x is null || !x.Contains("=~"))
+                .WithMessage(_ => localiser[EntityAnalysisModelResources.XPathRegexNotPermitted])
+                .WithErrorCode("XPathRegexNotPermitted")
                 .When(p => p.ReferenceDatePayloadLocationTypeId != 3);
 
             RuleFor(p => p.CacheFetchLimit)

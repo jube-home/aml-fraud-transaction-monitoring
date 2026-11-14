@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The lower-case scheme of an absolute URL; empty for file and share URLs.")]
         public static string UrlScheme(this string? @this)
         {
             return Uri.TryCreate((@this ?? "").Trim(), UriKind.Absolute, out var uri) && !uri.IsFile && !uri.IsUnc

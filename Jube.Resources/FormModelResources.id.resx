@@ -1,0 +1,689 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="EntityAnalysisModelTag.name" xml:space="preserve">
+        <value>Nama</value>
+    </data>
+    <data name="EntityAnalysisModelTag.active" xml:space="preserve">
+        <value>Aktif</value>
+    </data>
+    <data name="EntityAnalysisModelTag.locked" xml:space="preserve">
+        <value>Terkunci</value>
+    </data>
+    <data name="EntityAnalysisModelTag.id" xml:space="preserve">
+        <value>ID</value>
+    </data>
+    <data name="EntityAnalysisModelTag.createdUser" xml:space="preserve">
+        <value>Dibuat oleh</value>
+    </data>
+    <data name="EntityAnalysisModelTag.createdDate" xml:space="preserve">
+        <value>Tanggal dibuat</value>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedUser" xml:space="preserve">
+        <value>Diperbarui oleh</value>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedDate" xml:space="preserve">
+        <value>Tanggal diperbarui</value>
+    </data>
+    <data name="EntityAnalysisModelTag.version" xml:space="preserve">
+        <value>Versi</value>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedUser" xml:space="preserve">
+        <value>Dihapus oleh</value>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedDate" xml:space="preserve">
+        <value>Tanggal dihapus</value>
+    </data>
+    <data name="EntityAnalysisModelTag.group.Identity" xml:space="preserve">
+        <value>Identitas</value>
+    </data>
+    <data name="EntityAnalysisModelTag.group.Audit" xml:space="preserve">
+        <value>Audit</value>
+    </data>
+    <data name="EntityAnalysisModelTag.column.name" xml:space="preserve">
+        <value>Nama</value>
+    </data>
+    <data name="EntityAnalysisModelTag.column.active" xml:space="preserve">
+        <value>Aktif</value>
+    </data>
+    <data name="option.IntervalUnit.Second" xml:space="preserve">
+        <value>Detik</value>
+    </data>
+    <data name="option.IntervalUnit.Minute" xml:space="preserve">
+        <value>Menit</value>
+    </data>
+    <data name="option.IntervalUnit.Hour" xml:space="preserve">
+        <value>Jam</value>
+    </data>
+    <data name="option.IntervalUnit.Day" xml:space="preserve">
+        <value>Hari</value>
+    </data>
+    <data name="option.IntervalUnit.Month" xml:space="preserve">
+        <value>Bulan</value>
+    </data>
+    <data name="option.IntervalUnit.Year" xml:space="preserve">
+        <value>Tahun</value>
+    </data>
+    <data name="option.NotificationType.Email" xml:space="preserve">
+        <value>Email</value>
+    </data>
+    <data name="option.NotificationType.Sms" xml:space="preserve">
+        <value>SMS</value>
+    </data>
+    <data name="EntityAnalysisModelTag.name.description" xml:space="preserve">
+        <value>Nama tampilan tag ini. Unik dalam model (tidak peka huruf besar-kecil). Digabungkan ke bagian tag muatan arsip untuk EntityAnalysisModelEntityInstanceGuid yang sesuai.</value>
+        <comment>a46002d2</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.active.description" xml:space="preserve">
+        <value>Jika benar, tag dapat diterapkan pada muatan arsip.</value>
+        <comment>9ecf021f</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.locked.description" xml:space="preserve">
+        <value>Jika benar, pendaftaran tag terkunci dan tidak dapat diedit atau dihapus.</value>
+        <comment>c427ac09</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.id.description" xml:space="preserve">
+        <value>Pengenal baris yang ditetapkan server. Hanya baca.</value>
+        <comment>254b452e</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.createdUser.description" xml:space="preserve">
+        <value>Pengguna yang membuat tag ini. Ditetapkan server. Hanya baca.</value>
+        <comment>b8b7a648</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.createdDate.description" xml:space="preserve">
+        <value>Stempel waktu (UTC) pembuatan tag. Ditetapkan server. Hanya baca.</value>
+        <comment>2a046216</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedUser.description" xml:space="preserve">
+        <value>Pengguna yang terakhir memperbarui tag ini. Ditetapkan server. Hanya baca.</value>
+        <comment>692dc498</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedDate.description" xml:space="preserve">
+        <value>Stempel waktu (UTC) pembaruan terakhir tag. Ditetapkan server. Hanya baca.</value>
+        <comment>b845bd79</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.version.description" xml:space="preserve">
+        <value>Nomor versi untuk kontrol konkurensi optimistis, ditetapkan server dan bertambah pada setiap pembaruan. Hanya baca.</value>
+        <comment>937d398b</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedUser.description" xml:space="preserve">
+        <value>Pengguna yang menghapus tag ini (hapus lunak). Ditetapkan server. Hanya baca.</value>
+        <comment>2e8d7efb</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedDate.description" xml:space="preserve">
+        <value>Stempel waktu (UTC) penghapusan lunak tag, jika ada. Ditetapkan server. Hanya baca.</value>
+        <comment>68166826</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.name.placeholder" xml:space="preserve">
+        <value>mis. Ditinjau oleh kepatuhan</value>
+        <comment>2ebb83c4</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.name" xml:space="preserve">
+        <value>Nama</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.name.description" xml:space="preserve">
+        <value>Nama yang digunakan aturan untuk membaca entitas sebagai Graph.{Nama}, misalnya AccountId atau Payee. Hanya huruf dan angka, diawali huruf; unik dalam model.</value>
+        <comment>4a7fc4f0</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.name.placeholder" xml:space="preserve">
+        <value>mis. Payee</value>
+        <comment>81ff940b</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.name" xml:space="preserve">
+        <value>Nama</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.active" xml:space="preserve">
+        <value>Aktif</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.active.description" xml:space="preserve">
+        <value>Jika benar, entitas dibaca dari graf pada setiap pemanggilan model.</value>
+        <comment>ba3c6a3d</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.active" xml:space="preserve">
+        <value>Aktif</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.locked" xml:space="preserve">
+        <value>Terkunci</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.locked.description" xml:space="preserve">
+        <value>Jika benar, entitas terkunci dan tidak dapat diedit atau dihapus.</value>
+        <comment>17318987</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.requestXPathName" xml:space="preserve">
+        <value>Bidang</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.requestXPathName.description" xml:space="preserve">
+        <value>Bidang permintaan model ini, ditandai sebagai Kunci arsip, yang nilainya mengidentifikasi entitas dalam graf, misalnya AccountId atau ToAccountId.</value>
+        <comment>af382e5f</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.requestXPathName" xml:space="preserve">
+        <value>Bidang</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.nodeKey" xml:space="preserve">
+        <value>Kunci simpul</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.nodeKey.description" xml:space="preserve">
+        <value>Kunci simpul graf tempat nilai disimpan bila berbeda dari nama bidang, seperti To Node Key pada definisi sisi: nilai ToAccountId disimpan sebagai simpul AccountId. Kosongkan untuk memakai nama bidang.</value>
+        <comment>49a08603</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.counterpartName" xml:space="preserve">
+        <value>Pihak lawan</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.counterpartName.description" xml:space="preserve">
+        <value>Nama entitas lain pada model ini yang dipasangkan dengan entitas ini untuk fakta sisi (jumlah, nilai, kemunculan pertama) dan deteksi jembatan, misalnya entitas Payer dengan Payee-nya. Pemasangan bersifat eksplisit dan tidak pernah ditebak; kosongkan jika tidak ada.</value>
+        <comment>60120df2</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.counterpartName" xml:space="preserve">
+        <value>Pihak lawan</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.graphRegistryGuid" xml:space="preserve">
+        <value>Registri graf</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.graphRegistryGuid.description" xml:space="preserve">
+        <value>Registri graf yang definisi sisinya membatasi fakta sisi terhadap pihak lawan. Kosongkan untuk memakai setiap definisi aktif milik penyewa.</value>
+        <comment>d48d9af2</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.responsePayload" xml:space="preserve">
+        <value>Muatan respons</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.responsePayload.description" xml:space="preserve">
+        <value>Jika benar, objek entitas dikembalikan dalam JSON respons di bawah Graph. Saling eksklusif dengan Kunci arsip: entitas dikembalikan atau disimpan, tidak keduanya.</value>
+        <comment>8648201c</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.reportTable" xml:space="preserve">
+        <value>Kunci arsip</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.reportTable.description" xml:space="preserve">
+        <value>Jika benar, objek entitas ditulis ke JSON arsip untuk pelaporan dan pelatihan. Saling eksklusif dengan Response Payload.</value>
+        <comment>87f888f3</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdDate" xml:space="preserve">
+        <value>Tanggal dibuat</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdDate.description" xml:space="preserve">
+        <value>Stempel waktu pembuatan yang ditetapkan server. Hanya baca.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdUser" xml:space="preserve">
+        <value>Dibuat oleh</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdUser.description" xml:space="preserve">
+        <value>Pengguna yang membuat baris ini, ditetapkan server. Hanya baca.</value>
+        <comment>c7492dc3</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedUser" xml:space="preserve">
+        <value>Diperbarui oleh</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedUser.description" xml:space="preserve">
+        <value>Pengguna yang terakhir memperbarui baris ini, ditetapkan server. Hanya baca.</value>
+        <comment>dfe8daba</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedDate" xml:space="preserve">
+        <value>Tanggal diperbarui</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedDate.description" xml:space="preserve">
+        <value>Stempel waktu pembaruan terakhir yang ditetapkan server. Hanya baca.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.version" xml:space="preserve">
+        <value>Versi</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.version.description" xml:space="preserve">
+        <value>Nomor versi yang ditetapkan server, bertambah pada setiap pembaruan. Hanya baca.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Identity" xml:space="preserve">
+        <value>Identitas</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Entity" xml:space="preserve">
+        <value>Entitas</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Output" xml:space="preserve">
+        <value>Keluaran</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Audit" xml:space="preserve">
+        <value>Audit</value>
+    </data>
+    <data name="EntityAnalysisModel.hub.Network" xml:space="preserve">
+        <value>Jaringan</value>
+    </data>
+    <data name="EntityAnalysisModel.child.EntityAnalysisModelGraphRecall" xml:space="preserve">
+        <value>Pembacaan graf</value>
+    </data>
+    <data name="CaseWorkflowXPath.sourceGuid" xml:space="preserve">
+        <value>Bidang sumber</value>
+    </data>
+    <data name="CaseWorkflowXPath.sourceGuid.description" xml:space="preserve">
+        <value>Bidang model yang dibaca ekstraksi, dipilih dari XPath permintaan, fungsi bawaan, aturan abstraksi, kalkulasi abstraksi, penghitung TTL, adaptasi HTTP, dan aturan aktivasi model alur kerja (model itu sendiri mewakili kunci masukannya). Jalur JSON, kunci arsip, dan tipe data diturunkan darinya, dan ekstraksi dapat dirinci tepat ketika bidang ditandai sebagai Kunci arsip.</value>
+        <comment>9af5ba6a</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.name" xml:space="preserve">
+        <value>Nama</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.name.description" xml:space="preserve">
+        <value>Nama entri yang digunakan aturan untuk membaca rekaman intelijen IP sebagai Svirfd.{Nama}.{Komponen}, misalnya Svirfd.Customer.Privacy.Vpn. Hanya huruf dan angka, diawali huruf; unik dalam model.</value>
+        <comment>26ee861d</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.name.placeholder" xml:space="preserve">
+        <value>mis. Customer</value>
+        <comment>d4f90c87</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.active" xml:space="preserve">
+        <value>Aktif</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.active.description" xml:space="preserve">
+        <value>Jika aktif, alamat dicari pada setiap pemanggilan model.</value>
+        <comment>a03783be</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.locked" xml:space="preserve">
+        <value>Terkunci</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.locked.description" xml:space="preserve">
+        <value>Jika aktif, entri ini terkunci dan tidak dapat diedit atau dihapus.</value>
+        <comment>d3777afa</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.requestXPathName" xml:space="preserve">
+        <value>Bidang</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.requestXPathName.description" xml:space="preserve">
+        <value>Bidang permintaan model ini bertipe data IP yang nilainya adalah alamat yang dicari.</value>
+        <comment>bfb592ae</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.responsePayload" xml:space="preserve">
+        <value>Muatan respons</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.responsePayload.description" xml:space="preserve">
+        <value>Jika aktif, seluruh rekaman intelijen IP dikembalikan dalam JSON respons di bawah Svirfd.</value>
+        <comment>bd6e75d5</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.reportTable" xml:space="preserve">
+        <value>Arsip</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.reportTable.description" xml:space="preserve">
+        <value>Jika aktif, rekaman ditulis ke JSON arsip untuk pelaporan, pelatihan, dan jurnal kasus yang membandingkannya dengan pencarian baru untuk menunjukkan penyimpangan.</value>
+        <comment>08bbf83a</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.narrative" xml:space="preserve">
+        <value>Narasi</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.narrative.description" xml:space="preserve">
+        <value>Jika aktif, narasi bahasa sederhana dilampirkan pada rekaman sehingga dikembalikan dalam respons dan diarsipkan bersamanya. Matikan agar rekaman hanya berisi data.</value>
+        <comment>98a1314b</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdDate" xml:space="preserve">
+        <value>Tanggal dibuat</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdDate.description" xml:space="preserve">
+        <value>Stempel waktu pembuatan yang ditetapkan server. Hanya baca.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdUser" xml:space="preserve">
+        <value>Dibuat oleh</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdUser.description" xml:space="preserve">
+        <value>Pengguna yang membuat baris ini, ditetapkan server. Hanya baca.</value>
+        <comment>c7492dc3</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedUser" xml:space="preserve">
+        <value>Diperbarui oleh</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedUser.description" xml:space="preserve">
+        <value>Pengguna yang terakhir memperbarui baris ini, ditetapkan server. Hanya baca.</value>
+        <comment>dfe8daba</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedDate" xml:space="preserve">
+        <value>Tanggal diperbarui</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedDate.description" xml:space="preserve">
+        <value>Stempel waktu pembaruan terakhir yang ditetapkan server. Hanya baca.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.version" xml:space="preserve">
+        <value>Versi</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.version.description" xml:space="preserve">
+        <value>Nomor versi yang ditetapkan server, bertambah pada setiap pembaruan. Hanya baca.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.column.name" xml:space="preserve">
+        <value>Nama</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.column.active" xml:space="preserve">
+        <value>Aktif</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.column.requestXPathName" xml:space="preserve">
+        <value>Bidang</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Identity" xml:space="preserve">
+        <value>Identitas</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Field" xml:space="preserve">
+        <value>Bidang</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Output" xml:space="preserve">
+        <value>Keluaran</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Audit" xml:space="preserve">
+        <value>Audit</value>
+    </data>
+    <data name="EntityAnalysisModel.child.EntityAnalysisModelSvirfd" xml:space="preserve">
+        <value>Svirfd</value>
+    </data>
+    <data name="option.FieldDataType.Ip" xml:space="preserve">
+        <value>IP</value>
+    </data>
+    <data name="TenantRegistry.svirfdRemoteLookupsEnabled" xml:space="preserve">
+        <value>Pencarian jarak jauh Svirfd</value>
+    </data>
+    <data name="TenantRegistry.svirfdRemoteLookupsEnabled.description" xml:space="preserve">
+        <value>Jika dimatikan, tidak ada alamat IP tenant ini yang dikirim ke layanan Svirfd jarak jauh. Pencarian lokal dan direktori tidak terpengaruh. Hanya landlord yang dapat mengubahnya.</value>
+        <comment>8c1916e8</comment>
+    </data>
+    <data name="TenantRegistry.group.DataProtection" xml:space="preserve">
+        <value>Perlindungan data</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationUrl" xml:space="preserve">
+        <value>URL adaptasi HTTP</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationTimeoutMilliseconds" xml:space="preserve">
+        <value>Batas waktu adaptasi HTTP (md)</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationValidateSsl" xml:space="preserve">
+        <value>Validasi SSL adaptasi HTTP</value>
+    </data>
+    <data name="TenantRegistry.group.HttpAdaptation" xml:space="preserve">
+        <value>Adaptasi HTTP</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationUrl.description" xml:space="preserve">
+        <value>Khusus landlord. URL dasar tempat endpoint Adaptasi HTTP Tenant ini ditambahkan. Biarkan kosong untuk memakai HttpAdaptationUrl tingkat instalasi. Harus berupa URL https ke host publik tanpa kredensial, string kueri, atau fragmen.</value>
+        <comment>ee19d732</comment>
+    </data>
+    <data name="TenantRegistry.httpAdaptationTimeoutMilliseconds.description" xml:space="preserve">
+        <value>Khusus landlord. Batas waktu dalam milidetik untuk panggilan Adaptasi HTTP Tenant ini, antara 100 dan 30000. Nol memakai HttpAdaptationTimeout tingkat instalasi.</value>
+        <comment>f8d39b15</comment>
+    </data>
+    <data name="TenantRegistry.httpAdaptationValidateSsl.description" xml:space="preserve">
+        <value>Khusus landlord. Jika benar, sertifikat TLS endpoint Adaptasi HTTP Tenant ini divalidasi. Hanya berlaku jika HttpAdaptationUrl ditetapkan untuk Tenant.</value>
+        <comment>2cf1b2e6</comment>
+    </data>
+    <data name="TenantRegistry.httpAdaptationUrl.placeholder" xml:space="preserve">
+        <value>https://scoring.example.com</value>
+        <comment>9591a0fb</comment>
+    </data>
+    <data name="TenantRegistry.name.description" xml:space="preserve">
+        <value>Nama tampilan Tenant, ditampilkan di pengalih tenant dan Administrasi &gt; Keamanan &gt; Tenant. Unik di seluruh Tenant pada instalasi (tabel ini tidak memiliki lingkup induk sendiri untuk keunikan).</value>
+        <comment>9a55131b</comment>
+    </data>
+    <data name="TenantRegistry.name.placeholder" xml:space="preserve">
+        <value>mis. Acme Bank</value>
+        <comment>c18a9b46</comment>
+    </data>
+    <data name="TenantRegistry.active.description" xml:space="preserve">
+        <value>Jika benar, Tenant tersedia untuk digunakan (mis. dapat dipilih melalui pengalih tenant).</value>
+        <comment>81029c1e</comment>
+    </data>
+    <data name="TenantRegistry.locked.description" xml:space="preserve">
+        <value>Jika benar, Tenant dikunci menjadi hanya-baca dan tidak dapat diubah atau dihapus.</value>
+        <comment>01ae7e98</comment>
+    </data>
+    <data name="TenantRegistry.createdDate.description" xml:space="preserve">
+        <value>Stempel waktu pembuatan yang ditetapkan server. Hanya-baca.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="TenantRegistry.createdUser.description" xml:space="preserve">
+        <value>Pengguna yang membuat Tenant ini, ditetapkan server. Hanya-baca.</value>
+        <comment>8352b7ce</comment>
+    </data>
+    <data name="TenantRegistry.updatedUser.description" xml:space="preserve">
+        <value>Pengguna yang terakhir memperbarui Tenant ini, ditetapkan server. Hanya-baca.</value>
+        <comment>6fe961d0</comment>
+    </data>
+    <data name="TenantRegistry.updatedDate.description" xml:space="preserve">
+        <value>Stempel waktu pembaruan terbaru yang ditetapkan server. Hanya-baca.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="TenantRegistry.version.description" xml:space="preserve">
+        <value>Nomor versi yang ditetapkan server, bertambah pada setiap pembaruan. Hanya-baca.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="RoleRegistry.name.description" xml:space="preserve">
+        <value>Nama tampilan Peran, ditampilkan kepada administrator saat mengalokasikan Izin atau Pengguna. Unik dalam tenant (tidak membedakan huruf besar/kecil).</value>
+        <comment>31293430</comment>
+    </data>
+    <data name="RoleRegistry.name.placeholder" xml:space="preserve">
+        <value>mis. Analis penipuan</value>
+        <comment>07225315</comment>
+    </data>
+    <data name="RoleRegistry.active.description" xml:space="preserve">
+        <value>Jika benar, Peran tersedia untuk dialokasikan ke Pengguna atau Model.</value>
+        <comment>bd788127</comment>
+    </data>
+    <data name="RoleRegistry.locked.description" xml:space="preserve">
+        <value>Jika benar, Peran dikunci menjadi hanya-baca dan tidak dapat diubah atau dihapus.</value>
+        <comment>5ae0abde</comment>
+    </data>
+    <data name="RoleRegistry.createdDate.description" xml:space="preserve">
+        <value>Stempel waktu pembuatan yang ditetapkan server. Hanya-baca.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="RoleRegistry.createdUser.description" xml:space="preserve">
+        <value>Pengguna yang membuat Peran ini, ditetapkan server. Hanya-baca.</value>
+        <comment>8ec04d32</comment>
+    </data>
+    <data name="RoleRegistry.updatedUser.description" xml:space="preserve">
+        <value>Pengguna yang terakhir memperbarui Peran ini, ditetapkan server. Hanya-baca.</value>
+        <comment>fb01581b</comment>
+    </data>
+    <data name="RoleRegistry.updatedDate.description" xml:space="preserve">
+        <value>Stempel waktu pembaruan terbaru yang ditetapkan server. Hanya-baca.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="RoleRegistry.version.description" xml:space="preserve">
+        <value>Nomor versi yang ditetapkan server, bertambah pada setiap pembaruan. Hanya-baca.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="RoleRegistryPermission.permissionSpecificationId.description" xml:space="preserve">
+        <value>Pengenal Spesifikasi Izin yang diberikan kepada Peran -- literal bilangan bulat yang sama yang menjadi dasar pemeriksaan izin yang ditulis keras di setiap layanan. Harus merujuk baris yang ada di katalog Spesifikasi Izin.</value>
+        <comment>a04fe2e8</comment>
+    </data>
+    <data name="RoleRegistryPermission.active.description" xml:space="preserve">
+        <value>Jika benar, pemberian izin ini diberlakukan. Jika salah, diabaikan dan Peran tidak menerima izin tersebut.</value>
+        <comment>f16785e0</comment>
+    </data>
+    <data name="RoleRegistryPermission.locked.description" xml:space="preserve">
+        <value>Jika benar, pemberian ini dikunci dan tidak dapat diubah atau dihapus.</value>
+        <comment>51b4242c</comment>
+    </data>
+    <data name="RoleRegistryPermission.createdUser.description" xml:space="preserve">
+        <value>Pengguna yang membuat baris ini. Ditetapkan server. Hanya-baca.</value>
+        <comment>3b8cd8cf</comment>
+    </data>
+    <data name="RoleRegistryPermission.createdDate.description" xml:space="preserve">
+        <value>Stempel waktu (UTC) pembuatan baris ini. Ditetapkan server. Hanya-baca.</value>
+        <comment>bb91d7cb</comment>
+    </data>
+    <data name="RoleRegistryPermission.updatedUser.description" xml:space="preserve">
+        <value>Pengguna yang terakhir memperbarui baris ini. Ditetapkan server. Hanya-baca.</value>
+        <comment>eeb46a72</comment>
+    </data>
+    <data name="RoleRegistryPermission.updatedDate.description" xml:space="preserve">
+        <value>Stempel waktu (UTC) pembaruan terakhir baris ini. Ditetapkan server. Hanya-baca.</value>
+        <comment>666366bf</comment>
+    </data>
+    <data name="RoleRegistryPermission.version.description" xml:space="preserve">
+        <value>Nomor versi konkurensi optimistis yang ditetapkan server. Hanya-baca.</value>
+        <comment>755d4fe7</comment>
+    </data>
+    <data name="PermissionSpecification.id.description" xml:space="preserve">
+        <value>Pengenal bilangan bulat spesifikasi izin ini yang ditetapkan server -- literal bilangan bulat yang sama yang menjadi dasar pemeriksaan izin yang ditulis keras di setiap layanan. Hanya-baca: katalog diisi melalui migrasi basis data, tidak dibuat atau diubah melalui API ini.</value>
+        <comment>d881018b</comment>
+    </data>
+    <data name="PermissionSpecification.name.description" xml:space="preserve">
+        <value>Nama tampilan spesifikasi izin, ditampilkan di daftar tarik-turun Izin saat memberikan izin Peran. Hanya-baca: katalog diisi melalui migrasi basis data, tidak dibuat atau diubah melalui API ini.</value>
+        <comment>cda60556</comment>
+    </data>
+    <data name="UserRegistry.name.description" xml:space="preserve">
+        <value>Nama masuk pengguna, sesuai klaim Name pada JSON Web Token yang diterbitkan saat autentikasi. Unik dalam tenant.</value>
+        <comment>1114b6a1</comment>
+    </data>
+    <data name="UserRegistry.roleRegistryGuid.description" xml:space="preserve">
+        <value>Pengenal Registri Peran tempat pengguna ini ditugaskan. Menentukan tenant pengguna dan izin yang dimilikinya.</value>
+        <comment>f99c9842</comment>
+    </data>
+    <data name="UserRegistry.email.description" xml:space="preserve">
+        <value>Alamat email pengguna, digunakan untuk mengidentifikasi pemilik akun. Tidak digunakan untuk mengirim kata sandi sementara, yang dikembalikan sekali kepada pemanggil yang mengatur ulangnya.</value>
+        <comment>2767b97d</comment>
+    </data>
+    <data name="UserRegistry.email.placeholder" xml:space="preserve">
+        <value>nama@contoh.id</value>
+        <comment>7b17fb0b</comment>
+    </data>
+    <data name="UserRegistry.wirePasswordHash.description" xml:space="preserve">
+        <value>Jika benar, kata sandi sementara yang diterbitkan oleh tindakan atur ulang kata sandi juga diberi salt dengan Name pengguna dan di-hash SHA-256 sebelum hashing Argon2 (format kata sandi 'wire' yang diharapkan beberapa integrasi klien). Tidak mengubah cara kata sandi ditampilkan kepada pemanggil yang melakukan pengaturan ulang.</value>
+        <comment>13612f72</comment>
+    </data>
+    <data name="UserRegistry.passwordLocked.description" xml:space="preserve">
+        <value>Jika benar, akun terkunci setelah percobaan kata sandi yang gagal berulang kali dan tidak dapat diautentikasi hingga pengaturan ulang kata sandi membuka kuncinya. Hanya-baca di sini; hanya dibuka oleh tindakan atur ulang kata sandi.</value>
+        <comment>6c727df1</comment>
+    </data>
+    <data name="UserRegistry.id.description" xml:space="preserve">
+        <value>Pengenal baris yang ditetapkan server. Hanya-baca.</value>
+        <comment>254b452e</comment>
+    </data>
+    <data name="UserRegistry.createdUser.description" xml:space="preserve">
+        <value>Pengguna yang membuat akun ini. Ditetapkan server. Hanya-baca.</value>
+        <comment>7eb019f3</comment>
+    </data>
+    <data name="UserRegistry.createdDate.description" xml:space="preserve">
+        <value>Stempel waktu (UTC) pembuatan akun ini. Ditetapkan server. Hanya-baca.</value>
+        <comment>2c31adef</comment>
+    </data>
+    <data name="UserRegistry.version.description" xml:space="preserve">
+        <value>Nomor versi konkurensi optimistis yang ditetapkan server, bertambah pada setiap pembaruan. Hanya-baca.</value>
+        <comment>937d398b</comment>
+    </data>
+    <data name="UserRegistry.inheritedId.description" xml:space="preserve">
+        <value>Pengenal yang dibawa dari impor pelestarian baris instalasi sebelumnya, jika akun ini berasal dari sana. Tidak diisi atau digunakan selain itu. Hanya-baca.</value>
+        <comment>cacf7d8d</comment>
+    </data>
+    <data name="UserRegistry.active.description" xml:space="preserve">
+        <value>Jika benar, pengguna dapat diautentikasi. Jika salah, masuk ditolak terlepas dari benar tidaknya kata sandi.</value>
+        <comment>13f02082</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.name.description" xml:space="preserve">
+        <value>Nama penghitung OpenTelemetry yang bertambah saat ada kecocokan, mis. "jube.logcounter.postgres_deadlock". Unik di antara baris aktif, tidak membedakan huruf besar/kecil. Hanya huruf, angka, '.', '_' dan '-', sesuai konvensi penamaan instrumen OpenTelemetry.</value>
+        <comment>49fd6ad9</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.name.placeholder" xml:space="preserve">
+        <value>jube.logcounter.postgres_deadlock</value>
+        <comment>415927e2</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.regex.description" xml:space="preserve">
+        <value>Ekspresi reguler .NET yang diperiksa terhadap setiap baris/pesan log tak terstruktur yang masuk ke instans ini (ApplicationLogEntry, PostgresLogEntry, ContainerLogEntry, RespSlowOperation, EtcdClusterEvent, PatroniClusterEvent). Setiap kecocokan menambah Name sebanyak satu. Harus dapat dikompilasi -- divalidasi saat penyimpanan, bukan saat pencocokan. Pencocokan berjalan dalam waktu linear jika pola memungkinkan; pola dengan lookaround, backreference, atau grup atomik beralih ke pencocok backtracking yang dibatasi 100 ms per baris, dan aturan yang melewati batas waktu pada lima baris berturut-turut ditangguhkan hingga penyegaran satu menit berikutnya.</value>
+        <comment>dfb2a18d</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.regex.placeholder" xml:space="preserve">
+        <value>deadlock detected</value>
+        <comment>5561729c</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.active.description" xml:space="preserve">
+        <value>Jika benar, aturan ini diperiksa terhadap baris log yang masuk. Jika salah, diabaikan (dan penghitungnya berhenti bertambah -- baris tidak dihapus).</value>
+        <comment>d7167dd5</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.locked.description" xml:space="preserve">
+        <value>Jika benar, baris ini dikunci dan tidak dapat diubah atau dihapus.</value>
+        <comment>c9f595ac</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.createdUser.description" xml:space="preserve">
+        <value>Pengguna yang membuat baris ini. Ditetapkan server. Hanya-baca.</value>
+        <comment>3b8cd8cf</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.createdDate.description" xml:space="preserve">
+        <value>Stempel waktu (UTC) pembuatan baris ini. Ditetapkan server. Hanya-baca.</value>
+        <comment>bb91d7cb</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.updatedUser.description" xml:space="preserve">
+        <value>Pengguna yang terakhir memperbarui baris ini. Ditetapkan server. Hanya-baca.</value>
+        <comment>eeb46a72</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.updatedDate.description" xml:space="preserve">
+        <value>Stempel waktu (UTC) pembaruan terakhir baris ini. Ditetapkan server. Hanya-baca.</value>
+        <comment>666366bf</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.version.description" xml:space="preserve">
+        <value>Nomor versi konkurensi optimistis yang ditetapkan server. Hanya-baca.</value>
+        <comment>755d4fe7</comment>
+    </data>
+    <data name="OpenTelemetryExclude.name.description" xml:space="preserve">
+        <value>Nama persis instrumen/penghitung OpenTelemetry yang akan dihentikan ekspornya, mis. "jube.engine.logs.warn.count". Dicocokkan penuh, tidak membedakan huruf besar/kecil -- tanpa wildcard. Hanya huruf, angka, '.', '_', '/' dan '-'. Unik di antara baris aktif. Berlaku untuk setiap instrumen, termasuk yang dibuat OpenTelemetryLogCounter secara dinamis: nama yang dikecualikan di sana bahkan tidak pernah dibuat, sehingga tidak pernah mulai bertambah. Untuk penghitung bernama lain yang sudah ada, ini hanya berlaku bagi instrumen yang belum aktif mengekspor -- yang sudah mengekspor tetap melakukannya hingga proses dimulai ulang.</value>
+        <comment>7e24ca9e</comment>
+    </data>
+    <data name="OpenTelemetryExclude.name.placeholder" xml:space="preserve">
+        <value>jube.engine.logs.warn.count</value>
+        <comment>2ddc8a48</comment>
+    </data>
+    <data name="OpenTelemetryExclude.active.description" xml:space="preserve">
+        <value>Jika benar, pengecualian ini diberlakukan. Jika salah, diabaikan (instrumen diekspor seperti biasa, tunduk pada pengecualian lain).</value>
+        <comment>7d0dc62e</comment>
+    </data>
+    <data name="OpenTelemetryExclude.locked.description" xml:space="preserve">
+        <value>Jika benar, baris ini dikunci dan tidak dapat diubah atau dihapus.</value>
+        <comment>c9f595ac</comment>
+    </data>
+    <data name="OpenTelemetryExclude.createdUser.description" xml:space="preserve">
+        <value>Pengguna yang membuat baris ini. Ditetapkan server. Hanya-baca.</value>
+        <comment>3b8cd8cf</comment>
+    </data>
+    <data name="OpenTelemetryExclude.createdDate.description" xml:space="preserve">
+        <value>Stempel waktu (UTC) pembuatan baris ini. Ditetapkan server. Hanya-baca.</value>
+        <comment>bb91d7cb</comment>
+    </data>
+    <data name="OpenTelemetryExclude.updatedUser.description" xml:space="preserve">
+        <value>Pengguna yang terakhir memperbarui baris ini. Ditetapkan server. Hanya-baca.</value>
+        <comment>eeb46a72</comment>
+    </data>
+    <data name="OpenTelemetryExclude.updatedDate.description" xml:space="preserve">
+        <value>Stempel waktu (UTC) pembaruan terakhir baris ini. Ditetapkan server. Hanya-baca.</value>
+        <comment>666366bf</comment>
+    </data>
+    <data name="OpenTelemetryExclude.version.description" xml:space="preserve">
+        <value>Nomor versi konkurensi optimistis yang ditetapkan server. Hanya-baca.</value>
+        <comment>755d4fe7</comment>
+    </data>
+</root>

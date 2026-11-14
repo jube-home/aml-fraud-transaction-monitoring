@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="SqlSyntaxError" xml:space="preserve">
+        <value>SQL کو "{0}" کے قریب پڑھا نہیں جا سکا۔</value>
+    </data>
+    <data name="SqlUnknownTable" xml:space="preserve">
+        <value>ٹیبل "{0}" موجود نہیں یا آپ کو اس سے استفسار کی اجازت نہیں۔</value>
+    </data>
+    <data name="SqlUnknownTableSuggest" xml:space="preserve">
+        <value>ٹیبل "{0}" موجود نہیں یا آپ کو اس سے استفسار کی اجازت نہیں۔ کیا آپ کا مطلب "{1}" تھا؟</value>
+    </data>
+    <data name="SqlUnknownColumn" xml:space="preserve">
+        <value>کالم "{0}" موجود نہیں۔</value>
+    </data>
+    <data name="SqlUnknownColumnSuggest" xml:space="preserve">
+        <value>کالم "{0}" موجود نہیں۔ کیا آپ کا مطلب "{1}" تھا؟ بڑے حروف والے نام دوہرے اقتباس میں ہونے چاہئیں۔</value>
+    </data>
+    <data name="SqlUnknownAlias" xml:space="preserve">
+        <value>اس استفسار میں "{0}" نام کا کوئی ٹیبل یا عرف نہیں ہے۔</value>
+    </data>
+    <data name="SqlUnknownAliasSuggest" xml:space="preserve">
+        <value>اس استفسار میں "{0}" نام کا کوئی ٹیبل یا عرف نہیں ہے۔ کیا آپ کا مطلب "{1}" تھا؟</value>
+    </data>
+    <data name="SqlAmbiguousColumn" xml:space="preserve">
+        <value>کالم "{0}" مبہم ہے۔ اس سے پہلے ٹیبل کا نام یا عرف لگائیں۔</value>
+    </data>
+    <data name="SqlUnknownFunction" xml:space="preserve">
+        <value>فنکشن "{0}" موجود نہیں۔</value>
+    </data>
+    <data name="SqlUnknownFunctionSuggest" xml:space="preserve">
+        <value>فنکشن "{0}" موجود نہیں۔ کیا آپ کا مطلب "{1}" تھا؟</value>
+    </data>
+    <data name="SqlFunctionArity" xml:space="preserve">
+        <value>فنکشن "{0}" کو {1} دلائل نہیں دیے جا سکتے۔ یہ {2} لیتا ہے۔</value>
+    </data>
+    <data name="SqlOverNotWindow" xml:space="preserve">
+        <value>OVER کو "{0}" کے ساتھ استعمال نہیں کیا جا سکتا کیونکہ یہ نہ ایگریگیٹ فنکشن ہے نہ ونڈو فنکشن۔</value>
+    </data>
+    <data name="SqlWindowNeedsOver" xml:space="preserve">
+        <value>ونڈو فنکشن "{0}" کو OVER شق درکار ہے۔</value>
+    </data>
+    <data name="SqlWindowNotAllowed" xml:space="preserve">
+        <value>ونڈو فنکشن "{0}" استفسار کے اس حصے میں جائز نہیں۔</value>
+    </data>
+    <data name="SqlAggregateInWhere" xml:space="preserve">
+        <value>ایگریگیٹ فنکشن "{0}" WHERE میں جائز نہیں۔ ایگریگیٹس پر فلٹر کے لیے HAVING استعمال کریں۔</value>
+    </data>
+    <data name="SqlAggregateInJoin" xml:space="preserve">
+        <value>ایگریگیٹ فنکشن "{0}" JOIN شرط میں جائز نہیں۔</value>
+    </data>
+    <data name="SqlAggregateInGroupBy" xml:space="preserve">
+        <value>ایگریگیٹ فنکشن "{0}" GROUP BY میں جائز نہیں۔</value>
+    </data>
+    <data name="SqlAggregateNested" xml:space="preserve">
+        <value>ایگریگیٹ فنکشنز ایک دوسرے میں نہیں آ سکتے۔ "{0}" دوسرے ایگریگیٹ کے اندر استعمال ہوا ہے۔</value>
+    </data>
+    <data name="SqlColumnNotGrouped" xml:space="preserve">
+        <value>کالم "{0}" کا GROUP BY میں ہونا یا ایگریگیٹ فنکشن کے اندر استعمال ہونا ضروری ہے۔</value>
+    </data>
+    <data name="SqlTypeMismatch" xml:space="preserve">
+        <value>قسم {0} کی قدر کا موازنہ یا امتزاج قسم {1} کی قدر کے ساتھ نہیں ہو سکتا۔</value>
+    </data>
+    <data name="SqlLiteralInvalid" xml:space="preserve">
+        <value>قدر '{0}' قسم {1} کے لیے درست نہیں۔</value>
+    </data>
+    <data name="SqlFunctionArgumentType" xml:space="preserve">
+        <value>فنکشن "{0}" قسم {1} کی قدر قبول نہیں کرتا۔</value>
+    </data>
+    <data name="SqlAggregateArgumentType" xml:space="preserve">
+        <value>ایگریگیٹ فنکشن "{0}" قسم {1} کی قدر قبول نہیں کرتا۔</value>
+    </data>
+    <data name="SqlOperatorType" xml:space="preserve">
+        <value>آپریٹر {0} قسم {1} کی قدر کے ساتھ استعمال نہیں ہو سکتا۔</value>
+    </data>
+    <data name="SqlConditionType" xml:space="preserve">
+        <value>شرط درست یا غلط ہونی چاہیے، قسم {0} کی قدر نہیں۔</value>
+    </data>
+    <data name="SqlTypesUnmatched" xml:space="preserve">
+        <value>قسم {0} اور {1} کی قدریں ایک نتیجے میں یکجا نہیں ہو سکتیں۔</value>
+    </data>
+    <data name="SqlLimitNegative" xml:space="preserve">
+        <value>{0} منفی نہیں ہو سکتا۔</value>
+    </data>
+    <data name="SqlLimitType" xml:space="preserve">
+        <value>{0} کو پورا عدد درکار ہے، قسم {1} کی قدر نہیں۔</value>
+    </data>
+    <data name="SqlLimitVariables" xml:space="preserve">
+        <value>{0} کالمز کا حوالہ نہیں دے سکتا۔</value>
+    </data>
+    <data name="SqlOrdinalOutOfRange" xml:space="preserve">
+        <value>{0} کی پوزیشن {1} انتخابی فہرست میں نہیں ہے۔</value>
+    </data>
+    <data name="SqlSetOperationColumns" xml:space="preserve">
+        <value>UNION، INTERSECT یا EXCEPT کے ہر استفسار کو کالموں کی یکساں تعداد لوٹانی چاہیے، مگر یہ {0} اور {1} لوٹاتے ہیں۔</value>
+    </data>
+    <data name="SqlSubqueryColumns" xml:space="preserve">
+        <value>قدر کے طور پر استعمال ہونے والے ذیلی استفسار کو بالکل ایک کالم لوٹانا چاہیے۔</value>
+    </data>
+    <data name="SqlUnknownType" xml:space="preserve">
+        <value>ڈیٹا کی قسم "{0}" موجود نہیں۔</value>
+    </data>
+    <data name="SqlParameterUnknown" xml:space="preserve">
+        <value>پیرامیٹر @{0} یہاں دستیاب نہیں۔</value>
+    </data>
+    <data name="SqlParameterType" xml:space="preserve">
+        <value>پیرامیٹر @{0} میں قسم {1} کی قدر ہے مگر اس کا موازنہ قسم {2} کے کالم سے ہو رہا ہے۔</value>
+    </data>
+</root>

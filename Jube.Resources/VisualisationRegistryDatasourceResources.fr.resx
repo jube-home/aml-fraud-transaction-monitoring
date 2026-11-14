@@ -39,4 +39,58 @@
     <data name="NameRequired" xml:space="preserve">
     <value>Un nom est requis.</value>
   </data>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="VisualisationRegistryIdInvalid" xml:space="preserve">
+    <value>Un registre de visualisations valide est requis.</value>
+  </data>
+    <data name="VisualisationRegistryIdNotFound" xml:space="preserve">
+    <value>Le registre de visualisations parent est introuvable.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Le nom doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Ce nom existe déjà.</value>
+  </data>
+    <data name="CommandRequired" xml:space="preserve">
+    <value>Une commande SQL est requise.</value>
+  </data>
+    <data name="CommandMaxLength" xml:space="preserve">
+    <value>La commande SQL doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="PriorityRange" xml:space="preserve">
+    <value>La priorité doit être supérieure ou égale à zéro.</value>
+  </data>
+    <data name="ColumnSpanRange" xml:space="preserve">
+    <value>L'étendue en colonnes doit être supérieure ou égale à zéro.</value>
+  </data>
+    <data name="RowSpanRange" xml:space="preserve">
+    <value>L'étendue en lignes doit être supérieure ou égale à zéro.</value>
+  </data>
+    <data name="DisplayRequired" xml:space="preserve">
+    <value>Affichez un graphique, une grille ou les deux.</value>
+  </data>
+    <data name="DisplayKindIdInvalid" xml:space="preserve">
+    <value>Ce type de graphique ne peut pas être tracé par cette installation.</value>
+  </data>
+    <data name="TemplateTextMaxLength" xml:space="preserve">
+    <value>Le texte du modèle doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="MappingRoleInvalid" xml:space="preserve">
+    <value>Un rôle de graphique du mappage n'est pas un rôle connu.</value>
+  </data>
+    <data name="MappingRoleDuplicate" xml:space="preserve">
+    <value>Chaque rôle de graphique ne peut être attribué qu'une seule fois dans le mappage.</value>
+  </data>
+    <data name="MappingColumnInvalid" xml:space="preserve">
+    <value>Un nom de colonne du mappage est vide ou dépasse {0} caractères.</value>
+  </data>
+    <data name="MappingColumnDuplicate" xml:space="preserve">
+    <value>Une colonne ne peut remplir qu'un seul rôle de graphique.</value>
+  </data>
 </root>

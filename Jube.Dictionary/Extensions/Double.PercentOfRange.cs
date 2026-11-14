@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double PercentOfRange(this double @this, double minimum, double maximum)
+        [Description("Where the value sits between the minimum (0) and maximum (100).")]
+        public static double PercentOfRange(this double @this,
+            [Description("The value that maps to 0.")] double minimum,
+            [Description("The value that maps to 100.")] double maximum)
         {
             return CalculationSupport.Finite(100.0 * (@this - minimum) / (maximum - minimum));
         }

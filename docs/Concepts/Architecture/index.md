@@ -131,22 +131,23 @@ All HTTP requests will be targeted at the Kestrel webserver, and include:
   to HTTP requests. It follows that any interaction that can be achieved in the user interface, can also be achieved via
   API directly, subject to authentication.
 
-Authentication relies on a standard implementation of JSON web tokens stored in an HTTP header called authenticate, or
-an http cookie called authentication, which must always be present except for unauthenticated resources.
+Authentication relies on a standard implementation of JSON web tokens sent in the HTTP header called Authorization (as
+a Bearer token), or an http cookie called authentication-jwt, one of which must always be present except for
+unauthenticated resources (an API Key in the X-API-KEY header is the alternative for integration).
 
-The JSON web token encrypts using Environment Variables:
+The JSON web token is signed (HMAC-SHA256), not encrypted, using Environment Variables:
 
 ```text
 JWTValidAudience=http://localhost:5001
 JWTValidIssuer=http://localhost:5001
-JWTKey=ExtraSuperDuperSecretKeyCreatedOnFirstStartup
+JWTKey=<a long random value, at least 32 characters>
 ```
 
 | Value            | Description                                                                                                                                               |
 |------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | JWTValidAudience | The server domain that is allowed the token.                                                                                                              |
 | JWTValidIssuer   | The server domain that issued the token.                                                                                                                  |
-| JWTKey           | The encryption key for the token.  This key is created randomly on first instantiation of Jube,  but can be changed by updating the Environment Variable. |
+| JWTKey           | The signing key for the token. It has no default and is not generated: it must be supplied as an Environment Variable, and Jube will not start without it. |
 
 Notwithstanding a stateless architecture, the token contains a single claim type of Name
 (http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name), which will contain only the username (e.g. Administrator).
@@ -184,10 +185,10 @@ way to pass invocation values to a container image).
 # Cache
 
 Redis is the cache in the Jube software architecture and assures consistent and real-time responses. Ensure the
-RedisConnectionString environment variable string (simply the IP of the remote Redis Cluster) as follows:
+RespConnectionString environment variable string (simply the IP of the remote Redis Cluster) as follows:
 
 ```text
-RedisConnectionString=?
+RespConnectionString=?
 ```
 
 Cache has extreme performance demands and should be entirely uncontested when real-time tolerances are demanded.

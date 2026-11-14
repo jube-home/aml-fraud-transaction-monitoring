@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("A valid IBAN in upper case in groups of four, otherwise empty.")]
         public static string IbanPrintFormat(this string? @this)
         {
             if (!@this.IsValidIban())

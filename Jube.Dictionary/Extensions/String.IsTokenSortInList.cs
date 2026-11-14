@@ -18,7 +18,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsTokenSortInList(this string? @this, IEnumerable<string>? list, double threshold)
+        [Description("True when: the same words as an entry in any order, allowing typos.")]
+        public static bool IsTokenSortInList(this string? @this,
+            [Description("The List token whose entries are compared.")] IEnumerable<string>? list,
+            [Description("The similarity from 0 to 1 that counts after the words are sorted.")] double threshold)
         {
             return FuzzyListMatcher.Any(@this, list, FuzzyOptions.For(FuzzyAlgorithm.TokenSort, threshold));
         }

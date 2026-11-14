@@ -235,7 +235,7 @@ namespace Jube.Service.Agent.AdvancedAnalyticsTools.DataPreparationAndResampling
         public double[][] ApplyCategoryEncoder(
             [Description(
                 "Categorical table rows: one array of text values per case, in the same column order as the mappings.")]
-            string[][] data,
+            string?[][] data,
             [Description("One category list per column, as returned in the encoding tables.")]
             string[][] categories,
             [Description("One array of encoded values per column, aligned with the category lists.")]
@@ -265,7 +265,7 @@ namespace Jube.Service.Agent.AdvancedAnalyticsTools.DataPreparationAndResampling
                 .ToDictionary(x => x.cat, x => values[j][x.k], StringComparer.Ordinal)).ToArray();
 
             return DataPreparationGuard.Build(data.Length, columns, (i, j) =>
-                maps[j].TryGetValue(data[i][j], out var v) ? v : defaultValues[j]);
+                maps[j].TryGetValue(data[i][j] ?? string.Empty, out var v) ? v : defaultValues[j]);
         }
 
         [AdvancedAnalyticsTool("FitRareCategoryGrouping")]
@@ -333,7 +333,7 @@ namespace Jube.Service.Agent.AdvancedAnalyticsTools.DataPreparationAndResampling
             return ApplyGrouping(data, keptCategories, otherLabel);
         }
 
-        private static int CategoricalTable(string[]?[]? data, string parameterName)
+        private static int CategoricalTable(string?[]?[]? data, string parameterName)
         {
             if (data == null || data.Length == 0)
             {

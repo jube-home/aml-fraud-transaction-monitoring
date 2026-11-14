@@ -12,6 +12,7 @@
  */
 
 using System.Diagnostics.CodeAnalysis;
+using Jube.Dto.Options;
 using Jube.Dto.Repository.CaseNote;
 using RulePoco = Jube.Data.Poco.CaseNote;
 
@@ -33,6 +34,10 @@ namespace Jube.Service.Repository.CaseNote
                 CreatedUser = rulePoco.CreatedUser,
                 CaseKeyValue = rulePoco.CaseKeyValue,
                 CaseId = rulePoco.CaseId.GetValueOrDefault(),
+                IsFinding = rulePoco.IsFinding,
+                SourceId = rulePoco.SourceId,
+                KindId = rulePoco.KindId,
+                Version = rulePoco.Version,
                 Payload = null
             };
 
@@ -46,7 +51,11 @@ namespace Jube.Service.Repository.CaseNote
             PriorityId = caseNoteDto.PriorityId,
             CaseKey = caseNoteDto.CaseKey,
             CaseKeyValue = caseNoteDto.CaseKeyValue,
-            CaseId = caseNoteDto.CaseId
+            CaseId = caseNoteDto.CaseId,
+            IsFinding = caseNoteDto.IsFinding,
+            SourceId = (int)CaseNoteSource.User,
+            KindId = (int)CaseNoteKind.Note,
+            Version = 1
         };
 
         private static DateTimeOffset? ToOffset(DateTime? value) =>

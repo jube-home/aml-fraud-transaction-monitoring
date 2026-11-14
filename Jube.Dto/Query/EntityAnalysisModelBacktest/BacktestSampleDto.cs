@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,24 +22,31 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.EntityAnalysisModelBacktest
 {
     [Description("One archived transaction from the backtest; explain it to see why the rule fired or not.")]
+    [MessagePackObject]
     public class BacktestSampleDto
     {
         [Description("The transaction's entry Guid.")]
+        [Key(0)]
         public Guid EntityAnalysisModelInstanceEntryGuid { get; set; }
 
         [Description("The transaction's entry key value.")]
+        [Key(1)]
         public string? EntryKeyValue { get; set; }
 
         [Description("The transaction's reference date.")]
+        [Key(2)]
         public DateTime? ReferenceDate { get; set; }
 
         [Description("Whether the rule fired.")]
+        [Key(3)]
         public bool Fired { get; set; }
 
         [Description("Whether the transaction is in the positive class.")]
+        [Key(4)]
         public bool Positive { get; set; }
 
         [Description("The error the rule raised on this transaction, if any.")]
+        [Key(5)]
         public string? Error { get; set; }
     }
 }

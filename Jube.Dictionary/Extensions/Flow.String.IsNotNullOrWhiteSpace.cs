@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
+            [Description("True when: present with visible content. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsNotNullOrWhiteSpace()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringIsNotNullOrWhiteSpace(flow.Value));
             }
 
+            [Description("True when: present with visible content. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsNotNullOrWhiteSpace()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringIsNotNullOrWhiteSpace(flow.Value));
             }
 
+            [Description("True when: present with visible content. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsNotNullOrWhiteSpace()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringIsNotNullOrWhiteSpace(flow.Value));
             }
 
+            [Description("True when: present with visible content. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsNotNullOrWhiteSpace()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringIsNotNullOrWhiteSpace(flow.Value));
             }
 
+            [Description("True when: present with visible content. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsNotNullOrWhiteSpace()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
+            [Description("Begins a pipeline from the value. True when: present with visible content. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsNotNullOrWhiteSpace()
             {
                 return value.Start().MatchIsNotNullOrWhiteSpace();
             }
 
+            [Description("Begins a pipeline from the value. True when: present with visible content. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsNotNullOrWhiteSpace()
             {
                 return value.Start().RejectIsNotNullOrWhiteSpace();
             }
 
+            [Description("Begins a pipeline from the value. True when: present with visible content. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsNotNullOrWhiteSpace()
             {
                 return value.Start().BreakIsNotNullOrWhiteSpace();
             }
 
+            [Description("Begins a pipeline from the value. True when: present with visible content. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsNotNullOrWhiteSpace()
             {
                 return value.Start().RequireIsNotNullOrWhiteSpace();
             }
 
+            [Description("Begins a pipeline from the value. True when: present with visible content. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsNotNullOrWhiteSpace()
             {
                 return value.Start().EnsureIsNotNullOrWhiteSpace();

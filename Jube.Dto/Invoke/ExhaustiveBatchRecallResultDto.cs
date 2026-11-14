@@ -17,15 +17,24 @@
 // ReSharper disable RedundantAttributeUsageProperty
 // ReSharper disable CollectionNeverQueried.Global
 
+using MessagePack;
+
 namespace Jube.Dto.Invoke
 {
+    [MessagePackObject]
     public class ExhaustiveBatchRecallResultDto
     {
+        [Key(0)]
         public long RowCount { get; set; }
+        [Key(1)]
         public long ScoredCount { get; set; }
+        [Key(2)]
         public List<string> MappedVariables { get; set; } = [];
+        [Key(3)]
         public List<string> UnmappedVariables { get; set; } = [];
+        [Key(4)]
         public List<string> Warnings { get; set; } = [];
+        [Key(5)]
         public List<ExhaustiveBatchRecallRowDto> Rows { get; set; } = [];
     }
 }

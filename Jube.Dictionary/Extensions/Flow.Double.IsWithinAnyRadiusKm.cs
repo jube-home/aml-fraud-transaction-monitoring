@@ -17,8 +17,10 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchIsWithinAnyRadiusKm(double longitude, IEnumerable<string>? centres,
-                double radiusKm)
+            [Description("True when: the point at the value as latitude and the argument as longitude is within the radius in kilometres of any of the centres given as latitude,longitude text. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchIsWithinAnyRadiusKm([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The centres as latitude,longitude text, usually a List token.")] IEnumerable<string>? centres,
+                [Description("The radius in kilometres.")] double radiusKm)
             {
                 return flow.IsDecided
                     ? flow
@@ -26,8 +28,10 @@ namespace Jube.Dictionary.Extensions
                         FlowPredicates.DoubleIsWithinAnyRadiusKm(flow.Value, longitude, centres, radiusKm));
             }
 
-            public Flow<double> RejectIsWithinAnyRadiusKm(double longitude, IEnumerable<string>? centres,
-                double radiusKm)
+            [Description("True when: the point at the value as latitude and the argument as longitude is within the radius in kilometres of any of the centres given as latitude,longitude text. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectIsWithinAnyRadiusKm([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The centres as latitude,longitude text, usually a List token.")] IEnumerable<string>? centres,
+                [Description("The radius in kilometres.")] double radiusKm)
             {
                 return flow.IsDecided
                     ? flow
@@ -35,8 +39,10 @@ namespace Jube.Dictionary.Extensions
                         FlowPredicates.DoubleIsWithinAnyRadiusKm(flow.Value, longitude, centres, radiusKm));
             }
 
-            public Flow<double> BreakIsWithinAnyRadiusKm(double longitude, IEnumerable<string>? centres,
-                double radiusKm)
+            [Description("True when: the point at the value as latitude and the argument as longitude is within the radius in kilometres of any of the centres given as latitude,longitude text. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakIsWithinAnyRadiusKm([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The centres as latitude,longitude text, usually a List token.")] IEnumerable<string>? centres,
+                [Description("The radius in kilometres.")] double radiusKm)
             {
                 return flow.IsDecided
                     ? flow
@@ -44,8 +50,10 @@ namespace Jube.Dictionary.Extensions
                         FlowPredicates.DoubleIsWithinAnyRadiusKm(flow.Value, longitude, centres, radiusKm));
             }
 
-            public Flow<double> RequireIsWithinAnyRadiusKm(double longitude, IEnumerable<string>? centres,
-                double radiusKm)
+            [Description("True when: the point at the value as latitude and the argument as longitude is within the radius in kilometres of any of the centres given as latitude,longitude text. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireIsWithinAnyRadiusKm([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The centres as latitude,longitude text, usually a List token.")] IEnumerable<string>? centres,
+                [Description("The radius in kilometres.")] double radiusKm)
             {
                 return flow.IsDecided
                     ? flow
@@ -53,8 +61,10 @@ namespace Jube.Dictionary.Extensions
                         FlowPredicates.DoubleIsWithinAnyRadiusKm(flow.Value, longitude, centres, radiusKm));
             }
 
-            public Flow<double> EnsureIsWithinAnyRadiusKm(double longitude, IEnumerable<string>? centres,
-                double radiusKm)
+            [Description("True when: the point at the value as latitude and the argument as longitude is within the radius in kilometres of any of the centres given as latitude,longitude text. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureIsWithinAnyRadiusKm([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The centres as latitude,longitude text, usually a List token.")] IEnumerable<string>? centres,
+                [Description("The radius in kilometres.")] double radiusKm)
             {
                 return flow.IsDecided
                     ? flow
@@ -65,32 +75,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchIsWithinAnyRadiusKm(double longitude, IEnumerable<string>? centres,
-                double radiusKm)
+            [Description("Begins a pipeline from the value. True when: the point at the value as latitude and the argument as longitude is within the radius in kilometres of any of the centres given as latitude,longitude text. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchIsWithinAnyRadiusKm([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The centres as latitude,longitude text, usually a List token.")] IEnumerable<string>? centres,
+                [Description("The radius in kilometres.")] double radiusKm)
             {
                 return value.Start().MatchIsWithinAnyRadiusKm(longitude, centres, radiusKm);
             }
 
-            public Flow<double> RejectIsWithinAnyRadiusKm(double longitude, IEnumerable<string>? centres,
-                double radiusKm)
+            [Description("Begins a pipeline from the value. True when: the point at the value as latitude and the argument as longitude is within the radius in kilometres of any of the centres given as latitude,longitude text. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectIsWithinAnyRadiusKm([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The centres as latitude,longitude text, usually a List token.")] IEnumerable<string>? centres,
+                [Description("The radius in kilometres.")] double radiusKm)
             {
                 return value.Start().RejectIsWithinAnyRadiusKm(longitude, centres, radiusKm);
             }
 
-            public Flow<double> BreakIsWithinAnyRadiusKm(double longitude, IEnumerable<string>? centres,
-                double radiusKm)
+            [Description("Begins a pipeline from the value. True when: the point at the value as latitude and the argument as longitude is within the radius in kilometres of any of the centres given as latitude,longitude text. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakIsWithinAnyRadiusKm([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The centres as latitude,longitude text, usually a List token.")] IEnumerable<string>? centres,
+                [Description("The radius in kilometres.")] double radiusKm)
             {
                 return value.Start().BreakIsWithinAnyRadiusKm(longitude, centres, radiusKm);
             }
 
-            public Flow<double> RequireIsWithinAnyRadiusKm(double longitude, IEnumerable<string>? centres,
-                double radiusKm)
+            [Description("Begins a pipeline from the value. True when: the point at the value as latitude and the argument as longitude is within the radius in kilometres of any of the centres given as latitude,longitude text. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireIsWithinAnyRadiusKm([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The centres as latitude,longitude text, usually a List token.")] IEnumerable<string>? centres,
+                [Description("The radius in kilometres.")] double radiusKm)
             {
                 return value.Start().RequireIsWithinAnyRadiusKm(longitude, centres, radiusKm);
             }
 
-            public Flow<double> EnsureIsWithinAnyRadiusKm(double longitude, IEnumerable<string>? centres,
-                double radiusKm)
+            [Description("Begins a pipeline from the value. True when: the point at the value as latitude and the argument as longitude is within the radius in kilometres of any of the centres given as latitude,longitude text. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureIsWithinAnyRadiusKm([Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+                [Description("The centres as latitude,longitude text, usually a List token.")] IEnumerable<string>? centres,
+                [Description("The radius in kilometres.")] double radiusKm)
             {
                 return value.Start().EnsureIsWithinAnyRadiusKm(longitude, centres, radiusKm);
             }

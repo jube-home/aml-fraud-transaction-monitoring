@@ -16,11 +16,14 @@
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable RedundantAttributeUsageProperty
 
+using MessagePack;
+
 namespace Jube.Service.Charts.Models
 {
+    [MessagePackObject]
     public sealed class ExhaustiveStatisticsChartGridItem
     {
-        public int VariableId { get; set; }
-        public string Svg { get; set; } = string.Empty;
+        [Key(0)] public int VariableId { get; set; }
+        [Key(1)] public string Svg { get; set; } = string.Empty;
     }
 }

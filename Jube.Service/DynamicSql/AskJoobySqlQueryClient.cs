@@ -19,6 +19,7 @@ using Jube.Data.Query.GetPostgresRelationStatisticsByNameQuery;
 using Jube.Data.Query.GetPostgresStatementStatisticsByRelationQuery;
 using Jube.Data.Query.GetPostgresTableCommentsByNameQuery;
 using Jube.Data.Reporting;
+using Jube.Data.Reporting.Check;
 using Jube.Data.Repository;
 using log4net;
 using Npgsql;
@@ -31,8 +32,23 @@ namespace Jube.Service.DynamicSql
         ILog log,
         string userName,
         Func<int[], bool> hasPermission,
-        int? conversationId = null) : ISqlQueryClient
+        int? conversationId = null,
+        string? reportConnectionString = null,
+        bool requireValidation = false) : ISqlQueryClient
     {
+        private readonly string executionConnectionString =
+            string.IsNullOrWhiteSpace(reportConnectionString) ? connectionString : reportConnectionString;
+
+        private const string DatabaseRejectedMessage =
+            "The database rejected the statement. This means the validator missed something; the error text is never shown, only the SQLSTATE.";
+
+        private const string NotValidatedMessage =
+            "This statement has not been validated in this conversation. Call ValidateSqlQuery with exactly this statement first, fix every finding it reports, and only then run it.";
+
+        private const int MaximumReportedFindings = 5;
+
+        private string ValidationScope => conversationId.HasValue ? "conversation:" + conversationId.Value : "user:" + userName;
+
         private static readonly SqlQueryHistory noHistory = new(false, 0, 0, 0, 0, 0);
 
         public IReadOnlyList<string> ListQueryableTables()
@@ -63,22 +79,44 @@ namespace Jube.Service.DynamicSql
         {
             try
             {
+                var findings = await PreflightAsync(sql, token).ConfigureAwait(false);
+
+                if (findings.Count > 0)
+                {
+                    return new SqlValidation(false, DescribeFindings(findings), null);
+                }
+
                 await ExplainLinesAsync(sql, token).ConfigureAwait(false);
+
+                SqlValidationLedger.Record(ValidationScope, sql);
 
                 return new SqlValidation(true, null, null);
             }
             catch (PostgresException ex)
             {
-                return new SqlValidation(false, ex.MessageText, ex.SqlState);
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"AskJoobySqlQueryClient: validator gap, the database rejected a statement the checker passed user={userName} sqlstate={ex.SqlState}", ex);
+                }
+
+                return new SqlValidation(false, DatabaseRejectedMessage, ex.SqlState);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                return new SqlValidation(false, ex.Message, null);
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"AskJoobySqlQueryClient: SQL validation failed user={userName}", ex);
+                }
+
+                return new SqlValidation(false,
+                    ex is InvalidOperationException or ArgumentException ? ex.Message : DatabaseRejectedMessage, null);
             }
         }
 
         public async Task<SqlPlanSummary> ExplainAsync(string sql, CancellationToken token = default)
         {
+            await AssertPreflightAsync(sql, token).ConfigureAwait(false);
+
             return SqlPlanParser.Parse(await ExplainLinesAsync(sql, token).ConfigureAwait(false));
         }
 
@@ -137,12 +175,19 @@ namespace Jube.Service.DynamicSql
 
             try
             {
+                await AssertPreflightAsync(sql, token).ConfigureAwait(false);
+
+                if (requireValidation && !SqlValidationLedger.Has(ValidationScope, sql))
+                {
+                    throw new InvalidOperationException(NotValidatedMessage);
+                }
+
                 var allowedTables =
                     DynamicSqlTableAccess.BuildAllowedTables(userName, hasPermission, conversationId);
 
                 rewrittenSql = PostgresSqlValidator.RewriteTableReferences(sql, allowedTables);
 
-                using var postgres = new Postgres(connectionString, log);
+                using var postgres = new Postgres(executionConnectionString, log);
 
                 var rows = await postgres
                     .ExecuteAlreadyTokenSwitchedAsync(rewrittenSql, token)
@@ -165,8 +210,47 @@ namespace Jube.Service.DynamicSql
                 await TryLogAsync(rewrittenSql ?? sql, false, null, stopwatch.ElapsedMilliseconds, ex.Message, token)
                     .ConfigureAwait(false);
 
+                if (ex is PostgresException postgresException)
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn($"AskJoobySqlQueryClient: validator gap, the database rejected an executed statement user={userName} sqlstate={postgresException.SqlState}", ex);
+                    }
+
+                    throw new InvalidOperationException(
+                        $"{DatabaseRejectedMessage} [{postgresException.SqlState}]");
+                }
+
                 throw;
             }
+        }
+
+        private async Task<IReadOnlyList<SqlFinding>> PreflightAsync(string sql, CancellationToken token)
+        {
+            var allowedTables =
+                DynamicSqlTableAccess.BuildAllowedTables(userName, hasPermission, conversationId);
+
+            return await SqlPreflight.CheckAsync(sql, executionConnectionString, allowedTables, null, token)
+                .ConfigureAwait(false);
+        }
+
+        private async Task AssertPreflightAsync(string sql, CancellationToken token)
+        {
+            var findings = await PreflightAsync(sql, token).ConfigureAwait(false);
+
+            if (findings.Count > 0)
+            {
+                throw new InvalidOperationException(DescribeFindings(findings));
+            }
+        }
+
+        private static string DescribeFindings(IReadOnlyList<SqlFinding> findings)
+        {
+            var lines = findings.Take(MaximumReportedFindings).Select(SqlFindingText.RenderEnglish).ToList();
+
+            return findings.Count > MaximumReportedFindings
+                ? string.Join(" ", lines) + $" ({findings.Count - MaximumReportedFindings} more finding(s) not shown.)"
+                : string.Join(" ", lines);
         }
 
         private IReadOnlyList<string> PermittedRelations(string sql)
@@ -184,7 +268,7 @@ namespace Jube.Service.DynamicSql
             var allowedTables =
                 DynamicSqlTableAccess.BuildAllowedTables(userName, hasPermission, conversationId);
 
-            using var postgres = new Postgres(connectionString, log);
+            using var postgres = new Postgres(executionConnectionString, log);
 
             return await postgres.ExplainWithTableTokenSwitchAsync(sql, allowedTables, token).ConfigureAwait(false);
         }

@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,15 +21,19 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Repository.CaseWorkflowFormEntryValue
 {
+    [MessagePackObject]
     public class CaseWorkflowFormEntryValueDto
     {
         [Description("Server-assigned identifier of the form-entry value row. Read-only.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("The submitted field's name, as defined by the CaseWorkflowForm template.")]
+        [Key(1)]
         public string Name { get; set; } = string.Empty;
 
         [Description("The submitted field's value.")]
+        [Key(2)]
         public string Value { get; set; } = string.Empty;
     }
 }

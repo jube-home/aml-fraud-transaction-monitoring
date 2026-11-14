@@ -270,6 +270,17 @@ namespace Jube.Test.Dictionary.Extensions
         }
 
         [Fact]
+        public void RepeatRefusesAResultOverTheCharacterLimitInsteadOfAllocatingIt()
+        {
+            Action overString = () => "ab".Repeat(50001);
+            Action overflowing = () => "ab".Repeat(int.MaxValue);
+
+            overString.Should().Throw<ArgumentOutOfRangeException>();
+            overflowing.Should().Throw<ArgumentOutOfRangeException>();
+            "ab".Repeat(50000).Length.Should().Be(100000);
+        }
+
+        [Fact]
         public void RepeatWithASingleCharacterStringRepeatsItNTimes()
         {
             "x".Repeat(3).Should().Be("xxx");

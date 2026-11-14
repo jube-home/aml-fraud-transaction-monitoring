@@ -1,0 +1,145 @@
+﻿services:
+  postgres:
+    image: "pgvector/pgvector:pg17@sha256:7d0a41464797aeb9862dfdc0bbf1526b82cfd324cdd8036df19e3545f4a9ccb8"
+    container_name: "postgres"
+    environment:
+      POSTGRES_PASSWORD: $DockerComposePostgresPassword
+    command: >
+      postgres
+      -c shared_buffers=384MB
+      -c work_mem=1MB
+      -c maintenance_work_mem=64MB
+      -c max_connections=300
+      -c effective_cache_size=768MB
+      -c wal_buffers=8MB
+      -c max_wal_size=2GB
+      -c min_wal_size=256MB
+      -c temp_file_limit=512MB
+      -c shared_preload_libraries=pg_stat_statements
+      -c pg_stat_statements.track=all
+      -c pg_stat_statements.max=10000
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - default
+
+  redis:
+    image: "redis/redis-stack:latest"
+    container_name: "redis"
+    volumes:
+      - redis:/data
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    networks:
+      - default
+    environment:
+      REDIS_ARGS: --appendonly yes --save "" --auto-aof-rewrite-percentage 200 --auto-aof-rewrite-min-size 256mb --io-threads 4 --io-threads-do-reads yes --maxmemory 18gb --maxmemory-policy noeviction
+
+  jube:
+    image: jube.app
+    container_name: "jube"
+    depends_on:
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_started
+      jube-r:
+        condition: service_started
+    links:
+      - redis
+      - postgres
+      - jube-r
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:5001
+      - ConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=$DockerComposePostgresPassword;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
+      - ReportConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=$DockerComposePostgresPassword;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
+      - JWTKey=$DockerComposeJWTKey
+      - ApiHmacKey=$DockerComposeApiHmacKey
+      - RespConnectionString=redis
+      - EnableSanctionLoader=True
+      - EnableAskJooby=${DockerComposeEnableAskJooby}
+      - AskJoobyApiKey=${DockerComposeAskJoobyApiKey}
+      - PasswordHashingKey=$DockerComposePasswordHashingKey
+      - Log4NetLogLevel=ERROR
+      - ElementSymmetricEncryptionKey=$DockerComposeElementSymmetricEncryptionKey
+      - CaseSimilarityHashingKey=${DockerComposeCaseSimilarityHashingKey:-}
+      - DOTNET_gcServer=1
+      - DOTNET_gcConcurrent=1
+      - DOTNET_GCConserveMemory=4
+      - DOTNET_GCDynamicAdaptationMode=1
+      - OpenTelemetryBackendEndpoint=http://jube-otel-listener:4318
+      - RServerUrl=http://jube-r:8080
+      - DockerMonitoringProxyUrl=http://jube-monitoring:8081
+    ports:
+      - "5001:5001"
+    networks:
+      - default
+      - rsandbox
+    build:
+      context: .
+      dockerfile: Jube.App/Dockerfile
+
+  jube-monitoring:
+    image: jube.monitoring
+    container_name: "jube-monitoring"
+    depends_on:
+      postgres:
+        condition: service_started
+    environment:
+      - ConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=$DockerComposePostgresPassword;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=5;
+      - OpenTelemetryBackendEndpoint=http://jube-otel-listener:4318
+      # Only reachable on the compose network (no host port mapping below) -- jube-app/jube-engine call
+      # this for Docker container/host/event sampling and for the live DockerAdministrator agent tools,
+      # never docker.sock directly. This container-internal port is the one thing that changed about what
+      # this sidecar does: it answers GET /proxy?path=... with docker.sock's own response, nothing more.
+      - ASPNETCORE_URLS=http://+:8081
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - default
+    build:
+      context: .
+      dockerfile: Jube.Monitoring/Dockerfile
+
+  jube-r:
+    image: jube.r
+    container_name: "jube-r"
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: 2g
+    cpus: 2
+    networks:
+      - rsandbox
+    build:
+      context: ./Jube.R
+      dockerfile: Dockerfile
+
+  jube-otel-listener:
+    image: jube.opentelemetrylistener
+    container_name: "jube-otel-listener"
+    networks:
+      - default
+    build:
+      context: .
+      dockerfile: Jube.OpenTelemetryListener/Dockerfile
+
+networks:
+  default:
+    driver: bridge
+  rsandbox:
+    driver: bridge
+    internal: true
+volumes:
+  postgres:
+    external: false
+  redis:
+    external: false

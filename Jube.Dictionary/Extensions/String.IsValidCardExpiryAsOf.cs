@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsValidCardExpiryAsOf(this string? @this, DateTime asOf)
+        [Description("Whether an MM/YY or MM/YYYY expiry is still valid at an as-of date; the deterministic form of IsValidCardExpiry.")]
+        public static bool IsValidCardExpiryAsOf(this string? @this,
+            [Description("The date the count is made to.")] DateTime asOf)
         {
             var parts = (@this ?? "").Split('/');
 

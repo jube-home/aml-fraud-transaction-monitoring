@@ -16,17 +16,28 @@
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable RedundantAttributeUsageProperty
 
+using MessagePack;
+
 namespace Jube.Dto.Invoke
 {
+    [MessagePackObject]
     public class SanctionAggregationDto
     {
+        [Key(0)]
         public double? Sum { get; set; }
+        [Key(1)]
         public double? Average { get; set; }
+        [Key(2)]
         public double? Count { get; set; }
+        [Key(3)]
         public double? Max { get; set; }
+        [Key(4)]
         public double? Min { get; set; }
+        [Key(5)]
         public double? First { get; set; }
+        [Key(6)]
         public double? Last { get; set; }
+        [Key(7)]
         public double? Confidence { get; set; }
     }
 }

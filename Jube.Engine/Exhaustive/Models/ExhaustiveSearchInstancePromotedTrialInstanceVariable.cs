@@ -23,6 +23,7 @@ namespace Jube.Engine.Exhaustive.Models
         public double Mean { get; init; }
         public double Sd { get; init; }
         public byte NormalisationTypeId { get; init; }
+        public double ZScoreClipBound { get; init; } = ExhaustiveZScoreClipBoundResolver.DefaultBound;
         public CategoricalFieldEncoder CategoricalEncoder { get; init; }
         public int CategoricalIndicatorIndex { get; init; }
         public bool IsCategorical => CategoricalEncoder != null;
@@ -30,7 +31,12 @@ namespace Jube.Engine.Exhaustive.Models
 
         public double ZScore(double value)
         {
-            return NormalisationTypeId == 2 ? Standardisation.ZScore(value, Mean, Sd) : value;
+            return NormalisationTypeId == 2 ? ClampZScore(Standardisation.ZScore(value, Mean, Sd)) : value;
+        }
+
+        public double ClampZScore(double value)
+        {
+            return ExhaustiveZScoreClipBoundResolver.Clamp(value, ZScoreClipBound);
         }
     }
 }

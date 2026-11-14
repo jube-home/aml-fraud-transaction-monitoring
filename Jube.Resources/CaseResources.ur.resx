@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>آپ کو یہ کارروائی انجام دینے کی اجازت نہیں ہے۔</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>یہ کارروائی انجام دینے کے لیے آپ کا کسی ٹیننٹ میں سائن اِن ہونا ضروری ہے۔</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>کیس نہیں ملا۔</value>
+  </data>
+    <data name="CaseWorkflowNotFound" xml:space="preserve">
+    <value>کیس ورک فلو نہیں ملا۔</value>
+  </data>
+    <data name="ArchiveNotFound" xml:space="preserve">
+    <value>اس کیس کلید اور ویلیو کے امتزاج کے لیے کوئی ٹرانزیکشن نہیں ملی۔</value>
+  </data>
+    <data name="InvalidCaseWorkflowStatus" xml:space="preserve">
+    <value>مطلوبہ کیس ورک فلو اسٹیٹس اس کیس ورک فلو سے تعلق نہیں رکھتا۔</value>
+  </data>
+    <data name="CaseAlreadyExists" xml:space="preserve">
+    <value>اس کیس کلید اور ویلیو کے امتزاج کے لیے کیس پہلے سے موجود ہے۔</value>
+  </data>
+    <data name="CaseCreationFailed" xml:space="preserve">
+    <value>کیس کی تخلیق مکمل نہیں ہوئی۔ براہ کرم دوبارہ کوشش کریں۔</value>
+  </data>
+    <data name="IdRequired" xml:space="preserve">
+    <value>کیس کی شناخت درکار ہے۔</value>
+  </data>
+    <data name="LockedUserRequired" xml:space="preserve">
+    <value>⁨Locked⁩ سیٹ ہونے پر جس صارف کے نام کیس مقفل ہو، اس کا ہونا ضروری ہے۔</value>
+  </data>
+    <data name="CaseWorkflowStatusGuidRequired" xml:space="preserve">
+    <value>کیس ورک فلو اسٹیٹس درکار ہے۔</value>
+  </data>
+    <data name="DiaryDateRequired" xml:space="preserve">
+    <value>⁨Diary⁩ سیٹ ہونے پر ڈائری کی تاریخ درکار ہے۔</value>
+  </data>
+    <data name="RatingRequired" xml:space="preserve">
+    <value>0 (ابھی درجہ بندی نہیں ہوئی) سے 5 تک کی درجہ بندی درکار ہے۔</value>
+  </data>
+    <data name="PayloadRequired" xml:space="preserve">
+    <value>فارم کا پے لوڈ درکار ہے۔</value>
+  </data>
+    <data name="CaseWorkflowGuidRequired" xml:space="preserve">
+    <value>کیس ورک فلو درکار ہے۔</value>
+  </data>
+    <data name="CaseKeyRequired" xml:space="preserve">
+    <value>کیس کلید درکار ہے۔</value>
+  </data>
+    <data name="CaseKeyValueRequired" xml:space="preserve">
+    <value>کیس کلید کی ویلیو درکار ہے۔</value>
+  </data>
+    <data name="LockedUserInvalid" xml:space="preserve">
+    <value>مقفل صارف اسی ٹیننٹ کا ایسا صارف ہونا چاہیے جو اس کیس کو دیکھ سکتا ہو۔</value>
+  </data>
+    <data name="LockedByAnotherUser" xml:space="preserve">
+    <value>کیس کسی دوسرے صارف کے نام مقفل ہے۔</value>
+  </data>
+    <data name="ChecklistIncomplete" xml:space="preserve">
+    <value>کیس کے اس اسٹیٹس سے نکلنے یا بند ہونے سے پہلے چیک لسٹ کی ⁨{0}⁩ آئٹمز مکمل ہونی چاہئیں: ⁨{1}⁩۔</value>
+  </data>
+    <data name="CaseKeyNotArchiveKey" xml:space="preserve">
+    <value>کیس کلید ورک فلو کے ماڈل میں ⁨Archive Key⁩ کے طور پر نشان زد فیلڈ نہیں ہے، اس لیے کلید کی آخری ٹرانزیکشن نہیں مل سکتی۔</value>
+  </data>
+</root>

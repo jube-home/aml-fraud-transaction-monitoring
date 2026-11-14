@@ -66,4 +66,49 @@
     <data name="VisualisationRegistryGuidRequired" xml:space="preserve">
     <value>Une visualisation est requise lorsque la visualisation est activée.</value>
   </data>
+    <data name="GraphRegistryGuidRequired" xml:space="preserve">
+    <value>Un registre de graphe est requis lorsque le graphe est activé.</value>
+  </data>
+    <data name="GraphRegistryNotFound" xml:space="preserve">
+    <value>Le registre de graphe n'a pas été trouvé.</value>
+  </data>
+    <data name="VisualisationRegistryNotFound" xml:space="preserve">
+    <value>La visualisation est introuvable.</value>
+  </data>
+    <data name="RiskKappaOutOfRange" xml:space="preserve">
+    <value>L'amortissement du classement doit être supérieur à 0 et ne pas dépasser 1.</value>
+  </data>
+    <data name="RiskRhoOutOfRange" xml:space="preserve">
+    <value>Le poids du classement pour les preuves se recoupant doit être compris entre 0 et 1.</value>
+  </data>
+    <data name="RiskPriorStrengthOutOfRange" xml:space="preserve">
+    <value>La force a priori du classement doit être supérieure à 0 et ne pas dépasser 10000.</value>
+  </data>
+    <data name="RiskBaseRatePriorOutOfRange" xml:space="preserve">
+    <value>Le taux a priori du classement doit être compris entre 0.001 et 0.999.</value>
+  </data>
+    <data name="DailyGoalOutOfRange" xml:space="preserve">
+    <value>L'objectif quotidien doit être compris entre 1 et 1000 dossiers.</value>
+  </data>
+    <data name="RiskDeadlineLaneDaysOutOfRange" xml:space="preserve">
+    <value>La fenêtre d'échéance du classement doit être comprise entre 0 et 365 jours.</value>
+  </data>
+    <data name="RiskKeyHistoryHalfLifeOutOfRange" xml:space="preserve">
+    <value>La demi-vie de l'historique de clé du classement doit être supérieure à 0 et ne pas dépasser 3650 jours.</value>
+  </data>
+    <data name="RiskImpactWeightsInvalid" xml:space="preserve">
+    <value>Les poids d'impact du classement doivent être cinq nombres positifs, croissants, séparés par des virgules.</value>
+  </data>
+    <data name="RiskMoneyBandsInvalid" xml:space="preserve">
+    <value>Les tranches monétaires du classement doivent être quatre nombres positifs, croissants, séparés par des virgules.</value>
+  </data>
+    <data name="RiskImpactWeightsTooLong" xml:space="preserve">
+    <value>Les poids d'impact du classement ne doivent pas dépasser 200 caractères.</value>
+  </data>
+    <data name="RiskMoneyBandsTooLong" xml:space="preserve">
+    <value>Les tranches monétaires du classement ne doivent pas dépasser 200 caractères.</value>
+  </data>
+    <data name="RiskQaSampleRateOutOfRange" xml:space="preserve">
+    <value>Le taux d'échantillonnage de la revue qualité doit être compris entre 0 et 0.5.</value>
+  </data>
 </root>

@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Digits only, keeping a leading + and turning a 00 prefix into +.")]
         public static string PhoneNumberDigits(this string? @this)
         {
             var value = (@this ?? "").Trim();

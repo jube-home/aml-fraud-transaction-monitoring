@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Du har inte behörighet att utföra den här åtgärden.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Du måste vara inloggad i en tenant för att utföra den här åtgärden.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>Ärendearbetsflödet hittades inte.</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>En giltig överordnad modell krävs.</value>
+  </data>
+    <data name="EntityAnalysisModelNotFound" xml:space="preserve">
+    <value>Den refererade modellen hittades inte i din tenant.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>Namnet krävs.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Namnet får inte överstiga {0} tecken.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Det här namnet finns redan.</value>
+  </data>
+    <data name="DescriptionMaxLength" xml:space="preserve">
+    <value>Beskrivningen får inte överstiga {0} tecken.</value>
+  </data>
+    <data name="VisualisationRegistryGuidRequired" xml:space="preserve">
+    <value>En visualisering krävs när visualisering är aktiverad.</value>
+  </data>
+    <data name="VisualisationRegistryNotFound" xml:space="preserve">
+    <value>Visualiseringen hittades inte.</value>
+  </data>
+    <data name="RiskKappaOutOfRange" xml:space="preserve">
+    <value>Rankningens dämpning måste vara över 0 och högst 1.</value>
+  </data>
+    <data name="RiskRhoOutOfRange" xml:space="preserve">
+    <value>Rankningens vikt för överlappande bevis måste vara mellan 0 och 1.</value>
+  </data>
+    <data name="RiskPriorStrengthOutOfRange" xml:space="preserve">
+    <value>Rankningens förhandsstyrka måste vara över 0 och högst 10000.</value>
+  </data>
+    <data name="RiskBaseRatePriorOutOfRange" xml:space="preserve">
+    <value>Rankningens förhandsfrekvens måste vara mellan 0,001 och 0,999.</value>
+  </data>
+    <data name="DailyGoalOutOfRange" xml:space="preserve">
+    <value>Dagsmålet måste vara mellan 1 och 1000 ärenden.</value>
+  </data>
+    <data name="RiskDeadlineLaneDaysOutOfRange" xml:space="preserve">
+    <value>Rankningens tidsfönster måste vara mellan 0 och 365 dagar.</value>
+  </data>
+    <data name="RiskKeyHistoryHalfLifeOutOfRange" xml:space="preserve">
+    <value>Rankningens halveringstid för nyckelhistorik måste vara över 0 och högst 3650 dagar.</value>
+  </data>
+    <data name="RiskImpactWeightsInvalid" xml:space="preserve">
+    <value>Rankningens effektvikter måste vara fem positiva, växande tal separerade med kommatecken.</value>
+  </data>
+    <data name="RiskMoneyBandsInvalid" xml:space="preserve">
+    <value>Rankningens beloppsband måste vara fyra positiva, växande tal separerade med kommatecken.</value>
+  </data>
+    <data name="RiskImpactWeightsTooLong" xml:space="preserve">
+    <value>Rankningens påverkansvikter får vara högst 200 tecken.</value>
+  </data>
+    <data name="RiskMoneyBandsTooLong" xml:space="preserve">
+    <value>Rankningens beloppsintervall får vara högst 200 tecken.</value>
+  </data>
+    <data name="RiskQaSampleRateOutOfRange" xml:space="preserve">
+    <value>Urvalsfrekvensen för kvalitetsgranskning måste vara mellan 0 och 0,5.</value>
+  </data>
+    <data name="GraphRegistryGuidRequired" xml:space="preserve">
+    <value>Ett grafregister krävs när grafen är aktiverad.</value>
+  </data>
+    <data name="GraphRegistryNotFound" xml:space="preserve">
+    <value>Grafregistret hittades inte.</value>
+  </data>
+</root>

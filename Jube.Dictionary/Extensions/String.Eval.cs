@@ -17,7 +17,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static TResult Eval<TResult>(this String? @this, String name)
+        [Description("Evaluates the named curated dynamic expression against the text; only when dynamic evaluation is enabled.")]
+        public static TResult Eval<TResult>(this String? @this,
+            [Description("The name of the curated dynamic expression.")] String name)
         {
             if (!EvalExpressionRegistry.Enabled)
             {

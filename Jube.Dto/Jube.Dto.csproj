@@ -7,4 +7,8 @@
         <RootNamespace>Jube.Dto</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+        <PackageReference Include="MessagePack" Version="3.1.12"/>
+    </ItemGroup>
+
 </Project>

@@ -39,29 +39,31 @@ JSON Web Token in the response body:
 
 ![Image](Required.png)
 
-As is standard, the HTTP header (which must be there on request, but is also echoed in the response) is named
-authentication with the value being the string "Bearer " concatenated with the JSON Web Token. The HTTP cookie meanwhile
-is called "authentication" and contains only the JSON Web Token, although it is unlikely that an API led integration
-would choose to store or use a HTTP cookie, being more likely reserved for user interface page requests.
+As is standard, the HTTP header, which must be there on request, is named Authorization with the value being the
+string "Bearer " concatenated with the JSON Web Token. The HTTP cookie meanwhile is called "authentication-jwt" and
+contains only the JSON Web Token, although it is unlikely that an API led integration would choose to store or use a
+HTTP cookie, being more likely reserved for user interface page requests. Only the cookie is refreshed as it is used; a
+token sent in the header is valid for 15 minutes and is not replaced.
 
-The JSON web token is encrypted using Environment Variable values:
+The JSON web token is signed (HMAC-SHA256), not encrypted, using Environment Variable values:
 
 ```text
 JWTValidAudience=http://localhost:5001
 JWTValidIssuer=http://localhost:5001
-JWTKey=ExtraSuperDuperSecretKeyCreatedOnFirstStartup
+JWTKey=<a long random value, at least 32 characters>
 ```
 
 | Value            | Description                                                                                                                                                                |
 |------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | JWTValidAudience | The server domain that is allowed the token.                                                                                                                               |
 | JWTValidIssuer   | The server domain that issued the token.                                                                                                                                   |
-| JWTKey           | The encryption key for the JWT.  This key is created randomly on first startup of a Jube instance executable and stored in the Jube.environment file,  but can be changed. |
+| JWTKey           | The signing key for the JWT. It has no default and is not generated: it must be supplied as an Environment Variable, and Jube will not start without it.                   |
 
-Notwithstanding the stateless architecture, the token contains a single claim type of Name
-(http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name) which will contain the username (e.g. Administrator). It
-follows that in knowing the key values for the JSON Web Token, authentication can take place entirely out of band of the
-application.
+The token carries the username (e.g. Administrator) in the Name claim
+(http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name) and the NameIdentifier claim, and the instant the session
+began. It follows that in knowing the key values for the JSON Web Token, a token can be created entirely out of band of
+the application, although every token is still checked against the database on each request and is refused if the user
+is not active, is locked, or has had their tokens revoked since it was issued.
 
 The following HTTP status codes are implemented by the API:
 

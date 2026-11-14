@@ -11,6 +11,11 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Query.ArchiveKeyLookup;
+
+using Jube.Data.Query.GetArchiveKeyFieldsByEntityAnalysisModelIdQuery;
+
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +24,7 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace Jube.Data.Repository
 {
@@ -63,6 +69,29 @@ namespace Jube.Data.Repository
                     && f.Name.ToLower() == name.ToLower(), token);
         }
 
+        public async Task<ArchiveKeyField> FindSourceAsync(int caseWorkflowId, Guid? sourceGuid,
+            CancellationToken token = default)
+        {
+            if (sourceGuid is null || sourceGuid == Guid.Empty)
+            {
+                return null;
+            }
+
+            return (await GetSourcesAsync(caseWorkflowId, token)).FirstOrDefault(f => f.Guid == sourceGuid.Value);
+        }
+
+        public async Task<List<ArchiveKeyField>> GetSourcesAsync(int caseWorkflowId, CancellationToken token = default)
+        {
+            var modelId = await dbContext.CaseWorkflow
+                .Where(w => w.Id == caseWorkflowId && w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                            && (w.Deleted == 0 || w.Deleted == null))
+                .Select(w => w.EntityAnalysisModelId).FirstOrDefaultAsync(token);
+
+            return modelId is null
+                ? []
+                : await new GetArchiveKeyFieldsByEntityAnalysisModelIdQuery(dbContext).ExecuteAsync(modelId.Value, token);
+        }
+
         public async Task<IEnumerable<CaseWorkflowXPath>> GetAsync(CancellationToken token = default)
         {
             return await dbContext.CaseWorkflowXPath
@@ -80,7 +109,6 @@ namespace Jube.Data.Repository
                                 w.CaseWorkflow.EntityAnalysisModel.Deleted == null)
                             && (w.CaseWorkflow.Deleted == 0 || w.CaseWorkflow.Deleted == null)
                             && w.Active == 1
-                            && w.Drill == 1
                             && w.CaseWorkflowId == casesWorkflowId
                             && (w.Deleted == 0 || w.Deleted == null)
                             && dbContext.CaseWorkflowXPathRole
@@ -111,7 +139,6 @@ namespace Jube.Data.Repository
                                 w.CaseWorkflow.EntityAnalysisModel.Deleted == null)
                             && (w.CaseWorkflow.Deleted == 0 || w.CaseWorkflow.Deleted == null)
                             && w.Active == 1
-                            && w.Drill == 1
                             && w.CaseWorkflow.Guid == casesWorkflowGuid
                             && (w.Deleted == 0 || w.Deleted == null)
                             && dbContext.CaseWorkflowXPathRole
@@ -242,6 +269,8 @@ namespace Jube.Data.Repository
                 throw new KeyNotFoundException();
             }
 
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
+
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
             model.CreatedUser = existing.CreatedUser;
@@ -249,6 +278,8 @@ namespace Jube.Data.Repository
             model.UpdatedUser = userName;
             model.UpdatedDate = DateTime.UtcNow;
             model.ImportId = existing.ImportId;
+            model.CaseWorkflowId = existing.CaseWorkflowId;
+            model.InheritedId = existing.InheritedId;
 
             await dbContext.UpdateAsync(model, token: token);
 
@@ -258,6 +289,8 @@ namespace Jube.Data.Repository
                 CaseWorkflowId = existing.CaseWorkflowId,
                 Name = existing.Name,
                 XPath = existing.XPath,
+                SourceKindId = existing.SourceKindId,
+                SourceGuid = existing.SourceGuid,
                 Active = existing.Active,
                 Locked = existing.Locked,
                 InheritedId = existing.InheritedId,
@@ -271,6 +304,8 @@ namespace Jube.Data.Repository
                 BoldLineFormatForeColor = existing.BoldLineFormatForeColor,
                 BoldLineFormatBackColor = existing.BoldLineFormatBackColor,
                 BoldLineMatched = existing.BoldLineMatched,
+                RoleId = existing.RoleId,
+                Segment = existing.Segment,
                 Guid = existing.Guid,
                 CreatedDate = existing.CreatedDate,
                 CreatedUser = existing.CreatedUser,

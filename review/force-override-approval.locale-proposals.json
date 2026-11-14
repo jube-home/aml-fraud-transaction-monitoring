@@ -1,0 +1,94 @@
+{
+  "slice": "force-override-approval",
+  "note": "Machine translated, proof of concept. New keys only: override.col.approval, override.approval.* and integrity.approvalKind.22 and 23. override.approval.awaiting is plural: forms are zero|one|other for en, ka, sv, ur, hi; zero|other for id; 5 for pl; 6 for ar; 4 for fr (zero|one|many|other). Placeholder {n} is the count, {name} an override described as key = value. Apply with an integration pass; the shared locale JSON files were not edited. Until applied, labels.spec and any locale parity test will see the integrity.approvalKind.22 and 23 keys as missing, and the override page will show raw keys.",
+  "en": {
+    "override.col.approval": "Approval",
+    "override.approval.review": "Review",
+    "override.approval.close": "Close",
+    "override.approval.title": "Approval of Force override {name}",
+    "override.approval.note": "A Force override takes effect only after a second person with the approval permission approves it. Until then it has no effect on scoring. Changing or removing it is held for approval too, and the last approved version stays in force meanwhile.",
+    "override.approval.awaiting": "No Force overrides are awaiting approval | One Force override is awaiting approval | {n} Force overrides are awaiting approval",
+    "integrity.approvalKind.22": "Force override",
+    "integrity.approvalKind.23": "Force rule override"
+  },
+  "pl": {
+    "override.col.approval": "Zatwierdzenie",
+    "override.approval.review": "Przejrzyj",
+    "override.approval.close": "Zamknij",
+    "override.approval.title": "Zatwierdzenie nadpisania wymuszającego {name}",
+    "override.approval.note": "Nadpisanie wymuszające (Force) zaczyna działać dopiero po zatwierdzeniu przez drugą osobę z uprawnieniem do zatwierdzania. Do tego czasu nie wpływa na ocenę. Zmiana lub usunięcie również czeka na zatwierdzenie, a do tego czasu obowiązuje ostatnia zatwierdzona wersja.",
+    "override.approval.awaiting": "Brak nadpisań wymuszających oczekujących na zatwierdzenie | Jedno nadpisanie wymuszające oczekuje na zatwierdzenie | {n} nadpisania wymuszające oczekują na zatwierdzenie | {n} nadpisań wymuszających oczekuje na zatwierdzenie | {n} nadpisania wymuszającego oczekuje na zatwierdzenie",
+    "integrity.approvalKind.22": "Nadpisanie wymuszające",
+    "integrity.approvalKind.23": "Nadpisanie wymuszające reguły"
+  },
+  "ar": {
+    "override.col.approval": "الموافقة",
+    "override.approval.review": "مراجعة",
+    "override.approval.close": "إغلاق",
+    "override.approval.title": "الموافقة على تجاوز الإجبار {name}",
+    "override.approval.note": "لا يسري تجاوز الإجبار (Force) إلا بعد موافقة شخص ثانٍ لديه صلاحية الموافقة. وحتى ذلك الحين لا يؤثر في التقييم. كما أن تعديله أو إزالته ينتظر الموافقة، وتبقى آخر نسخة معتمدة سارية في الأثناء.",
+    "override.approval.awaiting": "لا توجد تجاوزات إجبار بانتظار الموافقة | تجاوز إجبار واحد بانتظار الموافقة | تجاوزا إجبار بانتظار الموافقة | {n} تجاوزات إجبار بانتظار الموافقة | {n} تجاوز إجبار بانتظار الموافقة | {n} تجاوز إجبار بانتظار الموافقة",
+    "integrity.approvalKind.22": "تجاوز الإجبار",
+    "integrity.approvalKind.23": "تجاوز الإجبار للقاعدة"
+  },
+  "ka": {
+    "override.col.approval": "დამტკიცება",
+    "override.approval.review": "გადახედვა",
+    "override.approval.close": "დახურვა",
+    "override.approval.title": "იძულების გადაფარვის დამტკიცება {name}",
+    "override.approval.note": "იძულების (Force) გადაფარვა ძალაში შედის მხოლოდ მას შემდეგ, რაც მეორე პირი, რომელსაც დამტკიცების უფლება აქვს, დაამტკიცებს მას. მანამდე ის არ მოქმედებს შეფასებაზე. მისი შეცვლა ან წაშლაც დამტკიცებას ელოდება და ამასობაში ძალაშია ბოლო დამტკიცებული ვერსია.",
+    "override.approval.awaiting": "იძულების გადაფარვა დამტკიცებას არ ელოდება | ერთი იძულების გადაფარვა ელოდება დამტკიცებას | {n} იძულების გადაფარვა ელოდება დამტკიცებას",
+    "integrity.approvalKind.22": "იძულების გადაფარვა",
+    "integrity.approvalKind.23": "წესის იძულების გადაფარვა"
+  },
+  "id": {
+    "override.col.approval": "Persetujuan",
+    "override.approval.review": "Tinjau",
+    "override.approval.close": "Tutup",
+    "override.approval.title": "Persetujuan penimpaan Force {name}",
+    "override.approval.note": "Penimpaan Force baru berlaku setelah orang kedua yang memiliki izin persetujuan menyetujuinya. Sebelum itu, penimpaan tidak berpengaruh pada penilaian. Perubahan atau penghapusannya juga menunggu persetujuan, dan versi terakhir yang disetujui tetap berlaku selama itu.",
+    "override.approval.awaiting": "Tidak ada penimpaan Force yang menunggu persetujuan | {n} penimpaan Force menunggu persetujuan",
+    "integrity.approvalKind.22": "Penimpaan Force",
+    "integrity.approvalKind.23": "Penimpaan Force aturan"
+  },
+  "sv": {
+    "override.col.approval": "Godkännande",
+    "override.approval.review": "Granska",
+    "override.approval.close": "Stäng",
+    "override.approval.title": "Godkännande av Force-åsidosättningen {name}",
+    "override.approval.note": "En Force-åsidosättning börjar gälla först när en andra person med godkännandebehörighet har godkänt den. Dessförinnan påverkar den inte poängsättningen. Ändring eller borttagning väntar också på godkännande, och den senast godkända versionen gäller under tiden.",
+    "override.approval.awaiting": "Inga Force-åsidosättningar väntar på godkännande | En Force-åsidosättning väntar på godkännande | {n} Force-åsidosättningar väntar på godkännande",
+    "integrity.approvalKind.22": "Force-åsidosättning",
+    "integrity.approvalKind.23": "Force-åsidosättning av regel"
+  },
+  "ur": {
+    "override.col.approval": "منظوری",
+    "override.approval.review": "جائزہ",
+    "override.approval.close": "بند کریں",
+    "override.approval.title": "فورس اوور رائیڈ {name} کی منظوری",
+    "override.approval.note": "فورس (Force) اوور رائیڈ صرف اس وقت نافذ ہوتا ہے جب منظوری کی اجازت رکھنے والا دوسرا شخص اسے منظور کر لے۔ تب تک اس کا اسکورنگ پر کوئی اثر نہیں ہوتا۔ اسے بدلنا یا ہٹانا بھی منظوری کا منتظر رہتا ہے، اور اس دوران آخری منظور شدہ ورژن نافذ رہتا ہے۔",
+    "override.approval.awaiting": "کوئی فورس اوور رائیڈ منظوری کا منتظر نہیں | ایک فورس اوور رائیڈ منظوری کا منتظر ہے | {n} فورس اوور رائیڈ منظوری کے منتظر ہیں",
+    "integrity.approvalKind.22": "فورس اوور رائیڈ",
+    "integrity.approvalKind.23": "قاعدے کا فورس اوور رائیڈ"
+  },
+  "hi": {
+    "override.col.approval": "अनुमोदन",
+    "override.approval.review": "समीक्षा",
+    "override.approval.close": "बंद करें",
+    "override.approval.title": "फ़ोर्स ओवरराइड {name} का अनुमोदन",
+    "override.approval.note": "फ़ोर्स (Force) ओवरराइड तभी प्रभावी होता है जब अनुमोदन की अनुमति रखने वाला दूसरा व्यक्ति उसे अनुमोदित कर दे। तब तक उसका स्कोरिंग पर कोई प्रभाव नहीं पड़ता। उसे बदलना या हटाना भी अनुमोदन की प्रतीक्षा में रहता है, और तब तक अंतिम अनुमोदित संस्करण लागू रहता है।",
+    "override.approval.awaiting": "कोई फ़ोर्स ओवरराइड अनुमोदन की प्रतीक्षा में नहीं है | एक फ़ोर्स ओवरराइड अनुमोदन की प्रतीक्षा में है | {n} फ़ोर्स ओवरराइड अनुमोदन की प्रतीक्षा में हैं",
+    "integrity.approvalKind.22": "फ़ोर्स ओवरराइड",
+    "integrity.approvalKind.23": "नियम का फ़ोर्स ओवरराइड"
+  },
+  "fr": {
+    "override.col.approval": "Approbation",
+    "override.approval.review": "Examiner",
+    "override.approval.close": "Fermer",
+    "override.approval.title": "Approbation de la dérogation Force {name}",
+    "override.approval.note": "Une dérogation Force ne prend effet qu'une fois approuvée par une seconde personne disposant de l'autorisation d'approbation. Jusque-là, elle n'a aucun effet sur la notation. Sa modification ou sa suppression est également soumise à approbation, et la dernière version approuvée reste en vigueur entre-temps.",
+    "override.approval.awaiting": "Aucune dérogation Force n'attend d'approbation | Une dérogation Force attend son approbation | {n} dérogations Force attendent leur approbation | {n} de dérogations Force attendent leur approbation",
+    "integrity.approvalKind.22": "Dérogation Force",
+    "integrity.approvalKind.23": "Dérogation Force de règle"
+  }
+}

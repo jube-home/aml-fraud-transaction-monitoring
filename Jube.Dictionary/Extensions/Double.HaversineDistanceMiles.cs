@@ -15,8 +15,11 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double HaversineDistanceMiles(this double latitude1, double longitude1,
-            double latitude2, double longitude2)
+        [Description("Returns the great-circle distance between two coordinates, in miles.")]
+        public static double HaversineDistanceMiles(this double latitude1,
+            [Description("Longitude of the first point.")] double longitude1,
+            [Description("Latitude of the second point.")] double latitude2,
+            [Description("Longitude of the second point.")] double longitude2)
         {
             const double earthRadiusMiles = 3958.7613;
 

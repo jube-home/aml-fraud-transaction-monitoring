@@ -22,7 +22,9 @@ RUN apt-get update \
        strace \
        tcpdump \
        traceroute \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /var/lib/jube/svirfd \
+    && chown $APP_UID /var/lib/jube/svirfd
 
 USER $APP_UID
 WORKDIR /app
@@ -30,6 +32,14 @@ EXPOSE 5001
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
+
+# Jube.App.csproj builds the Vue front end itself (npm ci + vite build into wwwroot) as part of dotnet build, so the
+# SDK stage needs Node alongside it; the version satisfies the engines range in Jube.App/Vue/package.json.
+COPY --from=node:24-bookworm-slim /usr/local/bin/node /usr/local/bin/node
+COPY --from=node:24-bookworm-slim /usr/local/lib/node_modules /usr/local/lib/node_modules
+RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
+    && ln -s /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
+
 WORKDIR /src
 COPY ["Jube.App/Jube.App.csproj", "Jube.App/"]
 COPY ["Jube.Data/Jube.Data.csproj", "Jube.Data/"]
@@ -56,7 +66,7 @@ COPY ["Jube.HealthCheck/Jube.HealthCheck.csproj", "Jube.HealthCheck/"]
 COPY ["Jube.TaskCancellation/Jube.TaskCancellation.csproj", "Jube.TaskCancellation/"]
 COPY ["Jube.Tests/Jube.Tests.csproj", "Jube.Tests/"]
 COPY ["Jube.ResilientNpgsql/Jube.ResilientNpgsql.csproj", "Jube.ResilientNpgsql/"]
-COPY ["Jube.ResilientRedisConnection/Jube.ResilientRedisConnection.csproj", "Jube.ResilientRedisConnection/"]
+COPY ["Jube.ResilientRespConnection/Jube.ResilientRespConnection.csproj", "Jube.ResilientRespConnection/"]
 COPY ["Jube.Tokenisation/Jube.Tokenisation.csproj", "Jube.Tokenisation/"]
 COPY ["Jube.ApiTokensCache/Jube.ApiTokensCache.csproj", "Jube.ApiTokensCache/"]
 COPY ["Jube.CLI/Jube.CLI.csproj", "Jube.CLI/"]

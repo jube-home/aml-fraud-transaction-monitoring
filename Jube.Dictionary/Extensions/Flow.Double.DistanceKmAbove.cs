@@ -17,35 +17,55 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchDistanceKmAbove(double longitude1, double latitude2, double longitude2, double kilometers)
+            [Description("True when: the value is latitude 1. The distance to the second point is above the kilometres. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchDistanceKmAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in kilometres that counts.")] double kilometers)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleDistanceKmAbove(flow.Value, longitude1, latitude2, longitude2, kilometers));
             }
 
-            public Flow<double> RejectDistanceKmAbove(double longitude1, double latitude2, double longitude2, double kilometers)
+            [Description("True when: the value is latitude 1. The distance to the second point is above the kilometres. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectDistanceKmAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in kilometres that counts.")] double kilometers)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleDistanceKmAbove(flow.Value, longitude1, latitude2, longitude2, kilometers));
             }
 
-            public Flow<double> BreakDistanceKmAbove(double longitude1, double latitude2, double longitude2, double kilometers)
+            [Description("True when: the value is latitude 1. The distance to the second point is above the kilometres. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakDistanceKmAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in kilometres that counts.")] double kilometers)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleDistanceKmAbove(flow.Value, longitude1, latitude2, longitude2, kilometers));
             }
 
-            public Flow<double> RequireDistanceKmAbove(double longitude1, double latitude2, double longitude2, double kilometers)
+            [Description("True when: the value is latitude 1. The distance to the second point is above the kilometres. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireDistanceKmAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in kilometres that counts.")] double kilometers)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleDistanceKmAbove(flow.Value, longitude1, latitude2, longitude2, kilometers));
             }
 
-            public Flow<double> EnsureDistanceKmAbove(double longitude1, double latitude2, double longitude2, double kilometers)
+            [Description("True when: the value is latitude 1. The distance to the second point is above the kilometres. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureDistanceKmAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in kilometres that counts.")] double kilometers)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +75,47 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchDistanceKmAbove(double longitude1, double latitude2, double longitude2, double kilometers)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The distance to the second point is above the kilometres. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchDistanceKmAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in kilometres that counts.")] double kilometers)
             {
                 return value.Start().MatchDistanceKmAbove(longitude1, latitude2, longitude2, kilometers);
             }
 
-            public Flow<double> RejectDistanceKmAbove(double longitude1, double latitude2, double longitude2, double kilometers)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The distance to the second point is above the kilometres. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectDistanceKmAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in kilometres that counts.")] double kilometers)
             {
                 return value.Start().RejectDistanceKmAbove(longitude1, latitude2, longitude2, kilometers);
             }
 
-            public Flow<double> BreakDistanceKmAbove(double longitude1, double latitude2, double longitude2, double kilometers)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The distance to the second point is above the kilometres. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakDistanceKmAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in kilometres that counts.")] double kilometers)
             {
                 return value.Start().BreakDistanceKmAbove(longitude1, latitude2, longitude2, kilometers);
             }
 
-            public Flow<double> RequireDistanceKmAbove(double longitude1, double latitude2, double longitude2, double kilometers)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The distance to the second point is above the kilometres. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireDistanceKmAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in kilometres that counts.")] double kilometers)
             {
                 return value.Start().RequireDistanceKmAbove(longitude1, latitude2, longitude2, kilometers);
             }
 
-            public Flow<double> EnsureDistanceKmAbove(double longitude1, double latitude2, double longitude2, double kilometers)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The distance to the second point is above the kilometres. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureDistanceKmAbove([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The distance in kilometres that counts.")] double kilometers)
             {
                 return value.Start().EnsureDistanceKmAbove(longitude1, latitude2, longitude2, kilometers);
             }

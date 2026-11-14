@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Whether the date is the last day of its month, allowing for leap years.")]
         public static bool IsLastDayOfMonth(this DateTime @this)
         {
             return @this.Day == DateTime.DaysInMonth(@this.Year, @this.Month);

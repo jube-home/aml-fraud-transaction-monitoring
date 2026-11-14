@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,33 +21,43 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Query.EntityAnalysisModelOverrideQuery
 {
+    [MessagePackObject]
     public class EntityAnalysisModelOverrideKeyQueryDto
     {
         [Description("Name of the request XPath that is enabled as an override key.")]
+        [Key(0)]
         public string? OverrideKey { get; set; }
 
         [Description("Number of Models on which this Request XPath is enabled as an override key.")]
+        [Key(1)]
         public int EnabledOnModels { get; set; }
 
         [Description("Number of distinct values currently overridden against this key.")]
+        [Key(2)]
         public int Values { get; set; }
 
         [Description("Number of live overrides held against this key, counting each binding once.")]
+        [Key(3)]
         public int Overrides { get; set; }
 
         [Description("Number of those overrides that force their Activation Rule rather than suppress it.")]
+        [Key(4)]
         public int Forced { get; set; }
 
         [Description("Number of distinct Activation Rules bound to overrides on this key.")]
+        [Key(5)]
         public int ActivationRules { get; set; }
 
         [Description("Number of overrides on this key bound to all Activation Rules rather than a named one.")]
+        [Key(6)]
         public int AllActivationRules { get; set; }
 
         [Description("Earliest expiry date (UTC) among the overrides on this key, where any is set to expire.")]
+        [Key(7)]
         public DateTimeOffset? NextExpiryDate { get; set; }
 
         [Description("Most recent creation date (UTC) among the overrides on this key.")]
+        [Key(8)]
         public DateTimeOffset? LastCreatedDate { get; set; }
     }
 }

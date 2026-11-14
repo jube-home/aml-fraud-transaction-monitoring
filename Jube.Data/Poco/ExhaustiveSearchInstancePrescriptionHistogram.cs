@@ -33,7 +33,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(5)] public int? Frequency { get; set; }
 
         [Association(ThisKey = "ExhaustiveSearchInstancePromotedTrialInstanceVariableId", OtherKey = "Id",
-            CanBeNull = true, Relationship = Relationship.ManyToOne)]
+            CanBeNull = true)]
         [Key(6)]
         public ExhaustiveSearchInstancePromotedTrialInstanceVariable
             ExhaustiveSearchInstancePromotedTrialInstanceVariable { get; set; }

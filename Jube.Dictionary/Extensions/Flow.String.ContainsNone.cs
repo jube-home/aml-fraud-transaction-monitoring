@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchContainsNone(params string[] values)
+            [Description("True when: present and contains none of the listed strings. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsNone([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringContainsNone(flow.Value, values));
             }
 
-            public Flow<string?> RejectContainsNone(params string[] values)
+            [Description("True when: present and contains none of the listed strings. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsNone([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringContainsNone(flow.Value, values));
             }
 
-            public Flow<string?> BreakContainsNone(params string[] values)
+            [Description("True when: present and contains none of the listed strings. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsNone([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringContainsNone(flow.Value, values));
             }
 
-            public Flow<string?> RequireContainsNone(params string[] values)
+            [Description("True when: present and contains none of the listed strings. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsNone([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringContainsNone(flow.Value, values));
             }
 
-            public Flow<string?> EnsureContainsNone(params string[] values)
+            [Description("True when: present and contains none of the listed strings. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsNone([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchContainsNone(params string[] values)
+            [Description("Begins a pipeline from the value. True when: present and contains none of the listed strings. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsNone([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return value.Start().MatchContainsNone(values);
             }
 
-            public Flow<string?> RejectContainsNone(params string[] values)
+            [Description("Begins a pipeline from the value. True when: present and contains none of the listed strings. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsNone([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return value.Start().RejectContainsNone(values);
             }
 
-            public Flow<string?> BreakContainsNone(params string[] values)
+            [Description("Begins a pipeline from the value. True when: present and contains none of the listed strings. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsNone([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return value.Start().BreakContainsNone(values);
             }
 
-            public Flow<string?> RequireContainsNone(params string[] values)
+            [Description("Begins a pipeline from the value. True when: present and contains none of the listed strings. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsNone([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return value.Start().RequireContainsNone(values);
             }
 
-            public Flow<string?> EnsureContainsNone(params string[] values)
+            [Description("Begins a pipeline from the value. True when: present and contains none of the listed strings. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsNone([Description("The texts looked for inside the value.")] params string[] values)
             {
                 return value.Start().EnsureContainsNone(values);
             }

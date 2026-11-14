@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchAbsoluteDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the size of the gap between the value and the other is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchAbsoluteDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleAbsoluteDifferenceFromInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectAbsoluteDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the size of the gap between the value and the other is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectAbsoluteDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleAbsoluteDifferenceFromInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakAbsoluteDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the size of the gap between the value and the other is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakAbsoluteDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleAbsoluteDifferenceFromInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireAbsoluteDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the size of the gap between the value and the other is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireAbsoluteDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleAbsoluteDifferenceFromInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureAbsoluteDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the size of the gap between the value and the other is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureAbsoluteDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchAbsoluteDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the size of the gap between the value and the other is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchAbsoluteDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchAbsoluteDifferenceFromInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectAbsoluteDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the size of the gap between the value and the other is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectAbsoluteDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectAbsoluteDifferenceFromInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakAbsoluteDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the size of the gap between the value and the other is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakAbsoluteDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakAbsoluteDifferenceFromInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireAbsoluteDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the size of the gap between the value and the other is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireAbsoluteDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireAbsoluteDifferenceFromInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureAbsoluteDifferenceFromInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the size of the gap between the value and the other is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureAbsoluteDifferenceFromInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureAbsoluteDifferenceFromInRange(other, lowerBound, upperBound);
             }

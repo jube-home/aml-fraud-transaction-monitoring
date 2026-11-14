@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchCoefficientOfVariationBelow(double mean, double bound)
+            [Description("True when: the value, as a standard deviation, over the size of the mean is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchCoefficientOfVariationBelow([Description("The mean the value is measured from.")] double mean,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleCoefficientOfVariationBelow(flow.Value, mean, bound));
             }
 
-            public Flow<double> RejectCoefficientOfVariationBelow(double mean, double bound)
+            [Description("True when: the value, as a standard deviation, over the size of the mean is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectCoefficientOfVariationBelow([Description("The mean the value is measured from.")] double mean,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleCoefficientOfVariationBelow(flow.Value, mean, bound));
             }
 
-            public Flow<double> BreakCoefficientOfVariationBelow(double mean, double bound)
+            [Description("True when: the value, as a standard deviation, over the size of the mean is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakCoefficientOfVariationBelow([Description("The mean the value is measured from.")] double mean,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleCoefficientOfVariationBelow(flow.Value, mean, bound));
             }
 
-            public Flow<double> RequireCoefficientOfVariationBelow(double mean, double bound)
+            [Description("True when: the value, as a standard deviation, over the size of the mean is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireCoefficientOfVariationBelow([Description("The mean the value is measured from.")] double mean,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleCoefficientOfVariationBelow(flow.Value, mean, bound));
             }
 
-            public Flow<double> EnsureCoefficientOfVariationBelow(double mean, double bound)
+            [Description("True when: the value, as a standard deviation, over the size of the mean is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureCoefficientOfVariationBelow([Description("The mean the value is measured from.")] double mean,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchCoefficientOfVariationBelow(double mean, double bound)
+            [Description("Begins a pipeline from the value. True when: the value, as a standard deviation, over the size of the mean is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchCoefficientOfVariationBelow([Description("The mean the value is measured from.")] double mean,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchCoefficientOfVariationBelow(mean, bound);
             }
 
-            public Flow<double> RejectCoefficientOfVariationBelow(double mean, double bound)
+            [Description("Begins a pipeline from the value. True when: the value, as a standard deviation, over the size of the mean is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectCoefficientOfVariationBelow([Description("The mean the value is measured from.")] double mean,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectCoefficientOfVariationBelow(mean, bound);
             }
 
-            public Flow<double> BreakCoefficientOfVariationBelow(double mean, double bound)
+            [Description("Begins a pipeline from the value. True when: the value, as a standard deviation, over the size of the mean is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakCoefficientOfVariationBelow([Description("The mean the value is measured from.")] double mean,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakCoefficientOfVariationBelow(mean, bound);
             }
 
-            public Flow<double> RequireCoefficientOfVariationBelow(double mean, double bound)
+            [Description("Begins a pipeline from the value. True when: the value, as a standard deviation, over the size of the mean is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireCoefficientOfVariationBelow([Description("The mean the value is measured from.")] double mean,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireCoefficientOfVariationBelow(mean, bound);
             }
 
-            public Flow<double> EnsureCoefficientOfVariationBelow(double mean, double bound)
+            [Description("Begins a pipeline from the value. True when: the value, as a standard deviation, over the size of the mean is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureCoefficientOfVariationBelow([Description("The mean the value is measured from.")] double mean,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureCoefficientOfVariationBelow(mean, bound);
             }

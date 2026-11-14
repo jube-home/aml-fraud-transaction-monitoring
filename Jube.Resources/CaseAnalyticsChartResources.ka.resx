@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="WeekdayMon" xml:space="preserve">
+        <value>ორშ</value>
+    </data>
+    <data name="WeekdayTue" xml:space="preserve">
+        <value>სამ</value>
+    </data>
+    <data name="WeekdayWed" xml:space="preserve">
+        <value>ოთხ</value>
+    </data>
+    <data name="WeekdayThu" xml:space="preserve">
+        <value>ხუთ</value>
+    </data>
+    <data name="WeekdayFri" xml:space="preserve">
+        <value>პარ</value>
+    </data>
+    <data name="WeekdaySat" xml:space="preserve">
+        <value>შაბ</value>
+    </data>
+    <data name="WeekdaySun" xml:space="preserve">
+        <value>კვ</value>
+    </data>
+    <data name="ImpactMinimal" xml:space="preserve">
+        <value>მინიმალური</value>
+    </data>
+    <data name="ImpactLow" xml:space="preserve">
+        <value>დაბალი</value>
+    </data>
+    <data name="ImpactModerate" xml:space="preserve">
+        <value>ზომიერი</value>
+    </data>
+    <data name="ImpactHigh" xml:space="preserve">
+        <value>მაღალი</value>
+    </data>
+    <data name="ImpactSevere" xml:space="preserve">
+        <value>მძიმე</value>
+    </data>
+    <data name="LikelihoodVeryLikely" xml:space="preserve">
+        <value>ძალიან სავარაუდო</value>
+    </data>
+    <data name="LikelihoodLikely" xml:space="preserve">
+        <value>სავარაუდო</value>
+    </data>
+    <data name="LikelihoodPossible" xml:space="preserve">
+        <value>შესაძლო</value>
+    </data>
+    <data name="LikelihoodUnlikely" xml:space="preserve">
+        <value>ნაკლებად სავარაუდო</value>
+    </data>
+    <data name="RiskMatrixTitle" xml:space="preserve">
+        <value>რისკის მატრიცა</value>
+    </data>
+    <data name="RiskMatrixAssessed" xml:space="preserve">
+        <value>{0} შეფასებული საქმე; {1} ჯერ არ არის შეფასებული</value>
+    </data>
+    <data name="RiskMatrixCases" xml:space="preserve">
+        <value>{0} საქმე</value>
+    </data>
+    <data name="Impact" xml:space="preserve">
+        <value>გავლენა</value>
+    </data>
+    <data name="Likelihood" xml:space="preserve">
+        <value>ალბათობა</value>
+    </data>
+    <data name="Cases" xml:space="preserve">
+        <value>საქმეები</value>
+    </data>
+    <data name="FlowTitle" xml:space="preserve">
+        <value>გახსნილი, დახურული და ნაშთი</value>
+    </data>
+    <data name="FlowSubtitle" xml:space="preserve">
+        <value>ყოველდღე გახსნილი და დახურული საქმეები და დღის ბოლოს კვლავ ღია საქმეები</value>
+    </data>
+    <data name="Opened" xml:space="preserve">
+        <value>გახსნილი</value>
+    </data>
+    <data name="Closed" xml:space="preserve">
+        <value>დახურული</value>
+    </data>
+    <data name="Backlog" xml:space="preserve">
+        <value>ნაშთი</value>
+    </data>
+    <data name="FirstViewTitle" xml:space="preserve">
+        <value>დრო პირველ დათვალიერებამდე</value>
+    </data>
+    <data name="FirstViewSubtitle" xml:space="preserve">
+        <value>საქმეები ლოდინის ხანგრძლივობის მიხედვით</value>
+    </data>
+    <data name="ResolutionTitle" xml:space="preserve">
+        <value>დრო გადაწყვეტამდე</value>
+    </data>
+    <data name="ResolutionSubtitle" xml:space="preserve">
+        <value>დახურული საქმეები ხანგრძლივობის მიხედვით</value>
+    </data>
+    <data name="AgingTitle" xml:space="preserve">
+        <value>ღია საქმეები ასაკის მიხედვით</value>
+    </data>
+    <data name="AgingSubtitle" xml:space="preserve">
+        <value>რამდენი ხანია ელოდებიან ღია საქმეები, სასწრაფოობის ხაზის მიხედვით</value>
+    </data>
+    <data name="LaneLiveMoney" xml:space="preserve">
+        <value>ცოცხალი ფული</value>
+    </data>
+    <data name="LaneMandatory" xml:space="preserve">
+        <value>სავალდებულო</value>
+    </data>
+    <data name="LaneDeadlineNear" xml:space="preserve">
+        <value>ვადა ახლოსაა</value>
+    </data>
+    <data name="LaneStandard" xml:space="preserve">
+        <value>სტანდარტული</value>
+    </data>
+    <data name="StatusDwellTitle" xml:space="preserve">
+        <value>დრო თითოეულ სტატუსში</value>
+    </data>
+    <data name="StatusDwellSubtitle" xml:space="preserve">
+        <value>დასრულებული ყოფნების მედიანა და ყველაზე ნელი მეათედი, საათებში</value>
+    </data>
+    <data name="Unknown" xml:space="preserve">
+        <value>უცნობი</value>
+    </data>
+    <data name="Hours" xml:space="preserve">
+        <value>საათები</value>
+    </data>
+    <data name="Median" xml:space="preserve">
+        <value>მედიანა</value>
+    </data>
+    <data name="SlowestTenth" xml:space="preserve">
+        <value>ყველაზე ნელი მეათედი</value>
+    </data>
+    <data name="RuleEffortTitle" xml:space="preserve">
+        <value>ცრუ დადებითებზე დაკარგული ანალიტიკოსის დრო</value>
+    </data>
+    <data name="RuleEffortSubtitle" xml:space="preserve">
+        <value>საათები, რომლებიც დაიხარჯა წესის მიერ აღძრულ საქმეებზე, რომლებიც არარეალური აღმოჩნდა</value>
+    </data>
+    <data name="RulePrecisionTitle" xml:space="preserve">
+        <value>წესის სიზუსტე</value>
+    </data>
+    <data name="RulePrecisionSubtitle" xml:space="preserve">
+        <value>წესის მიერ აღძრული გადაწყვეტილი საქმეების წილი, რომლებიც დადასტურდა</value>
+    </data>
+    <data name="Percent" xml:space="preserve">
+        <value>პროცენტი</value>
+    </data>
+    <data name="Precision" xml:space="preserve">
+        <value>სიზუსტე</value>
+    </data>
+    <data name="GainsTitle" xml:space="preserve">
+        <value>დადასტურებული საქმეები, რომლებიც საქმეების დამუშავებისას აღმოჩნდა</value>
+    </data>
+    <data name="DecidedCases" xml:space="preserve">
+        <value>{0} გადაწყვეტილი საქმე</value>
+    </data>
+    <data name="FewDecidedCases" xml:space="preserve">
+        <value>მხოლოდ {0} გადაწყვეტილი საქმე, დასაყრდენად ძალიან ცოტა</value>
+    </data>
+    <data name="CasesWorkedPercent" xml:space="preserve">
+        <value>დამუშავებული საქმეები (%)</value>
+    </data>
+    <data name="ConfirmedFoundPercent" xml:space="preserve">
+        <value>აღმოჩენილი დადასტურებული (%)</value>
+    </data>
+    <data name="PriorityOrder" xml:space="preserve">
+        <value>პრიორიტეტის თანმიმდევრობა</value>
+    </data>
+    <data name="LikelihoodOrder" xml:space="preserve">
+        <value>ალბათობის თანმიმდევრობა</value>
+    </data>
+    <data name="OldestFirst" xml:space="preserve">
+        <value>უძველესი პირველი</value>
+    </data>
+    <data name="Random" xml:space="preserve">
+        <value>შემთხვევითი</value>
+    </data>
+    <data name="CalibrationTitle" xml:space="preserve">
+        <value>პროგნოზირებული ალბათობა იმასთან შედარებით, რაც მოხდა</value>
+    </data>
+    <data name="ArrivalsTitle" xml:space="preserve">
+        <value>როდის შემოდის საქმეები</value>
+    </data>
+    <data name="ArrivalsSubtitle" xml:space="preserve">
+        <value>საქმეები შექმნილი კვირის დღისა და საათის მიხედვით (UTC)</value>
+    </data>
+    <data name="Hour" xml:space="preserve">
+        <value>საათი</value>
+    </data>
+    <data name="Weekday" xml:space="preserve">
+        <value>კვირის დღე</value>
+    </data>
+    <data name="FirstViewByHourTitle" xml:space="preserve">
+        <value>პირველ დათვალიერებამდე დროის მედიანა შემოსვლის საათის მიხედვით</value>
+    </data>
+    <data name="FirstViewByHourSubtitle" xml:space="preserve">
+        <value>წუთები, რომლებიც საქმე ელოდა სანამ ვინმე შეხედავდა, შემოსვლის საათის მიხედვით (UTC)</value>
+    </data>
+    <data name="Minutes" xml:space="preserve">
+        <value>წუთები</value>
+    </data>
+    <data name="MedianMinutes" xml:space="preserve">
+        <value>წუთების მედიანა</value>
+    </data>
+    <data name="ServiceLevelTitle" xml:space="preserve">
+        <value>მომსახურების დონის მიღწევა კვირების მიხედვით</value>
+    </data>
+    <data name="ServiceLevelSubtitle" xml:space="preserve">
+        <value>იმ კვირას შექმნილი საქმეების წილი, რომლებმაც თითოეული მიზანი შეასრულა</value>
+    </data>
+    <data name="MetPercent" xml:space="preserve">
+        <value>შესრულებული (%)</value>
+    </data>
+    <data name="ServiceLevelFirstView" xml:space="preserve">
+        <value>პირველი დათვალიერება</value>
+    </data>
+    <data name="ServiceLevelOwnership" xml:space="preserve">
+        <value>მფლობელობა</value>
+    </data>
+    <data name="ServiceLevelResolution" xml:space="preserve">
+        <value>გადაწყვეტა</value>
+    </data>
+    <data name="ServiceLevelTimeInStatus" xml:space="preserve">
+        <value>დრო სტატუსში</value>
+    </data>
+    <data name="HandoffsTitle" xml:space="preserve">
+        <value>რამდენად ხშირად იცვლის საქმე ხელს</value>
+    </data>
+    <data name="HandoffsSubtitle" xml:space="preserve">
+        <value>{0} საქმე ხელახლა გაიხსნა დახურვის შემდეგ</value>
+    </data>
+    <data name="ChangesOfOwner" xml:space="preserve">
+        <value>მფლობელის ცვლილებები</value>
+    </data>
+</root>

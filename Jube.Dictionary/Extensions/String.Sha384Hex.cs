@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Lower-case hex SHA-384 digest of the UTF-8 bytes.")]
         public static string Sha384Hex(this string? @this)
         {
             return Convert.ToHexStringLower(SHA384.HashData(Encoding.UTF8.GetBytes(@this ?? "")));

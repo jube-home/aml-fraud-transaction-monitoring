@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string CanonicalPairKey(this string? @this, string? other)
+        [Description("A key for the pair of the value and the other that is the same whichever way round they are given.")]
+        public static string CanonicalPairKey(this string? @this,
+            [Description("The text the value is compared with.")] string? other)
         {
             var first = @this ?? string.Empty;
             var second = other ?? string.Empty;

@@ -27,6 +27,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -47,6 +48,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
 
         private static readonly EngineJsonSerializationHelper jsonSerializationHelper = new();
         private readonly List<int> createdEntryIds = [];
+        private readonly List<int> createdValidatorIds = [];
         private readonly List<int> createdCaseIds = [];
         private readonly List<int> createdCaseWorkflowFormIds = [];
         private readonly List<int> createdCaseWorkflowIds = [];
@@ -63,6 +65,10 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
                             createdEntryIds.Contains(w.CaseWorkflowFormEntryId.Value))
                 .DeleteAsync();
 
+            await dbContext.GetTable<Data.Poco.CaseWorkflowDispatch>()
+                .Where(w => w.CaseId != null && createdCaseIds.Contains(w.CaseId.Value)).DeleteAsync();
+            await dbContext.GetTable<Data.Poco.CaseWorkflowFormValidator>()
+                .Where(w => createdValidatorIds.Contains(w.Id)).DeleteAsync();
             await dbContext.CaseWorkflowFormEntry.Where(w => createdEntryIds.Contains(w.Id)).DeleteAsync();
             await dbContext.Case.Where(w => createdCaseIds.Contains(w.Id)).DeleteAsync();
 
@@ -94,6 +100,8 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
         private static readonly JubeDynamicEnvironment dynamicEnvironment = TestDynamicEnvironment.Create(
             new Dictionary<string, string>
             {
+                ["ReportConnectionString"] = Environment.GetEnvironmentVariable("JubeTestConnectionString")
+                                             ?? Environment.GetEnvironmentVariable("ConnectionString") ?? string.Empty,
                 ["ConnectionString"] = Environment.GetEnvironmentVariable("JubeTestConnectionString")
                                        ?? Environment.GetEnvironmentVariable("ConnectionString")
                                        ??
@@ -190,7 +198,8 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
         }
 
         private async Task<int> CreateWorkflowFormAsync(DbContext dbContext, string userName, Guid caseWorkflowGuid,
-            byte enableNotification = 0, byte enableHttpEndpoint = 0)
+            byte enableNotification = 0, byte enableHttpEndpoint = 0, string? html = null, string? sql = null,
+            string? destination = null)
         {
             var caseWorkflowId = await dbContext.CaseWorkflow.Where(w => w.Guid == caseWorkflowGuid)
                 .Select(w => w.Id).FirstAsync();
@@ -203,8 +212,13 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
                 Active = 1,
                 Locked = 0,
                 Deleted = 0,
-                Html = "<div></div>",
+                Html = html ?? "<input name=\"field\"><input name=\"firstName\"><input name=\"age\">",
                 EnableNotification = enableNotification,
+                NotificationTypeId = 1,
+                NotificationDestination = destination,
+                NotificationSubject = "Entry",
+                NotificationBody = "Entry body",
+                Sql = sql,
                 EnableHttpEndpoint = enableHttpEndpoint,
                 CreatedUser = userName,
                 CreatedDate = DateTime.UtcNow,
@@ -226,6 +240,30 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
             });
 
             return formId;
+        }
+
+        private async Task AddValidatorAsync(DbContext dbContext, int formId, byte kind, string field,
+            string? argument1 = null, string? argument2 = null, string? sql = null, string? message = null)
+        {
+            var formGuid = await dbContext.CaseWorkflowForm.Where(f => f.Id == formId).Select(f => f.Guid).FirstAsync();
+
+            createdValidatorIds.Add(await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowFormValidator
+            {
+                Guid = Guid.NewGuid(),
+                CaseWorkflowFormGuid = formGuid,
+                Name = "Rule",
+                FieldName = field,
+                KindId = kind,
+                Argument1 = argument1,
+                Argument2 = argument2,
+                Sql = sql,
+                Message = message,
+                Active = 1,
+                Deleted = 0,
+                Version = 1,
+                CreatedUser = fx.Seed.UserWithPermission,
+                CreatedDate = DateTime.UtcNow
+            }));
         }
 
         private async Task<int> CreateCaseAsync(DbContext dbContext, Guid caseWorkflowGuid,
@@ -451,6 +489,345 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
         }
 
         [Fact]
+        public async Task InsertRejectsAKeyThatIsNotAFieldOfTheFormWithoutNamingItAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var (workflowGuid, statusGuid, _) =
+                await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+            var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, "account", caseKeyValue);
+            var formId = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var act = () => service.InsertAsync(new CaseWorkflowFormEntryDto
+            {
+                Payload = new Dictionary<string, object?> { ["field"] = "ok", ["../../etc/passwd"] = "x" },
+                CaseId = caseId,
+                CaseWorkflowFormId = formId,
+                CaseKey = "account",
+                CaseKeyValue = caseKeyValue,
+            });
+
+            var failure = (await act.Should().ThrowAsync<DtoValidationException>()).Which;
+
+            failure.Result.Errors.Should().ContainSingle().Which.PropertyName.Should().Be("Payload");
+            failure.Result.Errors.Single().ErrorCode.Should().Be("unknown");
+        }
+
+        [Fact]
+        public async Task InsertEnforcesTheChoicesOfASelectAndTheTypeOfAFieldAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var (workflowGuid, statusGuid, _) =
+                await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+            var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, "account", caseKeyValue);
+            var formId = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid,
+                html: "<select name=\"outcome\"><option value=\"escalate\">E</option></select><input type=\"number\" name=\"amount\">");
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var act = () => service.InsertAsync(new CaseWorkflowFormEntryDto
+            {
+                Payload = new Dictionary<string, object?> { ["outcome"] = "close", ["amount"] = "lots" },
+                CaseId = caseId,
+                CaseWorkflowFormId = formId,
+                CaseKey = "account",
+                CaseKeyValue = caseKeyValue,
+            });
+
+            var failure = (await act.Should().ThrowAsync<DtoValidationException>()).Which;
+
+            failure.Result.Errors.Select(e => (e.PropertyName, e.ErrorCode)).Should().BeEquivalentTo(
+                [("Payload.outcome", "option"), ("Payload.amount", "type")]);
+        }
+
+        [Fact]
+        public async Task InsertStoresNothingForAFieldTheTemplateHidesAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var (workflowGuid, statusGuid, _) =
+                await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+            var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, "account", caseKeyValue);
+            var formId = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid,
+                html: "<select name=\"reason\"><option value=\"other\">O</option><option value=\"fraud\">F</option></select><input v-if=\"Form.reason == 'other'\" name=\"detail\">");
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var saved = await service.InsertAsync(new CaseWorkflowFormEntryDto
+            {
+                Payload = new Dictionary<string, object?> { ["reason"] = "fraud", ["detail"] = "left over" },
+                CaseId = caseId,
+                CaseWorkflowFormId = formId,
+                CaseKey = "account",
+                CaseKeyValue = caseKeyValue,
+            });
+            createdEntryIds.Add(saved.Id);
+
+            var values = await dbContext.GetTable<Data.Poco.CaseWorkflowFormEntryValue>()
+                .Where(w => w.CaseWorkflowFormEntryId == saved.Id).ToListAsync();
+
+            values.Select(v => v.Name).Should().Equal("reason");
+        }
+
+        [Fact]
+        public async Task InsertRefusesAFormTemplateThatDoesNotCompileAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var (workflowGuid, statusGuid, _) =
+                await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+            var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, "account", caseKeyValue);
+            var formId = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid,
+                html: "<script>alert(1)</script><input name=\"field\">");
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var act = () => service.InsertAsync(new CaseWorkflowFormEntryDto
+            {
+                Payload = new Dictionary<string, object?> { ["field"] = "x" },
+                CaseId = caseId,
+                CaseWorkflowFormId = formId,
+                CaseKey = "account",
+                CaseKeyValue = caseKeyValue,
+            });
+
+            var failure = (await act.Should().ThrowAsync<DtoValidationException>()).Which;
+
+            failure.Result.Errors.Should().ContainSingle().Which.ErrorCode.Should().Be("FormTemplateInvalid");
+        }
+
+        [Fact]
+        public async Task InsertRefusesAValueThatFailsAValidatorOfTheFormAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var (workflowGuid, statusGuid, _) =
+                await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+            var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, "account", caseKeyValue);
+            var formId = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid,
+                html: "<input name=\"firstName\"><input name=\"age\" type=\"number\">");
+
+            await AddValidatorAsync(dbContext, formId, 1, "firstName");
+            await AddValidatorAsync(dbContext, formId, 3, "age", "18", "120", message: "Must be an adult.");
+
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var act = () => service.InsertAsync(new CaseWorkflowFormEntryDto
+            {
+                Payload = new Dictionary<string, object?> { ["age"] = "9" },
+                CaseId = caseId,
+                CaseWorkflowFormId = formId,
+                CaseKey = "account",
+                CaseKeyValue = caseKeyValue,
+            });
+
+            var failure = (await act.Should().ThrowAsync<DtoValidationException>()).Which;
+
+            failure.Result.Errors.Select(e => (e.PropertyName, e.ErrorCode)).Should().BeEquivalentTo(
+                [("Payload.firstName", "required"), ("Payload.age", "range")]);
+            failure.Result.Errors.Single(e => e.ErrorCode == "range").ErrorMessage.Should().Be("Must be an adult.");
+        }
+
+        [Fact]
+        public async Task InsertAcceptsAValueThatPassesTheValidatorsOfTheFormAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var (workflowGuid, statusGuid, _) =
+                await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+            var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, "account", caseKeyValue);
+            var formId = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid,
+                html: "<input name=\"firstName\"><input name=\"age\" type=\"number\">");
+
+            await AddValidatorAsync(dbContext, formId, 1, "firstName");
+            await AddValidatorAsync(dbContext, formId, 3, "age", "18", "120");
+
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var saved = await service.InsertAsync(new CaseWorkflowFormEntryDto
+            {
+                Payload = new Dictionary<string, object?> { ["firstName"] = "Ada", ["age"] = "36" },
+                CaseId = caseId,
+                CaseWorkflowFormId = formId,
+                CaseKey = "account",
+                CaseKeyValue = caseKeyValue,
+            });
+            createdEntryIds.Add(saved.Id);
+
+            saved.Id.Should().BeGreaterThan(0);
+        }
+
+        [Fact]
+        public async Task InsertRunsASqlValidatorAgainstTheRealDatabaseAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var (workflowGuid, statusGuid, _) =
+                await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+            var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, "account", caseKeyValue);
+            var formId = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid,
+                html: "<input name=\"firstName\"><input name=\"age\" type=\"number\">");
+
+            await AddValidatorAsync(dbContext, formId, 9, "age",
+                sql: "select @value::numeric > 10 and @CaseKeyValue = \"CaseKeyValue\" from \"Case\" where \"Id\" = @CaseId");
+
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            CaseWorkflowFormEntryDto Entry(string age) => new()
+            {
+                Payload = new Dictionary<string, object?> { ["age"] = age },
+                CaseId = caseId,
+                CaseWorkflowFormId = formId,
+                CaseKey = "account",
+                CaseKeyValue = caseKeyValue,
+            };
+
+            var refused = () => service.InsertAsync(Entry("3"));
+
+            (await refused.Should().ThrowAsync<DtoValidationException>()).Which.Result.Errors.Should()
+                .ContainSingle().Which.ErrorCode.Should().Be("sql");
+
+            var saved = await service.InsertAsync(Entry("30"));
+            createdEntryIds.Add(saved.Id);
+
+            saved.Id.Should().BeGreaterThan(0);
+        }
+
+        [Fact]
+        public async Task InsertFailsClosedWhenASqlValidatorCannotRunAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var (workflowGuid, statusGuid, _) =
+                await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+            var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, "account", caseKeyValue);
+            var formId = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid,
+                html: "<input name=\"firstName\">");
+
+            await AddValidatorAsync(dbContext, formId, 9, "firstName", sql: "select @value::numeric > 1");
+
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var act = () => service.InsertAsync(new CaseWorkflowFormEntryDto
+            {
+                Payload = new Dictionary<string, object?> { ["firstName"] = "not a number" },
+                CaseId = caseId,
+                CaseWorkflowFormId = formId,
+                CaseKey = "account",
+                CaseKeyValue = caseKeyValue,
+            });
+
+            (await act.Should().ThrowAsync<DtoValidationException>()).Which.Result.Errors.Should()
+                .ContainSingle().Which.ErrorCode.Should().Be("sqlFailed");
+        }
+
+        [Fact]
+        public async Task InsertInSqlModeStoresASnapshotOfTheSqlTheTemplateAndTheRowsAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var (workflowGuid, statusGuid, _) =
+                await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+            var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, "account", caseKeyValue);
+            var formId = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid,
+                html: "<p>[@ rows[0].ckv @]</p><input name=\"field\">", sql: "select \"CaseKeyValue\" as ckv from \"Case\" where \"Id\" = @Id");
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var saved = await service.InsertAsync(new CaseWorkflowFormEntryDto
+            {
+                Payload = new Dictionary<string, object?> { ["field"] = "typed" },
+                CaseId = caseId,
+                CaseWorkflowFormId = formId,
+                CaseKey = "account",
+                CaseKeyValue = caseKeyValue,
+            });
+            createdEntryIds.Add(saved.Id);
+
+            var stored = await dbContext.CaseWorkflowFormEntry.FirstAsync(e => e.Id == saved.Id);
+
+            stored.Sql.Should().Contain("CaseKeyValue");
+            stored.Template.Should().Contain("rows[0].ckv");
+            stored.Rows.Should().Contain(caseKeyValue);
+        }
+
+        [Fact]
+        public async Task InsertInSqlModeRefusesASubmissionWhenTheFormSqlFailsAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var (workflowGuid, statusGuid, _) =
+                await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+            var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, "account", caseKeyValue);
+            var formId = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid,
+                html: "<input name=\"field\">", sql: "select count(*) from \"UserRegistry\"");
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var act = () => service.InsertAsync(new CaseWorkflowFormEntryDto
+            {
+                Payload = new Dictionary<string, object?> { ["field"] = "typed" },
+                CaseId = caseId,
+                CaseWorkflowFormId = formId,
+                CaseKey = "account",
+                CaseKeyValue = caseKeyValue,
+            });
+
+            (await act.Should().ThrowAsync<DtoValidationException>()).Which.Result.Errors.Should().ContainSingle()
+                .Which.ErrorCode.Should().Be("FormSqlFailed");
+            (await dbContext.CaseWorkflowFormEntry.CountAsync(e => e.CaseId == caseId)).Should().Be(0);
+        }
+
+        [Fact]
+        public async Task InsertInSqlModeAuditsARefusedNotificationWithItsRowsAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var (workflowGuid, statusGuid, _) =
+                await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+            var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, "account", caseKeyValue);
+            var formId = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid,
+                enableNotification: 1, html: "<input name=\"field\">", sql: "select \"CaseKeyValue\" as ckv from \"Case\" where \"Id\" = @Id",
+                destination: "[@ rows[0].ckv @]");
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var saved = await service.InsertAsync(new CaseWorkflowFormEntryDto
+            {
+                Payload = new Dictionary<string, object?> { ["field"] = "typed" },
+                CaseId = caseId,
+                CaseWorkflowFormId = formId,
+                CaseKey = "account",
+                CaseKeyValue = caseKeyValue,
+            });
+            createdEntryIds.Add(saved.Id);
+
+            var audit = await dbContext.GetTable<Data.Poco.CaseWorkflowDispatch>().SingleAsync(d => d.CaseId == caseId);
+
+            audit.OutcomeId.Should().Be(3);
+            audit.SourceKindId.Should().Be(1);
+            audit.Rows.Should().Contain(caseKeyValue);
+        }
+
+        [Fact]
         public async Task InsertSkipsNullPayloadValuesAsync()
         {
             await using var dbContext = fx.GetDbContext();
@@ -571,6 +948,77 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFormEntry
             entries[0].Id.Should().Be(second.Id);
             entries[1].Id.Should().Be(first.Id);
             entries.Should().OnlyContain(e => e.Payload == null);
+        }
+
+        [Fact]
+        public async Task InsertOnACaseLockedToSomeoneElseIsRefusedAndStoresNothingAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var (workflowGuid, statusGuid, _) =
+                await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+            var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, "account", caseKeyValue);
+            var formId = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid);
+            var bus = new CapturingBus();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission, serviceChangeBus: bus);
+
+            CaseWorkflowFormEntryDto Entry() => new()
+            {
+                Payload = new Dictionary<string, object?> { ["field"] = "value" },
+                CaseId = caseId,
+                CaseWorkflowFormId = formId,
+                CaseKey = "account",
+                CaseKeyValue = caseKeyValue,
+            };
+
+            await dbContext.Case.Where(c => c.Id == caseId).Set(c => c.Locked, (byte)1)
+                .Set(c => c.LockedUser, "someone-else").UpdateAsync();
+
+            var act = () => service.InsertAsync(Entry());
+
+            await act.Should().ThrowAsync<CaseLockedException>();
+            bus.Published.Should().BeEmpty();
+
+            await dbContext.Case.Where(c => c.Id == caseId).Set(c => c.LockedUser, fx.Seed.UserWithPermission)
+                .UpdateAsync();
+
+            var saved = await service.InsertAsync(Entry());
+            createdEntryIds.Add(saved.Id);
+        }
+
+        [Fact]
+        public async Task GetByCaseKeyValueHidesEntriesOfAFormTheCallersRolesLoseAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var (workflowGuid, statusGuid, _) =
+                await CreateWorkflowWithRoleAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var caseKeyValue = $"acc-{Guid.NewGuid():N}"[..20];
+            var caseId = await CreateCaseAsync(dbContext, workflowGuid, statusGuid, "account", caseKeyValue);
+            var formId = await CreateWorkflowFormAsync(dbContext, fx.Seed.UserWithPermission, workflowGuid);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var entry = await service.InsertAsync(new CaseWorkflowFormEntryDto
+            {
+                Payload = new Dictionary<string, object?> { ["field"] = "value" },
+                CaseId = caseId,
+                CaseWorkflowFormId = formId,
+                CaseKey = "account",
+                CaseKeyValue = caseKeyValue,
+            });
+            createdEntryIds.Add(entry.Id);
+
+            var formGuid = await dbContext.CaseWorkflowForm.Where(f => f.Id == formId).Select(f => f.Guid).FirstAsync();
+
+            (await service.GetByCaseKeyValueAsync("account", caseKeyValue)).Should().ContainSingle();
+
+            await dbContext.GetTable<Data.Poco.CaseWorkflowFormRole>().Where(r => r.CaseWorkflowFormGuid == formGuid)
+                .Set(r => r.Deleted, (byte)1).UpdateAsync();
+
+            (await service.GetByCaseKeyValueAsync("account", caseKeyValue)).Should().BeEmpty();
         }
 
         [Fact]

@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double HarmonicMeanWith(this double @this, double other)
+        [Description("The harmonic mean of the value and another, for averaging rates.")]
+        public static double HarmonicMeanWith(this double @this, [Description("The other number.")] double other)
         {
             return CalculationSupport.Finite(2 * @this * other / (@this + other));
         }

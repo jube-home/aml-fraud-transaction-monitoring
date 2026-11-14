@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Whether the text is a syntactically valid domain name of at least two labels.")]
         public static bool IsValidDomainName(this string? @this)
         {
             var value = (@this ?? "").Trim().TrimEnd('.');

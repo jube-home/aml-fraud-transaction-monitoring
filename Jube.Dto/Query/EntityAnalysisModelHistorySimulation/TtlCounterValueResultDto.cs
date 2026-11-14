@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Validation;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,31 +24,40 @@ namespace Jube.Dto.Query.EntityAnalysisModelHistorySimulation
 {
     [Description("The value a TTL counter would have for the transaction in a context, read from the cache as " +
                  "the engine reads it. Nothing is stored or incremented.")]
+    [MessagePackObject]
     public class TtlCounterValueResultDto
     {
         [Description("True when the value was read; when false, Errors says why.")]
+        [Key(0)]
         public bool Read { get; set; }
 
         [Description("Why the value was not read, e.g. the counter's data field has no value in the context.")]
+        [Key(1)]
         public List<ValidationErrorDto> Errors { get; set; } = [];
 
         [Description("The TTL counter's name, as used in rules (TTLCounter.Name).")]
+        [Key(2)]
         public string Name { get; set; } = string.Empty;
 
         [Description("The payload field the counter is kept per, e.g. AccountId.")]
+        [Key(3)]
         public string DataName { get; set; } = string.Empty;
 
         [Description("The data field's value taken from the context.")]
+        [Key(4)]
         public string? DataValue { get; set; }
 
         [Description("True when the counter is aggregated online over a window rather than read as a running " +
                      "count.")]
+        [Key(5)]
         public bool OnlineAggregation { get; set; }
 
         [Description("For online aggregation, the start of the window, in UTC; otherwise null.")]
+        [Key(6)]
         public DateTime? WindowFrom { get; set; }
 
         [Description("The counter value, as invariant text.")]
+        [Key(7)]
         public string? Value { get; set; }
     }
 }

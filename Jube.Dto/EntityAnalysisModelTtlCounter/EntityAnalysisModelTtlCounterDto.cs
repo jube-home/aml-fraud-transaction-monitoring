@@ -13,7 +13,9 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,21 +25,25 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.EntityAnalysisModelTtlCounter
 {
     [FormEndpoint("EntityAnalysisModelTtlCounter")]
+    [FormApproval]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
     [FormGroup("Decrement", Order = 20)]
     [FormGroup("Output", Order = 30, Collapsed = true)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
+    [MessagePackObject]
     public class EntityAnalysisModelTtlCounterDto : IUpdated, IActivatable, ILockable, ITreeChild, IGuidIdentified
     {
         [Description("Identifier of the Model this TTL Counter is registered against. Set from the parent Model " +
                      "context; not user-editable.")]
+        [Key(0)]
         public int EntityAnalysisModelId { get; set; }
 
         [Description("Display name of this TTL Counter. Unique within the Model (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Declines in 24 hours")]
         [ListColumn(Order = 10, Title = "Name")]
+        [Key(1)]
         public string? Name { get; set; }
 
         [Description("The key extracted from the invocation payload used to group counter entries (e.g. " +
@@ -45,12 +51,14 @@ namespace Jube.Dto.EntityAnalysisModelTtlCounter
         [FormField(Group = "Identity", Order = 40)]
         [Lookup("/api/GetEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeQuery",
             TextField = "name", ValueField = "name", ParentField = nameof(EntityAnalysisModelId))]
+        [Key(2)]
         public string? TtlCounterDataName { get; set; }
 
         [Description("Whether the TTL Counter should ever be decremented. When true, no counter entry is created " +
                      "to wind the counter back and the Interval/Value/Resolution fields are not applicable.")]
         [FormField(Group = "Decrement", Order = 10, Widget = "switch")]
         [NewDefault(false)]
+        [Key(3)]
         public bool EnableLiveForever { get; set; }
 
         [Description("The unit of time (s = seconds, n = minutes, h = hours, d = days, m = months, y = years) " +
@@ -58,18 +66,26 @@ namespace Jube.Dto.EntityAnalysisModelTtlCounter
                      "decremented. Not applicable when EnableLiveForever is true.")]
         [FormField(Group = "Decrement", Order = 20, Widget = "radio")]
         [VisibleWhen(nameof(EnableLiveForever), false)]
+        [Options(typeof(IntervalUnit), IntervalUnit.Second, IntervalUnit.Minute, IntervalUnit.Hour, IntervalUnit.Day, IntervalUnit.Month, IntervalUnit.Year)]
+        [NewDefault("h")]
+        [Key(4)]
         public string? TtlCounterInterval { get; set; }
 
         [Description("The number of TtlCounterInterval units a counter entry lives before it is decremented. Not " +
                      "applicable when EnableLiveForever is true.")]
         [FormField(Group = "Decrement", Order = 30)]
         [VisibleWhen(nameof(EnableLiveForever), false)]
+        [NewDefault(1)]
+        [Key(5)]
         public int TtlCounterValue { get; set; }
 
         [Description("Truncation applied to the reference date when grouping decrement entries in cache (n = " +
                      "minutes, h = hours, d = days). Not applicable when EnableLiveForever is true.")]
         [FormField(Group = "Decrement", Order = 40, Widget = "radio")]
         [VisibleWhen(nameof(EnableLiveForever), false)]
+        [Options(typeof(IntervalUnit), IntervalUnit.Minute, IntervalUnit.Hour, IntervalUnit.Day)]
+        [NewDefault("h")]
+        [Key(6)]
         public string? ResolutionInterval { get; set; }
 
         [Description("Whether a numeric value extracted from the invocation payload (TtlCounterDataValue) " +
@@ -78,6 +94,7 @@ namespace Jube.Dto.EntityAnalysisModelTtlCounter
         [FormField(Group = "Decrement", Order = 50, Widget = "switch")]
         [VisibleWhen(nameof(EnableLiveForever), false)]
         [NewDefault(false)]
+        [Key(7)]
         public bool EnableSum { get; set; }
 
         [Description("The Integer or Float field in the invocation payload to increment the counter by. Required " +
@@ -88,75 +105,90 @@ namespace Jube.Dto.EntityAnalysisModelTtlCounter
         [RequiredWhen(nameof(EnableSum), true)]
         [Lookup("/api/GetEntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeQuery",
             TextField = "name", ValueField = "name", ParentField = nameof(EntityAnalysisModelId))]
+        [Key(8)]
         public string? TtlCounterDataValue { get; set; }
 
         [Description("Whether the aggregated TTL Counter value for a match is written back into the response " +
                      "payload.")]
         [FormField(Group = "Output", Order = 10, Widget = "switch")]
         [NewDefault(false)]
+        [Key(9)]
         public bool ResponsePayload { get; set; }
 
-        [Description("Whether this TTL Counter's activity is written to the reporting table.")]
-        [FormField(Group = "Output", Order = 20, Widget = "switch")]
+        [Description("Whether this TTL Counter's activity is written to the Archive Key table.")]
+        [FormField(Group = "Output", Order = 20, Widget = "switch", Label = "Archive Key")]
         [NewDefault(false)]
+        [Key(10)]
         public bool ReportTable { get; set; }
 
         [Description("Whether counter entries are aggregated in real time on every event (more expensive, less " +
                      "latent) rather than via the pre-aggregated cache summary (cheaper, can be slightly stale).")]
         [FormField(Group = "Output", Order = 30, Widget = "switch")]
         [NewDefault(false)]
+        [Key(11)]
         public bool OnlineAggregation { get; set; }
 
         [Description("When true, this TTL Counter participates in evaluation on transaction invocation.")]
         [FormField(Group = "Identity", Order = 30, Widget = "switch")]
         [NewDefault(false)]
+        [Key(12)]
         public bool Active { get; set; }
 
         [Description("Globally-addressable identifier for this TTL Counter, exposed for lookup by other areas " +
                      "(e.g. the Activation Rule TTL Counter increment picker). Server-assigned. Read-only.")]
+        [Key(13)]
         public Guid Guid { get; set; }
 
         [Description("When true, this TTL Counter is locked and cannot be edited or deleted.")]
         [FormField(Group = "Identity", Order = 20, Widget = "switch")]
         [NewDefault(false)]
+        [Key(14)]
         public bool Locked { get; set; }
 
         [Description("Server-assigned row identifier. Read-only.")]
         [FormField(Group = "Audit", Order = 10, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(15)]
         public int Id { get; set; }
 
         [Description("User who created this TTL Counter. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 20, ReadOnly = true)]
+        [Key(16)]
         public string? CreatedUser { get; set; }
 
         [Description("Timestamp (UTC) this TTL Counter was created. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 30, ReadOnly = true, Widget = "date")]
+        [Key(17)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("User who last updated this TTL Counter. Server-assigned. Read-only. No backing column -- " +
                      "always null when read back (pre-existing quirk, see migration report).")]
         [FormField(Group = "Audit", Order = 40, ReadOnly = true)]
+        [Key(18)]
         public string? UpdatedUser { get; set; }
 
         [Description("Timestamp (UTC) this TTL Counter was last updated. Server-assigned. Read-only. No backing " +
                      "column -- always null when read back (pre-existing quirk, see migration report).")]
         [FormField(Group = "Audit", Order = 50, ReadOnly = true, Widget = "date")]
+        [Key(19)]
         public DateTimeOffset? UpdatedDate { get; set; }
 
         [Description("Server-assigned optimistic-concurrency version number, incremented on every update. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 60, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(20)]
         public int Version { get; set; }
 
         [Description("User who deleted this TTL Counter, if soft-deleted. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 70, ReadOnly = true)]
+        [Key(21)]
         public string? DeletedUser { get; set; }
 
         [Description("Timestamp (UTC) this TTL Counter was soft-deleted, if applicable. Server-assigned. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 80, ReadOnly = true, Widget = "date")]
+        [Key(22)]
         public DateTimeOffset? DeletedDate { get; set; }
     }
 }

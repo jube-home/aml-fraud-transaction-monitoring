@@ -28,6 +28,7 @@ using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue.Models;
 using LinqToDB;
+using LinqToDB.Async;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
@@ -58,6 +59,13 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
 
             await dbContext.CaseWorkflowFormEntry.Where(w => createdEntryIds.Contains(w.Id)).DeleteAsync();
             await dbContext.Case.Where(w => createdCaseIds.Contains(w.Id)).DeleteAsync();
+
+            var createdFormGuids = dbContext.CaseWorkflowForm.Where(w => createdCaseWorkflowFormIds.Contains(w.Id))
+                .Select(w => w.Guid);
+
+            await dbContext.GetTable<Data.Poco.CaseWorkflowFormRole>()
+                .Where(w => createdFormGuids.Contains(w.CaseWorkflowFormGuid)).DeleteAsync();
+
             await dbContext.CaseWorkflowForm.Where(w => createdCaseWorkflowFormIds.Contains(w.Id)).DeleteAsync();
 
             var caseWorkflowStatusGuids = dbContext.CaseWorkflowStatus
@@ -167,10 +175,12 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
 
             var formName = $"{DatabaseFixture.Prefix}Form{Guid.NewGuid():N}"[..40];
 
+            var formGuid = Guid.NewGuid();
+
             var formId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowForm
             {
                 Name = formName,
-                Guid = Guid.NewGuid(),
+                Guid = formGuid,
                 CaseWorkflowId = caseWorkflowId,
                 Active = 1,
                 Locked = 0,
@@ -180,6 +190,21 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
                 CreatedDate = DateTime.UtcNow,
             });
             createdCaseWorkflowFormIds.Add(formId);
+
+            var formRoleUser = workflowRoleUser ?? statusRoleUser;
+
+            if (formRoleUser != null)
+            {
+                await dbContext.InsertAsync(new Data.Poco.CaseWorkflowFormRole
+                {
+                    CaseWorkflowFormGuid = formGuid,
+                    Guid = Guid.NewGuid(),
+                    RoleRegistryGuid = await RoleGuidAsync(dbContext, formRoleUser),
+                    CreatedUser = tenantUser,
+                    CreatedDate = DateTime.UtcNow,
+                    Deleted = 0,
+                });
+            }
 
             var caseId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.Case
             {
@@ -298,6 +323,24 @@ namespace Jube.Test.Service.Query.CaseWorkflowFormEntryByCaseKeyValue
 
             row.CreatedDate.Offset.Should().Be(TimeSpan.Zero);
             row.ResponseStatusId.Should().Be(0);
+        }
+
+        [Fact]
+        public async Task GetAsyncHidesAnEntryWhoseFormTheCallersRolesHoldNoGrantOnAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var key = NewKey();
+            var created = await CreateVisibleToUserAAsync(dbContext, key, "acc-1");
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            (await service.GetAsync(key, "acc-1")).Should().ContainSingle();
+
+            var formGuid = dbContext.CaseWorkflowForm.Where(f => f.Name == created.FormName).Select(f => f.Guid);
+
+            await dbContext.GetTable<Data.Poco.CaseWorkflowFormRole>()
+                .Where(r => formGuid.Contains(r.CaseWorkflowFormGuid)).Set(r => r.Deleted, (byte)1).UpdateAsync();
+
+            (await service.GetAsync(key, "acc-1")).Should().BeEmpty();
         }
 
         [Fact]

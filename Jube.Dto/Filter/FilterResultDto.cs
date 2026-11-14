@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Validation;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,19 +24,24 @@ namespace Jube.Dto.Filter
 {
     [Description("The rows matching a query builder JSON filter, ordered by id and capped; when More is true, call " +
                  "again with afterId set to the last returned Id to continue.")]
+    [MessagePackObject]
     public class FilterResultDto<T>
     {
         [Description("True when the filter is valid; the rows are then in Items.")]
+        [Key(0)]
         public bool Valid { get; set; }
 
         [Description("The matching rows, ordered by id.")]
+        [Key(1)]
         public List<T> Items { get; set; } = [];
 
         [Description("True when more matching rows follow the last one returned.")]
+        [Key(2)]
         public bool More { get; set; }
 
         [Description("Problems with the filter, each with a JSON path such as $.rules[0].operator. Empty when " +
                      "Valid is true.")]
+        [Key(3)]
         public List<ValidationErrorDto> Errors { get; set; } = [];
     }
 }

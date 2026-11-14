@@ -20,7 +20,7 @@ using log4net;
 
 namespace Jube.Engine.Exhaustive.Stages
 {
-    internal class PrepareStage(ILog log, Random seeded)
+    internal class PrepareStage(ILog log, Random seeded, DynamicEnvironment.DynamicEnvironment environment = null)
     {
         internal async Task<bool> ExecuteAsync(InstanceRun run)
         {
@@ -68,7 +68,7 @@ namespace Jube.Engine.Exhaustive.Stages
                 await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstance.Id, 10, token)
                     .ConfigureAwait(false);
 
-                data = new Normalisation(log).NormaliseData(variables, data);
+                data = new Normalisation(log, environment).NormaliseData(variables, data);
 
                 if (log.IsInfoEnabled)
                 {

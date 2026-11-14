@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchInListIgnoreCase(IEnumerable<string> list)
+            [Description("True when: a member of the List token, ignoring case. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringInListIgnoreCase(flow.Value, list));
             }
 
-            public Flow<string?> RejectInListIgnoreCase(IEnumerable<string> list)
+            [Description("True when: a member of the List token, ignoring case. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringInListIgnoreCase(flow.Value, list));
             }
 
-            public Flow<string?> BreakInListIgnoreCase(IEnumerable<string> list)
+            [Description("True when: a member of the List token, ignoring case. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringInListIgnoreCase(flow.Value, list));
             }
 
-            public Flow<string?> RequireInListIgnoreCase(IEnumerable<string> list)
+            [Description("True when: a member of the List token, ignoring case. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringInListIgnoreCase(flow.Value, list));
             }
 
-            public Flow<string?> EnsureInListIgnoreCase(IEnumerable<string> list)
+            [Description("True when: a member of the List token, ignoring case. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchInListIgnoreCase(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: a member of the List token, ignoring case. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().MatchInListIgnoreCase(list);
             }
 
-            public Flow<string?> RejectInListIgnoreCase(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: a member of the List token, ignoring case. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RejectInListIgnoreCase(list);
             }
 
-            public Flow<string?> BreakInListIgnoreCase(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: a member of the List token, ignoring case. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().BreakInListIgnoreCase(list);
             }
 
-            public Flow<string?> RequireInListIgnoreCase(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: a member of the List token, ignoring case. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RequireInListIgnoreCase(list);
             }
 
-            public Flow<string?> EnsureInListIgnoreCase(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: a member of the List token, ignoring case. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().EnsureInListIgnoreCase(list);
             }

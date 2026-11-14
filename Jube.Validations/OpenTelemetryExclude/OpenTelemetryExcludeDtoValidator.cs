@@ -32,7 +32,7 @@ namespace Jube.Validations.OpenTelemetryExclude
                 .WithMessage(_ => string.Format(localiser[OpenTelemetryExcludeResources.NameMaxLength],
                     MaxNameLength))
                 .WithErrorCode("NameMaximumLength")
-                .Must(name => name == null || !name.Any(char.IsControl))
+                .Matches(@"\A[A-Za-z0-9._/-]+\z")
                 .WithMessage(_ => localiser[OpenTelemetryExcludeResources.NameInvalidCharacters])
                 .WithErrorCode("NameInvalidCharacters");
         }

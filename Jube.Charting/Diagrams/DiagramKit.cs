@@ -63,16 +63,18 @@ namespace Jube.Charting.Diagrams
             scale = 1;
         }
 
-        public void OpenMark(string key, string label, string classes)
+        public void OpenMark(string key, string label, string classes,
+            params (string Name, string? Value)[] attributes)
         {
             if (!Interactive)
             {
-                W.Open("g");
+                W.Open("g", attributes);
 
                 return;
             }
 
-            Canvas.OpenMark(-1, label, (External && !StyleCaps.KeyClass(key) ? string.Empty : key + " ") + classes);
+            Canvas.OpenMark(-1, label, (External && !StyleCaps.KeyClass(key) ? string.Empty : key + " ") + classes,
+                null, attributes);
         }
 
         public (string Name, string? Value) StrokeWidth(double width)

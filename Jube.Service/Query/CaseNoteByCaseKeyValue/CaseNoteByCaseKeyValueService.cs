@@ -33,6 +33,7 @@ namespace Jube.Service.Query.CaseNoteByCaseKeyValue
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
+        private readonly DbContext dbContext;
         private readonly GetCaseNoteByCaseKeyValueQuery query;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
@@ -50,6 +51,7 @@ namespace Jube.Service.Query.CaseNoteByCaseKeyValue
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
+            this.dbContext = dbContext;
             query = new GetCaseNoteByCaseKeyValueQuery(dbContext, userName);
         }
 
@@ -125,6 +127,14 @@ namespace Jube.Service.Query.CaseNoteByCaseKeyValue
 
                 var dtos = CaseNoteByCaseKeyValueMapper.ToDto(
                     await query.ExecuteAsync(key, value, token).ConfigureAwait(false));
+
+                var files = await Repository.CaseNote.CaseNoteAttachmentLoader
+                    .LoadAsync(dbContext, userName, key, value, token).ConfigureAwait(false);
+
+                foreach (var dto in dtos)
+                {
+                    dto.Files = files.GetValueOrDefault(dto.Id) ?? [];
+                }
                 op.Rows(dtos.Count);
 
                 if (log.IsDebugEnabled)

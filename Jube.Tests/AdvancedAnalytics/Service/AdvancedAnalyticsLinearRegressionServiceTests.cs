@@ -71,7 +71,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
 
             var submission = await service.SubmitTrainingAsync(new AdvancedAnalyticsLinearRegressionTrainingDto
             {
-                AdvancedAnalyticsInstanceId = instance.Id,
+                AskJoobyAnalyticsInstanceId = instance.Id,
                 ModelName = modelName,
                 VariableNames = data.Names,
                 ProcessingTypeIds = processingTypeIds,
@@ -116,7 +116,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             var trainedModelId = result.TrainedModelId!.Value;
             var versionId = result.TrainedModelVersionId!.Value;
 
-            var trainedModelRepository = new AdvancedAnalyticsTrainedModelRepository(Db, TenantA, Permitted);
+            var trainedModelRepository = new AskJoobyAnalyticsTrainedModelRepository(Db, TenantA, Permitted);
             await trainedModelRepository.SetActiveVersionAsync(trainedModelId, versionId);
             await trainedModelRepository.SetActiveAsync(trainedModelId, true);
 
@@ -124,11 +124,11 @@ namespace Jube.Test.AdvancedAnalytics.Service
             trainedModel!.ActiveVersionId.Should().Be(versionId);
             trainedModel.Active.Should().Be(1);
 
-            var version = await new AdvancedAnalyticsTrainedModelVersionRepository(Db, TenantA, Permitted)
+            var version = await new AskJoobyAnalyticsTrainedModelVersionRepository(Db, TenantA, Permitted)
                 .GetActiveByModelIdAsync(trainedModelId);
             version.Should().NotBeNull();
 
-            var syncedModel = SyncAdvancedAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(instance,
+            var syncedModel = SyncAskJoobyAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(instance,
                 trainedModel, version!);
 
             syncedModel.Should().NotBeNull();
@@ -156,7 +156,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
 
             var cancelSubmission = await service.SubmitTrainingAsync(new AdvancedAnalyticsLinearRegressionTrainingDto
             {
-                AdvancedAnalyticsInstanceId = instance.Id,
+                AskJoobyAnalyticsInstanceId = instance.Id,
                 ModelName = modelName,
                 VariableNames = cancelData.Names,
                 ProcessingTypeIds = [1],
@@ -179,7 +179,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
 
             var submission = await service.SubmitTrainingAsync(new AdvancedAnalyticsLinearRegressionTrainingDto
             {
-                AdvancedAnalyticsInstanceId = instance.Id,
+                AskJoobyAnalyticsInstanceId = instance.Id,
                 ModelName = "TypedEvidence",
                 VariableNames = data.Names,
                 ProcessingTypeIds = [1, 1],

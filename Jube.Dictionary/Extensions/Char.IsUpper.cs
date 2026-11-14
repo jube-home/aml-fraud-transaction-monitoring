@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Checks if the character is an uppercase letter.")]
         public static Boolean IsUpper(this Char c)
         {
             return char.IsUpper(c);

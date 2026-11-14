@@ -61,6 +61,9 @@ namespace Jube.App.Endpoints.Query
             group.MapPost("{id:int}/Stop", StopAsync)
                 .Produces<BacktestInstanceDto>()
                 .WithName("EntityAnalysisModelBacktestStop");
+            group.MapPost("Tune", TuneAsync)
+                .Produces<BacktestTuneResultDto>()
+                .WithName("EntityAnalysisModelBacktestTune");
             group.MapPost("Explain", ExplainAsync)
                 .Produces<BacktestExplanationDto>()
                 .WithName("EntityAnalysisModelBacktestExplain");
@@ -97,6 +100,18 @@ namespace Jube.App.Endpoints.Query
         {
             return ExecuteAsync("POST", $"{Base}/Stop", httpContext,
                 (_, service, cancellation) => service.StopAsync(id, cancellation), token);
+        }
+
+        private static Task<IResult> TuneAsync(BacktestTuneRequestDto model, HttpContext httpContext,
+            CancellationToken token)
+        {
+            if (model.Request == null)
+            {
+                return Task.FromResult<IResult>(TypedResults.BadRequest());
+            }
+
+            return ExecuteAsync("POST", $"{Base}/Tune", httpContext,
+                (_, service, cancellation) => service.TuneAsync(model, cancellation), token);
         }
 
         private static Task<IResult> ExplainAsync(BacktestExplainRequestDto model, HttpContext httpContext,

@@ -41,6 +41,8 @@ namespace Jube.Service.Repository.Case
                 Json = rulePoco.Json,
                 CaseKeyValue = rulePoco.CaseKeyValue,
                 LastClosedStatus = rulePoco.LastClosedStatus.GetValueOrDefault(),
+                ClosedReasonId = rulePoco.ClosedReasonId.GetValueOrDefault(),
+                ClosedReasonNote = rulePoco.ClosedReasonNote,
                 Payload = null
             };
 
@@ -55,6 +57,10 @@ namespace Jube.Service.Repository.Case
             Locked = (byte)(caseDto.Locked ? 1 : 0),
             LockedUser = caseDto.LockedUser,
             ClosedStatusId = caseDto.ClosedStatusId,
+            ClosedReasonId = caseDto.ClosedReasonId == 0 ? null : caseDto.ClosedReasonId,
+            ClosedReasonNote = string.IsNullOrWhiteSpace(caseDto.ClosedReasonNote)
+                ? null
+                : caseDto.ClosedReasonNote.Trim(),
             CaseKey = caseDto.CaseKey,
             Diary = (byte)(caseDto.Diary ? 1 : 0),
             Rating = caseDto.Rating,

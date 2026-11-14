@@ -4,8 +4,15 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string Repeat(this char @this, int repeatCount)
+        [Description("Repeats the character a specified number of times.")]
+        public static string Repeat(this char @this, [Description("Number of repeats.")] int repeatCount)
         {
+            if (repeatCount > MaxRepeatLength)
+            {
+                throw new ArgumentOutOfRangeException(nameof(repeatCount),
+                    $"The repeated text is limited to {MaxRepeatLength} characters.");
+            }
+
             return new string(@this, repeatCount);
         }
     }

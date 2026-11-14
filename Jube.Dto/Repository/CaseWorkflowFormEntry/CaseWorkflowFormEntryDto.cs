@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,33 +21,42 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Repository.CaseWorkflowFormEntry
 {
+    [MessagePackObject]
     public class CaseWorkflowFormEntryDto
     {
         [Description("Server-assigned identifier of the form entry. Read-only.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("The submitted field name/value pairs, keyed by the CaseWorkflowForm's HTML field ids; " +
                      "persisted as one CaseWorkflowFormEntryValue row per non-null entry and also used to resolve " +
                      "notification/HTTP-endpoint token substitutions.")]
+        [Key(1)]
         public Dictionary<string, object?>? Payload { get; set; }
 
         [Description("Server-assigned creation timestamp. Read-only.")]
+        [Key(2)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("Server-assigned username of the submitter. Read-only.")]
+        [Key(3)]
         public string CreatedUser { get; set; } = string.Empty;
 
         [Description("The case key this entry rolls up to, alongside CaseKeyValue.")]
+        [Key(4)]
         public string CaseKey { get; set; } = string.Empty;
 
         [Description("Identifier of the case this form is being submitted against.")]
+        [Key(5)]
         public int CaseId { get; set; }
 
         [Description("Identifier of the CaseWorkflowForm template this entry is a submission of; dispatches that " +
                      "form's notification and/or HTTP endpoint, if either is enabled.")]
+        [Key(6)]
         public int CaseWorkflowFormId { get; set; }
 
         [Description("The case key value this entry rolls up to.")]
+        [Key(7)]
         public string CaseKeyValue { get; set; } = string.Empty;
     }
 }

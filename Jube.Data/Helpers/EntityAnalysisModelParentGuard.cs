@@ -16,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Context;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace Jube.Data.Helpers
 {

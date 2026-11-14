@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsSameDayAs(this DateTime @this, DateTime other)
+        [Description("Whether two date-times share a calendar date.")]
+        public static bool IsSameDayAs(this DateTime @this, [Description("The other date.")] DateTime other)
         {
             return @this.Date == other.Date;
         }

@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double PercentDifferenceFrom(this double @this, double other)
+        [Description("The gap between the two as a percentage of their average size, the same either way round.")]
+        public static double PercentDifferenceFrom(this double @this, [Description("The other number.")] double other)
         {
             return @this == 0 && other == 0 ? 0 : CalculationSupport.Finite(Math.Abs(@this - other) / ((Math.Abs(@this) + Math.Abs(other)) / 2.0) * 100.0);
         }

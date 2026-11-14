@@ -49,6 +49,9 @@
     <value>Name must be {0} characters or fewer.</value>
   </data>
     <data name="NameInvalidCharacters" xml:space="preserve">
-    <value>Name must not contain control characters.</value>
+    <value>Name may only contain letters, digits, '.', '_', '/' and '-'.</value>
+  </data>
+    <data name="NameDuplicate" xml:space="preserve">
+    <value>An active row with this Name already exists (names are compared ignoring case).</value>
   </data>
 </root>

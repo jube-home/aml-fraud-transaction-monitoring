@@ -56,5 +56,8 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(23)] public byte? AggregationTypeId { get; set; }
         [Column] [Nullable] [Key(24)] public double? MaxDistanceRatio { get; set; }
         [Column] [Nullable] [Key(25)] public double? MaxCoverageRatio { get; set; }
+        [Column] [Nullable] [Key(26)] public byte? MatchAlgorithmId { get; set; }
+        [Column] [Nullable] [Key(27)] public double? MinimumSimilarity { get; set; }
+        [Column] [Nullable] [Key(28)] public byte? Transliterate { get; set; }
     }
 }

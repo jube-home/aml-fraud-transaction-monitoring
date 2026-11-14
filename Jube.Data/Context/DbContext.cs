@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2022-present Jube Holdings Limited.
+/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -13,511 +13,684 @@
 
 using Jube.Data.Poco;
 using LinqToDB;
-using LinqToDB.Configuration;
 using LinqToDB.Data;
 
 namespace Jube.Data.Context
 {
-    public class DbContext(LinqToDbConnectionOptions<DbContext> options) : DataConnection(options)
+    public class DbContext(DataOptions<DbContext> options) : DataConnection(options.Options)
     {
-        public ITable<ActivationWatcher> ActivationWatcher => GetTable<ActivationWatcher>();
-        public ITable<EntityAnalysisModelTag> EntityAnalysisModelTag => GetTable<EntityAnalysisModelTag>();
+        public ITable<ActivationWatcher> ActivationWatcher => this.GetTable<ActivationWatcher>();
+        public ITable<EntityAnalysisModelTag> EntityAnalysisModelTag => this.GetTable<EntityAnalysisModelTag>();
+
+        public ITable<EntityAnalysisModelResponseElevationRange> EntityAnalysisModelResponseElevationRange =>
+            this.GetTable<EntityAnalysisModelResponseElevationRange>();
 
         public ITable<EntityAnalysisModelStagePerformanceCounter> EntityAnalysisModelStagePerformanceCounter =>
-            GetTable<EntityAnalysisModelStagePerformanceCounter>();
+            this.GetTable<EntityAnalysisModelStagePerformanceCounter>();
 
         public ITable<ArchiverStagePerformanceCounter> ArchiverStagePerformanceCounter =>
-            GetTable<ArchiverStagePerformanceCounter>();
+            this.GetTable<ArchiverStagePerformanceCounter>();
 
         public ITable<CaseCreationStagePerformanceCounter> CaseCreationStagePerformanceCounter =>
-            GetTable<CaseCreationStagePerformanceCounter>();
+            this.GetTable<CaseCreationStagePerformanceCounter>();
 
-        public ITable<CaseCreationWarning> CaseCreationWarning => GetTable<CaseCreationWarning>();
-        public ITable<ArchiverWarning> ArchiverWarning => GetTable<ArchiverWarning>();
-        public ITable<CaptureQueueHealth> CaptureQueueHealth => GetTable<CaptureQueueHealth>();
-        public ITable<HaProxyServerStatus> HaProxyServerStatus => GetTable<HaProxyServerStatus>();
-        public ITable<HaProxyReachabilityProbe> HaProxyReachabilityProbe => GetTable<HaProxyReachabilityProbe>();
-        public ITable<OverlayNetworkTaskDrift> OverlayNetworkTaskDrift => GetTable<OverlayNetworkTaskDrift>();
+        public ITable<CaseCreationWarning> CaseCreationWarning => this.GetTable<CaseCreationWarning>();
+        public ITable<ArchiverWarning> ArchiverWarning => this.GetTable<ArchiverWarning>();
+        public ITable<CaptureQueueHealth> CaptureQueueHealth => this.GetTable<CaptureQueueHealth>();
+        public ITable<HaProxyServerStatus> HaProxyServerStatus => this.GetTable<HaProxyServerStatus>();
+        public ITable<HaProxyReachabilityProbe> HaProxyReachabilityProbe => this.GetTable<HaProxyReachabilityProbe>();
+        public ITable<OverlayNetworkTaskDrift> OverlayNetworkTaskDrift => this.GetTable<OverlayNetworkTaskDrift>();
 
         public ITable<EntityAnalysisModelTaskPerformanceCounter> EntityAnalysisModelTaskPerformanceCounter =>
-            GetTable<EntityAnalysisModelTaskPerformanceCounter>();
+            this.GetTable<EntityAnalysisModelTaskPerformanceCounter>();
 
-        public ITable<ApplicationLogEntry> ApplicationLogEntry => GetTable<ApplicationLogEntry>();
-        public ITable<WafSignature> WafSignature => GetTable<WafSignature>();
-        public ITable<WafException> WafException => GetTable<WafException>();
-        public ITable<WafAttack> WafAttack => GetTable<WafAttack>();
-        public ITable<DotNetRuntimeMetric> DotNetRuntimeMetric => GetTable<DotNetRuntimeMetric>();
-        public ITable<PostgresMetric> PostgresMetric => GetTable<PostgresMetric>();
-        public ITable<PostgresLogEntry> PostgresLogEntry => GetTable<PostgresLogEntry>();
-        public ITable<ContainerLogEntry> ContainerLogEntry => GetTable<ContainerLogEntry>();
-        public ITable<DockerEvent> DockerEvent => GetTable<DockerEvent>();
-        public ITable<OpenTelemetryLogCounter> OpenTelemetryLogCounter => GetTable<OpenTelemetryLogCounter>();
-        public ITable<AskJoobyConversation> AskJoobyConversation => GetTable<AskJoobyConversation>();
-        public ITable<AskJoobyMessage> AskJoobyMessage => GetTable<AskJoobyMessage>();
-        public ITable<AskJoobyRun> AskJoobyRun => GetTable<AskJoobyRun>();
-        public ITable<AskJoobyRouting> AskJoobyRouting => GetTable<AskJoobyRouting>();
+        public ITable<ApplicationLogEntry> ApplicationLogEntry => this.GetTable<ApplicationLogEntry>();
+        public ITable<WafSignature> WafSignature => this.GetTable<WafSignature>();
+        public ITable<WafException> WafException => this.GetTable<WafException>();
+        public ITable<WafAttack> WafAttack => this.GetTable<WafAttack>();
+        public ITable<DotNetRuntimeMetric> DotNetRuntimeMetric => this.GetTable<DotNetRuntimeMetric>();
+        public ITable<PostgresMetric> PostgresMetric => this.GetTable<PostgresMetric>();
+        public ITable<PostgresLogEntry> PostgresLogEntry => this.GetTable<PostgresLogEntry>();
+        public ITable<ContainerLogEntry> ContainerLogEntry => this.GetTable<ContainerLogEntry>();
+        public ITable<DockerEvent> DockerEvent => this.GetTable<DockerEvent>();
+        public ITable<OpenTelemetryLogCounter> OpenTelemetryLogCounter => this.GetTable<OpenTelemetryLogCounter>();
+        public ITable<AskJoobyConversation> AskJoobyConversation => this.GetTable<AskJoobyConversation>();
+        public ITable<AskJoobyMessage> AskJoobyMessage => this.GetTable<AskJoobyMessage>();
+        public ITable<AskJoobyRun> AskJoobyRun => this.GetTable<AskJoobyRun>();
+        public ITable<AskJoobyRouting> AskJoobyRouting => this.GetTable<AskJoobyRouting>();
 
         public ITable<AskJoobyAgentGuardRejection> AskJoobyAgentGuardRejection =>
-            GetTable<AskJoobyAgentGuardRejection>();
+            this.GetTable<AskJoobyAgentGuardRejection>();
 
-        public ITable<AskJoobyAgentGuardRule> AskJoobyAgentGuardRule => GetTable<AskJoobyAgentGuardRule>();
+        public ITable<AskJoobyAgentGuardRule> AskJoobyAgentGuardRule => this.GetTable<AskJoobyAgentGuardRule>();
 
-        public ITable<AskJoobyToolCall> AskJoobyToolCall => GetTable<AskJoobyToolCall>();
-        public ITable<AskJoobyWorkflowStep> AskJoobyWorkflowStep => GetTable<AskJoobyWorkflowStep>();
-        public ITable<AskJoobyErrata> AskJoobyErrata => GetTable<AskJoobyErrata>();
-        public ITable<AskJoobyCompaction> AskJoobyCompaction => GetTable<AskJoobyCompaction>();
-        public ITable<AskJoobyModelCall> AskJoobyModelCall => GetTable<AskJoobyModelCall>();
-        public ITable<AskJoobyEmbeddingCall> AskJoobyEmbeddingCall => GetTable<AskJoobyEmbeddingCall>();
-        public ITable<AskJoobyRerankCall> AskJoobyRerankCall => GetTable<AskJoobyRerankCall>();
-        public ITable<AskJoobyWebSearchCall> AskJoobyWebSearchCall => GetTable<AskJoobyWebSearchCall>();
+        public ITable<AskJoobyToolCall> AskJoobyToolCall => this.GetTable<AskJoobyToolCall>();
+        public ITable<AskJoobyWorkflowStep> AskJoobyWorkflowStep => this.GetTable<AskJoobyWorkflowStep>();
+        public ITable<AskJoobyErrata> AskJoobyErrata => this.GetTable<AskJoobyErrata>();
+        public ITable<AskJoobyCompaction> AskJoobyCompaction => this.GetTable<AskJoobyCompaction>();
+        public ITable<AskJoobyModelCall> AskJoobyModelCall => this.GetTable<AskJoobyModelCall>();
+        public ITable<AskJoobyEmbeddingCall> AskJoobyEmbeddingCall => this.GetTable<AskJoobyEmbeddingCall>();
+        public ITable<AskJoobyRerankCall> AskJoobyRerankCall => this.GetTable<AskJoobyRerankCall>();
+        public ITable<AskJoobyWebSearchCall> AskJoobyWebSearchCall => this.GetTable<AskJoobyWebSearchCall>();
 
         public ITable<AskJoobyOpenCorporatesCall> AskJoobyOpenCorporatesCall =>
-            GetTable<AskJoobyOpenCorporatesCall>();
+            this.GetTable<AskJoobyOpenCorporatesCall>();
 
-        public ITable<AskJoobyEndpointFee> AskJoobyEndpointFee => GetTable<AskJoobyEndpointFee>();
-        public ITable<AskJoobyRerankFee> AskJoobyRerankFee => GetTable<AskJoobyRerankFee>();
-        public ITable<AskJoobyTurnCost> AskJoobyTurnCost => GetTable<AskJoobyTurnCost>();
-        public ITable<AskJoobyRagChunk> AskJoobyRagChunk => GetTable<AskJoobyRagChunk>();
-        public ITable<AskJoobyFile> AskJoobyFile => GetTable<AskJoobyFile>();
-        public ITable<AskJoobyMemory> AskJoobyMemory => GetTable<AskJoobyMemory>();
-        public ITable<AskJoobyDataCache> AskJoobyDataCache => GetTable<AskJoobyDataCache>();
-        public ITable<DynamicSqlQueryLog> DynamicSqlQueryLog => GetTable<DynamicSqlQueryLog>();
-        public ITable<OpenTelemetryExclude> OpenTelemetryExclude => GetTable<OpenTelemetryExclude>();
-        public ITable<OtlpDispatchCounter> OtlpDispatchCounter => GetTable<OtlpDispatchCounter>();
-        public ITable<RedisMetric> RedisMetric => GetTable<RedisMetric>();
-        public ITable<RedisSlowOperation> RedisSlowOperation => GetTable<RedisSlowOperation>();
+        public ITable<AskJoobyEndpointFee> AskJoobyEndpointFee => this.GetTable<AskJoobyEndpointFee>();
+        public ITable<AskJoobyRerankFee> AskJoobyRerankFee => this.GetTable<AskJoobyRerankFee>();
+        public ITable<AskJoobyTurnCost> AskJoobyTurnCost => this.GetTable<AskJoobyTurnCost>();
+        public ITable<AskJoobyRagChunk> AskJoobyRagChunk => this.GetTable<AskJoobyRagChunk>();
+        public ITable<AskJoobyFile> AskJoobyFile => this.GetTable<AskJoobyFile>();
+        public ITable<AskJoobyMemory> AskJoobyMemory => this.GetTable<AskJoobyMemory>();
+        public ITable<AskJoobyDataCache> AskJoobyDataCache => this.GetTable<AskJoobyDataCache>();
+        public ITable<DynamicSqlQueryLog> DynamicSqlQueryLog => this.GetTable<DynamicSqlQueryLog>();
+        public ITable<OpenTelemetryExclude> OpenTelemetryExclude => this.GetTable<OpenTelemetryExclude>();
+        public ITable<OtlpDispatchCounter> OtlpDispatchCounter => this.GetTable<OtlpDispatchCounter>();
+        public ITable<RespMetric> RespMetric => this.GetTable<RespMetric>();
+        public ITable<RespSlowOperation> RespSlowOperation => this.GetTable<RespSlowOperation>();
 
-        public ITable<RedisConnectionMultiplexerMetric> RedisConnectionMultiplexerMetric =>
-            GetTable<RedisConnectionMultiplexerMetric>();
+        public ITable<RespConnectionMultiplexerMetric> RespConnectionMultiplexerMetric =>
+            this.GetTable<RespConnectionMultiplexerMetric>();
 
-        public ITable<PostgresReplicationStatus> PostgresReplicationStatus => GetTable<PostgresReplicationStatus>();
-        public ITable<RedisSentinelStatus> RedisSentinelStatus => GetTable<RedisSentinelStatus>();
-        public ITable<EtcdMemberStatus> EtcdMemberStatus => GetTable<EtcdMemberStatus>();
-        public ITable<PatroniMemberStatus> PatroniMemberStatus => GetTable<PatroniMemberStatus>();
-        public ITable<DockerContainerMetric> DockerContainerMetric => GetTable<DockerContainerMetric>();
-        public ITable<DockerHostMetric> DockerHostMetric => GetTable<DockerHostMetric>();
-        public ITable<OpenTelemetryMetric> OpenTelemetryMetric => GetTable<OpenTelemetryMetric>();
-        public ITable<EtcdClusterEvent> EtcdClusterEvent => GetTable<EtcdClusterEvent>();
-        public ITable<PatroniClusterEvent> PatroniClusterEvent => GetTable<PatroniClusterEvent>();
-        public ITable<RedisSentinelEvent> RedisSentinelEvent => GetTable<RedisSentinelEvent>();
-        public ITable<ModelInvokeWarning> ModelInvokeWarning => GetTable<ModelInvokeWarning>();
-        public ITable<RedisConnectionEvent> RedisConnectionEvent => GetTable<RedisConnectionEvent>();
-        public ITable<RedisCallCounter> RedisCallCounter => GetTable<RedisCallCounter>();
+        public ITable<PostgresReplicationStatus> PostgresReplicationStatus =>
+            this.GetTable<PostgresReplicationStatus>();
+
+        public ITable<RespSentinelStatus> RespSentinelStatus => this.GetTable<RespSentinelStatus>();
+        public ITable<EtcdMemberStatus> EtcdMemberStatus => this.GetTable<EtcdMemberStatus>();
+        public ITable<PatroniMemberStatus> PatroniMemberStatus => this.GetTable<PatroniMemberStatus>();
+        public ITable<DockerContainerMetric> DockerContainerMetric => this.GetTable<DockerContainerMetric>();
+        public ITable<DockerHostMetric> DockerHostMetric => this.GetTable<DockerHostMetric>();
+        public ITable<OpenTelemetryMetric> OpenTelemetryMetric => this.GetTable<OpenTelemetryMetric>();
+        public ITable<EtcdClusterEvent> EtcdClusterEvent => this.GetTable<EtcdClusterEvent>();
+        public ITable<PatroniClusterEvent> PatroniClusterEvent => this.GetTable<PatroniClusterEvent>();
+        public ITable<RespSentinelEvent> RespSentinelEvent => this.GetTable<RespSentinelEvent>();
+        public ITable<ModelInvokeWarning> ModelInvokeWarning => this.GetTable<ModelInvokeWarning>();
+        public ITable<RespConnectionEvent> RespConnectionEvent => this.GetTable<RespConnectionEvent>();
+        public ITable<RespCallCounter> RespCallCounter => this.GetTable<RespCallCounter>();
 
         public ITable<EntityAnalysisModelResponseTimePipelineCounter> EntityAnalysisModelResponseTimePipelineCounter =>
-            GetTable<EntityAnalysisModelResponseTimePipelineCounter>();
+            this.GetTable<EntityAnalysisModelResponseTimePipelineCounter>();
 
-        public ITable<CaseWorkflowFormEntryValue> CaseWorkflowFormEntryValue => GetTable<CaseWorkflowFormEntryValue>();
-        public ITable<CaseWorkflowFormEntry> CaseWorkflowFormEntry => GetTable<CaseWorkflowFormEntry>();
-        public ITable<CaseFile> CaseFile => GetTable<CaseFile>();
-        public ITable<UserLogin> UserLogin => GetTable<UserLogin>();
-        public ITable<UserLogout> UserLogout => GetTable<UserLogout>();
-        public ITable<CaseNote> CaseNote => GetTable<CaseNote>();
-        public ITable<SessionCaseJournal> SessionCaseJournal => GetTable<SessionCaseJournal>();
+        public ITable<CaseWorkflowFormEntryValue> CaseWorkflowFormEntryValue =>
+            this.GetTable<CaseWorkflowFormEntryValue>();
+
+        public ITable<CaseWorkflowFormEntry> CaseWorkflowFormEntry => this.GetTable<CaseWorkflowFormEntry>();
+        public ITable<CaseFile> CaseFile => this.GetTable<CaseFile>();
+        public ITable<UserLogin> UserLogin => this.GetTable<UserLogin>();
+        public ITable<UserLogout> UserLogout => this.GetTable<UserLogout>();
+        public ITable<CaseNote> CaseNote => this.GetTable<CaseNote>();
+        public ITable<CaseResearch> CaseResearch => this.GetTable<CaseResearch>();
+        public ITable<CaseResearchCitation> CaseResearchCitation => this.GetTable<CaseResearchCitation>();
+        public ITable<CaseSuppression> CaseSuppression => this.GetTable<CaseSuppression>();
+        public ITable<CaseSuppressionVersion> CaseSuppressionVersion => this.GetTable<CaseSuppressionVersion>();
+        public ITable<CaseSuppressionTarget> CaseSuppressionTarget => this.GetTable<CaseSuppressionTarget>();
+
+        public ITable<CaseSuppressionTransaction> CaseSuppressionTransaction =>
+            this.GetTable<CaseSuppressionTransaction>();
+
+        public ITable<CaseSuppressionApproval> CaseSuppressionApproval => this.GetTable<CaseSuppressionApproval>();
+        public ITable<SessionCaseJournal> SessionCaseJournal => this.GetTable<SessionCaseJournal>();
 
         public ITable<SessionCaseSearchCompiledSql> SessionCaseSearchCompiledSql =>
-            GetTable<SessionCaseSearchCompiledSql>();
+            this.GetTable<SessionCaseSearchCompiledSql>();
+
+        public ITable<CaseSearchFilter> CaseSearchFilter => this.GetTable<CaseSearchFilter>();
+
+        public ITable<CaseRiskAssessment> CaseRiskAssessment => this.GetTable<CaseRiskAssessment>();
+
+        public ITable<CaseView> CaseView => this.GetTable<CaseView>();
+
+        public ITable<CaseKeyJournalPin> CaseKeyJournalPin => this.GetTable<CaseKeyJournalPin>();
+
+        public ITable<CaseKeyJournalReplay> CaseKeyJournalReplay => this.GetTable<CaseKeyJournalReplay>();
+
+        public ITable<CaseKeyJournalPeer> CaseKeyJournalPeer => this.GetTable<CaseKeyJournalPeer>();
+
+        public ITable<GraphRegistry> GraphRegistry => this.GetTable<GraphRegistry>();
+
+        public ITable<GraphRegistryVersion> GraphRegistryVersion => this.GetTable<GraphRegistryVersion>();
+
+        public ITable<GraphRegistryRole> GraphRegistryRole => this.GetTable<GraphRegistryRole>();
+
+        public ITable<GraphRegistryEdge> GraphRegistryEdge => this.GetTable<GraphRegistryEdge>();
+
+        public ITable<GraphRegistryEdgeVersion> GraphRegistryEdgeVersion => this.GetTable<GraphRegistryEdgeVersion>();
+
+        public ITable<GraphNode> GraphNode => this.GetTable<GraphNode>();
+
+        public ITable<GraphEdge> GraphEdge => this.GetTable<GraphEdge>();
+
+        public ITable<GraphEdgeEvent> GraphEdgeEvent => this.GetTable<GraphEdgeEvent>();
+
+        public ITable<GraphBuildState> GraphBuildState => this.GetTable<GraphBuildState>();
+
+        public ITable<GraphExploration> GraphExploration => this.GetTable<GraphExploration>();
+
+        public ITable<GraphCommunity> GraphCommunity => this.GetTable<GraphCommunity>();
+
+        public ITable<GraphPattern> GraphPattern => this.GetTable<GraphPattern>();
+
+        public ITable<GraphPatternNode> GraphPatternNode => this.GetTable<GraphPatternNode>();
+
+        public ITable<GraphNodeTag> GraphNodeTag => this.GetTable<GraphNodeTag>();
+
+        public ITable<EntityAnalysisModelGraphRecall> EntityAnalysisModelGraphRecall =>
+            this.GetTable<EntityAnalysisModelGraphRecall>();
+
+        public ITable<EntityAnalysisModelGraphRecallVersion> EntityAnalysisModelGraphRecallVersion =>
+            this.GetTable<EntityAnalysisModelGraphRecallVersion>();
+
+        public ITable<EntityAnalysisModelSvirfd> EntityAnalysisModelSvirfd =>
+            this.GetTable<EntityAnalysisModelSvirfd>();
+
+        public ITable<EntityAnalysisModelSvirfdVersion> EntityAnalysisModelSvirfdVersion =>
+            this.GetTable<EntityAnalysisModelSvirfdVersion>();
+
+        public ITable<CaseTag> CaseTag => this.GetTable<CaseTag>();
+
+        public ITable<CaseKeyJournalKeyIndex> CaseKeyJournalKeyIndex => this.GetTable<CaseKeyJournalKeyIndex>();
+
+        public ITable<CaseKeyJournalTagJob> CaseKeyJournalTagJob => this.GetTable<CaseKeyJournalTagJob>();
+
+        public ITable<CaseKeyJournalTagJobRow> CaseKeyJournalTagJobRow => this.GetTable<CaseKeyJournalTagJobRow>();
+
+        public ITable<CaseStatusTransition> CaseStatusTransition => this.GetTable<CaseStatusTransition>();
+
+        public ITable<UserNotification> UserNotification => this.GetTable<UserNotification>();
+
+        public ITable<SanctionExemption> SanctionExemption => this.GetTable<SanctionExemption>();
+
+        public ITable<CaseLink> CaseLink => this.GetTable<CaseLink>();
+
+        public ITable<CaseSimilarityComponent> CaseSimilarityComponent => this.GetTable<CaseSimilarityComponent>();
+
+        public ITable<CaseSimilarityComponentFrequency> CaseSimilarityComponentFrequency =>
+            this.GetTable<CaseSimilarityComponentFrequency>();
+
+        public ITable<CaseAgentRun> CaseAgentRun => this.GetTable<CaseAgentRun>();
+
+        public ITable<CaseQaReview> CaseQaReview => this.GetTable<CaseQaReview>();
+        public ITable<CaseAnalystAssessment> CaseAnalystAssessment => this.GetTable<CaseAnalystAssessment>();
+
+        public ITable<GraphEntityMatch> GraphEntityMatch => this.GetTable<GraphEntityMatch>();
+
+        public ITable<TransactionInboundQueue> TransactionInboundQueue => this.GetTable<TransactionInboundQueue>();
+
+        public ITable<CaseReportProfile> CaseReportProfile => this.GetTable<CaseReportProfile>();
+
+        public ITable<CaseReport> CaseReport => this.GetTable<CaseReport>();
+
+        public ITable<CaseReportVersion> CaseReportVersion => this.GetTable<CaseReportVersion>();
+
+        public ITable<CaseReportApproval> CaseReportApproval => this.GetTable<CaseReportApproval>();
+
+        public ITable<CaseReportFeedback> CaseReportFeedback => this.GetTable<CaseReportFeedback>();
+
+        public ITable<ErasureRequest> ErasureRequest => this.GetTable<ErasureRequest>();
+
+        public ITable<EntityRiskRatingRequest> EntityRiskRatingRequest => this.GetTable<EntityRiskRatingRequest>();
+
+        public ITable<ModelGovernanceRecord> ModelGovernanceRecord => this.GetTable<ModelGovernanceRecord>();
+
+        public ITable<CaseAgentReplay> CaseAgentReplay => this.GetTable<CaseAgentReplay>();
+
+        public ITable<CaseAgentReplayResult> CaseAgentReplayResult => this.GetTable<CaseAgentReplayResult>();
+
+        public ITable<EntityRiskRating> EntityRiskRating => this.GetTable<EntityRiskRating>();
+
+        public ITable<ModelDriftObservation> ModelDriftObservation => this.GetTable<ModelDriftObservation>();
+
+        public ITable<SanctionRescreenRun> SanctionRescreenRun => this.GetTable<SanctionRescreenRun>();
+
+        public ITable<SanctionRescreenHit> SanctionRescreenHit => this.GetTable<SanctionRescreenHit>();
+
+        public ITable<CaseServiceLevelBreach> CaseServiceLevelBreach => this.GetTable<CaseServiceLevelBreach>();
 
         public ITable<ArchiveEntityAnalysisModelAbstractionEntry> ArchiveEntityAnalysisModelAbstractionEntry =>
-            GetTable<ArchiveEntityAnalysisModelAbstractionEntry>();
+            this.GetTable<ArchiveEntityAnalysisModelAbstractionEntry>();
 
         public ITable<EntityAnalysisModelSearchKeyDistinctValueCalculationInstance>
             EntityAnalysisModelSearchKeyDistinctValueCalculationInstance =>
-            GetTable<EntityAnalysisModelSearchKeyDistinctValueCalculationInstance>();
+            this.GetTable<EntityAnalysisModelSearchKeyDistinctValueCalculationInstance>();
 
         public ITable<EntityAnalysisModelSearchKeyCalculationInstance>
             EntityAnalysisModelSearchKeyCalculationInstance =>
-            GetTable<EntityAnalysisModelSearchKeyCalculationInstance>();
+            this.GetTable<EntityAnalysisModelSearchKeyCalculationInstance>();
 
-        public ITable<EntityAnalysisInstance> EntityAnalysisInstance => GetTable<EntityAnalysisInstance>();
+        public ITable<EntityAnalysisInstance> EntityAnalysisInstance => this.GetTable<EntityAnalysisInstance>();
 
         public ITable<EntityAnalysisModelInstance> EntityAnalysisModelInstance =>
-            GetTable<EntityAnalysisModelInstance>();
+            this.GetTable<EntityAnalysisModelInstance>();
 
         public ITable<EntityAnalysisModelSynchronisationNodeStatusEntry>
             EntityAnalysisModelSynchronisationNodeStatusEntry =>
-            GetTable<EntityAnalysisModelSynchronisationNodeStatusEntry>();
+            this.GetTable<EntityAnalysisModelSynchronisationNodeStatusEntry>();
 
         public ITable<EntityAnalysisModelEngineSnapshot> EntityAnalysisModelEngineSnapshot =>
-            GetTable<EntityAnalysisModelEngineSnapshot>();
+            this.GetTable<EntityAnalysisModelEngineSnapshot>();
 
         public ITable<EntityAnalysisModelBacktestInstance> EntityAnalysisModelBacktestInstance =>
-            GetTable<EntityAnalysisModelBacktestInstance>();
+            this.GetTable<EntityAnalysisModelBacktestInstance>();
 
         public ITable<EntityAnalysisModelSynchronisationSchedule> EntityAnalysisModelSynchronisationSchedule =>
-            GetTable<EntityAnalysisModelSynchronisationSchedule>();
+            this.GetTable<EntityAnalysisModelSynchronisationSchedule>();
 
-        public ITable<ArchiveKey> ArchiveKey => GetTable<ArchiveKey>();
-        public ITable<ArchiveKeyVersion> ArchiveKeyVersion => GetTable<ArchiveKeyVersion>();
-        public ITable<ExhaustiveSearchInstance> ExhaustiveSearchInstance => GetTable<ExhaustiveSearchInstance>();
-        public ITable<ExhaustiveInstanceCsv> ExhaustiveInstanceCsv => GetTable<ExhaustiveInstanceCsv>();
-        public ITable<ExhaustiveInstanceCsvRow> ExhaustiveInstanceCsvRow => GetTable<ExhaustiveInstanceCsvRow>();
-        public ITable<ExhaustiveInstanceJson> ExhaustiveInstanceJson => GetTable<ExhaustiveInstanceJson>();
-        public ITable<ExhaustiveInstanceJsonRow> ExhaustiveInstanceJsonRow => GetTable<ExhaustiveInstanceJsonRow>();
-        public ITable<UserRegistry> UserRegistry => GetTable<UserRegistry>();
-        public ITable<Currency> Currency => GetTable<Currency>();
+        public ITable<ArchiveKey> ArchiveKey => this.GetTable<ArchiveKey>();
+        public ITable<ArchiveKeyVersion> ArchiveKeyVersion => this.GetTable<ArchiveKeyVersion>();
+        public ITable<ExhaustiveSearchInstance> ExhaustiveSearchInstance => this.GetTable<ExhaustiveSearchInstance>();
+        public ITable<ExhaustiveInstanceCsv> ExhaustiveInstanceCsv => this.GetTable<ExhaustiveInstanceCsv>();
+        public ITable<ExhaustiveInstanceCsvRow> ExhaustiveInstanceCsvRow => this.GetTable<ExhaustiveInstanceCsvRow>();
+        public ITable<ExhaustiveInstanceJson> ExhaustiveInstanceJson => this.GetTable<ExhaustiveInstanceJson>();
+
+        public ITable<ExhaustiveInstanceJsonRow> ExhaustiveInstanceJsonRow =>
+            this.GetTable<ExhaustiveInstanceJsonRow>();
+
+        public ITable<UserRegistry> UserRegistry => this.GetTable<UserRegistry>();
+        public ITable<Currency> Currency => this.GetTable<Currency>();
 
         public ITable<ExhaustiveSearchInstanceVariable> ExhaustiveSearchInstanceVariable =>
-            GetTable<ExhaustiveSearchInstanceVariable>();
+            this.GetTable<ExhaustiveSearchInstanceVariable>();
 
         public ITable<ExhaustiveSearchInstanceCategoricalField> ExhaustiveSearchInstanceCategoricalField =>
-            GetTable<ExhaustiveSearchInstanceCategoricalField>();
+            this.GetTable<ExhaustiveSearchInstanceCategoricalField>();
 
         public ITable<ExhaustiveSearchInstanceVariableClassification> ExhaustiveSearchInstanceVariableClassification =>
-            GetTable<ExhaustiveSearchInstanceVariableClassification>();
+            this.GetTable<ExhaustiveSearchInstanceVariableClassification>();
 
         public ITable<ExhaustiveSearchInstanceTrialInstanceVariable> ExhaustiveSearchInstanceTrialInstanceVariable =>
-            GetTable<ExhaustiveSearchInstanceTrialInstanceVariable>();
+            this.GetTable<ExhaustiveSearchInstanceTrialInstanceVariable>();
 
         public ITable<ExhaustiveSearchInstanceTrialInstance> ExhaustiveSearchInstanceTrialInstance =>
-            GetTable<ExhaustiveSearchInstanceTrialInstance>();
+            this.GetTable<ExhaustiveSearchInstanceTrialInstance>();
 
         public ITable<ExhaustiveSearchInstancePromotedTrialInstanceVariable>
             ExhaustiveSearchInstanceTrialInstanceVariablePrescription =>
-            GetTable<ExhaustiveSearchInstancePromotedTrialInstanceVariable>();
+            this.GetTable<ExhaustiveSearchInstancePromotedTrialInstanceVariable>();
 
         public ITable<ExhaustiveSearchInstancePrescriptionHistogram>
             ExhaustiveSearchInstancePrescriptionHistogram =>
-            GetTable<ExhaustiveSearchInstancePrescriptionHistogram>();
+            this.GetTable<ExhaustiveSearchInstancePrescriptionHistogram>();
 
         public ITable<ExhaustiveSearchInstancePromotedTrialInstanceSensitivity>
             ExhaustiveSearchInstancePromotedTrialInstanceSensitivity =>
-            GetTable<ExhaustiveSearchInstancePromotedTrialInstanceSensitivity>();
+            this.GetTable<ExhaustiveSearchInstancePromotedTrialInstanceSensitivity>();
 
         public ITable<ExhaustiveSearchInstancePromotedTrialInstanceRoc>
             ExhaustiveSearchInstancePromotedTrialInstanceRoc =>
-            GetTable<ExhaustiveSearchInstancePromotedTrialInstanceRoc>();
+            this.GetTable<ExhaustiveSearchInstancePromotedTrialInstanceRoc>();
 
         public ITable<ExhaustiveSearchInstanceVariableHistogram> ExhaustiveSearchInstanceVariableHistogram =>
-            GetTable<ExhaustiveSearchInstanceVariableHistogram>();
+            this.GetTable<ExhaustiveSearchInstanceVariableHistogram>();
 
         public ITable<ExhaustiveSearchInstancePromotedTrialInstance> ExhaustiveSearchInstancePromotedTrialInstance =>
-            GetTable<ExhaustiveSearchInstancePromotedTrialInstance>();
+            this.GetTable<ExhaustiveSearchInstancePromotedTrialInstance>();
 
         public ITable<ExhaustiveSearchInstancePromotedTrialInstancePredictedActual>
             ExhaustiveSearchInstancePromotedTrialInstancePredictedActual =>
-            GetTable<ExhaustiveSearchInstancePromotedTrialInstancePredictedActual>();
+            this.GetTable<ExhaustiveSearchInstancePromotedTrialInstancePredictedActual>();
 
         public ITable<ExhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValue>
             ExhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValue =>
-            GetTable<ExhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValue>();
+            this.GetTable<ExhaustiveSearchInstancePromotedTrialInstancePredictedActualVariableValue>();
 
         public ITable<ExhaustiveSearchInstanceTrialInstanceTopologyTrial>
             ExhaustiveSearchInstanceTrialInstanceTopologyTrial =>
-            GetTable<ExhaustiveSearchInstanceTrialInstanceTopologyTrial>();
+            this.GetTable<ExhaustiveSearchInstanceTrialInstanceTopologyTrial>();
 
         public ITable<ExhaustiveSearchInstanceTrialInstanceSensitivity>
             ExhaustiveSearchInstanceTrialInstanceSensitivity =>
-            GetTable<ExhaustiveSearchInstanceTrialInstanceSensitivity>();
+            this.GetTable<ExhaustiveSearchInstanceTrialInstanceSensitivity>();
 
         public ITable<ExhaustiveSearchInstanceTrialInstanceActivationFunctionTrial>
             ExhaustiveSearchInstanceTrialInstanceActivationFunctionTrial =>
-            GetTable<ExhaustiveSearchInstanceTrialInstanceActivationFunctionTrial>();
+            this.GetTable<ExhaustiveSearchInstanceTrialInstanceActivationFunctionTrial>();
 
         public ITable<ExhaustiveSearchInstanceVariableMultiCollinearity>
             ExhaustiveSearchInstanceVariableMultiCollinearity =>
-            GetTable<ExhaustiveSearchInstanceVariableMultiCollinearity>();
+            this.GetTable<ExhaustiveSearchInstanceVariableMultiCollinearity>();
 
-        public ITable<HttpProcessingCounter> HttpProcessingCounter => GetTable<HttpProcessingCounter>();
-        public ITable<Archive> Archive => GetTable<Archive>();
-        public ITable<ArchiveTag> ArchiveTag => GetTable<ArchiveTag>();
-        public ITable<HttpResponseHeader> HttpHeader => GetTable<HttpResponseHeader>();
-        public ITable<ArchiveTagVersion> ArchiveTagVersion => GetTable<ArchiveTagVersion>();
-        public ITable<ArchiveVersion> ArchiveVersion => GetTable<ArchiveVersion>();
-        public ITable<MockArchive> MockArchive => GetTable<MockArchive>();
+        public ITable<HttpProcessingCounter> HttpProcessingCounter => this.GetTable<HttpProcessingCounter>();
+        public ITable<Archive> Archive => this.GetTable<Archive>();
+        public ITable<ArchiveTag> ArchiveTag => this.GetTable<ArchiveTag>();
+        public ITable<HttpResponseHeader> HttpHeader => this.GetTable<HttpResponseHeader>();
+        public ITable<ArchiveTagVersion> ArchiveTagVersion => this.GetTable<ArchiveTagVersion>();
+        public ITable<ArchiveVersion> ArchiveVersion => this.GetTable<ArchiveVersion>();
+        public ITable<MockArchive> MockArchive => this.GetTable<MockArchive>();
 
         public ITable<EntityAnalysisModelProcessingCounter> EntityAnalysisModelProcessingCounter =>
-            GetTable<EntityAnalysisModelProcessingCounter>();
+            this.GetTable<EntityAnalysisModelProcessingCounter>();
 
-        public ITable<SanctionEntry> SanctionEntry => GetTable<SanctionEntry>();
-        public ITable<SanctionEntrySource> SanctionEntrySource => GetTable<SanctionEntrySource>();
-        public ITable<SanctionEntryImport> SanctionEntryImport => GetTable<SanctionEntryImport>();
-        public ITable<SanctionEntryRejection> SanctionEntryRejection => GetTable<SanctionEntryRejection>();
+        public ITable<SanctionEntry> SanctionEntry => this.GetTable<SanctionEntry>();
+        public ITable<SanctionEntrySource> SanctionEntrySource => this.GetTable<SanctionEntrySource>();
+        public ITable<SanctionEntryImport> SanctionEntryImport => this.GetTable<SanctionEntryImport>();
+        public ITable<SanctionEntryRejection> SanctionEntryRejection => this.GetTable<SanctionEntryRejection>();
 
         public ITable<EntityAnalysisModelSynchronisationError> EntityAnalysisModelSynchronisationError =>
-            GetTable<EntityAnalysisModelSynchronisationError>();
+            this.GetTable<EntityAnalysisModelSynchronisationError>();
 
         public ITable<EntityAnalysisModelActivationRuleCounterHistory>
             EntityAnalysisModelActivationRuleCounterHistory =>
-            GetTable<EntityAnalysisModelActivationRuleCounterHistory>();
+            this.GetTable<EntityAnalysisModelActivationRuleCounterHistory>();
 
         public ITable<EntityAnalysisModelGatewayRuleCounterHistory> EntityAnalysisModelGatewayRuleCounterHistory =>
-            GetTable<EntityAnalysisModelGatewayRuleCounterHistory>();
+            this.GetTable<EntityAnalysisModelGatewayRuleCounterHistory>();
 
-        public ITable<CaseWorkflow> CaseWorkflow => GetTable<CaseWorkflow>();
-        public ITable<CaseEvent> CaseEvent => GetTable<CaseEvent>();
-        public ITable<Case> Case => GetTable<Case>();
-        public ITable<CaseWorkflowStatus> CaseWorkflowStatus => GetTable<CaseWorkflowStatus>();
-        public ITable<CaseWorkflowXPath> CaseWorkflowXPath => GetTable<CaseWorkflowXPath>();
-        public ITable<CaseWorkflowForm> CaseWorkflowForm => GetTable<CaseWorkflowForm>();
-        public ITable<CaseWorkflowAction> CaseWorkflowAction => GetTable<CaseWorkflowAction>();
-        public ITable<CaseWorkflowDisplay> CaseWorkflowDisplay => GetTable<CaseWorkflowDisplay>();
-        public ITable<CaseWorkflowFilter> CaseWorkflowFilter => GetTable<CaseWorkflowFilter>();
-        public ITable<CaseWorkflowMacro> CaseWorkflowMacro => GetTable<CaseWorkflowMacro>();
-        public ITable<PermissionSpecification> PermissionSpecification => GetTable<PermissionSpecification>();
-        public ITable<RoleRegistry> RoleRegistry => GetTable<RoleRegistry>();
-        public ITable<RoleRegistryPermission> RoleRegistryPermission => GetTable<RoleRegistryPermission>();
-        public ITable<UserInTenant> UserInTenant => GetTable<UserInTenant>();
-        public ITable<UserInTenantSwitchLog> UserInTenantSwitchLog => GetTable<UserInTenantSwitchLog>();
-        public ITable<EntityAnalysisModel> EntityAnalysisModel => GetTable<EntityAnalysisModel>();
+        public ITable<CaseWorkflow> CaseWorkflow => this.GetTable<CaseWorkflow>();
+        public ITable<CaseEvent> CaseEvent => this.GetTable<CaseEvent>();
+        public ITable<Case> Case => this.GetTable<Case>();
+        public ITable<CaseWorkflowStatus> CaseWorkflowStatus => this.GetTable<CaseWorkflowStatus>();
+        public ITable<CaseWorkflowXPath> CaseWorkflowXPath => this.GetTable<CaseWorkflowXPath>();
+        public ITable<CaseWorkflowForm> CaseWorkflowForm => this.GetTable<CaseWorkflowForm>();
+        public ITable<CaseWorkflowAction> CaseWorkflowAction => this.GetTable<CaseWorkflowAction>();
+        public ITable<CaseWorkflowDisplay> CaseWorkflowDisplay => this.GetTable<CaseWorkflowDisplay>();
+        public ITable<CaseWorkflowFilter> CaseWorkflowFilter => this.GetTable<CaseWorkflowFilter>();
+        public ITable<CaseWorkflowMacro> CaseWorkflowMacro => this.GetTable<CaseWorkflowMacro>();
+        public ITable<PermissionSpecification> PermissionSpecification => this.GetTable<PermissionSpecification>();
+        public ITable<RoleRegistry> RoleRegistry => this.GetTable<RoleRegistry>();
+        public ITable<RoleRegistryPermission> RoleRegistryPermission => this.GetTable<RoleRegistryPermission>();
+        public ITable<UserInTenant> UserInTenant => this.GetTable<UserInTenant>();
+        public ITable<UserInTenantSwitchLog> UserInTenantSwitchLog => this.GetTable<UserInTenantSwitchLog>();
+        public ITable<EntityAnalysisModel> EntityAnalysisModel => this.GetTable<EntityAnalysisModel>();
 
         public ITable<EntityAnalysisModelGatewayRule> EntityAnalysisModelGatewayRule =>
-            GetTable<EntityAnalysisModelGatewayRule>();
+            this.GetTable<EntityAnalysisModelGatewayRule>();
 
         public ITable<EntityAnalysisModelActivationRule> EntityAnalysisModelActivationRule =>
-            GetTable<EntityAnalysisModelActivationRule>();
+            this.GetTable<EntityAnalysisModelActivationRule>();
 
         public ITable<EntityAnalysisModelSanction> EntityAnalysisModelSanction =>
-            GetTable<EntityAnalysisModelSanction>();
+            this.GetTable<EntityAnalysisModelSanction>();
 
-        public ITable<EntityAnalysisInlineScript> EntityAnalysisInlineScript => GetTable<EntityAnalysisInlineScript>();
+        public ITable<EntityAnalysisInlineScript> EntityAnalysisInlineScript =>
+            this.GetTable<EntityAnalysisInlineScript>();
 
         public ITable<EntityAnalysisModelListCsvFileUpload> EntityAnalysisModelListCsvFileUpload =>
-            GetTable<EntityAnalysisModelListCsvFileUpload>();
+            this.GetTable<EntityAnalysisModelListCsvFileUpload>();
 
         public ITable<EntityAnalysisModelDictionaryCsvFileUpload> EntityAnalysisModelDictionaryCsvFileUpload =>
-            GetTable<EntityAnalysisModelDictionaryCsvFileUpload>();
+            this.GetTable<EntityAnalysisModelDictionaryCsvFileUpload>();
 
         public ITable<EntityAnalysisModelInlineFunction> EntityAnalysisModelInlineFunction =>
-            GetTable<EntityAnalysisModelInlineFunction>();
+            this.GetTable<EntityAnalysisModelInlineFunction>();
 
         public ITable<EntityAnalysisModelRequestXpath> EntityAnalysisModelRequestXpath =>
-            GetTable<EntityAnalysisModelRequestXpath>();
+            this.GetTable<EntityAnalysisModelRequestXpath>();
 
         public ITable<EntityAnalysisModelTtlCounter> EntityAnalysisModelTtlCounter =>
-            GetTable<EntityAnalysisModelTtlCounter>();
+            this.GetTable<EntityAnalysisModelTtlCounter>();
 
         public ITable<EntityAnalysisModelAbstractionCalculation> EntityAnalysisModelAbstractionCalculation =>
-            GetTable<EntityAnalysisModelAbstractionCalculation>();
+            this.GetTable<EntityAnalysisModelAbstractionCalculation>();
 
         public ITable<EntityAnalysisModelHttpAdaptation> EntityAnalysisModelHttpAdaptation =>
-            GetTable<EntityAnalysisModelHttpAdaptation>();
+            this.GetTable<EntityAnalysisModelHttpAdaptation>();
 
-        public ITable<TenantRegistry> TenantRegistry => GetTable<TenantRegistry>();
-        public ITable<VisualisationRegistry> VisualisationRegistry => GetTable<VisualisationRegistry>();
+        public ITable<TenantRegistry> TenantRegistry => this.GetTable<TenantRegistry>();
+        public ITable<VisualisationRegistry> VisualisationRegistry => this.GetTable<VisualisationRegistry>();
 
         public ITable<VisualisationRegistryParameter> VisualisationRegistryParameter =>
-            GetTable<VisualisationRegistryParameter>();
+            this.GetTable<VisualisationRegistryParameter>();
 
         public ITable<VisualisationRegistryDatasource> VisualisationRegistryDatasource =>
-            GetTable<VisualisationRegistryDatasource>();
+            this.GetTable<VisualisationRegistryDatasource>();
 
         public ITable<EntityAnalysisModelDictionary> EntityAnalysisModelDictionary =>
-            GetTable<EntityAnalysisModelDictionary>();
+            this.GetTable<EntityAnalysisModelDictionary>();
 
         public ITable<EntityAnalysisModelReprocessingRule> EntityAnalysisModelReprocessingRule =>
-            GetTable<EntityAnalysisModelReprocessingRule>();
+            this.GetTable<EntityAnalysisModelReprocessingRule>();
 
         public ITable<EntityAnalysisModelReprocessingRuleInstance> EntityAnalysisModelReprocessingRuleInstance =>
-            GetTable<EntityAnalysisModelReprocessingRuleInstance>();
+            this.GetTable<EntityAnalysisModelReprocessingRuleInstance>();
 
-        public ITable<EntityAnalysisModelList> EntityAnalysisModelList => GetTable<EntityAnalysisModelList>();
+        public ITable<EntityAnalysisModelList> EntityAnalysisModelList => this.GetTable<EntityAnalysisModelList>();
 
         public ITable<EntityAnalysisAsynchronousQueueBalance> EntityAnalysisAsynchronousQueueBalance =>
-            GetTable<EntityAnalysisAsynchronousQueueBalance>();
+            this.GetTable<EntityAnalysisAsynchronousQueueBalance>();
 
         public ITable<EntityAnalysisModelListValue> EntityAnalysisModelListValue =>
-            GetTable<EntityAnalysisModelListValue>();
+            this.GetTable<EntityAnalysisModelListValue>();
 
         public ITable<EntityAnalysisModelOverride> EntityAnalysisModelOverride =>
-            GetTable<EntityAnalysisModelOverride>();
+            this.GetTable<EntityAnalysisModelOverride>();
 
         public ITable<EntityAnalysisModelOverrideVersion> EntityAnalysisModelOverrideVersion =>
-            GetTable<EntityAnalysisModelOverrideVersion>();
+            this.GetTable<EntityAnalysisModelOverrideVersion>();
 
         public ITable<EntityAnalysisModelActivationRuleOverride> EntityAnalysisModelActivationRuleOverride =>
-            GetTable<EntityAnalysisModelActivationRuleOverride>();
+            this.GetTable<EntityAnalysisModelActivationRuleOverride>();
 
         public ITable<EntityAnalysisModelActivationRuleOverrideVersion>
             EntityAnalysisModelActivationRuleOverrideVersion =>
-            GetTable<EntityAnalysisModelActivationRuleOverrideVersion>();
+            this.GetTable<EntityAnalysisModelActivationRuleOverrideVersion>();
 
         public ITable<EntityAnalysisModelDictionaryKvp> EntityAnalysisModelDictionaryKvp =>
-            GetTable<EntityAnalysisModelDictionaryKvp>();
+            this.GetTable<EntityAnalysisModelDictionaryKvp>();
 
-        public ITable<RuleScriptToken> RuleScriptToken => GetTable<RuleScriptToken>();
-        public ITable<DictionaryEvalExpression> DictionaryEvalExpression => GetTable<DictionaryEvalExpression>();
+        public ITable<RuleScriptToken> RuleScriptToken => this.GetTable<RuleScriptToken>();
+        public ITable<DictionaryEvalExpression> DictionaryEvalExpression => this.GetTable<DictionaryEvalExpression>();
 
         public ITable<EntityAnalysisModelAbstractionRule> EntityAnalysisModelAbstractionRule =>
-            GetTable<EntityAnalysisModelAbstractionRule>();
+            this.GetTable<EntityAnalysisModelAbstractionRule>();
 
         public ITable<EntityAnalysisModelInlineScript> EntityAnalysisModelInlineScript =>
-            GetTable<EntityAnalysisModelInlineScript>();
+            this.GetTable<EntityAnalysisModelInlineScript>();
 
         public ITable<VisualisationRegistryDatasourceSeries> VisualisationRegistryDatasourceSeries =>
-            GetTable<VisualisationRegistryDatasourceSeries>();
+            this.GetTable<VisualisationRegistryDatasourceSeries>();
 
         public ITable<EntityAnalysisModelAsynchronousQueueBalance> EntityAnalysisModelAsynchronousQueueBalance =>
-            GetTable<EntityAnalysisModelAsynchronousQueueBalance>();
+            this.GetTable<EntityAnalysisModelAsynchronousQueueBalance>();
 
         public ITable<EntityAnalysisModelRequestXpathVersion> EntityAnalysisModelRequestXpathVersion =>
-            GetTable<EntityAnalysisModelRequestXpathVersion>();
+            this.GetTable<EntityAnalysisModelRequestXpathVersion>();
 
         public ITable<EntityAnalysisModelInlineFunctionVersion> EntityAnalysisModelInlineFunctionVersion =>
-            GetTable<EntityAnalysisModelInlineFunctionVersion>();
+            this.GetTable<EntityAnalysisModelInlineFunctionVersion>();
 
         public ITable<EntityAnalysisModelInlineScriptVersion> EntityAnalysisModelInlineScriptVersion =>
-            GetTable<EntityAnalysisModelInlineScriptVersion>();
+            this.GetTable<EntityAnalysisModelInlineScriptVersion>();
 
         public ITable<EntityAnalysisModelGatewayRuleVersion> EntityAnalysisModelGatewayRuleVersion =>
-            GetTable<EntityAnalysisModelGatewayRuleVersion>();
+            this.GetTable<EntityAnalysisModelGatewayRuleVersion>();
 
         public ITable<EntityAnalysisModelTagVersion> EntityAnalysisModelTagVersion =>
-            GetTable<EntityAnalysisModelTagVersion>();
+            this.GetTable<EntityAnalysisModelTagVersion>();
+
+        public ITable<EntityAnalysisModelResponseElevationRangeVersion>
+            EntityAnalysisModelResponseElevationRangeVersion =>
+            this.GetTable<EntityAnalysisModelResponseElevationRangeVersion>();
 
         public ITable<EntityAnalysisModelSanctionVersion> EntityAnalysisModelSanctionVersion =>
-            GetTable<EntityAnalysisModelSanctionVersion>();
+            this.GetTable<EntityAnalysisModelSanctionVersion>();
 
         public ITable<EntityAnalysisModelAbstractionRuleVersion> EntityAnalysisModelAbstractionRuleVersion =>
-            GetTable<EntityAnalysisModelAbstractionRuleVersion>();
+            this.GetTable<EntityAnalysisModelAbstractionRuleVersion>();
 
         public ITable<EntityAnalysisModelAbstractionCalculationVersion>
             EntityAnalysisModelAbstractionCalculationVersion =>
-            GetTable<EntityAnalysisModelAbstractionCalculationVersion>();
+            this.GetTable<EntityAnalysisModelAbstractionCalculationVersion>();
 
         public ITable<EntityAnalysisModelHttpAdaptationVersion> EntityAnalysisModelHttpAdaptationVersion =>
-            GetTable<EntityAnalysisModelHttpAdaptationVersion>();
+            this.GetTable<EntityAnalysisModelHttpAdaptationVersion>();
 
         public ITable<EntityAnalysisModelActivationRuleVersion> EntityAnalysisModelActivationRuleVersion =>
-            GetTable<EntityAnalysisModelActivationRuleVersion>();
+            this.GetTable<EntityAnalysisModelActivationRuleVersion>();
 
         public ITable<EntityAnalysisModelListVersion> EntityAnalysisModelListVersion =>
-            GetTable<EntityAnalysisModelListVersion>();
+            this.GetTable<EntityAnalysisModelListVersion>();
 
         public ITable<EntityAnalysisModelDictionaryVersion> EntityAnalysisModelDictionaryVersion =>
-            GetTable<EntityAnalysisModelDictionaryVersion>();
+            this.GetTable<EntityAnalysisModelDictionaryVersion>();
 
-        public ITable<CaseWorkflowXPathVersion> CaseWorkflowXPathVersion => GetTable<CaseWorkflowXPathVersion>();
-        public ITable<CaseWorkflowFormVersion> CaseWorkflowFormVersion => GetTable<CaseWorkflowFormVersion>();
-        public ITable<CaseWorkflowActionVersion> CaseWorkflowActionVersion => GetTable<CaseWorkflowActionVersion>();
-        public ITable<CaseWorkflowDisplayVersion> CaseWorkflowDisplayVersion => GetTable<CaseWorkflowDisplayVersion>();
-        public ITable<CaseWorkflowMacroVersion> CaseWorkflowMacroVersion => GetTable<CaseWorkflowMacroVersion>();
-        public ITable<CaseWorkflowFilterVersion> CaseWorkflowFilterVersion => GetTable<CaseWorkflowFilterVersion>();
+        public ITable<CaseWorkflowXPathVersion> CaseWorkflowXPathVersion => this.GetTable<CaseWorkflowXPathVersion>();
+        public ITable<CaseWorkflowFormVersion> CaseWorkflowFormVersion => this.GetTable<CaseWorkflowFormVersion>();
+        public ITable<CaseWorkflowDispatch> CaseWorkflowDispatch => this.GetTable<CaseWorkflowDispatch>();
+
+        public ITable<CaseWorkflowFormValidator> CaseWorkflowFormValidator =>
+            this.GetTable<CaseWorkflowFormValidator>();
+
+        public ITable<CaseWorkflowFormValidatorVersion> CaseWorkflowFormValidatorVersion =>
+            this.GetTable<CaseWorkflowFormValidatorVersion>();
+
+        public ITable<CaseWorkflowChecklist> CaseWorkflowChecklist => this.GetTable<CaseWorkflowChecklist>();
+
+        public ITable<CaseWorkflowChecklistVersion> CaseWorkflowChecklistVersion =>
+            this.GetTable<CaseWorkflowChecklistVersion>();
+
+        public ITable<CaseWorkflowChecklistItem> CaseWorkflowChecklistItem =>
+            this.GetTable<CaseWorkflowChecklistItem>();
+
+        public ITable<CaseWorkflowChecklistItemVersion> CaseWorkflowChecklistItemVersion =>
+            this.GetTable<CaseWorkflowChecklistItemVersion>();
+
+        public ITable<CaseChecklistItem> CaseChecklistItem => this.GetTable<CaseChecklistItem>();
+        public ITable<CaseChecklistEvent> CaseChecklistEvent => this.GetTable<CaseChecklistEvent>();
+        public ITable<CaseChecklistOverride> CaseChecklistOverride => this.GetTable<CaseChecklistOverride>();
+        public ITable<CaseWorkflowReleaseHook> CaseWorkflowReleaseHook => this.GetTable<CaseWorkflowReleaseHook>();
+
+        public ITable<CaseWorkflowReleaseHookVersion> CaseWorkflowReleaseHookVersion =>
+            this.GetTable<CaseWorkflowReleaseHookVersion>();
+
+        public ITable<CaseWorkflowActionVersion> CaseWorkflowActionVersion =>
+            this.GetTable<CaseWorkflowActionVersion>();
+
+        public ITable<CaseWorkflowDisplayVersion> CaseWorkflowDisplayVersion =>
+            this.GetTable<CaseWorkflowDisplayVersion>();
+
+        public ITable<CaseWorkflowMacroVersion> CaseWorkflowMacroVersion => this.GetTable<CaseWorkflowMacroVersion>();
+
+        public ITable<CaseWorkflowFilterVersion> CaseWorkflowFilterVersion =>
+            this.GetTable<CaseWorkflowFilterVersion>();
 
         public ITable<EntityAnalysisModelListValueVersion> EntityAnalysisModelListValueVersion =>
-            GetTable<EntityAnalysisModelListValueVersion>();
+            this.GetTable<EntityAnalysisModelListValueVersion>();
 
         public ITable<EntityAnalysisModelDictionaryKvpVersion> EntityAnalysisModelDictionaryKvpVersion =>
-            GetTable<EntityAnalysisModelDictionaryKvpVersion>();
+            this.GetTable<EntityAnalysisModelDictionaryKvpVersion>();
 
         public ITable<VisualisationRegistryDatasourceVersion> VisualisationRegistryDatasourceVersion =>
-            GetTable<VisualisationRegistryDatasourceVersion>();
+            this.GetTable<VisualisationRegistryDatasourceVersion>();
 
         public ITable<VisualisationRegistryParameterVersion> VisualisationRegistryParameterVersion =>
-            GetTable<VisualisationRegistryParameterVersion>();
+            this.GetTable<VisualisationRegistryParameterVersion>();
 
         public ITable<ExhaustiveSearchInstanceVariableAnomaly> ExhaustiveSearchInstanceVariableAnomaly =>
-            GetTable<ExhaustiveSearchInstanceVariableAnomaly>();
+            this.GetTable<ExhaustiveSearchInstanceVariableAnomaly>();
 
         public ITable<ExhaustiveSearchInstanceVariableHistogramClassification>
             ExhaustiveSearchInstanceVariableHistogramClassification =>
-            GetTable<ExhaustiveSearchInstanceVariableHistogramClassification>();
+            this.GetTable<ExhaustiveSearchInstanceVariableHistogramClassification>();
 
         public ITable<ExhaustiveSearchInstanceVariableHistogramAnomaly>
             ExhaustiveSearchInstanceVariableHistogramAnomaly =>
-            GetTable<ExhaustiveSearchInstanceVariableHistogramAnomaly>();
+            this.GetTable<ExhaustiveSearchInstanceVariableHistogramAnomaly>();
 
         public ITable<ExhaustiveSearchInstanceVariableHistogramClass>
             ExhaustiveSearchInstanceVariableHistogramClass =>
-            GetTable<ExhaustiveSearchInstanceVariableHistogramClass>();
+            this.GetTable<ExhaustiveSearchInstanceVariableHistogramClass>();
 
         public ITable<ExhaustiveSearchInstancePromotedTrialInstanceVariable>
             ExhaustiveSearchInstancePromotedTrialInstanceVariable =>
-            GetTable<ExhaustiveSearchInstancePromotedTrialInstanceVariable>();
+            this.GetTable<ExhaustiveSearchInstancePromotedTrialInstanceVariable>();
 
         public ITable<ExhaustiveSearchInstanceData> ExhaustiveSearchInstanceData =>
-            GetTable<ExhaustiveSearchInstanceData>();
+            this.GetTable<ExhaustiveSearchInstanceData>();
 
-        public ITable<Import> Import => GetTable<Import>();
-        public ITable<PreservationSnapshot> PreservationSnapshot => GetTable<PreservationSnapshot>();
-        public ITable<Export> Export => GetTable<Export>();
-        public ITable<ExportPeek> ExportPeek => GetTable<ExportPeek>();
-        public ITable<LocalCacheInstance> LocalCacheInstance => GetTable<LocalCacheInstance>();
-        public ITable<LocalCacheInstanceKey> LocalCacheInstanceKey => GetTable<LocalCacheInstanceKey>();
-        public ITable<LocalCacheInstanceLru> LocalCacheInstanceLru => GetTable<LocalCacheInstanceLru>();
-        public ITable<HashCacheAssemblyInstance> HashCacheAssemblyInstance => GetTable<HashCacheAssemblyInstance>();
+        public ITable<Import> Import => this.GetTable<Import>();
+        public ITable<PreservationSnapshot> PreservationSnapshot => this.GetTable<PreservationSnapshot>();
+        public ITable<Export> Export => this.GetTable<Export>();
+        public ITable<PreservationDiff> PreservationDiff => this.GetTable<PreservationDiff>();
+        public ITable<LocalCacheInstance> LocalCacheInstance => this.GetTable<LocalCacheInstance>();
+        public ITable<LocalCacheInstanceKey> LocalCacheInstanceKey => this.GetTable<LocalCacheInstanceKey>();
+        public ITable<LocalCacheInstanceLru> LocalCacheInstanceLru => this.GetTable<LocalCacheInstanceLru>();
+
+        public ITable<HashCacheAssemblyInstance> HashCacheAssemblyInstance =>
+            this.GetTable<HashCacheAssemblyInstance>();
 
         public ITable<HashCacheAssemblyInstanceEntry> HashCacheAssemblyInstanceEntry =>
-            GetTable<HashCacheAssemblyInstanceEntry>();
+            this.GetTable<HashCacheAssemblyInstanceEntry>();
 
         public ITable<HashCacheAssemblyInstanceJournal> HashCacheAssemblyInstanceJournal =>
-            GetTable<HashCacheAssemblyInstanceJournal>();
+            this.GetTable<HashCacheAssemblyInstanceJournal>();
 
-        public ITable<CachePayloadRemovalBatch> CachePayloadRemovalBatch => GetTable<CachePayloadRemovalBatch>();
+        public ITable<CachePayloadRemovalBatch> CachePayloadRemovalBatch => this.GetTable<CachePayloadRemovalBatch>();
 
         public ITable<CachePayloadRemovalBatchEntry> CachePayloadRemovalBatchEntry =>
-            GetTable<CachePayloadRemovalBatchEntry>();
+            this.GetTable<CachePayloadRemovalBatchEntry>();
 
         public ITable<CachePayloadLatestRemovalBatchEntry> CachePayloadLatestRemovalBatchEntry =>
-            GetTable<CachePayloadLatestRemovalBatchEntry>();
+            this.GetTable<CachePayloadLatestRemovalBatchEntry>();
 
         public ITable<CachePayloadRemovalBatchResponseTime> CachePayloadRemovalBatchResponseTime =>
-            GetTable<CachePayloadRemovalBatchResponseTime>();
+            this.GetTable<CachePayloadRemovalBatchResponseTime>();
 
         public ITable<CachePayloadLatestRemovalBatch> CachePayloadLatestRemovalBatch =>
-            GetTable<CachePayloadLatestRemovalBatch>();
+            this.GetTable<CachePayloadLatestRemovalBatch>();
 
         public ITable<CachePayloadLatestRemovalBatchResponseTime> CachePayloadLatestRemovalBatchResponseTime =>
-            GetTable<CachePayloadLatestRemovalBatchResponseTime>();
+            this.GetTable<CachePayloadLatestRemovalBatchResponseTime>();
 
         public ITable<CacheTtlCounterEntryRemovalBatch> CacheTtlCounterEntryRemovalBatch =>
-            GetTable<CacheTtlCounterEntryRemovalBatch>();
+            this.GetTable<CacheTtlCounterEntryRemovalBatch>();
 
         public ITable<CacheTtlCounterEntryRemovalBatchEntry> CacheTtlCounterEntryRemovalBatchEntry =>
-            GetTable<CacheTtlCounterEntryRemovalBatchEntry>();
+            this.GetTable<CacheTtlCounterEntryRemovalBatchEntry>();
 
-        public ITable<CaseWorkflowStatusRole> CaseWorkflowStatusRole => GetTable<CaseWorkflowStatusRole>();
-        public ITable<CaseWorkflowRole> CaseWorkflowRole => GetTable<CaseWorkflowRole>();
-        public ITable<CaseWorkflowMacroRole> CaseWorkflowMacroRole => GetTable<CaseWorkflowMacroRole>();
-        public ITable<CaseWorkflowFormRole> CaseWorkflowFormRole => GetTable<CaseWorkflowFormRole>();
-        public ITable<CaseWorkflowActionRole> CaseWorkflowActionRole => GetTable<CaseWorkflowActionRole>();
-        public ITable<CaseWorkflowDisplayRole> CaseWorkflowDisplayRole => GetTable<CaseWorkflowDisplayRole>();
-        public ITable<CaseWorkflowXPathRole> CaseWorkflowXPathRole => GetTable<CaseWorkflowXPathRole>();
-        public ITable<EntityAnalysisModelRole> EntityAnalysisModelRole => GetTable<EntityAnalysisModelRole>();
-        public ITable<VisualisationRegistryRole> VisualisationRegistryRole => GetTable<VisualisationRegistryRole>();
+        public ITable<CaseWorkflowStatusRole> CaseWorkflowStatusRole => this.GetTable<CaseWorkflowStatusRole>();
+        public ITable<CaseWorkflowRole> CaseWorkflowRole => this.GetTable<CaseWorkflowRole>();
+        public ITable<CaseWorkflowMacroRole> CaseWorkflowMacroRole => this.GetTable<CaseWorkflowMacroRole>();
+        public ITable<CaseWorkflowFormRole> CaseWorkflowFormRole => this.GetTable<CaseWorkflowFormRole>();
+        public ITable<CaseWorkflowActionRole> CaseWorkflowActionRole => this.GetTable<CaseWorkflowActionRole>();
+        public ITable<CaseWorkflowDisplayRole> CaseWorkflowDisplayRole => this.GetTable<CaseWorkflowDisplayRole>();
+        public ITable<CaseWorkflowXPathRole> CaseWorkflowXPathRole => this.GetTable<CaseWorkflowXPathRole>();
+        public ITable<EntityAnalysisModelRole> EntityAnalysisModelRole => this.GetTable<EntityAnalysisModelRole>();
+
+        public ITable<VisualisationRegistryRole> VisualisationRegistryRole =>
+            this.GetTable<VisualisationRegistryRole>();
 
         public ITable<VisualisationRegistryDatasourceRole> VisualisationRegistryDatasourceRole =>
-            GetTable<VisualisationRegistryDatasourceRole>();
+            this.GetTable<VisualisationRegistryDatasourceRole>();
 
         public ITable<VisualisationRegistryParameterRole> VisualisationRegistryParameterRole =>
-            GetTable<VisualisationRegistryParameterRole>();
+            this.GetTable<VisualisationRegistryParameterRole>();
 
-        public ITable<CaseWorkflowFilterRole> CaseWorkflowFilterRole => GetTable<CaseWorkflowFilterRole>();
-        public ITable<UserRegistryApiKey> UserRegistryApiKey => GetTable<UserRegistryApiKey>();
-        public ITable<SanctionStopToken> SanctionStopToken => GetTable<SanctionStopToken>();
-        public ITable<EntityApproval> EntityApproval => GetTable<EntityApproval>();
+        public ITable<CaseWorkflowFilterRole> CaseWorkflowFilterRole => this.GetTable<CaseWorkflowFilterRole>();
+        public ITable<UserRegistryApiKey> UserRegistryApiKey => this.GetTable<UserRegistryApiKey>();
+        public ITable<SanctionStopToken> SanctionStopToken => this.GetTable<SanctionStopToken>();
+        public ITable<EntityApproval> EntityApproval => this.GetTable<EntityApproval>();
 
-        public ITable<AdvancedAnalyticsInstance> AdvancedAnalyticsInstance =>
-            GetTable<AdvancedAnalyticsInstance>();
+        public ITable<AskJoobyAnalyticsInstance> AskJoobyAnalyticsInstance =>
+            this.GetTable<AskJoobyAnalyticsInstance>();
 
         public ITable<AdvancedAnalyticsCache> AdvancedAnalyticsCache =>
-            GetTable<AdvancedAnalyticsCache>();
+            this.GetTable<AdvancedAnalyticsCache>();
 
-        public ITable<AdvancedAnalyticsTrainedModel> AdvancedAnalyticsTrainedModel =>
-            GetTable<AdvancedAnalyticsTrainedModel>();
+        public ITable<AskJoobyAnalyticsTrainedModel> AskJoobyAnalyticsTrainedModel =>
+            this.GetTable<AskJoobyAnalyticsTrainedModel>();
 
-        public ITable<AdvancedAnalyticsTrainedModelVersion> AdvancedAnalyticsTrainedModelVersion =>
-            GetTable<AdvancedAnalyticsTrainedModelVersion>();
+        public ITable<AskJoobyAnalyticsTrainedModelVersion> AskJoobyAnalyticsTrainedModelVersion =>
+            this.GetTable<AskJoobyAnalyticsTrainedModelVersion>();
 
         public ITable<AdvancedAnalyticsTrainingRun> AdvancedAnalyticsTrainingRun =>
-            GetTable<AdvancedAnalyticsTrainingRun>();
+            this.GetTable<AdvancedAnalyticsTrainingRun>();
 
         public ITable<AdvancedAnalyticsTrainingRunStep> AdvancedAnalyticsTrainingRunStep =>
-            GetTable<AdvancedAnalyticsTrainingRunStep>();
+            this.GetTable<AdvancedAnalyticsTrainingRunStep>();
 
         public ITable<AdvancedAnalyticsTrainingRunTrial> AdvancedAnalyticsTrainingRunTrial =>
-            GetTable<AdvancedAnalyticsTrainingRunTrial>();
+            this.GetTable<AdvancedAnalyticsTrainingRunTrial>();
 
         public ITable<AdvancedAnalyticsTrainingRunIteration> AdvancedAnalyticsTrainingRunIteration =>
-            GetTable<AdvancedAnalyticsTrainingRunIteration>();
+            this.GetTable<AdvancedAnalyticsTrainingRunIteration>();
 
         public ITable<AdvancedAnalyticsTrainingRunVariable> AdvancedAnalyticsTrainingRunVariable =>
-            GetTable<AdvancedAnalyticsTrainingRunVariable>();
+            this.GetTable<AdvancedAnalyticsTrainingRunVariable>();
 
         public ITable<AdvancedAnalyticsTrainingRunMetric> AdvancedAnalyticsTrainingRunMetric =>
-            GetTable<AdvancedAnalyticsTrainingRunMetric>();
+            this.GetTable<AdvancedAnalyticsTrainingRunMetric>();
 
         public ITable<AdvancedAnalyticsTrainingRunCurvePoint> AdvancedAnalyticsTrainingRunCurvePoint =>
-            GetTable<AdvancedAnalyticsTrainingRunCurvePoint>();
+            this.GetTable<AdvancedAnalyticsTrainingRunCurvePoint>();
     }
 }

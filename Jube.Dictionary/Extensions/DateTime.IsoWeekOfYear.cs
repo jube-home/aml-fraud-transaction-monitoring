@@ -19,6 +19,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns the ISO-8601 week number of the year.")]
         public static int IsoWeekOfYear(this DateTime @this)
         {
             return ISOWeek.GetWeekOfYear(@this);

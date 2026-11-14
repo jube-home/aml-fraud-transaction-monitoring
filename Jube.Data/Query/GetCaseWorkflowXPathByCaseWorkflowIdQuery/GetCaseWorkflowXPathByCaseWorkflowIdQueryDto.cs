@@ -18,10 +18,17 @@
 
 namespace Jube.Data.Query.GetCaseWorkflowXPathByCaseWorkflowIdQuery
 {
+    using System;
+
     public class GetCaseWorkflowXPathByCaseWorkflowIdQueryDto
     {
         public string Name { get; set; }
         public string XPath { get; set; }
+        public string Key { get; set; }
+        public int DataTypeId { get; set; }
+        public byte ProcessingTypeId { get; set; }
+        public int SourceKindId { get; set; }
+        public Guid SourceGuid { get; set; }
         public bool ConditionalRegularExpressionFormatting { get; set; }
         public string ConditionalFormatForeColor { get; set; }
         public string ConditionalFormatBackColor { get; set; }
@@ -31,5 +38,8 @@ namespace Jube.Data.Query.GetCaseWorkflowXPathByCaseWorkflowIdQuery
         public string BoldLineFormatForeColor { get; set; }
         public string BoldLineFormatBackColor { get; set; }
         public bool BoldLineMatched { get; set; }
+        public bool Drill { get; set; }
+        public int RoleId { get; set; }
+        public bool Segment { get; set; }
     }
 }

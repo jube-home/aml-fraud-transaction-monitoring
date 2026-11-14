@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using System.Globalization;
 using Jube.Data.Context;
@@ -810,6 +811,12 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                 op.Outcome("notfound");
                 throw;
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");

@@ -7,7 +7,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static DateTime EndOfWeek(this DateTime dt, DayOfWeek startDayOfWeek = DayOfWeek.Sunday)
+        [Description("Returns the end of the week.")]
+        public static DateTime EndOfWeek(this DateTime dt,
+            [Description("The start day of week (optional).")] DayOfWeek startDayOfWeek = DayOfWeek.Sunday)
         {
             var end = dt;
             var endDayOfWeek = startDayOfWeek - 1;

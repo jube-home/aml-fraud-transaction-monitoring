@@ -31,6 +31,7 @@ using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using Jube.Test.Service.Query.CaseById.Models;
 using LinqToDB;
+using LinqToDB.Async;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
@@ -91,6 +92,8 @@ namespace Jube.Test.Service.Query.CaseById
 
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
+            await ArchiveKeySeed.CleanupAsync(dbContext, createdModelIds);
 
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
         }
@@ -230,7 +233,8 @@ namespace Jube.Test.Service.Query.CaseById
                 CaseWorkflowId = workflowId,
                 Guid = guid,
                 Name = name,
-                XPath = xPath,
+                SourceKindId = 6,
+                SourceGuid = await ArchiveKeySeed.SourceByWorkflowAsync(dbContext, workflowId, ArchiveKeySeed.NameOf(xPath), archiveKey: true),
                 Active = 1,
                 Locked = 0,
                 Deleted = 0,

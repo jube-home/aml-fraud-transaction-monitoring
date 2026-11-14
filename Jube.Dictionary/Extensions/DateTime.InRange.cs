@@ -6,7 +6,10 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static bool InRange(this DateTime @this, DateTime minValue, DateTime maxValue)
+        [Description("Checks if the date is between two dates (inclusive).")]
+        public static bool InRange(this DateTime @this,
+            [Description("The minimum value.")] DateTime minValue,
+            [Description("The maximum value.")] DateTime maxValue)
         {
             return @this.CompareTo(minValue) >= 0 && @this.CompareTo(maxValue) <= 0;
         }

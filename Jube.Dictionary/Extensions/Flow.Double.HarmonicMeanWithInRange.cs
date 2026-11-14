@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchHarmonicMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the harmonic mean of the value and another, for averaging rates is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchHarmonicMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleHarmonicMeanWithInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectHarmonicMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the harmonic mean of the value and another, for averaging rates is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectHarmonicMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleHarmonicMeanWithInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakHarmonicMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the harmonic mean of the value and another, for averaging rates is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakHarmonicMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleHarmonicMeanWithInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireHarmonicMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the harmonic mean of the value and another, for averaging rates is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireHarmonicMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleHarmonicMeanWithInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureHarmonicMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the harmonic mean of the value and another, for averaging rates is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureHarmonicMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchHarmonicMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the harmonic mean of the value and another, for averaging rates is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchHarmonicMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchHarmonicMeanWithInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectHarmonicMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the harmonic mean of the value and another, for averaging rates is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectHarmonicMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectHarmonicMeanWithInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakHarmonicMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the harmonic mean of the value and another, for averaging rates is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakHarmonicMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakHarmonicMeanWithInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireHarmonicMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the harmonic mean of the value and another, for averaging rates is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireHarmonicMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireHarmonicMeanWithInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureHarmonicMeanWithInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the harmonic mean of the value and another, for averaging rates is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureHarmonicMeanWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureHarmonicMeanWithInRange(other, lowerBound, upperBound);
             }

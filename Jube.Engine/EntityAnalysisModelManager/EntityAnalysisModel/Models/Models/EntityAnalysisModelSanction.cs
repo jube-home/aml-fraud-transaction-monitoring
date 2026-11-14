@@ -31,5 +31,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
         public byte AggregationTypeId { get; set; }
         public double? MaxDistanceRatio { get; set; }
         public double? MaxCoverageRatio { get; set; }
+        public byte MatchAlgorithmId { get; set; } = 1;
+        public double MinimumSimilarity { get; set; } = 0.9;
+        public bool Transliterate { get; set; }
     }
 }

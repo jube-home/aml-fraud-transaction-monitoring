@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchShareOfSumWithInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchShareOfSumWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleShareOfSumWithInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectShareOfSumWithInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectShareOfSumWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleShareOfSumWithInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakShareOfSumWithInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakShareOfSumWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleShareOfSumWithInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireShareOfSumWithInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireShareOfSumWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleShareOfSumWithInRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureShareOfSumWithInRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureShareOfSumWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchShareOfSumWithInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchShareOfSumWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchShareOfSumWithInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectShareOfSumWithInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectShareOfSumWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectShareOfSumWithInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakShareOfSumWithInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakShareOfSumWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakShareOfSumWithInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireShareOfSumWithInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireShareOfSumWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireShareOfSumWithInRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureShareOfSumWithInRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureShareOfSumWithInRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureShareOfSumWithInRange(other, lowerBound, upperBound);
             }

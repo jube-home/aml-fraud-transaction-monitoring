@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchRelativeChangeFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("True when: the change from the previous value as a fraction of it is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRelativeChangeFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleRelativeChangeFromInRange(flow.Value, previous, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectRelativeChangeFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("True when: the change from the previous value as a fraction of it is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRelativeChangeFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleRelativeChangeFromInRange(flow.Value, previous, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakRelativeChangeFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("True when: the change from the previous value as a fraction of it is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRelativeChangeFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleRelativeChangeFromInRange(flow.Value, previous, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireRelativeChangeFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("True when: the change from the previous value as a fraction of it is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRelativeChangeFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleRelativeChangeFromInRange(flow.Value, previous, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureRelativeChangeFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("True when: the change from the previous value as a fraction of it is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRelativeChangeFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchRelativeChangeFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value as a fraction of it is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRelativeChangeFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchRelativeChangeFromInRange(previous, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectRelativeChangeFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value as a fraction of it is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRelativeChangeFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectRelativeChangeFromInRange(previous, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakRelativeChangeFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value as a fraction of it is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRelativeChangeFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakRelativeChangeFromInRange(previous, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireRelativeChangeFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value as a fraction of it is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRelativeChangeFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireRelativeChangeFromInRange(previous, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureRelativeChangeFromInRange(double previous, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value as a fraction of it is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRelativeChangeFromInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureRelativeChangeFromInRange(previous, lowerBound, upperBound);
             }

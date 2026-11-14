@@ -23,6 +23,7 @@ using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 
 namespace Jube.Test.Engine.EntityAnalysisModelManager.Backtest

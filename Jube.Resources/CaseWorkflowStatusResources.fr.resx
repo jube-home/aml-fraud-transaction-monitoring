@@ -81,4 +81,25 @@
     <data name="NotificationTypeIdInvalid" xml:space="preserve">
     <value>Un type de notification valide est requis lorsque la notification est activée.</value>
   </data>
+    <data name="HttpEndpointInvalid" xml:space="preserve">
+    <value>Le point de terminaison HTTP doit être une URL http ou https absolue dont le schéma, l'hôte et le port sont écrits littéralement, avec des jetons uniquement dans le chemin et la requête.</value>
+  </data>
+    <data name="EscalationTriggerInvalid" xml:space="preserve">
+    <value>Le déclencheur d'escalade doit être l'un des déclencheurs de la liste.</value>
+  </data>
+    <data name="EscalationTriggerRequired" xml:space="preserve">
+    <value>Un déclencheur d'escalade est requis lorsqu'une cible d'escalade est choisie.</value>
+  </data>
+    <data name="EscalationTargetRequired" xml:space="preserve">
+    <value>Un statut cible d'escalade est requis lorsqu'un déclencheur d'escalade est choisi.</value>
+  </data>
+    <data name="EscalationThresholdInvalid" xml:space="preserve">
+    <value>Le seuil d'escalade doit être de 1 à 525600 minutes pour la durée dans le statut, de 1 à 3 pour une voie, ou de 1 à 100 pour une Priorité.</value>
+  </data>
+    <data name="EscalationTargetNotFound" xml:space="preserve">
+    <value>La cible d'escalade doit être un autre statut actif du même flux de travail de dossier.</value>
+  </data>
+    <data name="EscalationTargetNotStronger" xml:space="preserve">
+    <value>La cible d'escalade doit avoir une priorité plus forte que ce statut, c'est-à-dire un numéro de Priorité plus bas.</value>
+  </data>
 </root>

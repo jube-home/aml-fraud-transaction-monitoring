@@ -33,13 +33,11 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(1)] public int? ExhaustiveSearchInstanceId { get; set; }
         [Column] [Nullable] [Key(2)] public DateTime? CreatedDate { get; set; }
 
-        [Association(ThisKey = "ExhaustiveSearchInstanceId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "ExhaustiveSearchInstanceId", OtherKey = "Id", CanBeNull = true)]
         [Key(3)]
         public ExhaustiveSearchInstance ExhaustiveSearchInstance { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceTrialInstanceId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceTrialInstanceId", CanBeNull = true)]
         [Key(4)]
         public IEnumerable<ExhaustiveSearchInstancePromotedTrialInstance> ExhaustiveSearchInstancePromotedTrialInstance
         {
@@ -47,38 +45,32 @@ namespace Jube.Data.Poco
             set;
         }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceTrialInstanceId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceTrialInstanceId", CanBeNull = true)]
         [Key(5)]
         public IEnumerable<ExhaustiveSearchInstancePromotedTrialInstancePredictedActual>
             ExhaustiveSearchInstancePromotedTrialInstancePredictedActual { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceTrialInstanceId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceTrialInstanceId", CanBeNull = true)]
         [Key(6)]
         public IEnumerable<ExhaustiveSearchInstancePromotedTrialInstanceRoc>
             ExhaustiveSearchInstancePromotedTrialInstanceRoc { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceTrialInstanceId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceTrialInstanceId", CanBeNull = true)]
         [Key(7)]
         public IEnumerable<ExhaustiveSearchInstanceTrialInstanceTopologyTrial>
             ExhaustiveSearchInstanceTrialInstanceTopologyTrial { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceTrialInstanceId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceTrialInstanceId", CanBeNull = true)]
         [Key(8)]
         public IEnumerable<ExhaustiveSearchInstanceTrialInstanceActivationFunctionTrial>
             ExhaustiveSearchInstanceTrialInstanceActivationFunctionTrial { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceTrialInstanceId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceTrialInstanceId", CanBeNull = true)]
         [Key(9)]
         public IEnumerable<ExhaustiveSearchInstanceTrialInstanceSensitivity>
             ExhaustiveSearchInstanceTrialInstanceSensitivity { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceTrialInstanceId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceTrialInstanceId", CanBeNull = true)]
         [Key(10)]
         public IEnumerable<ExhaustiveSearchInstanceTrialInstanceVariable> ExhaustiveSearchInstanceTrialInstanceVariable
         {

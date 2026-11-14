@@ -14,6 +14,7 @@
 using System.ComponentModel;
 using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -26,15 +27,18 @@ namespace Jube.Dto.EntityAnalysisModelListValue
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelListId))]
     [FormGroup("Value", Order = 10)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
+    [MessagePackObject]
     public class EntityAnalysisModelListValueDto : IUpdated, ITreeChild
     {
         [Description("Id of the List this value belongs to. Set from the parent List context; not user-editable.")]
+        [Key(0)]
         public int EntityAnalysisModelListId { get; set; }
 
         [Description("The literal value held in the List, referenced as an operator in Builder and Coder rules " +
                      "on the Model.")]
-        [FormField(Group = "Value", Order = 10)]
+        [FormField(Group = "Value", Order = 10, Placeholder = "e.g. ACME TRADING LTD")]
         [ListColumn(Order = 10, Title = "Value")]
+        [Key(1)]
         public string? ListValue { get; set; }
 
         [Description("Timestamp (UTC) after which this value is automatically excluded from processing and no " +
@@ -42,45 +46,55 @@ namespace Jube.Dto.EntityAnalysisModelListValue
                      "Must be in the future.")]
         [FormField(Group = "Value", Order = 20, Widget = "date")]
         [ListColumn(Order = 20, Title = "Delete Expiry Date")]
+        [Key(2)]
         public DateTimeOffset? DeleteExpiryDate { get; set; }
 
         [Description("Globally-addressable identifier for this row, stable across environments and the form "
                      + "in which every other area refers to it. Server-assigned. Read-only.")]
+        [Key(3)]
         public Guid Guid { get; set; }
 
         [Description("Server-assigned row identifier. Read-only.")]
         [FormField(Group = "Audit", Order = 10, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(4)]
         public int Id { get; set; }
 
         [Description("User who created this value. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 20, ReadOnly = true)]
+        [Key(5)]
         public string? CreatedUser { get; set; }
 
         [Description("Timestamp (UTC) this value was created. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 30, ReadOnly = true, Widget = "date")]
+        [Key(6)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("User who last updated this value. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 40, ReadOnly = true)]
+        [Key(7)]
         public string? UpdatedUser { get; set; }
 
         [Description("Timestamp (UTC) this value was last updated. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 50, ReadOnly = true, Widget = "date")]
+        [Key(8)]
         public DateTimeOffset? UpdatedDate { get; set; }
 
         [Description("Server-assigned optimistic-concurrency version number, incremented on every update. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 60, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(9)]
         public int Version { get; set; }
 
         [Description("User who deleted this value, if soft-deleted. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 70, ReadOnly = true)]
+        [Key(10)]
         public string? DeletedUser { get; set; }
 
         [Description("Timestamp (UTC) this value was soft-deleted, if applicable. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 80, ReadOnly = true, Widget = "date")]
+        [Key(11)]
         public DateTimeOffset? DeletedDate { get; set; }
     }
 }

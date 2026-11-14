@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Checks if the value is infinity.")]
         public static Boolean IsInfinity(this Double d)
         {
             return double.IsInfinity(d);

@@ -24,12 +24,15 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Mod
     using EntityAnalysisModelInlineScript =
         Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineScript.
         EntityAnalysisModelInlineScript;
+    using GraphRecall;
     using SanctionEntry = Sanctions.Models.SanctionEntry;
 
     public class EntityAnalysisModels
     {
         public ConcurrentDictionary<int, EntityAnalysisModel> ActiveEntityAnalysisModels { get; set; } =
             new ConcurrentDictionary<int, EntityAnalysisModel>();
+
+        public HashSet<int> SynchronisationScope { get; set; }
 
         public List<EntityAnalysisModelInlineScript> EntityAnalysisModelInlineScripts { get; set; }
         public Guid EntityAnalysisInstanceGuid { get; set; }
@@ -39,5 +42,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Mod
 
         public ConcurrentDictionary<string, byte> SanctionsStopTokens { get; set; } =
             new ConcurrentDictionary<string, byte>();
+
+        public GraphRecallCache GraphRecall { get; set; } = new();
     }
 }

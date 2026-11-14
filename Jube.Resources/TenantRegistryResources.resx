@@ -54,4 +54,16 @@
     <data name="NameAlreadyExists" xml:space="preserve">
     <value>This name already exists.</value>
   </data>
+    <data name="NameInvalidCharacters" xml:space="preserve">
+    <value>The name cannot start or end with a space or contain control or text-direction characters.</value>
+  </data>
+    <data name="LandlordMustStayActive" xml:space="preserve">
+    <value>The Landlord tenant must stay active.</value>
+  </data>
+    <data name="HttpAdaptationUrlInvalid" xml:space="preserve">
+    <value>The HTTP Adaptation URL must be an https URL to a public host, without credentials, a query string or a fragment.</value>
+  </data>
+    <data name="HttpAdaptationTimeoutRange" xml:space="preserve">
+    <value>The HTTP Adaptation timeout must be zero (use the installation default) or between 100 and 30000 milliseconds.</value>
+  </data>
 </root>

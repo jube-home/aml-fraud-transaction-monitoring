@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchComplementOutsideRange(double lowerBound, double upperBound)
+            [Description("True when: one minus the value (an approval ratio from a decline ratio) is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchComplementOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleComplementOutsideRange(flow.Value, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectComplementOutsideRange(double lowerBound, double upperBound)
+            [Description("True when: one minus the value (an approval ratio from a decline ratio) is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectComplementOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleComplementOutsideRange(flow.Value, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakComplementOutsideRange(double lowerBound, double upperBound)
+            [Description("True when: one minus the value (an approval ratio from a decline ratio) is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakComplementOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleComplementOutsideRange(flow.Value, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireComplementOutsideRange(double lowerBound, double upperBound)
+            [Description("True when: one minus the value (an approval ratio from a decline ratio) is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireComplementOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleComplementOutsideRange(flow.Value, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureComplementOutsideRange(double lowerBound, double upperBound)
+            [Description("True when: one minus the value (an approval ratio from a decline ratio) is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureComplementOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchComplementOutsideRange(double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: one minus the value (an approval ratio from a decline ratio) is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchComplementOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchComplementOutsideRange(lowerBound, upperBound);
             }
 
-            public Flow<double> RejectComplementOutsideRange(double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: one minus the value (an approval ratio from a decline ratio) is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectComplementOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectComplementOutsideRange(lowerBound, upperBound);
             }
 
-            public Flow<double> BreakComplementOutsideRange(double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: one minus the value (an approval ratio from a decline ratio) is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakComplementOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakComplementOutsideRange(lowerBound, upperBound);
             }
 
-            public Flow<double> RequireComplementOutsideRange(double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: one minus the value (an approval ratio from a decline ratio) is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireComplementOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireComplementOutsideRange(lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureComplementOutsideRange(double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: one minus the value (an approval ratio from a decline ratio) is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureComplementOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureComplementOutsideRange(lowerBound, upperBound);
             }

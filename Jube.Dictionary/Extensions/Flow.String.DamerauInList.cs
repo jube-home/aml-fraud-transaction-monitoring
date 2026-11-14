@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchDamerauInList(IEnumerable<string> list, int maxDistance)
+            [Description("True when: within the edit distance of an entry, counting a swap of adjacent letters as one edit. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchDamerauInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed, counting a swap of adjacent letters as one.")] int maxDistance)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringDamerauInList(flow.Value, list, maxDistance));
             }
 
-            public Flow<string?> RejectDamerauInList(IEnumerable<string> list, int maxDistance)
+            [Description("True when: within the edit distance of an entry, counting a swap of adjacent letters as one edit. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectDamerauInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed, counting a swap of adjacent letters as one.")] int maxDistance)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringDamerauInList(flow.Value, list, maxDistance));
             }
 
-            public Flow<string?> BreakDamerauInList(IEnumerable<string> list, int maxDistance)
+            [Description("True when: within the edit distance of an entry, counting a swap of adjacent letters as one edit. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakDamerauInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed, counting a swap of adjacent letters as one.")] int maxDistance)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringDamerauInList(flow.Value, list, maxDistance));
             }
 
-            public Flow<string?> RequireDamerauInList(IEnumerable<string> list, int maxDistance)
+            [Description("True when: within the edit distance of an entry, counting a swap of adjacent letters as one edit. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireDamerauInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed, counting a swap of adjacent letters as one.")] int maxDistance)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringDamerauInList(flow.Value, list, maxDistance));
             }
 
-            public Flow<string?> EnsureDamerauInList(IEnumerable<string> list, int maxDistance)
+            [Description("True when: within the edit distance of an entry, counting a swap of adjacent letters as one edit. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureDamerauInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed, counting a swap of adjacent letters as one.")] int maxDistance)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchDamerauInList(IEnumerable<string> list, int maxDistance)
+            [Description("Begins a pipeline from the value. True when: within the edit distance of an entry, counting a swap of adjacent letters as one edit. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchDamerauInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed, counting a swap of adjacent letters as one.")] int maxDistance)
             {
                 return value.Start().MatchDamerauInList(list, maxDistance);
             }
 
-            public Flow<string?> RejectDamerauInList(IEnumerable<string> list, int maxDistance)
+            [Description("Begins a pipeline from the value. True when: within the edit distance of an entry, counting a swap of adjacent letters as one edit. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectDamerauInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed, counting a swap of adjacent letters as one.")] int maxDistance)
             {
                 return value.Start().RejectDamerauInList(list, maxDistance);
             }
 
-            public Flow<string?> BreakDamerauInList(IEnumerable<string> list, int maxDistance)
+            [Description("Begins a pipeline from the value. True when: within the edit distance of an entry, counting a swap of adjacent letters as one edit. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakDamerauInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed, counting a swap of adjacent letters as one.")] int maxDistance)
             {
                 return value.Start().BreakDamerauInList(list, maxDistance);
             }
 
-            public Flow<string?> RequireDamerauInList(IEnumerable<string> list, int maxDistance)
+            [Description("Begins a pipeline from the value. True when: within the edit distance of an entry, counting a swap of adjacent letters as one edit. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireDamerauInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed, counting a swap of adjacent letters as one.")] int maxDistance)
             {
                 return value.Start().RequireDamerauInList(list, maxDistance);
             }
 
-            public Flow<string?> EnsureDamerauInList(IEnumerable<string> list, int maxDistance)
+            [Description("Begins a pipeline from the value. True when: within the edit distance of an entry, counting a swap of adjacent letters as one edit. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureDamerauInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed, counting a swap of adjacent letters as one.")] int maxDistance)
             {
                 return value.Start().EnsureDamerauInList(list, maxDistance);
             }

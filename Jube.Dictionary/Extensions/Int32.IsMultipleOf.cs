@@ -6,7 +6,8 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static bool IsMultipleOf(this Int32 @this, Int32 factor)
+        [Description("Checks if the number is a multiple of another.")]
+        public static bool IsMultipleOf(this Int32 @this, [Description("The factor to check against.")] Int32 factor)
         {
             return @this % factor == 0;
         }

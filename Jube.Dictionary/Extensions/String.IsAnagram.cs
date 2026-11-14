@@ -4,7 +4,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsAnagram(this string @this, string otherString)
+        [Description("Checks if the string is an anagram of another.")]
+        public static bool IsAnagram(this string @this,
+            [Description("The other string to compare with.")] string otherString)
         {
             return @this
                 .OrderBy(c => c)

@@ -71,7 +71,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
             var repository = new EntityAnalysisModelOverrideRepository(context.Services.DbContext);
 
             var records = await repository
-                .GetByEntityAnalysisModelIdAsync(key, context.Services.CancellationToken).ConfigureAwait(false);
+                .GetApprovedByEntityAnalysisModelIdAsync(key, context.ApprovalsRequired,
+                    context.Services.CancellationToken).ConfigureAwait(false);
 
             foreach (var record in records)
             {
@@ -109,8 +110,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 new EntityAnalysisModelActivationRuleOverrideRepository(context.Services.DbContext);
 
             var records = await repository
-                .GetByEntityAnalysisModelGuidOrderByIdAsync(entityAnalysisModelGuid,
-                    context.Services.CancellationToken).ConfigureAwait(false);
+                .GetApprovedByEntityAnalysisModelGuidOrderByIdAsync(entityAnalysisModelGuid,
+                    context.ApprovalsRequired, context.Services.CancellationToken).ConfigureAwait(false);
 
             foreach (var record in records)
             {

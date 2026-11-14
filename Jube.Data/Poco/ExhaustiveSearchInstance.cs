@@ -69,31 +69,26 @@ namespace Jube.Data.Poco
         [Key(28)]
         public string FilterTokens { get; set; }
 
-        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true)]
         [Key(29)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceId", CanBeNull = true)]
         [Key(30)]
         public IEnumerable<ExhaustiveSearchInstanceTrialInstance> ExhaustiveSearchInstanceTrialInstance { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceId", CanBeNull = true)]
         [Key(31)]
         public IEnumerable<ExhaustiveSearchInstanceVariable> ExhaustiveSearchInstanceVariable { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceId", CanBeNull = true)]
         [Key(32)]
         public IEnumerable<ExhaustiveSearchInstanceData> ExhaustiveSearchInstanceData { get; set; }
 
         [Column] [Nullable] [Key(33)] public int? ImportId { get; set; }
         [Column] [Nullable] [Key(34)] public string CategoricalOptionsJson { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceId", CanBeNull = true)]
         [Key(35)]
         public IEnumerable<ExhaustiveSearchInstanceCategoricalField> ExhaustiveSearchInstanceCategoricalField
         {

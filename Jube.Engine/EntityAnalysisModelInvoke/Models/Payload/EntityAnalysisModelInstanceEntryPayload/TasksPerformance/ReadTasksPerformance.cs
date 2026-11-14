@@ -22,6 +22,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
     {
         public TaskPerformance SanctionsAsync { get; set; }
         public TaskPerformance TtlCountersAsync { get; set; }
+        public TaskPerformance GraphAsync { get; set; }
         public TaskPerformance AbstractionRulesWithSearchKeysAsync { get; set; }
     }
 }

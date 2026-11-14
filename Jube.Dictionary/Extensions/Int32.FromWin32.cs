@@ -11,6 +11,7 @@ namespace Jube.Dictionary.Extensions
     public static partial class Extensions
     {
 #if !NETSTANDARD
+        [Description("Converts a Windows color to a Color.")]
         public static Color FromWin32(this Int32 win32Color)
         {
             return ColorTranslator.FromWin32(win32Color);

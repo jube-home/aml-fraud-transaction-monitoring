@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>آپ کو یہ کارروائی کرنے کی اجازت نہیں ہے۔</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>یہ کارروائی کرنے کے لیے آپ کا کسی ٹیننٹ میں سائن ان ہونا ضروری ہے۔</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>ایک درست ماڈل درکار ہے۔</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>نام درکار ہے۔</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>نام ⁨{0}⁩ حروف یا اس سے کم ہونا چاہیے۔</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>یہ نام پہلے سے موجود ہے۔</value>
+  </data>
+    <data name="RuleScriptTypeIdInvalid" xml:space="preserve">
+    <value>رول اسکرپٹ کی قسم ⁨Builder⁩ یا ⁨Coder⁩ ہونی چاہیے۔</value>
+  </data>
+    <data name="BuilderRuleScriptRequired" xml:space="preserve">
+    <value>رول اسکرپٹ درکار ہے۔</value>
+  </data>
+    <data name="BuilderRuleScriptMaxLength" xml:space="preserve">
+    <value>رول اسکرپٹ ⁨{0}⁩ حروف یا اس سے کم ہونا چاہیے۔</value>
+  </data>
+    <data name="JsonRequired" xml:space="preserve">
+    <value>رول بلڈر کی تعریف درکار ہے۔</value>
+  </data>
+    <data name="CoderRuleScriptRequired" xml:space="preserve">
+    <value>⁨Coder⁩ رول اسکرپٹ درکار ہے۔</value>
+  </data>
+    <data name="CoderRuleScriptMaxLength" xml:space="preserve">
+    <value>⁨Coder⁩ رول اسکرپٹ ⁨{0}⁩ حروف یا اس سے کم ہونا چاہیے۔</value>
+  </data>
+    <data name="CaseWorkflowGuidRequired" xml:space="preserve">
+    <value>کیسز فعال ہونے پر کیس ورک فلو درکار ہے۔</value>
+  </data>
+    <data name="CaseWorkflowStatusGuidRequired" xml:space="preserve">
+    <value>کیسز فعال ہونے پر کیس ورک فلو اسٹیٹس درکار ہے۔</value>
+  </data>
+    <data name="CaseKeyRequired" xml:space="preserve">
+    <value>کیسز فعال ہونے پر کیس کی درکار ہے۔</value>
+  </data>
+    <data name="CaseKeyMaxLength" xml:space="preserve">
+    <value>کیس کی ⁨{0}⁩ حروف یا اس سے کم ہونی چاہیے۔</value>
+  </data>
+    <data name="BypassSuspendSampleRange" xml:space="preserve">
+    <value>بائی پاس معطلی کا نمونہ 0 اور 1 کے درمیان ہونا چاہیے۔</value>
+  </data>
+    <data name="BypassSuspendIntervalInvalid" xml:space="preserve">
+    <value>بائی پاس معطلی کا وقفہ منٹ، گھنٹے، دن یا مہینے ہونا چاہیے۔</value>
+  </data>
+    <data name="BypassSuspendValueRange" xml:space="preserve">
+    <value>بائی پاس معطلی کی قدر منفی نہیں ہو سکتی۔</value>
+  </data>
+    <data name="ResponseElevationRange" xml:space="preserve">
+    <value>ردعمل کی بلندی منفی نہیں ہو سکتی۔</value>
+  </data>
+    <data name="ResponseElevationContentMaxLength" xml:space="preserve">
+    <value>ردعمل کی بلندی کا مواد ⁨{0}⁩ حروف یا اس سے کم ہونا چاہیے۔</value>
+  </data>
+    <data name="ResponseElevationRedirectMaxLength" xml:space="preserve">
+    <value>ردعمل کی بلندی کی ری ڈائریکٹ ⁨{0}⁩ حروف یا اس سے کم ہونی چاہیے۔</value>
+  </data>
+    <data name="ResponseElevationKeyRequired" xml:space="preserve">
+    <value>⁨Activation⁩ ⁨Watcher⁩ کو بھیجتے وقت ردعمل کی بلندی کی کلید درکار ہے۔</value>
+  </data>
+    <data name="ResponseElevationForeColorRequired" xml:space="preserve">
+    <value>⁨Activation⁩ ⁨Watcher⁩ کو بھیجتے وقت پیش منظر کا رنگ درکار ہے۔</value>
+  </data>
+    <data name="ResponseElevationForeColorInvalid" xml:space="preserve">
+    <value>پیش منظر کا رنگ ہیکس قدر ہونا چاہیے، مثلاً ⁨#0000FF⁩۔</value>
+  </data>
+    <data name="ResponseElevationBackColorRequired" xml:space="preserve">
+    <value>⁨Activation⁩ ⁨Watcher⁩ کو بھیجتے وقت پس منظر کا رنگ درکار ہے۔</value>
+  </data>
+    <data name="ResponseElevationBackColorInvalid" xml:space="preserve">
+    <value>پس منظر کا رنگ ہیکس قدر ہونا چاہیے، مثلاً ⁨#FF0000⁩۔</value>
+  </data>
+    <data name="EntityAnalysisModelGuidTtlCounterRequired" xml:space="preserve">
+    <value>⁨TTL⁩ کاؤنٹر میں اضافہ فعال ہونے پر ماڈل درکار ہے۔</value>
+  </data>
+    <data name="EntityAnalysisModelTtlCounterGuidRequired" xml:space="preserve">
+    <value>⁨TTL⁩ کاؤنٹر میں اضافہ فعال ہونے پر ⁨TTL⁩ کاؤنٹر درکار ہے۔</value>
+  </data>
+    <data name="EntityAnalysisModelTtlCounterGuidNotFound" xml:space="preserve">
+    <value>بڑھایا جانے والا ⁨TTL⁩ کاؤنٹر منتخب ماڈل میں نہیں ملا۔</value>
+  </data>
+    <data name="CaseWorkflowStatusGuidNotFound" xml:space="preserve">
+    <value>کیس ورک فلو اسٹیٹس منتخب ماڈل کے کسی کیس ورک فلو میں نہیں ملا۔</value>
+  </data>
+    <data name="ActivationSampleRange" xml:space="preserve">
+    <value>ایکٹیویشن نمونہ 0 اور 1 کے درمیان ہونا چاہیے۔</value>
+  </data>
+    <data name="PriorityRange" xml:space="preserve">
+    <value>ترجیح منفی نہیں ہو سکتی۔</value>
+  </data>
+    <data name="JsonInvalid" xml:space="preserve">
+    <value>رول بلڈر کی تعریف درست ⁨JSON⁩ ہونی چاہیے جو 1 ⁨MB⁩ سے زیادہ نہ ہو۔</value>
+  </data>
+    <data name="ResponseElevationRangeNotFound" xml:space="preserve">
+    <value>ردعمل کی بلندی ماڈل کی کسی فعال ردعمل بلندی رینج کے اندر ہونی چاہیے۔</value>
+  </data>
+</root>

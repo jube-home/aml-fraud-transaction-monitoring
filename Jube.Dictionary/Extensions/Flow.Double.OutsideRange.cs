@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchOutsideRange(double minimum, double maximum)
+            [Description("True when: below the minimum or above the maximum. NaN is false. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleOutsideRange(flow.Value, minimum, maximum));
             }
 
-            public Flow<double> RejectOutsideRange(double minimum, double maximum)
+            [Description("True when: below the minimum or above the maximum. NaN is false. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleOutsideRange(flow.Value, minimum, maximum));
             }
 
-            public Flow<double> BreakOutsideRange(double minimum, double maximum)
+            [Description("True when: below the minimum or above the maximum. NaN is false. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleOutsideRange(flow.Value, minimum, maximum));
             }
 
-            public Flow<double> RequireOutsideRange(double minimum, double maximum)
+            [Description("True when: below the minimum or above the maximum. NaN is false. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleOutsideRange(flow.Value, minimum, maximum));
             }
 
-            public Flow<double> EnsureOutsideRange(double minimum, double maximum)
+            [Description("True when: below the minimum or above the maximum. NaN is false. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchOutsideRange(double minimum, double maximum)
+            [Description("Begins a pipeline from the value. True when: below the minimum or above the maximum. NaN is false. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return value.Start().MatchOutsideRange(minimum, maximum);
             }
 
-            public Flow<double> RejectOutsideRange(double minimum, double maximum)
+            [Description("Begins a pipeline from the value. True when: below the minimum or above the maximum. NaN is false. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return value.Start().RejectOutsideRange(minimum, maximum);
             }
 
-            public Flow<double> BreakOutsideRange(double minimum, double maximum)
+            [Description("Begins a pipeline from the value. True when: below the minimum or above the maximum. NaN is false. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return value.Start().BreakOutsideRange(minimum, maximum);
             }
 
-            public Flow<double> RequireOutsideRange(double minimum, double maximum)
+            [Description("Begins a pipeline from the value. True when: below the minimum or above the maximum. NaN is false. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return value.Start().RequireOutsideRange(minimum, maximum);
             }
 
-            public Flow<double> EnsureOutsideRange(double minimum, double maximum)
+            [Description("Begins a pipeline from the value. True when: below the minimum or above the maximum. NaN is false. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return value.Start().EnsureOutsideRange(minimum, maximum);
             }

@@ -1,0 +1,59 @@
+{
+  "_note": "Keys for the Activation watcher map popups (ActivationMap text now goes through t(), with the English default shipped in code). Machine translated, proof of concept. en, pl and ar are included because the SPA locale JSON is owned by shell-auth and needs the same keys added. Flat dotted keys; integration pass nests them.",
+  "en": {
+    "watcher.popup.elevation": "Response elevation {value}",
+    "watcher.popup.travel": "{kilometres} km at {speed} km/h",
+    "watcher.popup.travelInstant": "{kilometres} km in an instant",
+    "watcher.popup.impossible": "Impossible travel",
+    "watcher.popup.plausible": "Plausible travel"
+  },
+  "pl": {
+    "watcher.popup.elevation": "Podniesienie odpowiedzi {value}",
+    "watcher.popup.travel": "{kilometres} km z prędkością {speed} km/h",
+    "watcher.popup.travelInstant": "{kilometres} km w jednej chwili",
+    "watcher.popup.impossible": "Niemożliwa podróż",
+    "watcher.popup.plausible": "Prawdopodobna podróż"
+  },
+  "ar": {
+    "watcher.popup.elevation": "مستوى رفع الاستجابة {value}",
+    "watcher.popup.travel": "{kilometres} كم بسرعة {speed} كم/س",
+    "watcher.popup.travelInstant": "{kilometres} كم في لحظة",
+    "watcher.popup.impossible": "سفر مستحيل",
+    "watcher.popup.plausible": "سفر معقول"
+  },
+  "ka": {
+    "watcher.popup.elevation": "პასუხის ესკალაცია {value}",
+    "watcher.popup.travel": "{kilometres} კმ სიჩქარით {speed} კმ/სთ",
+    "watcher.popup.travelInstant": "{kilometres} კმ ერთ მომენტში",
+    "watcher.popup.impossible": "შეუძლებელი მოგზაურობა",
+    "watcher.popup.plausible": "სავარაუდო მოგზაურობა"
+  },
+  "id": {
+    "watcher.popup.elevation": "Peningkatan respons {value}",
+    "watcher.popup.travel": "{kilometres} km dengan kecepatan {speed} km/jam",
+    "watcher.popup.travelInstant": "{kilometres} km dalam sekejap",
+    "watcher.popup.impossible": "Perjalanan mustahil",
+    "watcher.popup.plausible": "Perjalanan masuk akal"
+  },
+  "sv": {
+    "watcher.popup.elevation": "Svarshöjning {value}",
+    "watcher.popup.travel": "{kilometres} km med {speed} km/h",
+    "watcher.popup.travelInstant": "{kilometres} km på ett ögonblick",
+    "watcher.popup.impossible": "Omöjlig förflyttning",
+    "watcher.popup.plausible": "Rimlig förflyttning"
+  },
+  "ur": {
+    "watcher.popup.elevation": "ردِعمل کی بلندی {value}",
+    "watcher.popup.travel": "{kilometres} کلومیٹر بہ رفتار {speed} کلومیٹر/گھنٹہ",
+    "watcher.popup.travelInstant": "{kilometres} کلومیٹر ایک لمحے میں",
+    "watcher.popup.impossible": "ناممکن سفر",
+    "watcher.popup.plausible": "قابلِ قبول سفر"
+  },
+  "hi": {
+    "watcher.popup.elevation": "प्रतिक्रिया उन्नयन {value}",
+    "watcher.popup.travel": "{kilometres} किमी, {speed} किमी/घंटा की गति से",
+    "watcher.popup.travelInstant": "{kilometres} किमी एक पल में",
+    "watcher.popup.impossible": "असंभव यात्रा",
+    "watcher.popup.plausible": "संभावित यात्रा"
+  }
+}

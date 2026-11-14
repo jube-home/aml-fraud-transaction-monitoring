@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="SqlSyntaxError" xml:space="preserve">
+        <value>SQL kan inte läsas nära "{0}".</value>
+    </data>
+    <data name="SqlUnknownTable" xml:space="preserve">
+        <value>Tabellen "{0}" finns inte eller så får du inte fråga den.</value>
+    </data>
+    <data name="SqlUnknownTableSuggest" xml:space="preserve">
+        <value>Tabellen "{0}" finns inte eller så får du inte fråga den. Menade du "{1}"?</value>
+    </data>
+    <data name="SqlUnknownColumn" xml:space="preserve">
+        <value>Kolumnen "{0}" finns inte.</value>
+    </data>
+    <data name="SqlUnknownColumnSuggest" xml:space="preserve">
+        <value>Kolumnen "{0}" finns inte. Menade du "{1}"? Namn med stora bokstäver måste stå inom dubbla citattecken.</value>
+    </data>
+    <data name="SqlUnknownAlias" xml:space="preserve">
+        <value>Det finns ingen tabell eller alias med namnet "{0}" i den här frågan.</value>
+    </data>
+    <data name="SqlUnknownAliasSuggest" xml:space="preserve">
+        <value>Det finns ingen tabell eller alias med namnet "{0}" i den här frågan. Menade du "{1}"?</value>
+    </data>
+    <data name="SqlAmbiguousColumn" xml:space="preserve">
+        <value>Kolumnen "{0}" är tvetydig. Sätt ett tabellnamn eller alias framför den.</value>
+    </data>
+    <data name="SqlUnknownFunction" xml:space="preserve">
+        <value>Funktionen "{0}" finns inte.</value>
+    </data>
+    <data name="SqlUnknownFunctionSuggest" xml:space="preserve">
+        <value>Funktionen "{0}" finns inte. Menade du "{1}"?</value>
+    </data>
+    <data name="SqlFunctionArity" xml:space="preserve">
+        <value>Funktionen "{0}" kan inte få {1} argument. Den tar {2}.</value>
+    </data>
+    <data name="SqlOverNotWindow" xml:space="preserve">
+        <value>OVER kan inte användas med "{0}" eftersom den varken är en aggregat- eller fönsterfunktion.</value>
+    </data>
+    <data name="SqlWindowNeedsOver" xml:space="preserve">
+        <value>Fönsterfunktionen "{0}" kräver en OVER-sats.</value>
+    </data>
+    <data name="SqlWindowNotAllowed" xml:space="preserve">
+        <value>Fönsterfunktionen "{0}" är inte tillåten i den här delen av frågan.</value>
+    </data>
+    <data name="SqlAggregateInWhere" xml:space="preserve">
+        <value>Aggregatfunktionen "{0}" är inte tillåten i WHERE. Filtrera på aggregat i HAVING i stället.</value>
+    </data>
+    <data name="SqlAggregateInJoin" xml:space="preserve">
+        <value>Aggregatfunktionen "{0}" är inte tillåten i ett JOIN-villkor.</value>
+    </data>
+    <data name="SqlAggregateInGroupBy" xml:space="preserve">
+        <value>Aggregatfunktionen "{0}" är inte tillåten i GROUP BY.</value>
+    </data>
+    <data name="SqlAggregateNested" xml:space="preserve">
+        <value>Aggregatfunktioner kan inte nästlas. "{0}" används inuti ett annat aggregat.</value>
+    </data>
+    <data name="SqlColumnNotGrouped" xml:space="preserve">
+        <value>Kolumnen "{0}" måste finnas i GROUP BY eller användas inuti en aggregatfunktion.</value>
+    </data>
+    <data name="SqlTypeMismatch" xml:space="preserve">
+        <value>Ett värde av typen {0} kan inte jämföras eller kombineras med ett värde av typen {1}.</value>
+    </data>
+    <data name="SqlLiteralInvalid" xml:space="preserve">
+        <value>Värdet '{0}' är inte giltigt för typen {1}.</value>
+    </data>
+    <data name="SqlFunctionArgumentType" xml:space="preserve">
+        <value>Funktionen "{0}" godtar inte ett värde av typen {1}.</value>
+    </data>
+    <data name="SqlAggregateArgumentType" xml:space="preserve">
+        <value>Aggregatfunktionen "{0}" godtar inte ett värde av typen {1}.</value>
+    </data>
+    <data name="SqlOperatorType" xml:space="preserve">
+        <value>Operatorn {0} kan inte användas med ett värde av typen {1}.</value>
+    </data>
+    <data name="SqlConditionType" xml:space="preserve">
+        <value>Ett villkor måste vara sant eller falskt, inte ett värde av typen {0}.</value>
+    </data>
+    <data name="SqlTypesUnmatched" xml:space="preserve">
+        <value>Värden av typen {0} och {1} kan inte kombineras till ett resultat.</value>
+    </data>
+    <data name="SqlLimitNegative" xml:space="preserve">
+        <value>{0} får inte vara negativt.</value>
+    </data>
+    <data name="SqlLimitType" xml:space="preserve">
+        <value>{0} kräver ett heltal, inte ett värde av typen {1}.</value>
+    </data>
+    <data name="SqlLimitVariables" xml:space="preserve">
+        <value>{0} kan inte referera till kolumner.</value>
+    </data>
+    <data name="SqlOrdinalOutOfRange" xml:space="preserve">
+        <value>Position {1} i {0} finns inte i urvalslistan.</value>
+    </data>
+    <data name="SqlSetOperationColumns" xml:space="preserve">
+        <value>Varje fråga i en UNION, INTERSECT eller EXCEPT måste returnera lika många kolumner, men dessa returnerar {0} och {1}.</value>
+    </data>
+    <data name="SqlSubqueryColumns" xml:space="preserve">
+        <value>En underfråga som används som värde måste returnera exakt en kolumn.</value>
+    </data>
+    <data name="SqlUnknownType" xml:space="preserve">
+        <value>Datatypen "{0}" finns inte.</value>
+    </data>
+    <data name="SqlParameterUnknown" xml:space="preserve">
+        <value>Parametern @{0} är inte tillgänglig här.</value>
+    </data>
+    <data name="SqlParameterType" xml:space="preserve">
+        <value>Parametern @{0} innehåller ett värde av typen {1} men jämförs med en kolumn av typen {2}.</value>
+    </data>
+</root>

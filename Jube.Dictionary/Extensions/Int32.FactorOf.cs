@@ -6,7 +6,8 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static bool FactorOf(this Int32 @this, Int32 factorNumer)
+        [Description("Checks if the number is a factor of another.")]
+        public static bool FactorOf(this Int32 @this, [Description("The number to check against.")] Int32 factorNumer)
         {
             return factorNumer % @this == 0;
         }

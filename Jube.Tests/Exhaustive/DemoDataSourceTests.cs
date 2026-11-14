@@ -24,6 +24,7 @@ using Jube.Engine.Helpers;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Xunit;
 using Jube.Data.Query.GetNextExhaustiveSearchInstanceQuery;

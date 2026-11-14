@@ -11,6 +11,7 @@ namespace Jube.Dictionary.Extensions
     public static partial class Extensions
     {
 #if !NETSTANDARD
+        [Description("Converts an OLE color to a Color.")]
         public static Color FromOle(this Int32 oleColor)
         {
             return ColorTranslator.FromOle(oleColor);

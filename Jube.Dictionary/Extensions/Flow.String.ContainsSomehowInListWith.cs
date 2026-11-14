@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchContainsSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("True when: some entry is found fuzzily inside the longer text, using an options string (scope is always within). Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringContainsSomehowInListWith(flow.Value, list, options));
             }
 
-            public Flow<string?> RejectContainsSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("True when: some entry is found fuzzily inside the longer text, using an options string (scope is always within). Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringContainsSomehowInListWith(flow.Value, list, options));
             }
 
-            public Flow<string?> BreakContainsSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("True when: some entry is found fuzzily inside the longer text, using an options string (scope is always within). Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringContainsSomehowInListWith(flow.Value, list, options));
             }
 
-            public Flow<string?> RequireContainsSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("True when: some entry is found fuzzily inside the longer text, using an options string (scope is always within). Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringContainsSomehowInListWith(flow.Value, list, options));
             }
 
-            public Flow<string?> EnsureContainsSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("True when: some entry is found fuzzily inside the longer text, using an options string (scope is always within). Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchContainsSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("Begins a pipeline from the value. True when: some entry is found fuzzily inside the longer text, using an options string (scope is always within). Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return value.Start().MatchContainsSomehowInListWith(list, options);
             }
 
-            public Flow<string?> RejectContainsSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("Begins a pipeline from the value. True when: some entry is found fuzzily inside the longer text, using an options string (scope is always within). Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return value.Start().RejectContainsSomehowInListWith(list, options);
             }
 
-            public Flow<string?> BreakContainsSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("Begins a pipeline from the value. True when: some entry is found fuzzily inside the longer text, using an options string (scope is always within). Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return value.Start().BreakContainsSomehowInListWith(list, options);
             }
 
-            public Flow<string?> RequireContainsSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("Begins a pipeline from the value. True when: some entry is found fuzzily inside the longer text, using an options string (scope is always within). Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return value.Start().RequireContainsSomehowInListWith(list, options);
             }
 
-            public Flow<string?> EnsureContainsSomehowInListWith(IEnumerable<string> list, string? options)
+            [Description("Begins a pipeline from the value. True when: some entry is found fuzzily inside the longer text, using an options string (scope is always within). Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsSomehowInListWith([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return value.Start().EnsureContainsSomehowInListWith(list, options);
             }

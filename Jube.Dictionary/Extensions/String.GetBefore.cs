@@ -4,7 +4,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string GetBefore(this string @this, string value)
+        [Description("Gets the substring before the specified value.")]
+        public static string GetBefore(this string @this, [Description("The value to search for.")] string value)
         {
             var index = @this.IndexOf(value, StringComparison.Ordinal);
 

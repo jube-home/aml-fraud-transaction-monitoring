@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,12 +22,15 @@ using System.ComponentModel;
 namespace Jube.Dto.Filter
 {
     [Description("One value of the group-by field and how many matching rows have it.")]
+    [MessagePackObject]
     public class FilterCountGroupDto
     {
         [Description("The field's value as text (dates in ISO 8601, numbers invariant); null when the field is empty.")]
+        [Key(0)]
         public string? Value { get; set; }
 
         [Description("How many matching rows have this value.")]
+        [Key(1)]
         public int Count { get; set; }
     }
 }

@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
 using Xunit;
@@ -77,7 +78,8 @@ namespace Jube.Test.Service.RoleGrantAccess
                 case "CaseWorkflowXPath":
                     await db.InsertWithInt32IdentityAsync(new Data.Poco.CaseWorkflowXPath
                     {
-                        Name = name, Guid = childGuid, CaseWorkflowId = workflowId, XPath = "/Case/Field", Active = 1,
+                        Name = name, Guid = childGuid, CaseWorkflowId = workflowId, XPath = "/Case/Field", SourceKindId = 6,
+                        SourceGuid = await ArchiveKeySeed.SourceByWorkflowAsync(db, workflowId, "Field"), Active = 1,
                         Locked = 0, Deleted = 0, CreatedUser = createdUser, CreatedDate = now
                     });
 

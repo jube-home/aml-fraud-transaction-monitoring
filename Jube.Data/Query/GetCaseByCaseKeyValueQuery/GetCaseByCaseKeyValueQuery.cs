@@ -19,6 +19,7 @@ namespace Jube.Data.Query.GetCaseByCaseKeyValueQuery
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
 
     public class GetCaseByCaseKeyValueQuery(DbContext dbContext, string userName)
     {

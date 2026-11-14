@@ -47,8 +47,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(18)] public byte? Active { get; set; }
         [Column] [Nullable] [Key(19)] public int? InheritedId { get; set; }
 
-        [Association(ThisKey = "RoleRegistryGuid", OtherKey = "Guid", CanBeNull = false,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "RoleRegistryGuid", OtherKey = "Guid", CanBeNull = false)]
         [Key(20)]
         public RoleRegistry RoleRegistry { get; set; }
 

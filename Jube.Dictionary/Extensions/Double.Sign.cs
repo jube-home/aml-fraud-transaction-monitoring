@@ -8,6 +8,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns the sign of the number.")]
         public static Int32 Sign(this Double value)
         {
             return Math.Sign(value);

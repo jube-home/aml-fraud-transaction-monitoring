@@ -12,8 +12,9 @@ The platform's set of OpenTelemetry instruments only grows over time — [OpenTe
 Counter](../OpenTelemetryLogCounter/index.html) alone can create an unbounded number of new counters, on top of every
 fixed instrument already in the codebase (`jube.engine.*`, `jube.service.*`, `jube.cache.*`, `jube.data.*`, the
 built-in ASP.NET/runtime/process meters, ...). Left unchecked, that is exactly how a collector/backend ends up
-overwhelmed. OpenTelemetry Exclude is the release valve: an administration page listing instrument names — exact
-match only, no wildcards — that should simply stop being exported, without a redeploy.
+overwhelmed. OpenTelemetry Exclude is the release valve: an administration page listing instrument names — matched in
+full, ignoring case,
+with no wildcards — that should simply stop being exported, without a redeploy.
 
 ## What it affects, and how live it is
 

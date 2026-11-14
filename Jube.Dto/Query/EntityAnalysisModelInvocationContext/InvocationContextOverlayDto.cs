@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,12 +23,15 @@ namespace Jube.Dto.Query.EntityAnalysisModelInvocationContext
 {
     [Description("A request to set values in a context by completion name, e.g. to test a rule with " +
                  "Abstraction.CountLastHour set to 6.")]
+    [MessagePackObject]
     public class InvocationContextOverlayDto
     {
         [Description("The context to change, as returned by any of the context operations.")]
+        [Key(0)]
         public InvocationContextDto? Context { get; set; }
 
         [Description("The values to set: completion name to invariant text (null clears the value).")]
+        [Key(1)]
         public Dictionary<string, string?> Values { get; set; } = [];
     }
 }

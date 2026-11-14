@@ -1,0 +1,689 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="EntityAnalysisModelTag.name" xml:space="preserve">
+        <value>الاسم</value>
+    </data>
+    <data name="EntityAnalysisModelTag.active" xml:space="preserve">
+        <value>نشط</value>
+    </data>
+    <data name="EntityAnalysisModelTag.locked" xml:space="preserve">
+        <value>مقفل</value>
+    </data>
+    <data name="EntityAnalysisModelTag.id" xml:space="preserve">
+        <value>المعرّف</value>
+    </data>
+    <data name="EntityAnalysisModelTag.createdUser" xml:space="preserve">
+        <value>أنشأه</value>
+    </data>
+    <data name="EntityAnalysisModelTag.createdDate" xml:space="preserve">
+        <value>تاريخ الإنشاء</value>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedUser" xml:space="preserve">
+        <value>حدّثه</value>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedDate" xml:space="preserve">
+        <value>تاريخ التحديث</value>
+    </data>
+    <data name="EntityAnalysisModelTag.version" xml:space="preserve">
+        <value>الإصدار</value>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedUser" xml:space="preserve">
+        <value>حذفه</value>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedDate" xml:space="preserve">
+        <value>تاريخ الحذف</value>
+    </data>
+    <data name="EntityAnalysisModelTag.group.Identity" xml:space="preserve">
+        <value>الهوية</value>
+    </data>
+    <data name="EntityAnalysisModelTag.group.Audit" xml:space="preserve">
+        <value>التدقيق</value>
+    </data>
+    <data name="EntityAnalysisModelTag.column.name" xml:space="preserve">
+        <value>الاسم</value>
+    </data>
+    <data name="EntityAnalysisModelTag.column.active" xml:space="preserve">
+        <value>نشط</value>
+    </data>
+    <data name="option.IntervalUnit.Second" xml:space="preserve">
+        <value>ثوانٍ</value>
+    </data>
+    <data name="option.IntervalUnit.Minute" xml:space="preserve">
+        <value>دقائق</value>
+    </data>
+    <data name="option.IntervalUnit.Hour" xml:space="preserve">
+        <value>ساعات</value>
+    </data>
+    <data name="option.IntervalUnit.Day" xml:space="preserve">
+        <value>أيام</value>
+    </data>
+    <data name="option.IntervalUnit.Month" xml:space="preserve">
+        <value>أشهر</value>
+    </data>
+    <data name="option.IntervalUnit.Year" xml:space="preserve">
+        <value>سنوات</value>
+    </data>
+    <data name="option.NotificationType.Email" xml:space="preserve">
+        <value>البريد الإلكتروني</value>
+    </data>
+    <data name="option.NotificationType.Sms" xml:space="preserve">
+        <value>رسالة نصية</value>
+    </data>
+    <data name="EntityAnalysisModelTag.name.description" xml:space="preserve">
+        <value>الاسم المعروض لهذا الوسم. فريد ضمن النموذج (دون حساسية لحالة الأحرف). يُدمج في قسم الوسوم من حمولة الأرشيف للمعرّف EntityAnalysisModelEntityInstanceGuid المطابق.</value>
+        <comment>a46002d2</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.active.description" xml:space="preserve">
+        <value>عند التفعيل يكون الوسم مؤهلاً للتطبيق على حمولة الأرشيف.</value>
+        <comment>9ecf021f</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.locked.description" xml:space="preserve">
+        <value>عند التفعيل يكون تسجيل الوسم مقفلاً ولا يمكن تعديله أو حذفه.</value>
+        <comment>c427ac09</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.id.description" xml:space="preserve">
+        <value>معرّف الصف الذي يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>254b452e</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.createdUser.description" xml:space="preserve">
+        <value>المستخدم الذي أنشأ هذا الوسم. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>b8b7a648</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.createdDate.description" xml:space="preserve">
+        <value>الطابع الزمني (UTC) لإنشاء هذا الوسم. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>2a046216</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedUser.description" xml:space="preserve">
+        <value>المستخدم الذي حدّث هذا الوسم آخر مرة. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>692dc498</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedDate.description" xml:space="preserve">
+        <value>الطابع الزمني (UTC) لآخر تحديث لهذا الوسم. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>b845bd79</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.version.description" xml:space="preserve">
+        <value>رقم إصدار التحكم المتفائل بالتزامن، يعيّنه الخادم ويزداد مع كل تحديث. للقراءة فقط.</value>
+        <comment>937d398b</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedUser.description" xml:space="preserve">
+        <value>المستخدم الذي حذف هذا الوسم (حذف منطقي). يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>2e8d7efb</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedDate.description" xml:space="preserve">
+        <value>الطابع الزمني (UTC) للحذف المنطقي لهذا الوسم إن وجد. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>68166826</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.name.placeholder" xml:space="preserve">
+        <value>مثال: روجع من قبل الامتثال</value>
+        <comment>2ebb83c4</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.name" xml:space="preserve">
+        <value>الاسم</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.name.description" xml:space="preserve">
+        <value>الاسم الذي تقرأ به القواعد الكيان، بصيغة Graph.{Name}، مثل AccountId أو Payee. أحرف وأرقام فقط، يبدأ بحرف؛ فريد داخل النموذج.</value>
+        <comment>4a7fc4f0</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.name.placeholder" xml:space="preserve">
+        <value>مثلاً Payee</value>
+        <comment>81ff940b</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.name" xml:space="preserve">
+        <value>الاسم</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.active" xml:space="preserve">
+        <value>نشط</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.active.description" xml:space="preserve">
+        <value>عند التفعيل، يُستدعى الكيان من المخطط في كل استدعاء للنموذج.</value>
+        <comment>ba3c6a3d</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.active" xml:space="preserve">
+        <value>نشط</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.locked" xml:space="preserve">
+        <value>مقفل</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.locked.description" xml:space="preserve">
+        <value>عند التفعيل، يكون الكيان مقفلاً ولا يمكن تعديله أو حذفه.</value>
+        <comment>17318987</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.requestXPathName" xml:space="preserve">
+        <value>الحقل</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.requestXPathName.description" xml:space="preserve">
+        <value>حقل الطلب في هذا النموذج، المعلَّم كجدول تقارير، الذي تحدد قيمته الكيان في المخطط، مثل AccountId أو ToAccountId.</value>
+        <comment>af382e5f</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.requestXPathName" xml:space="preserve">
+        <value>الحقل</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.nodeKey" xml:space="preserve">
+        <value>مفتاح العقدة</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.nodeKey.description" xml:space="preserve">
+        <value>مفتاح عقدة المخطط الذي تُسجَّل تحته القيمة عندما يختلف عن اسم الحقل، كما يفعل To Node Key في تعريف الحافة: تُسجَّل قيمة ToAccountId كعقدة AccountId. اتركه فارغاً لاستخدام اسم الحقل.</value>
+        <comment>49a08603</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.counterpartName" xml:space="preserve">
+        <value>الطرف المقابل</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.counterpartName.description" xml:space="preserve">
+        <value>اسم كيان آخر في هذا النموذج يُربط به هذا الكيان لحقائق الحافة (العدد، المبلغ، أول ظهور) واكتشاف الجسور، مثل كيان Payer المرتبط بـ Payee الخاص به. الروابط صريحة ولا تُخمَّن أبداً؛ اتركه فارغاً إن لم يوجد.</value>
+        <comment>60120df2</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.counterpartName" xml:space="preserve">
+        <value>الطرف المقابل</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.graphRegistryGuid" xml:space="preserve">
+        <value>سجل المخطط</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.graphRegistryGuid.description" xml:space="preserve">
+        <value>سجل المخطط الذي تحدد تعريفات حوافه نطاق حقائق الحافة مقابل الطرف المقابل. اتركه فارغاً لاستخدام كل تعريف نشط للمستأجر.</value>
+        <comment>d48d9af2</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.responsePayload" xml:space="preserve">
+        <value>حمولة الاستجابة</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.responsePayload.description" xml:space="preserve">
+        <value>عند التفعيل، يُعاد كائن الكيان في JSON الاستجابة تحت Graph. متعارض مع مفتاح الأرشيف: يُعاد الكيان أو يُخزَّن، لا كلاهما.</value>
+        <comment>8648201c</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.reportTable" xml:space="preserve">
+        <value>مفتاح الأرشيف</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.reportTable.description" xml:space="preserve">
+        <value>عند التفعيل، يُكتب كائن الكيان في JSON الأرشيف للتقارير والتدريب. متعارض مع حمولة الاستجابة.</value>
+        <comment>87f888f3</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdDate" xml:space="preserve">
+        <value>تاريخ الإنشاء</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdDate.description" xml:space="preserve">
+        <value>طابع وقت الإنشاء المعيَّن من الخادم. للقراءة فقط.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdUser" xml:space="preserve">
+        <value>أنشأه</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdUser.description" xml:space="preserve">
+        <value>المستخدم الذي أنشأ هذا الصف، معيَّن من الخادم. للقراءة فقط.</value>
+        <comment>c7492dc3</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedUser" xml:space="preserve">
+        <value>حدّثه</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedUser.description" xml:space="preserve">
+        <value>المستخدم الذي حدّث هذا الصف مؤخراً، معيَّن من الخادم. للقراءة فقط.</value>
+        <comment>dfe8daba</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedDate" xml:space="preserve">
+        <value>تاريخ التحديث</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedDate.description" xml:space="preserve">
+        <value>طابع وقت آخر تحديث المعيَّن من الخادم. للقراءة فقط.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.version" xml:space="preserve">
+        <value>الإصدار</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.version.description" xml:space="preserve">
+        <value>رقم الإصدار المعيَّن من الخادم، يزداد مع كل تحديث. للقراءة فقط.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Identity" xml:space="preserve">
+        <value>الهوية</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Entity" xml:space="preserve">
+        <value>الكيان</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Output" xml:space="preserve">
+        <value>المخرجات</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Audit" xml:space="preserve">
+        <value>التدقيق</value>
+    </data>
+    <data name="EntityAnalysisModel.hub.Network" xml:space="preserve">
+        <value>الشبكة</value>
+    </data>
+    <data name="EntityAnalysisModel.child.EntityAnalysisModelGraphRecall" xml:space="preserve">
+        <value>استدعاء المخطط</value>
+    </data>
+    <data name="CaseWorkflowXPath.sourceGuid" xml:space="preserve">
+        <value>الحقل المصدر</value>
+    </data>
+    <data name="CaseWorkflowXPath.sourceGuid.description" xml:space="preserve">
+        <value>حقل النموذج الذي يقرأه الاستخراج، يُختار من XPath الطلب والدوال المضمّنة وقواعد التجريد وحسابات التجريد وعدّادات TTL وتكييفات HTTP وقواعد التفعيل لنموذج سير العمل (النموذج نفسه يمثّل مفتاح الإدخال). يُشتق منه مسار JSON ومفتاح الأرشيف ونوع البيانات، ويمكن التعمّق في الاستخراج تمامًا عندما يكون الحقل معلّمًا كمفتاح أرشيف.</value>
+        <comment>9af5ba6a</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.name" xml:space="preserve">
+        <value>الاسم</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.name.description" xml:space="preserve">
+        <value>اسم الإدخال الذي تقرأ به القواعد سجل معلومات IP كـ Svirfd.{Name}.{Member}، مثل Svirfd.Customer.Privacy.Vpn. أحرف وأرقام فقط، يبدأ بحرف؛ فريد داخل النموذج.</value>
+        <comment>26ee861d</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.name.placeholder" xml:space="preserve">
+        <value>مثل Customer</value>
+        <comment>d4f90c87</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.active" xml:space="preserve">
+        <value>نشط</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.active.description" xml:space="preserve">
+        <value>عند التفعيل، يتم البحث عن العنوان في كل استدعاء للنموذج.</value>
+        <comment>a03783be</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.locked" xml:space="preserve">
+        <value>مقفل</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.locked.description" xml:space="preserve">
+        <value>عند التفعيل، يكون هذا الإدخال مقفلاً ولا يمكن تعديله أو حذفه.</value>
+        <comment>d3777afa</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.requestXPathName" xml:space="preserve">
+        <value>الحقل</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.requestXPathName.description" xml:space="preserve">
+        <value>حقل الطلب في هذا النموذج بنوع البيانات IP الذي تكون قيمته هي العنوان الذي يتم البحث عنه.</value>
+        <comment>bfb592ae</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.responsePayload" xml:space="preserve">
+        <value>حمولة الاستجابة</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.responsePayload.description" xml:space="preserve">
+        <value>عند التفعيل، يُعاد سجل معلومات IP بالكامل في JSON الاستجابة تحت Svirfd.</value>
+        <comment>bd6e75d5</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.reportTable" xml:space="preserve">
+        <value>الأرشيف</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.reportTable.description" xml:space="preserve">
+        <value>عند التفعيل، يُكتب السجل في JSON الأرشيف لإعداد التقارير والتدريب وسجل الحالة، الذي يقارنه ببحث جديد لإظهار الانحراف.</value>
+        <comment>08bbf83a</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.narrative" xml:space="preserve">
+        <value>السرد</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.narrative.description" xml:space="preserve">
+        <value>عند التفعيل يُضاف السرد بلغة بسيطة إلى السجل، فيُعاد في الاستجابة ويُؤرشف معه. عطّله ليبقى السجل بيانات فقط.</value>
+        <comment>98a1314b</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdDate" xml:space="preserve">
+        <value>تاريخ الإنشاء</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdDate.description" xml:space="preserve">
+        <value>طابع وقت الإنشاء المعيَّن من الخادم. للقراءة فقط.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdUser" xml:space="preserve">
+        <value>أنشأه</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdUser.description" xml:space="preserve">
+        <value>المستخدم الذي أنشأ هذا الصف، معيَّن من الخادم. للقراءة فقط.</value>
+        <comment>c7492dc3</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedUser" xml:space="preserve">
+        <value>حدّثه</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedUser.description" xml:space="preserve">
+        <value>المستخدم الذي حدّث هذا الصف مؤخراً، معيَّن من الخادم. للقراءة فقط.</value>
+        <comment>dfe8daba</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedDate" xml:space="preserve">
+        <value>تاريخ التحديث</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedDate.description" xml:space="preserve">
+        <value>طابع وقت آخر تحديث المعيَّن من الخادم. للقراءة فقط.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.version" xml:space="preserve">
+        <value>الإصدار</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.version.description" xml:space="preserve">
+        <value>رقم الإصدار المعيَّن من الخادم، يزداد مع كل تحديث. للقراءة فقط.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.column.name" xml:space="preserve">
+        <value>الاسم</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.column.active" xml:space="preserve">
+        <value>نشط</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.column.requestXPathName" xml:space="preserve">
+        <value>الحقل</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Identity" xml:space="preserve">
+        <value>الهوية</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Field" xml:space="preserve">
+        <value>الحقل</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Output" xml:space="preserve">
+        <value>المخرجات</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Audit" xml:space="preserve">
+        <value>التدقيق</value>
+    </data>
+    <data name="EntityAnalysisModel.child.EntityAnalysisModelSvirfd" xml:space="preserve">
+        <value>Svirfd</value>
+    </data>
+    <data name="option.FieldDataType.Ip" xml:space="preserve">
+        <value>IP</value>
+    </data>
+    <data name="TenantRegistry.svirfdRemoteLookupsEnabled" xml:space="preserve">
+        <value>عمليات البحث عن بُعد في Svirfd</value>
+    </data>
+    <data name="TenantRegistry.svirfdRemoteLookupsEnabled.description" xml:space="preserve">
+        <value>عند الإيقاف لا يُرسل أي عنوان IP لهذا المستأجر إلى خدمة Svirfd البعيدة. لا تتأثر عمليات البحث المحلية وعمليات بحث الدليل. وحده الـ landlord يستطيع تغيير ذلك.</value>
+        <comment>8c1916e8</comment>
+    </data>
+    <data name="TenantRegistry.group.DataProtection" xml:space="preserve">
+        <value>حماية البيانات</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationUrl" xml:space="preserve">
+        <value>عنوان URL لتكييف HTTP</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationTimeoutMilliseconds" xml:space="preserve">
+        <value>مهلة تكييف HTTP (بالمللي ثانية)</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationValidateSsl" xml:space="preserve">
+        <value>التحقق من SSL لتكييف HTTP</value>
+    </data>
+    <data name="TenantRegistry.group.HttpAdaptation" xml:space="preserve">
+        <value>تكييف HTTP</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationUrl.description" xml:space="preserve">
+        <value>للـ landlord فقط. عنوان URL الأساسي الذي تُلحق به نقاط نهاية تكييف HTTP الخاصة بهذا المستأجر. اتركه فارغاً لاستخدام HttpAdaptationUrl المعتمد على مستوى التثبيت. يجب أن يكون عنوان https إلى مضيف عام دون بيانات اعتماد أو سلسلة استعلام أو جزء.</value>
+        <comment>ee19d732</comment>
+    </data>
+    <data name="TenantRegistry.httpAdaptationTimeoutMilliseconds.description" xml:space="preserve">
+        <value>للـ landlord فقط. مهلة بالمللي ثانية لاستدعاءات تكييف HTTP الخاصة بهذا المستأجر، بين 100 و30000. الصفر يعني استخدام HttpAdaptationTimeout المعتمد على مستوى التثبيت.</value>
+        <comment>f8d39b15</comment>
+    </data>
+    <data name="TenantRegistry.httpAdaptationValidateSsl.description" xml:space="preserve">
+        <value>للـ landlord فقط. عند التفعيل يتم التحقق من شهادة TLS لنقطة نهاية تكييف HTTP الخاصة بهذا المستأجر. ينطبق فقط عند تعيين HttpAdaptationUrl للمستأجر.</value>
+        <comment>2cf1b2e6</comment>
+    </data>
+    <data name="TenantRegistry.httpAdaptationUrl.placeholder" xml:space="preserve">
+        <value>https://scoring.example.com</value>
+        <comment>9591a0fb</comment>
+    </data>
+    <data name="TenantRegistry.name.description" xml:space="preserve">
+        <value>الاسم المعروض للمستأجر، ويظهر في مبدّل المستأجرين وفي الإدارة &gt; الأمان &gt; المستأجرون. فريد بين جميع المستأجرين في التثبيت (ليس لهذا الجدول نطاق أصل خاص به ليكون فريدًا ضمنه).</value>
+        <comment>9a55131b</comment>
+    </data>
+    <data name="TenantRegistry.name.placeholder" xml:space="preserve">
+        <value>مثال: Acme Bank</value>
+        <comment>c18a9b46</comment>
+    </data>
+    <data name="TenantRegistry.active.description" xml:space="preserve">
+        <value>عندما تكون القيمة صحيحة يكون المستأجر متاحًا للاستخدام (مثلًا يمكن اختياره عبر مبدّل المستأجرين).</value>
+        <comment>81029c1e</comment>
+    </data>
+    <data name="TenantRegistry.locked.description" xml:space="preserve">
+        <value>عندما تكون القيمة صحيحة يكون المستأجر مقفلًا للقراءة فقط ولا يمكن تعديله أو حذفه.</value>
+        <comment>01ae7e98</comment>
+    </data>
+    <data name="TenantRegistry.createdDate.description" xml:space="preserve">
+        <value>طابع زمني للإنشاء يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="TenantRegistry.createdUser.description" xml:space="preserve">
+        <value>المستخدم الذي أنشأ هذا المستأجر، يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>8352b7ce</comment>
+    </data>
+    <data name="TenantRegistry.updatedUser.description" xml:space="preserve">
+        <value>المستخدم الذي حدّث هذا المستأجر مؤخرًا، يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>6fe961d0</comment>
+    </data>
+    <data name="TenantRegistry.updatedDate.description" xml:space="preserve">
+        <value>طابع زمني لآخر تحديث يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="TenantRegistry.version.description" xml:space="preserve">
+        <value>رقم إصدار يعيّنه الخادم ويزداد مع كل تحديث. للقراءة فقط.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="RoleRegistry.name.description" xml:space="preserve">
+        <value>الاسم المعروض للدور، ويظهر للمسؤولين عند تخصيص الأذونات أو المستخدمين. فريد ضمن المستأجر (بغض النظر عن حالة الأحرف).</value>
+        <comment>31293430</comment>
+    </data>
+    <data name="RoleRegistry.name.placeholder" xml:space="preserve">
+        <value>مثال: محلل احتيال</value>
+        <comment>07225315</comment>
+    </data>
+    <data name="RoleRegistry.active.description" xml:space="preserve">
+        <value>عندما تكون القيمة صحيحة يكون الدور متاحًا للتخصيص لمستخدم أو لنموذج.</value>
+        <comment>bd788127</comment>
+    </data>
+    <data name="RoleRegistry.locked.description" xml:space="preserve">
+        <value>عندما تكون القيمة صحيحة يكون الدور مقفلًا للقراءة فقط ولا يمكن تعديله أو حذفه.</value>
+        <comment>5ae0abde</comment>
+    </data>
+    <data name="RoleRegistry.createdDate.description" xml:space="preserve">
+        <value>طابع زمني للإنشاء يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="RoleRegistry.createdUser.description" xml:space="preserve">
+        <value>المستخدم الذي أنشأ هذا الدور، يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>8ec04d32</comment>
+    </data>
+    <data name="RoleRegistry.updatedUser.description" xml:space="preserve">
+        <value>المستخدم الذي حدّث هذا الدور مؤخرًا، يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>fb01581b</comment>
+    </data>
+    <data name="RoleRegistry.updatedDate.description" xml:space="preserve">
+        <value>طابع زمني لآخر تحديث يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="RoleRegistry.version.description" xml:space="preserve">
+        <value>رقم إصدار يعيّنه الخادم ويزداد مع كل تحديث. للقراءة فقط.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="RoleRegistryPermission.permissionSpecificationId.description" xml:space="preserve">
+        <value>معرّف مواصفة الإذن الممنوح للدور -- العدد الصحيح نفسه الذي يُبنى عليه فحص الإذن في كل خدمة. يجب أن يشير إلى صف موجود في كتالوج مواصفات الأذونات.</value>
+        <comment>a04fe2e8</comment>
+    </data>
+    <data name="RoleRegistryPermission.active.description" xml:space="preserve">
+        <value>عندما تكون القيمة صحيحة يُطبَّق منح هذا الإذن. وعندما تكون خاطئة يُتجاهل ولا يحصل الدور على الإذن.</value>
+        <comment>f16785e0</comment>
+    </data>
+    <data name="RoleRegistryPermission.locked.description" xml:space="preserve">
+        <value>عندما تكون القيمة صحيحة يكون هذا المنح مقفلًا ولا يمكن تعديله أو حذفه.</value>
+        <comment>51b4242c</comment>
+    </data>
+    <data name="RoleRegistryPermission.createdUser.description" xml:space="preserve">
+        <value>المستخدم الذي أنشأ هذا الصف. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>3b8cd8cf</comment>
+    </data>
+    <data name="RoleRegistryPermission.createdDate.description" xml:space="preserve">
+        <value>الطابع الزمني (UTC) لإنشاء هذا الصف. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>bb91d7cb</comment>
+    </data>
+    <data name="RoleRegistryPermission.updatedUser.description" xml:space="preserve">
+        <value>المستخدم الذي حدّث هذا الصف آخر مرة. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>eeb46a72</comment>
+    </data>
+    <data name="RoleRegistryPermission.updatedDate.description" xml:space="preserve">
+        <value>الطابع الزمني (UTC) لآخر تحديث لهذا الصف. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>666366bf</comment>
+    </data>
+    <data name="RoleRegistryPermission.version.description" xml:space="preserve">
+        <value>رقم إصدار التزامن المتفائل الذي يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>755d4fe7</comment>
+    </data>
+    <data name="PermissionSpecification.id.description" xml:space="preserve">
+        <value>المعرّف العددي الصحيح لمواصفة الإذن هذه الذي يعيّنه الخادم -- العدد الصحيح نفسه الذي تُبنى عليه فحوص الأذونات في كل خدمة. للقراءة فقط: يُملأ الكتالوج عبر ترحيل قاعدة البيانات ولا يُنشأ أو يُعدَّل عبر واجهة البرمجة هذه.</value>
+        <comment>d881018b</comment>
+    </data>
+    <data name="PermissionSpecification.name.description" xml:space="preserve">
+        <value>الاسم المعروض لمواصفة الإذن، ويظهر في القائمة المنسدلة للأذونات عند منح أذونات الدور. للقراءة فقط: يُملأ الكتالوج عبر ترحيل قاعدة البيانات ولا يُنشأ أو يُعدَّل عبر واجهة البرمجة هذه.</value>
+        <comment>cda60556</comment>
+    </data>
+    <data name="UserRegistry.name.description" xml:space="preserve">
+        <value>اسم تسجيل دخول المستخدم، ويطابق مطالبة Name في رمز JSON Web Token الصادر عند المصادقة. فريد ضمن المستأجر.</value>
+        <comment>1114b6a1</comment>
+    </data>
+    <data name="UserRegistry.roleRegistryGuid.description" xml:space="preserve">
+        <value>معرّف سجل الأدوار الذي عُيّن إليه هذا المستخدم. يحدد مستأجر المستخدم والأذونات التي يملكها.</value>
+        <comment>f99c9842</comment>
+    </data>
+    <data name="UserRegistry.email.description" xml:space="preserve">
+        <value>عنوان البريد الإلكتروني للمستخدم، ويُستخدم لتحديد صاحب الحساب. لا يُستخدم لتسليم كلمة المرور المؤقتة، التي تُعاد مرة واحدة إلى من أعاد تعيينها.</value>
+        <comment>2767b97d</comment>
+    </data>
+    <data name="UserRegistry.email.placeholder" xml:space="preserve">
+        <value>name@example.com</value>
+        <comment>7b17fb0b</comment>
+    </data>
+    <data name="UserRegistry.wirePasswordHash.description" xml:space="preserve">
+        <value>عندما تكون القيمة صحيحة تُملَّح كلمة المرور المؤقتة الصادرة عن إجراء إعادة تعيين كلمة المرور إضافيًا باسم المستخدم (Name) وتُجزَّأ بـ SHA-256 قبل تجزئة Argon2 (صيغة كلمة المرور 'wire' التي تتوقعها بعض تكاملات العملاء). لا يغيّر طريقة عرض كلمة المرور لمن يجري إعادة التعيين.</value>
+        <comment>13612f72</comment>
+    </data>
+    <data name="UserRegistry.passwordLocked.description" xml:space="preserve">
+        <value>عندما تكون القيمة صحيحة يكون الحساب مقفلًا بعد محاولات كلمة مرور فاشلة متكررة ولا يمكنه المصادقة حتى تزيل إعادة تعيين كلمة المرور القفل. للقراءة فقط هنا؛ لا يُزال إلا بإجراء إعادة تعيين كلمة المرور.</value>
+        <comment>6c727df1</comment>
+    </data>
+    <data name="UserRegistry.id.description" xml:space="preserve">
+        <value>معرّف الصف الذي يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>254b452e</comment>
+    </data>
+    <data name="UserRegistry.createdUser.description" xml:space="preserve">
+        <value>المستخدم الذي أنشأ هذا الحساب. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>7eb019f3</comment>
+    </data>
+    <data name="UserRegistry.createdDate.description" xml:space="preserve">
+        <value>الطابع الزمني (UTC) لإنشاء هذا الحساب. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>2c31adef</comment>
+    </data>
+    <data name="UserRegistry.version.description" xml:space="preserve">
+        <value>رقم إصدار التزامن المتفائل الذي يعيّنه الخادم ويزداد مع كل تحديث. للقراءة فقط.</value>
+        <comment>937d398b</comment>
+    </data>
+    <data name="UserRegistry.inheritedId.description" xml:space="preserve">
+        <value>معرّف منقول من استيراد حفظ لصف تثبيت سابق، إذا كان هذا الحساب قد نشأ منه. لا يُملأ ولا يُستخدم بخلاف ذلك. للقراءة فقط.</value>
+        <comment>cacf7d8d</comment>
+    </data>
+    <data name="UserRegistry.active.description" xml:space="preserve">
+        <value>عندما تكون القيمة صحيحة يمكن للمستخدم المصادقة. وعندما تكون خاطئة يُرفض تسجيل الدخول بصرف النظر عن صحة كلمة المرور.</value>
+        <comment>13f02082</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.name.description" xml:space="preserve">
+        <value>اسم عدّاد OpenTelemetry الذي يزداد عند المطابقة، مثل "jube.logcounter.postgres_deadlock". فريد بين الصفوف النشطة بغض النظر عن حالة الأحرف. أحرف وأرقام و'.' و'_' و'-' فقط، وفق اصطلاحات تسمية أدوات OpenTelemetry.</value>
+        <comment>49fd6ad9</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.name.placeholder" xml:space="preserve">
+        <value>jube.logcounter.postgres_deadlock</value>
+        <comment>415927e2</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.regex.description" xml:space="preserve">
+        <value>تعبير نمطي لـ .NET يُفحص مقابل كل سطر/رسالة سجل غير منظمة تصل إلى هذه النسخة (ApplicationLogEntry وPostgresLogEntry وContainerLogEntry وRespSlowOperation وEtcdClusterEvent وPatroniClusterEvent). كل مطابقة تزيد Name بواحد. يجب أن يُترجم -- يُتحقق منه عند الحفظ لا عند المطابقة. تعمل المطابقة في زمن خطي حيثما يسمح النمط؛ والأنماط التي تستخدم النظر الأمامي أو المراجع الخلفية أو المجموعات الذرية تعود إلى مطابِق تراجعي محدود بـ 100 مللي ثانية لكل سطر، وتُعلَّق القاعدة التي تتجاوز المهلة في خمسة أسطر متتالية حتى التحديث التالي بعد دقيقة.</value>
+        <comment>dfb2a18d</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.regex.placeholder" xml:space="preserve">
+        <value>deadlock detected</value>
+        <comment>5561729c</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.active.description" xml:space="preserve">
+        <value>عندما تكون القيمة صحيحة تُفحص هذه القاعدة مقابل أسطر السجل الواردة. وعندما تكون خاطئة تُتجاهل (ويتوقف عدّادها ببساطة عن الزيادة -- لا يُحذف الصف).</value>
+        <comment>d7167dd5</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.locked.description" xml:space="preserve">
+        <value>عندما تكون القيمة صحيحة يكون هذا الصف مقفلًا ولا يمكن تعديله أو حذفه.</value>
+        <comment>c9f595ac</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.createdUser.description" xml:space="preserve">
+        <value>المستخدم الذي أنشأ هذا الصف. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>3b8cd8cf</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.createdDate.description" xml:space="preserve">
+        <value>الطابع الزمني (UTC) لإنشاء هذا الصف. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>bb91d7cb</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.updatedUser.description" xml:space="preserve">
+        <value>المستخدم الذي حدّث هذا الصف آخر مرة. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>eeb46a72</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.updatedDate.description" xml:space="preserve">
+        <value>الطابع الزمني (UTC) لآخر تحديث لهذا الصف. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>666366bf</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.version.description" xml:space="preserve">
+        <value>رقم إصدار التزامن المتفائل الذي يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>755d4fe7</comment>
+    </data>
+    <data name="OpenTelemetryExclude.name.description" xml:space="preserve">
+        <value>الاسم الدقيق لأداة/عدّاد OpenTelemetry المطلوب إيقاف تصديره، مثل "jube.engine.logs.warn.count". يُطابق بالكامل بغض النظر عن حالة الأحرف -- بلا أحرف بدل. أحرف وأرقام و'.' و'_' و'/' و'-' فقط. فريد بين الصفوف النشطة. ينطبق على كل أداة، بما فيها تلك التي ينشئها OpenTelemetryLogCounter ديناميكيًا: الاسم المستبعد هناك لا يُنشأ أصلًا فلا يبدأ بالزيادة أبدًا. أما أي عدّاد مسمّى آخر موجود مسبقًا فلا يسري ذلك إلا على أداة لا تصدّر فعليًا بعد -- أما التي تصدّر فتواصل حتى إعادة تشغيل العملية.</value>
+        <comment>7e24ca9e</comment>
+    </data>
+    <data name="OpenTelemetryExclude.name.placeholder" xml:space="preserve">
+        <value>jube.engine.logs.warn.count</value>
+        <comment>2ddc8a48</comment>
+    </data>
+    <data name="OpenTelemetryExclude.active.description" xml:space="preserve">
+        <value>عندما تكون القيمة صحيحة يُطبَّق هذا الاستبعاد. وعندما تكون خاطئة يُتجاهل (تُصدَّر الأداة بشكل طبيعي مع مراعاة أي استبعاد آخر).</value>
+        <comment>7d0dc62e</comment>
+    </data>
+    <data name="OpenTelemetryExclude.locked.description" xml:space="preserve">
+        <value>عندما تكون القيمة صحيحة يكون هذا الصف مقفلًا ولا يمكن تعديله أو حذفه.</value>
+        <comment>c9f595ac</comment>
+    </data>
+    <data name="OpenTelemetryExclude.createdUser.description" xml:space="preserve">
+        <value>المستخدم الذي أنشأ هذا الصف. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>3b8cd8cf</comment>
+    </data>
+    <data name="OpenTelemetryExclude.createdDate.description" xml:space="preserve">
+        <value>الطابع الزمني (UTC) لإنشاء هذا الصف. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>bb91d7cb</comment>
+    </data>
+    <data name="OpenTelemetryExclude.updatedUser.description" xml:space="preserve">
+        <value>المستخدم الذي حدّث هذا الصف آخر مرة. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>eeb46a72</comment>
+    </data>
+    <data name="OpenTelemetryExclude.updatedDate.description" xml:space="preserve">
+        <value>الطابع الزمني (UTC) لآخر تحديث لهذا الصف. يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>666366bf</comment>
+    </data>
+    <data name="OpenTelemetryExclude.version.description" xml:space="preserve">
+        <value>رقم إصدار التزامن المتفائل الذي يعيّنه الخادم. للقراءة فقط.</value>
+        <comment>755d4fe7</comment>
+    </data>
+</root>

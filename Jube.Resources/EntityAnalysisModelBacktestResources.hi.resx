@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>आपको यह कार्रवाई करने की अनुमति नहीं है।</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>यह कार्रवाई करने के लिए आपको किसी टेनेंट में साइन इन होना चाहिए।</value>
+  </data>
+    <data name="ModelNotFound" xml:space="preserve">
+    <value>एंटिटी विश्लेषण मॉडल नहीं मिला।</value>
+  </data>
+    <data name="RuleTypeInvalid" xml:space="preserve">
+    <value>नियम प्रकार {0} का बैकटेस्ट नहीं किया जा सकता; GatewayRule, ActivationRule या ReprocessingRule का उपयोग करें।</value>
+  </data>
+    <data name="RangeInvalid" xml:space="preserve">
+    <value>प्रारंभ तिथि समाप्ति तिथि से पहले की होनी चाहिए।</value>
+  </data>
+    <data name="InstanceNotFound" xml:space="preserve">
+    <value>बैकटेस्ट नहीं मिला।</value>
+  </data>
+    <data name="RuleTextRequired" xml:space="preserve">
+    <value>बैकटेस्ट के लिए एक नियम आवश्यक है।</value>
+  </data>
+    <data name="ArchiveNotFound" xml:space="preserve">
+    <value>यह लेन-देन इस मॉडल के संग्रह में नहीं है।</value>
+  </data>
+    <data name="LimitTooLarge" xml:space="preserve">
+    <value>तत्काल बैकटेस्ट अधिकतम {0} लेन-देन पढ़ता है; अधिक पढ़ने के लिए इसे बैकग्राउंड बैकटेस्ट के रूप में सबमिट करें।</value>
+  </data>
+    <data name="ResultUnavailable" xml:space="preserve">
+    <value>बैकटेस्ट की स्थिति {0} है और उसका कोई परिणाम नहीं है।</value>
+  </data>
+    <data name="OnlineTimeLimit" xml:space="preserve">
+    <value>तत्काल बैकटेस्ट {0} सेकंड के बाद रुक जाता है; सीमा या अवधि घटाएँ, या इसे बैकग्राउंड बैकटेस्ट के रूप में सबमिट करें।</value>
+  </data>
+    <data name="PendingLimitModel" xml:space="preserve">
+    <value>इस मॉडल के पास पहले से {0} बैकटेस्ट प्रतीक्षा में या चल रहे हैं; नया सबमिट करने से पहले किसी एक के पूरा होने की प्रतीक्षा करें या किसी एक को रोकें।</value>
+  </data>
+    <data name="PendingLimitTenant" xml:space="preserve">
+    <value>आपके संगठन के पास पहले से {0} बैकटेस्ट प्रतीक्षा में या चल रहे हैं; नया सबमिट करने से पहले किसी एक के पूरा होने की प्रतीक्षा करें या किसी एक को रोकें।</value>
+  </data>
+    <data name="PlaceholderNotInRule" xml:space="preserve">
+    <value>नियम के पाठ में प्लेसहोल्डर होना चाहिए।</value>
+  </data>
+    <data name="CandidatesInvalid" xml:space="preserve">
+    <value>1 से {0} तक उम्मीदवार दें, प्रत्येक एक सादी संख्या हो।</value>
+  </data>
+</root>

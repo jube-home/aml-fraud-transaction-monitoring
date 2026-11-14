@@ -136,6 +136,18 @@ namespace Jube.Validations.ExhaustiveSearchInstance
                     ParameterErrors(json)))
                 .WithErrorCode("AnomalyParametersInvalid");
 
+            RuleFor(p => p.BootstrapWeightFactor)
+                .InclusiveBetween(0d, 1d)
+                .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.BootstrapWeightFactorRange])
+                .WithErrorCode("BootstrapWeightFactorRange")
+                .When(p => p.BootstrapWeightFactor.HasValue);
+
+            RuleFor(p => p.ChallengerModelBaseProbability)
+                .InclusiveBetween(0d, 1d)
+                .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.ChallengerModelBaseProbabilityRange])
+                .WithErrorCode("ChallengerModelBaseProbabilityRange")
+                .When(p => p.ChallengerModelBaseProbability.HasValue);
+
             RuleFor(p => p.BaseRate)
                 .Must(v => v is null || (v > 0 && v < 1))
                 .WithMessage(_ => localiser[ExhaustiveSearchInstanceResources.BaseRateRange])

@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
+            [Description("True when: the last day of the month. Decides matched if so; otherwise continues.")]
             public Flow<DateTime> MatchIsEndOfMonth()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeIsEndOfMonth(flow.Value));
             }
 
+            [Description("True when: the last day of the month. Decides rejected if so; otherwise continues.")]
             public Flow<DateTime> RejectIsEndOfMonth()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeIsEndOfMonth(flow.Value));
             }
 
+            [Description("True when: the last day of the month. Decides broken if so; otherwise continues.")]
             public Flow<DateTime> BreakIsEndOfMonth()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeIsEndOfMonth(flow.Value));
             }
 
+            [Description("True when: the last day of the month. Continues if so; otherwise decides rejected.")]
             public Flow<DateTime> RequireIsEndOfMonth()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeIsEndOfMonth(flow.Value));
             }
 
+            [Description("True when: the last day of the month. Continues if so; otherwise decides broken.")]
             public Flow<DateTime> EnsureIsEndOfMonth()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
+            [Description("Begins a pipeline from the value. True when: the last day of the month. Decides matched if so; otherwise continues.")]
             public Flow<DateTime> MatchIsEndOfMonth()
             {
                 return value.Start().MatchIsEndOfMonth();
             }
 
+            [Description("Begins a pipeline from the value. True when: the last day of the month. Decides rejected if so; otherwise continues.")]
             public Flow<DateTime> RejectIsEndOfMonth()
             {
                 return value.Start().RejectIsEndOfMonth();
             }
 
+            [Description("Begins a pipeline from the value. True when: the last day of the month. Decides broken if so; otherwise continues.")]
             public Flow<DateTime> BreakIsEndOfMonth()
             {
                 return value.Start().BreakIsEndOfMonth();
             }
 
+            [Description("Begins a pipeline from the value. True when: the last day of the month. Continues if so; otherwise decides rejected.")]
             public Flow<DateTime> RequireIsEndOfMonth()
             {
                 return value.Start().RequireIsEndOfMonth();
             }
 
+            [Description("Begins a pipeline from the value. True when: the last day of the month. Continues if so; otherwise decides broken.")]
             public Flow<DateTime> EnsureIsEndOfMonth()
             {
                 return value.Start().EnsureIsEndOfMonth();

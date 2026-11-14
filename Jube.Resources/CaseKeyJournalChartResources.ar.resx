@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="WeekdayMon" xml:space="preserve">
+        <value>الاثنين</value>
+    </data>
+    <data name="WeekdayTue" xml:space="preserve">
+        <value>الثلاثاء</value>
+    </data>
+    <data name="WeekdayWed" xml:space="preserve">
+        <value>الأربعاء</value>
+    </data>
+    <data name="WeekdayThu" xml:space="preserve">
+        <value>الخميس</value>
+    </data>
+    <data name="WeekdayFri" xml:space="preserve">
+        <value>الجمعة</value>
+    </data>
+    <data name="WeekdaySat" xml:space="preserve">
+        <value>السبت</value>
+    </data>
+    <data name="WeekdaySun" xml:space="preserve">
+        <value>الأحد</value>
+    </data>
+    <data name="BucketHour" xml:space="preserve">
+        <value>ساعة</value>
+    </data>
+    <data name="BucketDay" xml:space="preserve">
+        <value>يوم</value>
+    </data>
+    <data name="BucketWeek" xml:space="preserve">
+        <value>أسبوع</value>
+    </data>
+    <data name="BucketMonth" xml:space="preserve">
+        <value>شهر</value>
+    </data>
+    <data name="ProgressionTitle" xml:space="preserve">
+        <value>{0} عبر الزمن</value>
+    </data>
+    <data name="ProgressionSubtitle" xml:space="preserve">
+        <value>الوسيط لكل {0}، الأحدث {1}</value>
+    </data>
+    <data name="DistributionTitle" xml:space="preserve">
+        <value>توزيع {0}</value>
+    </data>
+    <data name="DistributionSubtitle" xml:space="preserve">
+        <value>القيمة الأحدث، {0}، عند المئين {1} من {2} معاملة</value>
+    </data>
+    <data name="Transactions" xml:space="preserve">
+        <value>المعاملات</value>
+    </data>
+    <data name="VelocityTitle" xml:space="preserve">
+        <value>متى تحدث المعاملات</value>
+    </data>
+    <data name="VelocitySubtitle" xml:space="preserve">
+        <value>حسب يوم الأسبوع والساعة (UTC)</value>
+    </data>
+    <data name="Hour" xml:space="preserve">
+        <value>الساعة</value>
+    </data>
+    <data name="Weekday" xml:space="preserve">
+        <value>يوم الأسبوع</value>
+    </data>
+    <data name="GapsTitle" xml:space="preserve">
+        <value>الوقت بين المعاملات</value>
+    </data>
+    <data name="GapsSubtitle" xml:space="preserve">
+        <value>المدة التي كان فيها المفتاح خاملًا قبل كل معاملة</value>
+    </data>
+    <data name="CounterpartiesTitle" xml:space="preserve">
+        <value>الأطراف المقابلة لـ {0}</value>
+    </data>
+    <data name="CounterpartiesSubtitle" xml:space="preserve">
+        <value>{0} مختلفة، {1} جديدة في آخر 30 يومًا</value>
+    </data>
+    <data name="CorrelationTitle" xml:space="preserve">
+        <value>كيف تتحرك المقاييس معًا</value>
+    </data>
+    <data name="CorrelationSubtitle" xml:space="preserve">
+        <value>ارتباط بيرسون، من -1 إلى 1</value>
+    </data>
+    <data name="DriftTitle" xml:space="preserve">
+        <value>الانجراف بين السجل السابق والحديث</value>
+    </data>
+    <data name="DriftSubtitle" xml:space="preserve">
+        <value>المسافة بين النصفين؛ ما فوق القيمة الحرجة انجرف</value>
+    </data>
+    <data name="Distance" xml:space="preserve">
+        <value>المسافة</value>
+    </data>
+    <data name="Critical" xml:space="preserve">
+        <value>الحرجة</value>
+    </data>
+    <data name="ContributionMoved" xml:space="preserve">
+        <value>{0}: ما الذي حرّك الدرجة</value>
+    </data>
+    <data name="ContributionPushed" xml:space="preserve">
+        <value>{0}: ما الذي رفع الدرجة</value>
+    </data>
+    <data name="BaseSubtitle" xml:space="preserve">
+        <value>من القيمة الأساسية {0}</value>
+    </data>
+    <data name="InSpace" xml:space="preserve">
+        <value> في {0}</value>
+    </data>
+    <data name="HiddenInputs" xml:space="preserve">
+        <value>؛ {0} مدخلات مخفية</value>
+    </data>
+    <data name="BaseValue" xml:space="preserve">
+        <value>القيمة الأساسية</value>
+    </data>
+    <data name="VisibleInputs" xml:space="preserve">
+        <value>المدخلات الظاهرة</value>
+    </data>
+    <data name="Score" xml:space="preserve">
+        <value>الدرجة</value>
+    </data>
+    <data name="RelativeContributions" xml:space="preserve">
+        <value>المساهمات النسبية</value>
+    </data>
+    <data name="ByMethod" xml:space="preserve">
+        <value> حسب {0}</value>
+    </data>
+    <data name="NotAdditive" xml:space="preserve">
+        <value>، غير تراكمية</value>
+    </data>
+    <data name="Contribution" xml:space="preserve">
+        <value>المساهمة</value>
+    </data>
+    <data name="GaugeThreshold" xml:space="preserve">
+        <value>العتبة {0}</value>
+    </data>
+    <data name="GaugeNoThreshold" xml:space="preserve">
+        <value>لم تُعلن أي عتبة</value>
+    </data>
+    <data name="GaugeCalibrated" xml:space="preserve">
+        <value>احتمال معايَر {0} · {1} · {2}</value>
+    </data>
+    <data name="GaugeScore" xml:space="preserve">
+        <value>الدرجة {0} (ليست احتمالًا) · {1}</value>
+    </data>
+    <data name="DriversMoved" xml:space="preserve">
+        <value>ما الذي حرّك {0}</value>
+    </data>
+    <data name="DriversPushed" xml:space="preserve">
+        <value>ما الذي رفع {0}</value>
+    </data>
+    <data name="RelativeNotAdditive" xml:space="preserve">
+        <value>المساهمات النسبية، غير تراكمية</value>
+    </data>
+    <data name="OtherInputs" xml:space="preserve">
+        <value>{0} مدخلات أخرى</value>
+    </data>
+    <data name="CalibrationTitle" xml:space="preserve">
+        <value>{0}: هل عنت الدرجة ما قالته</value>
+    </data>
+    <data name="CalibrationValidated" xml:space="preserve">
+        <value>تم التحقق على {0} حالات</value>
+    </data>
+    <data name="CalibrationExpected" xml:space="preserve">
+        <value>المتوقع مقابل الملاحظ</value>
+    </data>
+</root>

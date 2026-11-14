@@ -19,21 +19,28 @@ namespace Jube.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
     internal static class EntityAnalysisModelActivationRuleOverrideQueryMapper
     {
         public static EntityAnalysisModelActivationRuleOverrideQueryDto ToDto(
-            global::Jube.Data.Query.Models.EntityAnalysisModelActivationRuleOverrideQueryRow source) => new()
+            global::Jube.Data.Query.Models.EntityAnalysisModelActivationRuleOverrideQueryRow source)
         {
-            Name = source.Name,
-            HasOverride = source.HasOverride,
-            OverrideKind = source.OverrideKind == (byte)EntityAnalysisModelOverrideKind.Force
-                ? EntityAnalysisModelOverrideKind.Force
-                : EntityAnalysisModelOverrideKind.Suppress,
-            EntityAnalysisModelActivationRuleOverrideId = source.EntityAnalysisModelActivationRuleOverrideId,
-            EnableForce = source.EnableForce,
-            EntityAnalysisModelGuid = source.EntityAnalysisModelGuid,
-            DeleteExpiryDate = source.DeleteExpiryDate
-        };
+            return new EntityAnalysisModelActivationRuleOverrideQueryDto
+            {
+                Name = source.Name,
+                HasOverride = source.HasOverride,
+                OverrideKind = source.OverrideKind == (byte)EntityAnalysisModelOverrideKind.Force
+                    ? EntityAnalysisModelOverrideKind.Force
+                    : EntityAnalysisModelOverrideKind.Suppress,
+                EntityAnalysisModelActivationRuleOverrideId = source.EntityAnalysisModelActivationRuleOverrideId,
+                EnableForce = source.EnableForce,
+                EntityAnalysisModelGuid = source.EntityAnalysisModelGuid,
+                DeleteExpiryDate = source.DeleteExpiryDate,
+                OverrideId = source.OverrideId,
+                PendingRemoval = source.PendingRemoval
+            };
+        }
 
         public static List<EntityAnalysisModelActivationRuleOverrideQueryDto> ToDto(
-            IEnumerable<global::Jube.Data.Query.Models.EntityAnalysisModelActivationRuleOverrideQueryRow> source) =>
-            source.Select(ToDto).ToList();
+            IEnumerable<global::Jube.Data.Query.Models.EntityAnalysisModelActivationRuleOverrideQueryRow> source)
+        {
+            return source.Select(ToDto).ToList();
+        }
     }
 }

@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Svirfd;
+
 namespace Jube.Data.Query.GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQuery
 {
     using System.Collections.Generic;
@@ -18,6 +20,8 @@ namespace Jube.Data.Query.GetEntityAnalysisModelFieldByEntityAnalysisModelIdPars
     using System.Text.Json;
     using System.Threading;
     using System.Threading.Tasks;
+    using Analytics.Datasets;
+    using GraphRecallProtocol;
     using Context;
     using Helpers;
     using Poco;
@@ -141,6 +145,14 @@ namespace Jube.Data.Query.GetEntityAnalysisModelFieldByEntityAnalysisModelIdPars
 
                             getModelFieldByParserTypeIdDto.DataTypeId = 7;
                             getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "double";
+
+                            break;
+                        case 8:
+                            getModelFieldByParserTypeIdDto.ValueSqlPath
+                                = $"(\"Json\"-> 'payload' ->> '{SqlLiteral(entityAnalysisModelRequestXpath.Name)}')";
+
+                            getModelFieldByParserTypeIdDto.JQueryBuilderDataType = "string";
+                            getModelFieldByParserTypeIdDto.DataTypeId = 8;
 
                             break;
                     }
@@ -433,6 +445,53 @@ namespace Jube.Data.Query.GetEntityAnalysisModelFieldByEntityAnalysisModelIdPars
                             ProcessingTypeId = 7
                         })
                 );
+            }
+
+            if (reporting || parserTypeId >= 5)
+            {
+                var entityAnalysisModelGraphRecallRepository =
+                    new EntityAnalysisModelGraphRecallRepository(dbContext, tenantRegistryId);
+
+                var entityAnalysisModelGraphRecalls = (await entityAnalysisModelGraphRecallRepository
+                        .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false))
+                    .Where(w => w.Active == 1);
+
+                getModelFieldByParserTypeIdDtoList.AddRange(entityAnalysisModelGraphRecalls.SelectMany(entity =>
+                    GraphEntityMembers.Scalars.Select(member =>
+                        new GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQueryDto
+                        {
+                            Name = $"Graph.{entity.Name}.{member.Name}",
+                            Value = $"Graph.{entity.Name}.{member.Name}",
+                            ValueJsonPath = $"graph.{entity.Name}.{member.JsonPath}",
+                            ValueSqlPath = member.SqlPath(SqlLiteral(entity.Name)),
+                            DataTypeId = member.DataTypeId,
+                            JQueryBuilderDataType = member.JQueryBuilderDataType,
+                            Group = "Graph",
+                            ProcessingTypeId = DatasetProcessingTypes.Graph
+                        })));
+            }
+
+            {
+                var entityAnalysisModelSvirfdRepository =
+                    new EntityAnalysisModelSvirfdRepository(dbContext, tenantRegistryId);
+
+                var entityAnalysisModelSvirfds = (await entityAnalysisModelSvirfdRepository
+                        .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false))
+                    .Where(w => w.Active == 1);
+
+                getModelFieldByParserTypeIdDtoList.AddRange(entityAnalysisModelSvirfds.SelectMany(entity =>
+                    SvirfdMembers.Scalars.Select(member =>
+                        new GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQueryDto
+                        {
+                            Name = $"Svirfd.{entity.Name}.{member.Name}",
+                            Value = $"Svirfd.{entity.Name}.{member.Name}",
+                            ValueJsonPath = $"svirfd.{entity.Name}.{member.JsonPath}",
+                            ValueSqlPath = member.SqlPath(SqlLiteral(entity.Name)),
+                            DataTypeId = member.DataTypeId,
+                            JQueryBuilderDataType = member.JQueryBuilderDataType,
+                            Group = "Svirfd",
+                            ProcessingTypeId = DatasetProcessingTypes.Svirfd
+                        })));
             }
 
             if (reporting || parserTypeId >= 5)

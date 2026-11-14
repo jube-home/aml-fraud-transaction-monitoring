@@ -39,7 +39,7 @@ namespace Jube.Data.Poco
 
         [Column] [Nullable] [Key(4)] public string Name { get; set; }
         [Column] [Nullable] [Key(5)] public DateTime? CreatedDate { get; set; }
-        [Column] [Nullable] [Key(6)] public double? ResponseElevation { get; set; }
+        [Column] [Nullable] [Key(6)] public int? ResponseElevation { get; set; }
         [Column] [Nullable] [Key(7)] public Guid CaseWorkflowGuid { get; set; }
         [Column] [Nullable] [Key(8)] public int? EnableCaseWorkflow { get; set; }
         [Column] [Nullable] [Key(9)] public byte? Active { get; set; }
@@ -82,13 +82,11 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(47)] public byte? EnableReprocessing { get; set; }
         [Column] [Nullable] [Key(48)] public byte? EnableOverride { get; set; }
 
-        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true)]
         [Key(49)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
 
-        [Association(ThisKey = "CaseWorkflowStatusGuid", OtherKey = "Guid", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "CaseWorkflowStatusGuid", OtherKey = "Guid", CanBeNull = true)]
         [Key(50)]
         public CaseWorkflowStatus CaseWorkflowStatus { get; set; }
 
@@ -103,5 +101,6 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(59)] public long? ForcedActivationCounter { get; set; }
         [Column] [Nullable] [Key(60)] public byte? EnableForce { get; set; }
         [Column] [Nullable] [Key(61)] public string OverrideKey { get; set; }
+        [Column] [Nullable] [Key(62)] public byte? Shadow { get; set; }
     }
 }

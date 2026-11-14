@@ -41,10 +41,78 @@ namespace Jube.Charting.Diagrams
                     : GraphLayoutKind.Layered;
             }
 
-            return kind == GraphLayoutKind.Circular ? Circular(spec, index) : Layered(spec, index);
+            return kind switch
+            {
+                GraphLayoutKind.Circular => Circular(spec, index),
+                GraphLayoutKind.Force => ForceLayout.Compute(spec, index),
+                GraphLayoutKind.Radial => RadialLayout.Compute(spec, index),
+                GraphLayoutKind.Flow => FlowLayout.Compute(spec, index),
+                _ => LayeredWithUnconnected(spec, index)
+            };
         }
 
-        private const double MaxExtent = 3000;
+        public const int UnconnectedGridThreshold = 8;
+        private const double UnconnectedGap = 12;
+        private const double UnconnectedMinimumWidth = 900;
+
+        private static GraphLayoutResult LayeredWithUnconnected(GraphDiagramSpec spec, Dictionary<string, int> index)
+        {
+            var connected = new HashSet<int>();
+
+            foreach (var e in spec.Edges)
+            {
+                connected.Add(index[e.From]);
+                connected.Add(index[e.To]);
+            }
+
+            var loose = Enumerable.Range(0, spec.Nodes.Count).Where(i => !connected.Contains(i)).ToList();
+
+            if (loose.Count < UnconnectedGridThreshold || connected.Count == 0)
+            {
+                return Layered(spec, index);
+            }
+
+            var keep = Enumerable.Range(0, spec.Nodes.Count).Where(connected.Contains).ToList();
+
+            var core = spec with { Nodes = [.. keep.Select(i => spec.Nodes[i])] };
+            var coreIndex = new Dictionary<string, int>(StringComparer.Ordinal);
+
+            for (var i = 0; i < core.Nodes.Count; i++)
+            {
+                coreIndex[core.Nodes[i].Id] = i;
+            }
+
+            var inner = Layered(core, coreIndex);
+            var remap = keep.ToArray();
+
+            var nodes = inner.Nodes.Select(p => p with { Index = remap[p.Index] }).ToList();
+            var edges = inner.Edges.Select(e => e with { From = remap[e.From], To = remap[e.To] }).ToList();
+
+            var sizes = loose.Select(i => NodeSize(spec.Nodes[i])).ToArray();
+            var cell = sizes.Max(size => size.W) + UnconnectedGap;
+            var width = Math.Max(inner.Width, UnconnectedMinimumWidth);
+            var columns = Math.Max(1, (int)Math.Floor((width - 16 + UnconnectedGap) / cell));
+            var top = inner.Height + 56;
+            var rowHeight = NodeHeight + UnconnectedGap;
+            var rows = (int)Math.Ceiling(loose.Count / (double)columns);
+            var offset = (width - (Math.Min(columns, loose.Count) * cell - UnconnectedGap)) / 2;
+
+            for (var k = 0; k < loose.Count; k++)
+            {
+                var i = loose[k];
+                var (w, h) = sizes[k];
+
+                nodes.Add(new PlacedGraphNode(i, spec.Nodes[i].Id, spec.Nodes[i].Label, spec.Nodes[i].Role,
+                    offset + k % columns * cell + w / 2, top + k / columns * rowHeight + h / 2, w, h,
+                    inner.LayerCount));
+            }
+
+            nodes = [.. nodes.OrderBy(p => p.Index)];
+
+            return new GraphLayoutResult(nodes, edges, width, top + rows * rowHeight, GraphLayoutKind.Layered,
+                inner.LayerCount + 1, inner.Crossings);
+        }
+
         private const double NodeHeight = 32;
 
         private static Dictionary<string, int> Validate(GraphDiagramSpec spec)
@@ -85,7 +153,7 @@ namespace Jube.Charting.Diagrams
                     throw new ChartSpecificationException("A graph edge refers to a node that is not declared.");
                 }
 
-                if (!seen.Add((a, b)))
+                if (spec.Layout != GraphLayoutKind.Flow && !seen.Add((a, b)))
                 {
                     throw new ChartSpecificationException("Graph edges must be unique per ordered node pair.");
                 }
@@ -117,7 +185,15 @@ namespace Jube.Charting.Diagrams
         private static GraphLayoutResult Layered(GraphDiagramSpec spec, Dictionary<string, int> index)
         {
             var n = spec.Nodes.Count;
-            var sizes = spec.Nodes.Select(NodeSize).ToArray();
+            var leftToRight = spec.Direction == GraphDirection.LeftToRight;
+
+            var sizes = spec.Nodes.Select(node =>
+            {
+                var size = NodeSize(node);
+
+                return leftToRight ? (W: size.H, H: size.W) : size;
+            }).ToArray();
+
             var edges = spec.Edges.Select(e => (From: index[e.From], To: index[e.To])).ToArray();
             var loops = new HashSet<int>(edges.Where(e => e.From == e.To).Select(e => e.From));
             var reversed = new bool[edges.Length];
@@ -232,6 +308,11 @@ namespace Jube.Charting.Diagrams
                 }
             }
 
+            if (spec.MaxPerLayer > 0)
+            {
+                layer = Wrap(spec, layer);
+            }
+
             var layerCount = layer.Max() + 1;
             var ex = new Expanded();
 
@@ -293,7 +374,7 @@ namespace Jube.Charting.Diagrams
                            spec.Edges.Any(e =>
                                e.Weight.HasValue || e.Probability.HasValue || !string.IsNullOrWhiteSpace(e.Label));
 
-            var layerGap = labelled ? 104.0 : 84.0;
+            var layerGap = leftToRight ? labelled ? 150.0 : 96.0 : labelled ? 104.0 : 84.0;
             var layerHeight = new double[layerCount];
 
             for (var i = 0; i < n; i++)
@@ -313,11 +394,12 @@ namespace Jube.Charting.Diagrams
             var width = maxX - minX + 2 * margin;
             var height = y - layerGap + margin;
 
-            if (width > MaxExtent || height > MaxExtent)
+            if (width > spec.MaxExtent || height > spec.MaxExtent)
             {
                 throw new DiagramTooLargeException("graph extent in pixels",
                     (long)Math.Ceiling(Math.Max(width, height)),
-                    (long)MaxExtent, "Too many nodes on one level to draw legibly; keep the strongest structure only.");
+                    (long)spec.MaxExtent,
+                    "Too many nodes on one level to draw legibly; keep the strongest structure only.");
             }
 
             var dx = margin - minX;
@@ -325,8 +407,11 @@ namespace Jube.Charting.Diagrams
 
             for (var i = 0; i < n; i++)
             {
-                placed[i] = new PlacedGraphNode(i, spec.Nodes[i].Id, spec.Nodes[i].Label, spec.Nodes[i].Role, x[i] + dx,
-                    layerY[layer[i]], sizes[i].W, sizes[i].H, layer[i]);
+                placed[i] = leftToRight
+                    ? new PlacedGraphNode(i, spec.Nodes[i].Id, spec.Nodes[i].Label, spec.Nodes[i].Role,
+                        layerY[layer[i]], x[i] + dx, sizes[i].H, sizes[i].W, layer[i])
+                    : new PlacedGraphNode(i, spec.Nodes[i].Id, spec.Nodes[i].Label, spec.Nodes[i].Role, x[i] + dx,
+                        layerY[layer[i]], sizes[i].W, sizes[i].H, layer[i]);
             }
 
             var outCount = new Dictionary<int, List<(int Edge, double Target)>>();
@@ -358,7 +443,7 @@ namespace Jube.Charting.Diagrams
 
                 if (from == to)
                 {
-                    result.Add(SelfLoopRight(placed[from], k));
+                    result.Add(leftToRight ? SelfLoopBottom(placed[from], k) : SelfLoopRight(placed[from], k));
                     continue;
                 }
 
@@ -368,29 +453,38 @@ namespace Jube.Charting.Diagrams
 
                 var points = new List<(double X, double Y)>
                 {
-                    (placed[a].X + Attach(outCount, a, k), placed[a].Y + placed[a].Height / 2)
+                    leftToRight
+                        ? (placed[a].X + placed[a].Width / 2, placed[a].Y + Attach(outCount, a, k))
+                        : (placed[a].X + Attach(outCount, a, k), placed[a].Y + placed[a].Height / 2)
                 };
 
                 for (var i = 1; i < chain.Count - 1; i++)
                 {
-                    points.Add((x[chain[i]] + dx, layerY[ex.Layer[chain[i]]]));
+                    points.Add(leftToRight
+                        ? (layerY[ex.Layer[chain[i]]], x[chain[i]] + dx)
+                        : (x[chain[i]] + dx, layerY[ex.Layer[chain[i]]]));
                 }
 
-                points.Add((placed[b].X + Attach(inCount, b, k), placed[b].Y - placed[b].Height / 2));
+                points.Add(leftToRight
+                    ? (placed[b].X - placed[b].Width / 2, placed[b].Y + Attach(inCount, b, k))
+                    : (placed[b].X + Attach(inCount, b, k), placed[b].Y - placed[b].Height / 2));
 
                 if (reversed[k])
                 {
                     points.Reverse();
                 }
 
-                result.Add(BuildLayeredPath(k, from, to, points, reversed[k]));
+                result.Add(BuildLayeredPath(k, from, to, points, reversed[k], leftToRight));
             }
 
-            return new GraphLayoutResult(placed, result, width, height, GraphLayoutKind.Layered, layerCount, crossings);
+            return leftToRight
+                ? new GraphLayoutResult(placed, result, height, width, GraphLayoutKind.Layered, layerCount, crossings)
+                : new GraphLayoutResult(placed, result, width, height, GraphLayoutKind.Layered, layerCount,
+                    crossings);
         }
 
         private static PlacedGraphEdge BuildLayeredPath(int k, int from, int to, List<(double X, double Y)> points,
-            bool reversed)
+            bool reversed, bool leftToRight)
         {
             var path = new PathBuilder().Move(points[0].X, points[0].Y);
             var bestLength = -1.0;
@@ -402,13 +496,25 @@ namespace Jube.Charting.Diagrams
                 var (x0, y0) = points[i];
                 var (x1, y1) = points[i + 1];
                 var ym = (y0 + y1) / 2;
-                path.Cubic(x0, ym, x1, ym, x1, y1);
-                var length = Math.Abs(y1 - y0);
+                var xm = (x0 + x1) / 2;
+
+                if (leftToRight)
+                {
+                    path.Cubic(xm, y0, xm, y1, x1, y1);
+                }
+                else
+                {
+                    path.Cubic(x0, ym, x1, ym, x1, y1);
+                }
+
+                var length = leftToRight ? Math.Abs(x1 - x0) : Math.Abs(y1 - y0);
 
                 if (length > bestLength)
                 {
                     bestLength = length;
-                    var p = NetworkRenderer.Bezier(x0, y0, x0, ym, x1, ym, x1, y1, 0.5);
+                    var p = leftToRight
+                        ? NetworkRenderer.Bezier(x0, y0, xm, y0, xm, y1, x1, y1, 0.5)
+                        : NetworkRenderer.Bezier(x0, y0, x0, ym, x1, ym, x1, y1, 0.5);
                     lx = p.X;
                     ly = p.Y;
                 }
@@ -416,10 +522,10 @@ namespace Jube.Charting.Diagrams
 
             var end = points[^1];
             var before = points[^2];
-            var dir = end.Y >= before.Y ? 1.0 : -1.0;
+            var dir = leftToRight ? end.X >= before.X ? 1.0 : -1.0 : end.Y >= before.Y ? 1.0 : -1.0;
 
-            return new PlacedGraphEdge(k, from, to, path.ToString(), lx, ly, end.X, end.Y, 0, dir, false, reversed,
-                points);
+            return new PlacedGraphEdge(k, from, to, path.ToString(), lx, ly, end.X, end.Y, leftToRight ? dir : 0,
+                leftToRight ? 0 : dir, false, reversed, points);
         }
 
         private static PlacedGraphEdge SelfLoopRight(PlacedGraphNode node, int k)
@@ -434,6 +540,51 @@ namespace Jube.Charting.Diagrams
             return new PlacedGraphEdge(k, node.Index, node.Index, path, x + 30, node.Y - 2, x, bottom, -1, 0, true,
                 false,
                 [(x, top), (x + 26, node.Y), (x, bottom)]);
+        }
+
+        private static PlacedGraphEdge SelfLoopBottom(PlacedGraphNode node, int k)
+        {
+            var y = node.Y + node.Height / 2;
+
+            var path = new PathBuilder().Move(node.X - 6, y)
+                .Cubic(node.X - 22, y + 34, node.X + 22, y + 34, node.X + 6, y).ToString();
+
+            return new PlacedGraphEdge(k, node.Index, node.Index, path, node.X, y + 28, node.X + 6, y, 0, -1, true,
+                false, [(node.X - 6, y), (node.X, y + 26), (node.X + 6, y)]);
+        }
+
+        private static int[] Wrap(GraphDiagramSpec spec, int[] layer)
+        {
+            var rank = new Dictionary<string, int>(StringComparer.Ordinal);
+
+            foreach (var name in spec.GroupOrder)
+            {
+                rank.TryAdd(name, rank.Count);
+            }
+
+            int Rank(GraphNode node)
+            {
+                return node.Group is not null && rank.TryGetValue(node.Group, out var found) ? found : rank.Count;
+            }
+
+            var wrapped = new int[layer.Length];
+            var next = 0;
+
+            foreach (var level in Enumerable.Range(0, layer.Length).GroupBy(i => layer[i]).OrderBy(g => g.Key))
+            {
+                var ordered = level.OrderBy(i => Rank(spec.Nodes[i]))
+                    .ThenBy(i => spec.Nodes[i].Label, StringComparer.Ordinal)
+                    .ThenBy(i => i).ToList();
+
+                for (var k = 0; k < ordered.Count; k++)
+                {
+                    wrapped[ordered[k]] = next + k / spec.MaxPerLayer;
+                }
+
+                next += (ordered.Count + spec.MaxPerLayer - 1) / spec.MaxPerLayer;
+            }
+
+            return wrapped;
         }
 
         private static int ReduceCrossings(List<List<int>> layers, Expanded ex)

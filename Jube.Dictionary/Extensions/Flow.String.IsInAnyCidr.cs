@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchIsInAnyCidr(IEnumerable<string>? cidrs)
+            [Description("True when: an IP address inside any of the CIDR ranges. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchIsInAnyCidr([Description("The CIDR ranges, usually a List token.")] IEnumerable<string>? cidrs)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringIsInAnyCidr(flow.Value, cidrs));
             }
 
-            public Flow<string?> RejectIsInAnyCidr(IEnumerable<string>? cidrs)
+            [Description("True when: an IP address inside any of the CIDR ranges. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectIsInAnyCidr([Description("The CIDR ranges, usually a List token.")] IEnumerable<string>? cidrs)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringIsInAnyCidr(flow.Value, cidrs));
             }
 
-            public Flow<string?> BreakIsInAnyCidr(IEnumerable<string>? cidrs)
+            [Description("True when: an IP address inside any of the CIDR ranges. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakIsInAnyCidr([Description("The CIDR ranges, usually a List token.")] IEnumerable<string>? cidrs)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringIsInAnyCidr(flow.Value, cidrs));
             }
 
-            public Flow<string?> RequireIsInAnyCidr(IEnumerable<string>? cidrs)
+            [Description("True when: an IP address inside any of the CIDR ranges. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireIsInAnyCidr([Description("The CIDR ranges, usually a List token.")] IEnumerable<string>? cidrs)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringIsInAnyCidr(flow.Value, cidrs));
             }
 
-            public Flow<string?> EnsureIsInAnyCidr(IEnumerable<string>? cidrs)
+            [Description("True when: an IP address inside any of the CIDR ranges. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureIsInAnyCidr([Description("The CIDR ranges, usually a List token.")] IEnumerable<string>? cidrs)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchIsInAnyCidr(IEnumerable<string>? cidrs)
+            [Description("Begins a pipeline from the value. True when: an IP address inside any of the CIDR ranges. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchIsInAnyCidr([Description("The CIDR ranges, usually a List token.")] IEnumerable<string>? cidrs)
             {
                 return value.Start().MatchIsInAnyCidr(cidrs);
             }
 
-            public Flow<string?> RejectIsInAnyCidr(IEnumerable<string>? cidrs)
+            [Description("Begins a pipeline from the value. True when: an IP address inside any of the CIDR ranges. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectIsInAnyCidr([Description("The CIDR ranges, usually a List token.")] IEnumerable<string>? cidrs)
             {
                 return value.Start().RejectIsInAnyCidr(cidrs);
             }
 
-            public Flow<string?> BreakIsInAnyCidr(IEnumerable<string>? cidrs)
+            [Description("Begins a pipeline from the value. True when: an IP address inside any of the CIDR ranges. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakIsInAnyCidr([Description("The CIDR ranges, usually a List token.")] IEnumerable<string>? cidrs)
             {
                 return value.Start().BreakIsInAnyCidr(cidrs);
             }
 
-            public Flow<string?> RequireIsInAnyCidr(IEnumerable<string>? cidrs)
+            [Description("Begins a pipeline from the value. True when: an IP address inside any of the CIDR ranges. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireIsInAnyCidr([Description("The CIDR ranges, usually a List token.")] IEnumerable<string>? cidrs)
             {
                 return value.Start().RequireIsInAnyCidr(cidrs);
             }
 
-            public Flow<string?> EnsureIsInAnyCidr(IEnumerable<string>? cidrs)
+            [Description("Begins a pipeline from the value. True when: an IP address inside any of the CIDR ranges. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureIsInAnyCidr([Description("The CIDR ranges, usually a List token.")] IEnumerable<string>? cidrs)
             {
                 return value.Start().EnsureIsInAnyCidr(cidrs);
             }

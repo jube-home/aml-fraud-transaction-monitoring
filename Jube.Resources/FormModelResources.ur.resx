@@ -1,0 +1,689 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="EntityAnalysisModelTag.name" xml:space="preserve">
+        <value>نام</value>
+    </data>
+    <data name="EntityAnalysisModelTag.active" xml:space="preserve">
+        <value>فعال</value>
+    </data>
+    <data name="EntityAnalysisModelTag.locked" xml:space="preserve">
+        <value>مقفل</value>
+    </data>
+    <data name="EntityAnalysisModelTag.id" xml:space="preserve">
+        <value>شناخت</value>
+    </data>
+    <data name="EntityAnalysisModelTag.createdUser" xml:space="preserve">
+        <value>بنانے والا</value>
+    </data>
+    <data name="EntityAnalysisModelTag.createdDate" xml:space="preserve">
+        <value>تخلیق کی تاریخ</value>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedUser" xml:space="preserve">
+        <value>اپ ڈیٹ کرنے والا</value>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedDate" xml:space="preserve">
+        <value>اپ ڈیٹ کی تاریخ</value>
+    </data>
+    <data name="EntityAnalysisModelTag.version" xml:space="preserve">
+        <value>ورژن</value>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedUser" xml:space="preserve">
+        <value>حذف کرنے والا</value>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedDate" xml:space="preserve">
+        <value>حذف کی تاریخ</value>
+    </data>
+    <data name="EntityAnalysisModelTag.group.Identity" xml:space="preserve">
+        <value>شناخت کاری</value>
+    </data>
+    <data name="EntityAnalysisModelTag.group.Audit" xml:space="preserve">
+        <value>آڈٹ</value>
+    </data>
+    <data name="EntityAnalysisModelTag.column.name" xml:space="preserve">
+        <value>نام</value>
+    </data>
+    <data name="EntityAnalysisModelTag.column.active" xml:space="preserve">
+        <value>فعال</value>
+    </data>
+    <data name="option.IntervalUnit.Second" xml:space="preserve">
+        <value>سیکنڈ</value>
+    </data>
+    <data name="option.IntervalUnit.Minute" xml:space="preserve">
+        <value>منٹ</value>
+    </data>
+    <data name="option.IntervalUnit.Hour" xml:space="preserve">
+        <value>گھنٹے</value>
+    </data>
+    <data name="option.IntervalUnit.Day" xml:space="preserve">
+        <value>دن</value>
+    </data>
+    <data name="option.IntervalUnit.Month" xml:space="preserve">
+        <value>مہینے</value>
+    </data>
+    <data name="option.IntervalUnit.Year" xml:space="preserve">
+        <value>سال</value>
+    </data>
+    <data name="option.NotificationType.Email" xml:space="preserve">
+        <value>ای میل</value>
+    </data>
+    <data name="option.NotificationType.Sms" xml:space="preserve">
+        <value>SMS</value>
+    </data>
+    <data name="EntityAnalysisModelTag.name.description" xml:space="preserve">
+        <value>اس ٹیگ کا ظاہری نام۔ ماڈل کے اندر منفرد (بڑے چھوٹے حروف کی تمیز کے بغیر)۔ متعلقہ EntityAnalysisModelEntityInstanceGuid کے لیے آرکائیو پے لوڈ کے ٹیگ حصے میں ضم کیا جاتا ہے۔</value>
+        <comment>a46002d2</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.active.description" xml:space="preserve">
+        <value>درست ہونے پر ٹیگ آرکائیو پے لوڈ پر لاگو کیا جا سکتا ہے۔</value>
+        <comment>9ecf021f</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.locked.description" xml:space="preserve">
+        <value>درست ہونے پر ٹیگ کا اندراج مقفل ہے اور اسے ترمیم یا حذف نہیں کیا جا سکتا۔</value>
+        <comment>c427ac09</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.id.description" xml:space="preserve">
+        <value>سرور کی طرف سے دی گئی قطار کی شناخت۔ صرف پڑھنے کے لیے۔</value>
+        <comment>254b452e</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.createdUser.description" xml:space="preserve">
+        <value>وہ صارف جس نے یہ ٹیگ بنایا۔ سرور کی طرف سے مقرر۔ صرف پڑھنے کے لیے۔</value>
+        <comment>b8b7a648</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.createdDate.description" xml:space="preserve">
+        <value>ٹیگ بننے کا ٹائم اسٹیمپ (UTC)۔ سرور کی طرف سے مقرر۔ صرف پڑھنے کے لیے۔</value>
+        <comment>2a046216</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedUser.description" xml:space="preserve">
+        <value>وہ صارف جس نے یہ ٹیگ آخری بار اپ ڈیٹ کیا۔ سرور کی طرف سے مقرر۔ صرف پڑھنے کے لیے۔</value>
+        <comment>692dc498</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedDate.description" xml:space="preserve">
+        <value>ٹیگ کی آخری اپ ڈیٹ کا ٹائم اسٹیمپ (UTC)۔ سرور کی طرف سے مقرر۔ صرف پڑھنے کے لیے۔</value>
+        <comment>b845bd79</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.version.description" xml:space="preserve">
+        <value>پرامید ہم زمانی کنٹرول کے لیے ورژن نمبر، سرور کی طرف سے مقرر اور ہر اپ ڈیٹ پر بڑھایا جاتا ہے۔ صرف پڑھنے کے لیے۔</value>
+        <comment>937d398b</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedUser.description" xml:space="preserve">
+        <value>وہ صارف جس نے یہ ٹیگ حذف کیا (نرم حذف)۔ سرور کی طرف سے مقرر۔ صرف پڑھنے کے لیے۔</value>
+        <comment>2e8d7efb</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedDate.description" xml:space="preserve">
+        <value>ٹیگ کے نرم حذف کا ٹائم اسٹیمپ (UTC)، اگر ہو۔ سرور کی طرف سے مقرر۔ صرف پڑھنے کے لیے۔</value>
+        <comment>68166826</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.name.placeholder" xml:space="preserve">
+        <value>مثلاً تعمیل کی طرف سے جائزہ شدہ</value>
+        <comment>2ebb83c4</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.name" xml:space="preserve">
+        <value>نام</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.name.description" xml:space="preserve">
+        <value>وہ نام جس سے قواعد ہستی کو Graph.{نام} کے طور پر پڑھتے ہیں، مثلاً AccountId یا Payee۔ صرف حروف اور اعداد، حرف سے شروع؛ ماڈل کے اندر منفرد۔</value>
+        <comment>4a7fc4f0</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.name.placeholder" xml:space="preserve">
+        <value>مثلاً Payee</value>
+        <comment>81ff940b</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.name" xml:space="preserve">
+        <value>نام</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.active" xml:space="preserve">
+        <value>فعال</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.active.description" xml:space="preserve">
+        <value>درست ہونے پر ماڈل کی ہر کال پر ہستی گراف سے پڑھی جاتی ہے۔</value>
+        <comment>ba3c6a3d</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.active" xml:space="preserve">
+        <value>فعال</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.locked" xml:space="preserve">
+        <value>مقفل</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.locked.description" xml:space="preserve">
+        <value>درست ہونے پر ہستی مقفل ہے اور اسے ترمیم یا حذف نہیں کیا جا سکتا۔</value>
+        <comment>17318987</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.requestXPathName" xml:space="preserve">
+        <value>فیلڈ</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.requestXPathName.description" xml:space="preserve">
+        <value>اس ماڈل کا درخواست فیلڈ، جو آرکائیو کی کے طور پر نشان زد ہو، جس کی قدر گراف میں ہستی کی شناخت کرتی ہے، مثلاً AccountId یا ToAccountId۔</value>
+        <comment>af382e5f</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.requestXPathName" xml:space="preserve">
+        <value>فیلڈ</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.nodeKey" xml:space="preserve">
+        <value>نوڈ کی</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.nodeKey.description" xml:space="preserve">
+        <value>گراف نوڈ کی جس کے تحت قدر محفوظ ہوتی ہے جب وہ فیلڈ کے نام سے مختلف ہو، جیسے کنارے کی تعریف کی To Node Key: ToAccountId کی قدر AccountId نوڈ کے طور پر محفوظ ہوتی ہے۔ فیلڈ کا نام استعمال کرنے کے لیے خالی چھوڑیں۔</value>
+        <comment>49a08603</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.counterpartName" xml:space="preserve">
+        <value>فریقِ مقابل</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.counterpartName.description" xml:space="preserve">
+        <value>اس ماڈل کی دوسری ہستی کا نام جس کے ساتھ یہ کنارے کے حقائق (گنتی، رقم، پہلی موجودگی) اور پل کی نشاندہی کے لیے جوڑی جاتی ہے، مثلاً Payer ہستی اپنے Payee کے ساتھ۔ جوڑیاں واضح ہوتی ہیں اور کبھی اندازے سے نہیں بنتیں؛ نہ ہو تو خالی چھوڑیں۔</value>
+        <comment>60120df2</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.counterpartName" xml:space="preserve">
+        <value>فریقِ مقابل</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.graphRegistryGuid" xml:space="preserve">
+        <value>گراف رجسٹری</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.graphRegistryGuid.description" xml:space="preserve">
+        <value>گراف رجسٹری جس کی کنارے کی تعریفیں فریقِ مقابل کے مقابل کنارے کے حقائق کو محدود کرتی ہیں۔ کرایہ دار کی ہر فعال تعریف استعمال کرنے کے لیے خالی چھوڑیں۔</value>
+        <comment>d48d9af2</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.responsePayload" xml:space="preserve">
+        <value>جوابی پے لوڈ</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.responsePayload.description" xml:space="preserve">
+        <value>درست ہونے پر ہستی کا آبجیکٹ جوابی JSON میں Graph کے تحت لوٹایا جاتا ہے۔ آرکائیو کی کے ساتھ باہم مخصوص: ہستی یا تو لوٹائی جاتی ہے یا محفوظ ہوتی ہے، دونوں نہیں۔</value>
+        <comment>8648201c</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.reportTable" xml:space="preserve">
+        <value>آرکائیو کی</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.reportTable.description" xml:space="preserve">
+        <value>درست ہونے پر ہستی کا آبجیکٹ رپورٹنگ اور تربیت کے لیے آرکائیو JSON میں لکھا جاتا ہے۔ Response Payload کے ساتھ باہم مخصوص۔</value>
+        <comment>87f888f3</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdDate" xml:space="preserve">
+        <value>تخلیق کی تاریخ</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdDate.description" xml:space="preserve">
+        <value>سرور کا مقرر کردہ تخلیق کا ٹائم اسٹیمپ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdUser" xml:space="preserve">
+        <value>بنانے والا</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdUser.description" xml:space="preserve">
+        <value>وہ صارف جس نے یہ قطار بنائی، سرور کی طرف سے مقرر۔ صرف پڑھنے کے لیے۔</value>
+        <comment>c7492dc3</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedUser" xml:space="preserve">
+        <value>اپ ڈیٹ کرنے والا</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedUser.description" xml:space="preserve">
+        <value>وہ صارف جس نے یہ قطار آخری بار اپ ڈیٹ کی، سرور کی طرف سے مقرر۔ صرف پڑھنے کے لیے۔</value>
+        <comment>dfe8daba</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedDate" xml:space="preserve">
+        <value>اپ ڈیٹ کی تاریخ</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedDate.description" xml:space="preserve">
+        <value>سرور کا مقرر کردہ آخری اپ ڈیٹ کا ٹائم اسٹیمپ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.version" xml:space="preserve">
+        <value>ورژن</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.version.description" xml:space="preserve">
+        <value>سرور کا مقرر کردہ ورژن نمبر، ہر اپ ڈیٹ پر بڑھتا ہے۔ صرف پڑھنے کے لیے۔</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Identity" xml:space="preserve">
+        <value>شناخت کاری</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Entity" xml:space="preserve">
+        <value>ہستی</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Output" xml:space="preserve">
+        <value>آؤٹ پٹ</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Audit" xml:space="preserve">
+        <value>آڈٹ</value>
+    </data>
+    <data name="EntityAnalysisModel.hub.Network" xml:space="preserve">
+        <value>نیٹ ورک</value>
+    </data>
+    <data name="EntityAnalysisModel.child.EntityAnalysisModelGraphRecall" xml:space="preserve">
+        <value>گراف ریکال</value>
+    </data>
+    <data name="CaseWorkflowXPath.sourceGuid" xml:space="preserve">
+        <value>ماخذ فیلڈ</value>
+    </data>
+    <data name="CaseWorkflowXPath.sourceGuid.description" xml:space="preserve">
+        <value>ماڈل کا وہ فیلڈ جسے اخراج پڑھتا ہے، جو درخواست کے XPath، بلٹ اِن فنکشنز، تجرید کے قواعد، تجرید کے حسابات، TTL کاؤنٹرز، HTTP موافقتوں اور ورک فلو ماڈل کے ایکٹیویشن قواعد میں سے منتخب ہو (ماڈل خود اپنی ان پٹ کی کی نمائندگی کرتا ہے)۔ JSON راستہ، آرکائیو کی اور ڈیٹا کی قسم اسی سے اخذ ہوتے ہیں، اور اخراج کی تفصیل تب ہی کھولی جا سکتی ہے جب فیلڈ آرکائیو کی کے طور پر نشان زد ہو۔</value>
+        <comment>9af5ba6a</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.name" xml:space="preserve">
+        <value>نام</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.name.description" xml:space="preserve">
+        <value>اندراج کا نام جس سے قواعد IP انٹیلیجنس ریکارڈ کو Svirfd.{نام}.{جزو} کے طور پر پڑھتے ہیں، مثلاً Svirfd.Customer.Privacy.Vpn۔ صرف حروف اور اعداد، حرف سے شروع؛ ماڈل کے اندر منفرد۔</value>
+        <comment>26ee861d</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.name.placeholder" xml:space="preserve">
+        <value>مثلاً Customer</value>
+        <comment>d4f90c87</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.active" xml:space="preserve">
+        <value>فعال</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.active.description" xml:space="preserve">
+        <value>فعال ہونے پر ماڈل کی ہر کال پر پتہ تلاش کیا جاتا ہے۔</value>
+        <comment>a03783be</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.locked" xml:space="preserve">
+        <value>مقفل</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.locked.description" xml:space="preserve">
+        <value>فعال ہونے پر یہ اندراج مقفل ہے اور اسے ترمیم یا حذف نہیں کیا جا سکتا۔</value>
+        <comment>d3777afa</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.requestXPathName" xml:space="preserve">
+        <value>فیلڈ</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.requestXPathName.description" xml:space="preserve">
+        <value>اس ماڈل کا IP ڈیٹا کی قسم والا درخواست فیلڈ جس کی قدر تلاش کیا جانے والا پتہ ہے۔</value>
+        <comment>bfb592ae</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.responsePayload" xml:space="preserve">
+        <value>جوابی پے لوڈ</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.responsePayload.description" xml:space="preserve">
+        <value>فعال ہونے پر پورا IP انٹیلیجنس ریکارڈ جوابی JSON میں Svirfd کے تحت لوٹایا جاتا ہے۔</value>
+        <comment>bd6e75d5</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.reportTable" xml:space="preserve">
+        <value>آرکائیو</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.reportTable.description" xml:space="preserve">
+        <value>فعال ہونے پر ریکارڈ رپورٹنگ، تربیت اور کیس جرنل کے لیے آرکائیو JSON میں لکھا جاتا ہے، جو اسے تازہ تلاش سے موازنہ کر کے انحراف دکھاتا ہے۔</value>
+        <comment>08bbf83a</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.narrative" xml:space="preserve">
+        <value>بیانیہ</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.narrative.description" xml:space="preserve">
+        <value>فعال ہونے پر ریکارڈ کے ساتھ سادہ زبان کا بیانیہ منسلک ہوتا ہے، اس لیے وہ جواب میں لوٹایا جاتا ہے اور اسی کے ساتھ آرکائیو ہوتا ہے۔ ریکارڈ میں صرف ڈیٹا رکھنے کے لیے بند کریں۔</value>
+        <comment>98a1314b</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdDate" xml:space="preserve">
+        <value>تخلیق کی تاریخ</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdDate.description" xml:space="preserve">
+        <value>سرور کا مقرر کردہ تخلیق کا ٹائم اسٹیمپ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdUser" xml:space="preserve">
+        <value>بنانے والا</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdUser.description" xml:space="preserve">
+        <value>وہ صارف جس نے یہ قطار بنائی، سرور کی طرف سے مقرر۔ صرف پڑھنے کے لیے۔</value>
+        <comment>c7492dc3</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedUser" xml:space="preserve">
+        <value>اپ ڈیٹ کرنے والا</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedUser.description" xml:space="preserve">
+        <value>وہ صارف جس نے یہ قطار آخری بار اپ ڈیٹ کی، سرور کی طرف سے مقرر۔ صرف پڑھنے کے لیے۔</value>
+        <comment>dfe8daba</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedDate" xml:space="preserve">
+        <value>اپ ڈیٹ کی تاریخ</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedDate.description" xml:space="preserve">
+        <value>سرور کا مقرر کردہ آخری اپ ڈیٹ کا ٹائم اسٹیمپ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.version" xml:space="preserve">
+        <value>ورژن</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.version.description" xml:space="preserve">
+        <value>سرور کا مقرر کردہ ورژن نمبر، ہر اپ ڈیٹ پر بڑھتا ہے۔ صرف پڑھنے کے لیے۔</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.column.name" xml:space="preserve">
+        <value>نام</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.column.active" xml:space="preserve">
+        <value>فعال</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.column.requestXPathName" xml:space="preserve">
+        <value>فیلڈ</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Identity" xml:space="preserve">
+        <value>شناخت کاری</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Field" xml:space="preserve">
+        <value>فیلڈ</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Output" xml:space="preserve">
+        <value>آؤٹ پٹ</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Audit" xml:space="preserve">
+        <value>آڈٹ</value>
+    </data>
+    <data name="EntityAnalysisModel.child.EntityAnalysisModelSvirfd" xml:space="preserve">
+        <value>Svirfd</value>
+    </data>
+    <data name="option.FieldDataType.Ip" xml:space="preserve">
+        <value>IP</value>
+    </data>
+    <data name="TenantRegistry.svirfdRemoteLookupsEnabled" xml:space="preserve">
+        <value>Svirfd ریموٹ تلاشیں</value>
+    </data>
+    <data name="TenantRegistry.svirfdRemoteLookupsEnabled.description" xml:space="preserve">
+        <value>بند ہونے پر اس ٹیننٹ کا کوئی IP پتہ ریموٹ Svirfd سروس کو نہیں بھیجا جاتا۔ مقامی اور ڈائریکٹری تلاشیں متاثر نہیں ہوتیں۔ اسے صرف landlord بدل سکتا ہے۔</value>
+        <comment>8c1916e8</comment>
+    </data>
+    <data name="TenantRegistry.group.DataProtection" xml:space="preserve">
+        <value>ڈیٹا کا تحفظ</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationUrl" xml:space="preserve">
+        <value>HTTP موافقت کا URL</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationTimeoutMilliseconds" xml:space="preserve">
+        <value>HTTP موافقت کی میعاد (ملی سیکنڈ)</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationValidateSsl" xml:space="preserve">
+        <value>HTTP موافقت کے SSL کی توثیق</value>
+    </data>
+    <data name="TenantRegistry.group.HttpAdaptation" xml:space="preserve">
+        <value>HTTP موافقت</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationUrl.description" xml:space="preserve">
+        <value>صرف landlord کے لیے۔ بنیادی URL جس کے ساتھ اس ٹیننٹ کے HTTP موافقت کے اینڈ پوائنٹس جوڑے جاتے ہیں۔ پوری تنصیب کا HttpAdaptationUrl استعمال کرنے کے لیے خالی چھوڑیں۔ یہ عوامی ہوسٹ کا https URL ہونا چاہیے جس میں اسناد، کوئری سٹرنگ یا فریگمنٹ نہ ہو۔</value>
+        <comment>ee19d732</comment>
+    </data>
+    <data name="TenantRegistry.httpAdaptationTimeoutMilliseconds.description" xml:space="preserve">
+        <value>صرف landlord کے لیے۔ اس ٹیننٹ کی HTTP موافقت کی کالوں کی میعاد ملی سیکنڈ میں، 100 سے 30000 کے درمیان۔ صفر پوری تنصیب کا HttpAdaptationTimeout استعمال کرتا ہے۔</value>
+        <comment>f8d39b15</comment>
+    </data>
+    <data name="TenantRegistry.httpAdaptationValidateSsl.description" xml:space="preserve">
+        <value>صرف landlord کے لیے۔ درست ہونے پر اس ٹیننٹ کے HTTP موافقت کے اینڈ پوائنٹ کے TLS سرٹیفکیٹ کی توثیق کی جاتی ہے۔ صرف تب لاگو ہوتا ہے جب ٹیننٹ کے لیے HttpAdaptationUrl مقرر ہو۔</value>
+        <comment>2cf1b2e6</comment>
+    </data>
+    <data name="TenantRegistry.httpAdaptationUrl.placeholder" xml:space="preserve">
+        <value>https://scoring.example.com</value>
+        <comment>9591a0fb</comment>
+    </data>
+    <data name="TenantRegistry.name.description" xml:space="preserve">
+        <value>کرایہ دار کا ظاہری نام، جو ٹیننٹ سوئچر اور انتظام &gt; سیکیورٹی &gt; ٹیننٹس میں دکھایا جاتا ہے۔ انسٹالیشن کے تمام ٹیننٹس میں منفرد (اس ٹیبل کا اپنا کوئی والد دائرہ نہیں جس میں منفرد ہو)۔</value>
+        <comment>9a55131b</comment>
+    </data>
+    <data name="TenantRegistry.name.placeholder" xml:space="preserve">
+        <value>مثلاً Acme Bank</value>
+        <comment>c18a9b46</comment>
+    </data>
+    <data name="TenantRegistry.active.description" xml:space="preserve">
+        <value>جب قدر درست ہو تو ٹیننٹ استعمال کے لیے دستیاب ہے (مثلاً ٹیننٹ سوئچر سے منتخب کیا جا سکتا ہے)۔</value>
+        <comment>81029c1e</comment>
+    </data>
+    <data name="TenantRegistry.locked.description" xml:space="preserve">
+        <value>جب قدر درست ہو تو ٹیننٹ صرف پڑھنے کے لیے مقفل ہے اور اسے ترمیم یا حذف نہیں کیا جا سکتا۔</value>
+        <comment>01ae7e98</comment>
+    </data>
+    <data name="TenantRegistry.createdDate.description" xml:space="preserve">
+        <value>سرور کی تفویض کردہ تخلیق کی ٹائم اسٹیمپ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="TenantRegistry.createdUser.description" xml:space="preserve">
+        <value>وہ صارف جس نے یہ ٹیننٹ بنایا، سرور کی تفویض کردہ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>8352b7ce</comment>
+    </data>
+    <data name="TenantRegistry.updatedUser.description" xml:space="preserve">
+        <value>وہ صارف جس نے اس ٹیننٹ کو حال ہی میں اپ ڈیٹ کیا، سرور کی تفویض کردہ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>6fe961d0</comment>
+    </data>
+    <data name="TenantRegistry.updatedDate.description" xml:space="preserve">
+        <value>سرور کی تفویض کردہ تازہ ترین اپ ڈیٹ کی ٹائم اسٹیمپ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="TenantRegistry.version.description" xml:space="preserve">
+        <value>سرور کا تفویض کردہ ورژن نمبر، ہر اپ ڈیٹ پر بڑھتا ہے۔ صرف پڑھنے کے لیے۔</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="RoleRegistry.name.description" xml:space="preserve">
+        <value>رول کا ظاہری نام، جو منتظمین کو اجازتیں یا صارفین تفویض کرتے وقت دکھایا جاتا ہے۔ ٹیننٹ کے اندر منفرد (بڑے چھوٹے حروف کی تمیز کے بغیر)۔</value>
+        <comment>31293430</comment>
+    </data>
+    <data name="RoleRegistry.name.placeholder" xml:space="preserve">
+        <value>مثلاً فراڈ تجزیہ کار</value>
+        <comment>07225315</comment>
+    </data>
+    <data name="RoleRegistry.active.description" xml:space="preserve">
+        <value>جب قدر درست ہو تو رول کو صارف یا ماڈل کو تفویض کیا جا سکتا ہے۔</value>
+        <comment>bd788127</comment>
+    </data>
+    <data name="RoleRegistry.locked.description" xml:space="preserve">
+        <value>جب قدر درست ہو تو رول صرف پڑھنے کے لیے مقفل ہے اور اسے ترمیم یا حذف نہیں کیا جا سکتا۔</value>
+        <comment>5ae0abde</comment>
+    </data>
+    <data name="RoleRegistry.createdDate.description" xml:space="preserve">
+        <value>سرور کی تفویض کردہ تخلیق کی ٹائم اسٹیمپ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="RoleRegistry.createdUser.description" xml:space="preserve">
+        <value>وہ صارف جس نے یہ رول بنایا، سرور کی تفویض کردہ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>8ec04d32</comment>
+    </data>
+    <data name="RoleRegistry.updatedUser.description" xml:space="preserve">
+        <value>وہ صارف جس نے اس رول کو حال ہی میں اپ ڈیٹ کیا، سرور کی تفویض کردہ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>fb01581b</comment>
+    </data>
+    <data name="RoleRegistry.updatedDate.description" xml:space="preserve">
+        <value>سرور کی تفویض کردہ تازہ ترین اپ ڈیٹ کی ٹائم اسٹیمپ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="RoleRegistry.version.description" xml:space="preserve">
+        <value>سرور کا تفویض کردہ ورژن نمبر، ہر اپ ڈیٹ پر بڑھتا ہے۔ صرف پڑھنے کے لیے۔</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="RoleRegistryPermission.permissionSpecificationId.description" xml:space="preserve">
+        <value>رول کو دی جانے والی اجازت کی تصریح کا شناخت کنندہ -- وہی عدد جس کے مقابل ہر سروس کی اجازت کی جانچ مستقل طور پر لکھی گئی ہے۔ اجازت کی تصریحات کے کیٹلاگ کی موجودہ قطار کا حوالہ ہونا چاہیے۔</value>
+        <comment>a04fe2e8</comment>
+    </data>
+    <data name="RoleRegistryPermission.active.description" xml:space="preserve">
+        <value>جب قدر درست ہو تو یہ اجازت کی تفویض نافذ ہے۔ غلط ہو تو نظر انداز کی جاتی ہے اور رول کو اجازت نہیں ملتی۔</value>
+        <comment>f16785e0</comment>
+    </data>
+    <data name="RoleRegistryPermission.locked.description" xml:space="preserve">
+        <value>جب قدر درست ہو تو یہ تفویض مقفل ہے اور اسے ترمیم یا حذف نہیں کیا جا سکتا۔</value>
+        <comment>51b4242c</comment>
+    </data>
+    <data name="RoleRegistryPermission.createdUser.description" xml:space="preserve">
+        <value>وہ صارف جس نے یہ قطار بنائی۔ سرور کی تفویض کردہ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>3b8cd8cf</comment>
+    </data>
+    <data name="RoleRegistryPermission.createdDate.description" xml:space="preserve">
+        <value>اس قطار کی تخلیق کی ٹائم اسٹیمپ (UTC)۔ سرور کی تفویض کردہ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>bb91d7cb</comment>
+    </data>
+    <data name="RoleRegistryPermission.updatedUser.description" xml:space="preserve">
+        <value>وہ صارف جس نے اس قطار کو آخری بار اپ ڈیٹ کیا۔ سرور کی تفویض کردہ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>eeb46a72</comment>
+    </data>
+    <data name="RoleRegistryPermission.updatedDate.description" xml:space="preserve">
+        <value>اس قطار کی آخری اپ ڈیٹ کی ٹائم اسٹیمپ (UTC)۔ سرور کی تفویض کردہ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>666366bf</comment>
+    </data>
+    <data name="RoleRegistryPermission.version.description" xml:space="preserve">
+        <value>سرور کا تفویض کردہ پرامید ہم وقتی ورژن نمبر۔ صرف پڑھنے کے لیے۔</value>
+        <comment>755d4fe7</comment>
+    </data>
+    <data name="PermissionSpecification.id.description" xml:space="preserve">
+        <value>اس اجازت کی تصریح کا سرور کا تفویض کردہ عددی شناخت کنندہ -- وہی عدد جس کے مقابل ہر سروس کی اجازت کی جانچیں مستقل طور پر لکھی گئی ہیں۔ صرف پڑھنے کے لیے: کیٹلاگ ڈیٹا بیس مائیگریشن سے بھرا جاتا ہے، اس API کے ذریعے بنایا یا ترمیم نہیں کیا جاتا۔</value>
+        <comment>d881018b</comment>
+    </data>
+    <data name="PermissionSpecification.name.description" xml:space="preserve">
+        <value>اجازت کی تصریح کا ظاہری نام، جو رول کی اجازتیں دیتے وقت اجازت ڈراپ ڈاؤن میں دکھایا جاتا ہے۔ صرف پڑھنے کے لیے: کیٹلاگ ڈیٹا بیس مائیگریشن سے بھرا جاتا ہے، اس API کے ذریعے بنایا یا ترمیم نہیں کیا جاتا۔</value>
+        <comment>cda60556</comment>
+    </data>
+    <data name="UserRegistry.name.description" xml:space="preserve">
+        <value>صارف کا سائن اِن نام، جو تصدیق پر جاری ہونے والے JSON Web Token کے Name کلیم سے مطابقت رکھتا ہے۔ ٹیننٹ کے اندر منفرد۔</value>
+        <comment>1114b6a1</comment>
+    </data>
+    <data name="UserRegistry.roleRegistryGuid.description" xml:space="preserve">
+        <value>رول رجسٹری کا شناخت کنندہ جس کو یہ صارف تفویض ہے۔ صارف کا ٹیننٹ اور اس کی اجازتیں طے کرتا ہے۔</value>
+        <comment>f99c9842</comment>
+    </data>
+    <data name="UserRegistry.email.description" xml:space="preserve">
+        <value>صارف کا ای میل پتہ، جو اکاؤنٹ ہولڈر کی شناخت کے لیے استعمال ہوتا ہے۔ عارضی پاس ورڈ پہنچانے کے لیے استعمال نہیں ہوتا، جو ری سیٹ کرنے والے کو ایک بار واپس کیا جاتا ہے۔</value>
+        <comment>2767b97d</comment>
+    </data>
+    <data name="UserRegistry.email.placeholder" xml:space="preserve">
+        <value>name@example.com</value>
+        <comment>7b17fb0b</comment>
+    </data>
+    <data name="UserRegistry.wirePasswordHash.description" xml:space="preserve">
+        <value>جب قدر درست ہو تو پاس ورڈ ری سیٹ کے عمل سے جاری ہونے والے عارضی پاس ورڈ کو صارف کے Name کے ساتھ مزید سالٹ کیا جاتا ہے اور Argon2 ہیشنگ سے پہلے SHA-256 سے ہیش کیا جاتا ہے ('wire' پاس ورڈ فارمیٹ جس کی کچھ کلائنٹ انٹیگریشنز توقع کرتی ہیں)۔ ری سیٹ کرنے والے کو پاس ورڈ دکھانے کا طریقہ نہیں بدلتا۔</value>
+        <comment>13612f72</comment>
+    </data>
+    <data name="UserRegistry.passwordLocked.description" xml:space="preserve">
+        <value>جب قدر درست ہو تو بار بار ناکام پاس ورڈ کوششوں کے بعد اکاؤنٹ مقفل ہے اور پاس ورڈ ری سیٹ لاک ہٹانے تک تصدیق نہیں کر سکتا۔ یہاں صرف پڑھنے کے لیے؛ صرف پاس ورڈ ری سیٹ کے عمل سے ہٹتا ہے۔</value>
+        <comment>6c727df1</comment>
+    </data>
+    <data name="UserRegistry.id.description" xml:space="preserve">
+        <value>سرور کا تفویض کردہ قطار کا شناخت کنندہ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>254b452e</comment>
+    </data>
+    <data name="UserRegistry.createdUser.description" xml:space="preserve">
+        <value>وہ صارف جس نے یہ اکاؤنٹ بنایا۔ سرور کی تفویض کردہ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>7eb019f3</comment>
+    </data>
+    <data name="UserRegistry.createdDate.description" xml:space="preserve">
+        <value>اس اکاؤنٹ کی تخلیق کی ٹائم اسٹیمپ (UTC)۔ سرور کی تفویض کردہ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>2c31adef</comment>
+    </data>
+    <data name="UserRegistry.version.description" xml:space="preserve">
+        <value>سرور کا تفویض کردہ پرامید ہم وقتی ورژن نمبر، ہر اپ ڈیٹ پر بڑھتا ہے۔ صرف پڑھنے کے لیے۔</value>
+        <comment>937d398b</comment>
+    </data>
+    <data name="UserRegistry.inheritedId.description" xml:space="preserve">
+        <value>پچھلی انسٹالیشن کی قطار کی تحفظی درآمد سے منتقل شدہ شناخت کنندہ، اگر یہ اکاؤنٹ وہیں سے آیا ہو۔ بصورت دیگر نہ بھرا جاتا ہے نہ استعمال ہوتا ہے۔ صرف پڑھنے کے لیے۔</value>
+        <comment>cacf7d8d</comment>
+    </data>
+    <data name="UserRegistry.active.description" xml:space="preserve">
+        <value>جب قدر درست ہو تو صارف تصدیق کر سکتا ہے۔ غلط ہو تو پاس ورڈ درست ہونے سے قطع نظر سائن اِن مسترد کیا جاتا ہے۔</value>
+        <comment>13f02082</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.name.description" xml:space="preserve">
+        <value>OpenTelemetry کاؤنٹر کا نام جو مطابقت پر بڑھتا ہے، مثلاً "jube.logcounter.postgres_deadlock"۔ فعال قطاروں میں منفرد، بڑے چھوٹے حروف کی تمیز کے بغیر۔ صرف حروف، اعداد، '.', '_' اور '-'، OpenTelemetry انسٹرومنٹ کے ناموں کی روایات کے مطابق۔</value>
+        <comment>49fd6ad9</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.name.placeholder" xml:space="preserve">
+        <value>jube.logcounter.postgres_deadlock</value>
+        <comment>415927e2</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.regex.description" xml:space="preserve">
+        <value>ایک .NET ریگولر ایکسپریشن جو اس انسٹینس تک پہنچنے والی ہر غیر ساختہ لاگ لائن/پیغام پر جانچا جاتا ہے (ApplicationLogEntry، PostgresLogEntry، ContainerLogEntry، RespSlowOperation، EtcdClusterEvent، PatroniClusterEvent)۔ ہر مطابقت Name کو ایک سے بڑھاتی ہے۔ کمپائل ہونا ضروری ہے -- محفوظ کرتے وقت جانچا جاتا ہے، مطابقت کے وقت نہیں۔ جہاں پیٹرن اجازت دے مطابقت لکیری وقت میں چلتی ہے؛ لُک اراؤنڈ، بیک ریفرنس یا ایٹمک گروپ والے پیٹرن بیک ٹریکنگ میچر پر آ جاتے ہیں جو فی لائن 100 ملی سیکنڈ تک محدود ہے، اور جو اصول لگاتار پانچ لائنوں پر وقت ختم کرے وہ اگلی ایک منٹ کی تازہ کاری تک معطل رہتا ہے۔</value>
+        <comment>dfb2a18d</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.regex.placeholder" xml:space="preserve">
+        <value>deadlock detected</value>
+        <comment>5561729c</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.active.description" xml:space="preserve">
+        <value>جب قدر درست ہو تو یہ اصول آنے والی لاگ لائنوں پر جانچا جاتا ہے۔ غلط ہو تو نظر انداز کیا جاتا ہے (اور اس کا کاؤنٹر بس بڑھنا بند کر دیتا ہے -- قطار حذف نہیں ہوتی)۔</value>
+        <comment>d7167dd5</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.locked.description" xml:space="preserve">
+        <value>جب قدر درست ہو تو یہ قطار مقفل ہے اور اسے ترمیم یا حذف نہیں کیا جا سکتا۔</value>
+        <comment>c9f595ac</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.createdUser.description" xml:space="preserve">
+        <value>وہ صارف جس نے یہ قطار بنائی۔ سرور کی تفویض کردہ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>3b8cd8cf</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.createdDate.description" xml:space="preserve">
+        <value>اس قطار کی تخلیق کی ٹائم اسٹیمپ (UTC)۔ سرور کی تفویض کردہ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>bb91d7cb</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.updatedUser.description" xml:space="preserve">
+        <value>وہ صارف جس نے اس قطار کو آخری بار اپ ڈیٹ کیا۔ سرور کی تفویض کردہ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>eeb46a72</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.updatedDate.description" xml:space="preserve">
+        <value>اس قطار کی آخری اپ ڈیٹ کی ٹائم اسٹیمپ (UTC)۔ سرور کی تفویض کردہ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>666366bf</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.version.description" xml:space="preserve">
+        <value>سرور کا تفویض کردہ پرامید ہم وقتی ورژن نمبر۔ صرف پڑھنے کے لیے۔</value>
+        <comment>755d4fe7</comment>
+    </data>
+    <data name="OpenTelemetryExclude.name.description" xml:space="preserve">
+        <value>OpenTelemetry انسٹرومنٹ/کاؤنٹر کا عین نام جس کی برآمد روکنی ہے، مثلاً "jube.engine.logs.warn.count"۔ مکمل طور پر، بڑے چھوٹے حروف کی تمیز کے بغیر ملایا جاتا ہے -- کوئی وائلڈ کارڈ نہیں۔ صرف حروف، اعداد، '.', '_', '/' اور '-'۔ فعال قطاروں میں منفرد۔ ہر انسٹرومنٹ پر لاگو ہوتا ہے، بشمول وہ جو OpenTelemetryLogCounter متحرک طور پر بناتا ہے: وہاں خارج شدہ نام کبھی بنتا ہی نہیں، اس لیے کبھی بڑھنا شروع نہیں کرتا۔ ہر دوسرے پہلے سے موجود نامزد کاؤنٹر کے لیے یہ صرف اس انسٹرومنٹ پر اثر کرتا ہے جو ابھی فعال طور پر برآمد نہیں کر رہا -- جو پہلے سے برآمد کر رہا ہے وہ پروسیس ری اسٹارٹ تک جاری رکھتا ہے۔</value>
+        <comment>7e24ca9e</comment>
+    </data>
+    <data name="OpenTelemetryExclude.name.placeholder" xml:space="preserve">
+        <value>jube.engine.logs.warn.count</value>
+        <comment>2ddc8a48</comment>
+    </data>
+    <data name="OpenTelemetryExclude.active.description" xml:space="preserve">
+        <value>جب قدر درست ہو تو یہ اخراج نافذ ہے۔ غلط ہو تو نظر انداز کیا جاتا ہے (انسٹرومنٹ معمول کے مطابق برآمد ہوتا ہے، کسی دوسرے اخراج کے تابع)۔</value>
+        <comment>7d0dc62e</comment>
+    </data>
+    <data name="OpenTelemetryExclude.locked.description" xml:space="preserve">
+        <value>جب قدر درست ہو تو یہ قطار مقفل ہے اور اسے ترمیم یا حذف نہیں کیا جا سکتا۔</value>
+        <comment>c9f595ac</comment>
+    </data>
+    <data name="OpenTelemetryExclude.createdUser.description" xml:space="preserve">
+        <value>وہ صارف جس نے یہ قطار بنائی۔ سرور کی تفویض کردہ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>3b8cd8cf</comment>
+    </data>
+    <data name="OpenTelemetryExclude.createdDate.description" xml:space="preserve">
+        <value>اس قطار کی تخلیق کی ٹائم اسٹیمپ (UTC)۔ سرور کی تفویض کردہ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>bb91d7cb</comment>
+    </data>
+    <data name="OpenTelemetryExclude.updatedUser.description" xml:space="preserve">
+        <value>وہ صارف جس نے اس قطار کو آخری بار اپ ڈیٹ کیا۔ سرور کی تفویض کردہ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>eeb46a72</comment>
+    </data>
+    <data name="OpenTelemetryExclude.updatedDate.description" xml:space="preserve">
+        <value>اس قطار کی آخری اپ ڈیٹ کی ٹائم اسٹیمپ (UTC)۔ سرور کی تفویض کردہ۔ صرف پڑھنے کے لیے۔</value>
+        <comment>666366bf</comment>
+    </data>
+    <data name="OpenTelemetryExclude.version.description" xml:space="preserve">
+        <value>سرور کا تفویض کردہ پرامید ہم وقتی ورژن نمبر۔ صرف پڑھنے کے لیے۔</value>
+        <comment>755d4fe7</comment>
+    </data>
+</root>

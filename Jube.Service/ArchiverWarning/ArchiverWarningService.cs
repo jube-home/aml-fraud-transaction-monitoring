@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Dto.Options;
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Query.GetArchiverWarningListQuery;

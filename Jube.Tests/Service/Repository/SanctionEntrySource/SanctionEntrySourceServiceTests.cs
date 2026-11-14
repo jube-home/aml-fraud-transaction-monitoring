@@ -27,6 +27,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -210,6 +211,27 @@ namespace Jube.Test.Service.Repository.SanctionEntrySource
 
                 exception.Result.Errors.Should().Contain(e => e.PropertyName == "files");
             }
+        }
+
+        [Fact]
+        public async Task ImportOfAFileOverTheSizeCapThrowsDtoValidationExceptionAndWritesNothingAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var sourceId = await CreateSourceAsync(dbContext);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var (stream, _) = BuildCsv("Name,Reference\r\nRobert Mugabe,REF001\r\n");
+            var before = await dbContext.SanctionEntryImport.CountAsync(w => w.SanctionEntrySourceId == sourceId);
+
+            await using (stream)
+            {
+                var exception = await Assert.ThrowsAsync<DtoValidationException>(() =>
+                    service.ImportAsync(stream, SanctionEntrySourceService.MaximumImportBytes + 1, sourceId));
+
+                exception.Result.Errors.Should().Contain(e => e.ErrorCode == "FilesTooLarge");
+            }
+
+            (await dbContext.SanctionEntryImport.CountAsync(w => w.SanctionEntrySourceId == sourceId))
+                .Should().Be(before);
         }
 
         [Fact]

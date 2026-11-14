@@ -46,7 +46,7 @@ namespace Jube.LoadTest
             var sampleContainerStats = true;
             var sampleHostStats = true;
             string? postgresConnectionString = null;
-            string? redisConnectionString = null;
+            string? respConnectionString = null;
 
             for (var i = 0; i < args.Length; i++)
             {
@@ -113,7 +113,7 @@ namespace Jube.LoadTest
                         postgresConnectionString = args[++i];
                         break;
                     case "-redisconn":
-                        redisConnectionString = args[++i];
+                        respConnectionString = args[++i];
                         break;
                 }
             }
@@ -156,7 +156,7 @@ namespace Jube.LoadTest
                 ContainerNamePatternsAreRegex = containerNamePatternsAreRegex,
                 ContainerRoles = containerRoles ?? LoadSettings.DefaultContainerRoles,
                 PostgresConnectionString = postgresConnectionString,
-                RedisConnectionString = redisConnectionString
+                RespConnectionString = respConnectionString
             };
 
             var runner = new LoadRunner(settings);
@@ -256,7 +256,7 @@ namespace Jube.LoadTest
                                                         TPS report; containers matching more than one pattern for a role are
                                                         summed into it. Default covers both the single-node dev compose and
                                                         the HA swarm stack's container/service names:
-                                                          Postgres=postgres,patroni;Redis=redis;Sentinel=sentinel;
+                                                          Postgres=postgres,patroni;RESP=resp;Sentinel=sentinel;
                                                           Etcd=etcd;HAProxy=haproxy;
                                                           Jube.Jobs=jube.jobs,jube-jobs;
                                                           Jube.WebApi=jube.webapi,jube-api,jube-ui
@@ -269,8 +269,8 @@ namespace Jube.LoadTest
                                                         Postgres_TempMiBPerSec, Postgres_ReplicationLagSeconds,
                                                         Postgres_ReplicaCount. Omit to leave those columns blank.
                                 -redisconn <connstring> StackExchange.Redis connection string to sample INFO from, e.g. redis:6379
-                                                        Adds Redis_ConnectedClients, Redis_UsedMemMiB, Redis_OpsPerSec,
-                                                        Redis_HitRatePct. Omit to leave those columns blank.
+                                                        Adds Resp_ConnectedClients, Resp_UsedMemMiB, Resp_OpsPerSec,
+                                                        Resp_HitRatePct. Omit to leave those columns blank.
 
                               Container stats require the docker CLI and /var/run/docker.sock to be reachable from
                               wherever this runs (e.g. bind-mount the socket when running this tool itself in a container).
@@ -279,7 +279,7 @@ namespace Jube.LoadTest
                               this tool runs inside a container (Docker doesn't namespace /proc), but skipped rather
                               than failing the run if unavailable (e.g. non-Linux hosts).
 
-                              Postgres/Redis stats connect directly to the database, independent of container/host
+                              Postgres/RESP stats connect directly to the database, independent of container/host
                               sampling, so they still work against a managed or remote instance with no docker access.
 
                               Postgres_ReplicationLagSeconds reads whichever side of a primary/standby pair -pgconn

@@ -58,6 +58,11 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                     "Stops a submitted backtest.",
                     EntityAnalysisModelBacktestService.RequiredPermissions),
                 new ServiceToolDescriptor(
+                    "EntityAnalysisModelBacktestTune", OperationKind.Read, true,
+                    false,
+                    "Tunes a rule from outcomes: backtests each candidate threshold and returns precision and recall per variant; proposes, never applies.",
+                    EntityAnalysisModelBacktestService.RequiredPermissions),
+                new ServiceToolDescriptor(
                     "EntityAnalysisModelBacktestExplain", OperationKind.Read, true,
                     false,
                     "Explains why one archived transaction was or was not counted, with the values read.",

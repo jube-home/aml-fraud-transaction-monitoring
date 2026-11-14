@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsInsidePolygon(this double latitude, double longitude, IEnumerable<string>? vertices)
+        [Description("True when: the point at the value as latitude and the argument as longitude is inside the polygon given as a list of latitude,longitude vertices.")]
+        public static bool IsInsidePolygon(this double latitude,
+            [Description("The longitude of the point in degrees; the value is its latitude.")] double longitude,
+            [Description("The polygon's vertices as latitude,longitude text in order, usually a List token.")] IEnumerable<string>? vertices)
         {
             return CoordinateSupport.IsInsidePolygon(latitude, longitude, vertices);
         }

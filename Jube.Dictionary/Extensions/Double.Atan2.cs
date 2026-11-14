@@ -7,7 +7,8 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Double Atan2(this Double y, Double x)
+        [Description("Returns the angle whose tangent is the quotient of two numbers.")]
+        public static Double Atan2(this Double y, [Description("The x coordinate of a point.")] Double x)
         {
             return Math.Atan2(y, x);
         }

@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns the sum of the absolute value's decimal digits.")]
         public static Int32 DigitSum(this Int32 @this)
         {
             var value = Math.Abs((long)@this);

@@ -13,12 +13,14 @@ namespace Jube.Dictionary.Extensions
     {
         extension(String query)
         {
+            [Description("Parses a query string into a NameValueCollection.")]
             public NameValueCollection ParseQueryString()
             {
                 return HttpUtility.ParseQueryString(query);
             }
 
-            public NameValueCollection ParseQueryString(Encoding encoding)
+            [Description("Parses a query string with specified encoding.")]
+            public NameValueCollection ParseQueryString([Description("The encoding to use.")] Encoding encoding)
             {
                 return HttpUtility.ParseQueryString(query, encoding);
             }

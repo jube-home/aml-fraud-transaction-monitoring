@@ -22,7 +22,7 @@ namespace Jube.AskJooby.Workflows
         private const string Containers = "containers-load-balancer-and-overlay-network";
         private const string EtcdPatroni = "etcd-and-patroni-cluster-state";
         private const string Postgres = "postgres-observability";
-        private const string Redis = "redis-observability";
+        private const string RESP = "resp-observability";
         private const string Queues = "engine-queue-and-throughput-counters";
         private const string Invoke = "invoke-path-performance-and-warnings";
         private const string SyncSchedule = "entity-analysis-model-synchronisation-schedule";
@@ -141,10 +141,10 @@ namespace Jube.AskJooby.Workflows
                     new GraphWorkflowNode(
                         "cache-layer", "Read Sentinel as an independent domain",
                         "Master identity, quorum, per-slave lag, memory pressure and evictions.",
-                        Redis, ["RedisSentinelStatusList", "RedisSentinelEventList", "RedisMetricList"],
+                        RESP, ["RespSentinelStatusList", "RespSentinelEventList", "RespMetricList"],
                         [
                             "SentinelMasterIdentity", "SentinelQuorum", "SlaveReplicationLag",
-                            "RedisMemoryPressure", "EvictionCount"
+                            "RespMemoryPressure", "EvictionCount"
                         ],
                         ["ObservationWindow"],
                         "Sentinel is independent of Patroni and etcd. Folding it into the database verdict "
@@ -152,11 +152,11 @@ namespace Jube.AskJooby.Workflows
                     new GraphWorkflowNode(
                         "application-connection-health", "Read how clients experienced the cache",
                         "Multiplexer queue depth, connection failures and configuration-changed broadcasts.",
-                        Redis, ["RedisConnectionMultiplexerMetricList", "RedisConnectionEventList"],
+                        RESP, ["RespConnectionMultiplexerMetricList", "RespConnectionEventList"],
                         ["MultiplexerQueueDepth", "ConnectionFailureEvents", "ConfigurationChangedBroadcasts"],
                         ["SentinelMasterIdentity"],
                         "A burst of configuration-changed broadcasts is the normal consequence of a Sentinel "
-                        + "switch. Read without the node above it looks like the application losing Redis for "
+                        + "switch. Read without the node above it looks like the application losing RESP for "
                         + "no reason."),
                     new GraphWorkflowNode(
                         "container-and-host-layer", "Read containers and hosts last, not first",
@@ -485,7 +485,7 @@ namespace Jube.AskJooby.Workflows
                         ["DockerDiskUsagePerHost"],
                         ["PgBackRestErrorLines"],
                         "This reports Docker's image, container and volume accounting, not host filesystem "
-                        + "free space and not the backup or Redis mounts. The thing that actually fills -- "
+                        + "free space and not the backup or RESP mounts. The thing that actually fills -- "
                         + "the write-ahead log when archiving stalls -- is measured by nothing we have. Do "
                         + "not represent this as disk headroom. " + MonitoringGap),
                     Operator(
@@ -506,27 +506,28 @@ namespace Jube.AskJooby.Workflows
             new(
                 5,
                 "redis-sentinel-failover-verification",
-                "Redis Sentinel Failover Verification",
+                "RESP Sentinel Failover Verification",
                 "Whether Sentinel performed a master switch, which node holds the master role now, and "
                 + "whether every client and replica has converged on it.",
                 "Event evidence, then topology, then the new master's health, then client and workload "
                 + "recovery, then an operator check that no second master can appear.",
-                "Use for anything Redis, Sentinel, cache or multiplexer. Entirely independent of the Patroni "
-                + "workflows -- do not merge a Redis incident into a database incident.",
+                "Use for anything RESP, Sentinel, cache or multiplexer. Entirely independent of the Patroni "
+                + "workflows -- do not merge a RESP incident into a database incident.",
                 [
-                    "did redis fail over", "who is the redis master", "sentinel switched master",
-                    "the cache is down", "redis connection failures", "is sentinel at quorum",
-                    "redis memory pressure", "cache evictions"
+                    "did resp fail over", "who is the resp master", "sentinel switched master",
+                    "did redis fail over", "who is the redis master", "redis memory pressure",
+                    "the cache is down", "resp connection failures", "is sentinel at quorum",
+                    "resp memory pressure", "cache evictions"
                 ],
                 [
-                    BaselineThenRecent(Redis,
-                        ["RedisSentinelEventList", "RedisMetricList"],
+                    BaselineThenRecent(RESP,
+                        ["RespSentinelEventList", "RespMetricList"],
                         "the Sentinel event stream and the metrics behind it"),
                     new GraphWorkflowNode(
                         "switch-evidence", "Establish from Sentinel's own events that a switch occurred",
                         "Switch-master events, the subjective and objective down sequence, and failover state "
                         + "transitions.",
-                        Redis, ["RedisSentinelEventList"],
+                        RESP, ["RespSentinelEventList"],
                         ["SwitchMasterEvents", "SdownOdownSequence", "FailoverStateTransitions"],
                         ["BaselineWindow", "RecentWindow"],
                         "These are pub/sub captures into a bounded queue, so a dropped switch-master makes a "
@@ -536,7 +537,7 @@ namespace Jube.AskJooby.Workflows
                         "topology-now", "Read the topology",
                         "Master identity, slave and sentinel counts, the quorum setting, and per-slave link "
                         + "status and lag.",
-                        Redis, ["RedisSentinelStatusList"],
+                        RESP, ["RespSentinelStatusList"],
                         [
                             "MasterIdentity", "NumSlaves", "NumOtherSentinels", "QuorumSetting",
                             "MasterLinkStatusPerSlave", "ReplicationLagSecondsPerSlave"
@@ -548,7 +549,7 @@ namespace Jube.AskJooby.Workflows
                     new GraphWorkflowNode(
                         "new-master-health", "Read the new master's condition",
                         "Memory pressure, evictions, persistence state, connected replicas and fragmentation.",
-                        Redis, ["RedisMetricList"],
+                        RESP, ["RespMetricList"],
                         [
                             "MemoryPressure", "EvictedKeys", "AofState", "RdbLastSaveAge",
                             "ConnectedReplicas", "FragmentationRatio"
@@ -561,7 +562,7 @@ namespace Jube.AskJooby.Workflows
                     new GraphWorkflowNode(
                         "client-recovery", "Establish when clients actually reconnected",
                         "Reconnection timing, queue drain profile and residual failures.",
-                        Redis, ["RedisConnectionMultiplexerMetricList", "RedisConnectionEventList"],
+                        RESP, ["RespConnectionMultiplexerMetricList", "RespConnectionEventList"],
                         ["ReconnectionTiming", "QueueDrainProfile", "ResidualFailures"],
                         ["MasterIdentity"],
                         "A configuration-changed broadcast and a failed-then-restored pair are the expected "
@@ -570,7 +571,7 @@ namespace Jube.AskJooby.Workflows
                     new GraphWorkflowNode(
                         "workload-recovery", "Judge latency against the reconnection window",
                         "Per-call-site recovery and slow commands on the new master.",
-                        Redis, ["RedisCallCounterList", "RedisSlowOperationList"],
+                        RESP, ["RespCallCounterList", "RespSlowOperationList"],
                         ["PerCallSiteRecovery", "SlowCommandsOnNewMaster"],
                         ["ReconnectionTiming"],
                         "The new master is cold, so elevated latency immediately after a switch is warm-up "
@@ -719,7 +720,7 @@ namespace Jube.AskJooby.Workflows
                         Containers, ["DockerContainerMetricList", "DockerHostMetricList"],
                         ["ContainersByHost", "HostResourceProfile"],
                         ["BaselineWindow", "RecentWindow"],
-                        "Every etcd, Patroni, Redis and Sentinel service is pinned by zone label and cannot "
+                        "Every etcd, Patroni, RESP and Sentinel service is pinned by zone label and cannot "
                         + "move: draining does not relocate them, it removes them. No tool reads node labels, "
                         + "so the zone-to-host mapping has to be taken from the environment file by hand. "
                         + MonitoringGap),
@@ -734,11 +735,11 @@ namespace Jube.AskJooby.Workflows
                         + "this node must say so rather than report a healthy count."),
                     new GraphWorkflowNode(
                         "cache-exposure", "Work out the cache exposure too",
-                        "Whether the Redis master is there, and the sentinel quorum margin after the loss.",
-                        Redis, ["RedisSentinelStatusList"],
+                        "Whether the RESP master is there, and the sentinel quorum margin after the loss.",
+                        RESP, ["RespSentinelStatusList"],
                         ["MasterOnTargetNode", "SentinelQuorumMarginAfterLoss"],
                         ["ContainersByHost"],
-                        "Draining the node holding the Redis master forces a Sentinel failover rather than "
+                        "Draining the node holding the RESP master forces a Sentinel failover rather than "
                         + "avoiding one. Better to let it happen deliberately and verify it than discover it "
                         + "mid-drain."),
                     Operator(

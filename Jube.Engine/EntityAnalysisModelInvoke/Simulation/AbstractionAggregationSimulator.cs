@@ -21,6 +21,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using Analytics.Aggregation;
     using Context.Extensions.AbstractionRulesWithSearchKeys;
     using Dictionary;
     using EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
@@ -39,15 +40,18 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
         int IntervalValue,
         bool EnableOffset,
         int OffsetType,
-        int OffsetValue)
+        int OffsetValue,
+        int IterationOrderType = 1,
+        string SearchFunctionParameters = null)
     {
         public static AbstractionSettings FromRecord(int id, string name, string searchKey, string searchFunctionKey,
             int? searchFunctionTypeId, string searchInterval, int? searchValue, bool? offset, int? offsetTypeId,
-            int? offsetValue)
+            int? offsetValue, int? iterationOrderId = null, string searchFunctionParameters = null)
         {
             return new AbstractionSettings(id, name?.Replace(" ", "_"), searchKey, searchFunctionKey,
                 searchFunctionTypeId ?? 1, searchInterval ?? "d", searchInterval != null ? searchValue ?? 0 : 0,
-                offset == true, offsetTypeId ?? 0, offsetValue ?? 0);
+                offset == true, offsetTypeId ?? 0, offsetValue ?? 0, iterationOrderId ?? 1,
+                searchFunctionParameters);
         }
 
         public EntityAnalysisModelAbstractionRule ToEngineRule()
@@ -64,6 +68,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
                 EnableOffset = EnableOffset,
                 OffsetType = OffsetType,
                 OffsetValue = OffsetValue,
+                IterationOrderType = IterationOrderType,
+                AggregationFunction = AggregationParameters.Bind(AggregationFunctionType, SearchFunctionParameters),
                 Search = true
             };
         }
@@ -114,16 +120,28 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
             var shortened = AbstractionWindow.SearchKeyShortensTheWindow(rule.IntervalType, rule.IntervalValue,
                 searchKey.TtlInterval, searchKey.TtlIntervalValue, referenceDate);
 
-            List<DictionaryNoBoxing<string>> matches;
+            List<DictionaryNoBoxing<string>> inWindow;
+            int matched;
 
             try
             {
-                var match = await RuleRunner.Sandbox
+                var engineRule = rule.ToEngineRule();
+
+                engineRule.AbstractionRuleCompileDelegate = await RuleRunner.Sandbox
                     .GetDelegateAsync<EntityAnalysisModelAbstractionRule.Match>(parsed, token).ConfigureAwait(false);
 
-                matches = await RuleRunner.Sandbox
-                    .RunAsync(() => documents.FindAll(d => match(d, current.Lists, current.Kvp, log)), token)
-                    .ConfigureAwait(false);
+                engineRule.UsesCursor = parsed.UsesCursor;
+
+                var resolver = new AbstractionMatchResolver(documents, current.Data, current.Lists, current.Kvp, null,
+                    log);
+
+                (inWindow, matched) = await RuleRunner.Sandbox.RunAsync(() =>
+                {
+                    var resolved = resolver.Resolve(engineRule, referenceDateName, windowFrom, referenceDate,
+                        out var matchedBeforeWindow, out _);
+
+                    return (resolved, matchedBeforeWindow);
+                }, token).ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
@@ -131,15 +149,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
                     null, [], ex);
             }
 
-            var inWindow = matches.FindAll(x =>
-                x[referenceDateName].AsDateTime() >= windowFrom && x[referenceDateName].AsDateTime() <= referenceDate);
-
             var value = EntityAnalysisModelAbstractionRuleAggregatorUtility.Aggregate(
                 new EntityAnalysisModelInstanceEntryPayload { Payload = current.Data, ReferenceDate = referenceDate },
                 new ConcurrentDictionary<int, List<DictionaryNoBoxing<string>>> { [rule.Id] = inWindow },
                 rule.ToEngineRule(), log);
 
-            return new AbstractionSimulationResult(documents.Count, matches.Count, inWindow.Count, windowFrom,
+            return new AbstractionSimulationResult(documents.Count, matched, inWindow.Count, windowFrom,
                 referenceDate, shortened, value, inWindow, null);
         }
     }

@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Interfaces;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,18 +24,23 @@ namespace Jube.Dto.Query.TreeChildren
 {
     [Description("A child node of a Role Registry tree (user or permission). Colour is 'green' for an active " +
                  "node and 'red' otherwise.")]
+    [MessagePackObject]
     public class RoleRegistryTreeChildDto : ITreeChild
     {
         [Description("Guid of the parent Role Registry.")]
+        [Key(0)]
         public Guid RoleRegistryGuid { get; set; }
 
         [Description("Integer Id of the child row.")]
+        [Key(1)]
         public int Key { get; set; }
 
         [Description("Name of the child row (the permission specification name for permission nodes).")]
+        [Key(2)]
         public string? Name { get; set; }
 
         [Description("'green' when the child is active, otherwise 'red'.")]
+        [Key(3)]
         public string? Color { get; set; }
     }
 }

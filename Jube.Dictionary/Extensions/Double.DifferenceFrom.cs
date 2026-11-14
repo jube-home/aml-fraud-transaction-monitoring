@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double DifferenceFrom(this double @this, double other)
+        [Description("The value minus the other.")]
+        public static double DifferenceFrom(this double @this, [Description("The other number.")] double other)
         {
             return CalculationSupport.Finite(@this - other);
         }

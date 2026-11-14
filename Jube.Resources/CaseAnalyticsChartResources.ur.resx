@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="WeekdayMon" xml:space="preserve">
+        <value>پیر</value>
+    </data>
+    <data name="WeekdayTue" xml:space="preserve">
+        <value>منگل</value>
+    </data>
+    <data name="WeekdayWed" xml:space="preserve">
+        <value>بدھ</value>
+    </data>
+    <data name="WeekdayThu" xml:space="preserve">
+        <value>جمعرات</value>
+    </data>
+    <data name="WeekdayFri" xml:space="preserve">
+        <value>جمعہ</value>
+    </data>
+    <data name="WeekdaySat" xml:space="preserve">
+        <value>ہفتہ</value>
+    </data>
+    <data name="WeekdaySun" xml:space="preserve">
+        <value>اتوار</value>
+    </data>
+    <data name="ImpactMinimal" xml:space="preserve">
+        <value>کم سے کم</value>
+    </data>
+    <data name="ImpactLow" xml:space="preserve">
+        <value>کم</value>
+    </data>
+    <data name="ImpactModerate" xml:space="preserve">
+        <value>معتدل</value>
+    </data>
+    <data name="ImpactHigh" xml:space="preserve">
+        <value>زیادہ</value>
+    </data>
+    <data name="ImpactSevere" xml:space="preserve">
+        <value>شدید</value>
+    </data>
+    <data name="LikelihoodVeryLikely" xml:space="preserve">
+        <value>بہت ممکن</value>
+    </data>
+    <data name="LikelihoodLikely" xml:space="preserve">
+        <value>ممکن</value>
+    </data>
+    <data name="LikelihoodPossible" xml:space="preserve">
+        <value>قابل امکان</value>
+    </data>
+    <data name="LikelihoodUnlikely" xml:space="preserve">
+        <value>غیر ممکن</value>
+    </data>
+    <data name="RiskMatrixTitle" xml:space="preserve">
+        <value>رسک میٹرکس</value>
+    </data>
+    <data name="RiskMatrixAssessed" xml:space="preserve">
+        <value>{0} جانچے گئے کیسز؛ {1} ابھی جانچے نہیں گئے</value>
+    </data>
+    <data name="RiskMatrixCases" xml:space="preserve">
+        <value>{0} کیسز</value>
+    </data>
+    <data name="Impact" xml:space="preserve">
+        <value>اثر</value>
+    </data>
+    <data name="Likelihood" xml:space="preserve">
+        <value>امکان</value>
+    </data>
+    <data name="Cases" xml:space="preserve">
+        <value>کیسز</value>
+    </data>
+    <data name="FlowTitle" xml:space="preserve">
+        <value>کھلے، بند اور بیک لاگ</value>
+    </data>
+    <data name="FlowSubtitle" xml:space="preserve">
+        <value>ہر دن کھلنے اور بند ہونے والے کیسز، اور دن کے اختتام پر ابھی کھلے کیسز</value>
+    </data>
+    <data name="Opened" xml:space="preserve">
+        <value>کھلے</value>
+    </data>
+    <data name="Closed" xml:space="preserve">
+        <value>بند</value>
+    </data>
+    <data name="Backlog" xml:space="preserve">
+        <value>بیک لاگ</value>
+    </data>
+    <data name="FirstViewTitle" xml:space="preserve">
+        <value>پہلی نظر تک کا وقت</value>
+    </data>
+    <data name="FirstViewSubtitle" xml:space="preserve">
+        <value>کیسز انتظار کی مدت کے لحاظ سے</value>
+    </data>
+    <data name="ResolutionTitle" xml:space="preserve">
+        <value>حل تک کا وقت</value>
+    </data>
+    <data name="ResolutionSubtitle" xml:space="preserve">
+        <value>بند کیسز لگنے والے وقت کے لحاظ سے</value>
+    </data>
+    <data name="AgingTitle" xml:space="preserve">
+        <value>کھلے کیسز عمر کے لحاظ سے</value>
+    </data>
+    <data name="AgingSubtitle" xml:space="preserve">
+        <value>کھلے کیسز کتنی دیر سے منتظر ہیں، فوری ہونے کی لین کے لحاظ سے</value>
+    </data>
+    <data name="LaneLiveMoney" xml:space="preserve">
+        <value>زندہ رقم</value>
+    </data>
+    <data name="LaneMandatory" xml:space="preserve">
+        <value>لازمی</value>
+    </data>
+    <data name="LaneDeadlineNear" xml:space="preserve">
+        <value>آخری تاریخ قریب</value>
+    </data>
+    <data name="LaneStandard" xml:space="preserve">
+        <value>معیاری</value>
+    </data>
+    <data name="StatusDwellTitle" xml:space="preserve">
+        <value>ہر حالت میں وقت</value>
+    </data>
+    <data name="StatusDwellSubtitle" xml:space="preserve">
+        <value>مکمل قیاموں کا میڈین اور سب سے سست دسواں حصہ، گھنٹوں میں</value>
+    </data>
+    <data name="Unknown" xml:space="preserve">
+        <value>نامعلوم</value>
+    </data>
+    <data name="Hours" xml:space="preserve">
+        <value>گھنٹے</value>
+    </data>
+    <data name="Median" xml:space="preserve">
+        <value>میڈین</value>
+    </data>
+    <data name="SlowestTenth" xml:space="preserve">
+        <value>سب سے سست دسواں حصہ</value>
+    </data>
+    <data name="RuleEffortTitle" xml:space="preserve">
+        <value>غلط مثبتوں پر ضائع ہونے والا تجزیہ کار کا وقت</value>
+    </data>
+    <data name="RuleEffortSubtitle" xml:space="preserve">
+        <value>وہ گھنٹے جو اصول کے اٹھائے گئے ان کیسز پر خرچ ہوئے جو حقیقی نہیں نکلے</value>
+    </data>
+    <data name="RulePrecisionTitle" xml:space="preserve">
+        <value>اصول کی درستگی</value>
+    </data>
+    <data name="RulePrecisionSubtitle" xml:space="preserve">
+        <value>اصول کے اٹھائے گئے طے شدہ کیسز کا حصہ جن کی تصدیق ہوئی</value>
+    </data>
+    <data name="Percent" xml:space="preserve">
+        <value>فیصد</value>
+    </data>
+    <data name="Precision" xml:space="preserve">
+        <value>درستگی</value>
+    </data>
+    <data name="GainsTitle" xml:space="preserve">
+        <value>کیسز پر کام کرتے ہوئے ملنے والے تصدیق شدہ کیسز</value>
+    </data>
+    <data name="DecidedCases" xml:space="preserve">
+        <value>{0} طے شدہ کیسز</value>
+    </data>
+    <data name="FewDecidedCases" xml:space="preserve">
+        <value>صرف {0} طے شدہ کیسز، بھروسے کے لیے بہت کم</value>
+    </data>
+    <data name="CasesWorkedPercent" xml:space="preserve">
+        <value>کام کیے گئے کیسز (%)</value>
+    </data>
+    <data name="ConfirmedFoundPercent" xml:space="preserve">
+        <value>ملے تصدیق شدہ (%)</value>
+    </data>
+    <data name="PriorityOrder" xml:space="preserve">
+        <value>ترجیحی ترتیب</value>
+    </data>
+    <data name="LikelihoodOrder" xml:space="preserve">
+        <value>امکانی ترتیب</value>
+    </data>
+    <data name="OldestFirst" xml:space="preserve">
+        <value>سب سے پرانا پہلے</value>
+    </data>
+    <data name="Random" xml:space="preserve">
+        <value>بے ترتیب</value>
+    </data>
+    <data name="CalibrationTitle" xml:space="preserve">
+        <value>پیش گوئی شدہ امکان بمقابلہ جو ہوا</value>
+    </data>
+    <data name="ArrivalsTitle" xml:space="preserve">
+        <value>کیسز کب آتے ہیں</value>
+    </data>
+    <data name="ArrivalsSubtitle" xml:space="preserve">
+        <value>ہفتے کے دن اور گھنٹے کے لحاظ سے بنائے گئے کیسز (UTC)</value>
+    </data>
+    <data name="Hour" xml:space="preserve">
+        <value>گھنٹہ</value>
+    </data>
+    <data name="Weekday" xml:space="preserve">
+        <value>ہفتے کا دن</value>
+    </data>
+    <data name="FirstViewByHourTitle" xml:space="preserve">
+        <value>آمد کے گھنٹے کے لحاظ سے پہلی نظر تک کا میڈین وقت</value>
+    </data>
+    <data name="FirstViewByHourSubtitle" xml:space="preserve">
+        <value>وہ منٹ جو کیس نے کسی کے دیکھنے سے پہلے انتظار کیا، آمد کے گھنٹے کے لحاظ سے (UTC)</value>
+    </data>
+    <data name="Minutes" xml:space="preserve">
+        <value>منٹ</value>
+    </data>
+    <data name="MedianMinutes" xml:space="preserve">
+        <value>میڈین منٹ</value>
+    </data>
+    <data name="ServiceLevelTitle" xml:space="preserve">
+        <value>ہفتہ وار سروس لیول کا حصول</value>
+    </data>
+    <data name="ServiceLevelSubtitle" xml:space="preserve">
+        <value>اس ہفتے بنائے گئے کیسز کا حصہ جنہوں نے ہر ہدف پورا کیا</value>
+    </data>
+    <data name="MetPercent" xml:space="preserve">
+        <value>پورے ہوئے (%)</value>
+    </data>
+    <data name="ServiceLevelFirstView" xml:space="preserve">
+        <value>پہلی نظر</value>
+    </data>
+    <data name="ServiceLevelOwnership" xml:space="preserve">
+        <value>ملکیت</value>
+    </data>
+    <data name="ServiceLevelResolution" xml:space="preserve">
+        <value>حل</value>
+    </data>
+    <data name="ServiceLevelTimeInStatus" xml:space="preserve">
+        <value>حالت میں وقت</value>
+    </data>
+    <data name="HandoffsTitle" xml:space="preserve">
+        <value>کیسز کتنی بار ہاتھ بدلتے ہیں</value>
+    </data>
+    <data name="HandoffsSubtitle" xml:space="preserve">
+        <value>{0} کیسز بند ہونے کے بعد دوبارہ کھولے گئے</value>
+    </data>
+    <data name="ChangesOfOwner" xml:space="preserve">
+        <value>مالک کی تبدیلیاں</value>
+    </data>
+</root>

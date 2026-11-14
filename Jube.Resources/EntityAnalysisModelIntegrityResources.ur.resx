@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>آپ کو یہ کارروائی انجام دینے کی اجازت نہیں ہے۔</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>یہ کارروائی انجام دینے کے لیے آپ کا کسی ٹیننٹ میں سائن ان ہونا ضروری ہے۔</value>
+  </data>
+    <data name="ModelNotFound" xml:space="preserve">
+    <value>اینٹٹی اینالیسس ماڈل نہیں ملا۔</value>
+  </data>
+    <data name="EntityNotFound" xml:space="preserve">
+    <value>اس ماڈل میں آئی ڈی ⁨{1}⁩ والا ⁨{0}⁩ نہیں ملا۔</value>
+  </data>
+    <data name="Title_DependencyDangling" xml:space="preserve">
+    <value>ایسا نام استعمال کرتا ہے جو موجود نہیں</value>
+  </data>
+    <data name="Title_DependencyOnInactive" xml:space="preserve">
+    <value>غیر فعال اینٹٹی استعمال کرتا ہے</value>
+  </data>
+    <data name="Title_DependencyOnUnapproved" xml:space="preserve">
+    <value>ایسی اینٹٹی استعمال کرتا ہے جس کی ابھی منظوری نہیں ہوئی</value>
+  </data>
+    <data name="Title_EntityPendingApproval" xml:space="preserve">
+    <value>تبدیل کی گئی اور منظوری کی منتظر ہے</value>
+  </data>
+    <data name="Title_EntityUnreferenced" xml:space="preserve">
+    <value>کسی چیز کے زیر استعمال نہیں</value>
+  </data>
+    <data name="Title_EngineCompileFailed" xml:space="preserve">
+    <value>انجن میں کمپائل نہیں ہوا</value>
+  </data>
+    <data name="Title_ModelInactive" xml:space="preserve">
+    <value>ماڈل غیر فعال ہے</value>
+  </data>
+    <data name="Title_NoActiveActivationRules" xml:space="preserve">
+    <value>کوئی فعال ایکٹیویشن قاعدہ نہیں</value>
+  </data>
+    <data name="Title_TtlCountersDisabled" xml:space="preserve">
+    <value>TTL کاؤنٹرز غیر فعال ہیں</value>
+  </data>
+    <data name="Title_SearchKeyTtlShortensWindow" xml:space="preserve">
+    <value>سرچ کی کی تاریخ قاعدے کی کھڑکی سے مختصر ہے</value>
+  </data>
+    <data name="Title_SearchKeyTtlCollapsesWindow" xml:space="preserve">
+    <value>سرچ کی قاعدے کی کھڑکی کے لیے کوئی تاریخ نہیں رکھتی</value>
+  </data>
+    <data name="Title_EngineStateUnavailable" xml:space="preserve">
+    <value>انجن کی حالت دستیاب نہیں</value>
+  </data>
+    <data name="Title_EngineNoNodes" xml:space="preserve">
+    <value>کسی انجن انسٹینس نے مطابقت نہیں کی</value>
+  </data>
+    <data name="Title_EngineNodeStale" xml:space="preserve">
+    <value>انجن انسٹینس نے رپورٹ کرنا بند کر دیا</value>
+  </data>
+    <data name="Title_EngineModelNotLoaded" xml:space="preserve">
+    <value>ماڈل کو انجن انسٹینس نے لوڈ نہیں کیا</value>
+  </data>
+    <data name="Title_EngineModelNotStarted" xml:space="preserve">
+    <value>ماڈل لوڈ ہے مگر شروع نہیں ہوا</value>
+  </data>
+    <data name="Title_EngineEntityNotLoaded" xml:space="preserve">
+    <value>انجن انسٹینس نے لوڈ نہیں کیا</value>
+  </data>
+    <data name="Title_EngineEntityStale" xml:space="preserve">
+    <value>انجن اب بھی ایسی اینٹٹی چلا رہا ہے جو اب فعال نہیں</value>
+  </data>
+    <data name="Message_DependencyDanglingActiveRuleText" xml:space="preserve">
+    <value>⁨{0}⁩ ⁨{1}⁩ کا قاعدے کا متن ⁨{2}⁩ کا نام لیتا ہے جو موجود نہیں، اس لیے یہ کام نہیں کرے گا۔</value>
+  </data>
+    <data name="Message_DependencyDanglingInactiveRuleText" xml:space="preserve">
+    <value>⁨{0}⁩ ⁨{1}⁩ کا قاعدے کا متن ⁨{2}⁩ کا نام لیتا ہے جو موجود نہیں؛ یہ غیر فعال ہے، اس لیے یہ صرف فعال کرنے پر اہم ہے۔</value>
+  </data>
+    <data name="Message_DependencyDanglingActiveSetting" xml:space="preserve">
+    <value>⁨{1}⁩ ⁨{2}⁩ کی ⁨{0}⁩ ترتیب ⁨{3}⁩ کا نام لیتی ہے جو موجود نہیں، اس لیے یہ کام نہیں کرے گی۔</value>
+  </data>
+    <data name="Message_DependencyDanglingInactiveSetting" xml:space="preserve">
+    <value>⁨{1}⁩ ⁨{2}⁩ کی ⁨{0}⁩ ترتیب ⁨{3}⁩ کا نام لیتی ہے جو موجود نہیں؛ یہ غیر فعال ہے، اس لیے یہ صرف فعال کرنے پر اہم ہے۔</value>
+  </data>
+    <data name="Message_DependencyOnInactiveRuleText" xml:space="preserve">
+    <value>⁨{0}⁩ ⁨{1}⁩ کا قاعدے کا متن ⁨{2}⁩ ⁨{3}⁩ استعمال کرتا ہے جو غیر فعال ہے، اس لیے انجن اسے لوڈ نہیں کرتا اور یہ استعمال کام نہیں کرے گا۔</value>
+  </data>
+    <data name="Message_DependencyOnInactiveSetting" xml:space="preserve">
+    <value>⁨{1}⁩ ⁨{2}⁩ کی ⁨{0}⁩ ترتیب ⁨{3}⁩ ⁨{4}⁩ استعمال کرتی ہے جو غیر فعال ہے، اس لیے انجن اسے لوڈ نہیں کرتا اور یہ استعمال کام نہیں کرے گا۔</value>
+  </data>
+    <data name="Message_DependencyOnUnapprovedRuleText" xml:space="preserve">
+    <value>⁨{0}⁩ ⁨{1}⁩ کا قاعدے کا متن ⁨{2}⁩ ⁨{3}⁩ استعمال کرتا ہے جس کی ابھی منظوری نہیں ہوئی، اس لیے انجن اسے نہیں چلاتا اور منظوری تک یہ استعمال کام نہیں کرے گا۔</value>
+  </data>
+    <data name="Message_DependencyOnUnapprovedSetting" xml:space="preserve">
+    <value>⁨{1}⁩ ⁨{2}⁩ کی ⁨{0}⁩ ترتیب ⁨{3}⁩ ⁨{4}⁩ استعمال کرتی ہے جس کی ابھی منظوری نہیں ہوئی، اس لیے انجن اسے نہیں چلاتا اور منظوری تک یہ استعمال کام نہیں کرے گا۔</value>
+  </data>
+    <data name="Message_EntityUnreferenced" xml:space="preserve">
+    <value>⁨{0}⁩ ⁨{1}⁩ فعال ہے مگر ماڈل میں کوئی چیز اسے استعمال نہیں کرتی۔</value>
+  </data>
+    <data name="Message_EngineCompileFailed" xml:space="preserve">
+    <value>انجن آخری مطابقت کے وقت ⁨{0}⁩ ⁨{1}⁩ کمپائل نہ کر سکا، اس لیے یہ نہیں چل رہا: ⁨{2}⁩۔</value>
+  </data>
+    <data name="Message_EngineCompileFailedNoError" xml:space="preserve">
+    <value>انجن آخری مطابقت کے وقت ⁨{0}⁩ ⁨{1}⁩ کمپائل نہ کر سکا، اس لیے یہ نہیں چل رہا: کوئی خرابی درج نہیں ہوئی۔</value>
+  </data>
+    <data name="Message_ModelInactive" xml:space="preserve">
+    <value>ماڈل غیر فعال ہے، اس لیے انجن اسے لوڈ یا کال نہیں کرتا۔</value>
+  </data>
+    <data name="Message_NoActiveActivationRules" xml:space="preserve">
+    <value>ماڈل میں کوئی فعال ایکٹیویشن قاعدہ نہیں، اس لیے کوئی ٹرانزیکشن ایکٹیویٹ نہیں ہو سکتا۔</value>
+  </data>
+    <data name="Message_TtlCountersDisabled" xml:space="preserve">
+    <value>ماڈل کے لیے TTL کاؤنٹرز غیر فعال ہیں، اس لیے انجن ⁨{0}⁩ کو نہ بڑھاتا ہے نہ پڑھتا ہے؛ قواعد اسے 0 دیکھتے ہیں۔</value>
+  </data>
+    <data name="Message_SearchKeyTtlCollapsesWindow" xml:space="preserve">
+    <value>سرچ کی ⁨{0}⁩ کا کوئی TTL نہیں، اس لیے انجن ایبسٹریکشن قاعدے کی ⁨{1}⁩ ⁨{2}⁩ کی کھڑکی کو صرف حوالہ تاریخ تک محدود کرتا ہے اور تقریباً کچھ جمع نہیں کرتا۔</value>
+  </data>
+    <data name="Message_SearchKeyTtlShortensWindow" xml:space="preserve">
+    <value>سرچ کی ⁨{0}⁩ تاریخ ⁨{1}⁩ ⁨{2}⁩ تک رکھتی ہے، جو قاعدے کے ⁨{3}⁩ ⁨{4}⁩ سے مختصر ہے، اس لیے انجن خاموشی سے مختصر کھڑکی استعمال کرتا ہے۔</value>
+  </data>
+    <data name="Message_EngineStateUnavailable" xml:space="preserve">
+    <value>اس پروسیس میں کوئی انجن نہیں چل رہا اور کسی انجن نے درج نہیں کیا کہ اس نے اس ماڈل کے لیے کیا لوڈ کیا، اس لیے یہ جانچا نہیں جا سکتا کہ انجن کیا چلا رہا ہے۔</value>
+  </data>
+    <data name="Message_EngineNoNodes" xml:space="preserve">
+    <value>کسی انجن انسٹینس نے اس ٹیننٹ کے ماڈلز کی مطابقت نہیں کی۔</value>
+  </data>
+    <data name="Message_EngineNodeStale" xml:space="preserve">
+    <value>انجن انسٹینس ⁨{0}⁩ نے آخری بار ⁨{1}⁩ پر رپورٹ کیا اور نہیں چل رہا۔ اسے اگلی مطابقت پر ہٹا دیا جائے گا، یا اگر مطابقت نہ ہو تو یہ ⁨{2}⁩ پر اس فہرست سے نکل جائے گا۔</value>
+  </data>
+    <data name="Message_EngineModelNotStarted" xml:space="preserve">
+    <value>انجن انسٹینس ⁨{0}⁩ نے ماڈل لوڈ کیا ہے مگر شروع نہیں کیا۔</value>
+  </data>
+    <data name="Message_EntityPendingApprovalWaiting" xml:space="preserve">
+    <value>⁨{0}⁩ ⁨{1}⁩ منظوری کا منتظر ہے، اس لیے انجن انسٹینس ⁨{2}⁩ ابھی اسے نہیں چلاتا۔</value>
+  </data>
+    <data name="Message_EntityPendingApprovalChanged" xml:space="preserve">
+    <value>⁨{0}⁩ ⁨{1}⁩ میں ایک تبدیلی منظوری کی منتظر ہے، اس لیے انجن انسٹینس ⁨{2}⁩ اب بھی آخری منظور شدہ ورژن چلا رہا ہے۔</value>
+  </data>
+    <data name="Message_EngineEntityNotLoaded" xml:space="preserve">
+    <value>⁨{0}⁩ ⁨{1}⁩ منظور شدہ اور فعال ہے مگر انجن انسٹینس ⁨{2}⁩ نے اسے لوڈ نہیں کیا: ماڈل کی مطابقت کریں اور دیکھیں کہ یہ کمپائل ہوتا ہے۔</value>
+  </data>
+    <data name="Message_EngineEntityStale" xml:space="preserve">
+    <value>انجن انسٹینس ⁨{0}⁩ اب بھی ⁨{1}⁩ ⁨{2}⁩ چلا رہا ہے جو اب فعال نہیں؛ اسے ہٹانے کے لیے ماڈل کی مطابقت کریں۔</value>
+  </data>
+    <data name="Message_EngineModelNotLoaded" xml:space="preserve">
+    <value>انجن انسٹینس ⁨{0}⁩ نے ماڈل لوڈ نہیں کیا؛ اس کی مطابقت کریں۔</value>
+  </data>
+</root>

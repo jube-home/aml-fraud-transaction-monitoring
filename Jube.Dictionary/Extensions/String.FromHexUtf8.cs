@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Decodes hex, with an optional 0x prefix, to UTF-8 text.")]
         public static string FromHexUtf8(this string? @this)
         {
             var value = (@this ?? "").Trim();

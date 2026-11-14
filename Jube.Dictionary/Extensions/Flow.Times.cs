@@ -15,12 +15,15 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static Flow<double> Times(this Flow<double> flow, double factor)
+        [Description("Replaces the value being tested with the value times the argument.")]
+        public static Flow<double> Times(this Flow<double> flow,
+            [Description("The number to multiply by.")] double factor)
         {
             return flow.Carry(flow.Value * factor);
         }
 
-        public static double Times(this double value, double factor)
+        [Description("The value times the argument, NaN if undefined.")]
+        public static double Times(this double value, [Description("The number to multiply by.")] double factor)
         {
             return CalculationSupport.Finite(value * factor);
         }

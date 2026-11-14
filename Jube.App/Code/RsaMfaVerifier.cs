@@ -42,7 +42,7 @@ namespace Jube.App.Code
                     dynamicEnvironment.AppSettings("OutboundHttpRsaAmCertificateThumbprint")
             };
 
-            IMfaProvider mfaProvider = new RsaSecurIdMfaProvider(options, log);
+            using var mfaProvider = new RsaSecurIdMfaProvider(options, log);
 
             var result = await mfaProvider.VerifyAsync(new MfaVerificationRequest
             {

@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns the square root.")]
         public static Double Sqrt(this Double d)
         {
             return Math.Sqrt(d);

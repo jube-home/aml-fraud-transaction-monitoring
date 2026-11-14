@@ -1,0 +1,9 @@
+{
+  "slice": "model-abstraction",
+  "note": "No SPA locale keys are owned by this slice (vue [] and i18n [] in slices.json). TTL counters, abstraction rules and calculations are rendered by the form model on model-core's Models page; their labels, group titles and help text come from FormModelResources (shared) and the per-class resx files created by this slice.",
+  "ka": {},
+  "id": {},
+  "sv": {},
+  "ur": {},
+  "hi": {}
+}

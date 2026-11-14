@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>आपको यह कार्रवाई करने की अनुमति नहीं है।</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>यह कार्रवाई करने के लिए आपको किसी टेनेंट में साइन इन होना आवश्यक है।</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>मान्य मॉडल आवश्यक है।</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>नाम आवश्यक है।</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>नाम अधिकतम {0} वर्णों का होना चाहिए।</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>यह नाम पहले से मौजूद है।</value>
+  </data>
+    <data name="AnomalyProbabilityRange" xml:space="preserve">
+    <value>विसंगति संभावना 0 और 1 के बीच होनी चाहिए।</value>
+  </data>
+    <data name="BootstrapWeightFactorRange" xml:space="preserve">
+    <value>बूटस्ट्रैप भार कारक 0 और 1 के बीच होना चाहिए।</value>
+  </data>
+    <data name="ChallengerModelBaseProbabilityRange" xml:space="preserve">
+    <value>चैलेंजर मॉडल की आधार संभावना 0 और 1 के बीच होनी चाहिए।</value>
+  </data>
+    <data name="BaseRateRange" xml:space="preserve">
+    <value>आधार दर 0 से अधिक और 1 से कम होनी चाहिए।</value>
+  </data>
+    <data name="FilterJsonRequired" xml:space="preserve">
+    <value>प्रशिक्षण डेटा फ़िल्टर आवश्यक है।</value>
+  </data>
+    <data name="FilterSqlRequired" xml:space="preserve">
+    <value>प्रशिक्षण डेटा फ़िल्टर आवश्यक है।</value>
+  </data>
+    <data name="FilterTokensRequired" xml:space="preserve">
+    <value>प्रशिक्षण डेटा फ़िल्टर आवश्यक है।</value>
+  </data>
+    <data name="FilterJsonInvalid" xml:space="preserve">
+    <value>फ़िल्टर परिभाषा मान्य JSON होनी चाहिए, 1 MB से अधिक नहीं।</value>
+  </data>
+    <data name="CategoricalOptionsInvalid" xml:space="preserve">
+    <value>श्रेणीगत विकल्प मान्य JSON होने चाहिए, 1 MB से अधिक नहीं।</value>
+  </data>
+    <data name="FilterSqlInvalid" xml:space="preserve">
+    <value>फ़िल्टर एक सादा बूलियन व्यंजक होना चाहिए जिसमें कोई स्टेटमेंट, टिप्पणी, सबक्वेरी या असंतुलित कोष्ठक न हों।</value>
+  </data>
+    <data name="FilterTokensInvalid" xml:space="preserve">
+    <value>फ़िल्टर टोकन JSON ऐरे होने चाहिए।</value>
+  </data>
+    <data name="DataSourceInvalid" xml:space="preserve">
+    <value>डेटा स्रोत Archive (0), DemoDataset (1) या UploadedDataset (2) होना चाहिए।</value>
+  </data>
+    <data name="CalibrationMethodInvalid" xml:space="preserve">
+    <value>अंशांकन विधि automatic, platt, isotonic या beta होनी चाहिए।</value>
+  </data>
+    <data name="DatasetRequired" xml:space="preserve">
+    <value>जब डेटा स्रोत UploadedDataset हो, तो अपलोड किया गया डेटासेट चुनना आवश्यक है।</value>
+  </data>
+    <data name="DatasetAmbiguous" xml:space="preserve">
+    <value>CSV डेटासेट और JSON डेटासेट में से ठीक एक चुना जाना चाहिए।</value>
+  </data>
+    <data name="DatasetNotFound" xml:space="preserve">
+    <value>चुना गया डेटासेट मौजूद नहीं है, पुष्ट नहीं है, या आपके टेनेंट के लिए उपलब्ध नहीं है।</value>
+  </data>
+    <data name="DatasetNotPermitted" xml:space="preserve">
+    <value>डेटासेट केवल तभी चुना जा सकता है जब डेटा स्रोत UploadedDataset हो।</value>
+  </data>
+    <data name="DatasetFilterRequired" xml:space="preserve">
+    <value>जब डेटा स्रोत UploadedDataset हो, तो पॉज़िटिव क्लास परिभाषित करने के लिए क्लास डेफ़िनिशन फ़िल्टर सेट करना आवश्यक है।</value>
+  </data>
+    <data name="AnomalyContaminationRange" xml:space="preserve">
+    <value>इस विसंगति एल्गोरिदम के लिए विसंगति संभावना संदूषण अंश है और 0 से अधिक तथा अधिकतम 0.5 होनी चाहिए।</value>
+  </data>
+    <data name="AnomalyAlgorithmInvalid" xml:space="preserve">
+    <value>विसंगति एल्गोरिदम कोई ज्ञात एल्गोरिदम नहीं है।</value>
+  </data>
+    <data name="AnomalyParametersInvalid" xml:space="preserve">
+    <value>विसंगति पैरामीटर मान्य नहीं हैं। {0}</value>
+  </data>
+</root>

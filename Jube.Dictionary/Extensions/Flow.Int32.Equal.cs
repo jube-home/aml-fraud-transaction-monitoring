@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<int> flow)
         {
-            public Flow<int> MatchEqual(int other)
+            [Description("True when: equals the argument. Decides matched if so; otherwise continues.")]
+            public Flow<int> MatchEqual([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.Int32Equal(flow.Value, other));
             }
 
-            public Flow<int> RejectEqual(int other)
+            [Description("True when: equals the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<int> RejectEqual([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.Int32Equal(flow.Value, other));
             }
 
-            public Flow<int> BreakEqual(int other)
+            [Description("True when: equals the argument. Decides broken if so; otherwise continues.")]
+            public Flow<int> BreakEqual([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.Int32Equal(flow.Value, other));
             }
 
-            public Flow<int> RequireEqual(int other)
+            [Description("True when: equals the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<int> RequireEqual([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.Int32Equal(flow.Value, other));
             }
 
-            public Flow<int> EnsureEqual(int other)
+            [Description("True when: equals the argument. Continues if so; otherwise decides broken.")]
+            public Flow<int> EnsureEqual([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(int value)
         {
-            public Flow<int> MatchEqual(int other)
+            [Description("Begins a pipeline from the value. True when: equals the argument. Decides matched if so; otherwise continues.")]
+            public Flow<int> MatchEqual([Description("The other integer.")] int other)
             {
                 return value.Start().MatchEqual(other);
             }
 
-            public Flow<int> RejectEqual(int other)
+            [Description("Begins a pipeline from the value. True when: equals the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<int> RejectEqual([Description("The other integer.")] int other)
             {
                 return value.Start().RejectEqual(other);
             }
 
-            public Flow<int> BreakEqual(int other)
+            [Description("Begins a pipeline from the value. True when: equals the argument. Decides broken if so; otherwise continues.")]
+            public Flow<int> BreakEqual([Description("The other integer.")] int other)
             {
                 return value.Start().BreakEqual(other);
             }
 
-            public Flow<int> RequireEqual(int other)
+            [Description("Begins a pipeline from the value. True when: equals the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<int> RequireEqual([Description("The other integer.")] int other)
             {
                 return value.Start().RequireEqual(other);
             }
 
-            public Flow<int> EnsureEqual(int other)
+            [Description("Begins a pipeline from the value. True when: equals the argument. Continues if so; otherwise decides broken.")]
+            public Flow<int> EnsureEqual([Description("The other integer.")] int other)
             {
                 return value.Start().EnsureEqual(other);
             }

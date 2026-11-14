@@ -14,7 +14,9 @@
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
+using Jube.Dto.Repository.Preservation;
 using Jube.Dto.Repository.PreservationSnapshot;
+using Jube.Service.Repository.Preservation;
 using Jube.Preservation.Models;
 using Jube.Resources;
 using Jube.Service.Agent.Models;
@@ -35,14 +37,20 @@ namespace Jube.Service.Repository.PreservationSnapshot
         private const string ProcessSourceRequiredMessage =
             "A snapshot taken on behalf of a process must declare a process source.";
 
+        private const string DirectSourceInvalidMessage =
+            "A snapshot must declare a known source, and the before-import source is reserved for the import itself.";
+
+        private const int MaximumNameLength = 200;
+
+        private const string NameTooLongMessage = "A snapshot name may not exceed 200 characters.";
+
         private static readonly int[] permissions = [38];
         private static readonly int[] importPermissions = [63];
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
-        private readonly bool legacyFallback;
         private readonly ILog log;
+        private PreservationLimits limits = PreservationLimits.Default;
         private readonly PermissionValidation permissionValidation;
-        private readonly string? salt;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
         private readonly int tenantRegistryId;
@@ -50,7 +58,7 @@ namespace Jube.Service.Repository.PreservationSnapshot
 
         private PreservationSnapshotService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
-            IStringLocalizer strings, string? salt, bool legacyEncryptionFallback)
+            IStringLocalizer strings)
         {
             this.dbContext = dbContext;
             this.log = log;
@@ -60,22 +68,19 @@ namespace Jube.Service.Repository.PreservationSnapshot
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            this.salt = salt;
-            legacyFallback = legacyEncryptionFallback;
         }
 
         public static Task<PreservationSnapshotService> CreateAsync(DbContext dbContext, string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
-            string? preservationSalt, bool legacyEncryptionFallback, CancellationToken token = default)
+            CancellationToken token = default)
         {
             return CreateAsync(dbContext, userName, log, stringLocalizerFactory, serviceChangeBus,
-                LogManager.GetLogger("Jube.Audit"), preservationSalt, legacyEncryptionFallback, token);
+                LogManager.GetLogger("Jube.Audit"), token);
         }
 
         internal static async Task<PreservationSnapshotService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
-            IServiceChangeBus serviceChangeBus, ILog auditLog, string? preservationSalt,
-            bool legacyEncryptionFallback, CancellationToken token = default)
+            IServiceChangeBus serviceChangeBus, ILog auditLog, CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(PreservationResources));
 
@@ -106,8 +111,7 @@ namespace Jube.Service.Repository.PreservationSnapshot
                 .ConfigureAwait(false);
 
             return new PreservationSnapshotService(dbContext, userName, resolvedTenantRegistryId.Value,
-                permissionValidation, log, auditLog, serviceChangeBus, strings, preservationSalt,
-                legacyEncryptionFallback);
+                permissionValidation, log, auditLog, serviceChangeBus, strings);
         }
 
         [Description("Lists the snapshots held for the caller's own tenant, most recent first. Metadata only: " +
@@ -281,8 +285,11 @@ namespace Jube.Service.Repository.PreservationSnapshot
             {
                 ArgumentNullException.ThrowIfNull(model);
                 EnsurePermitted("PreservationSnapshot.Create");
+                EnsureDirectSource(model.SnapshotSourceId);
+                EnsureNameWithinLimit(model.Name);
 
                 var snapshot = await TakeAsync(model, token).ConfigureAwait(false);
+                await PruneAsync(token).ConfigureAwait(false);
 
                 op.Entity(snapshot.Id);
                 op.Created();
@@ -313,6 +320,109 @@ namespace Jube.Service.Repository.PreservationSnapshot
             }
         }
 
+        [Description("Compares two snapshots of the caller's own tenant, or a snapshot with the live tenant, and " +
+                     "reports what was added, removed and changed between them: the entities by section and, for " +
+                     "each changed entity, the properties that differ. Identifiers, audit stamps and references to " +
+                     "other entities are left out because they change when a snapshot is restored. Leave one side " +
+                     "out to compare against the live tenant. Nothing is changed; the comparison is recorded for " +
+                     "audit.")]
+        [ServiceOperation("PreservationSnapshotDiff", OperationKind.Read, Idempotent = true)]
+        public async Task<PreservationDiffDto> DiffAsync(
+            [Description(
+                "The snapshot on each side. A side left out is the live tenant; at least one must be a snapshot.")]
+            PreservationDiffRequestDto? request,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("PreservationSnapshot", "Diff", userName, tenantRegistryId,
+                auditLog, log, serviceChangeBus);
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(request);
+                EnsurePermitted("PreservationSnapshot.Diff");
+
+                var diff = await Comparer().CompareSnapshotsAsync(request.LeftSnapshotId, request.RightSnapshotId,
+                    token).ConfigureAwait(false);
+
+                op.Rows(diff.Entries.Count);
+
+                return diff;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                op.Outcome("notfound");
+                throw;
+            }
+            catch (ArgumentException)
+            {
+                op.Outcome("invalid");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"PreservationSnapshot.Diff: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Works out what rolling the caller's own tenant back to a snapshot would do, without changing " +
+                     "anything: the live configuration compared with the snapshot that would replace it, the users " +
+                     "who would be left without a role, and anything to know first. Use it before importing a " +
+                     "snapshot. The comparison is recorded for audit.")]
+        [ServiceOperation("PreservationSnapshotImportPreview", OperationKind.Read, Idempotent = true)]
+        public async Task<PreservationImportPreviewDto> ImportPreviewAsync(
+            [Description("Identifier of the snapshot that would be rolled back to.")]
+            int id,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("PreservationSnapshot", "ImportPreview", userName, tenantRegistryId,
+                auditLog, log, serviceChangeBus);
+
+            try
+            {
+                EnsurePermitted("PreservationSnapshot.ImportPreview");
+
+                var preview = await Comparer().PreviewSnapshotAsync(id, token).ConfigureAwait(false);
+
+                op.Entity(id);
+                op.Rows(preview.Diff.Entries.Count);
+
+                return preview;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                op.Outcome("notfound");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"PreservationSnapshot.ImportPreview: unexpected failure id={id} user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Rolls the caller's own tenant back to a snapshot, by importing the snapshot body through " +
                      "the same import that a Preservation package uses. This replaces configuration and is not " +
                      "reversible except by importing another snapshot, so take one first if the current state " +
@@ -331,6 +441,7 @@ namespace Jube.Service.Repository.PreservationSnapshot
                 EnsureImportPermitted("PreservationSnapshot.Import");
 
                 var snapshot = await RestoreAsync(id, token).ConfigureAwait(false);
+                await PruneAsync(token).ConfigureAwait(false);
 
                 op.Entity(snapshot.Id);
                 op.Updated();
@@ -434,6 +545,7 @@ namespace Jube.Service.Repository.PreservationSnapshot
                 EnsureProcessSource(model.SnapshotSourceId);
 
                 var snapshot = await TakeAsync(model, token).ConfigureAwait(false);
+                await PruneAsync(token).ConfigureAwait(false);
 
                 op.Entity(snapshot.Id);
                 op.Created();
@@ -472,6 +584,7 @@ namespace Jube.Service.Repository.PreservationSnapshot
             try
             {
                 var snapshot = await RestoreAsync(id, token).ConfigureAwait(false);
+                await PruneAsync(token).ConfigureAwait(false);
 
                 op.Entity(snapshot.Id);
                 op.Updated();
@@ -501,6 +614,43 @@ namespace Jube.Service.Repository.PreservationSnapshot
             }
         }
 
+        public PreservationSnapshotService WithLimits(PreservationLimits value)
+        {
+            limits = value;
+
+            return this;
+        }
+
+        private Task PruneAsync(CancellationToken token)
+        {
+            return PreservationSnapshotRetention.RunAsync(dbContext, userName, tenantRegistryId, limits, log, auditLog,
+                serviceChangeBus, token);
+        }
+
+        private static void EnsureNameWithinLimit(string? name)
+        {
+            if (name is { Length: > MaximumNameLength })
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), NameTooLongMessage);
+            }
+        }
+
+        private void EnsureDirectSource(PreservationSnapshotSource source)
+        {
+            if (Enum.IsDefined(source) && source != PreservationSnapshotSource.BeforeImport)
+            {
+                return;
+            }
+
+            if (log.IsWarnEnabled)
+            {
+                log.Warn(
+                    $"PreservationSnapshot.Create: source {(byte)source} may not be claimed by a direct request user={userName}.");
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(source), DirectSourceInvalidMessage);
+        }
+
         private void EnsureProcessSource(PreservationSnapshotSource source)
         {
             if (source is PreservationSnapshotSource.ModelSync or PreservationSnapshotSource.AskJooby)
@@ -520,11 +670,11 @@ namespace Jube.Service.Repository.PreservationSnapshot
         private Task<Data.Poco.PreservationSnapshot> TakeAsync(
             PreservationSnapshotRequestDto model, CancellationToken token)
         {
-            var library = new Library(dbContext, userName, salt, legacyFallback);
+            var library = new Library(dbContext, userName);
 
             return library.SnapshotAsync(new ExportOptions
             {
-                Exhaustive = model.Exhaustive,
+                Exhaustive = true,
                 Lists = model.Lists,
                 Dictionaries = model.Dictionaries,
                 Visualisations = model.Visualisations,
@@ -536,7 +686,7 @@ namespace Jube.Service.Repository.PreservationSnapshot
         private async Task<Data.Poco.PreservationSnapshot> RestoreAsync(int id,
             CancellationToken token)
         {
-            var library = new Library(dbContext, userName, salt, legacyFallback);
+            var library = new Library(dbContext, userName);
 
             try
             {
@@ -545,6 +695,15 @@ namespace Jube.Service.Repository.PreservationSnapshot
             catch (KeyNotFoundException ex)
             {
                 throw new NotFoundException("The snapshot was not found.", ex);
+            }
+            catch (Jube.Preservation.Exceptions.PrivilegeEscalationImportException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"Snapshot restore: privilege escalation refused user={userName}");
+                }
+
+                throw new ForbiddenException(strings[PreservationResources.PermissionDenied], importPermissions);
             }
         }
 
@@ -562,6 +721,12 @@ namespace Jube.Service.Repository.PreservationSnapshot
             }
 
             throw new ForbiddenException(strings[PreservationResources.PermissionDenied], importPermissions);
+        }
+
+        private PreservationComparer Comparer()
+        {
+            return new PreservationComparer(dbContext, userName, tenantRegistryId, strings, log,
+                limits.MaximumDecompressedBytes);
         }
 
         private void EnsurePermitted(string op)

@@ -17,7 +17,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string RegexCapture(this string? @this, string pattern, int group)
+        [Description("A numbered group of the first match of a pattern, otherwise empty, with a 250 ms match time limit.")]
+        public static string RegexCapture(this string? @this,
+            [Description("The regular expression with a capture group.")] string pattern,
+            [Description("The number of the capture group to return.")] int group)
         {
             var match = Regex.Match(@this ?? "", pattern, RegexOptions.None, RegexSupport.matchTimeout);
 

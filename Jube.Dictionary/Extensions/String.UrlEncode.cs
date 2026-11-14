@@ -12,12 +12,14 @@ namespace Jube.Dictionary.Extensions
     {
         extension(String str)
         {
+            [Description("URL encodes a string.")]
             public String UrlEncode()
             {
                 return HttpUtility.UrlEncode(str);
             }
 
-            public String UrlEncode(Encoding e)
+            [Description("URL encodes with specified encoding.")]
+            public String UrlEncode([Description("The encoding object that specifies the encoding scheme.")] Encoding e)
             {
                 return HttpUtility.UrlEncode(str, e);
             }

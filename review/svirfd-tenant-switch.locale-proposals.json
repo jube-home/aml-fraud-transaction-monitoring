@@ -1,0 +1,65 @@
+{
+  "en": {
+    "svirfd.tenantRemoteOff": "Remote Svirfd lookups are switched off for your tenant by the platform operator. Local and directory lookups still work.",
+    "svirfd.status.tenantRemoteLookups": "Remote lookups for this tenant",
+    "tenants.dataProtection.title": "Data protection",
+    "tenants.svirfdRemoteLookupsEnabled.label": "Svirfd remote lookups",
+    "tenants.svirfdRemoteLookupsEnabled.hint": "When off, no IP address of this tenant is sent to the remote Svirfd service. Local and directory lookups are unaffected. Only a landlord can change this."
+  },
+  "pl": {
+    "svirfd.tenantRemoteOff": "Zdalne wyszukiwania Svirfd zostały wyłączone dla Twojego tenanta przez operatora platformy. Wyszukiwania lokalne i z katalogu nadal działają.",
+    "svirfd.status.tenantRemoteLookups": "Zdalne wyszukiwania dla tego tenanta",
+    "tenants.dataProtection.title": "Ochrona danych",
+    "tenants.svirfdRemoteLookupsEnabled.label": "Zdalne wyszukiwania Svirfd",
+    "tenants.svirfdRemoteLookupsEnabled.hint": "Po wyłączeniu żaden adres IP tego tenanta nie jest wysyłany do zdalnej usługi Svirfd. Wyszukiwania lokalne i z katalogu nie są dotknięte. Tylko landlord może to zmienić."
+  },
+  "ar": {
+    "svirfd.tenantRemoteOff": "أوقف مشغّل المنصة عمليات البحث عن بُعد في Svirfd لمستأجرك. ما زالت عمليات البحث المحلية وعمليات بحث الدليل تعمل.",
+    "svirfd.status.tenantRemoteLookups": "عمليات البحث عن بُعد لهذا المستأجر",
+    "tenants.dataProtection.title": "حماية البيانات",
+    "tenants.svirfdRemoteLookupsEnabled.label": "عمليات البحث عن بُعد في Svirfd",
+    "tenants.svirfdRemoteLookupsEnabled.hint": "عند الإيقاف لا يُرسل أي عنوان IP لهذا المستأجر إلى خدمة Svirfd البعيدة. لا تتأثر عمليات البحث المحلية وعمليات بحث الدليل. وحده الـ landlord يستطيع تغيير ذلك."
+  },
+  "ka": {
+    "svirfd.tenantRemoteOff": "დისტანციური Svirfd ძიებები გამორთულია თქვენი ტენანტისთვის პლატფორმის ოპერატორის მიერ. ლოკალური და დირექტორიის ძიებები კვლავ მუშაობს.",
+    "svirfd.status.tenantRemoteLookups": "დისტანციური ძიებები ამ ტენანტისთვის",
+    "tenants.dataProtection.title": "მონაცემთა დაცვა",
+    "tenants.svirfdRemoteLookupsEnabled.label": "Svirfd-ის დისტანციური ძიებები",
+    "tenants.svirfdRemoteLookupsEnabled.hint": "გამორთვისას ამ ტენანტის არცერთი IP მისამართი არ იგზავნება დისტანციურ Svirfd სერვისზე. ლოკალური და დირექტორიის ძიებები არ იცვლება. ამის შეცვლა მხოლოდ landlord-ს შეუძლია."
+  },
+  "id": {
+    "svirfd.tenantRemoteOff": "Pencarian Svirfd jarak jauh dinonaktifkan untuk tenant Anda oleh operator platform. Pencarian lokal dan direktori tetap berfungsi.",
+    "svirfd.status.tenantRemoteLookups": "Pencarian jarak jauh untuk tenant ini",
+    "tenants.dataProtection.title": "Perlindungan data",
+    "tenants.svirfdRemoteLookupsEnabled.label": "Pencarian jarak jauh Svirfd",
+    "tenants.svirfdRemoteLookupsEnabled.hint": "Jika dimatikan, tidak ada alamat IP tenant ini yang dikirim ke layanan Svirfd jarak jauh. Pencarian lokal dan direktori tidak terpengaruh. Hanya landlord yang dapat mengubahnya."
+  },
+  "sv": {
+    "svirfd.tenantRemoteOff": "Fjärrsökningar i Svirfd har stängts av för din hyresgäst av plattformsoperatören. Lokala sökningar och katalogsökningar fungerar fortfarande.",
+    "svirfd.status.tenantRemoteLookups": "Fjärrsökningar för den här hyresgästen",
+    "tenants.dataProtection.title": "Dataskydd",
+    "tenants.svirfdRemoteLookupsEnabled.label": "Svirfd-fjärrsökningar",
+    "tenants.svirfdRemoteLookupsEnabled.hint": "När den är avstängd skickas ingen IP-adress för den här hyresgästen till fjärrtjänsten Svirfd. Lokala sökningar och katalogsökningar påverkas inte. Bara en landlord kan ändra detta."
+  },
+  "ur": {
+    "svirfd.tenantRemoteOff": "پلیٹ فارم آپریٹر نے آپ کے ٹیننٹ کے لیے ریموٹ Svirfd تلاشیں بند کر دی ہیں۔ مقامی اور ڈائریکٹری تلاشیں اب بھی کام کرتی ہیں۔",
+    "svirfd.status.tenantRemoteLookups": "اس ٹیننٹ کے لیے ریموٹ تلاشیں",
+    "tenants.dataProtection.title": "ڈیٹا کا تحفظ",
+    "tenants.svirfdRemoteLookupsEnabled.label": "Svirfd ریموٹ تلاشیں",
+    "tenants.svirfdRemoteLookupsEnabled.hint": "بند ہونے پر اس ٹیننٹ کا کوئی IP پتہ ریموٹ Svirfd سروس کو نہیں بھیجا جاتا۔ مقامی اور ڈائریکٹری تلاشیں متاثر نہیں ہوتیں۔ اسے صرف landlord بدل سکتا ہے۔"
+  },
+  "hi": {
+    "svirfd.tenantRemoteOff": "प्लेटफ़ॉर्म ऑपरेटर ने आपके टेनेंट के लिए रिमोट Svirfd लुकअप बंद कर दिए हैं। स्थानीय और डायरेक्टरी लुकअप अब भी काम करते हैं।",
+    "svirfd.status.tenantRemoteLookups": "इस टेनेंट के लिए रिमोट लुकअप",
+    "tenants.dataProtection.title": "डेटा सुरक्षा",
+    "tenants.svirfdRemoteLookupsEnabled.label": "Svirfd रिमोट लुकअप",
+    "tenants.svirfdRemoteLookupsEnabled.hint": "बंद होने पर इस टेनेंट का कोई IP पता रिमोट Svirfd सेवा को नहीं भेजा जाता। स्थानीय और डायरेक्टरी लुकअप प्रभावित नहीं होते। इसे केवल landlord बदल सकता है।"
+  },
+  "fr": {
+    "svirfd.tenantRemoteOff": "Les recherches Svirfd distantes sont désactivées pour votre locataire par l'opérateur de la plateforme. Les recherches locales et par répertoire fonctionnent toujours.",
+    "svirfd.status.tenantRemoteLookups": "Recherches distantes pour ce locataire",
+    "tenants.dataProtection.title": "Protection des données",
+    "tenants.svirfdRemoteLookupsEnabled.label": "Recherches Svirfd distantes",
+    "tenants.svirfdRemoteLookupsEnabled.hint": "Lorsque ce commutateur est désactivé, aucune adresse IP de ce locataire n'est envoyée au service Svirfd distant. Les recherches locales et par répertoire ne sont pas affectées. Seul un landlord peut le modifier."
+  }
+}

@@ -7,7 +7,21 @@
         <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+        <DefaultItemExcludes>$(DefaultItemExcludes);Vue/node_modules/**</DefaultItemExcludes>
     </PropertyGroup>
+
+    <PropertyGroup>
+        <WireGeneratedDirectory>$(MSBuildProjectDirectory)/Vue/src/generated</WireGeneratedDirectory>
+        <WireGeneratedStamp>$(IntermediateOutputPath)wire.generated.stamp</WireGeneratedStamp>
+    </PropertyGroup>
+
+    <Target Name="GenerateWireDecoders" AfterTargets="Build"
+            Condition="'$(DesignTimeBuild)' != 'true' And '$(WireGenerate)' != 'false' And Exists('$(MSBuildProjectDirectory)/Vue/src')"
+            Inputs="$(TargetPath);$(OutDir)Jube.Dto.dll"
+            Outputs="$(WireGeneratedStamp)">
+        <Exec Command="dotnet &quot;$(TargetPath)&quot; --wire-generate &quot;$(WireGeneratedDirectory)&quot;"/>
+        <Touch Files="$(WireGeneratedStamp)" AlwaysCreate="true"/>
+    </Target>
 
     <ItemGroup>
         <PackageReference Include="AsyncFixer" Version="1.6.0">
@@ -17,8 +31,7 @@
         <PackageReference Include="AutoMapper" Version="15.1.3"/>
         <PackageReference Include="FluentValidation" Version="10.3.6"/>
         <PackageReference Include="Isopoh.Cryptography.Argon2" Version="1.1.12"/>
-        <PackageReference Include="linq2db" Version="3.6.0"/>
-        <PackageReference Include="linq2db.AspNet" Version="3.6.0"/>
+        <PackageReference Include="linq2db" Version="6.5.1"/>
         <PackageReference Include="log4net" Version="3.3.1"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.14"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="6.0.8"/>
@@ -30,7 +43,6 @@
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.10.0"/>
         <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="4.10.0"/>
         <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.10.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.10"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="6.0.0"/>
         <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9"/>
         <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.18.0"/>
@@ -53,35 +65,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Update="Resources\Pages\Index.en.resx">
-            <Generator>ResXFileCodeGenerator</Generator>
-            <LastGenOutput>Index.en.Designer.cs</LastGenOutput>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Resources\Shared\_Layout.en.resx">
-            <Generator>ResXFileCodeGenerator</Generator>
-            <LastGenOutput>_Layout.en.Designer.cs</LastGenOutput>
-        </EmbeddedResource>
-        <EmbeddedResource Update="Resources\Pages\Shared\_Layout.en.resx">
-            <Generator>ResXFileCodeGenerator</Generator>
-            <LastGenOutput>_Layout.en.Designer.cs</LastGenOutput>
-        </EmbeddedResource>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Update="Resources\Pages\Index.en.Designer.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>Index.en.resx</DependentUpon>
-        </Compile>
-
-        <Compile Update="Resources\Shared\_Layout.en.Designer.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>Layout.en.resx</DependentUpon>
-        </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\Jube.ApiTokensCache\Jube.ApiTokensCache.csproj"/>
         <ProjectReference Include="..\Jube.AskJooby\Jube.AskJooby.csproj"/>
         <ProjectReference Include="..\Jube.Cache\Jube.Cache.csproj"/>
@@ -95,15 +78,13 @@
         <ProjectReference Include="..\Jube.Preservation\Jube.Preservation.csproj"/>
         <ProjectReference Include="..\Jube.Mfa\Jube.Mfa.csproj"/>
         <ProjectReference Include="..\Jube.Service\Jube.Service.csproj"/>
+        <ProjectReference Include="..\Jube.Svirfd\Jube.Svirfd.csproj"/>
         <ProjectReference Include="..\Jube.TaskCancellation\Jube.TaskCancellation.csproj"/>
         <ProjectReference Include="..\Jube.Validations\Jube.Validations.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
         <None Include="bin\Debug\net10.0\.env"/>
-        <None Include="wwwroot\**">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
     </ItemGroup>
 
     <ItemGroup>
@@ -114,8 +95,43 @@
 
     <ItemGroup>
         <Folder Include="bin\Debug\net10.0\"/>
-        <Folder Include="wwwroot\images"/>
-        <Folder Include="wwwroot\js\signalr"/>
     </ItemGroup>
+
+    <PropertyGroup>
+        <VueDirectory>$(MSBuildProjectDirectory)/Vue</VueDirectory>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <VueInput Include="Vue\src\**;Vue\public\**;Vue\index.html;Vue\package.json;Vue\package-lock.json;Vue\vite.config.ts;Vue\tsconfig*.json"/>
+        <Content Remove="Vue\**"/>
+        <None Remove="Vue\**"/>
+        <EmbeddedResource Remove="Vue\**"/>
+    </ItemGroup>
+
+    <Target Name="InstallVue" Condition="'$(DesignTimeBuild)' != 'true' And '$(SkipClientBuild)' != 'true'"
+            Inputs="$(VueDirectory)/package-lock.json" Outputs="$(VueDirectory)/node_modules/.package-lock.json">
+        <Exec Command="npm ci" WorkingDirectory="$(VueDirectory)"/>
+    </Target>
+
+    <Target Name="BuildVue" AfterTargets="Build" DependsOnTargets="GenerateWireDecoders;InstallVue"
+            Condition="'$(DesignTimeBuild)' != 'true' And '$(SkipClientBuild)' != 'true'"
+            Inputs="@(VueInput);$(WireGeneratedStamp)" Outputs="$(MSBuildProjectDirectory)/wwwroot/index.html">
+        <ItemGroup>
+            <StaleClientAsset Include="$(MSBuildProjectDirectory)/wwwroot/assets/**"/>
+        </ItemGroup>
+        <Delete Files="@(StaleClientAsset)"/>
+        <Exec Command="npm run build-only" WorkingDirectory="$(VueDirectory)"/>
+    </Target>
+
+    <Target Name="PublishVue" AfterTargets="ComputeFilesToPublish">
+        <ItemGroup>
+            <VueDistribution Include="wwwroot\**" Exclude="wwwroot\css\**"/>
+            <ResolvedFileToPublish Include="@(VueDistribution->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+                <RelativePath>wwwroot\%(VueDistribution.RecursiveDir)%(VueDistribution.Filename)%(VueDistribution.Extension)</RelativePath>
+                <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+                <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            </ResolvedFileToPublish>
+        </ItemGroup>
+    </Target>
 
 </Project>

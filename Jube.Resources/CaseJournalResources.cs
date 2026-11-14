@@ -17,5 +17,8 @@ namespace Jube.Resources
     {
         public const string PermissionDenied = nameof(PermissionDenied);
         public const string NotAuthenticated = nameof(NotAuthenticated);
+        public const string DrillNameNotArchiveKey = nameof(DrillNameNotArchiveKey);
+        public const string DrillValueInvalid = nameof(DrillValueInvalid);
+        public const string CaseWorkflowNotFound = nameof(CaseWorkflowNotFound);
     }
 }

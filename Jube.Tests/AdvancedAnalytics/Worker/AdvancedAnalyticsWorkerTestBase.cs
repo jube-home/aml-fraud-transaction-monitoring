@@ -25,6 +25,7 @@ using Jube.Test.AdvancedAnalytics.Slice;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using Jube.Service.Repository.AdvancedAnalyticsTrainingRun.Models;
 using Jube.Engine.AdvancedAnalytics.Regression.Models;
 using Jube.Analytics;
@@ -107,7 +108,7 @@ namespace Jube.Test.AdvancedAnalytics.Worker
 
         protected Task<int> VersionCountAsync(int runId)
         {
-            return Db.AdvancedAnalyticsTrainedModelVersion.CountAsync(w => w.AdvancedAnalyticsTrainingRunId == runId);
+            return Db.AskJoobyAnalyticsTrainedModelVersion.CountAsync(w => w.AdvancedAnalyticsTrainingRunId == runId);
         }
 
         protected async Task<AdvancedAnalyticsTrainingRun> InsertRunAsync(int tenant, int instanceId,
@@ -119,7 +120,7 @@ namespace Jube.Test.AdvancedAnalytics.Worker
             {
                 Guid = Guid.NewGuid(),
                 TenantRegistryId = tenant,
-                AdvancedAnalyticsInstanceId = instanceId,
+                AskJoobyAnalyticsInstanceId = instanceId,
                 UserName = tenant == TenantA ? Permitted : OtherTenant,
                 KindId = AdvancedAnalyticsKind.Classifier,
                 JobMode = mode,

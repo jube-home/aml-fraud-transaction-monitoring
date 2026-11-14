@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Whether the text is an ISO 3166-1 alpha-2 country code.")]
         public static bool IsValidCountryCode(this string? @this)
         {
             return IsoReferenceData.countriesByAlpha2.ContainsKey((@this ?? "").Trim());

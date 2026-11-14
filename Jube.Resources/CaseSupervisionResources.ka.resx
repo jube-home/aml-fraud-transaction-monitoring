@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>საქმეების ზედამხედველობის უფლება არ გაქვთ.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>საჭიროა ავთენტიფიკაცია.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>საქმე ვერ მოიძებნა.</value>
+  </data>
+    <data name="WorkflowNotFound" xml:space="preserve">
+    <value>საქმის სამუშაო პროცესი ვერ მოიძებნა.</value>
+  </data>
+    <data name="CaseIdInvalid" xml:space="preserve">
+    <value>საჭიროა საქმე.</value>
+  </data>
+    <data name="ToUserRequired" xml:space="preserve">
+    <value>საჭიროა ანალიტიკოსი, რომელიც საქმეს აიღებს.</value>
+  </data>
+    <data name="ToUserMaxLength" xml:space="preserve">
+    <value>ანალიტიკოსის სახელი ზედმეტად გრძელია.</value>
+  </data>
+    <data name="ReasonMaxLength" xml:space="preserve">
+    <value>მიზეზი შეიძლება იყოს არაუმეტეს 500 სიმბოლოსი.</value>
+  </data>
+    <data name="AnalystNotEligible" xml:space="preserve">
+    <value>ამ ანალიტიკოსს ამ საქმის დანახვა არ შეუძლია, ამიტომ საქმე მასზე ვერ დაიბლოკება.</value>
+  </data>
+    <data name="CaseNotOpen" xml:space="preserve">
+    <value>მხოლოდ ღია საქმის ხელახლა მიკუთვნება ან მისი ბლოკის მოხსნაა შესაძლებელი.</value>
+  </data>
+    <data name="CaseNotLocked" xml:space="preserve">
+    <value>საქმე დაბლოკილი არ არის.</value>
+  </data>
+    <data name="CaseChanged" xml:space="preserve">
+    <value>მოთხოვნის გაგზავნისას საქმე შეიცვალა. შეამოწმეთ და სცადეთ ხელახლა.</value>
+  </data>
+    <data name="PeriodInvalid" xml:space="preserve">
+    <value>'From' უნდა იყოს 'To'-მდე, ხოლო პერიოდი არაუმეტეს 366 დღისა.</value>
+  </data>
+    <data name="LegalHoldReasonRequired" xml:space="preserve">
+    <value>საქმის სამართლებრივ შეჩერებაში მოსაქცევად მიზეზი სავალდებულოა.</value>
+  </data>
+</root>

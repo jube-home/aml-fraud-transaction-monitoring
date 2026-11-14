@@ -28,6 +28,7 @@ using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Infrastructure.ModelScaffolding;
 using Jube.Test.Service.Invoke.Models;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 using Xunit.Abstractions;
 using ExhaustiveSearchInstancePromotedTrialInstanceVariable =
@@ -40,7 +41,7 @@ namespace Jube.Test.Service.Invoke
         InvokeModelFixture fixture,
         DatabaseFixture database,
         ITestOutputHelper output)
-        : IClassFixture<InvokeModelFixture>
+        : IClassFixture<InvokeModelFixture>, IAsyncLifetime
     {
         private const string Json = "application/json";
         private const string JsonUtf8 = "application/json; charset=utf-8";
@@ -48,6 +49,37 @@ namespace Jube.Test.Service.Invoke
         private ModelInvokeHost Api => fixture.Api;
         private ModelScaffold Model => fixture.Shared;
         private string User => fixture.Shared.UserName;
+
+        public async Task InitializeAsync()
+        {
+            await using var dbContext = database.GetDbContext();
+
+            var granted = await dbContext.RoleRegistryPermission.AnyAsync(w =>
+                w.RoleRegistryId == Model.RoleRegistryId && w.PermissionSpecificationId == 29);
+
+            if (granted)
+            {
+                return;
+            }
+
+            await dbContext.InsertWithInt32IdentityAsync(new RoleRegistryPermission
+            {
+                Guid = Guid.NewGuid(),
+                RoleRegistryId = Model.RoleRegistryId,
+                PermissionSpecificationId = 29,
+                Active = 1,
+                Locked = 0,
+                Deleted = 0,
+                Version = 1,
+                CreatedDate = DateTime.UtcNow,
+                CreatedUser = DatabaseFixture.Prefix
+            });
+        }
+
+        public Task DisposeAsync()
+        {
+            return Task.CompletedTask;
+        }
 
         private static byte[] Bytes(string value)
         {
@@ -821,6 +853,15 @@ namespace Jube.Test.Service.Invoke
                 (await WithHostAsync(gateOff, h => h.SendAsync("GET", "/api/Invoke/Sanction", User))).Status);
             Assert.Equal(503,
                 (await WithHostAsync(noEngine, h => h.SendAsync("GET", "/api/Invoke/Sanction", User))).Status);
+        }
+
+        [Fact]
+        public async Task Sanction_ByAUserWithoutTheViewSanctionPermission_Returns403Async()
+        {
+            var response = await Api.SendAsync("GET", "/api/Invoke/Sanction?multiPartString=john",
+                database.Seed.UserWithoutPermission);
+
+            Assert.Equal(403, response.Status);
         }
 
         [Fact]

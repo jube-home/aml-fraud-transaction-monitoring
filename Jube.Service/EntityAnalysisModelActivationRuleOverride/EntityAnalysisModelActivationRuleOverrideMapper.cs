@@ -55,12 +55,14 @@ namespace Jube.Service.EntityAnalysisModelActivationRuleOverride
         {
             return new ActivationRuleOverridePoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelGuid = dto.EntityAnalysisModelGuid,
                 OverrideKey = dto.OverrideKey,
                 OverrideKeyValue = dto.OverrideKeyValue,
                 EntityAnalysisModelActivationRuleName = dto.EntityAnalysisModelActivationRuleName,
-                OverrideKind = (byte)dto.OverrideKind
+                OverrideKind = (byte)dto.OverrideKind,
+                DeleteExpiryDate = dto.DeleteExpiryDate?.UtcDateTime
             };
         }
 

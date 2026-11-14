@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchSomehowLikeWith(string? other, string? options)
+            [Description("True when: fuzzily like a single value, using an options string. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchSomehowLikeWith([Description("The text the value is compared with.")] string? other,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringSomehowLikeWith(flow.Value, other, options));
             }
 
-            public Flow<string?> RejectSomehowLikeWith(string? other, string? options)
+            [Description("True when: fuzzily like a single value, using an options string. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectSomehowLikeWith([Description("The text the value is compared with.")] string? other,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringSomehowLikeWith(flow.Value, other, options));
             }
 
-            public Flow<string?> BreakSomehowLikeWith(string? other, string? options)
+            [Description("True when: fuzzily like a single value, using an options string. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakSomehowLikeWith([Description("The text the value is compared with.")] string? other,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringSomehowLikeWith(flow.Value, other, options));
             }
 
-            public Flow<string?> RequireSomehowLikeWith(string? other, string? options)
+            [Description("True when: fuzzily like a single value, using an options string. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireSomehowLikeWith([Description("The text the value is compared with.")] string? other,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringSomehowLikeWith(flow.Value, other, options));
             }
 
-            public Flow<string?> EnsureSomehowLikeWith(string? other, string? options)
+            [Description("True when: fuzzily like a single value, using an options string. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureSomehowLikeWith([Description("The text the value is compared with.")] string? other,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchSomehowLikeWith(string? other, string? options)
+            [Description("Begins a pipeline from the value. True when: fuzzily like a single value, using an options string. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchSomehowLikeWith([Description("The text the value is compared with.")] string? other,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return value.Start().MatchSomehowLikeWith(other, options);
             }
 
-            public Flow<string?> RejectSomehowLikeWith(string? other, string? options)
+            [Description("Begins a pipeline from the value. True when: fuzzily like a single value, using an options string. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectSomehowLikeWith([Description("The text the value is compared with.")] string? other,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return value.Start().RejectSomehowLikeWith(other, options);
             }
 
-            public Flow<string?> BreakSomehowLikeWith(string? other, string? options)
+            [Description("Begins a pipeline from the value. True when: fuzzily like a single value, using an options string. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakSomehowLikeWith([Description("The text the value is compared with.")] string? other,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return value.Start().BreakSomehowLikeWith(other, options);
             }
 
-            public Flow<string?> RequireSomehowLikeWith(string? other, string? options)
+            [Description("Begins a pipeline from the value. True when: fuzzily like a single value, using an options string. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireSomehowLikeWith([Description("The text the value is compared with.")] string? other,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return value.Start().RequireSomehowLikeWith(other, options);
             }
 
-            public Flow<string?> EnsureSomehowLikeWith(string? other, string? options)
+            [Description("Begins a pipeline from the value. True when: fuzzily like a single value, using an options string. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureSomehowLikeWith([Description("The text the value is compared with.")] string? other,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return value.Start().EnsureSomehowLikeWith(other, options);
             }

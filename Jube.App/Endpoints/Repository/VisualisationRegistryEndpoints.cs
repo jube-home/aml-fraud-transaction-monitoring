@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -18,6 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation.Results;
 using Jube.Data.Context;
+using Jube.Dto.Query.VisualisationRegistrySummary;
 using Jube.Dto.Repository.VisualisationRegistry;
 using Jube.Service.Exceptions.Repository.VisualisationRegistry;
 using Jube.Service.Reactivity.Interfaces;
@@ -48,6 +50,10 @@ namespace Jube.App.Endpoints.Repository
             group.MapGet("GetByShowInDirectory", GetByShowInDirectoryAsync)
                 .Produces<List<VisualisationRegistryDto>>()
                 .WithName("VisualisationRegistryListByShowInDirectory");
+
+            group.MapGet("Summary", SummaryAsync)
+                .Produces<List<VisualisationRegistrySummaryDto>>()
+                .WithName("VisualisationRegistrySummary");
 
             group.MapGet("GetByGuidActiveOnly/{guid:guid}", GetByGuidActiveOnlyAsync)
                 .Produces<VisualisationRegistryDto>()
@@ -181,6 +187,62 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"GET {Base}/GetByShowInDirectory: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        private static async Task<IResult> SummaryAsync(HttpContext httpContext, ILog log,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
+            IServiceChangeBus serviceChangeBus, CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"GET {Base}/Summary: entry user={user}");
+            }
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var service = await VisualisationRegistryService.CreateAsync(dbContext, user, log,
+                    stringLocalizerFactory, serviceChangeBus, token);
+
+                return TypedResults.Ok(await service.GetDirectorySummaryAsync(token));
+            }
+            catch (NotAuthenticatedException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"GET {Base}/Summary: 403 (not authenticated) user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"GET {Base}/Summary: 403 user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (OperationCanceledException)
+            {
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"GET {Base}/Summary: client cancelled user={user}");
+                }
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"GET {Base}/Summary: 500 user={user}", e);
 
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
@@ -422,6 +484,22 @@ namespace Jube.App.Endpoints.Repository
 
                 return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
             }
+            catch (VersionConflictException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}: 409 user={user} supplied={ex.SuppliedVersion} current={ex.CurrentVersion}");
+                }
+
+                return TypedResults.Conflict(new
+                {
+                    code = "VersionConflict",
+                    message = ex.Message,
+                    suppliedVersion = ex.SuppliedVersion,
+                    currentVersion = ex.CurrentVersion
+                });
+            }
+
             catch (OperationCanceledException)
             {
                 if (log.IsDebugEnabled)

@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchRatioOutsideRange(double denominator, double minimum, double maximum)
+            [Description("True when: the ratio is below the minimum or above the maximum. A zero denominator is false. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRatioOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleRatioOutsideRange(flow.Value, denominator, minimum, maximum));
             }
 
-            public Flow<double> RejectRatioOutsideRange(double denominator, double minimum, double maximum)
+            [Description("True when: the ratio is below the minimum or above the maximum. A zero denominator is false. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRatioOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleRatioOutsideRange(flow.Value, denominator, minimum, maximum));
             }
 
-            public Flow<double> BreakRatioOutsideRange(double denominator, double minimum, double maximum)
+            [Description("True when: the ratio is below the minimum or above the maximum. A zero denominator is false. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRatioOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleRatioOutsideRange(flow.Value, denominator, minimum, maximum));
             }
 
-            public Flow<double> RequireRatioOutsideRange(double denominator, double minimum, double maximum)
+            [Description("True when: the ratio is below the minimum or above the maximum. A zero denominator is false. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRatioOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleRatioOutsideRange(flow.Value, denominator, minimum, maximum));
             }
 
-            public Flow<double> EnsureRatioOutsideRange(double denominator, double minimum, double maximum)
+            [Description("True when: the ratio is below the minimum or above the maximum. A zero denominator is false. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRatioOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchRatioOutsideRange(double denominator, double minimum, double maximum)
+            [Description("Begins a pipeline from the value. True when: the ratio is below the minimum or above the maximum. A zero denominator is false. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRatioOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return value.Start().MatchRatioOutsideRange(denominator, minimum, maximum);
             }
 
-            public Flow<double> RejectRatioOutsideRange(double denominator, double minimum, double maximum)
+            [Description("Begins a pipeline from the value. True when: the ratio is below the minimum or above the maximum. A zero denominator is false. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRatioOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return value.Start().RejectRatioOutsideRange(denominator, minimum, maximum);
             }
 
-            public Flow<double> BreakRatioOutsideRange(double denominator, double minimum, double maximum)
+            [Description("Begins a pipeline from the value. True when: the ratio is below the minimum or above the maximum. A zero denominator is false. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRatioOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return value.Start().BreakRatioOutsideRange(denominator, minimum, maximum);
             }
 
-            public Flow<double> RequireRatioOutsideRange(double denominator, double minimum, double maximum)
+            [Description("Begins a pipeline from the value. True when: the ratio is below the minimum or above the maximum. A zero denominator is false. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRatioOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return value.Start().RequireRatioOutsideRange(denominator, minimum, maximum);
             }
 
-            public Flow<double> EnsureRatioOutsideRange(double denominator, double minimum, double maximum)
+            [Description("Begins a pipeline from the value. True when: the ratio is below the minimum or above the maximum. A zero denominator is false. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRatioOutsideRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return value.Start().EnsureRatioOutsideRange(denominator, minimum, maximum);
             }

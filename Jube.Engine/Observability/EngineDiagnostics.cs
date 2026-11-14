@@ -62,11 +62,11 @@ namespace Jube.Engine.Observability
         public static readonly Histogram<double> SamplerDuration =
             Meter.CreateHistogram<double>("jube.engine.sampler.duration", "ms");
 
-        public static readonly Counter<long> RedisCommandCount =
-            Meter.CreateCounter<long>("jube.redis.command.count", "{command}");
+        public static readonly Counter<long> RespCommandCount =
+            Meter.CreateCounter<long>("jube.resp.command.count", "{command}");
 
-        public static readonly Histogram<double> RedisCommandDuration =
-            Meter.CreateHistogram<double>("jube.redis.command.duration", "ms");
+        public static readonly Histogram<double> RespCommandDuration =
+            Meter.CreateHistogram<double>("jube.resp.command.duration", "ms");
 
         public static void TagCodeLocation(Activity activity, string function, string filePath, int lineNumber)
         {

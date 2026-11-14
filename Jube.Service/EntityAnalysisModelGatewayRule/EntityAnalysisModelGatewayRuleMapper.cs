@@ -64,6 +64,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
         {
             return new GatewayRulePoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelId = dto.EntityAnalysisModelId,
                 Name = dto.Name,

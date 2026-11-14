@@ -17,35 +17,55 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchCompoundGrowthRateInRange(double previous, double periods, double lowerBound, double upperBound)
+            [Description("True when: the steady growth rate per period that takes the previous value to this one is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchCompoundGrowthRateInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleCompoundGrowthRateInRange(flow.Value, previous, periods, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectCompoundGrowthRateInRange(double previous, double periods, double lowerBound, double upperBound)
+            [Description("True when: the steady growth rate per period that takes the previous value to this one is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectCompoundGrowthRateInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleCompoundGrowthRateInRange(flow.Value, previous, periods, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakCompoundGrowthRateInRange(double previous, double periods, double lowerBound, double upperBound)
+            [Description("True when: the steady growth rate per period that takes the previous value to this one is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakCompoundGrowthRateInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleCompoundGrowthRateInRange(flow.Value, previous, periods, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireCompoundGrowthRateInRange(double previous, double periods, double lowerBound, double upperBound)
+            [Description("True when: the steady growth rate per period that takes the previous value to this one is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireCompoundGrowthRateInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleCompoundGrowthRateInRange(flow.Value, previous, periods, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureCompoundGrowthRateInRange(double previous, double periods, double lowerBound, double upperBound)
+            [Description("True when: the steady growth rate per period that takes the previous value to this one is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureCompoundGrowthRateInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +75,47 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchCompoundGrowthRateInRange(double previous, double periods, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the steady growth rate per period that takes the previous value to this one is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchCompoundGrowthRateInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchCompoundGrowthRateInRange(previous, periods, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectCompoundGrowthRateInRange(double previous, double periods, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the steady growth rate per period that takes the previous value to this one is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectCompoundGrowthRateInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectCompoundGrowthRateInRange(previous, periods, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakCompoundGrowthRateInRange(double previous, double periods, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the steady growth rate per period that takes the previous value to this one is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakCompoundGrowthRateInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakCompoundGrowthRateInRange(previous, periods, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireCompoundGrowthRateInRange(double previous, double periods, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the steady growth rate per period that takes the previous value to this one is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireCompoundGrowthRateInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireCompoundGrowthRateInRange(previous, periods, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureCompoundGrowthRateInRange(double previous, double periods, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the steady growth rate per period that takes the previous value to this one is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureCompoundGrowthRateInRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The number of periods between the previous value and this one.")] double periods,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureCompoundGrowthRateInRange(previous, periods, lowerBound, upperBound);
             }

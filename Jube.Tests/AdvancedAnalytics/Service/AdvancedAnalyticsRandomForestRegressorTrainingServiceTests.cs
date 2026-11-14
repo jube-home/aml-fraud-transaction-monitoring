@@ -27,6 +27,7 @@ using Jube.Test.AdvancedAnalytics.Slice;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 using Jube.Engine.AdvancedAnalytics.Regression.Models;
 
@@ -79,7 +80,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             var storedRun = await runs.GetByIdAsync(submission.RunId);
             storedRun!.StatusId.Should().Be(AdvancedAnalyticsStatus.Succeeded);
 
-            var version = await Db.AdvancedAnalyticsTrainedModelVersion.FirstAsync(w => w.Id == outcome.Version!.Id);
+            var version = await Db.AskJoobyAnalyticsTrainedModelVersion.FirstAsync(w => w.Id == outcome.Version!.Id);
 
             var evidence = AdvancedAnalyticsEvidenceJson
                 .Deserialise<AdvancedAnalyticsEvidence<RandomForestRegressorEvidenceDetails>>(version.MetricsJson);

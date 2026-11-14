@@ -21,7 +21,7 @@ following example:
   "CurrencyAmount": "123.45",
   "SettlementAmount": "100000",
   "AccountCurrency": "566",
-  "IP": "123.456.789.200",
+  "IP": "8.8.8.8",
   "DeviceId": "OlaRoseGoldPhone6",
   "ChannelId": "1",
   "AppVersionCode": "12.34",
@@ -90,21 +90,24 @@ should be processed by the model are alongside the Request XPath value extracted
 
 The Request XPath page is available by navigating through the menu as Models >> References >> Request XPath:
 
+<!-- TODO(screenshot): file=model-references-navigation-to-top-of-tree-request-x-path.png route=/models/references/request-xpath state="replace the Razor-era image NavigationToTopOfTreeRequestXPath.png with the Vue UI showing the same step" -->
 ![Image](NavigationToTopOfTreeRequestXPath.png)
 
 The models will be available for configuration on the upper left hand side:
 
+<!-- TODO(screenshot): file=model-references-model-created-for-documentation.png route=/models/references/request-xpath state="replace the Razor-era image ModelCreatedForDocumentation.png with the Vue UI showing the same step" -->
 ![Image](ModelCreatedForDocumentation.png)
 
 Clicking the Documentation Example model top level tree node to expose the page to create a new Request XPath:
 
+<!-- TODO(screenshot): file=model-references-empty-request-x-path.png route=/models/references/request-xpath state="replace the Razor-era image EmptyRequestXPath.png with the Vue UI showing the same step" -->
 ![Image](EmptyRequestXPath.png)
 
 The Request XPath accepts the following parameter:
 
 | Value                                       | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Example       |
 |---------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
-| Enable Override                          | A flag indicating if this value should be available in the Suppression page.  Suppression allows the consequences of Rule Activations (such as Response Elevations, thus event decline) to be ignored based on the a key value pair (e.g. IP = 123.456.789.987).                                                                                                                                                                                                                                                                                                                                                                                  | True          |
+| Enable Override                             | A flag indicating if this value should be available in the Suppression page.  Suppression allows the consequences of Rule Activations (such as Response Elevations, thus event decline) to be ignored based on the a key value pair (e.g. IP = 123.456.789.987).                                                                                                                                                                                                                                                                                                                                                                                  | True          |
 | XPath                                       | Valid JsonPath to extract a value from the JSON received via POST or AMQP.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | $.IP          |
 | Cache                                       | A flag that indicates if the payload entry is to be serialised to the cache to support Abstraction Rules.  This is an important feature that allows for pragmatic control over the data stored in Redis having the effect of greatly reducing cache pressure,  cost and marginally improving serialisation performance on invocation.  Payload is serialised to the cache on the basis of an index rather than the full name specified, further reducing capacity requirements (i.e., each index is a single byte in Redis after serialisation).  It is worth noting that only entries designated as Cache will be availble to Abstraction Rules. | True          
 | Search Key                                  | If the field is flagged as a search key it allows the value extracted to be used to query the cache in the Abstraction Rule processing.  For example,  if a count of all transactions having taken place on an IP address are required,  this would be flagged as a Search Key, which would mean that during execution the value extracted in this process will be used as a predicate in a select from the Cache (i.e.All from Cache where Cache IP = This IP).                                                                                                                                                                                  | True          |
@@ -118,9 +121,9 @@ The Request XPath accepts the following parameter:
 | Search Key: Cache: Fetch Limit              | For each distinct search key value,  the maximum number of transaction that can be returned from the Cache for calculations to be performed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | 100000        |
 | Search Key: Cache: TTL Interval Type        | The Cache Key TTL Interval Type is the date interval taken together with Cache Key TTL Interval Value and is how long a distinct Search Key,  once calculated,  should live before being purged from the Cache.                                                                                                                                                                                                                                                                                                                                                                                                                                   | Day           |
 | Search Key: Cache: TTL Interval Value       | The Cache Key TTL Interval Value is the date interval taken together with Cache Key TTL Interval Type and is how long a distinct Search Key,  once calculated,  should live before being purged from the Cache.                                                                                                                                                                                                                                                                                                                                                                                                                                   | 1             |
-| Data Type                                   | The datatype of the data being extracted from the HTTP Request.  The datatype specified is important as it effects the types of predication that can happen in the rules.  Possible values are: String (Text and General Data); Integer (Numbers without any decimal places); Float (Numbers with decimal places); Date (Date and Time); Boolean (True or False); Latitude and Longitude (which are Float in effect).                                                                                                                                                                                                                             | String        |
+| Data Type                                   | The datatype of the data being extracted from the HTTP Request.  The datatype specified is important as it effects the types of predication that can happen in the rules.  Possible values are: String (Text and General Data); Integer (Numbers without any decimal places); Float (Numbers with decimal places); Date (Date and Time); Boolean (True or False); Latitude and Longitude (which are Float in effect); IP (an IPv4 or IPv6 address held as text, usable wherever a String is, and looked up for IP intelligence on every invocation when a Svirfd entry of the model names it).                                                    | String        |
 | Encryption                                  | Only shown for String fields. Encrypt the extracted value before it is stored and archived - see [Field Level Encryption](../../../Concepts/FieldEncryption/index.html) for the None/Deterministic/Random options and how to choose between them.                                                                                                                                                                                                                                                                                                                                                                                                 | Deterministic |
-| Default                                     | The default value to be used in the event the XPath returns a null token. Optional (1024 characters at most) - if left blank, a null token is simply omitted from the payload rather than being added with a default value; for a Date field, when supplied, it must be an integer number of days offset from now.                                                                                                                                                                                                                                                                                                                              | "Empty"       | 
+| Default                                     | The default value to be used in the event the XPath returns a null token. Optional (1024 characters at most) - if left blank, a null token is simply omitted from the payload rather than being added with a default value; for a Date field, when supplied, it must be an integer number of days offset from now.                                                                                                                                                                                                                                                                                                                                | "Empty"       | 
 
 Name and XPath are required (256 and 1024 characters respectively, at most); Name must be unique within the Model
 (case-insensitive). The TTL Interval, Cache Interval and Cache TTL Interval fields under Search Key and Search Key:
@@ -130,31 +133,37 @@ Key: Cache) is switched on.
 Complete the fields with the values as follows, being certain to set the Response Payload flag to ensure that the
 extract value is returned for testing:
 
+<!-- TODO(screenshot): file=model-references-example-i-p-request-x-path.png route=/models/references/request-xpath state="replace the Razor-era image ExampleIPRequestXPath.png with the Vue UI showing the same step" -->
 ![Image](ExampleIPRequestXPath.png)
 
 Clicking the Add button:
 
+<!-- TODO(screenshot): file=model-references-add-button.png route=/models/references/request-xpath state="replace the Razor-era image AddButton.png with the Vue UI showing the same step" -->
 ![Image](AddButton.png)
 
 Upon clicking the Add button the first version of the Request XPath for this Entity Model will be created:
 
+<!-- TODO(screenshot): file=model-references-version-and-hidden-add-button.png route=/models/references/request-xpath state="replace the Razor-era image VersionAndHiddenAddButton.png with the Vue UI showing the same step" -->
 ![Image](VersionAndHiddenAddButton.png)
 
 Synchronise the model via Entity >> Synchronisation and repeat the HTTP POST to
 endpoint [https://localhost:5001/api/invoke/EntityAnalysisModel/81abd51c-0013-41c1-a4c7-4a6270eb5aa4](https://localhost:5001/api/invoke/EntityAnalysisModel/81abd51c-0013-41c1-a4c7-4a6270eb5aa4)
 as follows:
 
+<!-- TODO(screenshot): file=model-references-response-including-the-i-p.png route=/models/references/request-xpath state="replace the Razor-era image ResponseIncludingTheIP.png with the Vue UI showing the same step" -->
 ![Image](ResponseIncludingTheIP.png)
 
 Notice the IP is now present in the response payload which would indicate that the IP was extracted from the request,
 processed and then included in the response payload:
 
+<!-- TODO(screenshot): file=model-references-highlight-i-p-in-response.png route=/models/references/request-xpath state="replace the Razor-era image HighlightIPInResponse.png with the Vue UI showing the same step" -->
 ![Image](HighlightIPInResponse.png)
 
 This process would be repeated for each element required in processing and is available in the JSON, which for the
 purpose of this documentation has already been done by default, as can be observed by navigating Models >> References >>
 Request XPath, and expanding on model:
 
+<!-- TODO(screenshot): file=model-references-detailed-account-financial-transaction-default.png route=/models/references/request-xpath state="replace the Razor-era image DetailedAccountFinancialTransactionDefault.png with the Vue UI showing the same step" -->
 ![Image](DetailedAccountFinancialTransactionDefault.png)
 
 The Guid for the DetailedAccountFinancialTransaction model is 90c425fd-101a-420b-91d1-cb7a24a969cc. The HTTP endpoint
@@ -163,10 +172,12 @@ be [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d
 throughout this documentation. In the case of AMQP integration, a header key value pair of EntityAnalysisModelGuid =
 90c425fd-101a-420b-91d1-cb7a24a969cc will be used throughout this documentation:
 
+<!-- TODO(screenshot): file=model-references-modified-guid-for-p-o-s-t.png route=/models/references/request-xpath state="replace the Razor-era image ModifiedGuidForPOST.png with the Vue UI showing the same step" -->
 ![Image](ModifiedGuidForPOST.png)
 
 Whereby performing the HTTP POST to the default model will return a much more comprehensive response payload:
 
+<!-- TODO(screenshot): file=model-references-more-comprehensive-response.png route=/models/references/request-xpath state="replace the Razor-era image MoreComprehensiveResponse.png with the Vue UI showing the same step" -->
 ![Image](MoreComprehensiveResponse.png)
 
 It can be observed throughout the platform that the API is quite flexible. Date parsing and exchange is quite tricky and
@@ -191,9 +202,18 @@ Given the promiscuous nature of the TryParse function, it is perfectly plausible
 adequately and it is possible to achieve reliable datetime exchange without adhering to round-trip date and time format,
 however it would rely upon correct configuration of the server culture and is not suggested.
 
+## Permissions and security
 
+<!-- TODO(docs): confirm the permission number and wording against the running menu and the Roles page -->
+Reading and writing this area requires permission 7. A user without it receives 403, and an unauthenticated request
+receives 401. Every mutation also needs the antiforgery token for cookie sessions.
 
+<!-- TODO(docs): owner to review this security paragraph, it was written from code, not from a running system -->
+Request XPath values are evaluated as JSONPath by Newtonsoft `SelectToken` (or the fast-path reader), not XML XPath;
+there is no XML parsing, so XXE does not apply. The regular expression operator `=~` is refused on save
+(`XPathRegexNotPermitted`) because Newtonsoft evaluates it without a timeout. An XPath that does not parse falls back to
+the default value at run time.
 
-
- 
- 
+<!-- TODO(docs): changes are subject to maker-checker approval when ApprovalsRequired is on; describe the Approvals tab, Resubmit and Retract for Request XPath (JSONPath) from the real UI -->
+<!-- TODO(docs): every statement above about the Razor-era page layout (tree on the left, Add button, version pane) may be stale after the Vue port; re-read the whole page against the new UI -->
+<!-- TODO(docs): add the Arabic and Urdu right-to-left note: identifiers, paths and code stay left-to-right inside right-to-left text -->

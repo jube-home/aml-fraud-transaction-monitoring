@@ -75,4 +75,10 @@
     <data name="NoteMaxLength" xml:space="preserve">
     <value>A note must be {0} characters or fewer.</value>
   </data>
+    <data name="NoteNotFound" xml:space="preserve">
+    <value>The note was not found.</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>The case is locked by another user.</value>
+  </data>
 </root>

@@ -6,8 +6,18 @@ nav_order: 11
 
 # Appendix: Package Dependency Inventory
 
+> **The generated software bill of materials is the authority for versions.** Every build of the `master` branch
+> publishes
+> CycloneDX SBOMs for the .NET solution and the web front end (workflow `supply-chain.yml`, artifact `sbom`), and each
+> release tag publishes them with the signed image tarballs. This appendix is maintained by hand for licence review, so
+> a version listed below can lag the SBOM; where they disagree the SBOM is right. For example, at the time of writing it
+> lists linq2db 3.6.0 and MessagePack 3.1.7 where the solution uses 6.5.1 and 3.1.12.
+
+<!-- TODO(docs): regenerate the licence columns of this appendix from the SBOM (the CycloneDX output carries licences) instead of maintaining them by hand. -->
+
 **Solution:** Jube (38 .csproj projects, all targeting `net10.0`)
-**Scope:** All NuGet package references across the solution, plus all vendored/static third-party client-side assets under `Jube.App/wwwroot` (outside NuGet).
+**Scope:** All NuGet package references across the solution, plus all vendored/static third-party client-side assets
+under `Jube.App/wwwroot` (outside NuGet).
 
 ## A. NuGet Packages (server-side, .NET)
 
@@ -77,7 +87,8 @@ nav_order: 11
 - xunit.runner.visualstudio — 2.4.3 — NuGet (test)
 - YamlDotNet — 16.3.0 — NuGet
 
-*Note: the Accord.\* projects (Core, Genetic, MachineLearning, Math, Math.Core, Neuro, Statistics) are vendored source forks compiled in-tree, not NuGet references — no `PackageReference` entries exist in them.
+*Note: the Accord.\* projects (Core, Genetic, MachineLearning, Math, Math.Core, Neuro, Statistics) are vendored source
+forks compiled in-tree, not NuGet references — no `PackageReference` entries exist in them.
 
 ## B. wwwroot Client-Side Dependencies (`Jube.App/wwwroot`) — non-NuGet, vendored static assets
 
@@ -89,12 +100,18 @@ nav_order: 11
 - jQuery (bundled inside Kendo) — 1.12.4 — Vendored JS library — `kendo/js/jquery.min.js`
 - JSZip (bundled inside Kendo) — 2.6.1 — Vendored JS library — internal to Kendo build, per Kendo NOTICE
 - Pako (bundled inside Kendo) — 1.0.6 — Vendored JS library — internal to Kendo build, per Kendo NOTICE
-- WiX Toolset (bundled inside Kendo, build-time only) — 3.8.1128.0 — Vendored MS-RL component — Kendo installer tooling, not runtime
+- WiX Toolset (bundled inside Kendo, build-time only) — 3.8.1128.0 — Vendored MS-RL component — Kendo installer tooling,
+  not runtime
 - Ace Editor — 1.4.13 — Vendored JS library — `js/ace/`
 - JSZip (app-level, separate from Kendo's internal copy) — 3.10.0 — Vendored JS library — `js/jszip/jszip.min.js`
-- jQuery Bar Rating — version not embedded in the minified source — Vendored JS library (jQuery plugin) — `js/barrating/`
-- jQuery QueryBuilder — 2.6.2 — Vendored JS/CSS library — `js/builder/query-builder.standalone.min.js`, `styles/query-builder.default.min.css`
+- jQuery Bar Rating — version not embedded in the minified source — Vendored JS library (jQuery plugin) —
+  `js/barrating/`
+- jQuery QueryBuilder — 2.6.2 — Vendored JS/CSS library — `js/builder/query-builder.standalone.min.js`,
+  `styles/query-builder.default.min.css`
 - Bootstrap — 3.3.2 — Vendored CSS library — `styles/bootstrap.min.css`
 - normalize.css (bundled in the Bootstrap file) — 3.0.2 — Vendored CSS — header comment in `styles/bootstrap.min.css`
 
-**First-party JS/CSS (not third-party dependencies, excluded above):** `js/BuilderCoder.js`, `js/CaseFilterBuilder.js`, `js/CRUD.js`, `js/ExhaustiveFilterBuilder.js`, `js/Override.js`, `js/Tree.js`, the `js/Account`, `js/Administration`, `js/Case`, `js/Model`, `js/RoleAllocation`, `js/Sanction`, `js/Visualisation`, `js/Watcher` directories, and `styles/jube.css` / `styles/site.css`.
+**First-party JS/CSS (not third-party dependencies, excluded above):** `js/BuilderCoder.js`, `js/CaseFilterBuilder.js`,
+`js/CRUD.js`, `js/ExhaustiveFilterBuilder.js`, `js/Override.js`, `js/Tree.js`, the `js/Account`, `js/Administration`,
+`js/Case`, `js/Model`, `js/RoleAllocation`, `js/Sanction`, `js/Visualisation`, `js/Watcher` directories, and
+`styles/jube.css` / `styles/site.css`.

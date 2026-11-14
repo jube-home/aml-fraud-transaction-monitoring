@@ -30,6 +30,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -460,6 +461,92 @@ namespace Jube.Test.Service.Repository.CaseWorkflow
         }
 
         [Fact]
+        public async Task RankingSettingsPersistThroughInsertAndUpdateAndTheListsAreTidiedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = ValidDto(modelId);
+            dto.RiskKappa = 0.5;
+            dto.RiskRho = 0.2;
+            dto.RiskPriorStrength = 30;
+            dto.RiskBaseRatePrior = 0.15;
+            dto.RiskDeadlineLaneDays = 4;
+            dto.RiskKeyHistoryHalfLifeDays = 90;
+            dto.RiskImpactWeights = " 2, 4,8 ,16,32 ";
+            dto.RiskMoneyBands = "1000,2000,3000,4000";
+            dto.RiskQaSampleRate = 0.1;
+            dto.DailyGoal = 25;
+
+            var saved = await service.InsertAsync(dto);
+            createdCaseWorkflowIds.Add(saved.Id);
+
+            var read = await service.GetByIdAsync(saved.Id);
+            read.RiskKappa.Should().Be(0.5);
+            read.RiskRho.Should().Be(0.2);
+            read.RiskPriorStrength.Should().Be(30);
+            read.RiskBaseRatePrior.Should().Be(0.15);
+            read.RiskDeadlineLaneDays.Should().Be(4);
+            read.RiskKeyHistoryHalfLifeDays.Should().Be(90);
+            read.RiskImpactWeights.Should().Be("2,4,8,16,32");
+            read.RiskMoneyBands.Should().Be("1000,2000,3000,4000");
+            read.RiskQaSampleRate.Should().Be(0.1);
+            read.DailyGoal.Should().Be(25);
+
+            read.RiskKappa = null;
+            read.RiskImpactWeights = "  ";
+            var updated = await service.UpdateAsync(read);
+
+            updated.DailyGoal.Should().Be(25);
+            updated.RiskKappa.Should().BeNull();
+            updated.RiskImpactWeights.Should().BeNull();
+            updated.RiskRho.Should().Be(0.2);
+        }
+
+        [Fact]
+        public async Task InvalidRankingSettingsAreRefusedAndEveryProblemIsReportedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = ValidDto(modelId);
+            dto.RiskKappa = 0;
+            dto.RiskRho = 2;
+            dto.RiskPriorStrength = 0;
+            dto.RiskBaseRatePrior = 1;
+            dto.RiskDeadlineLaneDays = -1;
+            dto.RiskKeyHistoryHalfLifeDays = 0;
+            dto.RiskImpactWeights = "5,4,3,2,1";
+            dto.RiskMoneyBands = "1,2";
+            dto.RiskQaSampleRate = 0.9;
+            dto.DailyGoal = 0;
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
+            ex.Result.Errors.Select(e => e.ErrorCode).Should().BeEquivalentTo(
+                "RiskKappaOutOfRange", "RiskRhoOutOfRange", "RiskPriorStrengthOutOfRange",
+                "RiskBaseRatePriorOutOfRange", "RiskDeadlineLaneDaysOutOfRange",
+                "RiskKeyHistoryHalfLifeOutOfRange", "RiskImpactWeightsInvalid", "RiskMoneyBandsInvalid",
+                "RiskQaSampleRateOutOfRange", "DailyGoalOutOfRange");
+        }
+
+        [Fact]
+        public async Task RankingSettingsLongerThanTheirColumnAreRefusedByTheValidatorAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = ValidDto(modelId);
+            dto.RiskImpactWeights = string.Join(",", Enumerable.Repeat("1", 101));
+            dto.RiskMoneyBands = string.Join(",", Enumerable.Repeat("1", 101));
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
+            ex.Result.Errors.Select(e => e.ErrorCode).Should().Contain(
+                ["RiskImpactWeightsMaximumLength", "RiskMoneyBandsMaximumLength"]);
+        }
+
+        [Fact]
         public async Task InsertWithNameAtExactlyMaxLengthSucceedsAsync()
         {
             await using var dbContext = fx.GetDbContext();
@@ -630,7 +717,6 @@ namespace Jube.Test.Service.Repository.CaseWorkflow
             dto.CreatedUser = "someone-else";
             dto.CreatedDate = DateTimeOffset.UtcNow.AddYears(-5);
             dto.Guid = Guid.NewGuid();
-            dto.Version = 999;
 
             var updated = await service.UpdateAsync(dto);
 
@@ -638,6 +724,26 @@ namespace Jube.Test.Service.Repository.CaseWorkflow
             updated.CreatedDate.Should().BeCloseTo(created.CreatedDate.Required(), TimeSpan.FromMilliseconds(1));
             updated.Guid.Should().Be(created.Guid);
             updated.Version.Should().Be(2);
+        }
+
+        [Fact]
+        public async Task UpdateCannotMoveAWorkflowToAnotherModelOfTheSameTenantAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var otherModelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var created = await service.InsertAsync(ValidDto(modelId));
+            createdCaseWorkflowIds.Add(created.Id);
+
+            var dto = ValidDto(otherModelId);
+            dto.Id = created.Id;
+
+            var updated = await service.UpdateAsync(dto);
+
+            updated.EntityAnalysisModelId.Should().Be(modelId);
+            (await dbContext.CaseWorkflow.Where(w => w.Id == created.Id)
+                .Select(w => w.EntityAnalysisModelId).FirstAsync()).Should().Be(modelId);
         }
 
         [Fact]

@@ -84,7 +84,8 @@ namespace Jube.AskJooby.Agents.Models
         ILoggerFactory? LoggerFactory = null,
         IAgentGuardRejectionLedger? GuardRejectionLedger = null,
         IReadOnlyList<AgentGuardRuleSetting>? AgentGuardRules = null,
-        PageContext? PageContext = null)
+        PageContext? PageContext = null,
+        IToolApprovalGate? ApprovalGate = null)
     {
         public static readonly RunContext None = new(null, null, null, _ => false);
 

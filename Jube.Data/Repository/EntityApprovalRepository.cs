@@ -22,6 +22,7 @@ namespace Jube.Data.Repository
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using LinqToDB.Data;
     using Poco;
     using Query.Models;

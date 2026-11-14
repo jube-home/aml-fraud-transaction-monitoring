@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,12 +22,15 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.ExhaustiveSearchInstanceVariable
 {
     [Description("One histogram bin of an Exhaustive Search Instance Variable.")]
+    [MessagePackObject]
     public class ExhaustiveSearchInstanceVariableHistogramValueDto
     {
         [Description("Frequency of values in the bin.")]
+        [Key(0)]
         public int Frequency { get; set; }
 
         [Description("Start of the bin range.")]
+        [Key(1)]
         public double Bin { get; set; }
     }
 }

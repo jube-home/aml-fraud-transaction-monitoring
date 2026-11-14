@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchInIgnoreCase(params string[] values)
+            [Description("True when: one of the listed strings, ignoring case. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchInIgnoreCase([Description("The values to look for.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringInIgnoreCase(flow.Value, values));
             }
 
-            public Flow<string?> RejectInIgnoreCase(params string[] values)
+            [Description("True when: one of the listed strings, ignoring case. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectInIgnoreCase([Description("The values to look for.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringInIgnoreCase(flow.Value, values));
             }
 
-            public Flow<string?> BreakInIgnoreCase(params string[] values)
+            [Description("True when: one of the listed strings, ignoring case. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakInIgnoreCase([Description("The values to look for.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringInIgnoreCase(flow.Value, values));
             }
 
-            public Flow<string?> RequireInIgnoreCase(params string[] values)
+            [Description("True when: one of the listed strings, ignoring case. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireInIgnoreCase([Description("The values to look for.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringInIgnoreCase(flow.Value, values));
             }
 
-            public Flow<string?> EnsureInIgnoreCase(params string[] values)
+            [Description("True when: one of the listed strings, ignoring case. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureInIgnoreCase([Description("The values to look for.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchInIgnoreCase(params string[] values)
+            [Description("Begins a pipeline from the value. True when: one of the listed strings, ignoring case. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchInIgnoreCase([Description("The values to look for.")] params string[] values)
             {
                 return value.Start().MatchInIgnoreCase(values);
             }
 
-            public Flow<string?> RejectInIgnoreCase(params string[] values)
+            [Description("Begins a pipeline from the value. True when: one of the listed strings, ignoring case. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectInIgnoreCase([Description("The values to look for.")] params string[] values)
             {
                 return value.Start().RejectInIgnoreCase(values);
             }
 
-            public Flow<string?> BreakInIgnoreCase(params string[] values)
+            [Description("Begins a pipeline from the value. True when: one of the listed strings, ignoring case. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakInIgnoreCase([Description("The values to look for.")] params string[] values)
             {
                 return value.Start().BreakInIgnoreCase(values);
             }
 
-            public Flow<string?> RequireInIgnoreCase(params string[] values)
+            [Description("Begins a pipeline from the value. True when: one of the listed strings, ignoring case. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireInIgnoreCase([Description("The values to look for.")] params string[] values)
             {
                 return value.Start().RequireInIgnoreCase(values);
             }
 
-            public Flow<string?> EnsureInIgnoreCase(params string[] values)
+            [Description("Begins a pipeline from the value. True when: one of the listed strings, ignoring case. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureInIgnoreCase([Description("The values to look for.")] params string[] values)
             {
                 return value.Start().EnsureInIgnoreCase(values);
             }

@@ -21,7 +21,7 @@ resolves there instead.
 
 |                                      |                                                                                                     |
 |--------------------------------------|-----------------------------------------------------------------------------------------------------|
-| tools assigned                       | 1046, over 718 distinct operations                                                                  |
+| tools assigned                       | 1048, over 720 distinct operations                                                                  |
 | leaf agents                          | 166                                                                                                 |
 | supervisors                          | 33                                                                                                  |
 | leaves attached straight to a domain | 10                                                                                                  |
@@ -435,13 +435,13 @@ it holds no change at all.
 
 - **Hierarchy Placement:** Level 2, child of Jooby
 - **Semantic Persona:** Works live alert and case material for an investigator: the case itself, its notes, files,
-  events and transaction journal, the activation watcher and sanctions screening. Never changes how the platform detects
-  anything, only what is recorded about a case under investigation.
+  events and transaction journal, the activation watcher, sanctions screening and payments held on a case. Never changes
+  how the platform detects anything, only what is recorded about a case under investigation.
 - **Semantic Routing Keywords:** case, alert, investigate, SAR, escalate, note, attachment, journal, watcher, sanctions
   screening, disposition
-- **Toolbox (Max 15):** none — routes to 1 supervisor and 3 leaf agents covering 29 tools
+- **Toolbox (Max 15):** none — routes to 1 supervisor and 6 leaf agents covering 54 tools
 - **Downstream Dependencies:** `case-analyst.investigation`, `activation-watcher-and-archive`, `sanctions-entry-source`,
-  `session-case-observability`
+  `session-case-observability`, `case-supervision`, `case-holds`, `case-checklists`
 - **Cross-Domain Reach:** `form-entries-and-macro-executions`
 
 #### Investigation Supervisor
@@ -451,14 +451,15 @@ it holds no change at all.
   the domain above it chooses between a handful of coherent specialists rather than dozens of leaves.
 - **Semantic Routing Keywords:** investigation, case, file, note, by, key, value, id, session, search, compile,
   creation, stage, performance, counter, warning, event, journal
-- **Toolbox (Max 15):** none — routes to 3 leaf agents covering 18 tools
-- **Downstream Dependencies:** `case-record-and-files`, `case-lookup-and-notes`, `case-journal-and-events`
+- **Toolbox (Max 15):** none — routes to 6 leaf agents covering 45 tools
+- **Downstream Dependencies:** `case-record-and-files`, `case-lookup-and-notes`, `case-journal-and-events`,
+  `case-journal-replay`, `case-network`, `graph-patterns`
 
 #### Case Record and Files (`case-record-and-files`)
 
 - **Hierarchy Placement:** Level 4, child of Investigation Supervisor
 - **Semantic Persona:** Owns the case record and files slice end to end, which is small enough that reads and writes
-  stay with one agent. It holds 4 mutating tools, so a confirmation is required before any of them runs.
+  stay with one agent. It holds 8 mutating tools, so a confirmation is required before any of them runs.
 - **Semantic Routing Keywords:** case, file
 - **Toolbox (Max 15):**
     * `CaseList`: Lists active cases for the caller's tenant, keyset-paged and capped. _(permissions from
@@ -477,15 +478,40 @@ it holds no change at all.
       the caller's tenant and Case Workflow roles. _(permissions from `CaseFileService.RequiredPermissions`)_
     * `CaseFileUpload`: Uploads and attaches a file to a Case in the caller's tenant. **Write — confirmation required**
       _(permissions from `CaseFileService.RequiredPermissions`)_
+    * `CaseNoteSetFinding`: Marks one of the caller's own notes as a finding, or clears the mark. Notes written by
+      AskJooby or the system cannot be changed. **Write — confirmation required** _(permissions from
+      `CaseNoteService.RequiredPermissions`)_
+    * `CaseResearchCreate`: Captures research on a case: topic, findings and up to 10 sources (title, http or https
+      address, when retrieved). Attach only real addresses of sources actually retrieved; never invent one. Flagged as
+      written by AskJooby and authored by the calling user. **Write — confirmation required** _(permissions from
+      `CaseResearchService.RequiredPermissions`)_
+    * `CaseResearchListByCaseKeyValue`: Lists the research captured on a Case Key/Value pair, newest first, with its
+      sources, scoped to the caller's tenant and Case Workflow roles. _(permissions from
+      `CaseResearchService.RequiredPermissions`)_
+    * `CaseSuppressionListByCase`: Lists the suppression requests made from one case, newest first, with their targets,
+      evidence transactions, decisions, the counts when requested and what each is now: pending, approved, rejected,
+      retracted, expired or removed. _(permissions from `CaseSuppressionService.RequiredPermissions`)_
+    * `CaseSuppressionRequest`: Requests that an override key and value be suppressed or forced on models and
+      activation rules, from a case. Nothing changes until different people with the approval permission approve it. The
+      value must be one the case journal carries, proved by archive ids from CaseSuppressionCandidateTransactions; a
+      reason and a future expiry are required. Flagged as written by AskJooby. **Write — confirmation required**
+      _(permissions from `CaseSuppressionService.RequiredPermissions`)_
+    * `CaseSuppressionCandidateValues`: Lists the distinct values of one override key across the journal of a case, with
+      how many transactions on the case carry each and, where indexed, how widely each is carried. _(permissions from
+      `CaseSuppressionCandidatesService.RequiredPermissions`)_
+    * `CaseSuppressionCandidateTransactions`: Lists the transactions in the journal of a case that carry one value of an
+      override key, with the archive ids to send back as evidence. _(permissions from
+      `CaseSuppressionCandidatesService.RequiredPermissions`)_
 - **Downstream Dependencies:** none (leaf)
 
 #### Case Lookup and Notes (`case-lookup-and-notes`)
 
 - **Hierarchy Placement:** Level 4, child of Investigation Supervisor
 - **Semantic Persona:** Owns the case lookup and notes slice end to end, which is small enough that reads and writes
-  stay with one agent. It holds 2 mutating tools, so a confirmation is required before any of them runs.
-- **Semantic Routing Keywords:** case, note, by, key, value, id, session, search, compile, creation, stage, performance,
-  counter
+  stay with one agent. It holds 7 mutating tools, so a confirmation is required before any of them runs.
+- **Semantic Routing Keywords:** case, note, diary, by, key, value, id, session, search, compile, creation, stage,
+  performance,
+  counter, journal, tag, similar, alike
 - **Toolbox (Max 15):**
     * `CaseNoteInsert`: Adds a note to a case, filed against a CaseWorkflowAction; dispatches that action's
       notification/webhook if enabled. **Write — confirmation required** _(permissions from
@@ -505,14 +531,36 @@ it holds no change at all.
       ExistingCasePriorityLookup, WorkflowStatusLookupAndPersist, Notification, HttpEndpoint -- most recent first,
       capped at 100000, with optional date-range and exact-match (StageId, e.g. _(permissions from
       `CaseCreationStagePerformanceCounterService.RequiredPermissions`)_
+    * `CaseDiarySet`: Places a diary on an open case, or changes it, saying what it is for (review, customer response,
+      regulatory deadline or payment hold) and when it falls due; a regulatory deadline or payment hold ranks the case
+      ahead
+      of everything else until cleared. **Write — confirmation required** _(permissions from
+      `CaseDiaryService.RequiredPermissions`)_
+    * `CaseDiaryClear`: Takes the diary off an open case, returning it to ranking on its own merits. **Write —
+      confirmation
+      required** _(permissions from `CaseDiaryService.RequiredPermissions`)_
+    * `CaseKeyJournalTagOptionsGet`: Lists the Tags the workflow's model allows, which are the only names that can be
+      added to a journal transaction. _(permissions from `CaseKeyJournalTagService.RequiredPermissions`)_
+    * `CaseKeyJournalTagUpdate`: Adds Tags to and removes Tags from up to 500 journal transactions in one step,
+      returning the Tag sets before and after so that the step can be undone. **Write — confirmation required**
+      _(permissions from `CaseKeyJournalTagService.RequiredPermissions`)_
+    * `CaseKeyJournalTagRestore`: Puts journal transactions back to the Tag sets they had, which undoes a tagging.
+      **Write — confirmation required** _(permissions from `CaseKeyJournalTagService.RequiredPermissions`)_
+    * `CaseKeyJournalPinList`: Lists the transactions pinned in the journal of a case. _(permissions from
+      `CaseKeyJournalPinService.RequiredPermissions`)_
+    * `CaseKeyJournalPinSet`: Pins or unpins journal transactions on a case so they stay at the top of the journal for
+      everyone working it. **Write — confirmation required** _(permissions from
+      `CaseKeyJournalPinService.RequiredPermissions`)_
+    * `CaseSimilarityGet`: Finds the cases of the same workflow that resemble a case and how the closed ones were
+      decided; informational only. _(permissions from `CaseSimilarityService.RequiredPermissions`)_
 - **Downstream Dependencies:** none (leaf)
 
 #### Case Journal and Events (`case-journal-and-events`)
 
 - **Hierarchy Placement:** Level 4, child of Investigation Supervisor
 - **Semantic Persona:** Owns the case journal and events slice end to end, which is small enough that reads and writes
-  stay with one agent.
-- **Semantic Routing Keywords:** case, creation, warning, event, by, key, value, journal, note
+  stay with one agent. It holds 3 mutating tools, so a confirmation is required before any of them runs.
+- **Semantic Routing Keywords:** case, creation, warning, event, by, key, value, journal, note, tag, job
 - **Toolbox (Max 15):**
     * `CaseCreationWarningList`: Lists captured case creation warn-threshold breaches -- the specific case (workflow,
       key, key value), the slow stage, and the notification/HTTP destination when relevant -- most recent first, capped
@@ -521,9 +569,136 @@ it holds no change at all.
       first. _(permissions from `CaseEventByCaseKeyValueService.RequiredPermissions`)_
     * `CaseJournalGet`: Returns the tenant-scoped Case journal of Archive entries matching a payload key and value. _(
       permissions from `CaseJournalService.RequiredPermissions`)_
+    * `CaseKeyJournalAnalyticsGet`: Analyses the history of a case key: a summary, which transactions stand out
+      against the key's own normal, progression, distributions, velocity, gaps, first-seen values, counterparties,
+      correlation and drift. _(permissions from `CaseKeyJournalService.RequiredPermissions`)_
+    * `CaseKeyJournalGet`: Returns the transactions of a case key scored by the workflow's model, newest first, in one
+      lens: payload, rules and activations, features, models or sanctions. _(permissions from
+      `CaseKeyJournalService.RequiredPermissions`)_
+    * `CaseKeyJournalTransactionGet`: Opens one archived transaction: the activations that fired, the features and
+      sanction distances the rules saw, and every model's score, threshold, calibration, contributions and decision
+      path. _(permissions from `CaseKeyJournalService.RequiredPermissions`)_
+    * `CaseKeyJournalAroundGet`: Shows the other transactions on the same day that shared an account, device, address or
+      counterparty with one transaction. _(permissions from `CaseKeyJournalService.RequiredPermissions`)_
+    * `CaseKeyJournalTransactionPayloadGet`: Returns the payload of one archived transaction limited to the fields the
+      caller's roles may see, and records that it was read. _(permissions from
+      `CaseKeyJournalService.RequiredPermissions`)_
     * `CaseNoteByCaseKeyValueGet`: Lists the case notes for cases matching a case key and value, newest first, limited
       to workflows, statuses and actions the caller's roles may see within the caller's tenant. _(permissions from
       `CaseNoteByCaseKeyValueService.RequiredPermissions`)_
+    * `CaseKeyJournalTagJobPreview`: Counts how many transactions a journal view matches, so that tagging all of them
+      can be confirmed first. _(permissions from `CaseKeyJournalTagJobService.RequiredPermissions`)_
+    * `CaseKeyJournalTagJobSubmit`: Starts a background job that adds Tags to and removes Tags from every transaction a
+      journal view matches. **Write — confirmation required** _(permissions from
+      `CaseKeyJournalTagJobService.RequiredPermissions`)_
+    * `CaseKeyJournalTagJobGet`: Returns a bulk tagging job with its state and how far it has got. _(permissions from
+      `CaseKeyJournalTagJobService.RequiredPermissions`)_
+    * `CaseKeyJournalTagJobList`: Lists the caller's recent bulk tagging jobs on a Case Workflow. _(permissions from
+      `CaseKeyJournalTagJobService.RequiredPermissions`)_
+    * `CaseKeyJournalTagJobCancel`: Asks a queued or running bulk tagging job to stop. **Write — confirmation required**
+      _(permissions from `CaseKeyJournalTagJobService.RequiredPermissions`)_
+    * `CaseKeyJournalTagJobUndo`: Starts a job that puts every transaction a finished bulk tagging changed back to the
+      Tags it had. **Write — confirmation required** _(permissions from
+      `CaseKeyJournalTagJobService.RequiredPermissions`)_
+- **Downstream Dependencies:** none (leaf)
+
+#### Case Journal Replay (`case-journal-replay`)
+
+- **Hierarchy Placement:** Level 4, child of Investigation Supervisor
+- **Semantic Persona:** Owns the journal replay slice end to end, which is small enough that reads and writes stay with
+  one agent. It holds 2 mutating tools, so a confirmation is required before any of them runs.
+- **Semantic Routing Keywords:** case, journal, replay, track, travel, movement, location, map, impossible, speed
+- **Toolbox (Max 15):**
+    * `CaseKeyJournalTrackGet`: Reads the transactions of a journal view in time order with their location, and works
+      out the distance, hours and speed between consecutive transactions of each key, marking legs that could not have
+      been travelled. _(permissions from `CaseKeyJournalTrackService.RequiredPermissions`)_
+    * `CaseKeyJournalActivationsGet`: Lists every rule and model that fired across the transactions of a journal view,
+      with how often, the latest transaction each fired on, the values a rule read, and a model's score against its
+      threshold with its largest contributions. _(permissions from `CaseKeyJournalService.RequiredPermissions`)_
+    * `CaseKeyJournalTransactionActivationsGet`: Opens what fired on one archived transaction and why: each rule with
+      the
+      values it read, and each model that crossed its threshold with its score, band and largest contributions. _(
+      permissions from `CaseKeyJournalService.RequiredPermissions`)_
+    * `CaseKeyJournalReplayList`: Lists the replays saved on a case: the settings that draw the movement of the case key
+      on a map again. _(permissions from `CaseKeyJournalReplayService.RequiredPermissions`)_
+    * `CaseKeyJournalReplaySave`: Saves a replay on a case: a name, the window in days, merged keys and a filter on the
+      Archive. **Write — confirmation required** _(permissions from `CaseKeyJournalReplayService.RequiredPermissions`)_
+    * `CaseKeyJournalReplayDelete`: Removes a saved replay from a case so that it is no longer offered. **Write —
+      confirmation required** _(permissions from `CaseKeyJournalReplayService.RequiredPermissions`)_
+    * `CaseKeyJournalReplaySummaryGet`: Works out a saved replay again from the archive and returns the movement it
+      comes to, with the fastest legs that could not have been travelled. _(permissions from
+      `CaseKeyJournalReplayService.RequiredPermissions`)_
+    * `CaseKeyJournalSvirfdGet`: Compares the IP intelligence record archived with one transaction against a fresh
+      lookup of the same address and lists the members that changed since. _(permissions from
+      `CaseKeyJournalService.RequiredPermissions`)_
+- **Downstream Dependencies:** none (leaf)
+
+#### Case Network (`case-network`)
+
+- **Hierarchy Placement:** Level 4, child of Investigation Supervisor
+- **Semantic Persona:** Owns the network slice: the graph derived from archived transactions under a Graph Registry, its
+  hubs, the evidence behind every edge and the facts of any node, drawn as SVG, and the caller's saved explorations. It
+  holds 3 mutating tools (capturing a view into a case, saving and removing an exploration), so a confirmation is
+  required before any of them runs. It also finds the shortest paths between two nodes and follows the money.
+- **Semantic Routing Keywords:** network, graph, device, shared, neighbour, hop, edge, node, link, ring, mule, hub
+- **Toolbox (Max 15):**
+    * `GraphNeighbourhoodGet`: Returns the network around a key value under a Graph Registry: nodes within the requested
+      hops, the edges among them with the archive ids behind each, hubs hidden unless asked, clusters collapsed beyond
+      the cap. _(permissions from `GraphService.RequiredPermissions`)_
+    * `GraphExplodeGet`: Lists the one-hop neighbourhood of a node as lanes with counts, totals, first and last seen,
+      hub flag and cases. _(permissions from `GraphService.RequiredPermissions`)_
+    * `GraphEdgeTransactionsGet`: Lists the archived transactions behind one edge within a window, with archive ids for
+      the Journal filter. _(permissions from `GraphService.RequiredPermissions`)_
+    * `GraphNodeGet`: Returns one node's cached graph features, edge definitions with counts, cases and plain sentences
+      stating why it matters. _(permissions from `GraphService.RequiredPermissions`)_
+    * `GraphRenderSvg`: Draws the network around a key value as an SVG with the requested layout and returns the node
+      positions for the next render. _(permissions from `GraphService.RequiredPermissions`)_
+    * `GraphTimeStripSvg`: Draws the histogram of the transactions behind a neighbourhood's edges within the window. _(
+      permissions from `GraphService.RequiredPermissions`)_
+    * `GraphCaptureCreate`: Freezes the current network view into a case as two hashed case files under one note.
+      **Write — confirmation required** _(permissions from `GraphService.RequiredPermissions`)_
+    * `GraphExplorationList`: Lists the caller's saved Graph page explorations, newest first. _(permissions from
+      `GraphService.RequiredPermissions`)_
+    * `GraphExplorationSave`: Saves or overwrites one of the caller's Graph page explorations by name. **Write —
+      confirmation required** _(permissions from `GraphService.RequiredPermissions`)_
+    * `GraphExplorationDelete`: Removes one of the caller's saved explorations; reversible only by direct database
+      action. **Write — confirmation required** _(permissions from `GraphService.RequiredPermissions`)_
+    * `GraphPathsGet`: Finds up to K shortest paths between two nodes with the nodes and edges touched and a sentence
+      per path. _(permissions from `GraphService.RequiredPermissions`)_
+    * `GraphFlowGet`: Follows the money forward from or back to a node through time-ordered, amount-matched hops and
+      returns the tranches, pass-through nodes and archive ids. _(permissions from `GraphService.RequiredPermissions`)_
+- **Downstream Dependencies:** none (leaf)
+
+#### Graph Patterns (`graph-patterns`)
+
+- **Hierarchy Placement:** Level 4, child of Investigation Supervisor
+- **Semantic Persona:** Owns the patterns slice: the money-flow motifs the perpetual detector cycle finds on the tenant
+  graph, the communities with their confirmed-case rates, and the hubs. It holds 3 mutating tools (deciding a pattern,
+  overriding a hub, merging case tags), so a confirmation is required before any of them runs.
+- **Semantic Routing Keywords:** pattern, motif, fan-in, fan-out, cycle, smurfing, structuring, pass-through, community,
+  hub, dense
+- **Toolbox (Max 15):**
+    * `GraphPatternList`: Lists detected money-flow patterns (fan-in, fan-out, cycles, pass-through, smurfing,
+      structuring, dense blocks) with anchor, score, window and evidence. _(permissions from
+      `GraphAnalyticsService.RequiredPermissions`)_
+    * `GraphPatternGet`: Returns one detected pattern with its members, roles and archive ids. _(permissions from
+      `GraphAnalyticsService.RequiredPermissions`)_
+    * `GraphPatternDecide`: Marks a detected pattern Seen, Dismissed or Cased with a case id. **Write — confirmation
+      required** _(permissions from `GraphAnalyticsService.ResolvePermissions`)_
+    * `GraphCommunityList`: Lists the graph communities with size, density, confirmed and closed counts and the ratio to
+      the tenant rate. _(permissions from `GraphAnalyticsService.RequiredPermissions`)_
+    * `GraphCommunityGet`: Returns one community with its most central members. _(permissions from
+      `GraphAnalyticsService.RequiredPermissions`)_
+    * `GraphHubList`: Lists the nodes marked as hubs with degrees and overrides. _(permissions from
+      `GraphAnalyticsService.RequiredPermissions`)_
+    * `GraphHubOverride`: Overrides whether a node is a hub: never, always, or back to the cycle's decision. **Write —
+      confirmation required** _(permissions from `GraphAnalyticsService.ResolvePermissions`)_
+    * `CaseTagListByCaseId`: Lists the tags applied to a case; case-level tags seed the graph's proximity-to-tag
+      distances. _(permissions from `CaseTagService.RequiredPermissions`)_
+    * `CaseTagChoices`: Lists the tag names a case may carry, from its model's tag vocabulary. _(permissions from
+      `CaseTagService.RequiredPermissions`)_
+    * `CaseTagMerge`: Replaces the tags on a case with the given list; every name must be in the model's vocabulary.
+      **Write — confirmation required** _(permissions from `CaseTagService.RequiredPermissions`)_
 - **Downstream Dependencies:** none (leaf)
 
 #### Activation Watcher and Archive (`activation-watcher-and-archive`)
@@ -568,8 +743,8 @@ it holds no change at all.
 
 - **Hierarchy Placement:** Level 3, child of Case Investigation Desk
 - **Semantic Persona:** Owns the session case observability slice end to end, which is small enough that reads and
-  writes stay with one agent. It holds 1 mutating tool, so a confirmation is required before any of them runs.
-- **Semantic Routing Keywords:** session, case, journal, search, compiled, sql
+  writes stay with one agent. It holds 4 mutating tools, so a confirmation is required before any of them runs.
+- **Semantic Routing Keywords:** session, case, journal, search, compiled, sql, saved, triage, skim
 - **Toolbox (Max 15):**
     * `SessionCaseJournalGetByCaseWorkflowGuid`: Gets the calling user's own saved journal (e.g. case grid column
       layout) for a CaseWorkflow. _(permissions from `SessionCaseJournalService.RequiredPermissions`)_
@@ -578,6 +753,107 @@ it holds no change at all.
     * `SessionCaseSearchCompiledSqlGetLast`: Returns the caller's own most recently compiled Session Case Search (or a
       NotFound placeholder); a search flagged for rebuild is recompiled first. _(permissions from
       `SessionCaseSearchCompiledSqlService.RequiredPermissions`)_
+    * `CaseSearchFilterList`: Lists the searches saved for the Cases page that the caller owns or that are shared with
+      the caller's role, optionally for one Case Workflow. _(permissions from
+      `CaseSearchFilterService.RequiredPermissions`)_
+    * `CaseSearchFilterGet`: Returns one saved Cases page search by Guid. _(permissions from
+      `CaseSearchFilterService.RequiredPermissions`)_
+    * `CaseSearchFilterCreate`: Saves a new Cases page search for the caller against a Case Workflow, private unless
+      shared with a role. **Write — confirmation required** _(permissions from
+      `CaseSearchFilterService.RequiredPermissions`)_
+    * `CaseSearchFilterValidate`: Validates a saved Cases page search without storing it and returns every failure. _(
+      permissions from `CaseSearchFilterService.RequiredPermissions`)_
+    * `CaseSearchFilterUpdate`: Changes one of the caller's own saved Cases page searches. **Write — confirmation
+      required** _(permissions from `CaseSearchFilterService.RequiredPermissions`)_
+    * `CaseSearchFilterDelete`: Permanently deletes one of the caller's own saved Cases page searches. **Write —
+      confirmation required** _(permissions from `CaseSearchFilterService.RequiredPermissions`)_
+    * `CaseSearchRun`: Lists the cases of a Case Workflow for triage, with each case's risk, why it needs the caller
+      again
+      and its service level position, in lane and Priority order with returned cases lifted. _(permissions from
+      `CaseSearchService.RequiredPermissions`)_
+    * `CaseSearchCounts`: Counts the cases behind every entry of the Cases page rail: the built-in views, the Case
+      Workflow
+      Filters and the caller's saved searches. _(permissions from `CaseSearchService.RequiredPermissions`)_
+    * `CaseSearchRiskMatrix`: Returns the likelihood by impact grid of the cases a search matches. _(permissions from
+      `CaseSearchService.RequiredPermissions`)_
+    * `CaseSearchSkim`: Takes the next case for the caller in triage order and locks it to them, returned cases first.
+      **Write — confirmation required** _(permissions from `CaseSearchService.RequiredPermissions`)_
+    * `CaseSummaryGet`: Peeks at a case without locking it: its risk and the evidence behind it, how the risk has moved,
+      its
+      stays in each status, recent events and notes, and what changed since the caller last looked. Records the peek. _(
+      permissions from `CaseSummaryService.RequiredPermissions`)_
+    * `CaseAnalyticsGet`: Analyses a Case Workflow over a period: waits to first look, ownership and resolution, flow
+      and
+      backlog, status bottlenecks, ageing, rule precision and false positive effort, whether Priority and likelihood
+      predict
+      confirmed cases, service level attainment, arrival rhythm, workload and handoffs. _(permissions from
+      `CaseAnalyticsService.RequiredPermissions`)_
+- **Downstream Dependencies:** none (leaf)
+
+#### Case Supervision (`case-supervision`)
+
+- **Hierarchy Placement:** Level 3, child of Case Investigation Desk
+- **Semantic Persona:** Owns the case supervision slice end to end, which is small enough that reads and writes stay
+  with one agent. It holds 2 mutating tools, so a confirmation is required before any of them runs.
+- **Semantic Routing Keywords:** case, supervision, workload, analyst, lock, stuck, reassign
+- **Toolbox (Max 15):**
+    * `CaseSupervisionBreakLock`: Releases the lock held on an open case so that anyone may take it, recording who broke
+      it
+      and why in the case journal. **Write — confirmation required** _(permissions from
+      `CaseSupervisionService.RequiredPermissions`)_
+    * `CaseSupervisionReassign`: Locks an open case to another analyst who can see it, recording the handover in the
+      case
+      journal. **Write — confirmation required** _(permissions from `CaseSupervisionService.RequiredPermissions`)_
+    * `CaseSupervisionStuckLocks`: Lists open cases that have stayed locked to someone with no activity for a given
+      number
+      of minutes, longest idle first. _(permissions from `CaseSupervisionService.RequiredPermissions`)_
+    * `CaseSupervisionWorkload`: Shows a supervisor what every analyst who can work a Case Workflow is holding and has
+      done
+      over a period, plus how many open cases nobody holds. _(permissions from
+      `CaseSupervisionService.RequiredPermissions`)_
+- **Downstream Dependencies:** none (leaf)
+
+#### Case Holds (`case-holds`)
+
+- **Hierarchy Placement:** Level 3, child of Case Investigation Desk
+- **Semantic Persona:** Owns the case holds slice end to end: the payments held, declined, released or refused on the
+  transactions of a case. It holds 2 mutating tools, so a confirmation is required before any of them runs. A payment
+  is released only when the release hook answers exactly 200, and the reason the caller gave is always passed on.
+- **Semantic Routing Keywords:** case, hold, held, payment, release, refuse, decline, elevation
+- **Toolbox (Max 15):**
+    * `CaseHoldList`: Lists the payments held, declined, released or refused on the transactions of a case, with the
+      response elevation range that stamped each, the deadline of the payment hold diary, who decided and why, the
+      messages sent and the release hook that would release it. _(permissions from
+      `CaseHoldService.RequiredPermissions`)_
+    * `CaseHoldRelease`: Releases a held payment by calling the case workflow release hook that handles it; recorded as
+      Released only when the hook answers exactly 200. Needs a reason and the release permission. Moves money in the
+      payment system. **Write — confirmation required** _(permissions from
+      `CaseHoldService.RequiredDecisionPermissions`)_
+    * `CaseHoldRefuse`: Refuses a held payment, recording who and why, and calling the refuse URL of the release hook
+      when it has one. Needs a reason and the release permission. **Write — confirmation required** _(permissions from
+      `CaseHoldService.RequiredDecisionPermissions`)_
+- **Downstream Dependencies:** none (leaf)
+
+#### Case Checklists (`case-checklists`)
+
+- **Hierarchy Placement:** Level 3, child of Case Investigation Desk
+- **Semantic Persona:** Owns the case checklists slice end to end: the checklist items a case carries for the status it
+  is in, which of them are shown or done, and how each stands against its SLA, and ticks or unticks an item for the
+  user who holds the case. Reading the checklists first brings them up to date, so it says plainly when that has
+  changed what is shown. It has no tool to override the gate that stops a case leaving its status with items open;
+  that is a supervisor's decision made outside the agents.
+- **Semantic Routing Keywords:** case, checklist, item, required, tick, untick, SLA, breach, status gate
+- **Toolbox (Max 15):**
+    * `CaseChecklistCheck`: Ticks one shown item of the checklist of the status a case is in. Only the user who holds
+      the case can tick, and the item's validation condition, if it has one, must pass first; a refusal is recorded
+      and the item stays unticked. Records the tick on the case timeline. **Write — confirmation required**
+      _(permissions from `CaseChecklistService.RequiredPermissions`)_
+    * `CaseChecklistGet`: Gets the checklists of the status a case is in, after bringing them up to date: which items
+      are shown or done, each item's SLA position and minutes left, and whether everything required is done. May record
+      items shown or hidden on the case timeline. _(permissions from `CaseChecklistService.RequiredPermissions`)_
+    * `CaseChecklistUncheck`: Unticks one ticked item of the checklist of the status a case is in, putting it back to
+      shown without restarting its SLA clock. Only the user who holds the case can untick. Records the untick on the
+      case timeline. **Write — confirmation required** _(permissions from `CaseChecklistService.RequiredPermissions`)_
 - **Downstream Dependencies:** none (leaf)
 
 ---
@@ -592,7 +868,7 @@ it holds no change at all.
   and never touches a live case.
 - **Semantic Routing Keywords:** case workflow, status, queue, routing, form, macro, action, display, XPath extraction,
   workflow role
-- **Toolbox (Max 15):** none — routes to 7 supervisors covering 121 tools
+- **Toolbox (Max 15):** none — routes to 7 supervisors covering 147 tools
 - **Downstream Dependencies:** `case-workflow-admin.definition`, `case-workflow-admin.entitlement`,
   `case-workflow-admin.interaction.actions`, `case-workflow-admin.interaction.forms`,
   `case-workflow-admin.interaction.macros`, `case-workflow-admin.routing.extraction`,
@@ -605,8 +881,9 @@ it holds no change at all.
 - **Semantic Persona:** Routes within the definition slice of case workflow governance. Holds no tools; it exists so the
   domain above it chooses between a handful of coherent specialists rather than dozens of leaves.
 - **Semantic Routing Keywords:** definition, case, workflow
-- **Toolbox (Max 15):** none — routes to 3 leaf agents covering 10 tools
-- **Downstream Dependencies:** `case-workflow-inspector`, `case-workflow-test-bench`, `case-workflow-author`
+- **Toolbox (Max 15):** none — routes to 5 leaf agents covering 36 tools
+- **Downstream Dependencies:** `case-workflow-inspector`, `case-workflow-test-bench`, `case-workflow-author`,
+  `graph-registry-author`, `graph-edge-author`
 
 #### Case Workflow Inspector (`case-workflow-inspector`)
 
@@ -671,6 +948,78 @@ it holds no change at all.
       required** _(permissions from `CaseWorkflowService.RequiredPermissions`)_
     * `CaseWorkflowDelete`: Soft-deletes a Case Workflow; reversible only by direct database action. **Write —
       confirmation required** _(permissions from `CaseWorkflowService.RequiredPermissions`)_
+- **Downstream Dependencies:** none (leaf)
+
+#### Graph Registry Author (`graph-registry-author`)
+
+- **Hierarchy Placement:** Level 4, child of Definition Supervisor
+- **Semantic Persona:** Owns the graph registry slice end to end: the named graph configurations of a tenant, where they
+  are shown and which roles may see them. It holds mutating tools, so a confirmation is required before any of them
+  runs.
+- **Semantic Routing Keywords:** graph, registry, network, directory, role, grant, layout, hops, window, hub
+- **Toolbox (Max 15):**
+    * `GraphRegistryList`: Lists Graph Registries visible to the caller's tenant, keyset-paged and capped. _(permissions
+      from `GraphRegistryService.ListPermissions`)_
+    * `GraphRegistryFilterFields`: Lists the fields a query builder JSON filter over Graph Registries may use. _(
+      permissions from `GraphRegistryService.ListPermissions`)_
+    * `GraphRegistryFilter`: Returns the Graph Registries matching query builder JSON, keyset-paged and capped. _(
+      permissions from `GraphRegistryService.ListPermissions`)_
+    * `GraphRegistryCount`: Counts the Graph Registries matching query builder JSON, optionally grouped by a field. _(
+      permissions from `GraphRegistryService.ListPermissions`)_
+    * `GraphRegistryGet`: Returns a single Graph Registry by Id. _(permissions from
+      `GraphRegistryService.ReadPermissions`)_
+    * `GraphRegistryGetByGuid`: Returns a single Graph Registry by Guid. _(permissions from
+      `GraphRegistryService.ReadPermissions`)_
+    * `GraphRegistryGetByGuidActiveOnly`: Returns a single active Graph Registry by Guid provided the caller holds a
+      role grant on it. _(permissions from `GraphRegistryService.ReadPermissions`)_
+    * `GraphRegistryListByShowInDirectory`: Lists active Graph Registries shown in the Directory that the caller holds a
+      role grant on. _(permissions from `GraphRegistryService.DirectoryPermissions`)_
+    * `GraphRegistryValidate`: Validates a Graph Registry without saving it and returns every failure. _(permissions
+      from `GraphRegistryService.WritePermissions`)_
+    * `GraphRegistryCreate`: Creates a Graph Registry; calling twice creates two. **Write — confirmation required** _(
+      permissions from `GraphRegistryService.WritePermissions`)_
+    * `GraphRegistryUpdate`: Updates a Graph Registry; overwrites, writes a version-audit row. **Write — confirmation
+      required** _(permissions from `GraphRegistryService.WritePermissions`)_
+    * `GraphRegistryDelete`: Soft-deletes a Graph Registry; reversible only by direct database action. **Write —
+      confirmation required** _(permissions from `GraphRegistryService.WritePermissions`)_
+    * `GraphRegistryRoleListByGraphRegistryGuid`: Lists the Role grants for a Graph Registry. _(permissions from
+      `GraphRegistryRoleService.RequiredPermissions`)_
+    * `GraphRegistryRoleCreate`: Grants a Role access to a Graph Registry; calling twice creates two grants. **Write —
+      confirmation required** _(permissions from `GraphRegistryRoleService.RequiredPermissions`)_
+    * `GraphRegistryRoleDelete`: Removes a Role's grant on a Graph Registry; reversible only by direct database action.
+      **Write — confirmation required** _(permissions from `GraphRegistryRoleService.RequiredPermissions`)_
+- **Downstream Dependencies:** none (leaf)
+
+#### Graph Edge Author (`graph-edge-author`)
+
+- **Hierarchy Placement:** Level 4, child of Definition Supervisor
+- **Semantic Persona:** Owns the graph edge slice end to end: the edge definitions of a graph registry, each pairing two
+  report keys that occur on the same archived transaction. It holds mutating tools, so a confirmation is required before
+  any of them runs.
+- **Semantic Routing Keywords:** graph, edge, key, report, device, pays, half-life, prior, hub, threshold, restricted
+- **Toolbox (Max 15):**
+    * `GraphRegistryEdgeList`: Lists Graph Registry Edges visible to the caller's tenant, keyset-paged and capped. _(
+      permissions from `GraphRegistryEdgeService.ListPermissions`)_
+    * `GraphRegistryEdgeFilterFields`: Lists the fields a query builder JSON filter over Graph Registry Edges may use.
+      _(permissions from `GraphRegistryEdgeService.ListPermissions`)_
+    * `GraphRegistryEdgeFilter`: Returns the Graph Registry Edges matching query builder JSON, keyset-paged and capped.
+      _(permissions from `GraphRegistryEdgeService.ListPermissions`)_
+    * `GraphRegistryEdgeCount`: Counts the Graph Registry Edges matching query builder JSON, optionally grouped by a
+      field. _(permissions from `GraphRegistryEdgeService.ListPermissions`)_
+    * `GraphRegistryEdgeListByGraphRegistryId`: Lists the edge definitions of one Graph Registry. _(permissions from
+      `GraphRegistryEdgeService.ListPermissions`)_
+    * `GraphRegistryEdgeGet`: Returns a single Graph Registry Edge by Id. _(permissions from
+      `GraphRegistryEdgeService.ReadPermissions`)_
+    * `GraphRegistryEdgeKeys`: Lists the report keys an edge definition may name, with the models each is flagged
+      Archive Key on. _(permissions from `GraphRegistryEdgeService.WritePermissions`)_
+    * `GraphRegistryEdgeValidate`: Validates a Graph Registry Edge without saving it and returns every failure. _(
+      permissions from `GraphRegistryEdgeService.WritePermissions`)_
+    * `GraphRegistryEdgeCreate`: Creates a Graph Registry Edge; calling twice creates two. **Write — confirmation
+      required** _(permissions from `GraphRegistryEdgeService.WritePermissions`)_
+    * `GraphRegistryEdgeUpdate`: Updates a Graph Registry Edge; overwrites, writes a version-audit row. **Write —
+      confirmation required** _(permissions from `GraphRegistryEdgeService.WritePermissions`)_
+    * `GraphRegistryEdgeDelete`: Soft-deletes a Graph Registry Edge; reversible only by direct database action.
+      **Write — confirmation required** _(permissions from `GraphRegistryEdgeService.WritePermissions`)_
 - **Downstream Dependencies:** none (leaf)
 
 #### Entitlement Supervisor
@@ -932,9 +1281,9 @@ it holds no change at all.
   so the domain above it chooses between a handful of coherent specialists rather than dozens of leaves.
 - **Semantic Routing Keywords:** interaction forms, case, workflow, form, entry, display, execution, by, key, value,
   macro
-- **Toolbox (Max 15):** none — routes to 4 leaf agents covering 18 tools
+- **Toolbox (Max 15):** none — routes to 5 leaf agents covering 30 tools
 - **Downstream Dependencies:** `case-workflow-form-inspector`, `case-workflow-form-test-bench`,
-  `case-workflow-form-author`, `form-entries-and-macro-executions`
+  `case-workflow-form-author`, `case-workflow-form-validator-author`, `form-entries-and-macro-executions`
 
 #### Case Workflow Form Inspector (`case-workflow-form-inspector`)
 
@@ -1005,6 +1354,42 @@ it holds no change at all.
       confirmation required** _(permissions from `CaseWorkflowFormService.RequiredPermissions`)_
 - **Downstream Dependencies:** none (leaf)
 
+#### Case Workflow Form Validator Author (`case-workflow-form-validator-author`)
+
+- **Hierarchy Placement:** Level 4, child of Interaction Forms Supervisor
+- **Semantic Persona:** Owns the case workflow form validator slice, the server-side rules each paired to one template
+  field by name, and is the only agent that mutates this slice; every call needs explicit confirmation and, where the
+  slice is preservation-managed, a pre-change snapshot. A SQL validator must return a boolean and needs its own
+  permission; a rule is tried with the test operation before it is relied on.
+- **Semantic Routing Keywords:** case, workflow, form, validator, author
+- **Toolbox (Max 15):**
+    * `CaseWorkflowFormValidatorList`: Lists every server-side Case Workflow Form validator visible to the caller's
+      tenant. _(permissions from `CaseWorkflowFormValidatorService.RequiredPermissions`)_
+    * `CaseWorkflowFormValidatorListByCaseWorkflowId`: Lists the server-side validators of the Forms of a Case Workflow,
+      each paired to a template field by name. _(permissions from
+      `CaseWorkflowFormValidatorService.RequiredPermissions`)_
+    * `CaseWorkflowFormValidatorGet`: Returns one Case Workflow Form validator by Id. _(permissions from
+      `CaseWorkflowFormValidatorService.RequiredPermissions`)_
+    * `CaseWorkflowFormValidatorValidate`: Runs every check a create or update of a Case Workflow Form validator would
+      run, storing nothing. _(permissions from `CaseWorkflowFormValidatorService.RequiredPermissions`)_
+    * `CaseWorkflowFormValidatorCreate`: Creates a server-side validator for one field of a Case Workflow Form:
+      required, required when, range, length, pattern, compare, in a model list, in a model dictionary or SQL. A SQL
+      validator also needs the SQL authoring permission. **Write — confirmation required** _(permissions from
+      `CaseWorkflowFormValidatorService.RequiredPermissions`)_
+    * `CaseWorkflowFormValidatorUpdate`: Updates a Case Workflow Form validator. Changing a SQL validator also needs the
+      SQL authoring permission. **Write — confirmation required** _(permissions from
+      `CaseWorkflowFormValidatorService.RequiredPermissions`)_
+    * `CaseWorkflowFormValidatorDelete`: Soft-deletes a Case Workflow Form validator; reversible only by direct
+      database action. **Write — confirmation required** _(permissions from
+      `CaseWorkflowFormValidatorService.RequiredPermissions`)_
+    * `CaseWorkflowFormValidatorTest`: Tries a saved Case Workflow Form validator against given values without
+      submitting the form, and reports whether it passed, why not and how long it took. _(permissions from
+      `CaseWorkflowFormValidatorService.RequiredPermissions`)_
+    * `CaseWorkflowDisplayExecutionTestSql`: Tries the SQL of a Form, Display, Macro, Action or Status against a case
+      without saving it, returning the columns and first rows or why it was refused. Needs the case workflow SQL
+      authoring permission. _(permissions from `CaseSqlGuard.RequiredPermissions`)_
+- **Downstream Dependencies:** none (leaf)
+
 #### Form Entries and Macro Executions (`form-entries-and-macro-executions`)
 
 - **Hierarchy Placement:** Level 4, child of Interaction Forms Supervisor
@@ -1020,8 +1405,15 @@ it holds no change at all.
     * `CaseWorkflowFormEntryListByCaseKeyValue`: Lists case workflow form entries for a Case Key/Value pair, newest
       first, scoped to the caller's tenant and role grants. _(permissions from
       `CaseWorkflowFormEntryService.RequiredPermissions`)_
-    * `CaseWorkflowDisplayExecutionExecute`: Renders a case workflow display HTML template with the case's stored
-      payload tokens replaced. _(permissions from `CaseWorkflowDisplayExecutionService.RequiredPermissions`)_
+    * `CaseWorkflowDisplayExecutionExecute`: Renders a case workflow display template as an escaped HTML fragment from
+      the case's stored payload. _(permissions from `CaseWorkflowDisplayExecutionService.RequiredPermissions`)_
+    * `CaseWorkflowDisplayExecutionRenderForm`: Renders a case workflow form template with the values entered so far,
+      naming the fields shown. _(permissions from `CaseWorkflowDisplayExecutionService.RequiredPermissions`)_
+    * `CaseWorkflowDisplayExecutionRenderFormEntries`: Draws the submitted form entries for a case's key read only, with
+      their values filled in. _(permissions from `CaseWorkflowDisplayExecutionService.RequiredPermissions`)_
+    * `CaseWorkflowDisplayExecutionListDispatches`: Lists the audit of the emails, SMS and HTTP calls fired for a case's
+      key: what was rendered, where it went, whether it was sent, failed or refused, and the SQL rows it was drawn
+      from. _(permissions from `CaseWorkflowDisplayExecutionService.RequiredPermissions`)_
     * `CaseWorkflowFormEntryByCaseKeyValueGet`: Lists Case Workflow Form Entries for a Case Key and Case Key Value,
       newest case first, limited to the caller's tenant and to Case Workflows and Statuses the caller's role holds. _(
       permissions from `CaseWorkflowFormEntryByCaseKeyValueService.RequiredPermissions`)_
@@ -1039,9 +1431,9 @@ it holds no change at all.
 - **Semantic Persona:** Routes within the interaction macros slice of case workflow governance. Holds no tools; it
   exists so the domain above it chooses between a handful of coherent specialists rather than dozens of leaves.
 - **Semantic Routing Keywords:** interaction macros, case, workflow, macro
-- **Toolbox (Max 15):** none — routes to 3 leaf agents covering 11 tools
+- **Toolbox (Max 15):** none — routes to 4 leaf agents covering 18 tools
 - **Downstream Dependencies:** `case-workflow-macro-inspector`, `case-workflow-macro-test-bench`,
-  `case-workflow-macro-author`
+  `case-workflow-macro-author`, `case-workflow-release-hook-author`
 
 #### Case Workflow Macro Inspector (`case-workflow-macro-inspector`)
 
@@ -1110,6 +1502,36 @@ it holds no change at all.
       confirmation required** _(permissions from `CaseWorkflowMacroService.RequiredPermissions`)_
     * `CaseWorkflowMacroDelete`: Soft-deletes a Case Workflow Macro; reversible only by direct database action.
       **Write — confirmation required** _(permissions from `CaseWorkflowMacroService.RequiredPermissions`)_
+- **Downstream Dependencies:** none (leaf)
+
+#### Case Workflow Release Hook Author (`case-workflow-release-hook-author`)
+
+- **Hierarchy Placement:** Level 4, child of Interaction Macros Supervisor
+- **Semantic Persona:** Owns the case workflow release hook slice, the web hooks called to release, or refuse, a payment
+  held on a case, each chosen by a field of the held transaction's payload, and is the only agent that mutates this
+  slice; every call needs explicit confirmation and, where the slice is preservation-managed, a pre-change snapshot. The
+  scheme, host and port of a hook are written out literally and the credential is never stored, only the name of an
+  environment variable that starts with JUBE_HOOK_.
+- **Semantic Routing Keywords:** case, workflow, release, hook, payment, hold, author
+- **Toolbox (Max 15):**
+    * `CaseWorkflowReleaseHookList`: Lists every Case Workflow release hook visible to the caller's tenant. _(
+      permissions
+      from `CaseWorkflowReleaseHookService.RequiredPermissions`)_
+    * `CaseWorkflowReleaseHookListByCaseWorkflowId`: Lists the release hooks of a Case Workflow, each chosen by a field
+      of
+      the payload of a held transaction. _(permissions from `CaseWorkflowReleaseHookService.RequiredPermissions`)_
+    * `CaseWorkflowReleaseHookGet`: Returns one Case Workflow release hook by Id. _(permissions from
+      `CaseWorkflowReleaseHookService.RequiredPermissions`)_
+    * `CaseWorkflowReleaseHookValidate`: Runs every check a create or update of a Case Workflow release hook would run,
+      storing nothing. _(permissions from `CaseWorkflowReleaseHookService.RequiredPermissions`)_
+    * `CaseWorkflowReleaseHookCreate`: Creates the web hook called to release or refuse a payment held on a case, with
+      literal host and tokens only in the path and query; the credential is the name of an environment variable.
+      **Write — confirmation required** _(permissions from `CaseWorkflowReleaseHookService.RequiredPermissions`)_
+    * `CaseWorkflowReleaseHookUpdate`: Updates an unlocked Case Workflow release hook. **Write — confirmation required**
+      _(permissions from `CaseWorkflowReleaseHookService.RequiredPermissions`)_
+    * `CaseWorkflowReleaseHookDelete`: Soft-deletes an unlocked Case Workflow release hook; reversible only by direct
+      database action. **Write — confirmation required** _(permissions from
+      `CaseWorkflowReleaseHookService.RequiredPermissions`)_
 - **Downstream Dependencies:** none (leaf)
 
 #### Routing Extraction Supervisor
@@ -1225,6 +1647,8 @@ it holds no change at all.
     * `CaseWorkflowXPathListByWorkflowGuidActiveDrillOnly`: Lists active, Drill-enabled Case Workflow XPath extractions
       for a parent Case Workflow (by Guid) that the caller holds a role grant on. _(permissions from
       `CaseWorkflowXPathService.ActiveOnlyPermissions`)_
+    * `CaseWorkflowXPathFields`: Lists the fields of the workflow's model a Case Workflow XPath extraction may read,
+      with whether each is flagged Archive Key. _(permissions from `CaseWorkflowXPathService.RequiredPermissions`)_
     * `CaseWorkflowXPathGet`: Returns a single Case Workflow XPath extraction by Id. _(permissions from
       `CaseWorkflowXPathService.RequiredPermissions`)_
     * `CaseWorkflowXPathGetByGuid`: Returns a single Case Workflow XPath extraction by Id. _(permissions from
@@ -1283,9 +1707,10 @@ it holds no change at all.
 - **Semantic Persona:** Routes within the routing status slice of case workflow governance. Holds no tools; it exists so
   the domain above it chooses between a handful of coherent specialists rather than dozens of leaves.
 - **Semantic Routing Keywords:** routing status, case, workflow, status, priority
-- **Toolbox (Max 15):** none — routes to 5 leaf agents covering 13 tools
+- **Toolbox (Max 15):** none — routes to 7 leaf agents covering 29 tools
 - **Downstream Dependencies:** `case-workflow-status-inspector-1`, `case-workflow-status-inspector-2`,
-  `case-workflow-status-test-bench`, `case-workflow-status-author`, `case-workflow-priority`
+  `case-workflow-status-test-bench`, `case-workflow-status-author`, `case-workflow-priority`,
+  `case-workflow-checklist-author`, `case-workflow-checklist-item-author`
 
 #### Case Workflow Status Inspector 1 (`case-workflow-status-inspector-1`)
 
@@ -1371,6 +1796,66 @@ it holds no change at all.
       **Write — confirmation required** _(permissions from `CaseWorkflowStatusService.RequiredPermissions`)_
 - **Downstream Dependencies:** none (leaf)
 
+#### Case Workflow Checklist Author (`case-workflow-checklist-author`)
+
+- **Hierarchy Placement:** Level 4, child of Routing Status Supervisor
+- **Semantic Persona:** Owns the case workflow checklist slice, the named checklists a case workflow status carries,
+  ordered by priority, and is the only agent that mutates this slice; every call needs explicit confirmation and, where
+  the slice is preservation-managed, a pre-change snapshot. Every item shown on a case in the status must be ticked
+  before the case can leave the status or be closed.
+- **Semantic Routing Keywords:** case, workflow, checklist, author
+- **Toolbox (Max 15):**
+    * `CaseWorkflowChecklistList`: Lists every Case Workflow checklist visible to the caller's tenant, ordered by
+      Priority ascending then name. _(permissions from `CaseWorkflowChecklistService.RequiredPermissions`)_
+    * `CaseWorkflowChecklistListByCaseWorkflowStatusId`: Lists the checklists carried by a Case Workflow Status, ordered
+      by Priority ascending then name. _(permissions from `CaseWorkflowChecklistService.RequiredPermissions`)_
+    * `CaseWorkflowChecklistGet`: Returns one Case Workflow checklist by Id. _(permissions from
+      `CaseWorkflowChecklistService.RequiredPermissions`)_
+    * `CaseWorkflowChecklistValidate`: Runs every check a create or update of a Case Workflow checklist would run,
+      storing nothing. _(permissions from `CaseWorkflowChecklistService.RequiredPermissions`)_
+    * `CaseWorkflowChecklistCreate`: Creates a Case Workflow checklist carried by one Case Workflow Status. Every item
+      shown on a case in the status must be ticked before the case can leave the status or be closed. **Write —
+      confirmation required** _(permissions from `CaseWorkflowChecklistService.RequiredPermissions`)_
+    * `CaseWorkflowChecklistUpdate`: Updates a Case Workflow checklist; the status that carries it cannot be changed.
+      **Write — confirmation required** _(permissions from `CaseWorkflowChecklistService.RequiredPermissions`)_
+    * `CaseWorkflowChecklistDelete`: Soft-deletes a Case Workflow checklist; reversible only by direct database action.
+      **Write — confirmation required** _(permissions from `CaseWorkflowChecklistService.RequiredPermissions`)_
+- **Downstream Dependencies:** none (leaf)
+
+#### Case Workflow Checklist Item Author (`case-workflow-checklist-item-author`)
+
+- **Hierarchy Placement:** Level 4, child of Routing Status Supervisor
+- **Semantic Persona:** Owns the case workflow checklist item slice, the items of a checklist, each with a priority and
+  an optional show condition, validate condition and SLA in minutes, and is the only agent that mutates this slice;
+  every call needs explicit confirmation and, where the slice is preservation-managed, a pre-change snapshot. Show and
+  validate SQL must each return one boolean, may use only the case id and case key value, and need their own permission
+  to write; a condition is tried with the test operation before it is relied on.
+- **Semantic Routing Keywords:** case, workflow, checklist, item, author
+- **Toolbox (Max 15):**
+    * `CaseWorkflowChecklistItemList`: Lists every Case Workflow checklist item visible to the caller's tenant, ordered
+      by priority. _(permissions from `CaseWorkflowChecklistItemService.RequiredPermissions`)_
+    * `CaseWorkflowChecklistItemListByCaseWorkflowId`: Lists the checklist items of the statuses of a Case Workflow,
+      ordered by priority. _(permissions from `CaseWorkflowChecklistItemService.RequiredPermissions`)_
+    * `CaseWorkflowChecklistItemListByCaseWorkflowChecklistGuid`: Lists the items of one Case Workflow checklist,
+      ordered by priority. _(permissions from `CaseWorkflowChecklistItemService.RequiredPermissions`)_
+    * `CaseWorkflowChecklistItemGet`: Returns one Case Workflow checklist item by Id. _(permissions from
+      `CaseWorkflowChecklistItemService.RequiredPermissions`)_
+    * `CaseWorkflowChecklistItemValidate`: Runs every check a create or update of a Case Workflow checklist item would
+      run, storing nothing. _(permissions from `CaseWorkflowChecklistItemService.RequiredPermissions`)_
+    * `CaseWorkflowChecklistItemCreate`: Creates a Case Workflow checklist item: a name and priority with an optional
+      show SQL, validate SQL and SLA in minutes. Any SQL also needs the SQL authoring permission. **Write — confirmation
+      required** _(permissions from `CaseWorkflowChecklistItemService.RequiredPermissions`)_
+    * `CaseWorkflowChecklistItemUpdate`: Updates a Case Workflow checklist item. Changing its show or validate SQL also
+      needs the SQL authoring permission. **Write — confirmation required** _(permissions from
+      `CaseWorkflowChecklistItemService.RequiredPermissions`)_
+    * `CaseWorkflowChecklistItemDelete`: Soft-deletes a Case Workflow checklist item; reversible only by direct database
+      action. **Write — confirmation required** _(permissions from
+      `CaseWorkflowChecklistItemService.RequiredPermissions`)_
+    * `CaseWorkflowChecklistItemTest`: Tries the show or validate SQL of a saved Case Workflow checklist item against a
+      case without ticking anything, and reports whether it passed, why not and how long it took. _(permissions from
+      `CaseWorkflowChecklistItemService.RequiredPermissions`)_
+- **Downstream Dependencies:** none (leaf)
+
 #### Case Workflow Priority (`case-workflow-priority`)
 
 - **Hierarchy Placement:** Level 4, child of Routing Status Supervisor
@@ -1429,8 +1914,9 @@ it holds no change at all.
     * `VisualisationRegistryGetByGuidActiveOnly`: Returns a single active Visualisation Registry by Guid, for embedded
       recall, provided the caller holds a role grant on it. _(permissions from
       `VisualisationRegistryService.ReadPermissions`)_
-    * `VisualisationRegistryListByShowInDirectory`: Lists active, Show In Directory Visualisation Registries that the
-      caller holds a role grant on. _(permissions from `VisualisationRegistryService.ShowInDirectoryPermissions`)_
+    * `VisualisationRegistryListByShowInDirectory`: Lists active Visualisation Registries shown in the Directory that
+      the
+      caller holds a role grant on. _(permissions from `VisualisationRegistryService.DirectoryPermissions`)_
 - **Downstream Dependencies:** none (leaf)
 
 #### Visualisation Registry Test Bench (`visualisation-registry-test-bench`)
@@ -1466,8 +1952,9 @@ it holds no change at all.
     * `VisualisationRegistryGetByGuidActiveOnly`: Returns a single active Visualisation Registry by Guid, for embedded
       recall, provided the caller holds a role grant on it. _(permissions from
       `VisualisationRegistryService.ReadPermissions`)_
-    * `VisualisationRegistryListByShowInDirectory`: Lists active, Show In Directory Visualisation Registries that the
-      caller holds a role grant on. _(permissions from `VisualisationRegistryService.ShowInDirectoryPermissions`)_
+    * `VisualisationRegistryListByShowInDirectory`: Lists active Visualisation Registries shown in the Directory that
+      the
+      caller holds a role grant on. _(permissions from `VisualisationRegistryService.DirectoryPermissions`)_
     * `VisualisationRegistryValidate`: Validates a Visualisation Registry without saving it and returns every failure.
       _(permissions from `VisualisationRegistryService.WritePermissions`)_
     * `VisualisationRegistryCreate`: Creates a Visualisation Registry; calling twice creates two. **Write — confirmation
@@ -1496,6 +1983,10 @@ it holds no change at all.
       `VisualisationRegistryRoleService.RequiredPermissions`)_
     * `VisualisationRegistryDatasourceCommandExecutionExecute`: Executes a Visualisation Registry Datasource command
       with caller-supplied parameter values and returns its rows. _(permissions from
+      `VisualisationRegistryDatasourceCommandExecutionService.RequiredPermissions`)_
+    * `VisualisationRegistryDatasourceCommandExecutionCard`: Returns the card for a Visualisation Registry Datasource
+      the
+      caller may see: its chart drawn as an SVG, the rows only when its grid is on, and its state. _(permissions from
       `VisualisationRegistryDatasourceCommandExecutionService.RequiredPermissions`)_
     * `VisualisationRegistryDatasourceSeriesListByVisualisationRegistryDatasourceId`: Lists the series definitions (name
       and inferred data type of each SQL result column) of a Visualisation Registry Datasource; server-derived, never
@@ -1635,6 +2126,14 @@ it holds no change at all.
 - **Toolbox (Max 15):**
     * `VisualisationRegistryDatasourceValidate`: Validates a Visualisation Registry Datasource without saving it and
       returns every failure. _(permissions from `VisualisationRegistryDatasourceService.WritePermissions`)_
+    * `VisualisationRegistryDatasourceIntrospect`: Reads the columns a Datasource's SQL Command would return, in order
+      and with their types, without saving; a rejected command is reported with its reason. _(permissions from
+      `VisualisationRegistryDatasourceService.WritePermissions`)_
+    * `VisualisationRegistryDatasourcePreview`: Runs a Datasource's SQL Command without saving and returns the card as
+      the Visualisation page receives it: the drawn SVG chart, the rows only when the grid is on, and its state. _(
+      permissions from `VisualisationRegistryDatasourceService.WritePermissions`)_
+    * `VisualisationRegistryDatasourceChartKinds`: Lists the chart kinds a Datasource can be drawn as and the column
+      roles each one reads. _(permissions from `VisualisationRegistryDatasourceService.ListPermissions`)_
 - **Downstream Dependencies:** none (leaf)
 
 #### Visualisation Registry Datasource Author (`visualisation-registry-datasource-author`)
@@ -1664,6 +2163,14 @@ it holds no change at all.
       `VisualisationRegistryDatasourceService.ReadByParentPermissions`)_
     * `VisualisationRegistryDatasourceValidate`: Validates a Visualisation Registry Datasource without saving it and
       returns every failure. _(permissions from `VisualisationRegistryDatasourceService.WritePermissions`)_
+    * `VisualisationRegistryDatasourceIntrospect`: Reads the columns a Datasource's SQL Command would return, in order
+      and with their types, without saving; a rejected command is reported with its reason. _(permissions from
+      `VisualisationRegistryDatasourceService.WritePermissions`)_
+    * `VisualisationRegistryDatasourcePreview`: Runs a Datasource's SQL Command without saving and returns the card as
+      the Visualisation page receives it: the drawn SVG chart, the rows only when the grid is on, and its state. _(
+      permissions from `VisualisationRegistryDatasourceService.WritePermissions`)_
+    * `VisualisationRegistryDatasourceChartKinds`: Lists the chart kinds a Datasource can be drawn as and the column
+      roles each one reads. _(permissions from `VisualisationRegistryDatasourceService.ListPermissions`)_
     * `VisualisationRegistryDatasourceCreate`: Registers a Datasource under a Visualisation Registry in the caller's
       tenant, validating its SQL Command; calling twice creates two. **Write — confirmation required** _(permissions
       from `VisualisationRegistryDatasourceService.WritePermissions`)_
@@ -2041,7 +2548,7 @@ it holds no change at all.
 - **Semantic Persona:** Routes within the activation slice of detection model authoring. Holds no tools; it exists so
   the domain above it chooses between a handful of coherent specialists rather than dozens of leaves.
 - **Semantic Routing Keywords:** activation, entity, analysis, model, rule, override, query
-- **Toolbox (Max 15):** none — routes to 7 leaf agents covering 27 tools
+- **Toolbox (Max 15):** none — routes to 8 leaf agents covering 38 tools
 - **Downstream Dependencies:** `entity-analysis-model-activation-rule-inspector`,
   `entity-analysis-model-activation-rule-test-bench`, `entity-analysis-model-activation-rule-author`,
   `entity-analysis-model-activation-rule-override-inspector`,
@@ -2495,10 +3002,13 @@ it holds no change at all.
 - **Hierarchy Placement:** Level 3, child of Detection Model Authoring
 - **Semantic Persona:** Routes within the references gateway slice of detection model authoring. Holds no tools; it
   exists so the domain above it chooses between a handful of coherent specialists rather than dozens of leaves.
-- **Semantic Routing Keywords:** references gateway, entity, analysis, model, gateway, rule
-- **Toolbox (Max 15):** none — routes to 3 leaf agents covering 14 tools
+- **Semantic Routing Keywords:** references gateway, entity, analysis, model, gateway, rule, response, elevation, range
+- **Toolbox (Max 15):** none — routes to 6 leaf agents covering 27 tools
 - **Downstream Dependencies:** `entity-analysis-model-gateway-rule-inspector`,
-  `entity-analysis-model-gateway-rule-test-bench`, `entity-analysis-model-gateway-rule-author`
+  `entity-analysis-model-gateway-rule-test-bench`, `entity-analysis-model-gateway-rule-author`,
+  `entity-analysis-model-response-elevation-range-inspector`,
+  `entity-analysis-model-response-elevation-range-test-bench`,
+  `entity-analysis-model-response-elevation-range-author`
 - **Cross-Domain Reach:** `completions`, `model-invocation-context-and-dependencies`
 
 #### Entity Analysis Model Gateway Rule Inspector (`entity-analysis-model-gateway-rule-inspector`)
@@ -2890,6 +3400,103 @@ it holds no change at all.
       `EntityAnalysisModelTagService.RequiredPermissions`)_
 - **Downstream Dependencies:** none (leaf)
 
+#### Entity Analysis Model Response Elevation Range Inspector (`entity-analysis-model-response-elevation-range-inspector`)
+
+- **Hierarchy Placement:** Level 4, child of References Gateway Supervisor
+- **Semantic Persona:** Owns the entity analysis model response elevation range slice and reads only; it never changes
+  anything and is the
+  safe default for any question about current state.
+- **Semantic Routing Keywords:** entity, analysis, model, response, elevation, range, inspector
+- **Toolbox (Max 15):**
+    * `EntityAnalysisModelResponseElevationRangeList`: Lists Response Elevation Ranges for the caller's tenant,
+      keyset-paged and capped. _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+    * `EntityAnalysisModelResponseElevationRangeFilterFields`: Lists the fields a query builder JSON filter over
+      Response Elevation Ranges may use. _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+    * `EntityAnalysisModelResponseElevationRangeFilter`: Returns the Response Elevation Ranges matching query builder
+      JSON, keyset-paged and capped. _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+    * `EntityAnalysisModelResponseElevationRangeCount`: Counts the Response Elevation Ranges matching query builder
+      JSON, optionally grouped by a field. _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+    * `EntityAnalysisModelResponseElevationRangeGet`: Returns one Response Elevation Range by id, scoped to the caller's
+      tenant. _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+    * `EntityAnalysisModelResponseElevationRangeGetByGuid`: Returns one Response Elevation Range by Guid, scoped to the
+      caller's tenant. _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+    * `EntityAnalysisModelResponseElevationRangeGetByEntityAnalysisModelId`: Lists the Active Response Elevation Ranges
+      belonging to a given Model, ordered by
+      Name, scoped to the caller's tenant. _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+- **Downstream Dependencies:** none (leaf)
+
+#### Entity Analysis Model Response Elevation Range Test Bench (`entity-analysis-model-response-elevation-range-test-bench`)
+
+- **Hierarchy Placement:** Level 4, child of References Gateway Supervisor
+- **Semantic Persona:** Owns the entity analysis model response elevation range slice and runs the side-effect-free
+  rehearsals: validation,
+  rule parsing and trial execution, so a change can be proven before it is made.
+- **Semantic Routing Keywords:** entity, analysis, model, response, elevation, range, test, bench
+- **Toolbox (Max 15):**
+    * `EntityAnalysisModelResponseElevationRangeValidate`: Validates a Response Elevation Range without saving it and
+      returns every failure. _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+- **Downstream Dependencies:** none (leaf)
+
+#### Entity Analysis Model Response Elevation Range Author (`entity-analysis-model-response-elevation-range-author`)
+
+- **Hierarchy Placement:** Level 4, child of References Gateway Supervisor
+- **Semantic Persona:** Owns the entity analysis model response elevation range slice and is the only agent that mutates
+  this slice; every
+  call needs explicit confirmation and, where the slice is preservation-managed, a pre-change snapshot.
+- **Semantic Routing Keywords:** entity, analysis, model, response, elevation, range, author
+- **Toolbox (Max 15):**
+    * `EntityAnalysisModelResponseElevationRangeList`: Lists Response Elevation Ranges for the caller's tenant,
+      keyset-paged and capped. _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+    * `EntityAnalysisModelResponseElevationRangeFilterFields`: Lists the fields a query builder JSON filter over
+      Response Elevation Ranges may use. _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+    * `EntityAnalysisModelResponseElevationRangeFilter`: Returns the Response Elevation Ranges matching query builder
+      JSON, keyset-paged and capped. _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+    * `EntityAnalysisModelResponseElevationRangeCount`: Counts the Response Elevation Ranges matching query builder
+      JSON, optionally grouped by a field. _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+    * `EntityAnalysisModelResponseElevationRangeGet`: Returns one Response Elevation Range by id, scoped to the caller's
+      tenant. _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+    * `EntityAnalysisModelResponseElevationRangeGetByGuid`: Returns one Response Elevation Range by Guid, scoped to the
+      caller's tenant. _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+    * `EntityAnalysisModelResponseElevationRangeGetByEntityAnalysisModelId`: Lists the Active Response Elevation Ranges
+      belonging to a given Model, ordered by
+      Name, scoped to the caller's tenant. _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+    * `EntityAnalysisModelResponseElevationRangeValidate`: Validates a Response Elevation Range without saving it and
+      returns every failure. _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+    * `EntityAnalysisModelResponseElevationRangeCreate`: Registers a Response Elevation Range under a Model in the
+      caller's tenant; calling twice creates two. **Write — confirmation required** _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+    * `EntityAnalysisModelResponseElevationRangeUpdate`: Updates a Response Elevation Range in the caller's tenant by
+      id. **Write — confirmation required** _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+    * `EntityAnalysisModelResponseElevationRangeDelete`: Soft-deletes a Response Elevation Range in the caller's tenant
+      by id. **Write — confirmation required**
+      _(permissions from `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+    * `EntityAnalysisModelResponseElevationRangeResubmit`: Resubmits a rejected Response Elevation Range for approval
+      again, unchanged, opening a fresh approval
+      cycle. **Write — confirmation required** _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+    * `EntityAnalysisModelResponseElevationRangeRetract`: Retracts a rejected Response Elevation Range, restoring it to
+      its last approved version without a new
+      approval cycle. **Write — confirmation required** _(permissions from
+      `EntityAnalysisModelResponseElevationRangeService.RequiredPermissions`)_
+- **Downstream Dependencies:** none (leaf)
+
 ---
 
 ## Model Risk and Analytics (`model-risk`)
@@ -2902,9 +3509,9 @@ it holds no change at all.
   only place a model's predictive behaviour changes.
 - **Semantic Routing Keywords:** train, training run, promote, rollback, backtest, calibration, anomaly, classifier,
   regressor, clusterer, model integrity, drift, explainability
-- **Toolbox (Max 15):** none — routes to 4 supervisors and 1 leaf agent covering 133 tools
+- **Toolbox (Max 15):** none — routes to 4 supervisors and 2 leaf agents covering 150 tools
 - **Downstream Dependencies:** `model-risk.advanced-analytics`, `model-risk.advanced-analytics-training`,
-  `model-risk.exhaustive`, `model-risk.validation`, `advanced-analytics-training-data`
+  `model-risk.exhaustive`, `model-risk.validation`, `advanced-analytics-training-data`, `svirfd-author`
 - **Cross-Domain Reach:** `completions`
 
 #### Advanced Analytics Training Data (`advanced-analytics-training-data`)
@@ -2933,76 +3540,76 @@ it holds no change at all.
 - **Downstream Dependencies:** `advanced-analytics-instance-inspector`, `advanced-analytics-instance-test-bench`,
   `advanced-analytics-instance-author`, `advanced-analytics-model-inspector`, `advanced-analytics-model-author`
 
-#### Advanced Analytics Instance Inspector (`advanced-analytics-instance-inspector`)
+#### AskJooby Analytics Instance Inspector (`advanced-analytics-instance-inspector`)
 
 - **Hierarchy Placement:** Level 4, child of Advanced Analytics Supervisor
-- **Semantic Persona:** Owns the advanced analytics instance slice and reads only; it never changes anything and is the
+- **Semantic Persona:** Owns the AskJooby analytics instance slice and reads only; it never changes anything and is the
   safe default for any question about current state.
 - **Semantic Routing Keywords:** advanced, analytics, instance, inspector
 - **Toolbox (Max 15):**
-    * `AdvancedAnalyticsInstanceGet`: Returns one Advanced Analytics instance by id, scoped to the caller's tenant. _(
+    * `AskJoobyAnalyticsInstanceGet`: Returns one AskJooby Analytics instance by id, scoped to the caller's tenant. _(
       permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsInstanceGetByGuid`: Returns one Advanced Analytics instance by Guid, scoped to the caller's
+    * `AskJoobyAnalyticsInstanceGetByGuid`: Returns one AskJooby Analytics instance by Guid, scoped to the caller's
       tenant. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsInstanceList`: Lists Advanced Analytics instances for the caller's tenant, keyset-paged and
+    * `AskJoobyAnalyticsInstanceList`: Lists AskJooby Analytics instances for the caller's tenant, keyset-paged and
       capped. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsInstanceFilterFields`: Lists the fields a query builder JSON filter over Advanced Analytics
+    * `AskJoobyAnalyticsInstanceFilterFields`: Lists the fields a query builder JSON filter over Advanced Analytics
       instances may use. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsInstanceFilter`: Returns the Advanced Analytics instances matching query builder JSON,
+    * `AskJoobyAnalyticsInstanceFilter`: Returns the AskJooby Analytics instances matching query builder JSON,
       keyset-paged and capped. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsInstanceCount`: Counts the Advanced Analytics instances matching query builder JSON, optionally
+    * `AskJoobyAnalyticsInstanceCount`: Counts the AskJooby Analytics instances matching query builder JSON, optionally
       grouped by a field. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
 - **Downstream Dependencies:** none (leaf)
 
-#### Advanced Analytics Instance Test Bench (`advanced-analytics-instance-test-bench`)
+#### AskJooby Analytics Instance Test Bench (`advanced-analytics-instance-test-bench`)
 
 - **Hierarchy Placement:** Level 4, child of Advanced Analytics Supervisor
-- **Semantic Persona:** Owns the advanced analytics instance slice and runs the side-effect-free rehearsals: validation,
+- **Semantic Persona:** Owns the AskJooby analytics instance slice and runs the side-effect-free rehearsals: validation,
   rule parsing and trial execution, so a change can be proven before it is made.
 - **Semantic Routing Keywords:** advanced, analytics, instance, test, bench
 - **Toolbox (Max 15):**
-    * `AdvancedAnalyticsInstanceValidate`: Validates an Advanced Analytics instance without saving it and returns every
+    * `AskJoobyAnalyticsInstanceValidate`: Validates an AskJooby Analytics instance without saving it and returns every
       failure. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
 - **Downstream Dependencies:** none (leaf)
 
-#### Advanced Analytics Instance Author (`advanced-analytics-instance-author`)
+#### AskJooby Analytics Instance Author (`advanced-analytics-instance-author`)
 
 - **Hierarchy Placement:** Level 4, child of Advanced Analytics Supervisor
-- **Semantic Persona:** Owns the advanced analytics instance slice and is the only agent that mutates this slice; every
+- **Semantic Persona:** Owns the AskJooby analytics instance slice and is the only agent that mutates this slice; every
   call needs explicit confirmation and, where the slice is preservation-managed, a pre-change snapshot.
 - **Semantic Routing Keywords:** advanced, analytics, instance, author
 - **Toolbox (Max 15):**
-    * `AdvancedAnalyticsInstanceGet`: Returns one Advanced Analytics instance by id, scoped to the caller's tenant. _(
+    * `AskJoobyAnalyticsInstanceGet`: Returns one AskJooby Analytics instance by id, scoped to the caller's tenant. _(
       permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsInstanceGetByGuid`: Returns one Advanced Analytics instance by Guid, scoped to the caller's
+    * `AskJoobyAnalyticsInstanceGetByGuid`: Returns one AskJooby Analytics instance by Guid, scoped to the caller's
       tenant. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsInstanceList`: Lists Advanced Analytics instances for the caller's tenant, keyset-paged and
+    * `AskJoobyAnalyticsInstanceList`: Lists AskJooby Analytics instances for the caller's tenant, keyset-paged and
       capped. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsInstanceFilterFields`: Lists the fields a query builder JSON filter over Advanced Analytics
+    * `AskJoobyAnalyticsInstanceFilterFields`: Lists the fields a query builder JSON filter over Advanced Analytics
       instances may use. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsInstanceFilter`: Returns the Advanced Analytics instances matching query builder JSON,
+    * `AskJoobyAnalyticsInstanceFilter`: Returns the AskJooby Analytics instances matching query builder JSON,
       keyset-paged and capped. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsInstanceCount`: Counts the Advanced Analytics instances matching query builder JSON, optionally
+    * `AskJoobyAnalyticsInstanceCount`: Counts the AskJooby Analytics instances matching query builder JSON, optionally
       grouped by a field. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsInstanceValidate`: Validates an Advanced Analytics instance without saving it and returns every
+    * `AskJoobyAnalyticsInstanceValidate`: Validates an AskJooby Analytics instance without saving it and returns every
       failure. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsInstanceCreate`: Creates an unallocated Advanced Analytics instance in the caller's tenant.
+    * `AskJoobyAnalyticsInstanceCreate`: Creates an unallocated AskJooby Analytics instance in the caller's tenant.
       **Write — confirmation required** _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsInstanceUpdate`: Renames an instance or changes its output flags; never changes its allocation.
+    * `AskJoobyAnalyticsInstanceUpdate`: Renames an instance or changes its output flags; never changes its allocation.
       **Write — confirmation required** _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsInstanceDelete`: Soft-deletes an Advanced Analytics instance, taking it out of the live
+    * `AskJoobyAnalyticsInstanceDelete`: Soft-deletes an AskJooby Analytics instance, taking it out of the live
       pipeline. **Write — confirmation required** _(permissions from
       `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsInstanceAllocateToModel`: Allocates an instance to a Jube Model of the caller's tenant; needs
+    * `AskJoobyAnalyticsInstanceAllocateToModel`: Allocates an instance to a Jube Model of the caller's tenant; needs
       the Promote Model permission. **Write — confirmation required** _(permissions from
       `AdvancedAnalyticsPermissionSpecifications.PromoteModelOnly`)_
-    * `AdvancedAnalyticsInstanceDeallocate`: Removes an instance's allocation to a Jube Model; needs the Promote Model
+    * `AskJoobyAnalyticsInstanceDeallocate`: Removes an instance's allocation to a Jube Model; needs the Promote Model
       permission. **Write — confirmation required** _(permissions from
       `AdvancedAnalyticsPermissionSpecifications.PromoteModelOnly`)_
-    * `AdvancedAnalyticsInstanceResubmit`: Resubmits a rejected change to an instance for approval again; needs the
+    * `AskJoobyAnalyticsInstanceResubmit`: Resubmits a rejected change to an instance for approval again; needs the
       Promote Model permission. **Write — confirmation required** _(permissions from
       `AdvancedAnalyticsPermissionSpecifications.PromoteModelOnly`)_
-    * `AdvancedAnalyticsInstanceRetract`: Retracts a rejected change to an instance, restoring its last approved state;
+    * `AskJoobyAnalyticsInstanceRetract`: Retracts a rejected change to an instance, restoring its last approved state;
       needs the Promote Model permission. **Write — confirmation required** _(permissions from
       `AdvancedAnalyticsPermissionSpecifications.PromoteModelOnly`)_
 - **Downstream Dependencies:** none (leaf)
@@ -3014,17 +3621,17 @@ it holds no change at all.
   safe default for any question about current state.
 - **Semantic Routing Keywords:** advanced, analytics, model, inspector
 - **Toolbox (Max 15):**
-    * `AdvancedAnalyticsModelList`: Lists trained models for the caller's tenant with their live version, keyset-paged
+    * `AskJoobyAnalyticsModelList`: Lists trained models for the caller's tenant with their live version, keyset-paged
       and capped. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsModelGet`: Returns one trained model with all its versions and their headline metrics. _(
+    * `AskJoobyAnalyticsModelGet`: Returns one trained model with all its versions and their headline metrics. _(
       permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsModelListVersions`: Lists the versions of a trained model with headline metrics and warning
+    * `AskJoobyAnalyticsModelListVersions`: Lists the versions of a trained model with headline metrics and warning
       codes. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsModelGetVersion`: Returns one model version with its complete stored evidence. _(permissions
+    * `AskJoobyAnalyticsModelGetVersion`: Returns one model version with its complete stored evidence. _(permissions
       from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsModelCompareVersions`: Compares two model versions on held-out metrics and says whether the
+    * `AskJoobyAnalyticsModelCompareVersions`: Compares two model versions on held-out metrics and says whether the
       comparison is fair. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsModelGetPromotionEvidence`: Returns the evidence needed to decide whether a model version
+    * `AskJoobyAnalyticsModelGetPromotionEvidence`: Returns the evidence needed to decide whether a model version
       deserves promotion. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
 - **Downstream Dependencies:** none (leaf)
 
@@ -3035,22 +3642,22 @@ it holds no change at all.
   call needs explicit confirmation and, where the slice is preservation-managed, a pre-change snapshot.
 - **Semantic Routing Keywords:** advanced, analytics, model, author
 - **Toolbox (Max 15):**
-    * `AdvancedAnalyticsModelList`: Lists trained models for the caller's tenant with their live version, keyset-paged
+    * `AskJoobyAnalyticsModelList`: Lists trained models for the caller's tenant with their live version, keyset-paged
       and capped. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsModelGet`: Returns one trained model with all its versions and their headline metrics. _(
+    * `AskJoobyAnalyticsModelGet`: Returns one trained model with all its versions and their headline metrics. _(
       permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsModelListVersions`: Lists the versions of a trained model with headline metrics and warning
+    * `AskJoobyAnalyticsModelListVersions`: Lists the versions of a trained model with headline metrics and warning
       codes. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsModelGetVersion`: Returns one model version with its complete stored evidence. _(permissions
+    * `AskJoobyAnalyticsModelGetVersion`: Returns one model version with its complete stored evidence. _(permissions
       from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsModelCompareVersions`: Compares two model versions on held-out metrics and says whether the
+    * `AskJoobyAnalyticsModelCompareVersions`: Compares two model versions on held-out metrics and says whether the
       comparison is fair. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsModelGetPromotionEvidence`: Returns the evidence needed to decide whether a model version
+    * `AskJoobyAnalyticsModelGetPromotionEvidence`: Returns the evidence needed to decide whether a model version
       deserves promotion. _(permissions from `AdvancedAnalyticsPermissionSpecifications.AnalyticsOnly`)_
-    * `AdvancedAnalyticsModelPromoteVersion`: Makes a model version live, recording its evidence; needs the Promote
+    * `AskJoobyAnalyticsModelPromoteVersion`: Makes a model version live, recording its evidence; needs the Promote
       Model permission. **Write — confirmation required** _(permissions from
       `AdvancedAnalyticsPermissionSpecifications.PromoteModelOnly`)_
-    * `AdvancedAnalyticsModelRollback`: Puts a model back on an earlier version; needs the Promote Model permission.
+    * `AskJoobyAnalyticsModelRollback`: Puts a model back on an earlier version; needs the Promote Model permission.
       **Write — confirmation required** _(permissions from
       `AdvancedAnalyticsPermissionSpecifications.PromoteModelOnly`)_
 - **Downstream Dependencies:** none (leaf)
@@ -3485,11 +4092,11 @@ it holds no change at all.
   domain above it chooses between a handful of coherent specialists rather than dozens of leaves.
 - **Semantic Routing Keywords:** validation, entity, analysis, model, backtest, http, adaptation, integrity, history,
   simulation, sample
-- **Toolbox (Max 15):** none — routes to 7 leaf agents covering 25 tools
+- **Toolbox (Max 15):** none — routes to 8 leaf agents covering 40 tools
 - **Downstream Dependencies:** `entity-analysis-model-backtest-inspector`, `entity-analysis-model-backtest-test-bench`,
   `entity-analysis-model-backtest-author`, `entity-analysis-model-http-adaptation-inspector`,
   `entity-analysis-model-http-adaptation-test-bench`, `entity-analysis-model-http-adaptation-author`,
-  `model-integrity-and-sampling`
+  `model-integrity-and-sampling`, `graph-recall-author`
 - **Cross-Domain Reach:** `completions`
 
 #### Entity Analysis Model Backtest Inspector (`entity-analysis-model-backtest-inspector`)
@@ -3520,6 +4127,9 @@ it holds no change at all.
 - **Toolbox (Max 15):**
     * `EntityAnalysisModelBacktestExplain`: Explains why one archived transaction was or was not counted, with the
       values read. _(permissions from `EntityAnalysisModelBacktestService.RequiredPermissions`)_
+    * `EntityAnalysisModelBacktestTune`: Tunes a rule from outcomes: backtests each candidate threshold and returns
+      precision and recall per variant; proposes, never applies. _(permissions from
+      `EntityAnalysisModelBacktestService.RequiredPermissions`)_
 - **Downstream Dependencies:** none (leaf)
 
 #### Entity Analysis Model Backtest Author (`entity-analysis-model-backtest-author`)
@@ -3541,6 +4151,9 @@ it holds no change at all.
       `EntityAnalysisModelBacktestService.RequiredPermissions`)_
     * `EntityAnalysisModelBacktestExplain`: Explains why one archived transaction was or was not counted, with the
       values read. _(permissions from `EntityAnalysisModelBacktestService.RequiredPermissions`)_
+    * `EntityAnalysisModelBacktestTune`: Tunes a rule from outcomes: backtests each candidate threshold and returns
+      precision and recall per variant; proposes, never applies. _(permissions from
+      `EntityAnalysisModelBacktestService.RequiredPermissions`)_
     * `EntityAnalysisModelBacktestSubmit`: Submits a large backtest to the engine's backtest threads; returns the run to
       poll. **Write — confirmation required** _(permissions from
       `EntityAnalysisModelBacktestService.RequiredPermissions`)_
@@ -3618,6 +4231,92 @@ it holds no change at all.
     * `EntityAnalysisModelHttpAdaptationRetract`: Retracts a rejected HTTP Adaptation, restoring it to its last approved
       version without a new approval cycle. **Write — confirmation required** _(permissions from
       `EntityAnalysisModelHttpAdaptationService.WritePermissions`)_
+- **Downstream Dependencies:** none (leaf)
+
+#### Svirfd Author (`svirfd-author`)
+
+- **Hierarchy Placement:** Level 3, child of Model Risk and Analytics
+- **Semantic Persona:** Owns the Svirfd slice: the IP address fields a model looks up for IP intelligence from
+  svirfd.com at invocation, exposed to rules as typed records under `Svirfd.{Name}.{Member}`, plus a lookup of any
+  address and the client status. It holds 5 mutating tools (create, update, delete, resubmit, retract), so a
+  confirmation is required before any of them runs.
+- **Semantic Routing Keywords:** svirfd, ip, address, geolocation, asn, vpn, tor, relay, proxy, hosting, cloud, routing,
+  rpki, bogon
+- **Toolbox (Max 15):**
+    * `EntityAnalysisModelSvirfdList`: Lists Svirfd entities visible to the caller's tenant, keyset-paged and capped. _(
+      permissions from `EntityAnalysisModelSvirfdService.ListPermissions`)_
+    * `EntityAnalysisModelSvirfdFilterFields`: Lists the fields a query builder JSON filter over Svirfd entities may
+      use. _(permissions from `EntityAnalysisModelSvirfdService.ListPermissions`)_
+    * `EntityAnalysisModelSvirfdFilter`: Returns the Svirfd entities matching query builder JSON, keyset-paged and
+      capped. _(permissions from `EntityAnalysisModelSvirfdService.ListPermissions`)_
+    * `EntityAnalysisModelSvirfdCount`: Counts the Svirfd entities matching query builder JSON, optionally grouped by a
+      field. _(permissions from `EntityAnalysisModelSvirfdService.ListPermissions`)_
+    * `EntityAnalysisModelSvirfdListByEntityAnalysisModelId`: Lists the Svirfd entities of one model. _(permissions from
+      `EntityAnalysisModelSvirfdService.ListPermissions`)_
+    * `EntityAnalysisModelSvirfdGet`: Returns a single Svirfd entry by Id. _(permissions from
+      `EntityAnalysisModelSvirfdService.ReadPermissions`)_
+    * `EntityAnalysisModelSvirfdFields`: Lists the request fields of one model a Svirfd entry may name, with whether
+      each has data type IP. _(permissions from `EntityAnalysisModelSvirfdService.WritePermissions`)_
+    * `EntityAnalysisModelSvirfdCreate`: Creates a Svirfd entry (a model IP field looked up and read as
+      Svirfd.{Name}.{Member} in rules); calling twice creates two. **Write — confirmation required** _(permissions from
+      `EntityAnalysisModelSvirfdService.WritePermissions`)_
+    * `EntityAnalysisModelSvirfdValidate`: Validates a Svirfd entry without saving it and returns every failure. _(
+      permissions from `EntityAnalysisModelSvirfdService.WritePermissions`)_
+    * `EntityAnalysisModelSvirfdUpdate`: Updates a Svirfd entry; overwrites, writes a version-audit row. **Write —
+      confirmation required** _(permissions from `EntityAnalysisModelSvirfdService.WritePermissions`)_
+    * `EntityAnalysisModelSvirfdDelete`: Soft-deletes a Svirfd entry; reversible only by direct database action.
+      **Write — confirmation required** _(permissions from `EntityAnalysisModelSvirfdService.WritePermissions`)_
+    * `EntityAnalysisModelSvirfdResubmit`: Resubmits a rejected Svirfd entry for approval again, unchanged, opening a
+      fresh approval cycle. **Write — confirmation required** _(permissions from
+      `EntityAnalysisModelSvirfdService.WritePermissions`)_
+    * `EntityAnalysisModelSvirfdRetract`: Retracts a rejected Svirfd entry, restoring it to its last approved version
+      without a new approval cycle. **Write — confirmation required** _(permissions from
+      `EntityAnalysisModelSvirfdService.WritePermissions`)_
+    * `SvirfdLookup`: Looks up one IP address for IP intelligence from svirfd.com: location with evidence and
+      confidence, ASN and routing, VPN, Tor and relay lists, cloud and a narrative. _(permissions from
+      `SvirfdService.ReadPermissions`)_
+    * `SvirfdStatus`: Returns whether Svirfd IP intelligence is enabled and ready, the mode in use and the credit to
+      show with its data. _(permissions from `SvirfdService.ReadPermissions`)_
+- **Downstream Dependencies:** none (leaf)
+
+#### Graph Recall Author (`graph-recall-author`)
+
+- **Hierarchy Placement:** Level 4, child of Validation Supervisor
+- **Semantic Persona:** Owns the graph recall slice: the entities a model reads from the network graph at invocation,
+  exposed to rules as typed objects under `Graph.{Name}`, with explicit counterparts for edge facts. It holds 5 mutating
+  tools (create, update, delete, resubmit, retract), so a confirmation is required before any of them runs.
+- **Semantic Routing Keywords:** graph, recall, entity, network, counterpart, distance, hop, hub, community, tag
+- **Toolbox (Max 15):**
+    * `EntityAnalysisModelGraphRecallList`: Lists graph recall entities visible to the caller's tenant, keyset-paged and
+      capped. _(permissions from `EntityAnalysisModelGraphRecallService.ListPermissions`)_
+    * `EntityAnalysisModelGraphRecallFilterFields`: Lists the fields a query builder JSON filter over graph recall
+      entities may use. _(permissions from `EntityAnalysisModelGraphRecallService.ListPermissions`)_
+    * `EntityAnalysisModelGraphRecallFilter`: Returns the graph recall entities matching query builder JSON,
+      keyset-paged and capped. _(permissions from `EntityAnalysisModelGraphRecallService.ListPermissions`)_
+    * `EntityAnalysisModelGraphRecallCount`: Counts the graph recall entities matching query builder JSON, optionally
+      grouped by a field. _(permissions from `EntityAnalysisModelGraphRecallService.ListPermissions`)_
+    * `EntityAnalysisModelGraphRecallListByEntityAnalysisModelId`: Lists the graph recall entities of one model. _(
+      permissions from `EntityAnalysisModelGraphRecallService.ListPermissions`)_
+    * `EntityAnalysisModelGraphRecallGet`: Returns a single graph recall entity by Id. _(permissions from
+      `EntityAnalysisModelGraphRecallService.ReadPermissions`)_
+    * `EntityAnalysisModelGraphRecallFields`: Lists the request fields of one model a graph recall entity may name, with
+      their Archive Key flag. _(permissions from `EntityAnalysisModelGraphRecallService.WritePermissions`)_
+    * `EntityAnalysisModelGraphRecallValidate`: Validates a graph recall entity without saving it and returns every
+      failure. _(permissions from `EntityAnalysisModelGraphRecallService.WritePermissions`)_
+    * `EntityAnalysisModelGraphRecallCreate`: Creates a graph recall entity (a model field read from the graph as
+      Graph.{Name} in rules); calling twice creates two. **Write — confirmation required** _(permissions from
+      `EntityAnalysisModelGraphRecallService.WritePermissions`)_
+    * `EntityAnalysisModelGraphRecallUpdate`: Updates a graph recall entity; overwrites, writes a version-audit row.
+      **Write — confirmation required** _(permissions from `EntityAnalysisModelGraphRecallService.WritePermissions`)_
+    * `EntityAnalysisModelGraphRecallDelete`: Soft-deletes a graph recall entity; reversible only by direct database
+      action. **Write — confirmation required** _(permissions from
+      `EntityAnalysisModelGraphRecallService.WritePermissions`)_
+    * `EntityAnalysisModelGraphRecallResubmit`: Resubmits a rejected graph recall entity for approval again, unchanged,
+      opening a fresh approval cycle. **Write — confirmation required** _(permissions from
+      `EntityAnalysisModelGraphRecallService.WritePermissions`)_
+    * `EntityAnalysisModelGraphRecallRetract`: Retracts a rejected graph recall entity, restoring it to its last
+      approved version without a new approval cycle. **Write — confirmation required** _(permissions from
+      `EntityAnalysisModelGraphRecallService.WritePermissions`)_
 - **Downstream Dependencies:** none (leaf)
 
 #### Model Integrity and Sampling (`model-integrity-and-sampling`)
@@ -4311,16 +5010,16 @@ it holds no change at all.
 - **Semantic Routing Keywords:** entity, analysis, model, reprocessing, rule, test, bench
 - **Toolbox (Max 15):**
     * `EntityAnalysisModelReprocessingRuleValidate`: Validates a Reprocessing Rule without saving it and returns every
-      failure. _(permissions from `EntityAnalysisModelReprocessingRuleService.RequiredPermissions`)_
+      failure. _(permissions from `EntityAnalysisModelReprocessingRuleService.EditPermissions`)_
     * `EntityAnalysisModelReprocessingRuleParseRule`: Parses and compiles a Reprocessing Rule's rule text as the engine
       would and returns each located error. _(permissions from
-      `EntityAnalysisModelReprocessingRuleService.RequiredPermissions`)_
+      `EntityAnalysisModelReprocessingRuleService.EditPermissions`)_
     * `EntityAnalysisModelReprocessingRuleExecute`: Runs a Reprocessing Rule against an invocation context as the engine
       would and returns the result. _(permissions from
-      `EntityAnalysisModelReprocessingRuleService.RequiredPermissions`)_
+      `EntityAnalysisModelReprocessingRuleService.EditPermissions`)_
     * `EntityAnalysisModelReprocessingRuleBuildRuleFromBuilderJson`: Turns query builder JSON into a Reprocessing Rule's
       rule text as the browser builder would, and parses it. _(permissions from
-      `EntityAnalysisModelReprocessingRuleService.RequiredPermissions`)_
+      `EntityAnalysisModelReprocessingRuleService.EditPermissions`)_
 - **Downstream Dependencies:** none (leaf)
 
 #### Entity Analysis Model Reprocessing Rule Author (`entity-analysis-model-reprocessing-rule-author`)
@@ -4344,25 +5043,25 @@ it holds no change at all.
       Model, scoped to the caller's tenant. _(permissions from
       `EntityAnalysisModelReprocessingRuleService.RequiredPermissions`)_
     * `EntityAnalysisModelReprocessingRuleValidate`: Validates a Reprocessing Rule without saving it and returns every
-      failure. _(permissions from `EntityAnalysisModelReprocessingRuleService.RequiredPermissions`)_
+      failure. _(permissions from `EntityAnalysisModelReprocessingRuleService.EditPermissions`)_
     * `EntityAnalysisModelReprocessingRuleParseRule`: Parses and compiles a Reprocessing Rule's rule text as the engine
       would and returns each located error. _(permissions from
-      `EntityAnalysisModelReprocessingRuleService.RequiredPermissions`)_
+      `EntityAnalysisModelReprocessingRuleService.EditPermissions`)_
     * `EntityAnalysisModelReprocessingRuleExecute`: Runs a Reprocessing Rule against an invocation context as the engine
       would and returns the result. _(permissions from
-      `EntityAnalysisModelReprocessingRuleService.RequiredPermissions`)_
+      `EntityAnalysisModelReprocessingRuleService.EditPermissions`)_
     * `EntityAnalysisModelReprocessingRuleBuildRuleFromBuilderJson`: Turns query builder JSON into a Reprocessing Rule's
       rule text as the browser builder would, and parses it. _(permissions from
-      `EntityAnalysisModelReprocessingRuleService.RequiredPermissions`)_
+      `EntityAnalysisModelReprocessingRuleService.EditPermissions`)_
     * `EntityAnalysisModelReprocessingRuleCreate`: Registers a Reprocessing Rule under a Model in the caller's tenant;
       calling twice creates two. **Write — confirmation required** _(permissions from
-      `EntityAnalysisModelReprocessingRuleService.RequiredPermissions`)_
+      `EntityAnalysisModelReprocessingRuleService.EditPermissions`)_
     * `EntityAnalysisModelReprocessingRuleUpdate`: Supersedes a Reprocessing Rule in the caller's tenant by id,
       assigning it a new id. **Write — confirmation required** _(permissions from
-      `EntityAnalysisModelReprocessingRuleService.RequiredPermissions`)_
+      `EntityAnalysisModelReprocessingRuleService.EditPermissions`)_
     * `EntityAnalysisModelReprocessingRuleDelete`: Soft-deletes a Reprocessing Rule in the caller's tenant by id.
       **Write — confirmation required** _(permissions from
-      `EntityAnalysisModelReprocessingRuleService.RequiredPermissions`)_
+      `EntityAnalysisModelReprocessingRuleService.EditPermissions`)_
 - **Downstream Dependencies:** none (leaf)
 
 #### Entity Analysis Model Reprocessing Rule Instance Inspector (`entity-analysis-model-reprocessing-rule-instance-inspector`)
@@ -4400,7 +5099,7 @@ it holds no change at all.
 - **Toolbox (Max 15):**
     * `EntityAnalysisModelReprocessingRuleInstanceValidate`: Validates a Reprocessing Rule Instance without saving it
       and returns every failure. _(permissions from
-      `EntityAnalysisModelReprocessingRuleInstanceService.RequiredPermissions`)_
+      `EntityAnalysisModelReprocessingRuleInstanceService.TriggerPermissions`)_
 - **Downstream Dependencies:** none (leaf)
 
 #### Entity Analysis Model Reprocessing Rule Instance Author (`entity-analysis-model-reprocessing-rule-instance-author`)
@@ -4430,19 +5129,19 @@ it holds no change at all.
       `EntityAnalysisModelReprocessingRuleInstanceService.RequiredPermissions`)_
     * `EntityAnalysisModelReprocessingRuleInstanceValidate`: Validates a Reprocessing Rule Instance without saving it
       and returns every failure. _(permissions from
-      `EntityAnalysisModelReprocessingRuleInstanceService.RequiredPermissions`)_
+      `EntityAnalysisModelReprocessingRuleInstanceService.TriggerPermissions`)_
     * `EntityAnalysisModelReprocessingRuleInstanceCreate`: Registers a Reprocessing Rule instance under a Reprocessing
       Rule in the caller's tenant; calling twice creates two. **Write — confirmation required** _(permissions from
-      `EntityAnalysisModelReprocessingRuleInstanceService.RequiredPermissions`)_
+      `EntityAnalysisModelReprocessingRuleInstanceService.TriggerPermissions`)_
     * `EntityAnalysisModelReprocessingRuleInstanceInsertByExistingUpdateUncompleted`: Triggers a new reprocessing run
       for a Reprocessing Rule; fails if one is already uncompleted. **Write — confirmation required** _(permissions from
-      `EntityAnalysisModelReprocessingRuleInstanceService.RequiredPermissions`)_
+      `EntityAnalysisModelReprocessingRuleInstanceService.TriggerPermissions`)_
     * `EntityAnalysisModelReprocessingRuleInstanceUpdate`: Supersedes a Reprocessing Rule instance in the caller's
       tenant by id, assigning it a new id. **Write — confirmation required** _(permissions from
-      `EntityAnalysisModelReprocessingRuleInstanceService.RequiredPermissions`)_
+      `EntityAnalysisModelReprocessingRuleInstanceService.TriggerPermissions`)_
     * `EntityAnalysisModelReprocessingRuleInstanceDelete`: Soft-deletes a Reprocessing Rule instance in the caller's
       tenant by id. **Write — confirmation required** _(permissions from
-      `EntityAnalysisModelReprocessingRuleInstanceService.RequiredPermissions`)_
+      `EntityAnalysisModelReprocessingRuleInstanceService.StopPermissions`)_
 - **Downstream Dependencies:** none (leaf)
 
 ---
@@ -4460,7 +5159,7 @@ it holds no change at all.
 - **Toolbox (Max 15):** none — routes to 2 supervisors and 5 leaf agents covering 59 tools
 - **Downstream Dependencies:** `platform-ops.engine-health`, `platform-ops.telemetry`, `application-and-container-logs`,
   `containers-load-balancer-and-overlay-network`, `etcd-and-patroni-cluster-state`, `postgres-observability`,
-  `redis-observability`
+  `resp-observability`
 
 #### Engine Health Supervisor
 
@@ -4514,8 +5213,8 @@ it holds no change at all.
   counter, response, time, pipeline, stage, performance, synchronisation, node, status, entries
 - **Toolbox (Max 15):**
     * `CaptureQueueHealthList`: Lists per-cycle depth and dropped-count snapshots for every bounded in-memory capture
-      queue in the observability suite (ModelInvokeWarning, CaseCreationWarning, ArchiverWarning, RedisSentinelEvent,
-      RedisConnectionEvent, OpenTelemetryMetric)… _(permissions from `CaptureQueueHealthService.RequiredPermissions`)_
+      queue in the observability suite (ModelInvokeWarning, CaseCreationWarning, ArchiverWarning, RespSentinelEvent,
+      RespConnectionEvent, OpenTelemetryMetric)… _(permissions from `CaptureQueueHealthService.RequiredPermissions`)_
     * `EntityAnalysisAsynchronousQueueBalanceList`: Lists platform-wide asynchronous processing queue balance rows, most
       recent first, capped at 100000, with optional date-range filters. _(permissions from
       `EntityAnalysisAsynchronousQueueBalanceService.RequiredPermissions`)_
@@ -4767,7 +5466,7 @@ it holds no change at all.
       scoped to any tenant. _(permissions from `PostgresTableStatisticsService.RequiredPermissions`)_
 - **Downstream Dependencies:** none (leaf)
 
-#### Redis Observability (`redis-observability`)
+#### Redis Observability (`resp-observability`)
 
 - **Hierarchy Placement:** Level 3, child of Platform Reliability
 - **Semantic Persona:** Owns the redis observability slice end to end, which is small enough that reads and writes stay
@@ -4775,46 +5474,46 @@ it holds no change at all.
 - **Semantic Routing Keywords:** redis, call, counter, connection, event, multiplexer, metric, sentinel, status, slow,
   operation
 - **Toolbox (Max 15):**
-    * `RedisCallCounterList`: Lists per-minute Redis call counters -- one row per distinct "call" label (a Jube.Cache
-      repository method, e.g. _(permissions from `RedisCallCounterService.RequiredPermissions`)_
-    * `RedisConnectionEventList`: Lists captured CacheService ConnectionMultiplexer events (ConnectionFailed,
+    * `RespCallCounterList`: Lists per-minute Redis call counters -- one row per distinct "call" label (a Jube.Cache
+      repository method, e.g. _(permissions from `RespCallCounterService.RequiredPermissions`)_
+    * `RespConnectionEventList`: Lists captured CacheService ConnectionMultiplexer events (ConnectionFailed,
       ConnectionRestored, ErrorMessage, InternalError, ConfigurationChanged, ConfigurationChangedBroadcast), most recent
-      first, capped at 100000. _(permissions from `RedisConnectionEventService.RequiredPermissions`)_
-    * `RedisConnectionMultiplexerMetricList`: Lists per-minute snapshots of the application's own live Redis connection
+      first, capped at 100000. _(permissions from `RespConnectionEventService.RequiredPermissions`)_
+    * `RespConnectionMultiplexerMetricList`: Lists per-minute snapshots of the application's own live Redis connection
       health and queue depth across every node, most recent first, capped at 100000, with optional date-range and
       substring search (Instance/ClientName) filters, not scoped… _(permissions from
-      `RedisConnectionMultiplexerMetricService.RequiredPermissions`)_
-    * `RedisKeyActivityList`: Samples up to 100 keys from the live Redis keyspace (SCAN, never KEYS) and reports each
+      `RespConnectionMultiplexerMetricService.RequiredPermissions`)_
+    * `RespKeyActivityList`: Samples up to 100 keys from the live Redis keyspace (SCAN, never KEYS) and reports each
       one's type, idle time, and -- only under an LFU maxmemory-policy -- its approximate access frequency. The 100-key
       cap is fixed. Optional glob pattern narrows the sample. For spotting a hot/cold key design problem, never for
-      enumerating the keyspace. Read-only. _(permissions from `RedisKeyActivityService.RequiredPermissions`)_
-    * `RedisMetricList`: Lists per-minute Redis metric snapshots across every node, most recent first, capped at 100000,
+      enumerating the keyspace. Read-only. _(permissions from `RespKeyActivityService.RequiredPermissions`)_
+    * `RespMetricList`: Lists per-minute Redis metric snapshots across every node, most recent first, capped at 100000,
       with optional date-range and substring search (Instance) filters, not scoped to any tenant. _(permissions from
-      `RedisMetricService.RequiredPermissions`)_
-    * `RedisSentinelCheckQuorum`: Reads whether enough Sentinels currently agree a failover of the given master could
-      actually succeed right now -- the real pre-flight check before reaching for RedisSentinelFailover. Read-only. _(
-      permissions from `RedisSentinelAdministratorService.RequiredPermissions`)_
-    * `RedisSentinelClusterStatusNow`: Reads every master/slave/sentinel Sentinel currently reports right now over its
+      `RespMetricService.RequiredPermissions`)_
+    * `RespSentinelCheckQuorum`: Reads whether enough Sentinels currently agree a failover of the given master could
+      actually succeed right now -- the real pre-flight check before reaching for RespSentinelFailover. Read-only. _(
+      permissions from `RespSentinelAdministratorService.RequiredPermissions`)_
+    * `RespSentinelClusterStatusNow`: Reads every master/slave/sentinel Sentinel currently reports right now over its
       own protocol, not the background sampler's last-stored row, which can be up to a minute stale. Read-only. _(
-      permissions from `RedisSentinelAdministratorService.RequiredPermissions`)_
-    * `RedisSentinelEventList`: Lists captured Redis Sentinel pub/sub events (every channel Sentinel publishes --
+      permissions from `RespSentinelAdministratorService.RequiredPermissions`)_
+    * `RespSentinelEventList`: Lists captured Redis Sentinel pub/sub events (every channel Sentinel publishes --
       +sdown, -sdown, +odown, +switch-master, +failover-state, +slave, +sentinel, and more), most recent first, capped
       at 100000, with optional date-range and subst… _(permissions from
-      `RedisSentinelEventService.RequiredPermissions`)_
-    * `RedisSentinelFailover`: Forces a manual failover of the given master right now -- the action Sentinel's own
+      `RespSentinelEventService.RequiredPermissions`)_
+    * `RespSentinelFailover`: Forces a manual failover of the given master right now -- the action Sentinel's own
       design exists to let an operator trigger under a real incident. **Write — confirmation required** _(permissions
-      from `RedisSentinelAdministratorService.RequiredPermissions`)_
-    * `RedisSentinelGetMasterAddress`: Reads Sentinel's own current, authoritative address for the given master, as
-      "host:port". Read-only. _(permissions from `RedisSentinelAdministratorService.RequiredPermissions`)_
-    * `RedisSentinelReset`: Forgets Sentinel's current state of every master matching the given glob pattern, forcing
+      from `RespSentinelAdministratorService.RequiredPermissions`)_
+    * `RespSentinelGetMasterAddress`: Reads Sentinel's own current, authoritative address for the given master, as
+      "host:port". Read-only. _(permissions from `RespSentinelAdministratorService.RequiredPermissions`)_
+    * `RespSentinelReset`: Forgets Sentinel's current state of every master matching the given glob pattern, forcing
       Sentinel to rediscover it from scratch; self-healing and non-destructive to data but still a real mutating call.
-      **Write — confirmation required** _(permissions from `RedisSentinelAdministratorService.RequiredPermissions`)_
-    * `RedisSentinelStatusList`: Lists per-minute Redis Sentinel topology snapshots (SENTINEL MASTERS/SLAVES/SENTINELS),
+      **Write — confirmation required** _(permissions from `RespSentinelAdministratorService.RequiredPermissions`)_
+    * `RespSentinelStatusList`: Lists per-minute Redis Sentinel topology snapshots (SENTINEL MASTERS/SLAVES/SENTINELS),
       one row per master/slave/sentinel entity, most recent first, capped at 100000. _(permissions from
-      `RedisSentinelStatusService.RequiredPermissions`)_
-    * `RedisSlowOperationList`: Lists Redis SLOWLOG entries across every node, most recent first, capped at 100000, with
+      `RespSentinelStatusService.RequiredPermissions`)_
+    * `RespSlowOperationList`: Lists Redis SLOWLOG entries across every node, most recent first, capped at 100000, with
       optional date-range and substring search (Command/CommandName/KeyName/ClientAddress/ClientName) filters, not
-      scoped to any tenant. _(permissions from `RedisSlowOperationService.RequiredPermissions`)_
+      scoped to any tenant. _(permissions from `RespSlowOperationService.RequiredPermissions`)_
 - **Downstream Dependencies:** none (leaf)
 
 ---
@@ -4832,7 +5531,7 @@ The tree above is a design, not a wiring. Four things in `Jube.AskJooby` decide 
   nine, counting cross-domain reach, and `model-admin` and `model-support` are separate domains specifically so that the
   slice rosters stay within eight before any cross-domain edge is added.
 * `AgentToolDefinition.RequiresSnapshot` is already derived from the owning operation being `Write` or `Delete`, and
-  `SnapshotOnWriteAiFunction` wraps those tools; the 174 tools flagged above are that same set, so the flag is a
+  `SnapshotOnWriteAiFunction` wraps those tools; the 176 tools flagged above are that same set, so the flag is a
   restatement of what the runtime already computes and must not be reintroduced as a second, hand-maintained source of
   truth.
 * `AgentDefinitions.IsPermitted` checks `RequiresLandlord` before it considers `RequiredPermissions`, because 49

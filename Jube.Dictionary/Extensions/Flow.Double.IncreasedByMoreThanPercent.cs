@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchIncreasedByMoreThanPercent(double previous, double percent)
+            [Description("True when: the percentage increase over the previous value exceeds the percentage. An increase from zero is infinite, so true. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchIncreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage increase that counts.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleIncreasedByMoreThanPercent(flow.Value, previous, percent));
             }
 
-            public Flow<double> RejectIncreasedByMoreThanPercent(double previous, double percent)
+            [Description("True when: the percentage increase over the previous value exceeds the percentage. An increase from zero is infinite, so true. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectIncreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage increase that counts.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleIncreasedByMoreThanPercent(flow.Value, previous, percent));
             }
 
-            public Flow<double> BreakIncreasedByMoreThanPercent(double previous, double percent)
+            [Description("True when: the percentage increase over the previous value exceeds the percentage. An increase from zero is infinite, so true. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakIncreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage increase that counts.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleIncreasedByMoreThanPercent(flow.Value, previous, percent));
             }
 
-            public Flow<double> RequireIncreasedByMoreThanPercent(double previous, double percent)
+            [Description("True when: the percentage increase over the previous value exceeds the percentage. An increase from zero is infinite, so true. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireIncreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage increase that counts.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleIncreasedByMoreThanPercent(flow.Value, previous, percent));
             }
 
-            public Flow<double> EnsureIncreasedByMoreThanPercent(double previous, double percent)
+            [Description("True when: the percentage increase over the previous value exceeds the percentage. An increase from zero is infinite, so true. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureIncreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage increase that counts.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchIncreasedByMoreThanPercent(double previous, double percent)
+            [Description("Begins a pipeline from the value. True when: the percentage increase over the previous value exceeds the percentage. An increase from zero is infinite, so true. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchIncreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage increase that counts.")] double percent)
             {
                 return value.Start().MatchIncreasedByMoreThanPercent(previous, percent);
             }
 
-            public Flow<double> RejectIncreasedByMoreThanPercent(double previous, double percent)
+            [Description("Begins a pipeline from the value. True when: the percentage increase over the previous value exceeds the percentage. An increase from zero is infinite, so true. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectIncreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage increase that counts.")] double percent)
             {
                 return value.Start().RejectIncreasedByMoreThanPercent(previous, percent);
             }
 
-            public Flow<double> BreakIncreasedByMoreThanPercent(double previous, double percent)
+            [Description("Begins a pipeline from the value. True when: the percentage increase over the previous value exceeds the percentage. An increase from zero is infinite, so true. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakIncreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage increase that counts.")] double percent)
             {
                 return value.Start().BreakIncreasedByMoreThanPercent(previous, percent);
             }
 
-            public Flow<double> RequireIncreasedByMoreThanPercent(double previous, double percent)
+            [Description("Begins a pipeline from the value. True when: the percentage increase over the previous value exceeds the percentage. An increase from zero is infinite, so true. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireIncreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage increase that counts.")] double percent)
             {
                 return value.Start().RequireIncreasedByMoreThanPercent(previous, percent);
             }
 
-            public Flow<double> EnsureIncreasedByMoreThanPercent(double previous, double percent)
+            [Description("Begins a pipeline from the value. True when: the percentage increase over the previous value exceeds the percentage. An increase from zero is infinite, so true. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureIncreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage increase that counts.")] double percent)
             {
                 return value.Start().EnsureIncreasedByMoreThanPercent(previous, percent);
             }

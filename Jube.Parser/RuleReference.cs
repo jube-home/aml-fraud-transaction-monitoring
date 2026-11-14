@@ -28,6 +28,8 @@ namespace Jube.Parser
         public const string HttpAdaptation = "HTTPAdaptation";
         public const string List = "List";
         public const string Activation = "Activation";
+        public const string Graph = "Graph";
+        public const string Svirfd = "Svirfd";
 
         private static readonly Dictionary<string, string> namespaces = new(StringComparer.OrdinalIgnoreCase)
         {
@@ -40,7 +42,9 @@ namespace Jube.Parser
             [ExhaustiveAdaptation] = ExhaustiveAdaptation,
             [HttpAdaptation] = HttpAdaptation,
             [List] = List,
-            [Activation] = Activation
+            [Activation] = Activation,
+            [Graph] = Graph,
+            [Svirfd] = Svirfd
         };
 
         public string CompletionName => $"{Namespace}.{Name}";

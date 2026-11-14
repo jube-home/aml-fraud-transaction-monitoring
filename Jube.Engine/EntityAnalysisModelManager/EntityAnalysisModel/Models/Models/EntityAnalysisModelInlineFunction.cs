@@ -16,6 +16,8 @@
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable RedundantAttributeUsageProperty
 
+using Svirfd;
+
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models
 {
     using System.Collections.Generic;
@@ -26,7 +28,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
     public class EntityAnalysisModelInlineFunction
     {
         public delegate object Match(DictionaryNoBoxing<string> data, Dictionary<string, List<string>> list,
-            PooledDictionary<string, double> kvp, ILog log);
+            PooledDictionary<string, double> kvp, PooledDictionary<string, IpResponse> svirfd, ILog log);
 
         public int Id { get; init; }
         public string Name { get; set; }

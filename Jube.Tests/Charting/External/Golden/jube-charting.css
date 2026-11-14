@@ -334,8 +334,9 @@
 
 .jc {
     display: block;
+    direction: ltr;
     color-scheme: light;
-    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Noto Sans Arabic', 'Noto Nastaliq Urdu', 'Noto Sans Devanagari', 'Noto Sans Georgian', sans-serif;
     font-size: 12px
 }
 
@@ -347,7 +348,7 @@
 
 .jc-message {
     color: var(--jc-muted);
-    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Noto Sans Arabic', 'Noto Nastaliq Urdu', 'Noto Sans Devanagari', 'Noto Sans Georgian', sans-serif;
     font-size: 16px;
     padding: 15px;
     text-align: center
@@ -4040,2004 +4041,1444 @@
     fill-opacity: .07
 }
 
-.jc:where(.jc-sankey):has(.nd.n0:hover) .lk:not(.m0) .lkp {
+.jc:where(.jc-sankey):has(.nd.n0:hover,.nd.n0:focus-visible) .lk:not(.m0) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n0:hover) .lk.m0 .lkp {
+.jc:where(.jc-sankey):has(.nd.n0:hover,.nd.n0:focus-visible) .lk.m0 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n0:focus-visible) .lk:not(.m0) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n0:hover) .nd:not(.a0) .bar {
+.jc:where(.jc-sankey):has(.nd.n0:hover,.nd.n0:focus-visible) .nd:not(.a0) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n0:hover) .nd.a0 .bar {
+.jc:where(.jc-sankey):has(.nd.n0:hover,.nd.n0:focus-visible) .nd.a0 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n1:hover) .lk:not(.m1) .lkp {
+.jc:where(.jc-sankey):has(.nd.n1:hover,.nd.n1:focus-visible) .lk:not(.m1) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n1:hover) .lk.m1 .lkp {
+.jc:where(.jc-sankey):has(.nd.n1:hover,.nd.n1:focus-visible) .lk.m1 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n1:focus-visible) .lk:not(.m1) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n1:hover) .nd:not(.a1) .bar {
+.jc:where(.jc-sankey):has(.nd.n1:hover,.nd.n1:focus-visible) .nd:not(.a1) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n1:hover) .nd.a1 .bar {
+.jc:where(.jc-sankey):has(.nd.n1:hover,.nd.n1:focus-visible) .nd.a1 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n2:hover) .lk:not(.m2) .lkp {
+.jc:where(.jc-sankey):has(.nd.n2:hover,.nd.n2:focus-visible) .lk:not(.m2) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n2:hover) .lk.m2 .lkp {
+.jc:where(.jc-sankey):has(.nd.n2:hover,.nd.n2:focus-visible) .lk.m2 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n2:focus-visible) .lk:not(.m2) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n2:hover) .nd:not(.a2) .bar {
+.jc:where(.jc-sankey):has(.nd.n2:hover,.nd.n2:focus-visible) .nd:not(.a2) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n2:hover) .nd.a2 .bar {
+.jc:where(.jc-sankey):has(.nd.n2:hover,.nd.n2:focus-visible) .nd.a2 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n3:hover) .lk:not(.m3) .lkp {
+.jc:where(.jc-sankey):has(.nd.n3:hover,.nd.n3:focus-visible) .lk:not(.m3) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n3:hover) .lk.m3 .lkp {
+.jc:where(.jc-sankey):has(.nd.n3:hover,.nd.n3:focus-visible) .lk.m3 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n3:focus-visible) .lk:not(.m3) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n3:hover) .nd:not(.a3) .bar {
+.jc:where(.jc-sankey):has(.nd.n3:hover,.nd.n3:focus-visible) .nd:not(.a3) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n3:hover) .nd.a3 .bar {
+.jc:where(.jc-sankey):has(.nd.n3:hover,.nd.n3:focus-visible) .nd.a3 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n4:hover) .lk:not(.m4) .lkp {
+.jc:where(.jc-sankey):has(.nd.n4:hover,.nd.n4:focus-visible) .lk:not(.m4) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n4:hover) .lk.m4 .lkp {
+.jc:where(.jc-sankey):has(.nd.n4:hover,.nd.n4:focus-visible) .lk.m4 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n4:focus-visible) .lk:not(.m4) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n4:hover) .nd:not(.a4) .bar {
+.jc:where(.jc-sankey):has(.nd.n4:hover,.nd.n4:focus-visible) .nd:not(.a4) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n4:hover) .nd.a4 .bar {
+.jc:where(.jc-sankey):has(.nd.n4:hover,.nd.n4:focus-visible) .nd.a4 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n5:hover) .lk:not(.m5) .lkp {
+.jc:where(.jc-sankey):has(.nd.n5:hover,.nd.n5:focus-visible) .lk:not(.m5) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n5:hover) .lk.m5 .lkp {
+.jc:where(.jc-sankey):has(.nd.n5:hover,.nd.n5:focus-visible) .lk.m5 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n5:focus-visible) .lk:not(.m5) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n5:hover) .nd:not(.a5) .bar {
+.jc:where(.jc-sankey):has(.nd.n5:hover,.nd.n5:focus-visible) .nd:not(.a5) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n5:hover) .nd.a5 .bar {
+.jc:where(.jc-sankey):has(.nd.n5:hover,.nd.n5:focus-visible) .nd.a5 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n6:hover) .lk:not(.m6) .lkp {
+.jc:where(.jc-sankey):has(.nd.n6:hover,.nd.n6:focus-visible) .lk:not(.m6) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n6:hover) .lk.m6 .lkp {
+.jc:where(.jc-sankey):has(.nd.n6:hover,.nd.n6:focus-visible) .lk.m6 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n6:focus-visible) .lk:not(.m6) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n6:hover) .nd:not(.a6) .bar {
+.jc:where(.jc-sankey):has(.nd.n6:hover,.nd.n6:focus-visible) .nd:not(.a6) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n6:hover) .nd.a6 .bar {
+.jc:where(.jc-sankey):has(.nd.n6:hover,.nd.n6:focus-visible) .nd.a6 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n7:hover) .lk:not(.m7) .lkp {
+.jc:where(.jc-sankey):has(.nd.n7:hover,.nd.n7:focus-visible) .lk:not(.m7) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n7:hover) .lk.m7 .lkp {
+.jc:where(.jc-sankey):has(.nd.n7:hover,.nd.n7:focus-visible) .lk.m7 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n7:focus-visible) .lk:not(.m7) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n7:hover) .nd:not(.a7) .bar {
+.jc:where(.jc-sankey):has(.nd.n7:hover,.nd.n7:focus-visible) .nd:not(.a7) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n7:hover) .nd.a7 .bar {
+.jc:where(.jc-sankey):has(.nd.n7:hover,.nd.n7:focus-visible) .nd.a7 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n8:hover) .lk:not(.m8) .lkp {
+.jc:where(.jc-sankey):has(.nd.n8:hover,.nd.n8:focus-visible) .lk:not(.m8) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n8:hover) .lk.m8 .lkp {
+.jc:where(.jc-sankey):has(.nd.n8:hover,.nd.n8:focus-visible) .lk.m8 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n8:focus-visible) .lk:not(.m8) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n8:hover) .nd:not(.a8) .bar {
+.jc:where(.jc-sankey):has(.nd.n8:hover,.nd.n8:focus-visible) .nd:not(.a8) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n8:hover) .nd.a8 .bar {
+.jc:where(.jc-sankey):has(.nd.n8:hover,.nd.n8:focus-visible) .nd.a8 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n9:hover) .lk:not(.m9) .lkp {
+.jc:where(.jc-sankey):has(.nd.n9:hover,.nd.n9:focus-visible) .lk:not(.m9) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n9:hover) .lk.m9 .lkp {
+.jc:where(.jc-sankey):has(.nd.n9:hover,.nd.n9:focus-visible) .lk.m9 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n9:focus-visible) .lk:not(.m9) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n9:hover) .nd:not(.a9) .bar {
+.jc:where(.jc-sankey):has(.nd.n9:hover,.nd.n9:focus-visible) .nd:not(.a9) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n9:hover) .nd.a9 .bar {
+.jc:where(.jc-sankey):has(.nd.n9:hover,.nd.n9:focus-visible) .nd.a9 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n10:hover) .lk:not(.m10) .lkp {
+.jc:where(.jc-sankey):has(.nd.n10:hover,.nd.n10:focus-visible) .lk:not(.m10) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n10:hover) .lk.m10 .lkp {
+.jc:where(.jc-sankey):has(.nd.n10:hover,.nd.n10:focus-visible) .lk.m10 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n10:focus-visible) .lk:not(.m10) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n10:hover) .nd:not(.a10) .bar {
+.jc:where(.jc-sankey):has(.nd.n10:hover,.nd.n10:focus-visible) .nd:not(.a10) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n10:hover) .nd.a10 .bar {
+.jc:where(.jc-sankey):has(.nd.n10:hover,.nd.n10:focus-visible) .nd.a10 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n11:hover) .lk:not(.m11) .lkp {
+.jc:where(.jc-sankey):has(.nd.n11:hover,.nd.n11:focus-visible) .lk:not(.m11) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n11:hover) .lk.m11 .lkp {
+.jc:where(.jc-sankey):has(.nd.n11:hover,.nd.n11:focus-visible) .lk.m11 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n11:focus-visible) .lk:not(.m11) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n11:hover) .nd:not(.a11) .bar {
+.jc:where(.jc-sankey):has(.nd.n11:hover,.nd.n11:focus-visible) .nd:not(.a11) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n11:hover) .nd.a11 .bar {
+.jc:where(.jc-sankey):has(.nd.n11:hover,.nd.n11:focus-visible) .nd.a11 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n12:hover) .lk:not(.m12) .lkp {
+.jc:where(.jc-sankey):has(.nd.n12:hover,.nd.n12:focus-visible) .lk:not(.m12) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n12:hover) .lk.m12 .lkp {
+.jc:where(.jc-sankey):has(.nd.n12:hover,.nd.n12:focus-visible) .lk.m12 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n12:focus-visible) .lk:not(.m12) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n12:hover) .nd:not(.a12) .bar {
+.jc:where(.jc-sankey):has(.nd.n12:hover,.nd.n12:focus-visible) .nd:not(.a12) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n12:hover) .nd.a12 .bar {
+.jc:where(.jc-sankey):has(.nd.n12:hover,.nd.n12:focus-visible) .nd.a12 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n13:hover) .lk:not(.m13) .lkp {
+.jc:where(.jc-sankey):has(.nd.n13:hover,.nd.n13:focus-visible) .lk:not(.m13) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n13:hover) .lk.m13 .lkp {
+.jc:where(.jc-sankey):has(.nd.n13:hover,.nd.n13:focus-visible) .lk.m13 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n13:focus-visible) .lk:not(.m13) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n13:hover) .nd:not(.a13) .bar {
+.jc:where(.jc-sankey):has(.nd.n13:hover,.nd.n13:focus-visible) .nd:not(.a13) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n13:hover) .nd.a13 .bar {
+.jc:where(.jc-sankey):has(.nd.n13:hover,.nd.n13:focus-visible) .nd.a13 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n14:hover) .lk:not(.m14) .lkp {
+.jc:where(.jc-sankey):has(.nd.n14:hover,.nd.n14:focus-visible) .lk:not(.m14) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n14:hover) .lk.m14 .lkp {
+.jc:where(.jc-sankey):has(.nd.n14:hover,.nd.n14:focus-visible) .lk.m14 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n14:focus-visible) .lk:not(.m14) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n14:hover) .nd:not(.a14) .bar {
+.jc:where(.jc-sankey):has(.nd.n14:hover,.nd.n14:focus-visible) .nd:not(.a14) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n14:hover) .nd.a14 .bar {
+.jc:where(.jc-sankey):has(.nd.n14:hover,.nd.n14:focus-visible) .nd.a14 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n15:hover) .lk:not(.m15) .lkp {
+.jc:where(.jc-sankey):has(.nd.n15:hover,.nd.n15:focus-visible) .lk:not(.m15) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n15:hover) .lk.m15 .lkp {
+.jc:where(.jc-sankey):has(.nd.n15:hover,.nd.n15:focus-visible) .lk.m15 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n15:focus-visible) .lk:not(.m15) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n15:hover) .nd:not(.a15) .bar {
+.jc:where(.jc-sankey):has(.nd.n15:hover,.nd.n15:focus-visible) .nd:not(.a15) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n15:hover) .nd.a15 .bar {
+.jc:where(.jc-sankey):has(.nd.n15:hover,.nd.n15:focus-visible) .nd.a15 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n16:hover) .lk:not(.m16) .lkp {
+.jc:where(.jc-sankey):has(.nd.n16:hover,.nd.n16:focus-visible) .lk:not(.m16) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n16:hover) .lk.m16 .lkp {
+.jc:where(.jc-sankey):has(.nd.n16:hover,.nd.n16:focus-visible) .lk.m16 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n16:focus-visible) .lk:not(.m16) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n16:hover) .nd:not(.a16) .bar {
+.jc:where(.jc-sankey):has(.nd.n16:hover,.nd.n16:focus-visible) .nd:not(.a16) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n16:hover) .nd.a16 .bar {
+.jc:where(.jc-sankey):has(.nd.n16:hover,.nd.n16:focus-visible) .nd.a16 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n17:hover) .lk:not(.m17) .lkp {
+.jc:where(.jc-sankey):has(.nd.n17:hover,.nd.n17:focus-visible) .lk:not(.m17) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n17:hover) .lk.m17 .lkp {
+.jc:where(.jc-sankey):has(.nd.n17:hover,.nd.n17:focus-visible) .lk.m17 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n17:focus-visible) .lk:not(.m17) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n17:hover) .nd:not(.a17) .bar {
+.jc:where(.jc-sankey):has(.nd.n17:hover,.nd.n17:focus-visible) .nd:not(.a17) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n17:hover) .nd.a17 .bar {
+.jc:where(.jc-sankey):has(.nd.n17:hover,.nd.n17:focus-visible) .nd.a17 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n18:hover) .lk:not(.m18) .lkp {
+.jc:where(.jc-sankey):has(.nd.n18:hover,.nd.n18:focus-visible) .lk:not(.m18) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n18:hover) .lk.m18 .lkp {
+.jc:where(.jc-sankey):has(.nd.n18:hover,.nd.n18:focus-visible) .lk.m18 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n18:focus-visible) .lk:not(.m18) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n18:hover) .nd:not(.a18) .bar {
+.jc:where(.jc-sankey):has(.nd.n18:hover,.nd.n18:focus-visible) .nd:not(.a18) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n18:hover) .nd.a18 .bar {
+.jc:where(.jc-sankey):has(.nd.n18:hover,.nd.n18:focus-visible) .nd.a18 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n19:hover) .lk:not(.m19) .lkp {
+.jc:where(.jc-sankey):has(.nd.n19:hover,.nd.n19:focus-visible) .lk:not(.m19) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n19:hover) .lk.m19 .lkp {
+.jc:where(.jc-sankey):has(.nd.n19:hover,.nd.n19:focus-visible) .lk.m19 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n19:focus-visible) .lk:not(.m19) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n19:hover) .nd:not(.a19) .bar {
+.jc:where(.jc-sankey):has(.nd.n19:hover,.nd.n19:focus-visible) .nd:not(.a19) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n19:hover) .nd.a19 .bar {
+.jc:where(.jc-sankey):has(.nd.n19:hover,.nd.n19:focus-visible) .nd.a19 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n20:hover) .lk:not(.m20) .lkp {
+.jc:where(.jc-sankey):has(.nd.n20:hover,.nd.n20:focus-visible) .lk:not(.m20) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n20:hover) .lk.m20 .lkp {
+.jc:where(.jc-sankey):has(.nd.n20:hover,.nd.n20:focus-visible) .lk.m20 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n20:focus-visible) .lk:not(.m20) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n20:hover) .nd:not(.a20) .bar {
+.jc:where(.jc-sankey):has(.nd.n20:hover,.nd.n20:focus-visible) .nd:not(.a20) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n20:hover) .nd.a20 .bar {
+.jc:where(.jc-sankey):has(.nd.n20:hover,.nd.n20:focus-visible) .nd.a20 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n21:hover) .lk:not(.m21) .lkp {
+.jc:where(.jc-sankey):has(.nd.n21:hover,.nd.n21:focus-visible) .lk:not(.m21) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n21:hover) .lk.m21 .lkp {
+.jc:where(.jc-sankey):has(.nd.n21:hover,.nd.n21:focus-visible) .lk.m21 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n21:focus-visible) .lk:not(.m21) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n21:hover) .nd:not(.a21) .bar {
+.jc:where(.jc-sankey):has(.nd.n21:hover,.nd.n21:focus-visible) .nd:not(.a21) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n21:hover) .nd.a21 .bar {
+.jc:where(.jc-sankey):has(.nd.n21:hover,.nd.n21:focus-visible) .nd.a21 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n22:hover) .lk:not(.m22) .lkp {
+.jc:where(.jc-sankey):has(.nd.n22:hover,.nd.n22:focus-visible) .lk:not(.m22) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n22:hover) .lk.m22 .lkp {
+.jc:where(.jc-sankey):has(.nd.n22:hover,.nd.n22:focus-visible) .lk.m22 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n22:focus-visible) .lk:not(.m22) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n22:hover) .nd:not(.a22) .bar {
+.jc:where(.jc-sankey):has(.nd.n22:hover,.nd.n22:focus-visible) .nd:not(.a22) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n22:hover) .nd.a22 .bar {
+.jc:where(.jc-sankey):has(.nd.n22:hover,.nd.n22:focus-visible) .nd.a22 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n23:hover) .lk:not(.m23) .lkp {
+.jc:where(.jc-sankey):has(.nd.n23:hover,.nd.n23:focus-visible) .lk:not(.m23) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n23:hover) .lk.m23 .lkp {
+.jc:where(.jc-sankey):has(.nd.n23:hover,.nd.n23:focus-visible) .lk.m23 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n23:focus-visible) .lk:not(.m23) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n23:hover) .nd:not(.a23) .bar {
+.jc:where(.jc-sankey):has(.nd.n23:hover,.nd.n23:focus-visible) .nd:not(.a23) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n23:hover) .nd.a23 .bar {
+.jc:where(.jc-sankey):has(.nd.n23:hover,.nd.n23:focus-visible) .nd.a23 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n24:hover) .lk:not(.m24) .lkp {
+.jc:where(.jc-sankey):has(.nd.n24:hover,.nd.n24:focus-visible) .lk:not(.m24) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n24:hover) .lk.m24 .lkp {
+.jc:where(.jc-sankey):has(.nd.n24:hover,.nd.n24:focus-visible) .lk.m24 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n24:focus-visible) .lk:not(.m24) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n24:hover) .nd:not(.a24) .bar {
+.jc:where(.jc-sankey):has(.nd.n24:hover,.nd.n24:focus-visible) .nd:not(.a24) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n24:hover) .nd.a24 .bar {
+.jc:where(.jc-sankey):has(.nd.n24:hover,.nd.n24:focus-visible) .nd.a24 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n25:hover) .lk:not(.m25) .lkp {
+.jc:where(.jc-sankey):has(.nd.n25:hover,.nd.n25:focus-visible) .lk:not(.m25) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n25:hover) .lk.m25 .lkp {
+.jc:where(.jc-sankey):has(.nd.n25:hover,.nd.n25:focus-visible) .lk.m25 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n25:focus-visible) .lk:not(.m25) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n25:hover) .nd:not(.a25) .bar {
+.jc:where(.jc-sankey):has(.nd.n25:hover,.nd.n25:focus-visible) .nd:not(.a25) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n25:hover) .nd.a25 .bar {
+.jc:where(.jc-sankey):has(.nd.n25:hover,.nd.n25:focus-visible) .nd.a25 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n26:hover) .lk:not(.m26) .lkp {
+.jc:where(.jc-sankey):has(.nd.n26:hover,.nd.n26:focus-visible) .lk:not(.m26) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n26:hover) .lk.m26 .lkp {
+.jc:where(.jc-sankey):has(.nd.n26:hover,.nd.n26:focus-visible) .lk.m26 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n26:focus-visible) .lk:not(.m26) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n26:hover) .nd:not(.a26) .bar {
+.jc:where(.jc-sankey):has(.nd.n26:hover,.nd.n26:focus-visible) .nd:not(.a26) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n26:hover) .nd.a26 .bar {
+.jc:where(.jc-sankey):has(.nd.n26:hover,.nd.n26:focus-visible) .nd.a26 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n27:hover) .lk:not(.m27) .lkp {
+.jc:where(.jc-sankey):has(.nd.n27:hover,.nd.n27:focus-visible) .lk:not(.m27) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n27:hover) .lk.m27 .lkp {
+.jc:where(.jc-sankey):has(.nd.n27:hover,.nd.n27:focus-visible) .lk.m27 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n27:focus-visible) .lk:not(.m27) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n27:hover) .nd:not(.a27) .bar {
+.jc:where(.jc-sankey):has(.nd.n27:hover,.nd.n27:focus-visible) .nd:not(.a27) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n27:hover) .nd.a27 .bar {
+.jc:where(.jc-sankey):has(.nd.n27:hover,.nd.n27:focus-visible) .nd.a27 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n28:hover) .lk:not(.m28) .lkp {
+.jc:where(.jc-sankey):has(.nd.n28:hover,.nd.n28:focus-visible) .lk:not(.m28) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n28:hover) .lk.m28 .lkp {
+.jc:where(.jc-sankey):has(.nd.n28:hover,.nd.n28:focus-visible) .lk.m28 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n28:focus-visible) .lk:not(.m28) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n28:hover) .nd:not(.a28) .bar {
+.jc:where(.jc-sankey):has(.nd.n28:hover,.nd.n28:focus-visible) .nd:not(.a28) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n28:hover) .nd.a28 .bar {
+.jc:where(.jc-sankey):has(.nd.n28:hover,.nd.n28:focus-visible) .nd.a28 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n29:hover) .lk:not(.m29) .lkp {
+.jc:where(.jc-sankey):has(.nd.n29:hover,.nd.n29:focus-visible) .lk:not(.m29) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n29:hover) .lk.m29 .lkp {
+.jc:where(.jc-sankey):has(.nd.n29:hover,.nd.n29:focus-visible) .lk.m29 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n29:focus-visible) .lk:not(.m29) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n29:hover) .nd:not(.a29) .bar {
+.jc:where(.jc-sankey):has(.nd.n29:hover,.nd.n29:focus-visible) .nd:not(.a29) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n29:hover) .nd.a29 .bar {
+.jc:where(.jc-sankey):has(.nd.n29:hover,.nd.n29:focus-visible) .nd.a29 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n30:hover) .lk:not(.m30) .lkp {
+.jc:where(.jc-sankey):has(.nd.n30:hover,.nd.n30:focus-visible) .lk:not(.m30) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n30:hover) .lk.m30 .lkp {
+.jc:where(.jc-sankey):has(.nd.n30:hover,.nd.n30:focus-visible) .lk.m30 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n30:focus-visible) .lk:not(.m30) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n30:hover) .nd:not(.a30) .bar {
+.jc:where(.jc-sankey):has(.nd.n30:hover,.nd.n30:focus-visible) .nd:not(.a30) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n30:hover) .nd.a30 .bar {
+.jc:where(.jc-sankey):has(.nd.n30:hover,.nd.n30:focus-visible) .nd.a30 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n31:hover) .lk:not(.m31) .lkp {
+.jc:where(.jc-sankey):has(.nd.n31:hover,.nd.n31:focus-visible) .lk:not(.m31) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n31:hover) .lk.m31 .lkp {
+.jc:where(.jc-sankey):has(.nd.n31:hover,.nd.n31:focus-visible) .lk.m31 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n31:focus-visible) .lk:not(.m31) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n31:hover) .nd:not(.a31) .bar {
+.jc:where(.jc-sankey):has(.nd.n31:hover,.nd.n31:focus-visible) .nd:not(.a31) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n31:hover) .nd.a31 .bar {
+.jc:where(.jc-sankey):has(.nd.n31:hover,.nd.n31:focus-visible) .nd.a31 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n32:hover) .lk:not(.m32) .lkp {
+.jc:where(.jc-sankey):has(.nd.n32:hover,.nd.n32:focus-visible) .lk:not(.m32) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n32:hover) .lk.m32 .lkp {
+.jc:where(.jc-sankey):has(.nd.n32:hover,.nd.n32:focus-visible) .lk.m32 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n32:focus-visible) .lk:not(.m32) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n32:hover) .nd:not(.a32) .bar {
+.jc:where(.jc-sankey):has(.nd.n32:hover,.nd.n32:focus-visible) .nd:not(.a32) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n32:hover) .nd.a32 .bar {
+.jc:where(.jc-sankey):has(.nd.n32:hover,.nd.n32:focus-visible) .nd.a32 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n33:hover) .lk:not(.m33) .lkp {
+.jc:where(.jc-sankey):has(.nd.n33:hover,.nd.n33:focus-visible) .lk:not(.m33) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n33:hover) .lk.m33 .lkp {
+.jc:where(.jc-sankey):has(.nd.n33:hover,.nd.n33:focus-visible) .lk.m33 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n33:focus-visible) .lk:not(.m33) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n33:hover) .nd:not(.a33) .bar {
+.jc:where(.jc-sankey):has(.nd.n33:hover,.nd.n33:focus-visible) .nd:not(.a33) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n33:hover) .nd.a33 .bar {
+.jc:where(.jc-sankey):has(.nd.n33:hover,.nd.n33:focus-visible) .nd.a33 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n34:hover) .lk:not(.m34) .lkp {
+.jc:where(.jc-sankey):has(.nd.n34:hover,.nd.n34:focus-visible) .lk:not(.m34) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n34:hover) .lk.m34 .lkp {
+.jc:where(.jc-sankey):has(.nd.n34:hover,.nd.n34:focus-visible) .lk.m34 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n34:focus-visible) .lk:not(.m34) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n34:hover) .nd:not(.a34) .bar {
+.jc:where(.jc-sankey):has(.nd.n34:hover,.nd.n34:focus-visible) .nd:not(.a34) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n34:hover) .nd.a34 .bar {
+.jc:where(.jc-sankey):has(.nd.n34:hover,.nd.n34:focus-visible) .nd.a34 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n35:hover) .lk:not(.m35) .lkp {
+.jc:where(.jc-sankey):has(.nd.n35:hover,.nd.n35:focus-visible) .lk:not(.m35) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n35:hover) .lk.m35 .lkp {
+.jc:where(.jc-sankey):has(.nd.n35:hover,.nd.n35:focus-visible) .lk.m35 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n35:focus-visible) .lk:not(.m35) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n35:hover) .nd:not(.a35) .bar {
+.jc:where(.jc-sankey):has(.nd.n35:hover,.nd.n35:focus-visible) .nd:not(.a35) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n35:hover) .nd.a35 .bar {
+.jc:where(.jc-sankey):has(.nd.n35:hover,.nd.n35:focus-visible) .nd.a35 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n36:hover) .lk:not(.m36) .lkp {
+.jc:where(.jc-sankey):has(.nd.n36:hover,.nd.n36:focus-visible) .lk:not(.m36) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n36:hover) .lk.m36 .lkp {
+.jc:where(.jc-sankey):has(.nd.n36:hover,.nd.n36:focus-visible) .lk.m36 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n36:focus-visible) .lk:not(.m36) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n36:hover) .nd:not(.a36) .bar {
+.jc:where(.jc-sankey):has(.nd.n36:hover,.nd.n36:focus-visible) .nd:not(.a36) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n36:hover) .nd.a36 .bar {
+.jc:where(.jc-sankey):has(.nd.n36:hover,.nd.n36:focus-visible) .nd.a36 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n37:hover) .lk:not(.m37) .lkp {
+.jc:where(.jc-sankey):has(.nd.n37:hover,.nd.n37:focus-visible) .lk:not(.m37) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n37:hover) .lk.m37 .lkp {
+.jc:where(.jc-sankey):has(.nd.n37:hover,.nd.n37:focus-visible) .lk.m37 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n37:focus-visible) .lk:not(.m37) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n37:hover) .nd:not(.a37) .bar {
+.jc:where(.jc-sankey):has(.nd.n37:hover,.nd.n37:focus-visible) .nd:not(.a37) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n37:hover) .nd.a37 .bar {
+.jc:where(.jc-sankey):has(.nd.n37:hover,.nd.n37:focus-visible) .nd.a37 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n38:hover) .lk:not(.m38) .lkp {
+.jc:where(.jc-sankey):has(.nd.n38:hover,.nd.n38:focus-visible) .lk:not(.m38) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n38:hover) .lk.m38 .lkp {
+.jc:where(.jc-sankey):has(.nd.n38:hover,.nd.n38:focus-visible) .lk.m38 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n38:focus-visible) .lk:not(.m38) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n38:hover) .nd:not(.a38) .bar {
+.jc:where(.jc-sankey):has(.nd.n38:hover,.nd.n38:focus-visible) .nd:not(.a38) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n38:hover) .nd.a38 .bar {
+.jc:where(.jc-sankey):has(.nd.n38:hover,.nd.n38:focus-visible) .nd.a38 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.nd.n39:hover) .lk:not(.m39) .lkp {
+.jc:where(.jc-sankey):has(.nd.n39:hover,.nd.n39:focus-visible) .lk:not(.m39) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.nd.n39:hover) .lk.m39 .lkp {
+.jc:where(.jc-sankey):has(.nd.n39:hover,.nd.n39:focus-visible) .lk.m39 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.nd.n39:focus-visible) .lk:not(.m39) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.nd.n39:hover) .nd:not(.a39) .bar {
+.jc:where(.jc-sankey):has(.nd.n39:hover,.nd.n39:focus-visible) .nd:not(.a39) .bar {
     opacity: .3
 }
 
-.jc:where(.jc-sankey):has(.nd.n39:hover) .nd.a39 .bar {
+.jc:where(.jc-sankey):has(.nd.n39:hover,.nd.n39:focus-visible) .nd.a39 .bar {
     opacity: 1
 }
 
-.jc:where(.jc-sankey):has(.lk.l0:hover) .lk:not(.k0) .lkp {
+.jc:where(.jc-sankey):has(.lk.l0:hover,.lk.l0:focus-visible) .lk:not(.k0) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l0:hover) .lk.k0 .lkp {
+.jc:where(.jc-sankey):has(.lk.l0:hover,.lk.l0:focus-visible) .lk.k0 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l0:focus-visible) .lk:not(.k0) .lkp {
+.jc:where(.jc-sankey):has(.lk.l1:hover,.lk.l1:focus-visible) .lk:not(.k1) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l1:hover) .lk:not(.k1) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l1:hover) .lk.k1 .lkp {
+.jc:where(.jc-sankey):has(.lk.l1:hover,.lk.l1:focus-visible) .lk.k1 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l1:focus-visible) .lk:not(.k1) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l2:hover) .lk:not(.k2) .lkp {
+.jc:where(.jc-sankey):has(.lk.l2:hover,.lk.l2:focus-visible) .lk:not(.k2) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l2:hover) .lk.k2 .lkp {
+.jc:where(.jc-sankey):has(.lk.l2:hover,.lk.l2:focus-visible) .lk.k2 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l2:focus-visible) .lk:not(.k2) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l3:hover) .lk:not(.k3) .lkp {
+.jc:where(.jc-sankey):has(.lk.l3:hover,.lk.l3:focus-visible) .lk:not(.k3) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l3:hover) .lk.k3 .lkp {
+.jc:where(.jc-sankey):has(.lk.l3:hover,.lk.l3:focus-visible) .lk.k3 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l3:focus-visible) .lk:not(.k3) .lkp {
+.jc:where(.jc-sankey):has(.lk.l4:hover,.lk.l4:focus-visible) .lk:not(.k4) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l4:hover) .lk:not(.k4) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l4:hover) .lk.k4 .lkp {
+.jc:where(.jc-sankey):has(.lk.l4:hover,.lk.l4:focus-visible) .lk.k4 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l4:focus-visible) .lk:not(.k4) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l5:hover) .lk:not(.k5) .lkp {
+.jc:where(.jc-sankey):has(.lk.l5:hover,.lk.l5:focus-visible) .lk:not(.k5) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l5:hover) .lk.k5 .lkp {
+.jc:where(.jc-sankey):has(.lk.l5:hover,.lk.l5:focus-visible) .lk.k5 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l5:focus-visible) .lk:not(.k5) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l6:hover) .lk:not(.k6) .lkp {
+.jc:where(.jc-sankey):has(.lk.l6:hover,.lk.l6:focus-visible) .lk:not(.k6) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l6:hover) .lk.k6 .lkp {
+.jc:where(.jc-sankey):has(.lk.l6:hover,.lk.l6:focus-visible) .lk.k6 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l6:focus-visible) .lk:not(.k6) .lkp {
+.jc:where(.jc-sankey):has(.lk.l7:hover,.lk.l7:focus-visible) .lk:not(.k7) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l7:hover) .lk:not(.k7) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l7:hover) .lk.k7 .lkp {
+.jc:where(.jc-sankey):has(.lk.l7:hover,.lk.l7:focus-visible) .lk.k7 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l7:focus-visible) .lk:not(.k7) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l8:hover) .lk:not(.k8) .lkp {
+.jc:where(.jc-sankey):has(.lk.l8:hover,.lk.l8:focus-visible) .lk:not(.k8) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l8:hover) .lk.k8 .lkp {
+.jc:where(.jc-sankey):has(.lk.l8:hover,.lk.l8:focus-visible) .lk.k8 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l8:focus-visible) .lk:not(.k8) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l9:hover) .lk:not(.k9) .lkp {
+.jc:where(.jc-sankey):has(.lk.l9:hover,.lk.l9:focus-visible) .lk:not(.k9) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l9:hover) .lk.k9 .lkp {
+.jc:where(.jc-sankey):has(.lk.l9:hover,.lk.l9:focus-visible) .lk.k9 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l9:focus-visible) .lk:not(.k9) .lkp {
+.jc:where(.jc-sankey):has(.lk.l10:hover,.lk.l10:focus-visible) .lk:not(.k10) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l10:hover) .lk:not(.k10) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l10:hover) .lk.k10 .lkp {
+.jc:where(.jc-sankey):has(.lk.l10:hover,.lk.l10:focus-visible) .lk.k10 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l10:focus-visible) .lk:not(.k10) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l11:hover) .lk:not(.k11) .lkp {
+.jc:where(.jc-sankey):has(.lk.l11:hover,.lk.l11:focus-visible) .lk:not(.k11) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l11:hover) .lk.k11 .lkp {
+.jc:where(.jc-sankey):has(.lk.l11:hover,.lk.l11:focus-visible) .lk.k11 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l11:focus-visible) .lk:not(.k11) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l12:hover) .lk:not(.k12) .lkp {
+.jc:where(.jc-sankey):has(.lk.l12:hover,.lk.l12:focus-visible) .lk:not(.k12) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l12:hover) .lk.k12 .lkp {
+.jc:where(.jc-sankey):has(.lk.l12:hover,.lk.l12:focus-visible) .lk.k12 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l12:focus-visible) .lk:not(.k12) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l13:hover) .lk:not(.k13) .lkp {
+.jc:where(.jc-sankey):has(.lk.l13:hover,.lk.l13:focus-visible) .lk:not(.k13) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l13:hover) .lk.k13 .lkp {
+.jc:where(.jc-sankey):has(.lk.l13:hover,.lk.l13:focus-visible) .lk.k13 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l13:focus-visible) .lk:not(.k13) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l14:hover) .lk:not(.k14) .lkp {
+.jc:where(.jc-sankey):has(.lk.l14:hover,.lk.l14:focus-visible) .lk:not(.k14) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l14:hover) .lk.k14 .lkp {
+.jc:where(.jc-sankey):has(.lk.l14:hover,.lk.l14:focus-visible) .lk.k14 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l14:focus-visible) .lk:not(.k14) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l15:hover) .lk:not(.k15) .lkp {
+.jc:where(.jc-sankey):has(.lk.l15:hover,.lk.l15:focus-visible) .lk:not(.k15) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l15:hover) .lk.k15 .lkp {
+.jc:where(.jc-sankey):has(.lk.l15:hover,.lk.l15:focus-visible) .lk.k15 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l15:focus-visible) .lk:not(.k15) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l16:hover) .lk:not(.k16) .lkp {
+.jc:where(.jc-sankey):has(.lk.l16:hover,.lk.l16:focus-visible) .lk:not(.k16) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l16:hover) .lk.k16 .lkp {
+.jc:where(.jc-sankey):has(.lk.l16:hover,.lk.l16:focus-visible) .lk.k16 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l16:focus-visible) .lk:not(.k16) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l17:hover) .lk:not(.k17) .lkp {
+.jc:where(.jc-sankey):has(.lk.l17:hover,.lk.l17:focus-visible) .lk:not(.k17) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l17:hover) .lk.k17 .lkp {
+.jc:where(.jc-sankey):has(.lk.l17:hover,.lk.l17:focus-visible) .lk.k17 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l17:focus-visible) .lk:not(.k17) .lkp {
+.jc:where(.jc-sankey):has(.lk.l18:hover,.lk.l18:focus-visible) .lk:not(.k18) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l18:hover) .lk:not(.k18) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l18:hover) .lk.k18 .lkp {
+.jc:where(.jc-sankey):has(.lk.l18:hover,.lk.l18:focus-visible) .lk.k18 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l18:focus-visible) .lk:not(.k18) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l19:hover) .lk:not(.k19) .lkp {
+.jc:where(.jc-sankey):has(.lk.l19:hover,.lk.l19:focus-visible) .lk:not(.k19) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l19:hover) .lk.k19 .lkp {
+.jc:where(.jc-sankey):has(.lk.l19:hover,.lk.l19:focus-visible) .lk.k19 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l19:focus-visible) .lk:not(.k19) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l20:hover) .lk:not(.k20) .lkp {
+.jc:where(.jc-sankey):has(.lk.l20:hover,.lk.l20:focus-visible) .lk:not(.k20) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l20:hover) .lk.k20 .lkp {
+.jc:where(.jc-sankey):has(.lk.l20:hover,.lk.l20:focus-visible) .lk.k20 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l20:focus-visible) .lk:not(.k20) .lkp {
+.jc:where(.jc-sankey):has(.lk.l21:hover,.lk.l21:focus-visible) .lk:not(.k21) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l21:hover) .lk:not(.k21) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l21:hover) .lk.k21 .lkp {
+.jc:where(.jc-sankey):has(.lk.l21:hover,.lk.l21:focus-visible) .lk.k21 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l21:focus-visible) .lk:not(.k21) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l22:hover) .lk:not(.k22) .lkp {
+.jc:where(.jc-sankey):has(.lk.l22:hover,.lk.l22:focus-visible) .lk:not(.k22) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l22:hover) .lk.k22 .lkp {
+.jc:where(.jc-sankey):has(.lk.l22:hover,.lk.l22:focus-visible) .lk.k22 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l22:focus-visible) .lk:not(.k22) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l23:hover) .lk:not(.k23) .lkp {
+.jc:where(.jc-sankey):has(.lk.l23:hover,.lk.l23:focus-visible) .lk:not(.k23) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l23:hover) .lk.k23 .lkp {
+.jc:where(.jc-sankey):has(.lk.l23:hover,.lk.l23:focus-visible) .lk.k23 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l23:focus-visible) .lk:not(.k23) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l24:hover) .lk:not(.k24) .lkp {
+.jc:where(.jc-sankey):has(.lk.l24:hover,.lk.l24:focus-visible) .lk:not(.k24) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l24:hover) .lk.k24 .lkp {
+.jc:where(.jc-sankey):has(.lk.l24:hover,.lk.l24:focus-visible) .lk.k24 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l24:focus-visible) .lk:not(.k24) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l25:hover) .lk:not(.k25) .lkp {
+.jc:where(.jc-sankey):has(.lk.l25:hover,.lk.l25:focus-visible) .lk:not(.k25) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l25:hover) .lk.k25 .lkp {
+.jc:where(.jc-sankey):has(.lk.l25:hover,.lk.l25:focus-visible) .lk.k25 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l25:focus-visible) .lk:not(.k25) .lkp {
+.jc:where(.jc-sankey):has(.lk.l26:hover,.lk.l26:focus-visible) .lk:not(.k26) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l26:hover) .lk:not(.k26) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l26:hover) .lk.k26 .lkp {
+.jc:where(.jc-sankey):has(.lk.l26:hover,.lk.l26:focus-visible) .lk.k26 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l26:focus-visible) .lk:not(.k26) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l27:hover) .lk:not(.k27) .lkp {
+.jc:where(.jc-sankey):has(.lk.l27:hover,.lk.l27:focus-visible) .lk:not(.k27) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l27:hover) .lk.k27 .lkp {
+.jc:where(.jc-sankey):has(.lk.l27:hover,.lk.l27:focus-visible) .lk.k27 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l27:focus-visible) .lk:not(.k27) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l28:hover) .lk:not(.k28) .lkp {
+.jc:where(.jc-sankey):has(.lk.l28:hover,.lk.l28:focus-visible) .lk:not(.k28) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l28:hover) .lk.k28 .lkp {
+.jc:where(.jc-sankey):has(.lk.l28:hover,.lk.l28:focus-visible) .lk.k28 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l28:focus-visible) .lk:not(.k28) .lkp {
+.jc:where(.jc-sankey):has(.lk.l29:hover,.lk.l29:focus-visible) .lk:not(.k29) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l29:hover) .lk:not(.k29) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l29:hover) .lk.k29 .lkp {
+.jc:where(.jc-sankey):has(.lk.l29:hover,.lk.l29:focus-visible) .lk.k29 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l29:focus-visible) .lk:not(.k29) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l30:hover) .lk:not(.k30) .lkp {
+.jc:where(.jc-sankey):has(.lk.l30:hover,.lk.l30:focus-visible) .lk:not(.k30) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l30:hover) .lk.k30 .lkp {
+.jc:where(.jc-sankey):has(.lk.l30:hover,.lk.l30:focus-visible) .lk.k30 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l30:focus-visible) .lk:not(.k30) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l31:hover) .lk:not(.k31) .lkp {
+.jc:where(.jc-sankey):has(.lk.l31:hover,.lk.l31:focus-visible) .lk:not(.k31) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l31:hover) .lk.k31 .lkp {
+.jc:where(.jc-sankey):has(.lk.l31:hover,.lk.l31:focus-visible) .lk.k31 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l31:focus-visible) .lk:not(.k31) .lkp {
+.jc:where(.jc-sankey):has(.lk.l32:hover,.lk.l32:focus-visible) .lk:not(.k32) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l32:hover) .lk:not(.k32) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l32:hover) .lk.k32 .lkp {
+.jc:where(.jc-sankey):has(.lk.l32:hover,.lk.l32:focus-visible) .lk.k32 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l32:focus-visible) .lk:not(.k32) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l33:hover) .lk:not(.k33) .lkp {
+.jc:where(.jc-sankey):has(.lk.l33:hover,.lk.l33:focus-visible) .lk:not(.k33) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l33:hover) .lk.k33 .lkp {
+.jc:where(.jc-sankey):has(.lk.l33:hover,.lk.l33:focus-visible) .lk.k33 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l33:focus-visible) .lk:not(.k33) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l34:hover) .lk:not(.k34) .lkp {
+.jc:where(.jc-sankey):has(.lk.l34:hover,.lk.l34:focus-visible) .lk:not(.k34) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l34:hover) .lk.k34 .lkp {
+.jc:where(.jc-sankey):has(.lk.l34:hover,.lk.l34:focus-visible) .lk.k34 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l34:focus-visible) .lk:not(.k34) .lkp {
+.jc:where(.jc-sankey):has(.lk.l35:hover,.lk.l35:focus-visible) .lk:not(.k35) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l35:hover) .lk:not(.k35) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l35:hover) .lk.k35 .lkp {
+.jc:where(.jc-sankey):has(.lk.l35:hover,.lk.l35:focus-visible) .lk.k35 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l35:focus-visible) .lk:not(.k35) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l36:hover) .lk:not(.k36) .lkp {
+.jc:where(.jc-sankey):has(.lk.l36:hover,.lk.l36:focus-visible) .lk:not(.k36) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l36:hover) .lk.k36 .lkp {
+.jc:where(.jc-sankey):has(.lk.l36:hover,.lk.l36:focus-visible) .lk.k36 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l36:focus-visible) .lk:not(.k36) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l37:hover) .lk:not(.k37) .lkp {
+.jc:where(.jc-sankey):has(.lk.l37:hover,.lk.l37:focus-visible) .lk:not(.k37) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l37:hover) .lk.k37 .lkp {
+.jc:where(.jc-sankey):has(.lk.l37:hover,.lk.l37:focus-visible) .lk.k37 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l37:focus-visible) .lk:not(.k37) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l38:hover) .lk:not(.k38) .lkp {
+.jc:where(.jc-sankey):has(.lk.l38:hover,.lk.l38:focus-visible) .lk:not(.k38) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l38:hover) .lk.k38 .lkp {
+.jc:where(.jc-sankey):has(.lk.l38:hover,.lk.l38:focus-visible) .lk.k38 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l38:focus-visible) .lk:not(.k38) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l39:hover) .lk:not(.k39) .lkp {
+.jc:where(.jc-sankey):has(.lk.l39:hover,.lk.l39:focus-visible) .lk:not(.k39) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l39:hover) .lk.k39 .lkp {
+.jc:where(.jc-sankey):has(.lk.l39:hover,.lk.l39:focus-visible) .lk.k39 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l39:focus-visible) .lk:not(.k39) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l40:hover) .lk:not(.k40) .lkp {
+.jc:where(.jc-sankey):has(.lk.l40:hover,.lk.l40:focus-visible) .lk:not(.k40) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l40:hover) .lk.k40 .lkp {
+.jc:where(.jc-sankey):has(.lk.l40:hover,.lk.l40:focus-visible) .lk.k40 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l40:focus-visible) .lk:not(.k40) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l41:hover) .lk:not(.k41) .lkp {
+.jc:where(.jc-sankey):has(.lk.l41:hover,.lk.l41:focus-visible) .lk:not(.k41) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l41:hover) .lk.k41 .lkp {
+.jc:where(.jc-sankey):has(.lk.l41:hover,.lk.l41:focus-visible) .lk.k41 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l41:focus-visible) .lk:not(.k41) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l42:hover) .lk:not(.k42) .lkp {
+.jc:where(.jc-sankey):has(.lk.l42:hover,.lk.l42:focus-visible) .lk:not(.k42) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l42:hover) .lk.k42 .lkp {
+.jc:where(.jc-sankey):has(.lk.l42:hover,.lk.l42:focus-visible) .lk.k42 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l42:focus-visible) .lk:not(.k42) .lkp {
+.jc:where(.jc-sankey):has(.lk.l43:hover,.lk.l43:focus-visible) .lk:not(.k43) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l43:hover) .lk:not(.k43) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l43:hover) .lk.k43 .lkp {
+.jc:where(.jc-sankey):has(.lk.l43:hover,.lk.l43:focus-visible) .lk.k43 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l43:focus-visible) .lk:not(.k43) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l44:hover) .lk:not(.k44) .lkp {
+.jc:where(.jc-sankey):has(.lk.l44:hover,.lk.l44:focus-visible) .lk:not(.k44) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l44:hover) .lk.k44 .lkp {
+.jc:where(.jc-sankey):has(.lk.l44:hover,.lk.l44:focus-visible) .lk.k44 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l44:focus-visible) .lk:not(.k44) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l45:hover) .lk:not(.k45) .lkp {
+.jc:where(.jc-sankey):has(.lk.l45:hover,.lk.l45:focus-visible) .lk:not(.k45) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l45:hover) .lk.k45 .lkp {
+.jc:where(.jc-sankey):has(.lk.l45:hover,.lk.l45:focus-visible) .lk.k45 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l45:focus-visible) .lk:not(.k45) .lkp {
+.jc:where(.jc-sankey):has(.lk.l46:hover,.lk.l46:focus-visible) .lk:not(.k46) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l46:hover) .lk:not(.k46) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l46:hover) .lk.k46 .lkp {
+.jc:where(.jc-sankey):has(.lk.l46:hover,.lk.l46:focus-visible) .lk.k46 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l46:focus-visible) .lk:not(.k46) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l47:hover) .lk:not(.k47) .lkp {
+.jc:where(.jc-sankey):has(.lk.l47:hover,.lk.l47:focus-visible) .lk:not(.k47) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l47:hover) .lk.k47 .lkp {
+.jc:where(.jc-sankey):has(.lk.l47:hover,.lk.l47:focus-visible) .lk.k47 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l47:focus-visible) .lk:not(.k47) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l48:hover) .lk:not(.k48) .lkp {
+.jc:where(.jc-sankey):has(.lk.l48:hover,.lk.l48:focus-visible) .lk:not(.k48) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l48:hover) .lk.k48 .lkp {
+.jc:where(.jc-sankey):has(.lk.l48:hover,.lk.l48:focus-visible) .lk.k48 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l48:focus-visible) .lk:not(.k48) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l49:hover) .lk:not(.k49) .lkp {
+.jc:where(.jc-sankey):has(.lk.l49:hover,.lk.l49:focus-visible) .lk:not(.k49) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l49:hover) .lk.k49 .lkp {
+.jc:where(.jc-sankey):has(.lk.l49:hover,.lk.l49:focus-visible) .lk.k49 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l49:focus-visible) .lk:not(.k49) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l50:hover) .lk:not(.k50) .lkp {
+.jc:where(.jc-sankey):has(.lk.l50:hover,.lk.l50:focus-visible) .lk:not(.k50) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l50:hover) .lk.k50 .lkp {
+.jc:where(.jc-sankey):has(.lk.l50:hover,.lk.l50:focus-visible) .lk.k50 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l50:focus-visible) .lk:not(.k50) .lkp {
+.jc:where(.jc-sankey):has(.lk.l51:hover,.lk.l51:focus-visible) .lk:not(.k51) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l51:hover) .lk:not(.k51) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l51:hover) .lk.k51 .lkp {
+.jc:where(.jc-sankey):has(.lk.l51:hover,.lk.l51:focus-visible) .lk.k51 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l51:focus-visible) .lk:not(.k51) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l52:hover) .lk:not(.k52) .lkp {
+.jc:where(.jc-sankey):has(.lk.l52:hover,.lk.l52:focus-visible) .lk:not(.k52) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l52:hover) .lk.k52 .lkp {
+.jc:where(.jc-sankey):has(.lk.l52:hover,.lk.l52:focus-visible) .lk.k52 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l52:focus-visible) .lk:not(.k52) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l53:hover) .lk:not(.k53) .lkp {
+.jc:where(.jc-sankey):has(.lk.l53:hover,.lk.l53:focus-visible) .lk:not(.k53) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l53:hover) .lk.k53 .lkp {
+.jc:where(.jc-sankey):has(.lk.l53:hover,.lk.l53:focus-visible) .lk.k53 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l53:focus-visible) .lk:not(.k53) .lkp {
+.jc:where(.jc-sankey):has(.lk.l54:hover,.lk.l54:focus-visible) .lk:not(.k54) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l54:hover) .lk:not(.k54) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l54:hover) .lk.k54 .lkp {
+.jc:where(.jc-sankey):has(.lk.l54:hover,.lk.l54:focus-visible) .lk.k54 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l54:focus-visible) .lk:not(.k54) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l55:hover) .lk:not(.k55) .lkp {
+.jc:where(.jc-sankey):has(.lk.l55:hover,.lk.l55:focus-visible) .lk:not(.k55) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l55:hover) .lk.k55 .lkp {
+.jc:where(.jc-sankey):has(.lk.l55:hover,.lk.l55:focus-visible) .lk.k55 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l55:focus-visible) .lk:not(.k55) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l56:hover) .lk:not(.k56) .lkp {
+.jc:where(.jc-sankey):has(.lk.l56:hover,.lk.l56:focus-visible) .lk:not(.k56) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l56:hover) .lk.k56 .lkp {
+.jc:where(.jc-sankey):has(.lk.l56:hover,.lk.l56:focus-visible) .lk.k56 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l56:focus-visible) .lk:not(.k56) .lkp {
+.jc:where(.jc-sankey):has(.lk.l57:hover,.lk.l57:focus-visible) .lk:not(.k57) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l57:hover) .lk:not(.k57) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l57:hover) .lk.k57 .lkp {
+.jc:where(.jc-sankey):has(.lk.l57:hover,.lk.l57:focus-visible) .lk.k57 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l57:focus-visible) .lk:not(.k57) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l58:hover) .lk:not(.k58) .lkp {
+.jc:where(.jc-sankey):has(.lk.l58:hover,.lk.l58:focus-visible) .lk:not(.k58) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l58:hover) .lk.k58 .lkp {
+.jc:where(.jc-sankey):has(.lk.l58:hover,.lk.l58:focus-visible) .lk.k58 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l58:focus-visible) .lk:not(.k58) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l59:hover) .lk:not(.k59) .lkp {
+.jc:where(.jc-sankey):has(.lk.l59:hover,.lk.l59:focus-visible) .lk:not(.k59) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l59:hover) .lk.k59 .lkp {
+.jc:where(.jc-sankey):has(.lk.l59:hover,.lk.l59:focus-visible) .lk.k59 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l59:focus-visible) .lk:not(.k59) .lkp {
+.jc:where(.jc-sankey):has(.lk.l60:hover,.lk.l60:focus-visible) .lk:not(.k60) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l60:hover) .lk:not(.k60) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l60:hover) .lk.k60 .lkp {
+.jc:where(.jc-sankey):has(.lk.l60:hover,.lk.l60:focus-visible) .lk.k60 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l60:focus-visible) .lk:not(.k60) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l61:hover) .lk:not(.k61) .lkp {
+.jc:where(.jc-sankey):has(.lk.l61:hover,.lk.l61:focus-visible) .lk:not(.k61) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l61:hover) .lk.k61 .lkp {
+.jc:where(.jc-sankey):has(.lk.l61:hover,.lk.l61:focus-visible) .lk.k61 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l61:focus-visible) .lk:not(.k61) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l62:hover) .lk:not(.k62) .lkp {
+.jc:where(.jc-sankey):has(.lk.l62:hover,.lk.l62:focus-visible) .lk:not(.k62) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l62:hover) .lk.k62 .lkp {
+.jc:where(.jc-sankey):has(.lk.l62:hover,.lk.l62:focus-visible) .lk.k62 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l62:focus-visible) .lk:not(.k62) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l63:hover) .lk:not(.k63) .lkp {
+.jc:where(.jc-sankey):has(.lk.l63:hover,.lk.l63:focus-visible) .lk:not(.k63) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l63:hover) .lk.k63 .lkp {
+.jc:where(.jc-sankey):has(.lk.l63:hover,.lk.l63:focus-visible) .lk.k63 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l63:focus-visible) .lk:not(.k63) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l64:hover) .lk:not(.k64) .lkp {
+.jc:where(.jc-sankey):has(.lk.l64:hover,.lk.l64:focus-visible) .lk:not(.k64) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l64:hover) .lk.k64 .lkp {
+.jc:where(.jc-sankey):has(.lk.l64:hover,.lk.l64:focus-visible) .lk.k64 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l64:focus-visible) .lk:not(.k64) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l65:hover) .lk:not(.k65) .lkp {
+.jc:where(.jc-sankey):has(.lk.l65:hover,.lk.l65:focus-visible) .lk:not(.k65) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l65:hover) .lk.k65 .lkp {
+.jc:where(.jc-sankey):has(.lk.l65:hover,.lk.l65:focus-visible) .lk.k65 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l65:focus-visible) .lk:not(.k65) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l66:hover) .lk:not(.k66) .lkp {
+.jc:where(.jc-sankey):has(.lk.l66:hover,.lk.l66:focus-visible) .lk:not(.k66) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l66:hover) .lk.k66 .lkp {
+.jc:where(.jc-sankey):has(.lk.l66:hover,.lk.l66:focus-visible) .lk.k66 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l66:focus-visible) .lk:not(.k66) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l67:hover) .lk:not(.k67) .lkp {
+.jc:where(.jc-sankey):has(.lk.l67:hover,.lk.l67:focus-visible) .lk:not(.k67) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l67:hover) .lk.k67 .lkp {
+.jc:where(.jc-sankey):has(.lk.l67:hover,.lk.l67:focus-visible) .lk.k67 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l67:focus-visible) .lk:not(.k67) .lkp {
+.jc:where(.jc-sankey):has(.lk.l68:hover,.lk.l68:focus-visible) .lk:not(.k68) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l68:hover) .lk:not(.k68) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l68:hover) .lk.k68 .lkp {
+.jc:where(.jc-sankey):has(.lk.l68:hover,.lk.l68:focus-visible) .lk.k68 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l68:focus-visible) .lk:not(.k68) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l69:hover) .lk:not(.k69) .lkp {
+.jc:where(.jc-sankey):has(.lk.l69:hover,.lk.l69:focus-visible) .lk:not(.k69) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l69:hover) .lk.k69 .lkp {
+.jc:where(.jc-sankey):has(.lk.l69:hover,.lk.l69:focus-visible) .lk.k69 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l69:focus-visible) .lk:not(.k69) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l70:hover) .lk:not(.k70) .lkp {
+.jc:where(.jc-sankey):has(.lk.l70:hover,.lk.l70:focus-visible) .lk:not(.k70) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l70:hover) .lk.k70 .lkp {
+.jc:where(.jc-sankey):has(.lk.l70:hover,.lk.l70:focus-visible) .lk.k70 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l70:focus-visible) .lk:not(.k70) .lkp {
+.jc:where(.jc-sankey):has(.lk.l71:hover,.lk.l71:focus-visible) .lk:not(.k71) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l71:hover) .lk:not(.k71) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l71:hover) .lk.k71 .lkp {
+.jc:where(.jc-sankey):has(.lk.l71:hover,.lk.l71:focus-visible) .lk.k71 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l71:focus-visible) .lk:not(.k71) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l72:hover) .lk:not(.k72) .lkp {
+.jc:where(.jc-sankey):has(.lk.l72:hover,.lk.l72:focus-visible) .lk:not(.k72) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l72:hover) .lk.k72 .lkp {
+.jc:where(.jc-sankey):has(.lk.l72:hover,.lk.l72:focus-visible) .lk.k72 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l72:focus-visible) .lk:not(.k72) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l73:hover) .lk:not(.k73) .lkp {
+.jc:where(.jc-sankey):has(.lk.l73:hover,.lk.l73:focus-visible) .lk:not(.k73) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l73:hover) .lk.k73 .lkp {
+.jc:where(.jc-sankey):has(.lk.l73:hover,.lk.l73:focus-visible) .lk.k73 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l73:focus-visible) .lk:not(.k73) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l74:hover) .lk:not(.k74) .lkp {
+.jc:where(.jc-sankey):has(.lk.l74:hover,.lk.l74:focus-visible) .lk:not(.k74) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l74:hover) .lk.k74 .lkp {
+.jc:where(.jc-sankey):has(.lk.l74:hover,.lk.l74:focus-visible) .lk.k74 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l74:focus-visible) .lk:not(.k74) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l75:hover) .lk:not(.k75) .lkp {
+.jc:where(.jc-sankey):has(.lk.l75:hover,.lk.l75:focus-visible) .lk:not(.k75) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l75:hover) .lk.k75 .lkp {
+.jc:where(.jc-sankey):has(.lk.l75:hover,.lk.l75:focus-visible) .lk.k75 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l75:focus-visible) .lk:not(.k75) .lkp {
+.jc:where(.jc-sankey):has(.lk.l76:hover,.lk.l76:focus-visible) .lk:not(.k76) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l76:hover) .lk:not(.k76) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l76:hover) .lk.k76 .lkp {
+.jc:where(.jc-sankey):has(.lk.l76:hover,.lk.l76:focus-visible) .lk.k76 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l76:focus-visible) .lk:not(.k76) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l77:hover) .lk:not(.k77) .lkp {
+.jc:where(.jc-sankey):has(.lk.l77:hover,.lk.l77:focus-visible) .lk:not(.k77) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l77:hover) .lk.k77 .lkp {
+.jc:where(.jc-sankey):has(.lk.l77:hover,.lk.l77:focus-visible) .lk.k77 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l77:focus-visible) .lk:not(.k77) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l78:hover) .lk:not(.k78) .lkp {
+.jc:where(.jc-sankey):has(.lk.l78:hover,.lk.l78:focus-visible) .lk:not(.k78) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l78:hover) .lk.k78 .lkp {
+.jc:where(.jc-sankey):has(.lk.l78:hover,.lk.l78:focus-visible) .lk.k78 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l78:focus-visible) .lk:not(.k78) .lkp {
+.jc:where(.jc-sankey):has(.lk.l79:hover,.lk.l79:focus-visible) .lk:not(.k79) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l79:hover) .lk:not(.k79) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l79:hover) .lk.k79 .lkp {
+.jc:where(.jc-sankey):has(.lk.l79:hover,.lk.l79:focus-visible) .lk.k79 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l79:focus-visible) .lk:not(.k79) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l80:hover) .lk:not(.k80) .lkp {
+.jc:where(.jc-sankey):has(.lk.l80:hover,.lk.l80:focus-visible) .lk:not(.k80) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l80:hover) .lk.k80 .lkp {
+.jc:where(.jc-sankey):has(.lk.l80:hover,.lk.l80:focus-visible) .lk.k80 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l80:focus-visible) .lk:not(.k80) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l81:hover) .lk:not(.k81) .lkp {
+.jc:where(.jc-sankey):has(.lk.l81:hover,.lk.l81:focus-visible) .lk:not(.k81) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l81:hover) .lk.k81 .lkp {
+.jc:where(.jc-sankey):has(.lk.l81:hover,.lk.l81:focus-visible) .lk.k81 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l81:focus-visible) .lk:not(.k81) .lkp {
+.jc:where(.jc-sankey):has(.lk.l82:hover,.lk.l82:focus-visible) .lk:not(.k82) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l82:hover) .lk:not(.k82) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l82:hover) .lk.k82 .lkp {
+.jc:where(.jc-sankey):has(.lk.l82:hover,.lk.l82:focus-visible) .lk.k82 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l82:focus-visible) .lk:not(.k82) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l83:hover) .lk:not(.k83) .lkp {
+.jc:where(.jc-sankey):has(.lk.l83:hover,.lk.l83:focus-visible) .lk:not(.k83) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l83:hover) .lk.k83 .lkp {
+.jc:where(.jc-sankey):has(.lk.l83:hover,.lk.l83:focus-visible) .lk.k83 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l83:focus-visible) .lk:not(.k83) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l84:hover) .lk:not(.k84) .lkp {
+.jc:where(.jc-sankey):has(.lk.l84:hover,.lk.l84:focus-visible) .lk:not(.k84) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l84:hover) .lk.k84 .lkp {
+.jc:where(.jc-sankey):has(.lk.l84:hover,.lk.l84:focus-visible) .lk.k84 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l84:focus-visible) .lk:not(.k84) .lkp {
+.jc:where(.jc-sankey):has(.lk.l85:hover,.lk.l85:focus-visible) .lk:not(.k85) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l85:hover) .lk:not(.k85) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l85:hover) .lk.k85 .lkp {
+.jc:where(.jc-sankey):has(.lk.l85:hover,.lk.l85:focus-visible) .lk.k85 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l85:focus-visible) .lk:not(.k85) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l86:hover) .lk:not(.k86) .lkp {
+.jc:where(.jc-sankey):has(.lk.l86:hover,.lk.l86:focus-visible) .lk:not(.k86) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l86:hover) .lk.k86 .lkp {
+.jc:where(.jc-sankey):has(.lk.l86:hover,.lk.l86:focus-visible) .lk.k86 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l86:focus-visible) .lk:not(.k86) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l87:hover) .lk:not(.k87) .lkp {
+.jc:where(.jc-sankey):has(.lk.l87:hover,.lk.l87:focus-visible) .lk:not(.k87) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l87:hover) .lk.k87 .lkp {
+.jc:where(.jc-sankey):has(.lk.l87:hover,.lk.l87:focus-visible) .lk.k87 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l87:focus-visible) .lk:not(.k87) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l88:hover) .lk:not(.k88) .lkp {
+.jc:where(.jc-sankey):has(.lk.l88:hover,.lk.l88:focus-visible) .lk:not(.k88) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l88:hover) .lk.k88 .lkp {
+.jc:where(.jc-sankey):has(.lk.l88:hover,.lk.l88:focus-visible) .lk.k88 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l88:focus-visible) .lk:not(.k88) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l89:hover) .lk:not(.k89) .lkp {
+.jc:where(.jc-sankey):has(.lk.l89:hover,.lk.l89:focus-visible) .lk:not(.k89) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l89:hover) .lk.k89 .lkp {
+.jc:where(.jc-sankey):has(.lk.l89:hover,.lk.l89:focus-visible) .lk.k89 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l89:focus-visible) .lk:not(.k89) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l90:hover) .lk:not(.k90) .lkp {
+.jc:where(.jc-sankey):has(.lk.l90:hover,.lk.l90:focus-visible) .lk:not(.k90) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l90:hover) .lk.k90 .lkp {
+.jc:where(.jc-sankey):has(.lk.l90:hover,.lk.l90:focus-visible) .lk.k90 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l90:focus-visible) .lk:not(.k90) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l91:hover) .lk:not(.k91) .lkp {
+.jc:where(.jc-sankey):has(.lk.l91:hover,.lk.l91:focus-visible) .lk:not(.k91) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l91:hover) .lk.k91 .lkp {
+.jc:where(.jc-sankey):has(.lk.l91:hover,.lk.l91:focus-visible) .lk.k91 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l91:focus-visible) .lk:not(.k91) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l92:hover) .lk:not(.k92) .lkp {
+.jc:where(.jc-sankey):has(.lk.l92:hover,.lk.l92:focus-visible) .lk:not(.k92) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l92:hover) .lk.k92 .lkp {
+.jc:where(.jc-sankey):has(.lk.l92:hover,.lk.l92:focus-visible) .lk.k92 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l92:focus-visible) .lk:not(.k92) .lkp {
+.jc:where(.jc-sankey):has(.lk.l93:hover,.lk.l93:focus-visible) .lk:not(.k93) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l93:hover) .lk:not(.k93) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l93:hover) .lk.k93 .lkp {
+.jc:where(.jc-sankey):has(.lk.l93:hover,.lk.l93:focus-visible) .lk.k93 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l93:focus-visible) .lk:not(.k93) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l94:hover) .lk:not(.k94) .lkp {
+.jc:where(.jc-sankey):has(.lk.l94:hover,.lk.l94:focus-visible) .lk:not(.k94) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l94:hover) .lk.k94 .lkp {
+.jc:where(.jc-sankey):has(.lk.l94:hover,.lk.l94:focus-visible) .lk.k94 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l94:focus-visible) .lk:not(.k94) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l95:hover) .lk:not(.k95) .lkp {
+.jc:where(.jc-sankey):has(.lk.l95:hover,.lk.l95:focus-visible) .lk:not(.k95) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l95:hover) .lk.k95 .lkp {
+.jc:where(.jc-sankey):has(.lk.l95:hover,.lk.l95:focus-visible) .lk.k95 .lkp {
     fill-opacity: .62
 }
 
-.jc:where(.jc-sankey):has(.lk.l95:focus-visible) .lk:not(.k95) .lkp {
+.jc:where(.jc-sankey):has(.lk.l96:hover,.lk.l96:focus-visible) .lk:not(.k96) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l96:hover) .lk:not(.k96) .lkp {
-    fill-opacity: .05
-}
-
-.jc:where(.jc-sankey):has(.lk.l96:hover) .lk.k96 .lkp {
+.jc:where(.jc-sankey):has(.lk.l96:hover,.lk.l96:focus-visible) .lk.k96 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l96:focus-visible) .lk:not(.k96) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l97:hover) .lk:not(.k97) .lkp {
+.jc:where(.jc-sankey):has(.lk.l97:hover,.lk.l97:focus-visible) .lk:not(.k97) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l97:hover) .lk.k97 .lkp {
+.jc:where(.jc-sankey):has(.lk.l97:hover,.lk.l97:focus-visible) .lk.k97 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l97:focus-visible) .lk:not(.k97) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l98:hover) .lk:not(.k98) .lkp {
+.jc:where(.jc-sankey):has(.lk.l98:hover,.lk.l98:focus-visible) .lk:not(.k98) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l98:hover) .lk.k98 .lkp {
+.jc:where(.jc-sankey):has(.lk.l98:hover,.lk.l98:focus-visible) .lk.k98 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l98:focus-visible) .lk:not(.k98) .lkp {
-    fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l99:hover) .lk:not(.k99) .lkp {
+.jc:where(.jc-sankey):has(.lk.l99:hover,.lk.l99:focus-visible) .lk:not(.k99) .lkp {
     fill-opacity: .05
 }
 
-.jc:where(.jc-sankey):has(.lk.l99:hover) .lk.k99 .lkp {
+.jc:where(.jc-sankey):has(.lk.l99:hover,.lk.l99:focus-visible) .lk.k99 .lkp {
     fill-opacity: .62
-}
-
-.jc:where(.jc-sankey):has(.lk.l99:focus-visible) .lk:not(.k99) .lkp {
-    fill-opacity: .05
 }
 
 .jc:where(.jc-diagram) .nb {

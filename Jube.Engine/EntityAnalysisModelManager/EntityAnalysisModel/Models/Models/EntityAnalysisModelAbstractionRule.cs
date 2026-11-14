@@ -16,8 +16,11 @@
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable RedundantAttributeUsageProperty
 
+using Svirfd;
+
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models
 {
+    using System;
     using System.Collections.Generic;
     using System.Reflection;
     using Dictionary;
@@ -27,7 +30,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
     {
         public delegate bool Match(DictionaryNoBoxing<string> data,
             Dictionary<string, List<string>> list,
-            PooledDictionary<string, double> kvp, ILog log);
+            PooledDictionary<string, double> kvp, PooledDictionary<string, IpResponse> svirfd,
+            AbstractionCursor cursor, ILog log);
 
         public int Id { get; init; }
         public string AbstractionRuleScript { get; set; }
@@ -48,5 +52,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
         public int OffsetType { get; set; }
         public int OffsetValue { get; set; }
         public string AbstractionRuleAggregationFunctionIntervalType { get; set; }
+        public bool UsesCursor { get; set; }
+        public int IterationOrderType { get; set; } = 1;
+        public Func<double[], double> AggregationFunction { get; set; }
     }
 }

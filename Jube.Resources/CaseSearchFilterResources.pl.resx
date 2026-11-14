@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Nie masz uprawnień do wykonania tej czynności.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Musisz być zalogowany do dzierżawy, aby wykonać tę czynność.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>Nie znaleziono zapisanego wyszukiwania.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>Pole 'Name' nie może być puste.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Pole 'Name' może mieć najwyżej {0} znaków.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Masz już zapisane wyszukiwanie o tej nazwie dla tego przepływu pracy spraw.</value>
+  </data>
+    <data name="CaseWorkflowGuidRequired" xml:space="preserve">
+    <value>Pole 'Case Workflow Guid' nie może być puste.</value>
+  </data>
+    <data name="CaseWorkflowNotFound" xml:space="preserve">
+    <value>Nie znaleziono przepływu pracy spraw lub nie masz do niego dostępu.</value>
+  </data>
+    <data name="CaseWorkflowCannotChange" xml:space="preserve">
+    <value>Zapisanego wyszukiwania nie można przenieść do innego przepływu pracy spraw.</value>
+  </data>
+    <data name="SelectJsonRequired" xml:space="preserve">
+    <value>Pole 'Select Json' nie może być puste.</value>
+  </data>
+    <data name="FilterJsonRequired" xml:space="preserve">
+    <value>Pole 'Filter Json' nie może być puste.</value>
+  </data>
+    <data name="JsonInvalid" xml:space="preserve">
+    <value>Pole '{0}' musi zawierać poprawny JSON.</value>
+  </data>
+    <data name="JsonTooLarge" xml:space="preserve">
+    <value>Pole '{0}' jest zbyt duże.</value>
+  </data>
+    <data name="SharedRoleNotFound" xml:space="preserve">
+    <value>Nie znaleziono roli, której ma zostać udostępnione wyszukiwanie.</value>
+  </data>
+</root>

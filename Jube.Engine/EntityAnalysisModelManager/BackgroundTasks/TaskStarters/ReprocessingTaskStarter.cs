@@ -145,6 +145,35 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             var instanceId = instance.EntityAnalysisModelsReprocessingRuleInstanceId;
             var repository = new EntityAnalysisModelReprocessingRuleInstanceRepository(dbContext);
 
+            try
+            {
+                return await RunInstanceAsync(dbContext, modelKvp, instance, found, repository, token)
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                await repository.RequeueAsync(instanceId, CancellationToken.None).ConfigureAwait(false);
+
+                throw;
+            }
+            catch (Exception ex)
+            {
+                context.Services.Log.Error(
+                    $"Entity Reprocessing: Reprocessing instance {instanceId} has failed as {ex}.");
+
+                await repository.UpdateFailedAsync(instanceId, CancellationToken.None).ConfigureAwait(false);
+
+                return new ReprocessingRunResult(instanceId, ReprocessingRunOutcome.Failed, 0, 0, 0, 0, 0,
+                    ex.Message);
+            }
+        }
+
+        private async Task<ReprocessingRunResult> RunInstanceAsync(DbContext dbContext,
+            KeyValuePair<int, EntityAnalysisModel> modelKvp, EntityAnalysisModelRuleReprocessingInstance instance,
+            bool found, EntityAnalysisModelReprocessingRuleInstanceRepository repository, CancellationToken token)
+        {
+            var instanceId = instance.EntityAnalysisModelsReprocessingRuleInstanceId;
+
             if (!found)
             {
                 var failure = instance.Failure ?? "The reprocessing rule could not be loaded.";
@@ -196,7 +225,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
             await repository.UpdateReferenceDateCountAsync(instanceId, availableCount, startDate.Value, token)
                 .ConfigureAwait(false);
 
-            var limit = int.Parse(context.Services.DynamicEnvironment.AppSettings("ReprocessingBulkLimit"));
+            var limit = ReprocessingPageLimit.Resolve(
+                context.Services.DynamicEnvironment.AppSettings("ReprocessingBulkLimit"));
 
             if (context.Services.Log.IsInfoEnabled)
             {
@@ -679,7 +709,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters
                         compile.CompileCode(gatewayRuleScript.ToString(), context.Services.Log,
                         [
                             Path.Combine(strPathBinary ?? throw new InvalidOperationException(), "log4net.dll"),
-                            Path.Combine(strPathBinary, "Jube.Dictionary.dll")
+                            Path.Combine(strPathBinary, "Jube.Dictionary.dll"),
+                            Path.Combine(strPathBinary, "Svirfd.dll"),
+                            Path.Combine(strPathBinary, "Jube.Svirfd.dll")
                         ], Compile.Language.Vb);
 
                         if (context.Services.Log.IsDebugEnabled)

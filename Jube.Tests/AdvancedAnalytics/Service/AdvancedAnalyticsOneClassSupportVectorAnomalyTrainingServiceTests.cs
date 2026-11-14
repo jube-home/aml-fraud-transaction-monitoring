@@ -26,6 +26,7 @@ using Jube.Test.AdvancedAnalytics.Slice;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Xunit;
 using Jube.Engine.AdvancedAnalytics.Anomaly.Models;

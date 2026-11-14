@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
+            [Description("True when: null, empty or not a well formed email address. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsNotValidEmail()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringIsNotValidEmail(flow.Value));
             }
 
+            [Description("True when: null, empty or not a well formed email address. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsNotValidEmail()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringIsNotValidEmail(flow.Value));
             }
 
+            [Description("True when: null, empty or not a well formed email address. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsNotValidEmail()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringIsNotValidEmail(flow.Value));
             }
 
+            [Description("True when: null, empty or not a well formed email address. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsNotValidEmail()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringIsNotValidEmail(flow.Value));
             }
 
+            [Description("True when: null, empty or not a well formed email address. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsNotValidEmail()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
+            [Description("Begins a pipeline from the value. True when: null, empty or not a well formed email address. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsNotValidEmail()
             {
                 return value.Start().MatchIsNotValidEmail();
             }
 
+            [Description("Begins a pipeline from the value. True when: null, empty or not a well formed email address. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsNotValidEmail()
             {
                 return value.Start().RejectIsNotValidEmail();
             }
 
+            [Description("Begins a pipeline from the value. True when: null, empty or not a well formed email address. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsNotValidEmail()
             {
                 return value.Start().BreakIsNotValidEmail();
             }
 
+            [Description("Begins a pipeline from the value. True when: null, empty or not a well formed email address. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsNotValidEmail()
             {
                 return value.Start().RequireIsNotValidEmail();
             }
 
+            [Description("Begins a pipeline from the value. True when: null, empty or not a well formed email address. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsNotValidEmail()
             {
                 return value.Start().EnsureIsNotValidEmail();

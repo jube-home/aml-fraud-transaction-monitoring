@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchSomehowInList(IEnumerable<string> list)
+            [Description("True when: fuzzily in the List token using the default profile: Jaro-Winkler or token sort, at least 0.92, after folding case, accents and punctuation. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringSomehowInList(flow.Value, list));
             }
 
-            public Flow<string?> RejectSomehowInList(IEnumerable<string> list)
+            [Description("True when: fuzzily in the List token using the default profile: Jaro-Winkler or token sort, at least 0.92, after folding case, accents and punctuation. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringSomehowInList(flow.Value, list));
             }
 
-            public Flow<string?> BreakSomehowInList(IEnumerable<string> list)
+            [Description("True when: fuzzily in the List token using the default profile: Jaro-Winkler or token sort, at least 0.92, after folding case, accents and punctuation. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringSomehowInList(flow.Value, list));
             }
 
-            public Flow<string?> RequireSomehowInList(IEnumerable<string> list)
+            [Description("True when: fuzzily in the List token using the default profile: Jaro-Winkler or token sort, at least 0.92, after folding case, accents and punctuation. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringSomehowInList(flow.Value, list));
             }
 
-            public Flow<string?> EnsureSomehowInList(IEnumerable<string> list)
+            [Description("True when: fuzzily in the List token using the default profile: Jaro-Winkler or token sort, at least 0.92, after folding case, accents and punctuation. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchSomehowInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: fuzzily in the List token using the default profile: Jaro-Winkler or token sort, at least 0.92, after folding case, accents and punctuation. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().MatchSomehowInList(list);
             }
 
-            public Flow<string?> RejectSomehowInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: fuzzily in the List token using the default profile: Jaro-Winkler or token sort, at least 0.92, after folding case, accents and punctuation. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RejectSomehowInList(list);
             }
 
-            public Flow<string?> BreakSomehowInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: fuzzily in the List token using the default profile: Jaro-Winkler or token sort, at least 0.92, after folding case, accents and punctuation. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().BreakSomehowInList(list);
             }
 
-            public Flow<string?> RequireSomehowInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: fuzzily in the List token using the default profile: Jaro-Winkler or token sort, at least 0.92, after folding case, accents and punctuation. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RequireSomehowInList(list);
             }
 
-            public Flow<string?> EnsureSomehowInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: fuzzily in the List token using the default profile: Jaro-Winkler or token sort, at least 0.92, after folding case, accents and punctuation. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().EnsureSomehowInList(list);
             }

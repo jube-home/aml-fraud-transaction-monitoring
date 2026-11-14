@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchContainsSomehowInList(IEnumerable<string> list)
+            [Description("True when: some entry of the List token is found fuzzily inside the longer text, using the default profile. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringContainsSomehowInList(flow.Value, list));
             }
 
-            public Flow<string?> RejectContainsSomehowInList(IEnumerable<string> list)
+            [Description("True when: some entry of the List token is found fuzzily inside the longer text, using the default profile. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringContainsSomehowInList(flow.Value, list));
             }
 
-            public Flow<string?> BreakContainsSomehowInList(IEnumerable<string> list)
+            [Description("True when: some entry of the List token is found fuzzily inside the longer text, using the default profile. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringContainsSomehowInList(flow.Value, list));
             }
 
-            public Flow<string?> RequireContainsSomehowInList(IEnumerable<string> list)
+            [Description("True when: some entry of the List token is found fuzzily inside the longer text, using the default profile. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringContainsSomehowInList(flow.Value, list));
             }
 
-            public Flow<string?> EnsureContainsSomehowInList(IEnumerable<string> list)
+            [Description("True when: some entry of the List token is found fuzzily inside the longer text, using the default profile. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchContainsSomehowInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: some entry of the List token is found fuzzily inside the longer text, using the default profile. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().MatchContainsSomehowInList(list);
             }
 
-            public Flow<string?> RejectContainsSomehowInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: some entry of the List token is found fuzzily inside the longer text, using the default profile. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RejectContainsSomehowInList(list);
             }
 
-            public Flow<string?> BreakContainsSomehowInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: some entry of the List token is found fuzzily inside the longer text, using the default profile. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().BreakContainsSomehowInList(list);
             }
 
-            public Flow<string?> RequireContainsSomehowInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: some entry of the List token is found fuzzily inside the longer text, using the default profile. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RequireContainsSomehowInList(list);
             }
 
-            public Flow<string?> EnsureContainsSomehowInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: some entry of the List token is found fuzzily inside the longer text, using the default profile. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().EnsureContainsSomehowInList(list);
             }

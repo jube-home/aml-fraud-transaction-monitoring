@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double SecondsBetween(this DateTime @this, DateTime other)
+        [Description("Fractional seconds from this date-time to another.")]
+        public static double SecondsBetween(this DateTime @this, [Description("The other date.")] DateTime other)
         {
             return (other - @this).TotalSeconds;
         }

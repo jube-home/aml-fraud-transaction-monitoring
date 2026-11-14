@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="WeekdayMon" xml:space="preserve">
+        <value>mån</value>
+    </data>
+    <data name="WeekdayTue" xml:space="preserve">
+        <value>tis</value>
+    </data>
+    <data name="WeekdayWed" xml:space="preserve">
+        <value>ons</value>
+    </data>
+    <data name="WeekdayThu" xml:space="preserve">
+        <value>tors</value>
+    </data>
+    <data name="WeekdayFri" xml:space="preserve">
+        <value>fre</value>
+    </data>
+    <data name="WeekdaySat" xml:space="preserve">
+        <value>lör</value>
+    </data>
+    <data name="WeekdaySun" xml:space="preserve">
+        <value>sön</value>
+    </data>
+    <data name="ImpactMinimal" xml:space="preserve">
+        <value>Minimal</value>
+    </data>
+    <data name="ImpactLow" xml:space="preserve">
+        <value>Låg</value>
+    </data>
+    <data name="ImpactModerate" xml:space="preserve">
+        <value>Måttlig</value>
+    </data>
+    <data name="ImpactHigh" xml:space="preserve">
+        <value>Hög</value>
+    </data>
+    <data name="ImpactSevere" xml:space="preserve">
+        <value>Allvarlig</value>
+    </data>
+    <data name="LikelihoodVeryLikely" xml:space="preserve">
+        <value>Mycket sannolik</value>
+    </data>
+    <data name="LikelihoodLikely" xml:space="preserve">
+        <value>Sannolik</value>
+    </data>
+    <data name="LikelihoodPossible" xml:space="preserve">
+        <value>Möjlig</value>
+    </data>
+    <data name="LikelihoodUnlikely" xml:space="preserve">
+        <value>Osannolik</value>
+    </data>
+    <data name="RiskMatrixTitle" xml:space="preserve">
+        <value>Riskmatris</value>
+    </data>
+    <data name="RiskMatrixAssessed" xml:space="preserve">
+        <value>{0} bedömda ärenden; {1} ännu inte bedömda</value>
+    </data>
+    <data name="RiskMatrixCases" xml:space="preserve">
+        <value>{0} ärenden</value>
+    </data>
+    <data name="Impact" xml:space="preserve">
+        <value>Påverkan</value>
+    </data>
+    <data name="Likelihood" xml:space="preserve">
+        <value>Sannolikhet</value>
+    </data>
+    <data name="Cases" xml:space="preserve">
+        <value>Ärenden</value>
+    </data>
+    <data name="FlowTitle" xml:space="preserve">
+        <value>Öppnade, stängda och balans</value>
+    </data>
+    <data name="FlowSubtitle" xml:space="preserve">
+        <value>Ärenden som öppnas och stängs varje dag, och ärenden som fortfarande är öppna vid dagens slut</value>
+    </data>
+    <data name="Opened" xml:space="preserve">
+        <value>Öppnade</value>
+    </data>
+    <data name="Closed" xml:space="preserve">
+        <value>Stängda</value>
+    </data>
+    <data name="Backlog" xml:space="preserve">
+        <value>Balans</value>
+    </data>
+    <data name="FirstViewTitle" xml:space="preserve">
+        <value>Tid till första titt</value>
+    </data>
+    <data name="FirstViewSubtitle" xml:space="preserve">
+        <value>Ärenden efter hur länge de väntat</value>
+    </data>
+    <data name="ResolutionTitle" xml:space="preserve">
+        <value>Tid till lösning</value>
+    </data>
+    <data name="ResolutionSubtitle" xml:space="preserve">
+        <value>Stängda ärenden efter hur lång tid de tog</value>
+    </data>
+    <data name="AgingTitle" xml:space="preserve">
+        <value>Öppna ärenden efter ålder</value>
+    </data>
+    <data name="AgingSubtitle" xml:space="preserve">
+        <value>Hur länge de öppna ärendena har väntat, per brådskefil</value>
+    </data>
+    <data name="LaneLiveMoney" xml:space="preserve">
+        <value>Levande pengar</value>
+    </data>
+    <data name="LaneMandatory" xml:space="preserve">
+        <value>Obligatoriskt</value>
+    </data>
+    <data name="LaneDeadlineNear" xml:space="preserve">
+        <value>Frist nära</value>
+    </data>
+    <data name="LaneStandard" xml:space="preserve">
+        <value>Standard</value>
+    </data>
+    <data name="StatusDwellTitle" xml:space="preserve">
+        <value>Tid i varje status</value>
+    </data>
+    <data name="StatusDwellSubtitle" xml:space="preserve">
+        <value>Median och långsammaste tiondel av avslutade vistelser, i timmar</value>
+    </data>
+    <data name="Unknown" xml:space="preserve">
+        <value>Okänd</value>
+    </data>
+    <data name="Hours" xml:space="preserve">
+        <value>Timmar</value>
+    </data>
+    <data name="Median" xml:space="preserve">
+        <value>Median</value>
+    </data>
+    <data name="SlowestTenth" xml:space="preserve">
+        <value>Långsammaste tiondel</value>
+    </data>
+    <data name="RuleEffortTitle" xml:space="preserve">
+        <value>Analytikertid förlorad på falska positiva</value>
+    </data>
+    <data name="RuleEffortSubtitle" xml:space="preserve">
+        <value>Timmar som lagts på ärenden som regeln väckte och som visade sig inte vara verkliga</value>
+    </data>
+    <data name="RulePrecisionTitle" xml:space="preserve">
+        <value>Regelprecision</value>
+    </data>
+    <data name="RulePrecisionSubtitle" xml:space="preserve">
+        <value>Andel av avgjorda ärenden som regeln väckte och som bekräftades</value>
+    </data>
+    <data name="Percent" xml:space="preserve">
+        <value>Procent</value>
+    </data>
+    <data name="Precision" xml:space="preserve">
+        <value>Precision</value>
+    </data>
+    <data name="GainsTitle" xml:space="preserve">
+        <value>Bekräftade ärenden funna allteftersom ärenden hanteras</value>
+    </data>
+    <data name="DecidedCases" xml:space="preserve">
+        <value>{0} avgjorda ärenden</value>
+    </data>
+    <data name="FewDecidedCases" xml:space="preserve">
+        <value>Bara {0} avgjorda ärenden, för få för att lita på</value>
+    </data>
+    <data name="CasesWorkedPercent" xml:space="preserve">
+        <value>Hanterade ärenden (%)</value>
+    </data>
+    <data name="ConfirmedFoundPercent" xml:space="preserve">
+        <value>Bekräftade funna (%)</value>
+    </data>
+    <data name="PriorityOrder" xml:space="preserve">
+        <value>Prioritetsordning</value>
+    </data>
+    <data name="LikelihoodOrder" xml:space="preserve">
+        <value>Sannolikhetsordning</value>
+    </data>
+    <data name="OldestFirst" xml:space="preserve">
+        <value>Äldsta först</value>
+    </data>
+    <data name="Random" xml:space="preserve">
+        <value>Slumpmässig</value>
+    </data>
+    <data name="CalibrationTitle" xml:space="preserve">
+        <value>Förutsagd sannolikhet mot vad som hände</value>
+    </data>
+    <data name="ArrivalsTitle" xml:space="preserve">
+        <value>När ärenden kommer in</value>
+    </data>
+    <data name="ArrivalsSubtitle" xml:space="preserve">
+        <value>Ärenden skapade per veckodag och timme (UTC)</value>
+    </data>
+    <data name="Hour" xml:space="preserve">
+        <value>Timme</value>
+    </data>
+    <data name="Weekday" xml:space="preserve">
+        <value>Veckodag</value>
+    </data>
+    <data name="FirstViewByHourTitle" xml:space="preserve">
+        <value>Mediantid till första titt per ankomsttimme</value>
+    </data>
+    <data name="FirstViewByHourSubtitle" xml:space="preserve">
+        <value>Minuter ett ärende väntade innan någon tittade på det, per ankomsttimme (UTC)</value>
+    </data>
+    <data name="Minutes" xml:space="preserve">
+        <value>Minuter</value>
+    </data>
+    <data name="MedianMinutes" xml:space="preserve">
+        <value>Medianminuter</value>
+    </data>
+    <data name="ServiceLevelTitle" xml:space="preserve">
+        <value>Måluppfyllelse för servicenivå per vecka</value>
+    </data>
+    <data name="ServiceLevelSubtitle" xml:space="preserve">
+        <value>Andel av ärendena som skapades den veckan som uppfyllde varje mål</value>
+    </data>
+    <data name="MetPercent" xml:space="preserve">
+        <value>Uppfyllda (%)</value>
+    </data>
+    <data name="ServiceLevelFirstView" xml:space="preserve">
+        <value>Första titt</value>
+    </data>
+    <data name="ServiceLevelOwnership" xml:space="preserve">
+        <value>Ägarskap</value>
+    </data>
+    <data name="ServiceLevelResolution" xml:space="preserve">
+        <value>Lösning</value>
+    </data>
+    <data name="ServiceLevelTimeInStatus" xml:space="preserve">
+        <value>Tid i status</value>
+    </data>
+    <data name="HandoffsTitle" xml:space="preserve">
+        <value>Hur ofta ärenden byter händer</value>
+    </data>
+    <data name="HandoffsSubtitle" xml:space="preserve">
+        <value>{0} ärenden öppnades på nytt efter stängning</value>
+    </data>
+    <data name="ChangesOfOwner" xml:space="preserve">
+        <value>Ägarbyten</value>
+    </data>
+</root>

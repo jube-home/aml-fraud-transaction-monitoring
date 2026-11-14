@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns the smallest integral value greater than or equal to the number.")]
         public static Double Ceiling(this Double a)
         {
             return Math.Ceiling(a);

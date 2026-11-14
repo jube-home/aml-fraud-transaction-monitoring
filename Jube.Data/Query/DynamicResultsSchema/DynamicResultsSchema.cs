@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using MessagePack;
+
 namespace Jube.Data.Query.DynamicResultsSchema
 {
     using System;
@@ -81,9 +83,10 @@ namespace Jube.Data.Query.DynamicResultsSchema
         }
     }
 
+    [MessagePackObject]
     public class DynamicResultsSchemaDto
     {
-        public Dictionary<string, string> Schema { get; set; }
-        public List<Dictionary<string, object>> Rows { get; set; }
+        [Key(0)] public Dictionary<string, string> Schema { get; set; }
+        [Key(1)] public List<Dictionary<string, object>> Rows { get; set; }
     }
 }

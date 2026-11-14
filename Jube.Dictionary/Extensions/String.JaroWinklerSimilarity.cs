@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double JaroWinklerSimilarity(this string? @this, string? other)
+        [Description("Returns a 0-1 similarity score that favours strings sharing a common prefix, standard for fuzzy name matching in sanctions/AML screening.")]
+        public static double JaroWinklerSimilarity(this string? @this,
+            [Description("The string to compare with.")] string? other)
         {
             var s1 = @this ?? "";
             var s2 = other ?? "";

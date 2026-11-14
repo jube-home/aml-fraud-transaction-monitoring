@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
+            [Description("True when: a valid BIC or SWIFT code. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsValidBic()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringIsValidBic(flow.Value));
             }
 
+            [Description("True when: a valid BIC or SWIFT code. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsValidBic()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringIsValidBic(flow.Value));
             }
 
+            [Description("True when: a valid BIC or SWIFT code. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsValidBic()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringIsValidBic(flow.Value));
             }
 
+            [Description("True when: a valid BIC or SWIFT code. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsValidBic()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringIsValidBic(flow.Value));
             }
 
+            [Description("True when: a valid BIC or SWIFT code. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsValidBic()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
+            [Description("Begins a pipeline from the value. True when: a valid BIC or SWIFT code. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsValidBic()
             {
                 return value.Start().MatchIsValidBic();
             }
 
+            [Description("Begins a pipeline from the value. True when: a valid BIC or SWIFT code. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsValidBic()
             {
                 return value.Start().RejectIsValidBic();
             }
 
+            [Description("Begins a pipeline from the value. True when: a valid BIC or SWIFT code. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsValidBic()
             {
                 return value.Start().BreakIsValidBic();
             }
 
+            [Description("Begins a pipeline from the value. True when: a valid BIC or SWIFT code. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsValidBic()
             {
                 return value.Start().RequireIsValidBic();
             }
 
+            [Description("Begins a pipeline from the value. True when: a valid BIC or SWIFT code. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsValidBic()
             {
                 return value.Start().EnsureIsValidBic();

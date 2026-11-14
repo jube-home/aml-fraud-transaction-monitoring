@@ -78,4 +78,7 @@
     <data name="NotificationTypeIdInvalid" xml:space="preserve">
     <value>Un type de notification valide est requis lorsque la notification est activée.</value>
   </data>
+    <data name="HttpEndpointInvalid" xml:space="preserve">
+    <value>Le point de terminaison HTTP doit être une URL http ou https absolue dont le schéma, l'hôte et le port sont écrits littéralement, avec des jetons uniquement dans le chemin et la requête.</value>
+  </data>
 </root>

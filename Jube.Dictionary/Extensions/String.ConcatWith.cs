@@ -4,7 +4,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string ConcatWith(this string @this, params string[] values)
+        [Description("Concatenates the string with others.")]
+        public static string ConcatWith(this string @this,
+            [Description("The strings to concatenate with.")] params string[] values)
         {
             return string.Concat(@this, string.Concat(values));
         }

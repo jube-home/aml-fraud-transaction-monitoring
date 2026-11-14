@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Odmowa dostępu.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Brak uwierzytelnienia.</value>
+  </data>
+    <data name="CaseNotFound" xml:space="preserve">
+    <value>Nie znaleziono sprawy lub nie jest ona widoczna.</value>
+  </data>
+    <data name="TopicRequired" xml:space="preserve">
+    <value>Badanie wymaga tematu.</value>
+  </data>
+    <data name="TopicMaxLength" xml:space="preserve">
+    <value>Temat badania może mieć co najwyżej {0} znaków.</value>
+  </data>
+    <data name="FindingsRequired" xml:space="preserve">
+    <value>Badanie wymaga ustaleń.</value>
+  </data>
+    <data name="FindingsMaxLength" xml:space="preserve">
+    <value>Ustalenia mogą mieć co najwyżej {0} znaków.</value>
+  </data>
+    <data name="CaseIdRequired" xml:space="preserve">
+    <value>Identyfikator sprawy jest wymagany.</value>
+  </data>
+    <data name="UrlInvalid" xml:space="preserve">
+    <value>Każde źródło wymaga adresu http lub https o długości co najwyżej {0} znaków, bez spacji, danych uwierzytelniających i nawiasów ostrych.</value>
+  </data>
+    <data name="TitleMaxLength" xml:space="preserve">
+    <value>Tytuł źródła może mieć co najwyżej {0} znaków.</value>
+  </data>
+    <data name="TooMany" xml:space="preserve">
+    <value>Badanie może powoływać się na co najwyżej {0} źródeł.</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>Sprawa jest zablokowana przez innego użytkownika.</value>
+  </data>
+</root>

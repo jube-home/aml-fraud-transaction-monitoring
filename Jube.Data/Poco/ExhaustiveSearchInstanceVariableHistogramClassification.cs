@@ -35,8 +35,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(6)] public DateTime? DeletedDate { get; set; }
         [Column] [Nullable] [Key(7)] public byte? Deleted { get; set; }
 
-        [Association(ThisKey = "ExhaustiveSearchInstanceVariableClassificationId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "ExhaustiveSearchInstanceVariableClassificationId", OtherKey = "Id", CanBeNull = true)]
         [Key(8)]
         public ExhaustiveSearchInstanceVariableClassification ExhaustiveSearchInstanceVariableClassification
         {

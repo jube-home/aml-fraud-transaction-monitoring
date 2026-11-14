@@ -23,6 +23,7 @@ using Jube.Service.DynamicSql;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 
 namespace Jube.Test.AskJooby
@@ -111,6 +112,25 @@ namespace Jube.Test.AskJooby
         }
 
         [Fact]
+        public async Task AValueOverTheCellByteLimitIsRefusedBeforeItIsHeldInMemoryAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var client = new AskJoobySqlQueryClient(
+                connectionString, dbContext, TestLog.NoOp, NewUserName(), _ => true);
+
+            var small = await client.ExecuteAsync(
+                "SELECT string_agg('x', '') AS \"Small\" FROM generate_series(1, 10)");
+            small.Should().ContainSingle();
+
+            var act = () =>
+                client.ExecuteAsync("SELECT string_agg('x', '') AS \"Big\" FROM generate_series(1, 2000000)");
+
+            (await act.Should().ThrowAsync<InvalidOperationException>())
+                .WithMessage("*byte limit*");
+        }
+
+        [Fact]
         public async Task RejectsANonSelectStatementAsync()
         {
             await using var dbContext = fx.GetDbContext();
@@ -149,7 +169,7 @@ namespace Jube.Test.AskJooby
         }
 
         [Fact]
-        public async Task ValidateReportsTheColumnTheDatabaseCannotResolveWithoutExecutingAsync()
+        public async Task ValidateReportsAColumnThatDoesNotExistFromTheCheckerWithoutTheDatabaseAsync()
         {
             await using var dbContext = fx.GetDbContext();
 
@@ -159,8 +179,100 @@ namespace Jube.Test.AskJooby
             var validation = await client.ValidateAsync("SELECT \"NoSuchColumnAtAll\" FROM \"Case\"");
 
             validation.IsValid.Should().BeFalse();
-            validation.Error.Should().Contain("NoSuchColumnAtAll");
-            validation.SqlState.Should().Be("42703");
+            validation.Error.Should().Contain("There is no column \"NoSuchColumnAtAll\"")
+                .And.Contain("line 1, column 8");
+            validation.SqlState.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task AStatementOnlyThePlannerCanRejectIsAnsweredWithTheSqlStateAloneAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var client = new AskJoobySqlQueryClient(
+                connectionString, dbContext, TestLog.NoOp, NewUserName(), _ => true);
+
+            var validation = await client.ValidateAsync(
+                "SELECT \"Id\" FROM \"Case\" WHERE \"Id\" = ANY(ARRAY['plannerOnlyProbe'])");
+
+            validation.IsValid.Should().BeFalse();
+            validation.SqlState.Should().NotBeNull();
+            validation.Error.Should().NotContain("plannerOnlyProbe").And.Contain("validator missed something");
+        }
+
+        [Fact]
+        public async Task ValidateOffersADidYouMeanDrawnFromThePermittedColumnsAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var client = new AskJoobySqlQueryClient(
+                connectionString, dbContext, TestLog.NoOp, NewUserName(), _ => true);
+
+            var validation = await client.ValidateAsync("SELECT \"Idd\" FROM \"Case\"");
+
+            validation.IsValid.Should().BeFalse();
+            validation.Error.Should().Contain("Did you mean \"Id\"");
+        }
+
+        [Fact]
+        public async Task ExecuteRefusesAMissingColumnWithTheCheckersMessageNotADatabaseExceptionAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var client = new AskJoobySqlQueryClient(
+                connectionString, dbContext, TestLog.NoOp, NewUserName(), _ => true);
+
+            var act = () => client.ExecuteAsync("SELECT \"NoSuchColumnAtAll\" FROM \"Case\"");
+
+            (await act.Should().ThrowAsync<InvalidOperationException>())
+                .WithMessage("*There is no column*NoSuchColumnAtAll*");
+        }
+
+        [Fact]
+        public async Task ARunToolThatRequiresValidationRefusesAStatementThatWasNotValidatedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var client = new AskJoobySqlQueryClient(
+                connectionString, dbContext, TestLog.NoOp, NewUserName(), _ => true, requireValidation: true);
+
+            var act = () => client.ExecuteAsync("SELECT \"Id\" FROM \"Case\" LIMIT 1");
+
+            (await act.Should().ThrowAsync<InvalidOperationException>()).WithMessage("*ValidateSqlQuery*");
+        }
+
+        [Fact]
+        public async Task ARunToolThatRequiresValidationRunsAStatementOnceItWasValidatedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var client = new AskJoobySqlQueryClient(
+                connectionString, dbContext, TestLog.NoOp, NewUserName(), _ => true, requireValidation: true);
+
+            const string sql = "SELECT \"Id\" FROM \"Case\" LIMIT 1";
+
+            (await client.ValidateAsync(sql)).IsValid.Should().BeTrue();
+
+            var act = () => client.ExecuteAsync("  SELECT \"Id\"   FROM \"Case\" LIMIT 1;");
+
+            await act.Should().NotThrowAsync();
+        }
+
+        [Fact]
+        public async Task AFailedValidationDoesNotUnlockTheRunToolAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var client = new AskJoobySqlQueryClient(
+                connectionString, dbContext, TestLog.NoOp, NewUserName(), _ => true, requireValidation: true);
+
+            const string sql = "SELECT \"Nope\" FROM \"Case\"";
+
+            (await client.ValidateAsync(sql)).IsValid.Should().BeFalse();
+
+            var act = () => client.ExecuteAsync(sql);
+
+            await act.Should().ThrowAsync<InvalidOperationException>();
         }
 
         [Fact]

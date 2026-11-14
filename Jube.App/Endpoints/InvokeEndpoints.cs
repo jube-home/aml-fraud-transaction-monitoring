@@ -75,6 +75,10 @@ namespace Jube.App.Endpoints
             group.MapPost("EntityAnalysisModel/{guid}", (Func<HttpContext, Task<IResult>>)EntityAnalysisModelAsync)
                 .WithName("InvokeEntityAnalysisModel");
 
+            group.MapPost("Queue/EntityAnalysisModel/{guid}", QueueAsync)
+                .ValidateAntiforgeryForCookieSessions()
+                .WithName("InvokeQueueEntityAnalysisModel");
+
             group.MapPost("EntityAnalysisModel/{guid}/{async}",
                     (Func<HttpContext, Task<IResult>>)EntityAnalysisModelAsync)
                 .WithName("InvokeEntityAnalysisModelAsync");
@@ -144,7 +148,7 @@ namespace Jube.App.Endpoints
             return Write(httpContext, result);
         }
 
-        private static IResult Sanction(HttpContext httpContext)
+        private static async Task<IResult> Sanction(HttpContext httpContext, CancellationToken token)
         {
             var query = httpContext.Request.Query;
 
@@ -158,7 +162,8 @@ namespace Jube.App.Endpoints
 
             try
             {
-                return Write(httpContext, CreateService(httpContext).Sanction(request));
+                return Write(httpContext,
+                    await CreateService(httpContext).SanctionAsync(request, token).ConfigureAwait(false));
             }
             catch (DtoValidationException ex)
             {
@@ -213,6 +218,23 @@ namespace Jube.App.Endpoints
                     maxBytes => ReadBodyBoundedAsync(httpContext, maxBytes),
                     httpContext.Request.ContentLength != null)
                 .ConfigureAwait(false);
+
+            return Write(httpContext, result);
+        }
+
+        private static async Task<IResult> QueueAsync(HttpContext httpContext, CancellationToken token)
+        {
+            var services = httpContext.RequestServices;
+            var dynamicEnvironment = services.GetRequiredService<DynamicEnvironment.DynamicEnvironment>();
+            var log = services.GetRequiredService<ILog>();
+
+            var service = new InboundQueueService(dynamicEnvironment, log,
+                httpContext.User.Identity?.Name,
+                () => DataConnectionDbContext.GetResilientDbContextDataConnection(
+                    dynamicEnvironment.AppSettings("ConnectionString"), log));
+
+            var result = await service.EnqueueAsync(httpContext.Request.RouteValues["guid"]?.ToString(),
+                maxBytes => ReadBodyBoundedAsync(httpContext, maxBytes), token).ConfigureAwait(false);
 
             return Write(httpContext, result);
         }

@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The value from 1 to 3999 as Roman numerals, otherwise empty.")]
         public static string ToRomanNumerals(this int @this)
         {
             if (@this is < 1 or > 3999)

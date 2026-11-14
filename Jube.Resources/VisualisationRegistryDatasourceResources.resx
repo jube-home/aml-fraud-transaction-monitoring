@@ -72,13 +72,25 @@
     <data name="RowSpanRange" xml:space="preserve">
     <value>Row span must be zero or greater.</value>
   </data>
-    <data name="VisualisationTypeIdInvalid" xml:space="preserve">
-    <value>Display type must be Chart Javascript, Map Javascript or HTML.</value>
+    <data name="DisplayRequired" xml:space="preserve">
+    <value>Show a chart, a grid or both.</value>
   </data>
-    <data name="VisualisationTextRequired" xml:space="preserve">
-    <value>Display text is required when Include Display is enabled.</value>
+    <data name="DisplayKindIdInvalid" xml:space="preserve">
+    <value>The chart kind is not one this installation can draw.</value>
   </data>
-    <data name="VisualisationTextMaxLength" xml:space="preserve">
-    <value>Display text must be {0} characters or fewer.</value>
+    <data name="TemplateTextMaxLength" xml:space="preserve">
+    <value>Template text must be {0} characters or fewer.</value>
+  </data>
+    <data name="MappingRoleInvalid" xml:space="preserve">
+    <value>A chart role in the mapping is not a known role.</value>
+  </data>
+    <data name="MappingRoleDuplicate" xml:space="preserve">
+    <value>Each chart role may be assigned only once in the mapping.</value>
+  </data>
+    <data name="MappingColumnInvalid" xml:space="preserve">
+    <value>A column name in the mapping is empty or longer than {0} characters.</value>
+  </data>
+    <data name="MappingColumnDuplicate" xml:space="preserve">
+    <value>A column may fill only one chart role.</value>
   </data>
 </root>

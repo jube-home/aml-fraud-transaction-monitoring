@@ -18,6 +18,7 @@ namespace Jube.Data.Query
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Repository;
     using Models;
 

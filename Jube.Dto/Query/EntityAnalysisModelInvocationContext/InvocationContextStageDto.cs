@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,16 +22,20 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.EntityAnalysisModelInvocationContext
 {
     [Description("One invocation pipeline stage and what the context knows about it.")]
+    [MessagePackObject]
     public class InvocationContextStageDto
     {
         [Description("Stage name, in pipeline order, e.g. Extraction, TtlCounters, ActivationRules, CaseCreation.")]
+        [Key(0)]
         public string Stage { get; set; } = string.Empty;
 
         [Description("Computed (worked out for this context), FromArchive (as archived), NotComputed (set its " +
                      "values with an overlay) or Excluded (stores or notifies, so never performed).")]
+        [Key(1)]
         public string Status { get; set; } = string.Empty;
 
         [Description("What the status means for this stage.")]
+        [Key(2)]
         public string Note { get; set; } = string.Empty;
     }
 }

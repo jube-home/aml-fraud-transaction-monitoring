@@ -6,6 +6,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Returns the SqlDbType for a SQL Server system type id.")]
         public static SqlDbType SqlSystemTypeToSqlDbType(this int @this)
         {
             switch (@this)

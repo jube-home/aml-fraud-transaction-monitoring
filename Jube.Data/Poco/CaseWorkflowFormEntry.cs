@@ -12,6 +12,7 @@
  */
 
 using System;
+using LinqToDB;
 using LinqToDB.Mapping;
 using MessagePack;
 
@@ -34,9 +35,17 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(5)] public int? CaseWorkflowFormId { get; set; }
         [Column] [Nullable] [Key(6)] public string CaseKeyValue { get; set; }
 
-        [Association(ThisKey = "CaseId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "CaseId", OtherKey = "Id", CanBeNull = true)]
         [Key(8)]
         public Case Case { get; set; }
+
+        [Column] [Nullable] [Key(20)] public string Sql { get; set; }
+        [Column] [Nullable] [Key(21)] public string Template { get; set; }
+
+        [Column]
+        [DataType(DataType.BinaryJson)]
+        [Nullable]
+        [Key(22)]
+        public string Rows { get; set; }
     }
 }

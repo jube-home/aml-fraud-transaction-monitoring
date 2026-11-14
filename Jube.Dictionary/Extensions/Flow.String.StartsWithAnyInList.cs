@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchStartsWithAnyInList(IEnumerable<string> list)
+            [Description("True when: starts with any entry of the List token. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchStartsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringStartsWithAnyInList(flow.Value, list));
             }
 
-            public Flow<string?> RejectStartsWithAnyInList(IEnumerable<string> list)
+            [Description("True when: starts with any entry of the List token. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectStartsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringStartsWithAnyInList(flow.Value, list));
             }
 
-            public Flow<string?> BreakStartsWithAnyInList(IEnumerable<string> list)
+            [Description("True when: starts with any entry of the List token. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakStartsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringStartsWithAnyInList(flow.Value, list));
             }
 
-            public Flow<string?> RequireStartsWithAnyInList(IEnumerable<string> list)
+            [Description("True when: starts with any entry of the List token. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireStartsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringStartsWithAnyInList(flow.Value, list));
             }
 
-            public Flow<string?> EnsureStartsWithAnyInList(IEnumerable<string> list)
+            [Description("True when: starts with any entry of the List token. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureStartsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchStartsWithAnyInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: starts with any entry of the List token. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchStartsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().MatchStartsWithAnyInList(list);
             }
 
-            public Flow<string?> RejectStartsWithAnyInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: starts with any entry of the List token. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectStartsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RejectStartsWithAnyInList(list);
             }
 
-            public Flow<string?> BreakStartsWithAnyInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: starts with any entry of the List token. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakStartsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().BreakStartsWithAnyInList(list);
             }
 
-            public Flow<string?> RequireStartsWithAnyInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: starts with any entry of the List token. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireStartsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RequireStartsWithAnyInList(list);
             }
 
-            public Flow<string?> EnsureStartsWithAnyInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: starts with any entry of the List token. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureStartsWithAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().EnsureStartsWithAnyInList(list);
             }

@@ -307,8 +307,14 @@ namespace Jube.Test.AskJooby
                 .Where(entry => entry.Key != "validator" && entry.Value.DisplayName is not null)
                 .ToList();
 
-            named.Should().HaveCount(223,
-                "every hierarchy agent plus the researcher and the web research specialist carries a persona");
+            var withoutAPersona = AgentDefinitions.All
+                .Where(entry => entry.Key != "validator" && entry.Key != "general" && entry.Value.DisplayName is null)
+                .Select(entry => entry.Key).OrderBy(key => key).ToList();
+
+            withoutAPersona.Should()
+                .BeEmpty("every agent except the validator and the general agent carries a persona");
+
+            named.Should().NotBeEmpty();
 
             foreach (var (agentType, definition) in named)
             {
@@ -325,8 +331,8 @@ namespace Jube.Test.AskJooby
         [Fact]
         public void DescribeAgentLabelIsTheAgentsNameAloneAndNotItsJobTitle()
         {
-            AgentStreamNarrator.DescribeAgentLabel("redis-observability")
-                .Should().NotContain("Redis",
+            AgentStreamNarrator.DescribeAgentLabel("resp-observability")
+                .Should().NotContain("RESP",
                     "the label is who turned up, not what they do -- the transcript already carries "
                     + "the work in the line beside it")
                 .And.NotBe(Named("platform-ops"),
@@ -418,12 +424,12 @@ namespace Jube.Test.AskJooby
                 new FunctionCallContent("call-fanout", "SpawnAgents", new Dictionary<string, object?>
                 {
                     ["subTasks"] =
-                        "[{\"agentType\":\"redis-observability\",\"task\":\"a\"},"
+                        "[{\"agentType\":\"resp-observability\",\"task\":\"a\"},"
                         + "{\"agentType\":\"postgres-observability\",\"task\":\"b\"},"
                         + "{\"agentType\":\"containers-load-balancer-and-overlay-network\",\"task\":\"c\"}]"
                 }));
 
-            item!.Text.Should().Contain(AgentStreamNarrator.DescribeAgentLabel("redis-observability"))
+            item!.Text.Should().Contain(AgentStreamNarrator.DescribeAgentLabel("resp-observability"))
                 .And.Contain(AgentStreamNarrator.DescribeAgentLabel("postgres-observability"))
                 .And.Contain(AgentStreamNarrator.DescribeAgentLabel(
                         "containers-load-balancer-and-overlay-network"),

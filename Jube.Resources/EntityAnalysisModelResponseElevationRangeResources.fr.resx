@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="NameRequired" xml:space="preserve">
+    <value>Un nom est requis.</value>
+  </data>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>Un modèle valide est requis.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Le nom doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Ce nom existe déjà.</value>
+  </data>
+    <data name="MinimumRange" xml:space="preserve">
+    <value>Le premier niveau ne peut pas être négatif.</value>
+  </data>
+    <data name="MaximumRange" xml:space="preserve">
+    <value>Le dernier niveau ne peut pas être inférieur au premier niveau.</value>
+  </data>
+    <data name="RangeOverlaps" xml:space="preserve">
+    <value>Cette plage chevauche la plage nommée {0}.</value>
+  </data>
+    <data name="DeclineAndHold" xml:space="preserve">
+    <value>Une plage ne peut pas à la fois refuser et suspendre ; un refus ne suspend jamais.</value>
+  </data>
+    <data name="ColourInvalid" xml:space="preserve">
+    <value>La couleur doit être une valeur hexadécimale telle que #A1B2C3.</value>
+  </data>
+    <data name="ContentMaxLength" xml:space="preserve">
+    <value>Le contenu doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="RedirectMaxLength" xml:space="preserve">
+    <value>La redirection doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="HttpEndpointRequired" xml:space="preserve">
+    <value>Une URL de webhook est requise lorsque le webhook est activé.</value>
+  </data>
+    <data name="HttpEndpointInvalid" xml:space="preserve">
+    <value>Le webhook doit être une URL http ou https absolue dont le schéma, l'hôte et le port sont écrits littéralement, avec des jetons uniquement dans le chemin et la requête.</value>
+  </data>
+    <data name="HttpEndpointMaxLength" xml:space="preserve">
+    <value>L'URL du webhook doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="HttpEndpointHostBlocked" xml:space="preserve">
+    <value>L'adresse du webhook est bloquée par la politique des hôtes sortants : elle désigne une adresse de bouclage, de lien local, de métadonnées, privée, partagée, locale unique ou réservée, localhost, ou un schéma autre que http ou https. Indiquez un récepteur interne de confiance dans JUBE_HOOK_ALLOWED_HOSTS ou JUBE_HOOK_ALLOWED_CIDRS.</value>
+  </data>
+    <data name="HttpEndpointTypeIdInvalid" xml:space="preserve">
+    <value>La méthode du webhook doit être POST ou GET.</value>
+  </data>
+    <data name="HttpEndpointHeaderRequired" xml:space="preserve">
+    <value>Le nom de l'en-tête d'identification est requis lorsqu'une variable d'identification est fournie.</value>
+  </data>
+    <data name="HttpEndpointHeaderInvalid" xml:space="preserve">
+    <value>Le nom de l'en-tête d'identification doit être un nom d'en-tête simple et non un nom réservé.</value>
+  </data>
+    <data name="HttpEndpointCredentialRequired" xml:space="preserve">
+    <value>La variable d'identification est requise lorsqu'un nom d'en-tête d'identification est fourni.</value>
+  </data>
+    <data name="HttpEndpointCredentialInvalid" xml:space="preserve">
+    <value>La variable d'identification doit être un nom de variable d'environnement commençant par JUBE_HOOK_ suivi de lettres majuscules, de chiffres ou de traits de soulignement.</value>
+  </data>
+    <data name="NotificationTypeIdInvalid" xml:space="preserve">
+    <value>Le canal de notification doit être Email ou SMS.</value>
+  </data>
+    <data name="NotificationDestinationRequired" xml:space="preserve">
+    <value>Un destinataire est requis lorsque la notification est activée.</value>
+  </data>
+    <data name="NotificationDestinationMaxLength" xml:space="preserve">
+    <value>Le destinataire doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="NotificationSubjectMaxLength" xml:space="preserve">
+    <value>L'objet doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="NotificationBodyMaxLength" xml:space="preserve">
+    <value>Le corps doit comporter {0} caractères au maximum.</value>
+  </data>
+</root>

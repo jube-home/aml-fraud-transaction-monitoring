@@ -16,11 +16,11 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Jube.Cache.Redis.Models;
+using Jube.Cache.Resp.Models;
 using Jube.Data.Poco;
 using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters;
 using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.TtlCounterAdministration;
-using Jube.ResilientRedisConnection.Interfaces;
+using Jube.ResilientRespConnection.Interfaces;
 using Jube.Test.Infrastructure;
 using Xunit;
 using EntityAnalysisModelDomain = Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel;
@@ -35,9 +35,9 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
         private const double Tolerance = 0.001;
 
         private static EntityAnalysisModelDomain NewModel(int tenantRegistryId,
-            out FakeHybridResilientRedisDatabase redis)
+            out FakeHybridResilientRespDatabase resp)
         {
-            var cacheService = TestCacheService.Create(out redis);
+            var cacheService = TestCacheService.Create(out resp);
 
             var model = new EntityAnalysisModelDomain
             {
@@ -176,7 +176,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
         [Fact]
         public async Task ADecrementFailureDoesNotPreventTheEntryFromStillBeingDeletedAsync()
         {
-            var model = NewModel(1, out var redis);
+            var model = NewModel(1, out var resp);
             var counter = NewCounter();
             var referenceDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             await SeedCounterAndEntryAsync(model, counter, "555000111", referenceDate, 10);
@@ -193,7 +193,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarte
             var batch = new CacheTtlCounterEntryRemovalBatch { Id = 1 };
             var entries = new ConcurrentBag<CacheTtlCounterEntryRemovalBatchEntry>();
 
-            redis.ThrowOnMethod = nameof(IHybridResilientRedisDatabase.HashDecrementAsync);
+            resp.ThrowOnMethod = nameof(IHybridResilientRespDatabase.HashDecrementAsync);
 
             var act = async () => await TtlCounterAdministrationTaskStarter.ProcessTtlCounterDeprecationAsync(model,
                 ttlCounterAdministrationCacheService, counter, expiredEntry, entries, batch);

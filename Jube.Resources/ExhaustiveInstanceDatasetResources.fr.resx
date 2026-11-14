@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation de gérer les jeux de données Exhaustive.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Une authentification est requise.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>Le jeu de données est introuvable.</value>
+  </data>
+    <data name="FileRequired" xml:space="preserve">
+    <value>Un fichier CSV est requis.</value>
+  </data>
+    <data name="FileNameInvalid" xml:space="preserve">
+    <value>Le nom du fichier n'est pas acceptable. Seul un fichier .csv ou .txt est accepté.</value>
+  </data>
+    <data name="ContentTypeInvalid" xml:space="preserve">
+    <value>Le type de contenu n'est pas acceptable. Téléversez un fichier CSV en texte brut.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>Un nom est requis.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Le nom ne peut pas dépasser {0} caractères.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Un jeu de données portant ce nom existe déjà.</value>
+  </data>
+    <data name="DatasetInUse" xml:space="preserve">
+    <value>Le jeu de données est utilisé par une Exhaustive Adaptation dont l'entraînement n'est pas terminé ; il ne peut être ni modifié ni supprimé.</value>
+  </data>
+    <data name="AlreadyConfirmed" xml:space="preserve">
+    <value>Le jeu de données est utilisé par une Exhaustive Adaptation et son mappage ne peut plus être modifié.</value>
+  </data>
+    <data name="MappingColumnsRequired" xml:space="preserve">
+    <value>Le mappage des colonnes est requis.</value>
+  </data>
+    <data name="MappingColumnCountMismatch" xml:space="preserve">
+    <value>Le mappage doit lister toutes les colonnes du jeu de données.</value>
+  </data>
+    <data name="MappingColumnIndexInvalid" xml:space="preserve">
+    <value>Le mappage fait référence à une colonne qui n'existe pas.</value>
+  </data>
+    <data name="MappingColumnIndexDuplicate" xml:space="preserve">
+    <value>Le mappage liste une colonne plus d'une fois.</value>
+  </data>
+    <data name="MappingNoVariables" xml:space="preserve">
+    <value>Au moins une colonne de variable doit être incluse.</value>
+  </data>
+    <data name="MappingVariableNotNumeric" xml:space="preserve">
+    <value>Une colonne incluse n'est pas numérique et n'a pas pu être ajustée comme catégorielle.</value>
+  </data>
+    <data name="MappingVariableConstant" xml:space="preserve">
+    <value>Une colonne incluse est constante et ne porte aucune information.</value>
+  </data>
+    <data name="MappingNameInvalid" xml:space="preserve">
+    <value>Un nom de variable doit commencer par une lettre et ne contenir que des lettres, des chiffres et des traits de soulignement, jusqu'à 64 caractères.</value>
+  </data>
+    <data name="MappingNameDuplicate" xml:space="preserve">
+    <value>Les noms de variables doivent être uniques.</value>
+  </data>
+    <data name="MappingProcessingTypeInvalid" xml:space="preserve">
+    <value>Le type de traitement doit être Payload (1) ou Abstraction (5).</value>
+  </data>
+    <data name="SourceLabelInvalid" xml:space="preserve">
+    <value>Le libellé de la source doit comporter au plus 256 caractères, sans caractères de contrôle, balisage, séparateurs de chemin ni caractères d'interpréteur de commandes.</value>
+  </data>
+    <data name="JsonRequired" xml:space="preserve">
+    <value>Un contenu JSON est requis.</value>
+  </data>
+    <data name="UploadTooLarge" xml:space="preserve">
+    <value>Le fichier dépasse la taille autorisée.</value>
+  </data>
+</root>

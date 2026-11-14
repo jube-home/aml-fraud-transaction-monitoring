@@ -16,14 +16,22 @@
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable RedundantAttributeUsageProperty
 
+using MessagePack;
+
 namespace Jube.Data.Query.GetAskJoobyStartupStatsQuery
 {
+    [MessagePackObject]
     public sealed class GetAskJoobyStartupStatsQueryDto
     {
+        [Key(0)]
         public int Bites { get; set; }
+        [Key(1)]
         public int Trails { get; set; }
+        [Key(2)]
         public int Saltlicks { get; set; }
+        [Key(3)]
         public int Joobriks { get; set; }
+        [Key(4)]
         public int Yokes { get; set; }
     }
 }

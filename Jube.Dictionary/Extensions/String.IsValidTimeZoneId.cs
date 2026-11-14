@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Whether the text is a time zone id known to the host.")]
         public static bool IsValidTimeZoneId(this string? @this)
         {
             return TimeZoneSupport.Find(@this) is not null;

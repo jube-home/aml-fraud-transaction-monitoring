@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Returns the four-character American Soundex phonetic code, for matching similar-sounding names.")]
         public static string Soundex(this string? @this)
         {
             if (string.IsNullOrWhiteSpace(@this))

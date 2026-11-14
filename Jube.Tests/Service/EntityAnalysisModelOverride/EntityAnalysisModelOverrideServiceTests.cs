@@ -22,6 +22,7 @@ using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
 using Jube.Dto.EntityAnalysisModelOverride;
+using Jube.Dto.Overrides;
 using Jube.Service.Agent.ServiceToolCatalogue;
 using Jube.Service.EntityAnalysisModelOverride;
 using Jube.Service.Exceptions.EntityAnalysisModelOverride;
@@ -33,6 +34,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModelOverride.Models;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
@@ -255,6 +257,67 @@ namespace Jube.Test.Service.EntityAnalysisModelOverride
 
             var byId = await service.GetByIdAsync(saved.Id);
             byId.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task UpdateDeleteExpiryDateOfAForceRowIsRefusedWithoutTheForceOverridePermissionAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var (_, modelGuid) = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var keyValue = UniqueValue("ForceExpiry");
+
+            var forced = await new EntityAnalysisModelOverrideRepository(dbContext, fx.Seed.UserWithPermission)
+                .InsertAsync(new Data.Poco.EntityAnalysisModelOverride
+                {
+                    EntityAnalysisModelGuid = modelGuid,
+                    OverrideKey = "IP",
+                    OverrideKeyValue = keyValue,
+                    OverrideKind = (byte)EntityAnalysisModelOverrideKind.Force
+                });
+            createdIds.Add(forced.Id);
+
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(modelGuid, "IP", keyValue);
+            dto.DeleteExpiryDate = DateTimeOffset.UtcNow.AddDays(30);
+
+            var act = async () => await service.UpdateDeleteExpiryDateAsync(dto);
+
+            await act.Should().ThrowAsync<ForbiddenException>(
+                "extending or clearing the expiry of a Force override is widening it, so it needs the Force permission");
+        }
+
+        [Fact]
+        public async Task InsertKeepsTheDeleteExpiryDateTheCallerSuppliedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var (_, modelGuid) = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var expiry = DateTimeOffset.UtcNow.AddDays(2);
+            var dto = NewDto(modelGuid, "IP", UniqueValue("InsertExpiry"));
+            dto.DeleteExpiryDate = expiry;
+
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+
+            saved.DeleteExpiryDate.Should().NotBeNull();
+            saved.DeleteExpiryDate!.Value.Should().BeCloseTo(expiry.UtcDateTime, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public async Task UpdateWithAnIdThatMatchesNoVisibleRowThrowsNotFoundAndCreatesNothingAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var (modelId, modelGuid) = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var dto = NewDto(modelGuid, "IP", UniqueValue("UnknownId"));
+            dto.Id = int.MaxValue - 1;
+
+            await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateAsync(dto));
+
+            var rows = await service.GetByEntityAnalysisModelIdAsync(modelId);
+            rows.Should().BeEmpty();
         }
 
         [Fact]

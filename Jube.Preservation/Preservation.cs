@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2022-present Jube Holdings Limited.
+/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -14,6 +14,7 @@
 namespace Jube.Preservation
 {
     using Cryptography;
+    using Cryptography.Exceptions;
     using Data.Context;
     using Data.Poco;
     using Data.Query.ApproveEntireModelQuery;
@@ -22,23 +23,31 @@ namespace Jube.Preservation
     using Data.Repository.Models;
     using Exceptions;
     using LinqToDB;
+    using LinqToDB.Async;
+    using LinqToDB.Data;
     using System.Text;
     using Newtonsoft.Json;
     using MessagePack;
     using Models;
 
-    public class Preservation(
-        DbContext dbContext,
-        string userName,
-        string? salt = null,
-        bool legacyFallbackEnabled = false) : IAsyncDisposable
+    public class Preservation(DbContext dbContext, string userName) : IAsyncDisposable
     {
-        private readonly string salt = salt ?? "";
-
         private static readonly JsonSerializerSettings BodyJsonSettings = new()
         {
             NullValueHandling = NullValueHandling.Ignore,
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        };
+
+        public const byte BeforeImportSource = 4;
+
+        private static readonly ExportOptions BeforeImportOptions = new()
+        {
+            Exhaustive = true,
+            Lists = true,
+            Dictionaries = true,
+            Visualisations = true,
+            Roles = true,
+            AdvancedAnalytics = true
         };
 
         public ValueTask DisposeAsync()
@@ -107,7 +116,7 @@ namespace Jube.Preservation
 
             if (string.IsNullOrEmpty(snapshot.Json))
             {
-                throw new InvalidOperationException("The snapshot holds no body and cannot be imported.");
+                throw new KeyNotFoundException("The snapshot holds no body and cannot be imported.");
             }
 
             await ApplyWrapperAsync(null,
@@ -120,16 +129,36 @@ namespace Jube.Preservation
 
         public Task ImportAsync(byte[] bytes, ImportOptions options, CancellationToken token = default)
         {
-            return ApplyWrapperAsync(bytes, () =>
+            return ApplyWrapperAsync(bytes, () => ReadPackage(bytes, options), token);
+        }
+
+        private async Task EnsureImportWithinCallersPrivilegeAsync(Wrapper wrapper, int? tenantRegistryId,
+            CancellationToken token)
+        {
+            var caller = await new Data.Security.PermissionValidation()
+                .GetPermissionsAsync(dbContext, userName, log4net.LogManager.GetLogger(typeof(Preservation)))
+                .ConfigureAwait(false);
+
+            if (caller.Landlord)
             {
-                var aesEncryption = new JempAesEncryption(options.Password ?? "", salt, legacyFallbackEnabled);
-                var decryptedBytes = aesEncryption.Decrypt(bytes);
+                return;
+            }
 
-                var lz4Options =
-                    MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray);
+            var held = caller.Permissions.ToHashSet();
 
-                return MessagePackSerializer.Deserialize<Wrapper>(decryptedBytes, lz4Options);
-            }, token);
+            var imported = (wrapper.Payload?.RoleRegistry ?? [])
+                .SelectMany(r => r.RoleRegistryPermission ?? [])
+                .Select(g => g.PermissionSpecificationId)
+                .Where(id => id.HasValue)
+                .Select(id => id.GetValueOrDefault());
+
+            var replaced = await new Data.Query.GetCarriedPermissionsQuery.GetCarriedPermissionsQuery(dbContext,
+                tenantRegistryId.GetValueOrDefault()).ForTenantAsync(token).ConfigureAwait(false);
+
+            if (imported.Concat(replaced).Any(id => !held.Contains(id)))
+            {
+                throw new PrivilegeEscalationImportException();
+            }
         }
 
         private async Task ApplyWrapperAsync(byte[]? bytes, Func<Wrapper> read,
@@ -150,7 +179,20 @@ namespace Jube.Preservation
             {
                 var wrapper = read();
 
+                await EnsureImportWithinCallersPrivilegeAsync(wrapper, import.TenantRegistryId, token)
+                    .ConfigureAwait(false);
+
+                var callerPermissions = await new Data.Security.PermissionValidation()
+                    .GetPermissionsAsync(dbContext, userName, log4net.LogManager.GetLogger(typeof(Preservation)))
+                    .ConfigureAwait(false);
+
+                await SnapshotAsync(BeforeImportOptions, BeforeImportSource, "Before import of " + wrapper.Guid,
+                    token).ConfigureAwait(false);
+
                 await using var transaction = await dbContext.BeginTransactionAsync(token).ConfigureAwait(false);
+
+                await dbContext.ExecuteAsync("select pg_advisory_xact_lock(hashtext(@key))", token,
+                    new DataParameter("key", $"PreservationImport|{import.TenantRegistryId}")).ConfigureAwait(false);
 
                 var roleRegistryRepository = new RoleRegistryRepository(dbContext, import.TenantRegistryId);
                 var roleRegistryAcrossAllTenants = await roleRegistryRepository.GetAllTenantsAsync(token);
@@ -209,6 +251,12 @@ namespace Jube.Preservation
                 await entityAnalysisModelTagRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
+                var entityAnalysisModelResponseElevationRangeRepository =
+                    new EntityAnalysisModelResponseElevationRangeRepository(dbContext, import.TenantRegistryId);
+
+                await entityAnalysisModelResponseElevationRangeRepository
+                    .DeleteByTenantRegistryIdOutsideOfInstanceAsync(import.TenantRegistryId, import.Id, token);
+
                 var entityAnalysisModelTtlCounterRepository =
                     new EntityAnalysisModelTtlCounterRepository(dbContext, import.TenantRegistryId);
 
@@ -232,6 +280,18 @@ namespace Jube.Preservation
                     new EntityAnalysisModelHttpAdaptationRepository(dbContext, import.TenantRegistryId);
 
                 await entityAnalysisModelHttpAdaptationRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
+                    import.TenantRegistryId, import.Id, token);
+
+                var entityAnalysisModelGraphRecallRepository =
+                    new EntityAnalysisModelGraphRecallRepository(dbContext, import.TenantRegistryId);
+
+                await entityAnalysisModelGraphRecallRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
+                    import.TenantRegistryId, import.Id, token);
+
+                var entityAnalysisModelSvirfdRepository =
+                    new EntityAnalysisModelSvirfdRepository(dbContext, import.TenantRegistryId);
+
+                await entityAnalysisModelSvirfdRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
                 var entityAnalysisModelActivationRuleRepository =
@@ -564,6 +624,30 @@ namespace Jube.Preservation
                 await caseWorkflowFormRoleRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
                     import.TenantRegistryId, import.Id, token);
 
+                var caseWorkflowFormValidatorRepository =
+                    new CaseWorkflowFormValidatorRepository(dbContext, import.TenantRegistryId);
+
+                await caseWorkflowFormValidatorRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
+                    import.TenantRegistryId, import.Id, token);
+
+                var caseWorkflowChecklistRepository =
+                    new CaseWorkflowChecklistRepository(dbContext, import.TenantRegistryId);
+
+                await caseWorkflowChecklistRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
+                    import.TenantRegistryId, import.Id, token);
+
+                var caseWorkflowChecklistItemRepository =
+                    new CaseWorkflowChecklistItemRepository(dbContext, import.TenantRegistryId);
+
+                await caseWorkflowChecklistItemRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
+                    import.TenantRegistryId, import.Id, token);
+
+                var caseWorkflowReleaseHookRepository =
+                    new CaseWorkflowReleaseHookRepository(dbContext, import.TenantRegistryId);
+
+                await caseWorkflowReleaseHookRepository.DeleteByTenantRegistryIdOutsideOfInstanceAsync(
+                    import.TenantRegistryId, import.Id, token);
+
                 var caseWorkflowMacroRoleRepository =
                     new CaseWorkflowMacroRoleRepository(dbContext, import.TenantRegistryId);
 
@@ -615,10 +699,13 @@ namespace Jube.Preservation
                 var entityAnalysisModelGatewayRuleRekey = new Dictionary<Guid, Guid>();
                 var entityAnalysisModelSanctionRekey = new Dictionary<Guid, Guid>();
                 var entityAnalysisModelTagRekey = new Dictionary<Guid, Guid>();
+                var entityAnalysisModelResponseElevationRangeRekey = new Dictionary<Guid, Guid>();
                 var entityAnalysisModelTtlCounterRekey = new Dictionary<Guid, Guid>();
                 var entityAnalysisModelAbstractionRuleRekey = new Dictionary<Guid, Guid>();
                 var entityAnalysisModelAbstractionCalculationsRekey = new Dictionary<Guid, Guid>();
                 var entityAnalysisModelHttpAdaptationRekey = new Dictionary<Guid, Guid>();
+                var entityAnalysisModelGraphRecallRekey = new Dictionary<Guid, Guid>();
+                var entityAnalysisModelSvirfdRekey = new Dictionary<Guid, Guid>();
                 var entityAnalysisModelExhaustiveSearchInstanceRekey = new Dictionary<Guid, Guid>();
                 var entityAnalysisModelActivationRuleRekey = new Dictionary<Guid, Guid>();
                 var caseWorkflowRekey = new Dictionary<Guid, Guid>();
@@ -629,6 +716,7 @@ namespace Jube.Preservation
                 var caseWorkflowsFilterRekey = new Dictionary<Guid, Guid>();
                 var caseWorkflowsMacroRekey = new Dictionary<Guid, Guid>();
                 var caseWorkflowsStatusRekey = new Dictionary<Guid, Guid>();
+                var caseWorkflowsChecklistRekey = new Dictionary<Guid, Guid>();
                 var entityAnalysisModelListRekey = new Dictionary<Guid, Guid>();
                 var entityAnalysisModelListValueRekey = new Dictionary<Guid, Guid>();
                 var entityAnalysisModelDictionaryRekey = new Dictionary<Guid, Guid>();
@@ -649,7 +737,7 @@ namespace Jube.Preservation
 
                         if (existsAnywhere)
                         {
-                            var existsInTenant = roleRegistryAcrossAllTenants
+                            var existsInTenant = visualisationRegistryAllTenants
                                 .FirstOrDefault(f =>
                                     f.Guid == visualisationRegistry.Guid &&
                                     f.TenantRegistryId == import.TenantRegistryId) != null;
@@ -910,6 +998,35 @@ namespace Jube.Preservation
                                 entityApprovalEntityIdMaps, token);
                         }
 
+                        foreach (var entityAnalysisModelResponseElevationRange in oldEntityAnalysisModel
+                                     .EntityAnalysisModelResponseElevationRange ?? [])
+                        {
+                            var oldResponseElevationRangeId = entityAnalysisModelResponseElevationRange.Id;
+                            var oldResponseElevationRangeVersion = entityAnalysisModelResponseElevationRange.Version;
+
+                            entityAnalysisModelResponseElevationRange.EntityAnalysisModelId = newEntityAnalysisModel.Id;
+                            entityAnalysisModelResponseElevationRange.ImportId = import.Id;
+
+                            if (rekey)
+                            {
+                                entityAnalysisModelResponseElevationRangeRekey.TryAdd(
+                                    entityAnalysisModelResponseElevationRange.Guid, Guid.NewGuid());
+
+                                entityAnalysisModelResponseElevationRange.Guid =
+                                    entityAnalysisModelResponseElevationRangeRekey[
+                                        entityAnalysisModelResponseElevationRange.Guid];
+                            }
+
+                            await entityAnalysisModelResponseElevationRangeRepository.InsertAsync(
+                                entityAnalysisModelResponseElevationRange, token);
+
+                            await CarryVersionForApprovalReplayAsync(entityAnalysisModelResponseElevationRange,
+                                oldResponseElevationRangeVersion, oldResponseElevationRangeId,
+                                entityAnalysisModelResponseElevationRange.Id,
+                                EntityApprovalKind.EntityAnalysisModelResponseElevationRange,
+                                entityApprovalEntityIdMaps, token);
+                        }
+
                         foreach (var entityAnalysisModelTtlCounter in oldEntityAnalysisModel
                                      .EntityAnalysisModelTtlCounter)
                         {
@@ -1018,6 +1135,57 @@ namespace Jube.Preservation
                                 oldHttpAdaptationVersion, oldHttpAdaptationId, entityAnalysisModelHttpAdaptation.Id,
                                 EntityApprovalKind.EntityAnalysisModelHttpAdaptation, entityApprovalEntityIdMaps,
                                 token);
+                        }
+
+                        foreach (var entityAnalysisModelGraphRecall in oldEntityAnalysisModel
+                                     .EntityAnalysisModelGraphRecall ?? [])
+                        {
+                            var oldGraphRecallId = entityAnalysisModelGraphRecall.Id;
+                            var oldGraphRecallVersion = entityAnalysisModelGraphRecall.Version;
+
+                            entityAnalysisModelGraphRecall.EntityAnalysisModelId = newEntityAnalysisModel.Id;
+                            entityAnalysisModelGraphRecall.ImportId = import.Id;
+
+                            if (rekey)
+                            {
+                                entityAnalysisModelGraphRecallRekey.TryAdd(entityAnalysisModelGraphRecall.Guid,
+                                    Guid.NewGuid());
+
+                                entityAnalysisModelGraphRecall.Guid =
+                                    entityAnalysisModelGraphRecallRekey[entityAnalysisModelGraphRecall.Guid];
+                            }
+
+                            await entityAnalysisModelGraphRecallRepository.InsertAsync(entityAnalysisModelGraphRecall,
+                                token);
+
+                            await CarryVersionForApprovalReplayAsync(entityAnalysisModelGraphRecall,
+                                oldGraphRecallVersion, oldGraphRecallId, entityAnalysisModelGraphRecall.Id,
+                                EntityApprovalKind.EntityAnalysisModelGraphRecall, entityApprovalEntityIdMaps,
+                                token);
+                        }
+
+                        foreach (var entityAnalysisModelSvirfd in oldEntityAnalysisModel
+                                     .EntityAnalysisModelSvirfd ?? [])
+                        {
+                            var oldSvirfdId = entityAnalysisModelSvirfd.Id;
+                            var oldSvirfdVersion = entityAnalysisModelSvirfd.Version;
+
+                            entityAnalysisModelSvirfd.EntityAnalysisModelId = newEntityAnalysisModel.Id;
+                            entityAnalysisModelSvirfd.ImportId = import.Id;
+
+                            if (rekey)
+                            {
+                                entityAnalysisModelSvirfdRekey.TryAdd(entityAnalysisModelSvirfd.Guid, Guid.NewGuid());
+
+                                entityAnalysisModelSvirfd.Guid =
+                                    entityAnalysisModelSvirfdRekey[entityAnalysisModelSvirfd.Guid];
+                            }
+
+                            await entityAnalysisModelSvirfdRepository.InsertAsync(entityAnalysisModelSvirfd, token);
+
+                            await CarryVersionForApprovalReplayAsync(entityAnalysisModelSvirfd, oldSvirfdVersion,
+                                oldSvirfdId, entityAnalysisModelSvirfd.Id, EntityApprovalKind.EntityAnalysisModelSvirfd,
+                                entityApprovalEntityIdMaps, token);
                         }
 
                         if (oldEntityAnalysisModel.ExhaustiveSearchInstance != null)
@@ -1515,9 +1683,9 @@ namespace Jube.Preservation
                             oldEntityAnalysisModelCaseWorkflow.VisualisationRegistryGuid
                                 = visualisationRegistryRekey.TryGetValue(
                                     oldEntityAnalysisModelCaseWorkflow.VisualisationRegistryGuid,
-                                    out var entityAnalysisModelGuidTtlCounter)
-                                    ? entityAnalysisModelGuidTtlCounter
-                                    : newEntityAnalysisModel.Guid;
+                                    out var rekeyedVisualisationRegistryGuid)
+                                    ? rekeyedVisualisationRegistryGuid
+                                    : oldEntityAnalysisModelCaseWorkflow.VisualisationRegistryGuid;
 
                             if (rekey)
                             {
@@ -1836,16 +2004,16 @@ namespace Jube.Preservation
 
                 if (wrapper.Payload?.AdvancedAnalytics != null)
                 {
-                    var advancedAnalyticsInstanceIdMap =
+                    var askJoobyAnalyticsInstanceIdMap =
                         await new AdvancedAnalyticsPreservation(dbContext, import.TenantRegistryId, userName)
                             .ImportAsync(wrapper.Payload.AdvancedAnalytics, entityAnalysisModelIdMap, token)
                             .ConfigureAwait(false);
 
-                    foreach (var (oldAdvancedAnalyticsInstanceId, newAdvancedAnalyticsInstanceId) in
-                             advancedAnalyticsInstanceIdMap)
+                    foreach (var (oldAskJoobyAnalyticsInstanceId, newAskJoobyAnalyticsInstanceId) in
+                             askJoobyAnalyticsInstanceIdMap)
                     {
-                        entityApprovalEntityIdMaps[EntityApprovalKind.AdvancedAnalyticsInstance][
-                            oldAdvancedAnalyticsInstanceId] = newAdvancedAnalyticsInstanceId;
+                        entityApprovalEntityIdMaps[EntityApprovalKind.AskJoobyAnalyticsInstance][
+                            oldAskJoobyAnalyticsInstanceId] = newAskJoobyAnalyticsInstanceId;
                     }
                 }
 
@@ -1947,6 +2115,83 @@ namespace Jube.Preservation
 
                 if (wrapper.Payload is { EntityPermission: not null })
                 {
+                    var permissionTable = wrapper.Payload.EntityPermission;
+
+                    var knownGuids = PackageReferenceGuard.Collect(wrapper.Payload.EntityAnalysisModel,
+                        wrapper.Payload.VisualisationRegistry, wrapper.Payload.RoleRegistry,
+                        permissionTable.CaseWorkflowChecklist);
+
+                    foreach (var rekeyed in new[]
+                             {
+                                 roleRegistryRekey, entityAnalysisModelRekey, caseWorkflowRekey,
+                                 caseWorkflowsXPathRekey, caseWorkflowsActionRekey, caseWorkflowsDisplayRekey,
+                                 caseWorkflowsFormRekey, caseWorkflowsFilterRekey, caseWorkflowsMacroRekey,
+                                 caseWorkflowsStatusRekey, visualisationRegistryRekey,
+                                 visualisationRegistryDatasourceRekey, visualisationRegistryParameterRekey
+                             })
+                    {
+                        knownGuids.UnionWith(rekeyed.Keys);
+                    }
+
+                    permissionTable.CaseWorkflowRole = PackageReferenceGuard.Within(permissionTable.CaseWorkflowRole,
+                        knownGuids, r => r.CaseWorkflowGuid, r => r.RoleRegistryGuid);
+
+                    permissionTable.CaseWorkflowActionRole = PackageReferenceGuard.Within(
+                        permissionTable.CaseWorkflowActionRole, knownGuids, r => r.CaseWorkflowActionGuid,
+                        r => r.RoleRegistryGuid);
+
+                    permissionTable.CaseWorkflowDisplayRole = PackageReferenceGuard.Within(
+                        permissionTable.CaseWorkflowDisplayRole, knownGuids, r => r.CaseWorkflowDisplayGuid,
+                        r => r.RoleRegistryGuid);
+
+                    permissionTable.CaseWorkflowFilterRole = PackageReferenceGuard.Within(
+                        permissionTable.CaseWorkflowFilterRole, knownGuids, r => r.CaseWorkflowFilterGuid,
+                        r => r.RoleRegistryGuid);
+
+                    permissionTable.CaseWorkflowFormRole = PackageReferenceGuard.Within(
+                        permissionTable.CaseWorkflowFormRole, knownGuids, r => r.CaseWorkflowFormGuid,
+                        r => r.RoleRegistryGuid);
+
+                    permissionTable.CaseWorkflowMacroRole = PackageReferenceGuard.Within(
+                        permissionTable.CaseWorkflowMacroRole, knownGuids, r => r.CaseWorkflowMacroGuid,
+                        r => r.RoleRegistryGuid);
+
+                    permissionTable.CaseWorkflowStatusRole = PackageReferenceGuard.Within(
+                        permissionTable.CaseWorkflowStatusRole, knownGuids, r => r.CaseWorkflowStatusGuid,
+                        r => r.RoleRegistryGuid);
+
+                    permissionTable.CaseWorkflowXPathRole = PackageReferenceGuard.Within(
+                        permissionTable.CaseWorkflowXPathRole, knownGuids, r => r.CaseWorkflowXPathGuid,
+                        r => r.RoleRegistryGuid);
+
+                    permissionTable.VisualisationRegistryRole = PackageReferenceGuard.Within(
+                        permissionTable.VisualisationRegistryRole, knownGuids, r => r.VisualisationRegistryGuid,
+                        r => r.RoleRegistryGuid);
+
+                    permissionTable.VisualisationRegistryDatasourceRole = PackageReferenceGuard.Within(
+                        permissionTable.VisualisationRegistryDatasourceRole, knownGuids,
+                        r => r.VisualisationRegistryDatasourceGuid, r => r.RoleRegistryGuid);
+
+                    permissionTable.VisualisationRegistryParameterRole = PackageReferenceGuard.Within(
+                        permissionTable.VisualisationRegistryParameterRole, knownGuids,
+                        r => r.VisualisationRegistryParameterGuid, r => r.RoleRegistryGuid);
+
+                    permissionTable.EntityAnalysisModelRole = PackageReferenceGuard.Within(
+                        permissionTable.EntityAnalysisModelRole, knownGuids, r => r.EntityAnalysisModelGuid,
+                        r => r.RoleRegistryGuid);
+
+                    permissionTable.CaseWorkflowFormValidator = PackageReferenceGuard.Within(
+                        permissionTable.CaseWorkflowFormValidator, knownGuids, r => r.CaseWorkflowFormGuid);
+
+                    permissionTable.CaseWorkflowReleaseHook = PackageReferenceGuard.Within(
+                        permissionTable.CaseWorkflowReleaseHook, knownGuids, r => r.CaseWorkflowGuid);
+
+                    permissionTable.CaseWorkflowChecklist = PackageReferenceGuard.Within(
+                        permissionTable.CaseWorkflowChecklist, knownGuids, r => r.CaseWorkflowStatusGuid);
+
+                    permissionTable.CaseWorkflowChecklistItem = PackageReferenceGuard.Within(
+                        permissionTable.CaseWorkflowChecklistItem, knownGuids, r => r.CaseWorkflowChecklistGuid);
+
                     if (wrapper.Payload.EntityPermission.VisualisationRegistryRole != null)
                     {
                         foreach (var visualisationRegistryRole in wrapper.Payload.EntityPermission
@@ -2151,6 +2396,75 @@ namespace Jube.Preservation
                         }
                     }
 
+                    if (wrapper.Payload.EntityPermission.CaseWorkflowFormValidator != null)
+                    {
+                        foreach (var caseWorkflowFormValidator in wrapper.Payload.EntityPermission
+                                     .CaseWorkflowFormValidator)
+                        {
+                            caseWorkflowFormValidator.CaseWorkflowFormGuid
+                                = caseWorkflowsFormRekey.TryGetValue(caseWorkflowFormValidator.CaseWorkflowFormGuid,
+                                    out var entityGuid)
+                                    ? entityGuid
+                                    : caseWorkflowFormValidator.CaseWorkflowFormGuid;
+
+                            caseWorkflowFormValidator.ImportId = import.Id;
+
+                            await caseWorkflowFormValidatorRepository.InsertAsync(caseWorkflowFormValidator, token);
+                        }
+                    }
+
+                    if (wrapper.Payload.EntityPermission.CaseWorkflowChecklist != null)
+                    {
+                        foreach (var caseWorkflowChecklist in wrapper.Payload.EntityPermission.CaseWorkflowChecklist)
+                        {
+                            if (caseWorkflowsStatusRekey.TryGetValue(caseWorkflowChecklist.CaseWorkflowStatusGuid,
+                                    out var statusGuid))
+                            {
+                                caseWorkflowChecklist.CaseWorkflowStatusGuid = statusGuid;
+                                caseWorkflowsChecklistRekey.TryAdd(caseWorkflowChecklist.Guid, Guid.NewGuid());
+                                caseWorkflowChecklist.Guid = caseWorkflowsChecklistRekey[caseWorkflowChecklist.Guid];
+                            }
+
+                            caseWorkflowChecklist.ImportId = import.Id;
+
+                            await caseWorkflowChecklistRepository.InsertAsync(caseWorkflowChecklist, token);
+                        }
+                    }
+
+                    if (wrapper.Payload.EntityPermission.CaseWorkflowChecklistItem != null)
+                    {
+                        foreach (var caseWorkflowChecklistItem in wrapper.Payload.EntityPermission
+                                     .CaseWorkflowChecklistItem)
+                        {
+                            caseWorkflowChecklistItem.CaseWorkflowChecklistGuid
+                                = caseWorkflowsChecklistRekey.TryGetValue(
+                                    caseWorkflowChecklistItem.CaseWorkflowChecklistGuid, out var checklistGuid)
+                                    ? checklistGuid
+                                    : caseWorkflowChecklistItem.CaseWorkflowChecklistGuid;
+
+                            caseWorkflowChecklistItem.ImportId = import.Id;
+
+                            await caseWorkflowChecklistItemRepository.InsertAsync(caseWorkflowChecklistItem, token);
+                        }
+                    }
+
+                    if (wrapper.Payload.EntityPermission.CaseWorkflowReleaseHook != null)
+                    {
+                        foreach (var caseWorkflowReleaseHook in wrapper.Payload.EntityPermission
+                                     .CaseWorkflowReleaseHook)
+                        {
+                            caseWorkflowReleaseHook.CaseWorkflowGuid
+                                = caseWorkflowRekey.TryGetValue(caseWorkflowReleaseHook.CaseWorkflowGuid,
+                                    out var entityGuid)
+                                    ? entityGuid
+                                    : caseWorkflowReleaseHook.CaseWorkflowGuid;
+
+                            caseWorkflowReleaseHook.ImportId = import.Id;
+
+                            await caseWorkflowReleaseHookRepository.InsertAsync(caseWorkflowReleaseHook, token);
+                        }
+                    }
+
                     if (wrapper.Payload.EntityPermission.CaseWorkflowMacroRole != null)
                     {
                         foreach (var caseWorkflowMacroRole in wrapper.Payload.EntityPermission.CaseWorkflowMacroRole)
@@ -2219,7 +2533,7 @@ namespace Jube.Preservation
                 }
 
                 await new RecoverOrphanedUsersQuery(dbContext, import.TenantRegistryId, userName)
-                    .ExecuteAsync(token);
+                    .ExecuteAsync(callerPermissions.Landlord ? null : callerPermissions.Permissions, token);
 
                 await dbContext.CommitTransactionAsync(token).ConfigureAwait(false);
                 import.CompletedDate = DateTime.UtcNow;
@@ -2242,6 +2556,11 @@ namespace Jube.Preservation
 
         public async Task<Export> ExportAsync(ExportOptions options, CancellationToken token = default)
         {
+            if (!JempAesEncryption.IsAcceptablePassword(options.Password))
+            {
+                throw new InvalidPasswordException(JempAesEncryption.MinimumPasswordLength);
+            }
+
             var exportRepository = new ExportRepository(dbContext, userName);
 
             var export = new Export
@@ -2266,7 +2585,7 @@ namespace Jube.Preservation
 
                 var bytes = MessagePackSerializer.Serialize(wrapper, lz4Options);
 
-                var aesEncryption = new JempAesEncryption(options.Password ?? "", salt, legacyFallbackEnabled);
+                var aesEncryption = new JempAesEncryption(options.Password ?? "");
                 var encryptedBytes = aesEncryption.Encrypt(bytes);
 
                 export.Bytes = bytes;
@@ -2287,37 +2606,31 @@ namespace Jube.Preservation
             }
         }
 
-        public async Task<ExportPeek> ExportPeekAsync(ExportOptions options, CancellationToken token = default)
+        public async Task<Payload> LivePayloadAsync(ExportOptions options, CancellationToken token = default)
         {
-            var exportPeekRepository = new ExportPeekRepository(dbContext, userName);
+            var tenantRegistryId = await dbContext.UserInTenant.Where(w => w.User == userName)
+                .Select(s => s.TenantRegistryId).FirstOrDefaultAsync(token).ConfigureAwait(false);
 
-            var exportPeek = new ExportPeek
-            {
-                Guid = Guid.NewGuid(),
-                CreatedUser = userName
-            };
+            return await ExportPayloadAsync(options, tenantRegistryId, token).ConfigureAwait(false);
+        }
 
-            exportPeek = await exportPeekRepository.InsertAsync(exportPeek, token).ConfigureAwait(false);
+        public static string PayloadJson(Payload payload)
+        {
+            return JsonConvert.SerializeObject(payload, Formatting.None, BodyJsonSettings);
+        }
 
-            try
-            {
-                var payload = await ExportPayloadAsync(options, exportPeek.TenantRegistryId, token)
-                    .ConfigureAwait(false);
+        public Wrapper ReadPackage(byte[] bytes, ImportOptions options)
+        {
+            var aesEncryption = new JempAesEncryption(options.Password ?? "");
+            var decryptedBytes = aesEncryption.Decrypt(bytes);
 
-                exportPeek.Json = JsonConvert.SerializeObject(payload, Formatting.Indented, BodyJsonSettings);
-                exportPeek.CompletedDate = DateTime.UtcNow;
+            PackageSizeGuard.EnsureWithin(decryptedBytes, options.MaximumDecompressedBytes);
 
-                await exportPeekRepository.UpdateAsync(exportPeek, token);
+            var lz4Options =
+                MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray)
+                    .WithSecurity(MessagePackSecurity.UntrustedData);
 
-                return exportPeek;
-            }
-            catch (Exception ex)
-            {
-                exportPeek.InError = 1;
-                exportPeek.ErrorStack = ex.ToString();
-                await exportPeekRepository.UpdateAsync(exportPeek, token);
-                throw;
-            }
+            return MessagePackSerializer.Deserialize<Wrapper>(decryptedBytes, lz4Options);
         }
 
         private async Task CarryVersionForApprovalReplayAsync<T>(T imported, int? oldVersion, int oldId, int newId,
@@ -2368,6 +2681,9 @@ namespace Jube.Preservation
                     entityIdsByKind[EntityApprovalKind.EntityAnalysisModelTag].AddRange(
                         (entityAnalysisModel.EntityAnalysisModelTag ?? []).Select(s => s.Id));
 
+                    entityIdsByKind[EntityApprovalKind.EntityAnalysisModelResponseElevationRange].AddRange(
+                        (entityAnalysisModel.EntityAnalysisModelResponseElevationRange ?? []).Select(s => s.Id));
+
                     entityIdsByKind[EntityApprovalKind.EntityAnalysisModelTtlCounter].AddRange(
                         (entityAnalysisModel.EntityAnalysisModelTtlCounter ?? []).Select(s => s.Id));
 
@@ -2379,6 +2695,12 @@ namespace Jube.Preservation
 
                     entityIdsByKind[EntityApprovalKind.EntityAnalysisModelHttpAdaptation].AddRange(
                         (entityAnalysisModel.EntityAnalysisModelHttpAdaptation ?? []).Select(s => s.Id));
+
+                    entityIdsByKind[EntityApprovalKind.EntityAnalysisModelGraphRecall].AddRange(
+                        (entityAnalysisModel.EntityAnalysisModelGraphRecall ?? []).Select(s => s.Id));
+
+                    entityIdsByKind[EntityApprovalKind.EntityAnalysisModelSvirfd].AddRange(
+                        (entityAnalysisModel.EntityAnalysisModelSvirfd ?? []).Select(s => s.Id));
 
                     entityIdsByKind[EntityApprovalKind.EntityAnalysisModelActivationRule].AddRange(
                         (entityAnalysisModel.EntityAnalysisModelActivationRule ?? []).Select(s => s.Id));
@@ -2409,7 +2731,7 @@ namespace Jube.Preservation
 
             if (payload.AdvancedAnalytics?.Instances != null)
             {
-                entityIdsByKind[EntityApprovalKind.AdvancedAnalyticsInstance].AddRange(
+                entityIdsByKind[EntityApprovalKind.AskJoobyAnalyticsInstance].AddRange(
                     payload.AdvancedAnalytics.Instances.Select(s => s.Id));
             }
 
@@ -2531,6 +2853,14 @@ namespace Jube.Preservation
                     = await entityAnalysisModelTagRepository
                         .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModel.Id, token).ConfigureAwait(false);
 
+                var entityAnalysisModelResponseElevationRangeRepository =
+                    new EntityAnalysisModelResponseElevationRangeRepository(dbContext, tenantRegistryId);
+
+                entityAnalysisModel.EntityAnalysisModelResponseElevationRange
+                    = await entityAnalysisModelResponseElevationRangeRepository
+                        .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModel.Id, token)
+                        .ConfigureAwait(false);
+
                 var entityAnalysisModelTtlCounterRepository =
                     new EntityAnalysisModelTtlCounterRepository(dbContext, tenantRegistryId);
 
@@ -2559,6 +2889,20 @@ namespace Jube.Preservation
 
                 entityAnalysisModel.EntityAnalysisModelHttpAdaptation
                     = await entityAnalysisModelHttpAdaptationRepository
+                        .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModel.Id, token).ConfigureAwait(false);
+
+                var entityAnalysisModelGraphRecallRepository =
+                    new EntityAnalysisModelGraphRecallRepository(dbContext, tenantRegistryId);
+
+                entityAnalysisModel.EntityAnalysisModelGraphRecall
+                    = await entityAnalysisModelGraphRecallRepository
+                        .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModel.Id, token).ConfigureAwait(false);
+
+                var entityAnalysisModelSvirfdRepository =
+                    new EntityAnalysisModelSvirfdRepository(dbContext, tenantRegistryId);
+
+                entityAnalysisModel.EntityAnalysisModelSvirfd
+                    = await entityAnalysisModelSvirfdRepository
                         .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModel.Id, token).ConfigureAwait(false);
 
                 if (options.Exhaustive)
@@ -2908,30 +3252,30 @@ namespace Jube.Preservation
                                         .Id, token).ConfigureAwait(false);
                     }
                 }
+            }
 
-                if (options.Visualisations)
+            if (options.Visualisations)
+            {
+                var visualisationRegistryRepository =
+                    new VisualisationRegistryRepository(dbContext, tenantRegistryId);
+
+                payload.VisualisationRegistry = await visualisationRegistryRepository.GetOrderByIdAsync(token);
+
+                foreach (var visualisationRegistry in payload.VisualisationRegistry)
                 {
-                    var visualisationRegistryRepository =
-                        new VisualisationRegistryRepository(dbContext, tenantRegistryId);
+                    var visualisationRegistryDatasourceRepository =
+                        new VisualisationRegistryDatasourceRepository(dbContext, tenantRegistryId);
 
-                    payload.VisualisationRegistry = await visualisationRegistryRepository.GetOrderByIdAsync(token);
+                    visualisationRegistry.VisualisationRegistryDatasource
+                        = await visualisationRegistryDatasourceRepository
+                            .GetByVisualisationRegistryIdOrderByIdAsync(visualisationRegistry.Id, token);
 
-                    foreach (var visualisationRegistry in payload.VisualisationRegistry)
-                    {
-                        var visualisationRegistryDatasourceRepository =
-                            new VisualisationRegistryDatasourceRepository(dbContext, tenantRegistryId);
+                    var visualisationRegistryParameterRepository =
+                        new VisualisationRegistryParameterRepository(dbContext, tenantRegistryId);
 
-                        visualisationRegistry.VisualisationRegistryDatasource
-                            = await visualisationRegistryDatasourceRepository
-                                .GetByVisualisationRegistryIdOrderByIdAsync(visualisationRegistry.Id, token);
-
-                        var visualisationRegistryParameterRepository =
-                            new VisualisationRegistryParameterRepository(dbContext, tenantRegistryId);
-
-                        visualisationRegistry.VisualisationRegistryParameter
-                            = await visualisationRegistryParameterRepository
-                                .GetByVisualisationRegistryIdOrderByIdAsync(visualisationRegistry.Id, token);
-                    }
+                    visualisationRegistry.VisualisationRegistryParameter
+                        = await visualisationRegistryParameterRepository
+                            .GetByVisualisationRegistryIdOrderByIdAsync(visualisationRegistry.Id, token);
                 }
             }
 
@@ -2958,6 +3302,30 @@ namespace Jube.Preservation
 
             var caseWorkflowFormRoleRepository = new CaseWorkflowFormRoleRepository(dbContext, tenantRegistryId);
             payload.EntityPermission.CaseWorkflowFormRole = await caseWorkflowFormRoleRepository.GetAllDescAsync(token);
+
+            var caseWorkflowFormValidatorRepository =
+                new CaseWorkflowFormValidatorRepository(dbContext, tenantRegistryId);
+
+            payload.EntityPermission.CaseWorkflowFormValidator =
+                await caseWorkflowFormValidatorRepository.GetAllDescAsync(token);
+
+            var caseWorkflowChecklistRepository =
+                new CaseWorkflowChecklistRepository(dbContext, tenantRegistryId);
+
+            payload.EntityPermission.CaseWorkflowChecklist =
+                await caseWorkflowChecklistRepository.GetAllAsync(token);
+
+            var caseWorkflowChecklistItemRepository =
+                new CaseWorkflowChecklistItemRepository(dbContext, tenantRegistryId);
+
+            payload.EntityPermission.CaseWorkflowChecklistItem =
+                await caseWorkflowChecklistItemRepository.GetAllDescAsync(token);
+
+            var caseWorkflowReleaseHookRepository =
+                new CaseWorkflowReleaseHookRepository(dbContext, tenantRegistryId);
+
+            payload.EntityPermission.CaseWorkflowReleaseHook =
+                await caseWorkflowReleaseHookRepository.GetAllDescAsync(token);
 
             var caseWorkflowMacroRoleRepository = new CaseWorkflowMacroRoleRepository(dbContext, tenantRegistryId);
 

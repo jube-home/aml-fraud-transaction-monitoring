@@ -15,31 +15,37 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Begins a pipeline from the value; optional, since every test step called on a plain value begins one by itself, and harmless to repeat.")]
         public static Flow<double> Start(this double value)
         {
             return new Flow<double>(value, FlowOutcome.Undecided, 0, null);
         }
 
+        [Description("Begins a pipeline from the value; optional, since every test step called on a plain value begins one by itself, and harmless to repeat.")]
         public static Flow<int> Start(this int value)
         {
             return new Flow<int>(value, FlowOutcome.Undecided, 0, null);
         }
 
+        [Description("Begins a pipeline from the value; optional, since every test step called on a plain value begins one by itself, and harmless to repeat.")]
         public static Flow<string?> Start(this string? value)
         {
             return new Flow<string?>(value, FlowOutcome.Undecided, 0, null);
         }
 
+        [Description("Begins a pipeline from the value; optional, since every test step called on a plain value begins one by itself, and harmless to repeat.")]
         public static Flow<DateTime> Start(this DateTime value)
         {
             return new Flow<DateTime>(value, FlowOutcome.Undecided, 0, null);
         }
 
+        [Description("Begins a pipeline from the value; optional, since every test step called on a plain value begins one by itself, and harmless to repeat.")]
         public static Flow<bool> Start(this bool value)
         {
             return new Flow<bool>(value, FlowOutcome.Undecided, 0, null);
         }
 
+        [Description("Begins a pipeline from the value; optional, since every test step called on a plain value begins one by itself, and harmless to repeat.")]
         public static Flow<T> Start<T>(this Flow<T> flow)
         {
             return flow;

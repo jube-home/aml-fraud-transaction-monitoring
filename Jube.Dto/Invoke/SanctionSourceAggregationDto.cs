@@ -16,11 +16,16 @@
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable RedundantAttributeUsageProperty
 
+using MessagePack;
+
 namespace Jube.Dto.Invoke
 {
+    [MessagePackObject]
     public class SanctionSourceAggregationDto : SanctionAggregationDto
     {
+        [Key(8)]
         public int SourceId { get; set; }
+        [Key(9)]
         public string? SourceName { get; set; }
     }
 }

@@ -13,12 +13,15 @@ namespace Jube.Dictionary.Extensions
     {
         extension(String input)
         {
-            public Boolean IsMatch(String pattern)
+            [Description("Checks if the string matches a regular expression; matching is limited to 250 ms.")]
+            public Boolean IsMatch([Description("The regular expression pattern to match.")] String pattern)
             {
                 return Regex.IsMatch(input, pattern, RegexOptions.None, RegexSupport.matchTimeout);
             }
 
-            public Boolean IsMatch(String pattern, RegexOptions options)
+            [Description("Checks if the string matches a regex with options; matching is limited to 250 ms.")]
+            public Boolean IsMatch([Description("The regular expression pattern to match.")] String pattern,
+                [Description("A bitwise combination of the enumeration values that provide options for matching.")] RegexOptions options)
             {
                 return Regex.IsMatch(input, pattern, options, RegexSupport.matchTimeout);
             }

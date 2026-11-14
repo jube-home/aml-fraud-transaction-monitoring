@@ -39,7 +39,7 @@ namespace Jube.Service.Agent.AdvancedAnalyticsTools
             "GetAdvancedAnalyticsTrainingRunResult, whose evidence reports the discovered mode count. Training never " +
             "makes the resulting version live.")]
         public Task<AdvancedAnalyticsTrainingSubmissionDto> SubmitMeanShiftClustererTrainingAsync(
-            [Description("Numeric identifier of the Advanced Analytics instance the run and its model belong to.")]
+            [Description("Numeric identifier of the AskJooby Analytics instance the run and its model belong to.")]
             int instanceId,
             [Description("Name of the model the trained version is filed under. An existing model of that name " +
                          "receives a new version; otherwise a model is created.")]
@@ -97,7 +97,7 @@ namespace Jube.Service.Agent.AdvancedAnalyticsTools
         {
             return service.SubmitTrainingAsync(new AdvancedAnalyticsMeanShiftClustererTrainingDto
             {
-                AdvancedAnalyticsInstanceId = instanceId,
+                AskJoobyAnalyticsInstanceId = instanceId,
                 ModelName = modelName,
                 CorrelationKey = correlationKey,
                 VariableNames = variableNames,

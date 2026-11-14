@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchShareOfMaxAbove(double bound, params double[] others)
+            [Description("True when: the value over the largest of it and the others is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchShareOfMaxAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleShareOfMaxAbove(flow.Value, bound, others));
             }
 
-            public Flow<double> RejectShareOfMaxAbove(double bound, params double[] others)
+            [Description("True when: the value over the largest of it and the others is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectShareOfMaxAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleShareOfMaxAbove(flow.Value, bound, others));
             }
 
-            public Flow<double> BreakShareOfMaxAbove(double bound, params double[] others)
+            [Description("True when: the value over the largest of it and the others is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakShareOfMaxAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleShareOfMaxAbove(flow.Value, bound, others));
             }
 
-            public Flow<double> RequireShareOfMaxAbove(double bound, params double[] others)
+            [Description("True when: the value over the largest of it and the others is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireShareOfMaxAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleShareOfMaxAbove(flow.Value, bound, others));
             }
 
-            public Flow<double> EnsureShareOfMaxAbove(double bound, params double[] others)
+            [Description("True when: the value over the largest of it and the others is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureShareOfMaxAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchShareOfMaxAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value over the largest of it and the others is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchShareOfMaxAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().MatchShareOfMaxAbove(bound, others);
             }
 
-            public Flow<double> RejectShareOfMaxAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value over the largest of it and the others is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectShareOfMaxAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RejectShareOfMaxAbove(bound, others);
             }
 
-            public Flow<double> BreakShareOfMaxAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value over the largest of it and the others is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakShareOfMaxAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().BreakShareOfMaxAbove(bound, others);
             }
 
-            public Flow<double> RequireShareOfMaxAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value over the largest of it and the others is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireShareOfMaxAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RequireShareOfMaxAbove(bound, others);
             }
 
-            public Flow<double> EnsureShareOfMaxAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value over the largest of it and the others is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureShareOfMaxAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().EnsureShareOfMaxAbove(bound, others);
             }

@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,13 +22,15 @@ using Jube.Dto.Forms;
 
 namespace Jube.Dto.Repository.EntityAnalysisModelSynchronisationSchedule
 {
-    [FormEndpoint("EntityAnalysisModelSynchronisationSchedule")]
+    [FormEndpoint("EntityAnalysisModelSynchronisationSchedule", Operations = FormOperations.Create)]
     [FormKeys(Id = nameof(Id), NaturalKey = nameof(ScheduleDate))]
     [FormGroup("Schedule", Order = 10)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
+    [MessagePackObject]
     public class EntityAnalysisModelSynchronisationScheduleDto
     {
         [Description("Server-assigned row identifier. Read-only.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("The date and time (UTC) that model synchronisation across the cluster is scheduled for. " +
@@ -35,21 +38,31 @@ namespace Jube.Dto.Repository.EntityAnalysisModelSynchronisationSchedule
                      "immediate 'Synchronise Now'.")]
         [FormField(Group = "Schedule", Order = 10, Widget = "date")]
         [ListColumn(Order = 10, Title = "Scheduled For")]
+        [Key(1)]
         public DateTimeOffset? ScheduleDate { get; set; }
+
+        [Description("Identifier of the single model this schedule row asks the engine to synchronise. When " +
+                     "omitted, the row asks every model in the tenant to synchronise. A model-level row leaves " +
+                     "the tenant's other models exactly as they are.")]
+        [Key(2)]
+        public int? EntityAnalysisModelId { get; set; }
 
         [Description("Identifier of the tenant this schedule row belongs to. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 10, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(3)]
         public int TenantRegistryId { get; set; }
 
         [Description("User who created this row. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 20, ReadOnly = true)]
         [ListColumn(Order = 20, Title = "Created By")]
+        [Key(4)]
         public string? CreatedUser { get; set; }
 
         [Description("Timestamp (UTC) this row was created. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 30, ReadOnly = true)]
         [ListColumn(Order = 30, Title = "Created")]
+        [Key(5)]
         public DateTimeOffset? CreatedDate { get; set; }
     }
 }

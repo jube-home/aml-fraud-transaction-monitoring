@@ -28,6 +28,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -48,7 +49,11 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
         private readonly List<int> createdXpathIds = [];
         private readonly List<int> createdOverrideIds = [];
         private readonly List<int> createdActivationRuleOverrideIds = [];
-        public Task InitializeAsync() => Task.CompletedTask;
+
+        public Task InitializeAsync()
+        {
+            return Task.CompletedTask;
+        }
 
         public async Task DisposeAsync()
         {
@@ -71,8 +76,10 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
                 localizers, serviceChangeBus ?? new NullServiceChangeBus(), auditLog ?? TestLog.NoOp);
         }
 
-        private static Task<int> TenantOfAsync(DbContext dbContext, string userName) =>
-            dbContext.UserInTenant.Where(w => w.User == userName).Select(w => w.TenantRegistryId).FirstAsync();
+        private static Task<int> TenantOfAsync(DbContext dbContext, string userName)
+        {
+            return dbContext.UserInTenant.Where(w => w.User == userName).Select(w => w.TenantRegistryId).FirstAsync();
+        }
 
         private async Task<Data.Poco.EntityAnalysisModel> InsertModelAsync(DbContext dbContext, int tenantRegistryId,
             string key, bool enableOverride = true, byte deletedModel = 0, byte deletedXpath = 0)
@@ -84,7 +91,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
                 Active = 1,
                 Locked = 0,
                 Deleted = deletedModel,
-                TenantRegistryId = tenantRegistryId,
+                TenantRegistryId = tenantRegistryId
             };
 
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model);
@@ -99,7 +106,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
                     Active = 1,
                     Locked = 0,
                     Deleted = deletedXpath,
-                    EnableOverride = (byte)(enableOverride ? 1 : 0),
+                    EnableOverride = (byte)(enableOverride ? 1 : 0)
                 }));
 
             return model;
@@ -118,7 +125,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
                     Deleted = deleted,
                     CreatedDate = DateTime.UtcNow,
                     CreatedUser = DatabaseFixture.Prefix,
-                    Version = 1,
+                    Version = 1
                 }));
         }
 
@@ -323,7 +330,10 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
             row.LastCreatedDate.Should().NotBeNull();
         }
 
-        private static string NewKey() => $"{DatabaseFixture.Prefix}Key{Guid.NewGuid():N}"[..24];
+        private static string NewKey()
+        {
+            return $"{DatabaseFixture.Prefix}Key{Guid.NewGuid():N}"[..24];
+        }
 
         [Theory]
         [InlineData(null)]
@@ -454,7 +464,7 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelOverrideQuery
             var live = await InsertModelAsync(dbContext, tenantA, key);
             await InsertModelAsync(dbContext, tenantA, key, deletedModel: 1);
             await InsertModelAsync(dbContext, tenantA, key, deletedXpath: 1);
-            await InsertModelAsync(dbContext, tenantA, key, enableOverride: false);
+            await InsertModelAsync(dbContext, tenantA, key, false);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
             var result = await service.GetAsync(key, "v");

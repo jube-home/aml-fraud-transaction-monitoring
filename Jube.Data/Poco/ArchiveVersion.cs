@@ -44,8 +44,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(9)] public DateTime? CreatedDate { get; set; }
         [Column] [Nullable] [Key(10)] public DateTime? ReferenceDate { get; set; }
 
-        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = false,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = false)]
         [Key(11)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
 

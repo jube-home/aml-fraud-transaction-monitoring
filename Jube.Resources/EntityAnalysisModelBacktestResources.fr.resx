@@ -54,4 +54,31 @@
     <data name="InstanceNotFound" xml:space="preserve">
     <value>Le test sur l'historique est introuvable.</value>
   </data>
+    <data name="RuleTextRequired" xml:space="preserve">
+    <value>Une règle à tester rétrospectivement est requise.</value>
+  </data>
+    <data name="ArchiveNotFound" xml:space="preserve">
+    <value>La transaction ne figure pas dans l'archive de ce modèle.</value>
+  </data>
+    <data name="LimitTooLarge" xml:space="preserve">
+    <value>Un test rétrospectif immédiat lit au plus {0} transactions ; soumettez-le comme test rétrospectif en arrière-plan pour en lire davantage.</value>
+  </data>
+    <data name="ResultUnavailable" xml:space="preserve">
+    <value>Le test rétrospectif est {0} et n'a aucun résultat.</value>
+  </data>
+    <data name="OnlineTimeLimit" xml:space="preserve">
+    <value>Un test rétrospectif immédiat s'arrête après {0} secondes ; réduisez la plage ou abaissez la limite, ou soumettez-le comme test rétrospectif en arrière-plan.</value>
+  </data>
+    <data name="PendingLimitModel" xml:space="preserve">
+    <value>Ce modèle a déjà {0} tests rétrospectifs en attente ou en cours ; attendez la fin de l'un d'eux ou arrêtez-en un avant d'en soumettre un autre.</value>
+  </data>
+    <data name="PendingLimitTenant" xml:space="preserve">
+    <value>Votre organisation a déjà {0} tests rétrospectifs en attente ou en cours ; attendez la fin de l'un d'eux ou arrêtez-en un avant d'en soumettre un autre.</value>
+  </data>
+    <data name="PlaceholderNotInRule" xml:space="preserve">
+    <value>Le texte de la règle doit contenir l'espace réservé.</value>
+  </data>
+    <data name="CandidatesInvalid" xml:space="preserve">
+    <value>Indiquez de 1 à {0} candidats, chacun un nombre simple.</value>
+  </data>
 </root>

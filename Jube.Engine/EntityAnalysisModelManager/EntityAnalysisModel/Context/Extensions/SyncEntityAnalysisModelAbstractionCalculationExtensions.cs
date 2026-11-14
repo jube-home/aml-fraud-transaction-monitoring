@@ -34,7 +34,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
             {
                 context.Services.Parser.EntityAnalysisModelAbstractionCalculations = [];
 
-                foreach (var (key, value) in context.EntityAnalysisModels.ActiveEntityAnalysisModels)
+                foreach (var (key, value) in context.ModelsInScope())
                 {
                     context.Services.CancellationToken.ThrowIfCancellationRequested();
 
@@ -261,7 +261,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                             Path.Combine(
                                                 context.Paths.BinaryPath ?? throw new InvalidOperationException(),
                                                 "log4net.dll"),
-                                            Path.Combine(context.Paths.BinaryPath, "Jube.Dictionary.dll")
+                                            Path.Combine(context.Paths.BinaryPath, "Jube.Dictionary.dll"),
+                                            Path.Combine(context.Paths.BinaryPath, "Svirfd.dll"),
+                                            Path.Combine(context.Paths.BinaryPath, "Jube.Svirfd.dll")
                                         ], Compile.Language.Vb);
 
                                         if (context.Services.Log.IsDebugEnabled)

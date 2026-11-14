@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchCoefficientOfVariationInRange(double mean, double lowerBound, double upperBound)
+            [Description("True when: the value, as a standard deviation, over the size of the mean is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchCoefficientOfVariationInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleCoefficientOfVariationInRange(flow.Value, mean, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectCoefficientOfVariationInRange(double mean, double lowerBound, double upperBound)
+            [Description("True when: the value, as a standard deviation, over the size of the mean is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectCoefficientOfVariationInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleCoefficientOfVariationInRange(flow.Value, mean, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakCoefficientOfVariationInRange(double mean, double lowerBound, double upperBound)
+            [Description("True when: the value, as a standard deviation, over the size of the mean is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakCoefficientOfVariationInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleCoefficientOfVariationInRange(flow.Value, mean, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireCoefficientOfVariationInRange(double mean, double lowerBound, double upperBound)
+            [Description("True when: the value, as a standard deviation, over the size of the mean is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireCoefficientOfVariationInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleCoefficientOfVariationInRange(flow.Value, mean, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureCoefficientOfVariationInRange(double mean, double lowerBound, double upperBound)
+            [Description("True when: the value, as a standard deviation, over the size of the mean is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureCoefficientOfVariationInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchCoefficientOfVariationInRange(double mean, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value, as a standard deviation, over the size of the mean is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchCoefficientOfVariationInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchCoefficientOfVariationInRange(mean, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectCoefficientOfVariationInRange(double mean, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value, as a standard deviation, over the size of the mean is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectCoefficientOfVariationInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectCoefficientOfVariationInRange(mean, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakCoefficientOfVariationInRange(double mean, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value, as a standard deviation, over the size of the mean is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakCoefficientOfVariationInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakCoefficientOfVariationInRange(mean, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireCoefficientOfVariationInRange(double mean, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value, as a standard deviation, over the size of the mean is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireCoefficientOfVariationInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireCoefficientOfVariationInRange(mean, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureCoefficientOfVariationInRange(double mean, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value, as a standard deviation, over the size of the mean is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureCoefficientOfVariationInRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureCoefficientOfVariationInRange(mean, lowerBound, upperBound);
             }

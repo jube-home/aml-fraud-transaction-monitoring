@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>आपको यह कार्रवाई करने की अनुमति नहीं है।</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>यह कार्रवाई करने के लिए आपको किसी टेनेंट में साइन इन होना चाहिए।</value>
+  </data>
+    <data name="WorkflowNotFound" xml:space="preserve">
+    <value>केस वर्कफ़्लो नहीं मिला या आपको उस तक पहुँच नहीं है।</value>
+  </data>
+    <data name="KeyRequired" xml:space="preserve">
+    <value>जर्नल को मिलान के लिए पेलोड फ़ील्ड का नाम चाहिए।</value>
+  </data>
+    <data name="ValueRequired" xml:space="preserve">
+    <value>जर्नल को मिलान के लिए एक मान चाहिए।</value>
+  </data>
+    <data name="KeyInvalid" xml:space="preserve">
+    <value>पेलोड फ़ील्ड का नाम अधिकतम 256 वर्णों का होना चाहिए और उसमें कंट्रोल वर्ण नहीं होने चाहिए।</value>
+  </data>
+    <data name="LensInvalid" xml:space="preserve">
+    <value>लेंस payload, rules, features, models या sanctions में से एक होना चाहिए।</value>
+  </data>
+    <data name="LimitInvalid" xml:space="preserve">
+    <value>सीमा 1 और 5000 के बीच होनी चाहिए।</value>
+  </data>
+    <data name="PeriodInvalid" xml:space="preserve">
+    <value>'से' 'तक' से पहले होना चाहिए, और अवधि अधिकतम 3660 दिनों की होनी चाहिए।</value>
+  </data>
+    <data name="SectionInvalid" xml:space="preserve">
+    <value>अनुभाग summary, notable, progression, distributions, velocity, gaps, novelty, counterparties, correlation, drift या peers में से एक होना चाहिए।</value>
+  </data>
+    <data name="TransactionNotFound" xml:space="preserve">
+    <value>इस केस वर्कफ़्लो के लिए लेन-देन नहीं मिला।</value>
+  </data>
+    <data name="TransactionIdInvalid" xml:space="preserve">
+    <value>लेन-देन की आईडी शून्य से अधिक होनी चाहिए।</value>
+  </data>
+    <data name="TagTransactionsInvalid" xml:space="preserve">
+    <value>एक से 500 के बीच लेन-देन चाहिए और कोई लेन-देन दोहराया नहीं जा सकता।</value>
+  </data>
+    <data name="TagChangeRequired" xml:space="preserve">
+    <value>जोड़ने या हटाने के लिए कम से कम एक टैग चाहिए।</value>
+  </data>
+    <data name="TagNameInvalid" xml:space="preserve">
+    <value>टैग के नाम में पाठ होना चाहिए और वह अधिकतम 256 वर्णों का होना चाहिए।</value>
+  </data>
+    <data name="TagUnknown" xml:space="preserve">
+    <value>जोड़ा जाने वाला हर टैग वर्कफ़्लो के मॉडल का सक्रिय टैग होना चाहिए।</value>
+  </data>
+    <data name="TagLimitInvalid" xml:space="preserve">
+    <value>एक बार में 20 से अधिक टैग जोड़े, हटाए या रखे नहीं जा सकते।</value>
+  </data>
+    <data name="PinTransactionsInvalid" xml:space="preserve">
+    <value>एक से 50 के बीच लेन-देन चाहिए और कोई लेन-देन दोहराया नहीं जा सकता।</value>
+  </data>
+    <data name="TravelLimitInvalid" xml:space="preserve">
+    <value>गति सीमा 1 से 10,000 किलोमीटर प्रति घंटा के बीच और सबसे छोटा चरण 0 से 20,000 किलोमीटर के बीच होना चाहिए।</value>
+  </data>
+    <data name="ReplayNotFound" xml:space="preserve">
+    <value>इस केस पर सहेजा गया रीप्ले नहीं मिला।</value>
+  </data>
+    <data name="ReplayNameInvalid" xml:space="preserve">
+    <value>रीप्ले के लिए 1 से 100 वर्णों का नाम चाहिए।</value>
+  </data>
+    <data name="ReplayWindowInvalid" xml:space="preserve">
+    <value>रीप्ले 7, 30, 90 या 365 दिन पीछे देखता है।</value>
+  </data>
+    <data name="ReplayLimitInvalid" xml:space="preserve">
+    <value>एक केस पर अधिकतम 10 सहेजे गए रीप्ले हो सकते हैं।</value>
+  </data>
+    <data name="PinLimitInvalid" xml:space="preserve">
+    <value>एक केस पर अधिकतम 50 पिन किए गए लेन-देन हो सकते हैं।</value>
+  </data>
+    <data name="CaseNotFound" xml:space="preserve">
+    <value>केस नहीं मिला।</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>केस किसी अन्य उपयोगकर्ता के लिए लॉक है।</value>
+  </data>
+    <data name="FilterInvalid" xml:space="preserve">
+    <value>फ़िल्टर मान्य नहीं है। इसके लिए नियमों का एक समूह चाहिए, जिसके हर नियम में मॉडल का एक फ़ील्ड, फ़ील्ड के अनुरूप ऑपरेटर और फ़ील्ड के प्रकार का मान हो।</value>
+  </data>
+    <data name="FilterUnreadable" xml:space="preserve">
+    <value>फ़िल्टर लागू नहीं हो सका क्योंकि एक संग्रहीत मान को उस फ़ील्ड के प्रकार के रूप में नहीं पढ़ा जा सका जिससे उसकी तुलना की गई।</value>
+  </data>
+    <data name="MergeInvalid" xml:space="preserve">
+    <value>मर्ज के लिए JSON ऐरे चाहिए जिसमें केस कुंजी के अतिरिक्त अधिकतम तीन ऑब्जेक्ट हों, हर एक में कुंजी और मान हो।</value>
+  </data>
+    <data name="TagJobTooManyMatches" xml:space="preserve">
+    <value>बहुत अधिक लेन-देन मेल खाते हैं, उन्हें एक ही जॉब में टैग नहीं किया जा सकता। दृश्य को सीमित करें और फिर प्रयास करें।</value>
+  </data>
+    <data name="TagJobNoMatches" xml:space="preserve">
+    <value>कोई लेन-देन दृश्य से मेल नहीं खाता।</value>
+  </data>
+    <data name="TagJobNotFound" xml:space="preserve">
+    <value>टैगिंग जॉब नहीं मिला।</value>
+  </data>
+    <data name="TagJobNotUndoable" xml:space="preserve">
+    <value>केवल वही पूर्ण टैगिंग पूर्ववत की जा सकती है जिसने कुछ बदला हो और जो पहले पूर्ववत न की गई हो।</value>
+  </data>
+    <data name="TagJobActiveLimit" xml:space="preserve">
+    <value>बहुत अधिक बल्क टैगिंग जॉब पहले से कतार में हैं या चल रहे हैं। किसी एक के पूरा होने की प्रतीक्षा करें या एक रद्द करें और फिर प्रयास करें।</value>
+  </data>
+    <data name="KeyNotArchiveKey" xml:space="preserve">
+    <value>कुंजी वर्कफ़्लो के मॉडल पर Archive Key के रूप में चिह्नित फ़ील्ड नहीं है, इसलिए उसके लेन-देन खोजे नहीं जा सकते। मॉडल के request XPath में फ़ील्ड को Archive Key चिह्नित करें या कोई अन्य कुंजी चुनें।</value>
+  </data>
+    <data name="KeyValueInvalid" xml:space="preserve">
+    <value>मान को कुंजी के फ़ील्ड के डेटा प्रकार के रूप में नहीं पढ़ा जा सकता।</value>
+  </data>
+    <data name="KeyNotLookupable" xml:space="preserve">
+    <value>कुंजी का फ़ील्ड यादृच्छिक वेक्टर से एन्क्रिप्ट किया गया है, इसलिए उसके मान खोजे नहीं जा सकते।</value>
+  </data>
+    <data name="LaneOperatorNotAllowed" xml:space="preserve">
+    <value>रेंज ऑपरेटर केवल संख्यात्मक या तिथि कुंजी पर मान्य है; टेक्स्ट या बूलियन कुंजी केवल समानता से मेल खाती है।</value>
+  </data>
+    <data name="CaseKeyNotArchiveKey" xml:space="preserve">
+    <value>केस कुंजी वर्कफ़्लो के मॉडल पर Archive Key के रूप में चिह्नित फ़ील्ड नहीं है, इसलिए इस केस का जर्नल पढ़ा नहीं जा सकता। मॉडल के request XPath में फ़ील्ड को Archive Key चिह्नित करें और इतिहास के लिए archive key माइग्रेशन स्क्रिप्ट चलाएँ।</value>
+  </data>
+</root>

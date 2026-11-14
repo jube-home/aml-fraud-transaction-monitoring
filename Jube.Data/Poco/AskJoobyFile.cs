@@ -40,8 +40,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(11)] public byte? Deleted { get; set; }
         [Column] [Nullable] [Key(12)] public int? AskJoobyMessageId { get; set; }
 
-        [Association(ThisKey = "AskJoobyConversationId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "AskJoobyConversationId", OtherKey = "Id", CanBeNull = true)]
         [Key(13)]
         public AskJoobyConversation AskJoobyConversation { get; set; }
     }

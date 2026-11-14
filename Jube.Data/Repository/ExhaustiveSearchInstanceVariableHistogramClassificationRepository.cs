@@ -21,6 +21,7 @@ namespace Jube.Data.Repository
     using Context;
     using Interfaces;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
 
     public class ExhaustiveSearchInstanceVariableHistogramClassificationRepository(DbContext dbContext)

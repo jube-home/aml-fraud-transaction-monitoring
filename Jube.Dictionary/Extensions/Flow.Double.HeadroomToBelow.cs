@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchHeadroomToBelow(double limit, double bound)
+            [Description("True when: the limit minus the value, the room left is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchHeadroomToBelow([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleHeadroomToBelow(flow.Value, limit, bound));
             }
 
-            public Flow<double> RejectHeadroomToBelow(double limit, double bound)
+            [Description("True when: the limit minus the value, the room left is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectHeadroomToBelow([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleHeadroomToBelow(flow.Value, limit, bound));
             }
 
-            public Flow<double> BreakHeadroomToBelow(double limit, double bound)
+            [Description("True when: the limit minus the value, the room left is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakHeadroomToBelow([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleHeadroomToBelow(flow.Value, limit, bound));
             }
 
-            public Flow<double> RequireHeadroomToBelow(double limit, double bound)
+            [Description("True when: the limit minus the value, the room left is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireHeadroomToBelow([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleHeadroomToBelow(flow.Value, limit, bound));
             }
 
-            public Flow<double> EnsureHeadroomToBelow(double limit, double bound)
+            [Description("True when: the limit minus the value, the room left is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureHeadroomToBelow([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchHeadroomToBelow(double limit, double bound)
+            [Description("Begins a pipeline from the value. True when: the limit minus the value, the room left is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchHeadroomToBelow([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchHeadroomToBelow(limit, bound);
             }
 
-            public Flow<double> RejectHeadroomToBelow(double limit, double bound)
+            [Description("Begins a pipeline from the value. True when: the limit minus the value, the room left is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectHeadroomToBelow([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectHeadroomToBelow(limit, bound);
             }
 
-            public Flow<double> BreakHeadroomToBelow(double limit, double bound)
+            [Description("Begins a pipeline from the value. True when: the limit minus the value, the room left is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakHeadroomToBelow([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakHeadroomToBelow(limit, bound);
             }
 
-            public Flow<double> RequireHeadroomToBelow(double limit, double bound)
+            [Description("Begins a pipeline from the value. True when: the limit minus the value, the room left is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireHeadroomToBelow([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireHeadroomToBelow(limit, bound);
             }
 
-            public Flow<double> EnsureHeadroomToBelow(double limit, double bound)
+            [Description("Begins a pipeline from the value. True when: the limit minus the value, the room left is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureHeadroomToBelow([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureHeadroomToBelow(limit, bound);
             }

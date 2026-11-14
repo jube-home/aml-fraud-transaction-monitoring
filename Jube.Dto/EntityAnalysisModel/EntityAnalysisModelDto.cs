@@ -11,9 +11,31 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Dto.EntityAnalysisModelDictionary;
+using Jube.Dto.EntityAnalysisModelList;
+using Jube.Dto.EntityAnalysisModelAbstractionCalculation;
+using Jube.Dto.EntityAnalysisModelAbstractionRule;
+using Jube.Dto.EntityAnalysisModelActivationRule;
+using Jube.Dto.EntityAnalysisModelGatewayRule;
+using Jube.Dto.Repository.EntityAnalysisModelGraphRecall;
+using Jube.Dto.Repository.EntityAnalysisModelSvirfd;
+using Jube.Dto.EntityAnalysisModelHttpAdaptation;
+using Jube.Dto.EntityAnalysisModelInlineFunction;
+using Jube.Dto.EntityAnalysisModelInlineScript;
+using Jube.Dto.EntityAnalysisModelReprocessingRule;
+using Jube.Dto.EntityAnalysisModelRequestXPath;
+using Jube.Dto.EntityAnalysisModelSanction;
+using Jube.Dto.EntityAnalysisModelResponseElevationRange;
+using Jube.Dto.EntityAnalysisModelTag;
+using Jube.Dto.EntityAnalysisModelTtlCounter;
+using Jube.Dto.ExhaustiveSearchInstance;
+using Jube.Dto.Repository.CaseWorkflow;
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
+using Jube.Dto.Wire;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,7 +44,28 @@ using Jube.Dto.Interfaces;
 
 namespace Jube.Dto.EntityAnalysisModel
 {
+    [FormChild(typeof(EntityAnalysisModelRequestXPathDto), Label = "Request XPath", Hub = "References", Order = 10)]
+    [FormChild(typeof(EntityAnalysisModelInlineFunctionDto), Label = "Inline Functions", Hub = "References", Order = 20)]
+    [FormChild(typeof(EntityAnalysisModelInlineScriptDto), Label = "Inline Scripts", Hub = "References", Order = 30)]
+    [FormChild(typeof(EntityAnalysisModelGatewayRuleDto), Label = "Gateway Rules", Hub = "References", Order = 60)]
+    [FormChild(typeof(EntityAnalysisModelSanctionDto), Label = "Sanctions", Hub = "References", Order = 70)]
+    [FormChild(typeof(EntityAnalysisModelTagDto), Label = "Tags", Hub = "References", Order = 160)]
+    [FormChild(typeof(EntityAnalysisModelListDto), Label = "Lists", Hub = "References", Order = 40)]
+    [FormChild(typeof(EntityAnalysisModelDictionaryDto), Label = "Dictionary", Hub = "References", Order = 50)]
+    [FormChild(typeof(EntityAnalysisModelTtlCounterDto), Label = "TTL Counters", Hub = "Abstraction", Order = 80)]
+    [FormChild(typeof(EntityAnalysisModelAbstractionRuleDto), Label = "Abstraction Rules", Hub = "Abstraction", Order = 100)]
+    [FormChild(typeof(EntityAnalysisModelAbstractionCalculationDto), Label = "Abstraction Calculation", Hub = "Abstraction", Order = 110)]
+    [FormChild(typeof(EntityAnalysisModelHttpAdaptationDto), Label = "HTTP Adaptation", Hub = "Machine Learning", Order = 130)]
+    [FormChild(typeof(ExhaustiveSearchInstanceDto), Label = "Exhaustive Adaptation", Hub = "Machine Learning", Order = 120)]
+    [FormChild(typeof(EntityAnalysisModelGraphRecallDto), Label = "Graph Recall", Hub = "Network", Order = 90)]
+    [FormChild(typeof(EntityAnalysisModelSvirfdDto), Label = "Svirfd", Hub = "Network", Order = 95)]
+    [FormChild(typeof(EntityAnalysisModelResponseElevationRangeDto), Label = "Response Elevation Ranges", Hub = "", Order = 150)]
+    [FormChild(typeof(EntityAnalysisModelActivationRuleDto), Label = "Activation Rules", Hub = "", Order = 140)]
+    [FormChild(typeof(CaseWorkflowDto), Label = "Cases Workflows", Hub = "", Order = 170)]
+    [FormChild(typeof(EntityAnalysisModelReprocessingRuleDto), Label = "Reprocessing", Hub = "", Order = 180)]
     [FormEndpoint("EntityAnalysisModel")]
+    [FormApproval]
+    [FormRoles]
     [FormKeys(Id = nameof(Id), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
@@ -34,85 +77,114 @@ namespace Jube.Dto.EntityAnalysisModel
     [FormGroup("Implicit Async", Order = 70, Collapsed = true)]
     [FormGroup("Trace", Order = 75, Collapsed = true)]
     [FormGroup("Logs", Order = 76, Collapsed = true)]
+    [FormGroup("Response Trace", Order = 77, Collapsed = true)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
+    [MessagePackObject]
     public class EntityAnalysisModelDto : IUpdated, IActivatable, ILockable, IGuidIdentified
     {
         [Description("Display name of the model. Unique within the tenant (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Card transaction fraud")]
         [ListColumn(Order = 10, Title = "Name")]
+        [Key(0)]
         public string? Name { get; init; }
 
         [Description("Name of the field, as extracted from the HTTP POST body, that represents the entry " +
                      "identifier (for example a transaction identifier).")]
-        [FormField(Group = "Entry & Reference Date", Order = 10)]
+        [FormField(Group = "Entry & Reference Date", Order = 10, Placeholder = "TxnId")]
+        [Key(1)]
         public string? EntryName { get; init; }
 
         [Description("JSONPath specifying the location of the entry identifier in the HTTP POST body.")]
-        [FormField(Group = "Entry & Reference Date", Order = 20)]
+        [FormField(Group = "Entry & Reference Date", Order = 20, Placeholder = "$.TxnId")]
+        [Key(2)]
         public string? EntryXPath { get; init; }
 
         [Description("Not currently editable in the user interface and not persisted -- carried on the DTO for " +
                      "parity with the legacy payload shape only. Always 0 on read; any value sent is discarded.")]
-        [FormField(Group = "Entry & Reference Date", Order = 25, Widget = "radio", ReadOnly = true)]
+        [FormField(Group = "Entry & Reference Date", Order = 25, ReadOnly = true)]
         [NewDefault((byte)1)]
+        [Key(3)]
         public byte EntryPayloadLocationTypeId { get; set; }
 
         [Description("Name of the field, as extracted from the HTTP POST body or from the current server time, " +
                      "that represents the reference date (for example a transaction date/time).")]
-        [FormField(Group = "Entry & Reference Date", Order = 30)]
+        [FormField(Group = "Entry & Reference Date", Order = 30, Placeholder = "TxnDate")]
+        [Key(4)]
         public string? ReferenceDateName { get; init; }
 
         [Description("Where the reference date is read from: Body (extracted via Reference Date XPath) or Now " +
                      "(the server's current UTC time).")]
         [FormField(Group = "Entry & Reference Date", Order = 40, Widget = "radio")]
         [NewDefault((byte)1)]
+        [Options(typeof(ReferenceDateLocation))]
+        [Key(5)]
         public byte ReferenceDatePayloadLocationTypeId { get; set; }
 
         [Description("JSONPath specifying the location of the reference date in the HTTP POST body. Required " +
                      "unless Reference Date Payload Location is Now.")]
-        [FormField(Group = "Entry & Reference Date", Order = 50)]
+        [FormField(Group = "Entry & Reference Date", Order = 50, Placeholder = "$.TxnDateTime")]
         [VisibleWhen(nameof(ReferenceDatePayloadLocationTypeId), (byte)1)]
         [RequiredWhen(nameof(ReferenceDatePayloadLocationTypeId), (byte)1)]
+        [Key(6)]
         public string? ReferenceDateXPath { get; set; }
+
+        [Description("When true, every request is parsed into a Newtonsoft JObject that is held on the payload " +
+                     "and available to Inline Scripts. When false, only the configured XPaths are read, in a " +
+                     "single streaming pass, which is faster; the JObject is then built only if something asks " +
+                     "for it. Switching off only takes effect while the Entry, Reference Date and every request " +
+                     "XPath are simple dotted or indexed paths, otherwise the model parses as if this were true.")]
+        [FormField(Group = "Entry & Reference Date", Order = 60, Widget = "switch")]
+        [NewDefault(true)]
+        [Key(47)]
+        public bool EnablePayloadJObject { get; init; }
 
         [Description("When true, entry data backing Abstraction Rules is stored in the cache.")]
         [FormField(Group = "Cache", Order = 10, Widget = "switch")]
         [NewDefault(false)]
+        [Key(7)]
         public bool EnableCache { get; init; }
 
         [Description("Maximum number of records returned from the cache per entry lookup, to bound the cost of " +
                      "very active entities.")]
         [FormField(Group = "Cache", Order = 20, Widget = "number")]
         [NewDefault(100)]
+        [Key(8)]
         public int CacheFetchLimit { get; set; }
 
         [Description("Unit of Cache TTL Interval Value: Seconds, Minutes, Hours or Days.")]
         [FormField(Group = "Cache", Order = 30, Widget = "radio")]
         [NewDefault('h')]
+        [Options(typeof(IntervalUnit), IntervalUnit.Second, IntervalUnit.Minute, IntervalUnit.Hour, IntervalUnit.Day)]
+        [Key(9)]
+        [MessagePackFormatter(typeof(CharAsStringFormatter))]
         public char CacheTtlInterval { get; set; }
 
         [Description("Offset, in Cache TTL Interval units, before the current reference date at which cached " +
                      "entries are eligible for deletion.")]
         [FormField(Group = "Cache", Order = 40, Widget = "number")]
         [NewDefault(3)]
+        [Key(10)]
         public int CacheTtlIntervalValue { get; init; }
 
         [Description("When true, Sanction search results are served from a time-limited cache instead of " +
                      "recomputing the Levenshtein distance search on every request.")]
         [FormField(Group = "Cache", Order = 50, Widget = "switch")]
         [NewDefault(false)]
+        [Key(11)]
         public bool EnableSanctionCache { get; init; }
 
         [Description("The maximum response elevation allowed in the response payload for this model; a rule " +
                      "specifying a higher value is clipped to this maximum.")]
         [FormField(Group = "Response Elevation Limit", Order = 10, Widget = "number")]
         [NewDefault(10.0)]
+        [Key(12)]
         public double MaxResponseElevation { get; init; }
 
         [Description("When true, the number of response elevations set within a rolling period is capped; once " +
                      "the threshold is reached, further elevations return zero.")]
         [FormField(Group = "Response Elevation Limit", Order = 20, Widget = "switch")]
         [NewDefault(false)]
+        [Key(13)]
         public bool EnableResponseElevationLimit { get; init; }
 
         [Description("Unit of the response elevation limit's rolling period: Seconds, Minutes, Hours or Days.")]
@@ -120,6 +192,9 @@ namespace Jube.Dto.EntityAnalysisModel
         [VisibleWhen(nameof(EnableResponseElevationLimit), true)]
         [RequiredWhen(nameof(EnableResponseElevationLimit), true)]
         [NewDefault('d')]
+        [Options(typeof(IntervalUnit), IntervalUnit.Second, IntervalUnit.Minute, IntervalUnit.Hour, IntervalUnit.Day)]
+        [Key(14)]
+        [MessagePackFormatter(typeof(CharAsStringFormatter))]
         public char MaxResponseElevationInterval { get; init; }
 
         [Description("Length, in Max Response Elevation Interval units, of the rolling period over which " +
@@ -128,6 +203,7 @@ namespace Jube.Dto.EntityAnalysisModel
         [VisibleWhen(nameof(EnableResponseElevationLimit), true)]
         [RequiredWhen(nameof(EnableResponseElevationLimit), true)]
         [NewDefault(1)]
+        [Key(15)]
         public int MaxResponseElevationValue { get; init; }
 
         [Description("Maximum number of response elevations permitted within the rolling period before further " +
@@ -136,12 +212,14 @@ namespace Jube.Dto.EntityAnalysisModel
         [VisibleWhen(nameof(EnableResponseElevationLimit), true)]
         [RequiredWhen(nameof(EnableResponseElevationLimit), true)]
         [NewDefault(100)]
+        [Key(16)]
         public int MaxResponseElevationThreshold { get; init; }
 
         [Description("When true, activations for this model are streamed to the Activation Watcher, subject to " +
                      "the sample rate and the rolling-period threshold below.")]
         [FormField(Group = "Activation Watcher", Order = 10, Widget = "switch")]
         [NewDefault(false)]
+        [Key(17)]
         public bool EnableActivationWatcher { get; set; }
 
         [Description("Unit of the Activation Watcher's rolling period: Seconds, Minutes, Hours or Days.")]
@@ -149,6 +227,9 @@ namespace Jube.Dto.EntityAnalysisModel
         [VisibleWhen(nameof(EnableActivationWatcher), true)]
         [RequiredWhen(nameof(EnableActivationWatcher), true)]
         [NewDefault('d')]
+        [Options(typeof(IntervalUnit), IntervalUnit.Second, IntervalUnit.Minute, IntervalUnit.Hour, IntervalUnit.Day)]
+        [Key(18)]
+        [MessagePackFormatter(typeof(CharAsStringFormatter))]
         public char MaxActivationWatcherInterval { get; set; }
 
         [Description("Length, in Max Activation Watcher Interval units, of the rolling period over which " +
@@ -157,6 +238,7 @@ namespace Jube.Dto.EntityAnalysisModel
         [VisibleWhen(nameof(EnableActivationWatcher), true)]
         [RequiredWhen(nameof(EnableActivationWatcher), true)]
         [NewDefault(1)]
+        [Key(19)]
         public int MaxActivationWatcherValue { get; set; }
 
         [Description("Maximum number of activations streamed to the Activation Watcher within the rolling " +
@@ -165,6 +247,7 @@ namespace Jube.Dto.EntityAnalysisModel
         [VisibleWhen(nameof(EnableActivationWatcher), true)]
         [RequiredWhen(nameof(EnableActivationWatcher), true)]
         [NewDefault(100)]
+        [Key(20)]
         public int MaxActivationWatcherThreshold { get; set; }
 
         [Description("Proportion (0 to 1) of activations randomly sampled for the Activation Watcher's " +
@@ -173,28 +256,33 @@ namespace Jube.Dto.EntityAnalysisModel
         [VisibleWhen(nameof(EnableActivationWatcher), true)]
         [RequiredWhen(nameof(EnableActivationWatcher), true)]
         [NewDefault(1.0)]
+        [Key(21)]
         public double ActivationWatcherSample { get; set; }
 
         [Description("When true, model activity is retained as TTL Counter entries in the cache, backing TTL " +
                      "Counter rules.")]
         [FormField(Group = "Archiving & Counters", Order = 10, Widget = "switch")]
         [NewDefault(false)]
+        [Key(22)]
         public bool EnableTtlCounter { get; init; }
 
         [Description("When true, model activity is archived to the RDBMS archive tables in Postgres.")]
         [FormField(Group = "Archiving & Counters", Order = 20, Widget = "switch")]
         [NewDefault(false)]
+        [Key(23)]
         public bool EnableRdbmsArchive { get; init; }
 
         [Description("When true, activations for this model are retained in the activation archive, backing " +
                      "case creation and downstream reporting.")]
         [FormField(Group = "Archiving & Counters", Order = 30, Widget = "switch")]
+        [Key(24)]
         public bool EnableActivationArchive { get; init; }
 
         [Description("Not currently editable in the user interface and not persisted -- carried on the DTO for " +
                      "parity with a planned Elasticsearch archive feature only. Always false on read; any value " +
                      "sent is discarded.")]
         [FormField(Group = "Archiving & Counters", Order = 40, Widget = "switch", ReadOnly = true)]
+        [Key(25)]
         public bool EnableElasticsearchArchive { get; set; }
 
         [Description("When true, a synchronous transaction invocation waits inline for the model to finish " +
@@ -203,6 +291,7 @@ namespace Jube.Dto.EntityAnalysisModel
                      "endpoint (/api/invoke/EntityAnalysisModel/Callback/{guid}) for the completed result.")]
         [FormField(Group = "Implicit Async", Order = 10, Widget = "switch")]
         [NewDefault(false)]
+        [Key(26)]
         public bool EnableImplicitAsync { get; set; }
 
         [Description("Number of milliseconds a synchronous invocation waits inline before falling back to an " +
@@ -211,6 +300,7 @@ namespace Jube.Dto.EntityAnalysisModel
         [VisibleWhen(nameof(EnableImplicitAsync), true)]
         [RequiredWhen(nameof(EnableImplicitAsync), true)]
         [NewDefault(5000)]
+        [Key(27)]
         public int ImplicitAsyncTimeoutMilliseconds { get; set; }
 
         [Description("When true, invocation responses for this model echo the full per-stage and per-rule " +
@@ -221,6 +311,7 @@ namespace Jube.Dto.EntityAnalysisModel
                      "many rules.")]
         [FormField(Group = "Response Trace", Order = 10, Widget = "switch")]
         [NewDefault(false)]
+        [Key(28)]
         public bool EnableTrace { get; set; }
 
         [Description("Master switch for this model's invocation log capture -- Enable Logs: Info and Enable " +
@@ -231,6 +322,7 @@ namespace Jube.Dto.EntityAnalysisModel
                      "configuration.")]
         [FormField(Group = "Logs", Order = 5, Widget = "switch")]
         [NewDefault(false)]
+        [Key(29)]
         public bool EnableLogs { get; set; }
 
         [Description("Captures the same step-by-step trace normally only visible via log4net INFO logging into a " +
@@ -246,6 +338,7 @@ namespace Jube.Dto.EntityAnalysisModel
         [FormField(Group = "Logs", Order = 10, Widget = "switch")]
         [VisibleWhen(nameof(EnableLogs), true)]
         [NewDefault(false)]
+        [Key(30)]
         public bool EnableLogsInfo { get; set; }
 
         [Description("When true, only a random sample of invocations actually have Enable Logs: Info's trace " +
@@ -257,6 +350,7 @@ namespace Jube.Dto.EntityAnalysisModel
         [FormField(Group = "Logs", Order = 15, Widget = "switch")]
         [VisibleWhen(nameof(EnableLogsInfo), true)]
         [NewDefault(false)]
+        [Key(31)]
         public bool EnableSampling { get; set; }
 
         [Description("Percentage of invocations captured at Info level when Enable Sampling is on, e.g. 0.02 " +
@@ -269,6 +363,7 @@ namespace Jube.Dto.EntityAnalysisModel
         [VisibleWhen(nameof(EnableLogsInfo), true)]
         [RequiredWhen(nameof(EnableSampling), true)]
         [NewDefault(100)]
+        [Key(32)]
         public double SamplePercentage { get; set; }
 
         [Description("Captures a trace point into the same logs array as Enable Logs: Info, but only when the " +
@@ -279,14 +374,16 @@ namespace Jube.Dto.EntityAnalysisModel
         [FormField(Group = "Logs", Order = 18, Widget = "switch")]
         [VisibleWhen(nameof(EnableLogs), true)]
         [NewDefault(false)]
+        [Key(33)]
         public bool EnableLogsWarnThreshold { get; set; }
 
         [Description("Milliseconds a trace point's gap since the last captured entry must exceed to be " +
                      "captured, when Enable Logs: Warn Threshold is on.")]
-        [FormField(Group = "Logs", Order = 20, Widget = "slider")]
+        [FormField(Group = "Logs", Order = 20, Widget = "number")]
         [VisibleWhen(nameof(EnableLogsWarnThreshold), true)]
         [RequiredWhen(nameof(EnableLogsWarnThreshold), true)]
         [NewDefault(250)]
+        [Key(34)]
         public int LogsWarnThresholdMilliseconds { get; set; }
 
         [Description("When true, invocation responses for this model include the captured logs array, in " +
@@ -296,56 +393,68 @@ namespace Jube.Dto.EntityAnalysisModel
         [FormField(Group = "Logs", Order = 30, Widget = "switch")]
         [VisibleWhen(nameof(EnableLogs), true)]
         [NewDefault(false)]
+        [Key(35)]
         public bool EnableLogsInResponse { get; set; }
 
         [Description("When true, the model participates in transaction invocation and rule synchronisation.")]
         [FormField(Group = "Identity", Order = 30, Widget = "switch")]
         [NewDefault(false)]
+        [Key(36)]
         public bool Active { get; set; }
 
         [Description("Server-assigned globally unique identifier that addresses this model's transaction " +
                      "invocation endpoint (/api/invoke/EntityAnalysisModel/{guid}). Read-only.")]
         [FormField(Group = "Identity", Order = 20, ReadOnly = true, Widget = "guid")]
+        [Key(37)]
         public Guid Guid { get; set; }
 
         [Description("When true, the model is locked and cannot be edited or deleted.")]
         [FormField(Group = "Identity", Order = 40, Widget = "switch")]
         [NewDefault(false)]
+        [Key(38)]
         public bool Locked { get; set; }
 
         [Description("Server-assigned row identifier. Read-only.")]
         [FormField(Group = "Audit", Order = 10, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(39)]
         public int Id { get; set; }
 
         [Description("User who created this model. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 20, ReadOnly = true)]
+        [Key(40)]
         public string? CreatedUser { get; set; }
 
         [Description("Timestamp (UTC) this model was created. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 30, ReadOnly = true, Widget = "date")]
+        [Key(41)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("User who last updated this model. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 40, ReadOnly = true)]
+        [Key(42)]
         public string? UpdatedUser { get; set; }
 
         [Description("Timestamp (UTC) this model was last updated. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 50, ReadOnly = true, Widget = "date")]
+        [Key(43)]
         public DateTimeOffset? UpdatedDate { get; set; }
 
         [Description("Server-assigned optimistic-concurrency version number, incremented on every update. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 60, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(44)]
         public int Version { get; set; }
 
         [Description("User who deleted this model, if soft-deleted. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 70, ReadOnly = true)]
+        [Key(45)]
         public string? DeletedUser { get; set; }
 
         [Description("Timestamp (UTC) this model was soft-deleted, if applicable. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 80, ReadOnly = true, Widget = "date")]
+        [Key(46)]
         public DateTimeOffset? DeletedDate { get; set; }
     }
 }

@@ -21,6 +21,7 @@ namespace Jube.Data.Query.GetArchiverWarningListQuery
     using Context;
     using Helpers;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
 
     public class GetArchiverWarningListQuery(DbContext dbContext, int? tenantRegistryId)

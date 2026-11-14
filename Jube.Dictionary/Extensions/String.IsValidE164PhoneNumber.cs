@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Whether the text is an E.164 phone number: +, a non-zero digit, up to 15 digits.")]
         public static bool IsValidE164PhoneNumber(this string? @this)
         {
             var value = (@this ?? "").Trim();

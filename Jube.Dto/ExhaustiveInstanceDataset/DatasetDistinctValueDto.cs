@@ -16,11 +16,16 @@
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable RedundantAttributeUsageProperty
 
+using MessagePack;
+
 namespace Jube.Dto.ExhaustiveInstanceDataset
 {
+    [MessagePackObject]
     public class DatasetDistinctValueDto
     {
+        [Key(0)]
         public string? Value { get; set; }
+        [Key(1)]
         public long Count { get; set; }
     }
 }

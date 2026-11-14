@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,17 +22,25 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.RuleVocabulary
 {
     [Description("A parameter of a rule function.")]
+    [MessagePackObject]
     public class RuleWordParameterDto
     {
-        [Description("The parameter's name.")] public string Name { get; set; } = string.Empty;
+        [Description("The parameter's name.")] [Key(0)] public string Name { get; set; } = string.Empty;
 
         [Description("The parameter's Visual Basic type.")]
+        [Key(1)]
         public string Type { get; set; } = string.Empty;
 
         [Description("Whether it can be left out.")]
+        [Key(2)]
         public bool Optional { get; set; }
 
         [Description("Its value when left out.")]
+        [Key(3)]
         public string? DefaultValue { get; set; }
+
+        [Description("What the parameter is for, in a sentence, when one is recorded; otherwise null.")]
+        [Key(4)]
+        public string? Description { get; set; }
     }
 }

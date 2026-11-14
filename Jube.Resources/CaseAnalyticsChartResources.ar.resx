@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="WeekdayMon" xml:space="preserve">
+        <value>الاثنين</value>
+    </data>
+    <data name="WeekdayTue" xml:space="preserve">
+        <value>الثلاثاء</value>
+    </data>
+    <data name="WeekdayWed" xml:space="preserve">
+        <value>الأربعاء</value>
+    </data>
+    <data name="WeekdayThu" xml:space="preserve">
+        <value>الخميس</value>
+    </data>
+    <data name="WeekdayFri" xml:space="preserve">
+        <value>الجمعة</value>
+    </data>
+    <data name="WeekdaySat" xml:space="preserve">
+        <value>السبت</value>
+    </data>
+    <data name="WeekdaySun" xml:space="preserve">
+        <value>الأحد</value>
+    </data>
+    <data name="ImpactMinimal" xml:space="preserve">
+        <value>ضئيل</value>
+    </data>
+    <data name="ImpactLow" xml:space="preserve">
+        <value>منخفض</value>
+    </data>
+    <data name="ImpactModerate" xml:space="preserve">
+        <value>متوسط</value>
+    </data>
+    <data name="ImpactHigh" xml:space="preserve">
+        <value>مرتفع</value>
+    </data>
+    <data name="ImpactSevere" xml:space="preserve">
+        <value>شديد</value>
+    </data>
+    <data name="LikelihoodVeryLikely" xml:space="preserve">
+        <value>مرجح جدًا</value>
+    </data>
+    <data name="LikelihoodLikely" xml:space="preserve">
+        <value>مرجح</value>
+    </data>
+    <data name="LikelihoodPossible" xml:space="preserve">
+        <value>ممكن</value>
+    </data>
+    <data name="LikelihoodUnlikely" xml:space="preserve">
+        <value>غير مرجح</value>
+    </data>
+    <data name="RiskMatrixTitle" xml:space="preserve">
+        <value>مصفوفة المخاطر</value>
+    </data>
+    <data name="RiskMatrixAssessed" xml:space="preserve">
+        <value>{0} حالات مقيّمة؛ {1} لم تُقيَّم بعد</value>
+    </data>
+    <data name="RiskMatrixCases" xml:space="preserve">
+        <value>{0} حالات</value>
+    </data>
+    <data name="Impact" xml:space="preserve">
+        <value>الأثر</value>
+    </data>
+    <data name="Likelihood" xml:space="preserve">
+        <value>الاحتمالية</value>
+    </data>
+    <data name="Cases" xml:space="preserve">
+        <value>الحالات</value>
+    </data>
+    <data name="FlowTitle" xml:space="preserve">
+        <value>المفتوحة والمغلقة والمتراكمة</value>
+    </data>
+    <data name="FlowSubtitle" xml:space="preserve">
+        <value>الحالات المفتوحة والمغلقة كل يوم، والحالات التي لا تزال مفتوحة في نهايته</value>
+    </data>
+    <data name="Opened" xml:space="preserve">
+        <value>المفتوحة</value>
+    </data>
+    <data name="Closed" xml:space="preserve">
+        <value>المغلقة</value>
+    </data>
+    <data name="Backlog" xml:space="preserve">
+        <value>المتراكمة</value>
+    </data>
+    <data name="FirstViewTitle" xml:space="preserve">
+        <value>الوقت حتى أول اطلاع</value>
+    </data>
+    <data name="FirstViewSubtitle" xml:space="preserve">
+        <value>الحالات حسب مدة انتظارها</value>
+    </data>
+    <data name="ResolutionTitle" xml:space="preserve">
+        <value>الوقت حتى الحسم</value>
+    </data>
+    <data name="ResolutionSubtitle" xml:space="preserve">
+        <value>الحالات المغلقة حسب المدة التي استغرقتها</value>
+    </data>
+    <data name="AgingTitle" xml:space="preserve">
+        <value>الحالات المفتوحة حسب العمر</value>
+    </data>
+    <data name="AgingSubtitle" xml:space="preserve">
+        <value>منذ متى تنتظر الحالات المفتوحة، حسب مسار الاستعجال</value>
+    </data>
+    <data name="LaneLiveMoney" xml:space="preserve">
+        <value>أموال حية</value>
+    </data>
+    <data name="LaneMandatory" xml:space="preserve">
+        <value>إلزامي</value>
+    </data>
+    <data name="LaneDeadlineNear" xml:space="preserve">
+        <value>الموعد النهائي قريب</value>
+    </data>
+    <data name="LaneStandard" xml:space="preserve">
+        <value>قياسي</value>
+    </data>
+    <data name="StatusDwellTitle" xml:space="preserve">
+        <value>الوقت في كل حالة</value>
+    </data>
+    <data name="StatusDwellSubtitle" xml:space="preserve">
+        <value>الوسيط وأبطأ عُشر لفترات البقاء المكتملة، بالساعات</value>
+    </data>
+    <data name="Unknown" xml:space="preserve">
+        <value>غير معروف</value>
+    </data>
+    <data name="Hours" xml:space="preserve">
+        <value>الساعات</value>
+    </data>
+    <data name="Median" xml:space="preserve">
+        <value>الوسيط</value>
+    </data>
+    <data name="SlowestTenth" xml:space="preserve">
+        <value>أبطأ عُشر</value>
+    </data>
+    <data name="RuleEffortTitle" xml:space="preserve">
+        <value>وقت المحللين الضائع على الإنذارات الكاذبة</value>
+    </data>
+    <data name="RuleEffortSubtitle" xml:space="preserve">
+        <value>الساعات المنفقة على حالات أثارتها القاعدة وتبيّن أنها غير حقيقية</value>
+    </data>
+    <data name="RulePrecisionTitle" xml:space="preserve">
+        <value>دقة القاعدة</value>
+    </data>
+    <data name="RulePrecisionSubtitle" xml:space="preserve">
+        <value>حصة الحالات المحسومة التي أثارتها القاعدة وتم تأكيدها</value>
+    </data>
+    <data name="Percent" xml:space="preserve">
+        <value>النسبة المئوية</value>
+    </data>
+    <data name="Precision" xml:space="preserve">
+        <value>الدقة</value>
+    </data>
+    <data name="GainsTitle" xml:space="preserve">
+        <value>الحالات المؤكدة المكتشفة مع العمل على الحالات</value>
+    </data>
+    <data name="DecidedCases" xml:space="preserve">
+        <value>{0} حالات محسومة</value>
+    </data>
+    <data name="FewDecidedCases" xml:space="preserve">
+        <value>{0} حالات محسومة فقط، قليلة جدًا للاعتماد عليها</value>
+    </data>
+    <data name="CasesWorkedPercent" xml:space="preserve">
+        <value>الحالات المعالجة (%)</value>
+    </data>
+    <data name="ConfirmedFoundPercent" xml:space="preserve">
+        <value>المؤكدة المكتشفة (%)</value>
+    </data>
+    <data name="PriorityOrder" xml:space="preserve">
+        <value>ترتيب الأولوية</value>
+    </data>
+    <data name="LikelihoodOrder" xml:space="preserve">
+        <value>ترتيب الاحتمالية</value>
+    </data>
+    <data name="OldestFirst" xml:space="preserve">
+        <value>الأقدم أولًا</value>
+    </data>
+    <data name="Random" xml:space="preserve">
+        <value>عشوائي</value>
+    </data>
+    <data name="CalibrationTitle" xml:space="preserve">
+        <value>الاحتمالية المتوقعة مقابل ما حدث</value>
+    </data>
+    <data name="ArrivalsTitle" xml:space="preserve">
+        <value>متى تصل الحالات</value>
+    </data>
+    <data name="ArrivalsSubtitle" xml:space="preserve">
+        <value>الحالات المنشأة حسب يوم الأسبوع والساعة (UTC)</value>
+    </data>
+    <data name="Hour" xml:space="preserve">
+        <value>الساعة</value>
+    </data>
+    <data name="Weekday" xml:space="preserve">
+        <value>يوم الأسبوع</value>
+    </data>
+    <data name="FirstViewByHourTitle" xml:space="preserve">
+        <value>الوقت الوسيط حتى أول اطلاع حسب ساعة الوصول</value>
+    </data>
+    <data name="FirstViewByHourSubtitle" xml:space="preserve">
+        <value>الدقائق التي انتظرتها الحالة قبل أن ينظر إليها أحد، حسب ساعة الوصول (UTC)</value>
+    </data>
+    <data name="Minutes" xml:space="preserve">
+        <value>الدقائق</value>
+    </data>
+    <data name="MedianMinutes" xml:space="preserve">
+        <value>الدقائق الوسيطة</value>
+    </data>
+    <data name="ServiceLevelTitle" xml:space="preserve">
+        <value>تحقيق مستوى الخدمة حسب الأسبوع</value>
+    </data>
+    <data name="ServiceLevelSubtitle" xml:space="preserve">
+        <value>حصة الحالات المنشأة في ذلك الأسبوع التي حققت كل هدف</value>
+    </data>
+    <data name="MetPercent" xml:space="preserve">
+        <value>المحققة (%)</value>
+    </data>
+    <data name="ServiceLevelFirstView" xml:space="preserve">
+        <value>أول اطلاع</value>
+    </data>
+    <data name="ServiceLevelOwnership" xml:space="preserve">
+        <value>الملكية</value>
+    </data>
+    <data name="ServiceLevelResolution" xml:space="preserve">
+        <value>الحسم</value>
+    </data>
+    <data name="ServiceLevelTimeInStatus" xml:space="preserve">
+        <value>الوقت في الحالة</value>
+    </data>
+    <data name="HandoffsTitle" xml:space="preserve">
+        <value>كم مرة تتغير أيدي الحالات</value>
+    </data>
+    <data name="HandoffsSubtitle" xml:space="preserve">
+        <value>أُعيد فتح {0} حالات بعد إغلاقها</value>
+    </data>
+    <data name="ChangesOfOwner" xml:space="preserve">
+        <value>تغييرات المالك</value>
+    </data>
+</root>

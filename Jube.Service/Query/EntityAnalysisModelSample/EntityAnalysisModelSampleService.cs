@@ -14,12 +14,14 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using FluentValidation.Results;
 using System.Text;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Reporting;
 using Jube.Data.Repository;
 using Jube.Dto.Query.EntityAnalysisModelSample;
+using Jube.Engine.EntityAnalysisModelInvoke.Extraction;
 using Jube.Resources;
 using Jube.Service.Agent.Models;
 using Jube.Service.Exceptions.Query.EntityAnalysisModelSample;
@@ -40,6 +42,7 @@ namespace Jube.Service.Query.EntityAnalysisModelSample
 
     public sealed class EntityAnalysisModelSampleService
     {
+        private const long DefaultMaximumBytes = 33_554_432;
         private static readonly int[] permissions = [40];
 
         private static readonly string[] staticColumns =
@@ -185,29 +188,29 @@ namespace Jube.Service.Query.EntityAnalysisModelSample
                     var connectionString = dynamicEnvironment.AppSettings("ReportConnectionString")
                                            ?? dynamicEnvironment.AppSettings("ConnectionString");
 
-                    List<JObject> jsonObjects;
+                    byte[] content;
+                    int rowCount;
 
                     using (var postgres = new Postgres(connectionString, log))
                     {
-                        jsonObjects = await postgres.ExecuteReturnOnlyJsonFromArchiveSampleAsync(
-                                entityAnalysisModel.Id, model.Sample, model.DateFrom?.UtcDateTime,
-                                model.DateTo?.UtcDateTime, token)
+                        (content, rowCount) = await BuildCsvAsync(completions,
+                                postgres.StreamJsonFromArchiveSampleAsync(entityAnalysisModel.Id, model.Sample,
+                                    model.DateFrom?.UtcDateTime, model.DateTo?.UtcDateTime, token), token)
                             .ConfigureAwait(false);
                     }
 
-                    var csv = BuildCsv(completions, jsonObjects);
                     sw.Stop();
 
-                    executionLog.RowCount = jsonObjects.Count;
+                    executionLog.RowCount = rowCount;
                     executionLog.ResponseTime = sw.ElapsedMilliseconds;
                     executionLog.InError = 0;
 
                     await executionLogRepository.InsertAsync(executionLog, token).ConfigureAwait(false);
 
-                    op.Rows(jsonObjects.Count);
+                    op.Rows(rowCount);
 
                     return new EntityAnalysisModelSampleFileDto(
-                        Encoding.UTF8.GetBytes(csv),
+                        content,
                         $"sample_{entityAnalysisModel.Id}_{DateTime.UtcNow:yyyyMMddHHmmss}.csv",
                         "text/csv");
                 }
@@ -252,16 +255,25 @@ namespace Jube.Service.Query.EntityAnalysisModelSample
             }
         }
 
-        private string BuildCsv(GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQueryDto[] completions,
-            IEnumerable<JObject> jsonObjects)
+        private async Task<(byte[] Content, int RowCount)> BuildCsvAsync(
+            GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQueryDto[] completions,
+            IAsyncEnumerable<JObject> jsonObjects, CancellationToken token)
         {
-            var sb = new StringBuilder();
+            var maximumBytes = long.TryParse(dynamicEnvironment.AppSettings("SampleMaxBytes"), out var configured)
+                               && configured > 0
+                ? configured
+                : DefaultMaximumBytes;
 
-            sb.AppendLine(string.Join(",",
+            using var stream = new MemoryStream();
+            await using var writer = new StreamWriter(stream, new UTF8Encoding(false), 4096, true);
+
+            await writer.WriteLineAsync(string.Join(",",
                 staticColumns.Select(QuoteCsvField)
                     .Concat(completions.Select(c => QuoteCsvField(c.Name)))));
 
-            foreach (var jObject in jsonObjects)
+            var rowCount = 0;
+
+            await foreach (var jObject in jsonObjects.WithCancellation(token).ConfigureAwait(false))
             {
                 var staticFields = new[]
                 {
@@ -278,12 +290,31 @@ namespace Jube.Service.Query.EntityAnalysisModelSample
                 };
 
                 var payloadFields = completions.Select(completion =>
-                    ExtractValue(completion, jObject.SelectToken(completion.ValueJsonPath)));
+                    ExtractValue(completion, Jube.Data.Helpers.BoundedJsonPath.Select(jObject, completion.ValueJsonPath)));
 
-                sb.AppendLine(string.Join(",", staticFields.Concat(payloadFields)));
+                await writer.WriteLineAsync(string.Join(",", staticFields.Concat(payloadFields)));
+                await writer.FlushAsync(token).ConfigureAwait(false);
+                rowCount++;
+
+                if (stream.Length <= maximumBytes)
+                {
+                    continue;
+                }
+
+                throw new DtoValidationException(new ValidationResult([
+                    new ValidationFailure(nameof(EntityAnalysisModelSampleOptionsDto.Sample),
+                        string.Format(CultureInfo.CurrentCulture,
+                            strings[EntityAnalysisModelSampleResources.SampleTooLarge],
+                            maximumBytes / 1_048_576))
+                    {
+                        ErrorCode = "SampleTooLarge"
+                    }
+                ]));
             }
 
-            return sb.ToString();
+            await writer.FlushAsync(token).ConfigureAwait(false);
+
+            return (stream.ToArray(), rowCount);
         }
 
         private string ExtractValue(GetEntityAnalysisModelFieldByEntityAnalysisModelIdParseTypeIdQueryDto completion,
@@ -293,7 +324,7 @@ namespace Jube.Service.Query.EntityAnalysisModelSample
             {
                 return completion.DataTypeId switch
                 {
-                    1 => QuoteCsvField(string.Empty),
+                    1 or 8 => QuoteCsvField(string.Empty),
                     2 or 3 or 6 or 7 => "0",
                     4 => string.Empty,
                     5 => "0",
@@ -310,7 +341,7 @@ namespace Jube.Service.Query.EntityAnalysisModelSample
 
                 return completion.DataTypeId switch
                 {
-                    1 => QuoteCsvField(jToken.Value<string>() ?? string.Empty),
+                    1 or 8 => QuoteCsvField(jToken.Value<string>() ?? string.Empty),
                     2 => jToken.Value<int>().ToString(),
                     3 or 6 or 7 => jToken.Value<double>().ToString("G", CultureInfo.InvariantCulture),
                     4 => jToken.Value<DateTime>().ToString("O", CultureInfo.InvariantCulture),
@@ -327,7 +358,7 @@ namespace Jube.Service.Query.EntityAnalysisModelSample
                              $"tokenType={jToken.Type}): {e.Message}");
                 }
 
-                return completion.DataTypeId == 1 ? QuoteCsvField(string.Empty) : "0";
+                return completion.DataTypeId is 1 or 8 ? QuoteCsvField(string.Empty) : "0";
             }
         }
 

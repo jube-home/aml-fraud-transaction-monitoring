@@ -12,6 +12,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,6 +43,22 @@ namespace Jube.App.Endpoints.Query
             group.MapPost("", ExecuteAsync)
                 .Produces<string>()
                 .WithName("CaseWorkflowDisplayExecutionExecute");
+
+            group.MapPost("TestSql", TestSqlAsync)
+                .Produces<CaseWorkflowSqlTestResultDto>()
+                .WithName("CaseWorkflowDisplayExecutionTestSql");
+
+            group.MapPost("Dispatches", ListDispatchesAsync)
+                .Produces<List<CaseWorkflowDispatchDto>>()
+                .WithName("CaseWorkflowDisplayExecutionListDispatches");
+
+            group.MapPost("FormEntries", RenderFormEntriesAsync)
+                .Produces<List<CaseWorkflowFormEntryViewDto>>()
+                .WithName("CaseWorkflowDisplayExecutionRenderFormEntries");
+
+            group.MapPost("Form", RenderFormAsync)
+                .Produces<CaseWorkflowFormRenderResultDto>()
+                .WithName("CaseWorkflowDisplayExecutionRenderForm");
         }
 
         private static async Task<IResult> ExecuteAsync([FromBody] CaseWorkflowDisplayExecutionDto model,
@@ -63,7 +80,7 @@ namespace Jube.App.Endpoints.Query
             try
             {
                 var service = await CaseWorkflowDisplayExecutionService.CreateAsync(dbContext, user, log,
-                    stringLocalizerFactory, serviceChangeBus, jsonSerializationHelper, token);
+                    stringLocalizerFactory, serviceChangeBus, dynamicEnvironment, jsonSerializationHelper, token);
 
                 return TypedResults.Ok(await service.ExecuteAsync(model, token));
             }
@@ -84,6 +101,15 @@ namespace Jube.App.Endpoints.Query
                 }
 
                 return TypedResults.Forbid();
+            }
+            catch (TemplateInvalidException e)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}: 422 (template invalid) user={user}");
+                }
+
+                return TypedResults.UnprocessableEntity(e.Message);
             }
             catch (NotFoundException)
             {
@@ -106,6 +132,310 @@ namespace Jube.App.Endpoints.Query
             catch (Exception e)
             {
                 log.Error($"POST {Base}: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        private static async Task<IResult> RenderFormAsync([FromBody] CaseWorkflowFormRenderDto model,
+            HttpContext httpContext, ILog log,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
+            IServiceChangeBus serviceChangeBus, Engine.Helpers.JsonSerializationHelper jsonSerializationHelper,
+            CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"POST {Base}/Form: entry user={user}");
+            }
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var service = await CaseWorkflowDisplayExecutionService.CreateAsync(dbContext, user, log,
+                    stringLocalizerFactory, serviceChangeBus, dynamicEnvironment, jsonSerializationHelper, token);
+
+                return TypedResults.Ok(await service.RenderFormAsync(model, token));
+            }
+            catch (NotAuthenticatedException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/Form: 403 (not authenticated) user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/Form: 403 user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (TemplateInvalidException e)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/Form: 422 (template invalid) user={user}");
+                }
+
+                return TypedResults.UnprocessableEntity(e.Message);
+            }
+            catch (NotFoundException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/Form: 400 (case, display or status not found) user={user}");
+                }
+
+                return TypedResults.BadRequest();
+            }
+            catch (OperationCanceledException)
+            {
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"POST {Base}/Form: client cancelled user={user}");
+                }
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {Base}/Form: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        private static async Task<IResult> RenderFormEntriesAsync([FromBody] CaseWorkflowFormEntriesRenderDto model,
+            HttpContext httpContext, ILog log,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
+            IServiceChangeBus serviceChangeBus, Engine.Helpers.JsonSerializationHelper jsonSerializationHelper,
+            CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"POST {Base}/FormEntries: entry user={user}");
+            }
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var service = await CaseWorkflowDisplayExecutionService.CreateAsync(dbContext, user, log,
+                    stringLocalizerFactory, serviceChangeBus, dynamicEnvironment, jsonSerializationHelper, token);
+
+                return TypedResults.Ok(await service.RenderFormEntriesAsync(model, token));
+            }
+            catch (NotAuthenticatedException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/FormEntries: 403 (not authenticated) user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/FormEntries: 403 user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (TemplateInvalidException e)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/FormEntries: 422 (template invalid) user={user}");
+                }
+
+                return TypedResults.UnprocessableEntity(e.Message);
+            }
+            catch (NotFoundException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/FormEntries: 400 (case, display or status not found) user={user}");
+                }
+
+                return TypedResults.BadRequest();
+            }
+            catch (OperationCanceledException)
+            {
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"POST {Base}/FormEntries: client cancelled user={user}");
+                }
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {Base}/FormEntries: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        private static async Task<IResult> ListDispatchesAsync([FromBody] CaseWorkflowDispatchesDto model,
+            HttpContext httpContext, ILog log,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
+            IServiceChangeBus serviceChangeBus, Engine.Helpers.JsonSerializationHelper jsonSerializationHelper,
+            CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"POST {Base}/Dispatches: entry user={user}");
+            }
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var service = await CaseWorkflowDisplayExecutionService.CreateAsync(dbContext, user, log,
+                    stringLocalizerFactory, serviceChangeBus, dynamicEnvironment, jsonSerializationHelper, token);
+
+                return TypedResults.Ok(await service.ListDispatchesAsync(model, token));
+            }
+            catch (NotAuthenticatedException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/Dispatches: 403 (not authenticated) user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/Dispatches: 403 user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (TemplateInvalidException e)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/Dispatches: 422 (template invalid) user={user}");
+                }
+
+                return TypedResults.UnprocessableEntity(e.Message);
+            }
+            catch (NotFoundException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/Dispatches: 400 (case, display or status not found) user={user}");
+                }
+
+                return TypedResults.BadRequest();
+            }
+            catch (OperationCanceledException)
+            {
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"POST {Base}/Dispatches: client cancelled user={user}");
+                }
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {Base}/Dispatches: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        private static async Task<IResult> TestSqlAsync([FromBody] CaseWorkflowSqlTestDto model,
+            HttpContext httpContext, ILog log,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
+            IServiceChangeBus serviceChangeBus, Engine.Helpers.JsonSerializationHelper jsonSerializationHelper,
+            CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"POST {Base}/TestSql: entry user={user}");
+            }
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var service = await CaseWorkflowDisplayExecutionService.CreateAsync(dbContext, user, log,
+                    stringLocalizerFactory, serviceChangeBus, dynamicEnvironment, jsonSerializationHelper, token);
+
+                return TypedResults.Ok(await service.TestSqlAsync(model, token));
+            }
+            catch (NotAuthenticatedException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/TestSql: 403 (not authenticated) user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/TestSql: 403 user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (TemplateInvalidException e)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/TestSql: 422 (template invalid) user={user}");
+                }
+
+                return TypedResults.UnprocessableEntity(e.Message);
+            }
+            catch (NotFoundException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/TestSql: 400 (case, display or status not found) user={user}");
+                }
+
+                return TypedResults.BadRequest();
+            }
+            catch (OperationCanceledException)
+            {
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"POST {Base}/TestSql: client cancelled user={user}");
+                }
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {Base}/TestSql: 500 user={user}", e);
 
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }

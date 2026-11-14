@@ -51,6 +51,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke.Extraction
         {
             var model = new EntityAnalysisModel
             {
+                Flags = { EnablePayloadJObject = false },
                 References =
                 {
                     EntryXPath = "$.TxnId",

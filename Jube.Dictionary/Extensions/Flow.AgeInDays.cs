@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Replaces the value being tested with the whole days from the date to now as an integer.")]
         public static Flow<int> AgeInDays(this Flow<DateTime> flow)
         {
             return flow.Carry(flow.Value.AgeInDays());

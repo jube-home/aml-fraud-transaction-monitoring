@@ -25,7 +25,7 @@ namespace Jube.Validations.EntityAnalysisModelRequestXPath
         private const int MaxNameLength = 256;
         private const int MaxXPathLength = 1024;
         private const int MaxDefaultValueLength = 1024;
-        private static readonly int[] allowedDataTypeIds = [1, 2, 3, 4, 5, 6, 7];
+        private static readonly int[] allowedDataTypeIds = [1, 2, 3, 4, 5, 6, 7, 8];
         private static readonly int[] allowedEncryptionIds = [0, 1, 2];
         private static readonly string[] allowedIntervals = ["s", "n", "h", "d"];
 
@@ -73,7 +73,10 @@ namespace Jube.Validations.EntityAnalysisModelRequestXPath
                 .MaximumLength(MaxXPathLength)
                 .WithMessage(_ =>
                     string.Format(localiser[EntityAnalysisModelRequestXPathResources.XPathMaxLength], MaxXPathLength))
-                .WithErrorCode("XPathMaximumLength");
+                .WithErrorCode("XPathMaximumLength")
+                .Must(x => x == null || !x.Contains("=~"))
+                .WithMessage(_ => localiser[EntityAnalysisModelRequestXPathResources.XPathRegexNotPermitted])
+                .WithErrorCode("XPathRegexNotPermitted");
 
             RuleFor(p => p.DefaultValue)
                 .MaximumLength(MaxDefaultValueLength)

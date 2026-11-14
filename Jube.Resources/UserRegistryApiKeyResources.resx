@@ -60,4 +60,7 @@
     <data name="KeyIntegrityFailure" xml:space="preserve">
     <value>The generated API key failed its own integrity check and was not saved.</value>
   </data>
+    <data name="InsufficientPrivilege" xml:space="preserve">
+    <value>You do not have sufficient privilege to perform this action.</value>
+  </data>
 </root>

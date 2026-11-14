@@ -23,6 +23,7 @@ using Jube.Service.Concurrency;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using LinqToDB.Data;
 using Xunit;
 

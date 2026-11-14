@@ -39,6 +39,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
                     yield return ("Read", nameof(Read.TtlCountersAsync), Read.TtlCountersAsync);
                 }
 
+                if (Read.GraphAsync != null)
+                {
+                    yield return ("Read", nameof(Read.GraphAsync), Read.GraphAsync);
+                }
+
                 if (Read.AbstractionRulesWithSearchKeysAsync != null)
                 {
                     yield return ("Read", nameof(Read.AbstractionRulesWithSearchKeysAsync),

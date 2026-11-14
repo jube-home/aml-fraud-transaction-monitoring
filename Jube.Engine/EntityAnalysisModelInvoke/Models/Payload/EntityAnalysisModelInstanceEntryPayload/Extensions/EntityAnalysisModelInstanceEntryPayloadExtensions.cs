@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Jube.GraphRecallProtocol;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Extensions
 {
@@ -64,6 +65,15 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisMod
                     entityAnalysisModelInstanceEntryPayload.AdvancedAnalyticsAdaptation != null &&
                     entityAnalysisModelInstanceEntryPayload.AdvancedAnalyticsAdaptation.TryGetValue(key, out var v)
                         ? v.ToString(CultureInfo.InvariantCulture)
+                        : null,
+                ["Graph"] = key =>
+                    GraphEntityMembers.TryReadText(entityAnalysisModelInstanceEntryPayload.Graph, key, out var text)
+                        ? text
+                        : null,
+                ["Svirfd"] = key =>
+                    Jube.Svirfd.SvirfdMembers.TryReadText(entityAnalysisModelInstanceEntryPayload.Svirfd, key,
+                        out var svirfdText)
+                        ? svirfdText
                         : null,
                 ["Activation"] = key =>
                     entityAnalysisModelInstanceEntryPayload.Activation != null &&

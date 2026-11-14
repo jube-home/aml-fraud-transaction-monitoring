@@ -7,7 +7,10 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Int32 DivRem(this Int32 a, Int32 b, out Int32 result)
+        [Description("Divides and returns the quotient and remainder.")]
+        public static Int32 DivRem(this Int32 a,
+            [Description("The divisor.")] Int32 b,
+            [Description("The remainder.")] out Int32 result)
         {
             return Math.DivRem(a, b, out result);
         }

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Du har inte behörighet att utföra den här åtgärden.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Du måste vara inloggad i en tenant för att utföra den här åtgärden.</value>
+  </data>
+    <data name="ListValueRequired" xml:space="preserve">
+    <value>Ange ett värde för den här listan.</value>
+  </data>
+    <data name="ListValueMaxLength" xml:space="preserve">
+    <value>Värdet får vara högst {0} tecken.</value>
+  </data>
+    <data name="ListValueDuplicate" xml:space="preserve">
+    <value>Det här värdet finns redan i listan.</value>
+  </data>
+    <data name="EntityAnalysisModelListIdInvalid" xml:space="preserve">
+    <value>En giltig lista krävs.</value>
+  </data>
+    <data name="DeleteExpiryDateMustBeFuture" xml:space="preserve">
+    <value>Utgångsdatumet för borttagning måste ligga efter aktuellt datum och aktuell tid.</value>
+  </data>
+    <data name="ListNotFound" xml:space="preserve">
+    <value>Listan hittades inte.</value>
+  </data>
+</root>

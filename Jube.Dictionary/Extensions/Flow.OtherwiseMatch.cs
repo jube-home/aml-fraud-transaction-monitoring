@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Decides matched only if nothing has decided yet; the pipeline's Else.")]
         public static Flow<T> OtherwiseMatch<T>(this Flow<T> flow)
         {
             return flow.IsDecided ? flow : flow.Decide(FlowOutcome.Matched);

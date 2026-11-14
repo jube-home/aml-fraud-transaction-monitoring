@@ -13,6 +13,7 @@
 
 using Jube.Data.Repository.Models;
 using Jube.Service.Query.TreeChildren.Models;
+using Jube.Service.Security;
 
 namespace Jube.Service.Query.TreeChildren
 {
@@ -45,7 +46,7 @@ namespace Jube.Service.Query.TreeChildren
         public static readonly TreeChildrenNode Exhaustive = new("Exhaustive", ById, [16],
             EntityApprovalKind.ExhaustiveSearchInstance);
 
-        public static readonly TreeChildrenNode Reprocessing = new("Reprocessing", ById, [26]);
+        public static readonly TreeChildrenNode Reprocessing = new("Reprocessing", ById, ReprocessingPermissions.Read);
 
         public static readonly TreeChildrenNode Adaptation = new("Adaptation", ById, [15],
             EntityApprovalKind.EntityAnalysisModelHttpAdaptation);

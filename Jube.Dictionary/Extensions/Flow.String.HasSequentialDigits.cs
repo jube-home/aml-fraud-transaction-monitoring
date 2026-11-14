@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchHasSequentialDigits(int minimumRunLength)
+            [Description("True when: has an ascending or descending run of digits at least the minimum length (synthetic identifiers). Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchHasSequentialDigits([Description("The shortest run of consecutive digits that counts.")] int minimumRunLength)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringHasSequentialDigits(flow.Value, minimumRunLength));
             }
 
-            public Flow<string?> RejectHasSequentialDigits(int minimumRunLength)
+            [Description("True when: has an ascending or descending run of digits at least the minimum length (synthetic identifiers). Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectHasSequentialDigits([Description("The shortest run of consecutive digits that counts.")] int minimumRunLength)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringHasSequentialDigits(flow.Value, minimumRunLength));
             }
 
-            public Flow<string?> BreakHasSequentialDigits(int minimumRunLength)
+            [Description("True when: has an ascending or descending run of digits at least the minimum length (synthetic identifiers). Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakHasSequentialDigits([Description("The shortest run of consecutive digits that counts.")] int minimumRunLength)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringHasSequentialDigits(flow.Value, minimumRunLength));
             }
 
-            public Flow<string?> RequireHasSequentialDigits(int minimumRunLength)
+            [Description("True when: has an ascending or descending run of digits at least the minimum length (synthetic identifiers). Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireHasSequentialDigits([Description("The shortest run of consecutive digits that counts.")] int minimumRunLength)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringHasSequentialDigits(flow.Value, minimumRunLength));
             }
 
-            public Flow<string?> EnsureHasSequentialDigits(int minimumRunLength)
+            [Description("True when: has an ascending or descending run of digits at least the minimum length (synthetic identifiers). Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureHasSequentialDigits([Description("The shortest run of consecutive digits that counts.")] int minimumRunLength)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchHasSequentialDigits(int minimumRunLength)
+            [Description("Begins a pipeline from the value. True when: has an ascending or descending run of digits at least the minimum length (synthetic identifiers). Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchHasSequentialDigits([Description("The shortest run of consecutive digits that counts.")] int minimumRunLength)
             {
                 return value.Start().MatchHasSequentialDigits(minimumRunLength);
             }
 
-            public Flow<string?> RejectHasSequentialDigits(int minimumRunLength)
+            [Description("Begins a pipeline from the value. True when: has an ascending or descending run of digits at least the minimum length (synthetic identifiers). Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectHasSequentialDigits([Description("The shortest run of consecutive digits that counts.")] int minimumRunLength)
             {
                 return value.Start().RejectHasSequentialDigits(minimumRunLength);
             }
 
-            public Flow<string?> BreakHasSequentialDigits(int minimumRunLength)
+            [Description("Begins a pipeline from the value. True when: has an ascending or descending run of digits at least the minimum length (synthetic identifiers). Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakHasSequentialDigits([Description("The shortest run of consecutive digits that counts.")] int minimumRunLength)
             {
                 return value.Start().BreakHasSequentialDigits(minimumRunLength);
             }
 
-            public Flow<string?> RequireHasSequentialDigits(int minimumRunLength)
+            [Description("Begins a pipeline from the value. True when: has an ascending or descending run of digits at least the minimum length (synthetic identifiers). Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireHasSequentialDigits([Description("The shortest run of consecutive digits that counts.")] int minimumRunLength)
             {
                 return value.Start().RequireHasSequentialDigits(minimumRunLength);
             }
 
-            public Flow<string?> EnsureHasSequentialDigits(int minimumRunLength)
+            [Description("Begins a pipeline from the value. True when: has an ascending or descending run of digits at least the minimum length (synthetic identifiers). Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureHasSequentialDigits([Description("The shortest run of consecutive digits that counts.")] int minimumRunLength)
             {
                 return value.Start().EnsureHasSequentialDigits(minimumRunLength);
             }

@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double ConvertUnits(this double @this, string? fromUnit, string? toUnit)
+        [Description("Converts between units of one kind: length, mass, area, volume, speed, time, data size and temperature; NaN across kinds.")]
+        public static double ConvertUnits(this double @this,
+            [Description("The unit the value is in.")] string? fromUnit,
+            [Description("The unit to convert to.")] string? toUnit)
         {
             var from = (fromUnit ?? "").Trim().ToLowerInvariant();
             var to = (toUnit ?? "").Trim().ToLowerInvariant();

@@ -32,8 +32,9 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(3)] public int? TenantRegistryId { get; set; }
         [Column] [Nullable] [Key(4)] public string CreatedUser { get; set; }
 
-        [Association(ThisKey = "TenantRegistryId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Column] [Nullable] [Key(6)] public int? EntityAnalysisModelId { get; set; }
+
+        [Association(ThisKey = "TenantRegistryId", OtherKey = "Id", CanBeNull = true)]
         [Key(5)]
         public TenantRegistry TenantRegistry { get; set; }
     }

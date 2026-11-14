@@ -60,6 +60,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
         {
             return new TtlCounterPoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelId = dto.EntityAnalysisModelId,
                 Guid = dto.Guid,

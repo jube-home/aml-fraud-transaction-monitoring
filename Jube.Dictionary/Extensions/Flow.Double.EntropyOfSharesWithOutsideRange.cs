@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchEntropyOfSharesWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the Shannon entropy in bits of how the total is shared across the value and the others is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchEntropyOfSharesWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleEntropyOfSharesWithOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RejectEntropyOfSharesWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the Shannon entropy in bits of how the total is shared across the value and the others is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectEntropyOfSharesWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleEntropyOfSharesWithOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> BreakEntropyOfSharesWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the Shannon entropy in bits of how the total is shared across the value and the others is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakEntropyOfSharesWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleEntropyOfSharesWithOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RequireEntropyOfSharesWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the Shannon entropy in bits of how the total is shared across the value and the others is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireEntropyOfSharesWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleEntropyOfSharesWithOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> EnsureEntropyOfSharesWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the Shannon entropy in bits of how the total is shared across the value and the others is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureEntropyOfSharesWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchEntropyOfSharesWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the Shannon entropy in bits of how the total is shared across the value and the others is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchEntropyOfSharesWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().MatchEntropyOfSharesWithOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RejectEntropyOfSharesWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the Shannon entropy in bits of how the total is shared across the value and the others is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectEntropyOfSharesWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RejectEntropyOfSharesWithOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> BreakEntropyOfSharesWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the Shannon entropy in bits of how the total is shared across the value and the others is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakEntropyOfSharesWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().BreakEntropyOfSharesWithOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RequireEntropyOfSharesWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the Shannon entropy in bits of how the total is shared across the value and the others is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireEntropyOfSharesWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RequireEntropyOfSharesWithOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> EnsureEntropyOfSharesWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the Shannon entropy in bits of how the total is shared across the value and the others is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureEntropyOfSharesWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().EnsureEntropyOfSharesWithOutsideRange(lowerBound, upperBound, others);
             }

@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Checks if the character is a decimal digit.")]
         public static Boolean IsDigit(this Char c)
         {
             return char.IsDigit(c);

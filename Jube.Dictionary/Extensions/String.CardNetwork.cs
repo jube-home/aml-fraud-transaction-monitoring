@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Classifies a card number by its IIN/BIN prefix (Visa, Mastercard, AmericanExpress, Discover, DinersClub, Jcb, or Unknown).")]
         public static string CardNetwork(this string? @this)
         {
             var value = (@this ?? "").Replace(" ", "").Replace("-", "");

@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchSomehowLike(string? other)
+            [Description("True when: fuzzily like a single value, using the default profile. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchSomehowLike([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringSomehowLike(flow.Value, other));
             }
 
-            public Flow<string?> RejectSomehowLike(string? other)
+            [Description("True when: fuzzily like a single value, using the default profile. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectSomehowLike([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringSomehowLike(flow.Value, other));
             }
 
-            public Flow<string?> BreakSomehowLike(string? other)
+            [Description("True when: fuzzily like a single value, using the default profile. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakSomehowLike([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringSomehowLike(flow.Value, other));
             }
 
-            public Flow<string?> RequireSomehowLike(string? other)
+            [Description("True when: fuzzily like a single value, using the default profile. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireSomehowLike([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringSomehowLike(flow.Value, other));
             }
 
-            public Flow<string?> EnsureSomehowLike(string? other)
+            [Description("True when: fuzzily like a single value, using the default profile. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureSomehowLike([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchSomehowLike(string? other)
+            [Description("Begins a pipeline from the value. True when: fuzzily like a single value, using the default profile. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchSomehowLike([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().MatchSomehowLike(other);
             }
 
-            public Flow<string?> RejectSomehowLike(string? other)
+            [Description("Begins a pipeline from the value. True when: fuzzily like a single value, using the default profile. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectSomehowLike([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().RejectSomehowLike(other);
             }
 
-            public Flow<string?> BreakSomehowLike(string? other)
+            [Description("Begins a pipeline from the value. True when: fuzzily like a single value, using the default profile. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakSomehowLike([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().BreakSomehowLike(other);
             }
 
-            public Flow<string?> RequireSomehowLike(string? other)
+            [Description("Begins a pipeline from the value. True when: fuzzily like a single value, using the default profile. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireSomehowLike([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().RequireSomehowLike(other);
             }
 
-            public Flow<string?> EnsureSomehowLike(string? other)
+            [Description("Begins a pipeline from the value. True when: fuzzily like a single value, using the default profile. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureSomehowLike([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().EnsureSomehowLike(other);
             }

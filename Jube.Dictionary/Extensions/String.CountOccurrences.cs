@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static int CountOccurrences(this string? @this, string? value)
+        [Description("Non-overlapping case-sensitive occurrences of a substring.")]
+        public static int CountOccurrences(this string? @this, [Description("The text to count.")] string? value)
         {
             var text = @this ?? "";
 

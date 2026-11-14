@@ -33,6 +33,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Infrastructure.Reactivity;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
@@ -600,7 +601,6 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRule
             var dto = NewDto(modelId, saved.Name);
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
-            dto.Version = 999;
 
             var updated = await service.UpdateAsync(dto);
             createdIds.Add(updated.Id);
@@ -889,6 +889,100 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRule
 
             var oversized = await service.ListAsync(10_000);
             oversized.Items.Count.Should().BeLessThanOrEqualTo(200);
+        }
+
+        [Fact]
+        public async Task DeletingARuleCancelsItsUncompletedInstancesAndKeepsFinishedOnesAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(modelId, UniqueName("DeleteCancels")));
+            createdIds.Add(saved.Id);
+
+            var instances = new EntityAnalysisModelReprocessingRuleInstanceRepository(dbContext,
+                fx.Seed.UserWithPermission);
+
+            var instanceTable = dbContext.GetTable<Data.Poco.EntityAnalysisModelReprocessingRuleInstance>();
+            var ids = new List<int>();
+
+            try
+            {
+                foreach (var status in new byte[] { 0, 3, 4, 5 })
+                {
+                    var row = await instances.InsertAsync(new Data.Poco.EntityAnalysisModelReprocessingRuleInstance
+                        { EntityAnalysisModelReprocessingRuleId = saved.Id });
+
+                    ids.Add(row.Id);
+                    await instanceTable.Where(w => w.Id == row.Id).Set(s => s.StatusId, status).UpdateAsync();
+                }
+
+                await service.DeleteAsync(saved.Id);
+
+                var rows = await instanceTable.Where(w => ids.Contains(w.Id)).OrderBy(o => o.Id).ToListAsync();
+                rows.Select(r => r.Deleted == 1).Should().Equal(true, true, false, false);
+            }
+            finally
+            {
+                await instanceTable.Where(w => ids.Contains(w.Id)).DeleteAsync();
+            }
+        }
+
+        [Fact]
+        public async Task ListsNeverContainSoftDeletedRulesAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(modelId, UniqueName("ListDeleted")));
+            createdIds.Add(saved.Id);
+            await service.DeleteAsync(saved.Id);
+
+            (await service.GetAsync()).Should().NotContain(d => d.Id == saved.Id);
+            (await service.ListAsync(200)).Items.Should().NotContain(d => d.Id == saved.Id);
+        }
+
+        [Fact]
+        public async Task EditingARuleKeepsItsFinishedRunsReachableFromTheNewVersionAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(modelId, UniqueName("EditKeeps")));
+            createdIds.Add(saved.Id);
+
+            var instances = new EntityAnalysisModelReprocessingRuleInstanceRepository(dbContext,
+                fx.Seed.UserWithPermission);
+
+            var instanceTable = dbContext.GetTable<Data.Poco.EntityAnalysisModelReprocessingRuleInstance>();
+            var ids = new List<int>();
+
+            try
+            {
+                foreach (var status in new byte[] { 4, 5, 3 })
+                {
+                    var row = await instances.InsertAsync(new Data.Poco.EntityAnalysisModelReprocessingRuleInstance
+                        { EntityAnalysisModelReprocessingRuleId = saved.Id });
+
+                    ids.Add(row.Id);
+                    await instanceTable.Where(w => w.Id == row.Id).Set(s => s.StatusId, status).UpdateAsync();
+                }
+
+                var dto = NewDto(modelId, saved.Name);
+                dto.Id = saved.Id;
+                dto.Version = saved.Version.GetValueOrDefault();
+                dto.Priority = 9;
+                var updated = await service.UpdateAsync(dto);
+                createdIds.Add(updated.Id);
+
+                var rows = await instanceTable.Where(w => ids.Contains(w.Id)).OrderBy(o => o.Id).ToListAsync();
+                rows.Select(r => r.Deleted == 1).Should().Equal(false, false, true);
+                rows.Take(2).Should().OnlyContain(r => r.EntityAnalysisModelReprocessingRuleId == updated.Id);
+            }
+            finally
+            {
+                await instanceTable.Where(w => ids.Contains(w.Id)).DeleteAsync();
+            }
         }
     }
 }

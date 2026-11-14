@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PasswordMinLength" xml:space="preserve">
+    <value>कम से कम {0} वर्ण</value>
+  </data>
+    <data name="PasswordMaxLength" xml:space="preserve">
+    <value>{0} वर्णों से अधिक नहीं</value>
+  </data>
+    <data name="PasswordUppercase" xml:space="preserve">
+    <value>कम से कम एक बड़ा अक्षर</value>
+  </data>
+    <data name="PasswordLowercase" xml:space="preserve">
+    <value>कम से कम एक छोटा अक्षर</value>
+  </data>
+    <data name="PasswordDigit" xml:space="preserve">
+    <value>कम से कम एक अंक</value>
+  </data>
+    <data name="PasswordSpecial" xml:space="preserve">
+    <value>कम से कम एक विशेष वर्ण</value>
+  </data>
+    <data name="PasswordRepeated" xml:space="preserve">
+    <value>कोई भी वर्ण लगातार दो बार से अधिक दोहराया नहीं जा सकता</value>
+  </data>
+    <data name="PasswordCommonPattern" xml:space="preserve">
+    <value>सामान्य पैटर्न से शुरू नहीं हो सकता</value>
+  </data>
+    <data name="MissingNewPassword" xml:space="preserve">
+    <value>नया पासवर्ड नहीं दिया गया।</value>
+  </data>
+    <data name="AuthorizedUserNameNull" xml:space="preserve">
+    <value>अधिकृत, लेकिन उपयोगकर्ता नाम रिक्त है।</value>
+  </data>
+    <data name="UserNameRequired" xml:space="preserve">
+    <value>'उपयोगकर्ता नाम' रिक्त नहीं होना चाहिए।</value>
+  </data>
+    <data name="PasswordRequired" xml:space="preserve">
+    <value>'पासवर्ड' रिक्त नहीं होना चाहिए।</value>
+  </data>
+    <data name="MfaRequired" xml:space="preserve">
+    <value>'Mfa' रिक्त नहीं होना चाहिए।</value>
+  </data>
+    <data name="NewPasswordRequired" xml:space="preserve">
+    <value>'नया पासवर्ड' रिक्त नहीं होना चाहिए।</value>
+  </data>
+</root>

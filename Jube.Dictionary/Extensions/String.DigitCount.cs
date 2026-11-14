@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Counts the digit characters in the string.")]
         public static int DigitCount(this string? @this)
         {
             return @this?.Count(char.IsDigit) ?? 0;

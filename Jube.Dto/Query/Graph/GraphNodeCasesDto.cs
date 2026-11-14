@@ -1,0 +1,46 @@
+/* Copyright (C) 2022-present Jube Holdings Limited.
+ *
+ * This file is part of Jube™ software.
+ *
+ * Jube™ is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * Jube™ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
+ * see <https://www.gnu.org/licenses/>.
+ */
+
+using System.ComponentModel;
+using MessagePack;
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable NotAccessedPositionalProperty.Global
+// ReSharper disable RedundantAttributeUsageProperty
+
+namespace Jube.Dto.Query.Graph
+{
+    [MessagePackObject]
+    public class GraphNodeCasesDto
+    {
+        [Description("Open cases on this node's key.")]
+        [Key(0)]
+        public int Open { get; set; }
+
+        [Description("Closed cases on this node's key.")]
+        [Key(1)]
+        public int Closed { get; set; }
+
+        [Description("Closed cases whose status outcome is Confirmed.")]
+        [Key(2)]
+        public int Confirmed { get; set; }
+
+        [Description("The newest case id on this key, if any.")]
+        [Key(3)]
+        public int? LatestCaseId { get; set; }
+
+        [Description("The newest open case id on this key, if any.")]
+        [Key(4)]
+        public int? LatestOpenCaseId { get; set; }
+    }
+}

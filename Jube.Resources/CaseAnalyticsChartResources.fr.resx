@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="WeekdayMon" xml:space="preserve">
+        <value>lun</value>
+    </data>
+    <data name="WeekdayTue" xml:space="preserve">
+        <value>mar</value>
+    </data>
+    <data name="WeekdayWed" xml:space="preserve">
+        <value>mer</value>
+    </data>
+    <data name="WeekdayThu" xml:space="preserve">
+        <value>jeu</value>
+    </data>
+    <data name="WeekdayFri" xml:space="preserve">
+        <value>ven</value>
+    </data>
+    <data name="WeekdaySat" xml:space="preserve">
+        <value>sam</value>
+    </data>
+    <data name="WeekdaySun" xml:space="preserve">
+        <value>dim</value>
+    </data>
+    <data name="ImpactMinimal" xml:space="preserve">
+        <value>Minimal</value>
+    </data>
+    <data name="ImpactLow" xml:space="preserve">
+        <value>Faible</value>
+    </data>
+    <data name="ImpactModerate" xml:space="preserve">
+        <value>Modéré</value>
+    </data>
+    <data name="ImpactHigh" xml:space="preserve">
+        <value>Élevé</value>
+    </data>
+    <data name="ImpactSevere" xml:space="preserve">
+        <value>Sévère</value>
+    </data>
+    <data name="LikelihoodVeryLikely" xml:space="preserve">
+        <value>Très probable</value>
+    </data>
+    <data name="LikelihoodLikely" xml:space="preserve">
+        <value>Probable</value>
+    </data>
+    <data name="LikelihoodPossible" xml:space="preserve">
+        <value>Possible</value>
+    </data>
+    <data name="LikelihoodUnlikely" xml:space="preserve">
+        <value>Improbable</value>
+    </data>
+    <data name="RiskMatrixTitle" xml:space="preserve">
+        <value>Matrice des risques</value>
+    </data>
+    <data name="RiskMatrixAssessed" xml:space="preserve">
+        <value>{0} dossiers évalués ; {1} pas encore évalués</value>
+    </data>
+    <data name="RiskMatrixCases" xml:space="preserve">
+        <value>{0} dossiers</value>
+    </data>
+    <data name="Impact" xml:space="preserve">
+        <value>Impact</value>
+    </data>
+    <data name="Likelihood" xml:space="preserve">
+        <value>Probabilité</value>
+    </data>
+    <data name="Cases" xml:space="preserve">
+        <value>Dossiers</value>
+    </data>
+    <data name="FlowTitle" xml:space="preserve">
+        <value>Ouverts, fermés et arriéré</value>
+    </data>
+    <data name="FlowSubtitle" xml:space="preserve">
+        <value>Dossiers ouverts et fermés chaque jour, et dossiers encore ouverts à la fin de la journée</value>
+    </data>
+    <data name="Opened" xml:space="preserve">
+        <value>Ouverts</value>
+    </data>
+    <data name="Closed" xml:space="preserve">
+        <value>Fermés</value>
+    </data>
+    <data name="Backlog" xml:space="preserve">
+        <value>Arriéré</value>
+    </data>
+    <data name="FirstViewTitle" xml:space="preserve">
+        <value>Délai avant la première consultation</value>
+    </data>
+    <data name="FirstViewSubtitle" xml:space="preserve">
+        <value>Dossiers selon la durée d'attente</value>
+    </data>
+    <data name="ResolutionTitle" xml:space="preserve">
+        <value>Délai de résolution</value>
+    </data>
+    <data name="ResolutionSubtitle" xml:space="preserve">
+        <value>Dossiers fermés selon leur durée de traitement</value>
+    </data>
+    <data name="AgingTitle" xml:space="preserve">
+        <value>Dossiers ouverts par ancienneté</value>
+    </data>
+    <data name="AgingSubtitle" xml:space="preserve">
+        <value>Depuis combien de temps les dossiers ouverts attendent, par voie d'urgence</value>
+    </data>
+    <data name="LaneLiveMoney" xml:space="preserve">
+        <value>Argent en cours</value>
+    </data>
+    <data name="LaneMandatory" xml:space="preserve">
+        <value>Obligatoire</value>
+    </data>
+    <data name="LaneDeadlineNear" xml:space="preserve">
+        <value>Échéance proche</value>
+    </data>
+    <data name="LaneStandard" xml:space="preserve">
+        <value>Standard</value>
+    </data>
+    <data name="StatusDwellTitle" xml:space="preserve">
+        <value>Temps passé dans chaque statut</value>
+    </data>
+    <data name="StatusDwellSubtitle" xml:space="preserve">
+        <value>Médiane et dixième le plus lent des séjours terminés, en heures</value>
+    </data>
+    <data name="Unknown" xml:space="preserve">
+        <value>Inconnu</value>
+    </data>
+    <data name="Hours" xml:space="preserve">
+        <value>Heures</value>
+    </data>
+    <data name="Median" xml:space="preserve">
+        <value>Médiane</value>
+    </data>
+    <data name="SlowestTenth" xml:space="preserve">
+        <value>Dixième le plus lent</value>
+    </data>
+    <data name="RuleEffortTitle" xml:space="preserve">
+        <value>Temps d'analyste perdu en faux positifs</value>
+    </data>
+    <data name="RuleEffortSubtitle" xml:space="preserve">
+        <value>Heures passées sur des dossiers levés par la règle qui se sont révélés non avérés</value>
+    </data>
+    <data name="RulePrecisionTitle" xml:space="preserve">
+        <value>Précision des règles</value>
+    </data>
+    <data name="RulePrecisionSubtitle" xml:space="preserve">
+        <value>Part des dossiers tranchés levés par la règle qui ont été confirmés</value>
+    </data>
+    <data name="Percent" xml:space="preserve">
+        <value>Pourcentage</value>
+    </data>
+    <data name="Precision" xml:space="preserve">
+        <value>Précision</value>
+    </data>
+    <data name="GainsTitle" xml:space="preserve">
+        <value>Dossiers confirmés trouvés au fil du traitement</value>
+    </data>
+    <data name="DecidedCases" xml:space="preserve">
+        <value>{0} dossiers tranchés</value>
+    </data>
+    <data name="FewDecidedCases" xml:space="preserve">
+        <value>Seulement {0} dossiers tranchés, trop peu pour s'y fier</value>
+    </data>
+    <data name="CasesWorkedPercent" xml:space="preserve">
+        <value>Dossiers traités (%)</value>
+    </data>
+    <data name="ConfirmedFoundPercent" xml:space="preserve">
+        <value>Confirmés trouvés (%)</value>
+    </data>
+    <data name="PriorityOrder" xml:space="preserve">
+        <value>Ordre de priorité</value>
+    </data>
+    <data name="LikelihoodOrder" xml:space="preserve">
+        <value>Ordre de probabilité</value>
+    </data>
+    <data name="OldestFirst" xml:space="preserve">
+        <value>Plus anciens d'abord</value>
+    </data>
+    <data name="Random" xml:space="preserve">
+        <value>Aléatoire</value>
+    </data>
+    <data name="CalibrationTitle" xml:space="preserve">
+        <value>Probabilité prédite par rapport à ce qui s'est produit</value>
+    </data>
+    <data name="ArrivalsTitle" xml:space="preserve">
+        <value>Quand les dossiers arrivent</value>
+    </data>
+    <data name="ArrivalsSubtitle" xml:space="preserve">
+        <value>Dossiers créés par jour de la semaine et heure (UTC)</value>
+    </data>
+    <data name="Hour" xml:space="preserve">
+        <value>Heure</value>
+    </data>
+    <data name="Weekday" xml:space="preserve">
+        <value>Jour de la semaine</value>
+    </data>
+    <data name="FirstViewByHourTitle" xml:space="preserve">
+        <value>Délai médian avant la première consultation par heure d'arrivée</value>
+    </data>
+    <data name="FirstViewByHourSubtitle" xml:space="preserve">
+        <value>Minutes pendant lesquelles un dossier a attendu avant que quelqu'un le consulte, selon l'heure d'arrivée (UTC)</value>
+    </data>
+    <data name="Minutes" xml:space="preserve">
+        <value>Minutes</value>
+    </data>
+    <data name="MedianMinutes" xml:space="preserve">
+        <value>Minutes médianes</value>
+    </data>
+    <data name="ServiceLevelTitle" xml:space="preserve">
+        <value>Atteinte des niveaux de service par semaine</value>
+    </data>
+    <data name="ServiceLevelSubtitle" xml:space="preserve">
+        <value>Part des dossiers créés cette semaine-là qui ont respecté chaque objectif</value>
+    </data>
+    <data name="MetPercent" xml:space="preserve">
+        <value>Respectés (%)</value>
+    </data>
+    <data name="ServiceLevelFirstView" xml:space="preserve">
+        <value>Première consultation</value>
+    </data>
+    <data name="ServiceLevelOwnership" xml:space="preserve">
+        <value>Prise en charge</value>
+    </data>
+    <data name="ServiceLevelResolution" xml:space="preserve">
+        <value>Résolution</value>
+    </data>
+    <data name="ServiceLevelTimeInStatus" xml:space="preserve">
+        <value>Temps dans le statut</value>
+    </data>
+    <data name="HandoffsTitle" xml:space="preserve">
+        <value>À quelle fréquence les dossiers changent de mains</value>
+    </data>
+    <data name="HandoffsSubtitle" xml:space="preserve">
+        <value>{0} dossiers ont été rouverts après fermeture</value>
+    </data>
+    <data name="ChangesOfOwner" xml:space="preserve">
+        <value>Changements de responsable</value>
+    </data>
+</root>

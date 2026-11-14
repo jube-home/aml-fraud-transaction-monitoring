@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>ليس لديك صلاحية تنفيذ هذا الإجراء.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>يجب أن تكون مسجلاً الدخول إلى مستأجر لتنفيذ هذا الإجراء.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>لم يتم العثور على سير عمل الحالات.</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>نموذج أب صالح مطلوب.</value>
+  </data>
+    <data name="EntityAnalysisModelNotFound" xml:space="preserve">
+    <value>لم يتم العثور على النموذج المشار إليه في مستأجرك.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>الاسم مطلوب.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>يجب ألا يزيد الاسم على ⁨{0}⁩ حرفًا.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>هذا الاسم موجود بالفعل.</value>
+  </data>
+    <data name="DescriptionMaxLength" xml:space="preserve">
+    <value>يجب ألا يزيد الوصف على ⁨{0}⁩ حرفًا.</value>
+  </data>
+    <data name="VisualisationRegistryGuidRequired" xml:space="preserve">
+    <value>التصور مطلوب عند تفعيل التصور.</value>
+  </data>
+    <data name="VisualisationRegistryNotFound" xml:space="preserve">
+    <value>لم يتم العثور على التصور.</value>
+  </data>
+    <data name="RiskKappaOutOfRange" xml:space="preserve">
+    <value>يجب أن يكون تخميد الترتيب أكبر من 0 وألا يزيد على 1.</value>
+  </data>
+    <data name="RiskRhoOutOfRange" xml:space="preserve">
+    <value>يجب أن يكون وزن الترتيب للأدلة المتداخلة بين 0 و1.</value>
+  </data>
+    <data name="RiskPriorStrengthOutOfRange" xml:space="preserve">
+    <value>يجب أن تكون قوة المعدل المسبق للترتيب أكبر من 0 وألا تزيد على 10000.</value>
+  </data>
+    <data name="RiskBaseRatePriorOutOfRange" xml:space="preserve">
+    <value>يجب أن يكون المعدل المسبق للترتيب بين 0.001 و0.999.</value>
+  </data>
+    <data name="DailyGoalOutOfRange" xml:space="preserve">
+    <value>يجب أن يكون الهدف اليومي بين 1 و1000 حالة.</value>
+  </data>
+    <data name="RiskDeadlineLaneDaysOutOfRange" xml:space="preserve">
+    <value>يجب أن تكون نافذة الموعد النهائي للترتيب بين 0 و365 يومًا.</value>
+  </data>
+    <data name="RiskKeyHistoryHalfLifeOutOfRange" xml:space="preserve">
+    <value>يجب أن يكون عمر النصف لسجل المفتاح في الترتيب أكبر من 0 وألا يزيد على 3650 يومًا.</value>
+  </data>
+    <data name="RiskImpactWeightsInvalid" xml:space="preserve">
+    <value>يجب أن تكون أوزان تأثير الترتيب خمسة أرقام موجبة متزايدة مفصولة بفواصل.</value>
+  </data>
+    <data name="RiskMoneyBandsInvalid" xml:space="preserve">
+    <value>يجب أن تكون نطاقات المبالغ في الترتيب أربعة أرقام موجبة متزايدة مفصولة بفواصل.</value>
+  </data>
+    <data name="RiskImpactWeightsTooLong" xml:space="preserve">
+    <value>يجب ألا تتجاوز أوزان تأثير الترتيب 200 حرف.</value>
+  </data>
+    <data name="RiskMoneyBandsTooLong" xml:space="preserve">
+    <value>يجب ألا تتجاوز شرائح المبالغ الخاصة بالترتيب 200 حرف.</value>
+  </data>
+    <data name="RiskQaSampleRateOutOfRange" xml:space="preserve">
+    <value>يجب أن يكون معدل عينة مراجعة الجودة بين 0 و0.5.</value>
+  </data>
+    <data name="GraphRegistryGuidRequired" xml:space="preserve">
+    <value>سجل الرسم البياني مطلوب عند تفعيل الرسم البياني.</value>
+  </data>
+    <data name="GraphRegistryNotFound" xml:space="preserve">
+    <value>لم يتم العثور على سجل الرسم البياني.</value>
+  </data>
+</root>

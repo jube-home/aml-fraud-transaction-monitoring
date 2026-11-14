@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation de traiter les dossiers.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>L'authentification est requise.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>Le dossier est introuvable.</value>
+  </data>
+    <data name="CaseIdInvalid" xml:space="preserve">
+    <value>Un dossier est requis.</value>
+  </data>
+    <data name="DiaryTypeInvalid" xml:space="preserve">
+    <value>Le type d'agenda doit être révision, réponse du client, échéance réglementaire ou blocage de paiement.</value>
+  </data>
+    <data name="DueDateRequired" xml:space="preserve">
+    <value>La date d'échéance de l'agenda est requise.</value>
+  </data>
+    <data name="DueDateOutOfRange" xml:space="preserve">
+    <value>La date de l'agenda doit se situer dans la dernière année ou les dix prochaines années.</value>
+  </data>
+    <data name="CaseNotOpen" xml:space="preserve">
+    <value>Seul un dossier ouvert peut comporter un agenda typé. Un dossier suspendu utilise son agenda pour décider de sa réouverture.</value>
+  </data>
+    <data name="LockedByAnotherUser" xml:space="preserve">
+    <value>Le dossier est verrouillé par un autre utilisateur.</value>
+  </data>
+    <data name="DiaryNotSet" xml:space="preserve">
+    <value>Le dossier n'a aucun agenda à effacer.</value>
+  </data>
+    <data name="CaseChanged" xml:space="preserve">
+    <value>Le dossier a changé pendant l'envoi de la demande. Vérifiez-le et réessayez.</value>
+  </data>
+</root>

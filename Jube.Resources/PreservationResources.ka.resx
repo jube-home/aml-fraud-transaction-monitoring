@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+        <value>თქვენ არ გაქვთ ამ მოქმედების შესრულების უფლება.</value>
+    </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+        <value>ამ მოქმედების შესასრულებლად უნდა იყოთ შესული ტენანტში.</value>
+    </data>
+    <data name="NoFileSupplied" xml:space="preserve">
+        <value>შენახვის ფაილი არ არის მოწოდებული.</value>
+    </data>
+    <data name="InvalidPreservationFile" xml:space="preserve">
+        <value>შენახვის ფაილის გაშიფვრა ვერ მოხერხდა. შეამოწმეთ პაროლი და ის, რომ ფაილი Jube-ის ექსპორტია. Jube-ის ადრინდელი ვერსიიდან ექსპორტირებული ფაილის იმპორტი შეუძლებელია.</value>
+    </data>
+    <data name="PasswordTooShort" xml:space="preserve">
+        <value>პაროლი უნდა შეიცავდეს მინიმუმ 12 სიმბოლოს.</value>
+    </data>
+    <data name="WarningNoApprovalHistory" xml:space="preserve">
+        <value>პაკეტი არ შეიცავს დამტკიცების ისტორიას, ამიტომ ყველა იმპორტირებული ობიექტი მოინიშნება როგორც დამტკიცებული მიმდინარე ვერსიით თქვენი სახელით.</value>
+    </data>
+    <data name="WarningNoRoles" xml:space="preserve">
+        <value>პაკეტი არ შეიცავს როლებს, ამიტომ ტენანტის ყველა როლი ({0}) წაიშლება.</value>
+    </data>
+    <data name="WarningProductionData" xml:space="preserve">
+        <value>პაკეტი შეიცავს მონაცემებს, რომლებიც შეიძლება იყოს დიდი ან მგრძნობიარე: სიების {0} მნიშვნელობა, ლექსიკონების {1} წყვილი და Exhaustive-ის {2} მწკრივი.</value>
+    </data>
+    <data name="WarningOlderFormat" xml:space="preserve">
+        <value>პაკეტის ფორმატის ვერსია არის {0}, რომელიც ძველია მიმდინარე ვერსიაზე {1}.</value>
+    </data>
+    <data name="BlockerRoleRekey" xml:space="preserve">
+        <value>პაკეტის როლები უკვე არსებობს სხვა ტენანტში, ხოლო ამ ტენანტს ჰყავს მომხმარებლები, ამიტომ იმპორტი უარყოფილი იქნება.</value>
+    </data>
+    <data name="BlockerPrivilege" xml:space="preserve">
+        <value>პაკეტი ან ტენანტის მიმდინარე როლები შეიცავს უფლებებს, რომლებიც თქვენ არ გაქვთ, ამიტომ იმპორტი უარყოფილი იქნება. იმპორტი შეუძლია მხოლოდ მომხმარებელს, რომელსაც ყველა ეს უფლება აქვს, ან landlord-ს.</value>
+    </data>
+    <data name="DiffNeedsSnapshot" xml:space="preserve">
+        <value>შედარების მინიმუმ ერთი მხარე უნდა იყოს სნეპშოტი.</value>
+    </data>
+    <data name="DiffSameSnapshot" xml:space="preserve">
+        <value>სნეპშოტის თავის თავთან შედარება შეუძლებელია.</value>
+    </data>
+    <data name="PackageTooLarge" xml:space="preserve">
+    <value>პაკეტი აღემატება ამ სერვერის მიერ დაშვებულ ზომას.</value>
+  </data>
+</root>

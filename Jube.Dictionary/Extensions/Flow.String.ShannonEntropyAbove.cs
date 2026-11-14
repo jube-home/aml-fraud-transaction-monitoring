@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchShannonEntropyAbove(double threshold)
+            [Description("True when: non-empty and entropy above the threshold (generated looking values). Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchShannonEntropyAbove([Description("The entropy in bits the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringShannonEntropyAbove(flow.Value, threshold));
             }
 
-            public Flow<string?> RejectShannonEntropyAbove(double threshold)
+            [Description("True when: non-empty and entropy above the threshold (generated looking values). Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectShannonEntropyAbove([Description("The entropy in bits the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringShannonEntropyAbove(flow.Value, threshold));
             }
 
-            public Flow<string?> BreakShannonEntropyAbove(double threshold)
+            [Description("True when: non-empty and entropy above the threshold (generated looking values). Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakShannonEntropyAbove([Description("The entropy in bits the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringShannonEntropyAbove(flow.Value, threshold));
             }
 
-            public Flow<string?> RequireShannonEntropyAbove(double threshold)
+            [Description("True when: non-empty and entropy above the threshold (generated looking values). Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireShannonEntropyAbove([Description("The entropy in bits the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringShannonEntropyAbove(flow.Value, threshold));
             }
 
-            public Flow<string?> EnsureShannonEntropyAbove(double threshold)
+            [Description("True when: non-empty and entropy above the threshold (generated looking values). Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureShannonEntropyAbove([Description("The entropy in bits the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchShannonEntropyAbove(double threshold)
+            [Description("Begins a pipeline from the value. True when: non-empty and entropy above the threshold (generated looking values). Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchShannonEntropyAbove([Description("The entropy in bits the value is tested against.")] double threshold)
             {
                 return value.Start().MatchShannonEntropyAbove(threshold);
             }
 
-            public Flow<string?> RejectShannonEntropyAbove(double threshold)
+            [Description("Begins a pipeline from the value. True when: non-empty and entropy above the threshold (generated looking values). Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectShannonEntropyAbove([Description("The entropy in bits the value is tested against.")] double threshold)
             {
                 return value.Start().RejectShannonEntropyAbove(threshold);
             }
 
-            public Flow<string?> BreakShannonEntropyAbove(double threshold)
+            [Description("Begins a pipeline from the value. True when: non-empty and entropy above the threshold (generated looking values). Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakShannonEntropyAbove([Description("The entropy in bits the value is tested against.")] double threshold)
             {
                 return value.Start().BreakShannonEntropyAbove(threshold);
             }
 
-            public Flow<string?> RequireShannonEntropyAbove(double threshold)
+            [Description("Begins a pipeline from the value. True when: non-empty and entropy above the threshold (generated looking values). Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireShannonEntropyAbove([Description("The entropy in bits the value is tested against.")] double threshold)
             {
                 return value.Start().RequireShannonEntropyAbove(threshold);
             }
 
-            public Flow<string?> EnsureShannonEntropyAbove(double threshold)
+            [Description("Begins a pipeline from the value. True when: non-empty and entropy above the threshold (generated looking values). Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureShannonEntropyAbove([Description("The entropy in bits the value is tested against.")] double threshold)
             {
                 return value.Start().EnsureShannonEntropyAbove(threshold);
             }

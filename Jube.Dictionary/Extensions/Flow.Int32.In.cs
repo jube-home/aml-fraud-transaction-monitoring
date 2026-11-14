@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<int> flow)
         {
-            public Flow<int> MatchIn(params int[] values)
+            [Description("True when: one of the listed integers. Decides matched if so; otherwise continues.")]
+            public Flow<int> MatchIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.Int32In(flow.Value, values));
             }
 
-            public Flow<int> RejectIn(params int[] values)
+            [Description("True when: one of the listed integers. Decides rejected if so; otherwise continues.")]
+            public Flow<int> RejectIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.Int32In(flow.Value, values));
             }
 
-            public Flow<int> BreakIn(params int[] values)
+            [Description("True when: one of the listed integers. Decides broken if so; otherwise continues.")]
+            public Flow<int> BreakIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.Int32In(flow.Value, values));
             }
 
-            public Flow<int> RequireIn(params int[] values)
+            [Description("True when: one of the listed integers. Continues if so; otherwise decides rejected.")]
+            public Flow<int> RequireIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.Int32In(flow.Value, values));
             }
 
-            public Flow<int> EnsureIn(params int[] values)
+            [Description("True when: one of the listed integers. Continues if so; otherwise decides broken.")]
+            public Flow<int> EnsureIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(int value)
         {
-            public Flow<int> MatchIn(params int[] values)
+            [Description("Begins a pipeline from the value. True when: one of the listed integers. Decides matched if so; otherwise continues.")]
+            public Flow<int> MatchIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return value.Start().MatchIn(values);
             }
 
-            public Flow<int> RejectIn(params int[] values)
+            [Description("Begins a pipeline from the value. True when: one of the listed integers. Decides rejected if so; otherwise continues.")]
+            public Flow<int> RejectIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return value.Start().RejectIn(values);
             }
 
-            public Flow<int> BreakIn(params int[] values)
+            [Description("Begins a pipeline from the value. True when: one of the listed integers. Decides broken if so; otherwise continues.")]
+            public Flow<int> BreakIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return value.Start().BreakIn(values);
             }
 
-            public Flow<int> RequireIn(params int[] values)
+            [Description("Begins a pipeline from the value. True when: one of the listed integers. Continues if so; otherwise decides rejected.")]
+            public Flow<int> RequireIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return value.Start().RequireIn(values);
             }
 
-            public Flow<int> EnsureIn(params int[] values)
+            [Description("Begins a pipeline from the value. True when: one of the listed integers. Continues if so; otherwise decides broken.")]
+            public Flow<int> EnsureIn([Description("The value list to compare with the object.")] params int[] values)
             {
                 return value.Start().EnsureIn(values);
             }

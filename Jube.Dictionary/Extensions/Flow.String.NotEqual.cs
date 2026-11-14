@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchNotEqual(string? other)
+            [Description("True when: both present and different. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchNotEqual([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringNotEqual(flow.Value, other));
             }
 
-            public Flow<string?> RejectNotEqual(string? other)
+            [Description("True when: both present and different. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectNotEqual([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringNotEqual(flow.Value, other));
             }
 
-            public Flow<string?> BreakNotEqual(string? other)
+            [Description("True when: both present and different. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakNotEqual([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringNotEqual(flow.Value, other));
             }
 
-            public Flow<string?> RequireNotEqual(string? other)
+            [Description("True when: both present and different. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireNotEqual([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringNotEqual(flow.Value, other));
             }
 
-            public Flow<string?> EnsureNotEqual(string? other)
+            [Description("True when: both present and different. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureNotEqual([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchNotEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: both present and different. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchNotEqual([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().MatchNotEqual(other);
             }
 
-            public Flow<string?> RejectNotEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: both present and different. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectNotEqual([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().RejectNotEqual(other);
             }
 
-            public Flow<string?> BreakNotEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: both present and different. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakNotEqual([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().BreakNotEqual(other);
             }
 
-            public Flow<string?> RequireNotEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: both present and different. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireNotEqual([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().RequireNotEqual(other);
             }
 
-            public Flow<string?> EnsureNotEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: both present and different. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureNotEqual([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().EnsureNotEqual(other);
             }

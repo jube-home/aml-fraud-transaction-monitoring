@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Du har inte behörighet att utföra den här åtgärden.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Du måste vara inloggad i en tenant för att utföra den här åtgärden.</value>
+  </data>
+    <data name="ModelNotFound" xml:space="preserve">
+    <value>Den tränade modellen hittades inte.</value>
+  </data>
+    <data name="VersionNotFound" xml:space="preserve">
+    <value>Modellversionen hittades inte.</value>
+  </data>
+    <data name="InstanceNotAllocated" xml:space="preserve">
+    <value>Instansen som äger den här modellen är inte tilldelad en modell, så en version kan inte aktiveras.</value>
+  </data>
+    <data name="AllocatedModelUnavailable" xml:space="preserve">
+    <value>Modellen som instansen är tilldelad finns inte längre i din tenant.</value>
+  </data>
+    <data name="NoEarlierVersion" xml:space="preserve">
+    <value>Det finns ingen tidigare version att återgå till.</value>
+  </data>
+    <data name="VersionIdsInvalid" xml:space="preserve">
+    <value>Två olika versionsidentifierare krävs.</value>
+  </data>
+    <data name="EvidenceUnavailable" xml:space="preserve">
+    <value>Den här versionen har inga lagrade underlag.</value>
+  </data>
+    <data name="ModelHasNoActiveVersion" xml:space="preserve">
+    <value>Modellen har ingen aktiv version att återgå från.</value>
+  </data>
+    <data name="InstanceIsLive" xml:space="preserve">
+    <value>Instansen är aktiv. Stäng av den, vilket kräver en granskare, innan modellens aktiva version ändras.</value>
+  </data>
+</root>

@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Check digits of a valid IBAN, otherwise empty.")]
         public static string IbanCheckDigits(this string? @this)
         {
             return @this.IsValidIban() ? @this!.Replace(" ", "").Substring(2, 2) : "";

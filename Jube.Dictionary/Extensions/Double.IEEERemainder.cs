@@ -8,7 +8,8 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Double IeeeRemainder(this Double x, Double y)
+        [Description("Returns the remainder resulting from the division of the value by the divisor as specified by IEEE 754.")]
+        public static Double IeeeRemainder(this Double x, [Description("The divisor.")] Double y)
         {
             return Math.IEEERemainder(x, y);
         }

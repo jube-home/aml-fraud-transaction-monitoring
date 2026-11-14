@@ -32,8 +32,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(3)] public string SwitchedUser { get; set; }
         [Column] [Nullable] [Key(4)] public DateTime SwitchedDate { get; set; }
 
-        [Association(ThisKey = "TenantRegistryId", OtherKey = "Id", CanBeNull = false,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "TenantRegistryId", OtherKey = "Id", CanBeNull = false)]
         [Key(5)]
         public TenantRegistry TenantRegistry { get; set; }
     }

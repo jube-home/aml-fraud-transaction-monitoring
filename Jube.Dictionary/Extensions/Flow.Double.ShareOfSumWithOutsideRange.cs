@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchShareOfSumWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchShareOfSumWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleShareOfSumWithOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectShareOfSumWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectShareOfSumWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleShareOfSumWithOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakShareOfSumWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakShareOfSumWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleShareOfSumWithOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireShareOfSumWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireShareOfSumWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleShareOfSumWithOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureShareOfSumWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureShareOfSumWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchShareOfSumWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchShareOfSumWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchShareOfSumWithOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectShareOfSumWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectShareOfSumWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectShareOfSumWithOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakShareOfSumWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakShareOfSumWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakShareOfSumWithOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireShareOfSumWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireShareOfSumWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireShareOfSumWithOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureShareOfSumWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureShareOfSumWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureShareOfSumWithOutsideRange(other, lowerBound, upperBound);
             }

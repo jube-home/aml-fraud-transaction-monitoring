@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,12 +22,13 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.ExhaustiveSearchInstanceVariableStatistics
 {
     [Description("Summary statistics of a variable over one set of rows.")]
+    [MessagePackObject]
     public class ExhaustiveSearchInstanceVariableStatisticsSummaryDto
     {
-        [Description("Mean.")] public double Mean { get; set; }
-        [Description("Standard deviation.")] public double StandardDeviation { get; set; }
-        [Description("Minimum.")] public double Minimum { get; set; }
-        [Description("Maximum.")] public double Maximum { get; set; }
-        [Description("Interquartile range.")] public double Iqr { get; set; }
+        [Description("Mean.")] [Key(0)] public double Mean { get; set; }
+        [Description("Standard deviation.")] [Key(1)] public double StandardDeviation { get; set; }
+        [Description("Minimum.")] [Key(2)] public double Minimum { get; set; }
+        [Description("Maximum.")] [Key(3)] public double Maximum { get; set; }
+        [Description("Interquartile range.")] [Key(4)] public double Iqr { get; set; }
     }
 }

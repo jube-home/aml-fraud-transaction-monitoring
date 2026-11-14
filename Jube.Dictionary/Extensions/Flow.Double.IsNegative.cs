@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
+            [Description("True when: the value is less than zero. Decides matched if so; otherwise continues.")]
             public Flow<double> MatchIsNegative()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleIsNegative(flow.Value));
             }
 
+            [Description("True when: the value is less than zero. Decides rejected if so; otherwise continues.")]
             public Flow<double> RejectIsNegative()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleIsNegative(flow.Value));
             }
 
+            [Description("True when: the value is less than zero. Decides broken if so; otherwise continues.")]
             public Flow<double> BreakIsNegative()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleIsNegative(flow.Value));
             }
 
+            [Description("True when: the value is less than zero. Continues if so; otherwise decides rejected.")]
             public Flow<double> RequireIsNegative()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleIsNegative(flow.Value));
             }
 
+            [Description("True when: the value is less than zero. Continues if so; otherwise decides broken.")]
             public Flow<double> EnsureIsNegative()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
+            [Description("Begins a pipeline from the value. True when: the value is less than zero. Decides matched if so; otherwise continues.")]
             public Flow<double> MatchIsNegative()
             {
                 return value.Start().MatchIsNegative();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is less than zero. Decides rejected if so; otherwise continues.")]
             public Flow<double> RejectIsNegative()
             {
                 return value.Start().RejectIsNegative();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is less than zero. Decides broken if so; otherwise continues.")]
             public Flow<double> BreakIsNegative()
             {
                 return value.Start().BreakIsNegative();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is less than zero. Continues if so; otherwise decides rejected.")]
             public Flow<double> RequireIsNegative()
             {
                 return value.Start().RequireIsNegative();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is less than zero. Continues if so; otherwise decides broken.")]
             public Flow<double> EnsureIsNegative()
             {
                 return value.Start().EnsureIsNegative();

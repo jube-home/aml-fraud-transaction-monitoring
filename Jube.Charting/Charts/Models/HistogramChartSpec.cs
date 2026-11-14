@@ -26,11 +26,14 @@ namespace Jube.Charting.Charts.Models
         IReadOnlyList<double> Counts,
         string? Color = null);
 
+    public sealed record HistogramReference(double X, string Label);
+
     public sealed record HistogramChartSpec
     {
         public ChartOptions Options { get; init; } = new();
         public IReadOnlyList<HistogramSeries> Series { get; init; } = [];
         public bool Normalize { get; init; }
         public bool Density { get; init; }
+        public IReadOnlyList<HistogramReference> References { get; init; } = [];
     }
 }

@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<int> flow)
         {
-            public Flow<int> MatchGreater(int other)
+            [Description("True when: greater than the argument. Decides matched if so; otherwise continues.")]
+            public Flow<int> MatchGreater([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.Int32Greater(flow.Value, other));
             }
 
-            public Flow<int> RejectGreater(int other)
+            [Description("True when: greater than the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<int> RejectGreater([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.Int32Greater(flow.Value, other));
             }
 
-            public Flow<int> BreakGreater(int other)
+            [Description("True when: greater than the argument. Decides broken if so; otherwise continues.")]
+            public Flow<int> BreakGreater([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.Int32Greater(flow.Value, other));
             }
 
-            public Flow<int> RequireGreater(int other)
+            [Description("True when: greater than the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<int> RequireGreater([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.Int32Greater(flow.Value, other));
             }
 
-            public Flow<int> EnsureGreater(int other)
+            [Description("True when: greater than the argument. Continues if so; otherwise decides broken.")]
+            public Flow<int> EnsureGreater([Description("The other integer.")] int other)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(int value)
         {
-            public Flow<int> MatchGreater(int other)
+            [Description("Begins a pipeline from the value. True when: greater than the argument. Decides matched if so; otherwise continues.")]
+            public Flow<int> MatchGreater([Description("The other integer.")] int other)
             {
                 return value.Start().MatchGreater(other);
             }
 
-            public Flow<int> RejectGreater(int other)
+            [Description("Begins a pipeline from the value. True when: greater than the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<int> RejectGreater([Description("The other integer.")] int other)
             {
                 return value.Start().RejectGreater(other);
             }
 
-            public Flow<int> BreakGreater(int other)
+            [Description("Begins a pipeline from the value. True when: greater than the argument. Decides broken if so; otherwise continues.")]
+            public Flow<int> BreakGreater([Description("The other integer.")] int other)
             {
                 return value.Start().BreakGreater(other);
             }
 
-            public Flow<int> RequireGreater(int other)
+            [Description("Begins a pipeline from the value. True when: greater than the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<int> RequireGreater([Description("The other integer.")] int other)
             {
                 return value.Start().RequireGreater(other);
             }
 
-            public Flow<int> EnsureGreater(int other)
+            [Description("Begins a pipeline from the value. True when: greater than the argument. Continues if so; otherwise decides broken.")]
+            public Flow<int> EnsureGreater([Description("The other integer.")] int other)
             {
                 return value.Start().EnsureGreater(other);
             }

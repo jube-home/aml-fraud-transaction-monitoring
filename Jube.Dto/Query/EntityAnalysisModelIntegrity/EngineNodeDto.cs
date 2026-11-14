@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,15 +22,19 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.EntityAnalysisModelIntegrity
 {
     [Description("An engine instance that synchronises the tenant's models.")]
+    [MessagePackObject]
     public class EngineNodeDto
     {
         [Description("The instance's host name.")]
+        [Key(0)]
         public string? Instance { get; set; }
 
         [Description("When it last reported.")]
+        [Key(1)]
         public DateTime? HeartbeatDate { get; set; }
 
         [Description("When it last synchronised.")]
+        [Key(2)]
         public DateTime? SynchronisedDate { get; set; }
     }
 }

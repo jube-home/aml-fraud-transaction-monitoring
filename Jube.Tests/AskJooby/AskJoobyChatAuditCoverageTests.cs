@@ -67,6 +67,13 @@ namespace Jube.Test.AskJooby
             ["AskJoobyEndpointFee"] =
                 "a model/endpoint token-rate table for EnableAskJoobyCostBanner's cost calculation -- " +
                 "platform-wide pricing configuration, not scoped to any one conversation at all",
+            ["AskJoobyAnalyticsInstance"] =
+                "named analytics configuration allocated to a model and run by the engine -- platform state that " +
+                "Ask Jooby manages through tools, not a record of any conversation",
+            ["AskJoobyAnalyticsTrainedModel"] =
+                "a trained model attached to an analytics instance -- platform state, not a record of any conversation",
+            ["AskJoobyAnalyticsTrainedModelVersion"] =
+                "one fitted version of a trained model -- platform state, not a record of any conversation",
             ["AskJoobyRerankFee"] =
                 "a model/endpoint per-document rerank-rate table for EnableAskJoobyCostBanner's cost " +
                 "calculation -- platform-wide pricing configuration, not scoped to any one conversation at all"

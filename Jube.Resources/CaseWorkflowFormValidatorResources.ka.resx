@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>ამ მოქმედების შესრულების უფლება არ გაქვთ.</value>
+  </data>
+    <data name="SqlPermissionDenied" xml:space="preserve">
+    <value>SQL ვალიდატორების ავტორობის უფლება არ გაქვთ.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>ამ მოქმედების შესასრულებლად ტენანტში უნდა იყოთ შესული.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>ვალიდატორი ვერ მოიძებნა.</value>
+  </data>
+    <data name="CaseWorkflowFormGuidRequired" xml:space="preserve">
+    <value>ფორმა სავალდებულოა.</value>
+  </data>
+    <data name="CaseWorkflowFormNotFound" xml:space="preserve">
+    <value>ფორმა ვერ მოიძებნა.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>სახელი სავალდებულოა.</value>
+  </data>
+    <data name="NameTooLong" xml:space="preserve">
+    <value>სახელი 100 სიმბოლოზე გრძელია.</value>
+  </data>
+    <data name="FieldNameRequired" xml:space="preserve">
+    <value>ველის სახელი სავალდებულოა.</value>
+  </data>
+    <data name="FieldNameInvalid" xml:space="preserve">
+    <value>ველის სახელი უნდა იწყებოდეს ასოთი და შეიცავდეს მხოლოდ ასოებს, ციფრებს და ხაზგასმებს.</value>
+  </data>
+    <data name="FieldNotInForm" xml:space="preserve">
+    <value>ფორმის შაბლონს არ აქვს ამ სახელის ველი.</value>
+  </data>
+    <data name="KindInvalid" xml:space="preserve">
+    <value>წესის ტიპი შეთავაზებულ ტიპებში არ შედის.</value>
+  </data>
+    <data name="ArgumentRequired" xml:space="preserve">
+    <value>ამ ტიპის წესს სჭირდება მნიშვნელობა ველში {0}.</value>
+  </data>
+    <data name="ArgumentNumber" xml:space="preserve">
+    <value>{0} უნდა იყოს რიცხვი.</value>
+  </data>
+    <data name="ArgumentWholeNumber" xml:space="preserve">
+    <value>{0} უნდა იყოს ნულის ტოლი ან მეტი მთელი რიცხვი.</value>
+  </data>
+    <data name="ArgumentRange" xml:space="preserve">
+    <value>მინიმუმი მაქსიმუმზე მეტია.</value>
+  </data>
+    <data name="ArgumentOneNeeded" xml:space="preserve">
+    <value>მიუთითეთ მინიმუმი, მაქსიმუმი ან ორივე.</value>
+  </data>
+    <data name="ArgumentRelation" xml:space="preserve">
+    <value>მიმართება უნდა იყოს eq, ne, lt, le, gt ან ge.</value>
+  </data>
+    <data name="PatternInvalid" xml:space="preserve">
+    <value>შაბლონი არ არის სწორი რეგულარული გამოსახულება.</value>
+  </data>
+    <data name="ArgumentTooLong" xml:space="preserve">
+    <value>{0} აღემატება {1} სიმბოლოს ლიმიტს.</value>
+  </data>
+    <data name="OtherFieldNotInForm" xml:space="preserve">
+    <value>ფორმის შაბლონს არ აქვს ველი სახელით {0}.</value>
+  </data>
+    <data name="KindNotForField" xml:space="preserve">
+    <value>ამ ტიპის წესი ამ ველის ტიპზე არ ვრცელდება.</value>
+  </data>
+    <data name="ListNotFound" xml:space="preserve">
+    <value>მოდელს არ აქვს ამ სახელის სია.</value>
+  </data>
+    <data name="DictionaryNotFound" xml:space="preserve">
+    <value>მოდელს არ აქვს ამ სახელის ლექსიკონი.</value>
+  </data>
+    <data name="SqlRequired" xml:space="preserve">
+    <value>SQL სავალდებულოა ამ ტიპის წესისთვის.</value>
+  </data>
+    <data name="SqlTooLong" xml:space="preserve">
+    <value>SQL 8000 სიმბოლოზე გრძელია.</value>
+  </data>
+    <data name="SqlRejected" xml:space="preserve">
+    <value>SQL უარყოფილია: {0}</value>
+  </data>
+    <data name="SqlParameterUnknown" xml:space="preserve">
+    <value>SQL იყენებს პარამეტრს @{0}, რომელიც არც ჩაშენებული პარამეტრია და არც ფორმის ველი.</value>
+  </data>
+    <data name="MessageTooLong" xml:space="preserve">
+    <value>შეტყობინება 500 სიმბოლოზე გრძელია.</value>
+  </data>
+    <data name="TemplateInvalid" xml:space="preserve">
+    <value>ფორმის შაბლონი არ კომპილირდება: {0}</value>
+  </data>
+</root>

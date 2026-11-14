@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="SqlPermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation de créer le SQL d'un élément de liste de contrôle.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>L'élément de liste de contrôle est introuvable.</value>
+  </data>
+    <data name="CaseWorkflowChecklistGuidRequired" xml:space="preserve">
+    <value>La liste de contrôle est obligatoire.</value>
+  </data>
+    <data name="CaseWorkflowChecklistNotFound" xml:space="preserve">
+    <value>La liste de contrôle est introuvable.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>Un nom est obligatoire.</value>
+  </data>
+    <data name="NameTooLong" xml:space="preserve">
+    <value>Le nom doit comporter 100 caractères ou moins.</value>
+  </data>
+    <data name="PriorityInvalid" xml:space="preserve">
+    <value>La priorité doit être supérieure ou égale à zéro.</value>
+  </data>
+    <data name="SlaMinutesInvalid" xml:space="preserve">
+    <value>Le SLA doit être un nombre entier de minutes supérieur à zéro, ou vide.</value>
+  </data>
+    <data name="ValidateMessageTooLong" xml:space="preserve">
+    <value>Le message de validation doit comporter 500 caractères ou moins.</value>
+  </data>
+    <data name="SqlTooLong" xml:space="preserve">
+    <value>Le SQL doit comporter 8000 caractères ou moins.</value>
+  </data>
+    <data name="ShowSqlRequired" xml:space="preserve">
+    <value>Saisissez le SQL d'affichage, ou désactivez la condition d'affichage.</value>
+  </data>
+    <data name="ValidateSqlRequired" xml:space="preserve">
+    <value>Saisissez le SQL de validation, ou désactivez la condition de validation.</value>
+  </data>
+    <data name="SqlEnableNeedsPermission" xml:space="preserve">
+    <value>Activer une condition d'affichage ou de validation nécessite l'autorisation de rédaction SQL.</value>
+  </data>
+    <data name="SqlRejected" xml:space="preserve">
+    <value>Le SQL a été rejeté : {0}</value>
+  </data>
+    <data name="SqlParameterUnknown" xml:space="preserve">
+    <value>Le SQL utilise le paramètre @{0}, qui n'est pas disponible. Utilisez @Id ou @CaseKeyValue.</value>
+  </data>
+    <data name="ConditionInvalid" xml:space="preserve">
+    <value>La condition doit être 1 (affichage) ou 2 (validation).</value>
+  </data>
+    <data name="SqlNotPassed" xml:space="preserve">
+    <value>Le SQL n'a pas renvoyé vrai.</value>
+  </data>
+    <data name="SqlFailed" xml:space="preserve">
+    <value>Le SQL n'a pas pu être exécuté.</value>
+  </data>
+</root>

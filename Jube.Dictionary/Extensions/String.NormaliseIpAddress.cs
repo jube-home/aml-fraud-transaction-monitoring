@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The canonical text of an IP address, mapping IPv4-mapped IPv6 to IPv4, otherwise empty.")]
         public static string NormaliseIpAddress(this string? @this)
         {
             return NetworkAddressSupport.TryParseAddress(@this, out var address) ? address.ToString() : "";

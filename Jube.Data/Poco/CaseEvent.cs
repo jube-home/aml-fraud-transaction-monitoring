@@ -36,8 +36,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(7)] public string After { get; set; }
         [Column] [Nullable] [Key(8)] public string CaseKeyValue { get; set; }
 
-        [Association(ThisKey = "CaseId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "CaseId", OtherKey = "Id", CanBeNull = true)]
         [Key(9)]
         public Case Case { get; set; }
     }

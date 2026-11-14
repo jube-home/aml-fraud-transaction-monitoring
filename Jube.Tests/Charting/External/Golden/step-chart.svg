@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" class="jc jc-bands" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet"
-     role="img" aria-labelledby="jc-31aa074b-t jc-31aa074b-d">
-    <title id="jc-31aa074b-t">Card limit by tier</title>
-    <desc id="jc-31aa074b-d">Step chart with 2 series: Standard, Premium. Y values range from 0 to 5000.</desc>
+     role="img" aria-labelledby="jc-678f47b8-t jc-678f47b8-d">
+    <title id="jc-678f47b8-t">Card limit by tier</title>
+    <desc id="jc-678f47b8-d">Step chart with 2 series: Standard, Premium. Y values range from 0 to 5000.</desc>
     <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
     <text class="ttl" x="16" y="32">Card limit by tier</text>
     <g class="lg s0">
@@ -56,12 +56,12 @@
         <circle class="cx s0" cx="66.64" cy="291.2" r="4.5"/>
         <circle class="cx s1" cx="66.64" cy="236.4" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="78.64" y="206.4" width="116.08" height="61" rx="6"/>
-            <text class="tx b" x="88.64" y="224.4">0</text>
-            <rect class="tsw s0" x="88.64" y="232.4" width="9" height="9" rx="2"/>
-            <text class="tx" x="102.64" y="241.4">Standard: 1000</text>
-            <rect class="tsw s1" x="88.64" y="249.4" width="9" height="9" rx="2"/>
-            <text class="tx" x="102.64" y="258.4">Premium: 2000</text>
+            <rect class="tb" x="78.64" y="205.9" width="116.08" height="61" rx="6"/>
+            <text class="tx b" x="88.64" y="223.9">0</text>
+            <rect class="tsw s0" x="88.64" y="231.9" width="9" height="9" rx="2"/>
+            <text class="tx" x="102.64" y="240.9">Standard: 1000</text>
+            <rect class="tsw s1" x="88.64" y="248.9" width="9" height="9" rx="2"/>
+            <text class="tx" x="102.64" y="257.9">Premium: 2000</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="2, Standard: 1500, Premium: 3500">
@@ -71,12 +71,12 @@
         <circle class="cx s0" cx="155.82" cy="263.8" r="4.5"/>
         <circle class="cx s1" cx="155.82" cy="154.2" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="167.82" y="124.2" width="116.08" height="61" rx="6"/>
-            <text class="tx b" x="177.82" y="142.2">2</text>
-            <rect class="tsw s0" x="177.82" y="150.2" width="9" height="9" rx="2"/>
-            <text class="tx" x="191.82" y="159.2">Standard: 1500</text>
-            <rect class="tsw s1" x="177.82" y="167.2" width="9" height="9" rx="2"/>
-            <text class="tx" x="191.82" y="176.2">Premium: 3500</text>
+            <rect class="tb" x="167.82" y="123.7" width="116.08" height="61" rx="6"/>
+            <text class="tx b" x="177.82" y="141.7">2</text>
+            <rect class="tsw s0" x="177.82" y="149.7" width="9" height="9" rx="2"/>
+            <text class="tx" x="191.82" y="158.7">Standard: 1500</text>
+            <rect class="tsw s1" x="177.82" y="166.7" width="9" height="9" rx="2"/>
+            <text class="tx" x="191.82" y="175.7">Premium: 3500</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="3, Standard: 1500, Premium: 3500">
@@ -86,12 +86,12 @@
         <circle class="cx s0" cx="200.41" cy="263.8" r="4.5"/>
         <circle class="cx s1" cx="200.41" cy="154.2" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="212.41" y="124.2" width="116.08" height="61" rx="6"/>
-            <text class="tx b" x="222.41" y="142.2">3</text>
-            <rect class="tsw s0" x="222.41" y="150.2" width="9" height="9" rx="2"/>
-            <text class="tx" x="236.41" y="159.2">Standard: 1500</text>
-            <rect class="tsw s1" x="222.41" y="167.2" width="9" height="9" rx="2"/>
-            <text class="tx" x="236.41" y="176.2">Premium: 3500</text>
+            <rect class="tb" x="212.41" y="123.7" width="116.08" height="61" rx="6"/>
+            <text class="tx b" x="222.41" y="141.7">3</text>
+            <rect class="tsw s0" x="222.41" y="149.7" width="9" height="9" rx="2"/>
+            <text class="tx" x="236.41" y="158.7">Standard: 1500</text>
+            <rect class="tsw s1" x="222.41" y="166.7" width="9" height="9" rx="2"/>
+            <text class="tx" x="236.41" y="175.7">Premium: 3500</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="6, Standard: 1500, Premium: 3500">
@@ -101,12 +101,12 @@
         <circle class="cx s0" cx="334.17" cy="263.8" r="4.5"/>
         <circle class="cx s1" cx="334.17" cy="154.2" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="346.17" y="124.2" width="116.08" height="61" rx="6"/>
-            <text class="tx b" x="356.17" y="142.2">6</text>
-            <rect class="tsw s0" x="356.17" y="150.2" width="9" height="9" rx="2"/>
-            <text class="tx" x="370.17" y="159.2">Standard: 1500</text>
-            <rect class="tsw s1" x="356.17" y="167.2" width="9" height="9" rx="2"/>
-            <text class="tx" x="370.17" y="176.2">Premium: 3500</text>
+            <rect class="tb" x="346.17" y="123.7" width="116.08" height="61" rx="6"/>
+            <text class="tx b" x="356.17" y="141.7">6</text>
+            <rect class="tsw s0" x="356.17" y="149.7" width="9" height="9" rx="2"/>
+            <text class="tx" x="370.17" y="158.7">Standard: 1500</text>
+            <rect class="tsw s1" x="356.17" y="166.7" width="9" height="9" rx="2"/>
+            <text class="tx" x="370.17" y="175.7">Premium: 3500</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="9, Standard: 2000, Premium: 5000">

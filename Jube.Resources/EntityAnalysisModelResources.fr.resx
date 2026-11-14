@@ -48,4 +48,82 @@
     <data name="SamplePercentageRange" xml:space="preserve">
     <value>Le pourcentage d'échantillonnage doit être supérieur à 0 et inférieur ou égal à 100.</value>
   </data>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Le nom doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Ce nom existe déjà.</value>
+  </data>
+    <data name="EntryXPathRequired" xml:space="preserve">
+    <value>Un XPath d'entrée (JSONPath) est requis.</value>
+  </data>
+    <data name="EntryXPathMaxLength" xml:space="preserve">
+    <value>Le XPath d'entrée doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="ReferenceDateXPathRequired" xml:space="preserve">
+    <value>Un XPath de date de référence (JSONPath) est requis, sauf si l'emplacement de la date de référence dans la charge utile est défini sur Now.</value>
+  </data>
+    <data name="ReferenceDateXPathMaxLength" xml:space="preserve">
+    <value>Le XPath de la date de référence doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="EntryNameRequired" xml:space="preserve">
+    <value>Un nom d'entrée est requis.</value>
+  </data>
+    <data name="EntryNameMaxLength" xml:space="preserve">
+    <value>Le nom d'entrée doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="ReferenceDateNameRequired" xml:space="preserve">
+    <value>Un nom de date de référence est requis.</value>
+  </data>
+    <data name="ReferenceDateNameMaxLength" xml:space="preserve">
+    <value>Le nom de la date de référence doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="ReferenceDatePayloadLocationTypeIdInvalid" xml:space="preserve">
+    <value>L'emplacement de la date de référence dans la charge utile doit être Body ou Now.</value>
+  </data>
+    <data name="CacheFetchLimitRange" xml:space="preserve">
+    <value>La limite de récupération du cache doit être supérieure ou égale à zéro.</value>
+  </data>
+    <data name="CacheTtlIntervalInvalid" xml:space="preserve">
+    <value>L'intervalle TTL du cache doit être Secondes, Minutes, Heures ou Jours.</value>
+  </data>
+    <data name="CacheTtlIntervalValueRange" xml:space="preserve">
+    <value>La valeur de l'intervalle TTL du cache doit être supérieure ou égale à zéro.</value>
+  </data>
+    <data name="MaxResponseElevationRange" xml:space="preserve">
+    <value>L'élévation maximale de la réponse doit être supérieure ou égale à zéro.</value>
+  </data>
+    <data name="MaxResponseElevationIntervalInvalid" xml:space="preserve">
+    <value>L'intervalle de la limite d'élévation de la réponse doit être Secondes, Minutes, Heures ou Jours.</value>
+  </data>
+    <data name="MaxResponseElevationValueRange" xml:space="preserve">
+    <value>La valeur de la limite d'élévation de la réponse doit être supérieure ou égale à zéro.</value>
+  </data>
+    <data name="MaxResponseElevationThresholdRange" xml:space="preserve">
+    <value>Le seuil de la limite d'élévation de la réponse doit être supérieur ou égal à zéro.</value>
+  </data>
+    <data name="MaxActivationWatcherIntervalInvalid" xml:space="preserve">
+    <value>L'intervalle de la limite de l'Activation Watcher doit être Secondes, Minutes, Heures ou Jours.</value>
+  </data>
+    <data name="MaxActivationWatcherValueRange" xml:space="preserve">
+    <value>La valeur de la limite de l'Activation Watcher doit être supérieure ou égale à zéro.</value>
+  </data>
+    <data name="MaxActivationWatcherThresholdRange" xml:space="preserve">
+    <value>Le seuil de la limite de l'Activation Watcher doit être supérieur ou égal à zéro.</value>
+  </data>
+    <data name="ActivationWatcherSampleRange" xml:space="preserve">
+    <value>Le taux d'échantillonnage de l'Activation Watcher doit être compris entre 0 et 1.</value>
+  </data>
+    <data name="ModelNotFound" xml:space="preserve">
+    <value>Le modèle est introuvable.</value>
+  </data>
+    <data name="XPathRegexNotPermitted" xml:space="preserve">
+    <value>Le XPath ne doit pas utiliser l'opérateur d'expression régulière (=~).</value>
+  </data>
 </root>

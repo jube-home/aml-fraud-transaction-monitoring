@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static DateTime AddBusinessDays(this DateTime @this, int businessDays)
+        [Description("Moves by Monday-to-Friday days, skipping weekends; negative moves backward.")]
+        public static DateTime AddBusinessDays(this DateTime @this,
+            [Description("The number of Monday-to-Friday days to move; negative moves backward.")] int businessDays)
         {
             var date = @this;
 

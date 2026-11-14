@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,25 +23,32 @@ namespace Jube.Dto.Validation
 {
     [Description("One validation failure. When the failure is in rule text, Line, Start and Length locate it within " +
                  "that text.")]
+    [MessagePackObject]
     public class ValidationErrorDto
     {
         [Description("Name of the property that failed, e.g. Name or CoderRuleScript.")]
+        [Key(0)]
         public string PropertyName { get; set; } = string.Empty;
 
         [Description("Stable machine readable code for the failure, e.g. NameDuplicate or RuleScriptInvalid.")]
+        [Key(1)]
         public string ErrorCode { get; set; } = string.Empty;
 
         [Description("Human readable, localised explanation of the failure.")]
+        [Key(2)]
         public string Message { get; set; } = string.Empty;
 
         [Description("Zero based line within the rule text, for rule failures; otherwise null.")]
+        [Key(3)]
         public int? Line { get; set; }
 
         [Description("Zero based character offset within the rule text, for rule failures; otherwise null.")]
+        [Key(4)]
         public int? Start { get; set; }
 
         [Description("Length in characters of the failing span within the rule text, for rule failures; otherwise " +
                      "null.")]
+        [Key(5)]
         public int? Length { get; set; }
     }
 }

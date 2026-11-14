@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchJsonTextArrayAnyInList(string? path, IEnumerable<string>? list)
+            [Description("True when: the JSON text has an array at the path with a string element that is in the List token. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchJsonTextArrayAnyInList([Description("The path to the array, for example $.tags.")] string? path,
+                [Description("The List token whose entries are looked for.")] IEnumerable<string>? list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringJsonTextArrayAnyInList(flow.Value, path, list));
             }
 
-            public Flow<string?> RejectJsonTextArrayAnyInList(string? path, IEnumerable<string>? list)
+            [Description("True when: the JSON text has an array at the path with a string element that is in the List token. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectJsonTextArrayAnyInList([Description("The path to the array, for example $.tags.")] string? path,
+                [Description("The List token whose entries are looked for.")] IEnumerable<string>? list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringJsonTextArrayAnyInList(flow.Value, path, list));
             }
 
-            public Flow<string?> BreakJsonTextArrayAnyInList(string? path, IEnumerable<string>? list)
+            [Description("True when: the JSON text has an array at the path with a string element that is in the List token. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakJsonTextArrayAnyInList([Description("The path to the array, for example $.tags.")] string? path,
+                [Description("The List token whose entries are looked for.")] IEnumerable<string>? list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringJsonTextArrayAnyInList(flow.Value, path, list));
             }
 
-            public Flow<string?> RequireJsonTextArrayAnyInList(string? path, IEnumerable<string>? list)
+            [Description("True when: the JSON text has an array at the path with a string element that is in the List token. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireJsonTextArrayAnyInList([Description("The path to the array, for example $.tags.")] string? path,
+                [Description("The List token whose entries are looked for.")] IEnumerable<string>? list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringJsonTextArrayAnyInList(flow.Value, path, list));
             }
 
-            public Flow<string?> EnsureJsonTextArrayAnyInList(string? path, IEnumerable<string>? list)
+            [Description("True when: the JSON text has an array at the path with a string element that is in the List token. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureJsonTextArrayAnyInList([Description("The path to the array, for example $.tags.")] string? path,
+                [Description("The List token whose entries are looked for.")] IEnumerable<string>? list)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchJsonTextArrayAnyInList(string? path, IEnumerable<string>? list)
+            [Description("Begins a pipeline from the value. True when: the JSON text has an array at the path with a string element that is in the List token. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchJsonTextArrayAnyInList([Description("The path to the array, for example $.tags.")] string? path,
+                [Description("The List token whose entries are looked for.")] IEnumerable<string>? list)
             {
                 return value.Start().MatchJsonTextArrayAnyInList(path, list);
             }
 
-            public Flow<string?> RejectJsonTextArrayAnyInList(string? path, IEnumerable<string>? list)
+            [Description("Begins a pipeline from the value. True when: the JSON text has an array at the path with a string element that is in the List token. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectJsonTextArrayAnyInList([Description("The path to the array, for example $.tags.")] string? path,
+                [Description("The List token whose entries are looked for.")] IEnumerable<string>? list)
             {
                 return value.Start().RejectJsonTextArrayAnyInList(path, list);
             }
 
-            public Flow<string?> BreakJsonTextArrayAnyInList(string? path, IEnumerable<string>? list)
+            [Description("Begins a pipeline from the value. True when: the JSON text has an array at the path with a string element that is in the List token. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakJsonTextArrayAnyInList([Description("The path to the array, for example $.tags.")] string? path,
+                [Description("The List token whose entries are looked for.")] IEnumerable<string>? list)
             {
                 return value.Start().BreakJsonTextArrayAnyInList(path, list);
             }
 
-            public Flow<string?> RequireJsonTextArrayAnyInList(string? path, IEnumerable<string>? list)
+            [Description("Begins a pipeline from the value. True when: the JSON text has an array at the path with a string element that is in the List token. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireJsonTextArrayAnyInList([Description("The path to the array, for example $.tags.")] string? path,
+                [Description("The List token whose entries are looked for.")] IEnumerable<string>? list)
             {
                 return value.Start().RequireJsonTextArrayAnyInList(path, list);
             }
 
-            public Flow<string?> EnsureJsonTextArrayAnyInList(string? path, IEnumerable<string>? list)
+            [Description("Begins a pipeline from the value. True when: the JSON text has an array at the path with a string element that is in the List token. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureJsonTextArrayAnyInList([Description("The path to the array, for example $.tags.")] string? path,
+                [Description("The List token whose entries are looked for.")] IEnumerable<string>? list)
             {
                 return value.Start().EnsureJsonTextArrayAnyInList(path, list);
             }

@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Extracts a double from the string, reading . as the decimal point whatever the server culture.")]
         public static double ExtractDouble(this string @this)
         {
             var sb = new StringBuilder();

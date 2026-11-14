@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double MinMaxNormalise(this double @this, double minimum, double maximum)
+        [Description("Where the value sits between the minimum (0) and maximum (1).")]
+        public static double MinMaxNormalise(this double @this,
+            [Description("The value that maps to 0.")] double minimum,
+            [Description("The value that maps to 1.")] double maximum)
         {
             return CalculationSupport.Finite((@this - minimum) / (maximum - minimum));
         }

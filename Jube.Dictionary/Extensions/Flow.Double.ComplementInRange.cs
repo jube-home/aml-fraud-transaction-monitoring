@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchComplementInRange(double lowerBound, double upperBound)
+            [Description("True when: one minus the value (an approval ratio from a decline ratio) is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchComplementInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleComplementInRange(flow.Value, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectComplementInRange(double lowerBound, double upperBound)
+            [Description("True when: one minus the value (an approval ratio from a decline ratio) is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectComplementInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleComplementInRange(flow.Value, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakComplementInRange(double lowerBound, double upperBound)
+            [Description("True when: one minus the value (an approval ratio from a decline ratio) is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakComplementInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleComplementInRange(flow.Value, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireComplementInRange(double lowerBound, double upperBound)
+            [Description("True when: one minus the value (an approval ratio from a decline ratio) is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireComplementInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleComplementInRange(flow.Value, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureComplementInRange(double lowerBound, double upperBound)
+            [Description("True when: one minus the value (an approval ratio from a decline ratio) is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureComplementInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchComplementInRange(double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: one minus the value (an approval ratio from a decline ratio) is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchComplementInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchComplementInRange(lowerBound, upperBound);
             }
 
-            public Flow<double> RejectComplementInRange(double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: one minus the value (an approval ratio from a decline ratio) is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectComplementInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectComplementInRange(lowerBound, upperBound);
             }
 
-            public Flow<double> BreakComplementInRange(double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: one minus the value (an approval ratio from a decline ratio) is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakComplementInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakComplementInRange(lowerBound, upperBound);
             }
 
-            public Flow<double> RequireComplementInRange(double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: one minus the value (an approval ratio from a decline ratio) is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireComplementInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireComplementInRange(lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureComplementInRange(double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: one minus the value (an approval ratio from a decline ratio) is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureComplementInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureComplementInRange(lowerBound, upperBound);
             }

@@ -15,13 +15,16 @@ using System.ComponentModel;
 using System.Text;
 using System.Text.RegularExpressions;
 using Jube.AskJooby.Memory;
+using Jube.AskJooby.Security.Interfaces;
+using Jube.AskJooby.Security.Models;
 using Jube.AskJooby.Tools.Memory.Interfaces;
 
 namespace Jube.AskJooby.Tools.Memory
 {
-    public sealed class MemoryTool(IMemoryClient memory)
+    public sealed class MemoryTool(IMemoryClient memory, IToolApprovalGate? approvals = null)
     {
         private const int MaxAllowedMemories = 8;
+        private const int MaxContentCharacters = 2000;
 
         private static readonly Regex volatileValue = new(
             @"\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b" +
@@ -69,6 +72,13 @@ namespace Jube.AskJooby.Tools.Memory
             string kind = "Fact",
             CancellationToken token = default)
         {
+            if (string.IsNullOrWhiteSpace(content) || content.Length > MaxContentCharacters)
+            {
+                throw new ArgumentException(
+                    $"content must be between 1 and {MaxContentCharacters} characters. Remember the general point, " +
+                    "not a transcript.");
+            }
+
             if (volatileValue.IsMatch(content))
             {
                 throw new ArgumentException(
@@ -94,6 +104,29 @@ namespace Jube.AskJooby.Tools.Memory
             if (kind != "Fact" && kind != "Reflection")
             {
                 throw new ArgumentException("kind must be \"Fact\" or \"Reflection\".");
+            }
+
+            if (scope == "System" && approvals is not null)
+            {
+                var verdict = approvals.Review("Remember", new Dictionary<string, object?>
+                {
+                    ["content"] = content, ["scope"] = scope, ["kind"] = kind
+                });
+
+                if (verdict == ToolApprovalVerdict.Rejected)
+                {
+                    return "Not remembered: the user declined to share this with everyone in the tenant. " +
+                           "Do not try to store it another way.";
+                }
+
+                if (verdict == ToolApprovalVerdict.Pending)
+                {
+                    return "Not remembered yet: a tenant-wide memory is shown to every user, so it needs this " +
+                           "user's approval first and nothing has been saved. The user has been shown exactly " +
+                           "what you asked to store with an Approve and a Decline button. Tell them in one " +
+                           "sentence why it is worth sharing, then stop. Only repeat this identical call after " +
+                           "the user tells you they approved it.";
+                }
             }
 
             var expiresAt = expiresInMinutes.HasValue

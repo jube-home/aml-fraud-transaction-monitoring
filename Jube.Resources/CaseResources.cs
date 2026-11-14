@@ -34,5 +34,7 @@ namespace Jube.Resources
         public const string CaseKeyValueRequired = nameof(CaseKeyValueRequired);
         public const string LockedUserInvalid = nameof(LockedUserInvalid);
         public const string LockedByAnotherUser = nameof(LockedByAnotherUser);
+        public const string ChecklistIncomplete = nameof(ChecklistIncomplete);
+        public const string CaseKeyNotArchiveKey = nameof(CaseKeyNotArchiveKey);
     }
 }

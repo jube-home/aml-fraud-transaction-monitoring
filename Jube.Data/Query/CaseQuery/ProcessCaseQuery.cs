@@ -25,6 +25,11 @@ namespace Jube.Data.Query.CaseQuery
 
     public class ProcessCaseQuery(DbContext dbContext, string userName)
     {
+        private static readonly JsonSelectSettings selectSettings = new()
+        {
+            RegexMatchTimeout = TimeSpan.FromMilliseconds(250)
+        };
+
         public async Task<CaseQueryDto> ProcessAsync(CaseQueryDto getCaseByIdDto, CancellationToken token = default)
         {
             if (getCaseByIdDto == null)
@@ -59,7 +64,7 @@ namespace Jube.Data.Query.CaseQuery
 
                 try
                 {
-                    var jToken = json.SelectToken(xPath.XPath);
+                    var jToken = json.SelectToken(xPath.XPath, selectSettings);
 
                     if (jToken != null)
                     {

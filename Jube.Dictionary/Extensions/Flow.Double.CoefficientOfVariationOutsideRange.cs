@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchCoefficientOfVariationOutsideRange(double mean, double lowerBound, double upperBound)
+            [Description("True when: the value, as a standard deviation, over the size of the mean is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchCoefficientOfVariationOutsideRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleCoefficientOfVariationOutsideRange(flow.Value, mean, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectCoefficientOfVariationOutsideRange(double mean, double lowerBound, double upperBound)
+            [Description("True when: the value, as a standard deviation, over the size of the mean is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectCoefficientOfVariationOutsideRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleCoefficientOfVariationOutsideRange(flow.Value, mean, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakCoefficientOfVariationOutsideRange(double mean, double lowerBound, double upperBound)
+            [Description("True when: the value, as a standard deviation, over the size of the mean is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakCoefficientOfVariationOutsideRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleCoefficientOfVariationOutsideRange(flow.Value, mean, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireCoefficientOfVariationOutsideRange(double mean, double lowerBound, double upperBound)
+            [Description("True when: the value, as a standard deviation, over the size of the mean is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireCoefficientOfVariationOutsideRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleCoefficientOfVariationOutsideRange(flow.Value, mean, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureCoefficientOfVariationOutsideRange(double mean, double lowerBound, double upperBound)
+            [Description("True when: the value, as a standard deviation, over the size of the mean is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureCoefficientOfVariationOutsideRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchCoefficientOfVariationOutsideRange(double mean, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value, as a standard deviation, over the size of the mean is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchCoefficientOfVariationOutsideRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchCoefficientOfVariationOutsideRange(mean, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectCoefficientOfVariationOutsideRange(double mean, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value, as a standard deviation, over the size of the mean is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectCoefficientOfVariationOutsideRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectCoefficientOfVariationOutsideRange(mean, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakCoefficientOfVariationOutsideRange(double mean, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value, as a standard deviation, over the size of the mean is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakCoefficientOfVariationOutsideRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakCoefficientOfVariationOutsideRange(mean, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireCoefficientOfVariationOutsideRange(double mean, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value, as a standard deviation, over the size of the mean is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireCoefficientOfVariationOutsideRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireCoefficientOfVariationOutsideRange(mean, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureCoefficientOfVariationOutsideRange(double mean, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value, as a standard deviation, over the size of the mean is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureCoefficientOfVariationOutsideRange([Description("The mean the value is measured from.")] double mean,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureCoefficientOfVariationOutsideRange(mean, lowerBound, upperBound);
             }

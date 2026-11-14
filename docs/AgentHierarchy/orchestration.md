@@ -41,6 +41,20 @@ reasoned its way to a good one.
 
 The critic stays a separate model from the executor; independence is the point of it.
 
+## Validate first, findings are authoritative
+
+Every agent, whatever its slice, receives the same shared direction through `InstructionsBuilder`
+(`Jube.AskJooby/Prompts/ValidateFirst.cs`): anything written that has a validator (SQL, R, rule expressions) is
+validated before it is run, the agent loops on the validator's findings until clean, treats each finding (code, message,
+line and column, and a "did you mean" drawn only from names the caller may use) as authoritative, never retries an
+unchanged artefact and never asks the user about a fault the validator already described. A database rejection carries
+only a SQLSTATE and means the validator missed something; database error text is never shown to an agent or a browser.
+Enforcement is not only prose: the SQL run tool refuses a statement not validated in the same conversation, and the R
+execution client validates every script itself before it reaches `/execute`. `RepeatedToolLedger` treats
+`ValidateSqlQuery` and `ValidateRScript` as repeatable, so validate-then-run is the expected pair rather than a
+repeat. The hand-curated hierarchy pages (`index.md`, `tool-inventory.md`) carry no per-agent copy of this text on
+purpose: it lives in one place so it cannot drift between agents.
+
 ## Prompt caching
 
 The inference provider caches a prompt prefix per worker and matches it byte for byte, so two things decide whether a

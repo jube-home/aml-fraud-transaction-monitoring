@@ -57,6 +57,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
         {
             return new VisualisationRegistryParameterPoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 VisualisationRegistryId = dto.VisualisationRegistryId,
                 Name = dto.Name,

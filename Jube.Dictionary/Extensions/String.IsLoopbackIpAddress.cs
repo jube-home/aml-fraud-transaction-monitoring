@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Whether the address is a loopback address.")]
         public static bool IsLoopbackIpAddress(this string? @this)
         {
             return NetworkAddressSupport.TryParseAddress(@this, out var address) && IPAddress.IsLoopback(address);

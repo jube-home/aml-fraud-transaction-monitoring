@@ -12,6 +12,8 @@
  */
 
 using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.App.Code.Watcher;
@@ -30,6 +32,8 @@ namespace Jube.App.Endpoints.Query
     public static class WatcherStreamEndpoints
     {
         private const string Base = "/api/Watcher";
+        private const int MaximumConnectionsPerUser = 10;
+        private static readonly TimeSpan authorisationRecheckInterval = TimeSpan.FromSeconds(60);
 
         public static void MapWatcherStreamEndpoints(this IEndpointRouteBuilder endpoints)
         {
@@ -88,6 +92,19 @@ namespace Jube.App.Endpoints.Query
                 return;
             }
 
+            if (registry.Tracked().Count(c => string.Equals(c.UserName, user, StringComparison.Ordinal)) >=
+                MaximumConnectionsPerUser)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"GET {Base}/Stream: 429 too many open streams user={user}");
+                }
+
+                httpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+
+                return;
+            }
+
             var issuedMilliseconds = httpContext.User.FindFirst(TokenValidity.IssuedMillisecondsClaim)?.Value;
             var connectionId = Guid.NewGuid().ToString("N");
             using var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token);
@@ -112,17 +129,54 @@ namespace Jube.App.Endpoints.Query
                         ? configuredHeartbeatSeconds
                         : 15;
 
+                var recheck = Stopwatch.StartNew();
+
                 while (!cancellationTokenSource.IsCancellationRequested)
                 {
-                    var readTask = channel.Reader.WaitToReadAsync(cancellationTokenSource.Token).AsTask();
+                    if (recheck.Elapsed >= authorisationRecheckInterval)
+                    {
+                        recheck.Restart();
+
+                        await using var recheckContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                            dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+                        if (!await WatcherStreamAuthorizationService.StillAuthorisedAsync(recheckContext, user,
+                                tenantRegistryId, log, stringLocalizerFactory, cancellationTokenSource.Token))
+                        {
+                            if (log.IsWarnEnabled)
+                            {
+                                log.Warn($"GET {Base}/Stream: connection {connectionId} no longer authorised user={user}");
+                            }
+
+                            registry.Abort(connectionId);
+
+                            break;
+                        }
+                    }
+
+                    using var iteration = CancellationTokenSource.CreateLinkedTokenSource(
+                        cancellationTokenSource.Token);
+
+                    var readTask = channel.Reader.WaitToReadAsync(iteration.Token).AsTask();
 
                     var heartbeatTask = Task.Delay(TimeSpan.FromSeconds(heartbeatIntervalSeconds),
-                        cancellationTokenSource.Token);
+                        iteration.Token);
 
                     var completed = await Task.WhenAny(readTask, heartbeatTask);
 
+                    await iteration.CancelAsync();
+
                     if (completed == heartbeatTask)
                     {
+                        try
+                        {
+                            await readTask;
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                        }
+
                         await httpContext.Response.WriteAsync(": keep-alive\n\n", cancellationTokenSource.Token);
                         await httpContext.Response.Body.FlushAsync(cancellationTokenSource.Token);
                         continue;
@@ -135,8 +189,19 @@ namespace Jube.App.Endpoints.Query
 
                     while (channel.Reader.TryRead(out var payload))
                     {
-                        await httpContext.Response.WriteAsync($"event: activation\ndata: {payload}\n\n",
-                            cancellationTokenSource.Token);
+                        var frame = WatcherStreamFrame.Build(payload);
+
+                        if (frame == null)
+                        {
+                            if (log.IsWarnEnabled)
+                            {
+                                log.Warn($"GET {Base}/Stream: dropped an empty or oversize message for connection {connectionId}");
+                            }
+
+                            continue;
+                        }
+
+                        await httpContext.Response.WriteAsync(frame, cancellationTokenSource.Token);
 
                         await httpContext.Response.Body.FlushAsync(cancellationTokenSource.Token);
                     }

@@ -51,7 +51,7 @@ it affords a better than proportional reduction in a Redis load.
 The local LRU cache is enabled by default for 1GB but is subject to the LocalCache environment variable.
 
 The LocalCacheFill environment variable determines if on Jube startup if the local cache should be filled from Redis,
-and is the default. In the event that fill is disabled, it will allow a faster startup, but at the expense 
+and is the default. In the event that fill is disabled, it will allow a faster startup, but at the expense
 of increased pressure on Redis, and is henceforth discouraged.
 
 ## Fill order and the LruJournal
@@ -65,15 +65,15 @@ the ordering reflects genuinely recent usage rather than insertion order.
 Because LruJournal only ever grows on read, two things keep it from growing unbounded and from priming the cache with
 data that is no longer relevant:
 
-* A dedicated background task prunes LruJournal entries older than LruJournalMaxAgeInterval/lruJournalMaxAgeValue
-  (for example, 1 h) on an interval set by WaitLruJournalPrune - see
+* A dedicated background task prunes LruJournal entries older than LruJournalMaxAgeInterval/lruJournalMaxAgeValue (for
+  example, 1 h) on an interval set by WaitLruJournalPrune - see
   [Environment Variables](../../EnvironmentVariables/index.html).
 * Startup fill itself also checks that same age threshold as it walks the journal, and stops warming further as soon
   as it reaches an entry past the cutoff - so a slow or delayed prune cycle cannot cause stale entries to be used to
   prime the cache.
 
 Given an arrangement of Jube in a clustered and highly available manner, it is incumbent to update all Jube
-instances local LRU caches. Subject to the RedisPublishSubscribeEvents environment variable, events are published on the
+instances local LRU caches. Subject to the RespPublishSubscribeEvents environment variable, events are published on the
 addition, update, and deletion to the
 local LRU cache., Distributed instances of Jube are subscribed to the events, updating its local LRU cache to maintain
 parity between all instances.
@@ -88,8 +88,9 @@ A shortcoming of the Redis Publish\Subscribe functionality is that it can't disc
 originated from itself. Henceforth, the Server and InstanceCorrelationGuid combination that created the event - which by
 implication will already
 maintain an up-to-date local LRU cache - will be subscribed, potentially creating a recursion. On receipt of events, the
-Server and InstanceCorrelationGuid are compared. Server and InstanceCorrelationGuid definitively Server and 
-InstanceCorrelationGuid definitively identify the event’s source. Given own source, then it will not update the local LRU cache, and it will be completely ignored.
+Server and InstanceCorrelationGuid are compared. Server and InstanceCorrelationGuid definitively Server and
+InstanceCorrelationGuid definitively identify the event’s source. Given own source, then it will not update the local
+LRU cache, and it will be completely ignored.
 
 Given the significant effect the local LRU cache can have on overall performance, observability is provided via three
 Postgres tables that are updated every minute:
@@ -110,5 +111,5 @@ order by 1 desc
 
 ![img.png](img.png)
 
-The local LRU cache shares the same compression schema as Redis, subject to the RedisMessagePackCompression environment
+The local LRU cache shares the same compression schema as Redis, subject to the RespMessagePackCompression environment
 variable.

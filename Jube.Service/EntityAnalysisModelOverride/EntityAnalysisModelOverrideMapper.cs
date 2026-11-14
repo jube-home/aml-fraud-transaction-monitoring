@@ -53,11 +53,13 @@ namespace Jube.Service.EntityAnalysisModelOverride
         {
             return new OverridePoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelGuid = dto.EntityAnalysisModelGuid,
                 OverrideKey = dto.OverrideKey,
                 OverrideKeyValue = dto.OverrideKeyValue,
-                OverrideKind = (byte)dto.OverrideKind
+                OverrideKind = (byte)dto.OverrideKind,
+                DeleteExpiryDate = dto.DeleteExpiryDate?.UtcDateTime
             };
         }
 

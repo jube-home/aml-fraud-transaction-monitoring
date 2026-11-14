@@ -19,12 +19,15 @@ namespace Jube.Dictionary.Extensions
     {
         extension(string? @this)
         {
-            public bool ContainsSomehowInList(IEnumerable<string>? list)
+            [Description("True when: some entry of the List token is found fuzzily inside the longer text, using the default profile.")]
+            public bool ContainsSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string>? list)
             {
                 return FuzzyListMatcher.Any(@this, list, FuzzyOptions.Parse("within"));
             }
 
-            public bool ContainsSomehowInList(IEnumerable<string>? list, string? options)
+            [Description("True when: some entry is found fuzzily inside the longer text, using an options string (scope is always within).")]
+            public bool ContainsSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string>? list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return FuzzyListMatcher.Any(@this, list, FuzzyOptions.Parse(string.IsNullOrWhiteSpace(options) ? "within" : options + ",within"));
             }

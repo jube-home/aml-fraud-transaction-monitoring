@@ -29,8 +29,8 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun.Models
         [Description("Globally unique identifier of the training run.")]
         public Guid RunGuid { get; set; }
 
-        [Description("Numeric identifier of the Advanced Analytics instance the run belongs to.")]
-        public int AdvancedAnalyticsInstanceId { get; set; }
+        [Description("Numeric identifier of the AskJooby Analytics instance the run belongs to.")]
+        public int AskJoobyAnalyticsInstanceId { get; set; }
 
         [Description("Pending, Running, Succeeded, Failed, Cancelling or Cancelled. The last three of Succeeded, " +
                      "Failed and Cancelled are final.")]

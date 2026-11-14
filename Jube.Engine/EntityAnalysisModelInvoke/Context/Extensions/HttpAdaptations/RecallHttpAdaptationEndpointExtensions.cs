@@ -11,11 +11,14 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Globalization;
 using System.Threading.Tasks;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using Jube.HttpAdaptationProtocol;
 using Jube.HttpAdaptationProtocol.Parsing;
+using Jube.ResilientHttp;
+using Polly.Timeout;
 using Newtonsoft.Json;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.HttpAdaptations
@@ -27,11 +30,30 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.HttpAdaptatio
         public static async Task<Adaptation> RecallHttpEndpointAsync(this Context context,
             EntityAnalysisModelHttpAdaptation modelAdaptation, JsonSerializerSettings jsonSerializerSettings)
         {
-            var rawBody = await modelAdaptation
-                .PostAsync(context.EntityAnalysisModelInstanceEntryPayload, jsonSerializerSettings, context.Log)
-                .ConfigureAwait(false);
+            Adaptation adaptation;
 
-            var adaptation = rawBody.ParseAdaptationResponse(context.Log);
+            try
+            {
+                var rawBody = await modelAdaptation
+                    .PostAsync(context.EntityAnalysisModelInstanceEntryPayload, jsonSerializerSettings, context.Log)
+                    .ConfigureAwait(false);
+
+                adaptation = rawBody.ParseAdaptationResponse(context.Log);
+            }
+            catch (Exception ex)
+            {
+                context.Log.Error(
+                    $"Http Adaptation: the call for {modelAdaptation.Id} failed with {ex.GetType().Name}: {ex.Message}");
+
+                adaptation = new Adaptation
+                {
+                    Error = ResilientHttpExecutor.IsCircuitOpen(ex)
+                        ? "The HTTP Adaptation endpoint is temporarily suspended after repeated failures."
+                        : ex is TaskCanceledException or TimeoutRejectedException
+                            ? "The HTTP Adaptation endpoint did not respond within the configured timeout."
+                            : "The HTTP Adaptation endpoint could not be reached or returned an unsuccessful status."
+                };
+            }
 
             context.TraceLog(
                 $"is evaluating {modelAdaptation.Id} and has called the HTTP Adaptation endpoint with a value of {adaptation.Value?.ToString(CultureInfo.InvariantCulture) ?? "null"} and error of {adaptation.Error ?? "none"}.");

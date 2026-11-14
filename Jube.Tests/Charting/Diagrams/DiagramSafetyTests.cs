@@ -55,7 +55,8 @@ namespace Jube.Test.Charting.Diagrams
             svg.Should().Contain("prefers-color-scheme:dark").And.Contain("[data-theme=\"dark\"]").And
                 .Contain("prefers-reduced-motion");
 
-            svg.Should().NotContain("<script").And.NotContain("href").And.NotContain("url(").And.NotContain("@import");
+            svg.Should().NotContain("<script").And.NotContain("href").And.NotContain("@import");
+            SvgAssert.WithoutFragmentReferences(svg).Should().NotContain("url(");
         }
 
         [Theory]

@@ -6,6 +6,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Checks if the string contains only letters.")]
         public static bool IsAlpha(this string @this)
         {
             return !Regex.IsMatch(@this, "[^a-zA-Z]");

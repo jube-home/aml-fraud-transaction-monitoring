@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Du har inte behörighet att utföra den här åtgärden.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Du måste vara inloggad i en hyresgäst (tenant) för att utföra den här åtgärden.</value>
+  </data>
+    <data name="ModelNotFound" xml:space="preserve">
+    <value>Entitetsanalysmodellen hittades inte.</value>
+  </data>
+    <data name="EntityNotFound" xml:space="preserve">
+    <value>Ingen {0} med id {1} hittades i den här modellen.</value>
+  </data>
+    <data name="Title_DependencyDangling" xml:space="preserve">
+    <value>Använder ett namn som inte finns</value>
+  </data>
+    <data name="Title_DependencyOnInactive" xml:space="preserve">
+    <value>Använder en inaktiv entitet</value>
+  </data>
+    <data name="Title_DependencyOnUnapproved" xml:space="preserve">
+    <value>Använder en entitet som ännu inte har godkänts</value>
+  </data>
+    <data name="Title_EntityPendingApproval" xml:space="preserve">
+    <value>Ändrad och väntar på godkännande</value>
+  </data>
+    <data name="Title_EntityUnreferenced" xml:space="preserve">
+    <value>Används inte av något</value>
+  </data>
+    <data name="Title_EngineCompileFailed" xml:space="preserve">
+    <value>Kompilerades inte i motorn</value>
+  </data>
+    <data name="Title_ModelInactive" xml:space="preserve">
+    <value>Modellen är inaktiv</value>
+  </data>
+    <data name="Title_NoActiveActivationRules" xml:space="preserve">
+    <value>Inga aktiva aktiveringsregler</value>
+  </data>
+    <data name="Title_TtlCountersDisabled" xml:space="preserve">
+    <value>TTL-räknare är inaktiverade</value>
+  </data>
+    <data name="Title_SearchKeyTtlShortensWindow" xml:space="preserve">
+    <value>Sökfältets historik är kortare än regelns fönster</value>
+  </data>
+    <data name="Title_SearchKeyTtlCollapsesWindow" xml:space="preserve">
+    <value>Sökfältet sparar ingen historik för regelns fönster</value>
+  </data>
+    <data name="Title_EngineStateUnavailable" xml:space="preserve">
+    <value>Motorns tillstånd är inte tillgängligt</value>
+  </data>
+    <data name="Title_EngineNoNodes" xml:space="preserve">
+    <value>Ingen motorinstans har synkroniserat</value>
+  </data>
+    <data name="Title_EngineNodeStale" xml:space="preserve">
+    <value>Motorinstansen har slutat rapportera</value>
+  </data>
+    <data name="Title_EngineModelNotLoaded" xml:space="preserve">
+    <value>Modellen är inte inläst av en motorinstans</value>
+  </data>
+    <data name="Title_EngineModelNotStarted" xml:space="preserve">
+    <value>Modellen är inläst men inte startad</value>
+  </data>
+    <data name="Title_EngineEntityNotLoaded" xml:space="preserve">
+    <value>Inte inläst av en motorinstans</value>
+  </data>
+    <data name="Title_EngineEntityStale" xml:space="preserve">
+    <value>Motorn kör fortfarande en entitet som inte längre är aktiv</value>
+  </data>
+    <data name="Message_DependencyDanglingActiveRuleText" xml:space="preserve">
+    <value>Regeltexten för {0} {1} nämner {2}, som inte finns, så den fungerar inte.</value>
+  </data>
+    <data name="Message_DependencyDanglingInactiveRuleText" xml:space="preserve">
+    <value>Regeltexten för {0} {1} nämner {2}, som inte finns; den är inaktiv, så det spelar bara roll om den aktiveras.</value>
+  </data>
+    <data name="Message_DependencyDanglingActiveSetting" xml:space="preserve">
+    <value>Inställningen {0} för {1} {2} nämner {3}, som inte finns, så den fungerar inte.</value>
+  </data>
+    <data name="Message_DependencyDanglingInactiveSetting" xml:space="preserve">
+    <value>Inställningen {0} för {1} {2} nämner {3}, som inte finns; den är inaktiv, så det spelar bara roll om den aktiveras.</value>
+  </data>
+    <data name="Message_DependencyOnInactiveRuleText" xml:space="preserve">
+    <value>Regeltexten för {0} {1} använder {2} {3}, som är inaktiv, så motorn läser inte in den och användningen fungerar inte.</value>
+  </data>
+    <data name="Message_DependencyOnInactiveSetting" xml:space="preserve">
+    <value>Inställningen {0} för {1} {2} använder {3} {4}, som är inaktiv, så motorn läser inte in den och användningen fungerar inte.</value>
+  </data>
+    <data name="Message_DependencyOnUnapprovedRuleText" xml:space="preserve">
+    <value>Regeltexten för {0} {1} använder {2} {3}, som ännu inte har godkänts, så motorn kör den inte och användningen fungerar inte förrän den godkänns.</value>
+  </data>
+    <data name="Message_DependencyOnUnapprovedSetting" xml:space="preserve">
+    <value>Inställningen {0} för {1} {2} använder {3} {4}, som ännu inte har godkänts, så motorn kör den inte och användningen fungerar inte förrän den godkänns.</value>
+  </data>
+    <data name="Message_EntityUnreferenced" xml:space="preserve">
+    <value>{0} {1} är aktiv men ingenting i modellen använder den.</value>
+  </data>
+    <data name="Message_EngineCompileFailed" xml:space="preserve">
+    <value>Motorn kunde inte kompilera {0} {1} vid senaste synkroniseringen, så den körs inte: {2}.</value>
+  </data>
+    <data name="Message_EngineCompileFailedNoError" xml:space="preserve">
+    <value>Motorn kunde inte kompilera {0} {1} vid senaste synkroniseringen, så den körs inte: inget fel registrerades.</value>
+  </data>
+    <data name="Message_ModelInactive" xml:space="preserve">
+    <value>Modellen är inaktiv, så motorn läser inte in eller anropar den.</value>
+  </data>
+    <data name="Message_NoActiveActivationRules" xml:space="preserve">
+    <value>Modellen har inga aktiva aktiveringsregler, så ingen transaktion kan aktiveras.</value>
+  </data>
+    <data name="Message_TtlCountersDisabled" xml:space="preserve">
+    <value>TTL-räknare är inaktiverade för modellen, så motorn varken ökar eller läser {0}; regler ser det som 0.</value>
+  </data>
+    <data name="Message_SearchKeyTtlCollapsesWindow" xml:space="preserve">
+    <value>Sökfältet {0} har ingen TTL, så motorn begränsar abstraktionsregelns {1} {2}-fönster till enbart referensdatumet och aggregerar nästan ingenting.</value>
+  </data>
+    <data name="Message_SearchKeyTtlShortensWindow" xml:space="preserve">
+    <value>Sökfältet {0} sparar historik i {1} {2}, vilket är kortare än regelns {3} {4}, så motorn använder tyst det kortare fönstret.</value>
+  </data>
+    <data name="Message_EngineStateUnavailable" xml:space="preserve">
+    <value>Ingen motor körs i den här processen och ingen motor har registrerat vad den har läst in för modellen, så det går inte att kontrollera vad motorn kör.</value>
+  </data>
+    <data name="Message_EngineNoNodes" xml:space="preserve">
+    <value>Ingen motorinstans har synkroniserat den här hyresgästens (tenant) modeller.</value>
+  </data>
+    <data name="Message_EngineNodeStale" xml:space="preserve">
+    <value>Motorinstansen {0} rapporterade senast {1} och körs inte. Den tas bort vid nästa synkronisering eller försvinner från listan {2} om ingen synkronisering sker.</value>
+  </data>
+    <data name="Message_EngineModelNotStarted" xml:space="preserve">
+    <value>Motorinstansen {0} har läst in modellen men inte startat den.</value>
+  </data>
+    <data name="Message_EntityPendingApprovalWaiting" xml:space="preserve">
+    <value>{0} {1} väntar på godkännande, så motorinstansen {2} kör den inte ännu.</value>
+  </data>
+    <data name="Message_EntityPendingApprovalChanged" xml:space="preserve">
+    <value>{0} {1} har en ändring som väntar på godkännande, så motorinstansen {2} kör fortfarande den senast godkända versionen.</value>
+  </data>
+    <data name="Message_EngineEntityNotLoaded" xml:space="preserve">
+    <value>{0} {1} är godkänd och aktiv men motorinstansen {2} har inte läst in den: synkronisera modellen och kontrollera att den kompilerar.</value>
+  </data>
+    <data name="Message_EngineEntityStale" xml:space="preserve">
+    <value>Motorinstansen {0} kör fortfarande {1} {2}, som inte längre är aktiv; synkronisera modellen för att ladda ur den.</value>
+  </data>
+    <data name="Message_EngineModelNotLoaded" xml:space="preserve">
+    <value>Motorinstansen {0} har inte läst in modellen; synkronisera den.</value>
+  </data>
+</root>

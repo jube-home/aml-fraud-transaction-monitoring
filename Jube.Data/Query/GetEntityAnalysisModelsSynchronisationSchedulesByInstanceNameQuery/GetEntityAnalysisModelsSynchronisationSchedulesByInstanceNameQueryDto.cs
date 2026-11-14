@@ -18,9 +18,13 @@
 
 namespace Jube.Data.Query.GetEntityAnalysisModelsSynchronisationSchedulesByInstanceNameQuery
 {
+    using System;
+
     public class GetEntityAnalysisModelsSynchronisationSchedulesByInstanceNameQueryDto
     {
         public bool SynchronisationPending { get; set; }
         public int TenantRegistryId { get; set; }
+        public int[] EntityAnalysisModelIds { get; set; }
+        public DateTime ObservedDate { get; set; }
     }
 }

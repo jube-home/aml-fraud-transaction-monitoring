@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("CRC-32 (IEEE) checksum as eight hex digits.")]
         public static string Crc32Hex(this string? @this)
         {
             var crc = 0xFFFFFFFFu;

@@ -91,7 +91,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
 
             var submission = await service.SubmitTrainingAsync(new AdvancedAnalyticsIsolationForestAnomalyTrainingDto
             {
-                AdvancedAnalyticsInstanceId = instance.Id,
+                AskJoobyAnalyticsInstanceId = instance.Id,
                 ModelName = modelName,
                 VariableNames = names,
                 ProcessingTypeIds = processingTypeIds,
@@ -134,7 +134,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             var trainedModelId = executed.Model!.Id;
             var versionId = executed.Version.Id;
 
-            var trainedModelRepository = new AdvancedAnalyticsTrainedModelRepository(Db, TenantA, Permitted);
+            var trainedModelRepository = new AskJoobyAnalyticsTrainedModelRepository(Db, TenantA, Permitted);
             await trainedModelRepository.SetActiveVersionAsync(trainedModelId, versionId);
             await trainedModelRepository.SetActiveAsync(trainedModelId, true);
 

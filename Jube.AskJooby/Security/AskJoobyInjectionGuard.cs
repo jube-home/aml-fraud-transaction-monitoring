@@ -47,7 +47,7 @@ namespace Jube.AskJooby.Security
         ];
 
         private const string PlatformOperationsTopic =
-            "this platform's own live operational infrastructure -- Postgres, Redis, Docker, etcd " +
+            "this platform's own live operational infrastructure -- Postgres, RESP, Docker, etcd " +
             "and Patroni health, metrics, logs and administration -- reachable only by a Landlord, " +
             "since every tool over it is Landlord-gated";
 
@@ -123,7 +123,7 @@ namespace Jube.AskJooby.Security
             builder = AddOpirIfConfigured(builder);
 
             return new GuardrailPipeline(builder.Build(), NullLogger<GuardrailPipeline>.Instance,
-                new HashChainLedger(jsonlFilePath: null));
+                new HashChainLedger(null));
         }
 
         private static GuardrailPipeline BuildPipeline(
@@ -156,7 +156,7 @@ namespace Jube.AskJooby.Security
             builder = AddOpirIfConfigured(builder);
 
             return new GuardrailPipeline(builder.Build(), NullLogger<GuardrailPipeline>.Instance,
-                new HashChainLedger(jsonlFilePath: null));
+                new HashChainLedger(null));
         }
 
         private static GuardrailPipeline BuildOutputPipeline(IChatClient? topicBoundaryJudge, string[] topics)
@@ -175,7 +175,7 @@ namespace Jube.AskJooby.Security
             builder = AddOpirIfConfigured(builder);
 
             return new GuardrailPipeline(builder.Build(), NullLogger<GuardrailPipeline>.Instance,
-                new HashChainLedger(jsonlFilePath: null));
+                new HashChainLedger(null));
         }
 
         private static GuardrailPolicyBuilder AddOpirIfConfigured(GuardrailPolicyBuilder builder)
@@ -309,7 +309,7 @@ namespace Jube.AskJooby.Security
         public static async Task<AskJoobyGuardFinding?> CheckOutputAsync(
             string content, bool isLandlord = false, IReadOnlyList<AgentGuardRuleSetting>? rules = null)
         {
-            var (enabled, topics) = ResolveRule(rules, TopicBoundaryOutputRuleId, isLandlord, enabledByDefault: true);
+            var (enabled, topics) = ResolveRule(rules, TopicBoundaryOutputRuleId, isLandlord, true);
 
             var builtPipeline = BuildOutputPipeline(enabled ? settings.TopicBoundaryJudge : null, topics);
 

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas la permission d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous n'êtes pas authentifié.</value>
+  </data>
+    <data name="RegistryNotFound" xml:space="preserve">
+    <value>Le registre de graphe n'a pas été trouvé ou n'est pas actif.</value>
+  </data>
+    <data name="NodeNotFound" xml:space="preserve">
+    <value>Le nœud n'a pas été trouvé.</value>
+  </data>
+    <data name="EdgeNotFound" xml:space="preserve">
+    <value>L'arête n'a pas été trouvée.</value>
+  </data>
+    <data name="KeyRequired" xml:space="preserve">
+    <value>Une clé et une valeur sont requises.</value>
+  </data>
+    <data name="KeyTooLong" xml:space="preserve">
+    <value>La clé ou la valeur est trop longue.</value>
+  </data>
+    <data name="HopsOutOfRange" xml:space="preserve">
+    <value>Le nombre de sauts doit être compris entre 1 et 3.</value>
+  </data>
+    <data name="FanOutOutOfRange" xml:space="preserve">
+    <value>L'éventail doit être compris entre 1 et 100.</value>
+  </data>
+    <data name="WindowInvalid" xml:space="preserve">
+    <value>La fin de la fenêtre doit suivre son début.</value>
+  </data>
+    <data name="EdgesInvalid" xml:space="preserve">
+    <value>La liste des définitions d'arêtes n'est pas valide.</value>
+  </data>
+    <data name="SentenceHub" xml:space="preserve">
+    <value>{0} {1} est un concentrateur partagé par {2} contreparties ; la traversée ne le franchit que sur demande.</value>
+  </data>
+    <data name="SentenceSharedDevice" xml:space="preserve">
+    <value>{0} {1} est partagé par {2} comptes.</value>
+  </data>
+    <data name="SentenceDistance" xml:space="preserve">
+    <value>À {0} saut(s) d'un vrai positif confirmé, avec {1} à moins de trois sauts.</value>
+  </data>
+    <data name="SentenceOpenCases" xml:space="preserve">
+    <value>{0} dossier(s) ouvert(s) sur cette clé.</value>
+  </data>
+    <data name="SentenceConfirmedCases" xml:space="preserve">
+    <value>{0} dossier(s) sur cette clé clos comme confirmés.</value>
+  </data>
+    <data name="SentenceCommunity" xml:space="preserve">
+    <value>Membre de la communauté {0}.</value>
+  </data>
+    <data name="SentenceDegree" xml:space="preserve">
+    <value>{0} contreparties distinctes, dont {1} par flux monétaire.</value>
+  </data>
+    <data name="LayoutInvalid" xml:space="preserve">
+    <value>La disposition n'est pas reconnue.</value>
+  </data>
+    <data name="CaseNotFound" xml:space="preserve">
+    <value>Le dossier n'a pas été trouvé ou ne vous est pas ouvert.</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>Le dossier est verrouillé par un autre utilisateur.</value>
+  </data>
+    <data name="CaptureNote" xml:space="preserve">
+    <value>Capture du réseau : {0} nœuds et {1} arêtes entre le {2} et le {3}.</value>
+  </data>
+    <data name="ExplorationNameInvalid" xml:space="preserve">
+    <value>L'exploration nécessite un nom d'au plus 120 caractères.</value>
+  </data>
+    <data name="ExplorationAddressInvalid" xml:space="preserve">
+    <value>L'adresse de l'exploration est manquante ou trop longue.</value>
+  </data>
+    <data name="ExplorationNotFound" xml:space="preserve">
+    <value>L'exploration n'a pas été trouvée.</value>
+  </data>
+    <data name="NodeIdsRequired" xml:space="preserve">
+    <value>Les deux identifiants de nœud sont requis et doivent différer.</value>
+  </data>
+    <data name="PathHopsOutOfRange" xml:space="preserve">
+    <value>Les chemins vont de 1 à 6 sauts et 1 à 20 sont renvoyés.</value>
+  </data>
+    <data name="FlowInvalid" xml:space="preserve">
+    <value>La requête de flux a besoin d'une fenêtre de 1 à 720 heures, d'une tolérance de 0 à 0,9, d'une profondeur de 1 à 6 et d'un éventail de 1 à 50.</value>
+  </data>
+    <data name="PatternNotFound" xml:space="preserve">
+    <value>Le motif n'a pas été trouvé.</value>
+  </data>
+    <data name="CommunityNotFound" xml:space="preserve">
+    <value>La communauté n'a pas été trouvée.</value>
+  </data>
+    <data name="PatternStateInvalid" xml:space="preserve">
+    <value>Un motif peut être marqué Vu, Rejeté ou Mis en dossier, et Mis en dossier exige un identifiant de dossier.</value>
+  </data>
+    <data name="HubOverrideInvalid" xml:space="preserve">
+    <value>La surcharge de hub doit être 0 (aucune), 1 (jamais un hub) ou 2 (toujours un hub).</value>
+  </data>
+    <data name="SentencePath" xml:space="preserve">
+    <value>{0} saut(s) de {1} {2} à {3} {4} avec un poids de chemin de {5:0.###}.</value>
+  </data>
+    <data name="SentenceFlow" xml:space="preserve">
+    <value>{0} tranche(s) atteignent {1} nœud(s) en {2} saut(s) ; {3} nœud(s) font transiter l'argent directement.</value>
+  </data>
+    <data name="SentencePattern" xml:space="preserve">
+    <value>{0} ancré sur {1} {2} : {3} membre(s), score {4:0.###}, du {5:yyyy-MM-dd} au {6:yyyy-MM-dd}.</value>
+  </data>
+    <data name="SentenceCommunityRate" xml:space="preserve">
+    <value>Communauté {0} de {1} nœuds : {2} confirmés sur {3} dossiers clos, {4:0.0}x le taux du locataire.</value>
+  </data>
+    <data name="SentencePatternMember" xml:space="preserve">
+    <value>Membre de {0} motif(s), le plus récent {1}.</value>
+  </data>
+    <data name="SentenceTag" xml:space="preserve">
+    <value>{0} saut(s) d'une transaction ou d'un dossier étiqueté {1}, avec {2} à moins de trois sauts.</value>
+  </data>
+    <data name="ExpandedInvalid" xml:space="preserve">
+    <value>Au plus 25 identifiants de nœuds développés peuvent être fournis.</value>
+  </data>
+    <data name="ExplorationPinnedInvalid" xml:space="preserve">
+    <value>Les positions épinglées sont trop volumineuses.</value>
+  </data>
+    <data name="DetailDegree" xml:space="preserve">
+    <value>degré {0}</value>
+  </data>
+    <data name="DetailHub" xml:space="preserve">
+    <value>pivot</value>
+  </data>
+    <data name="DetailConfirmedDistance" xml:space="preserve">
+    <value>à {0} saut(s) d'un dossier confirmé</value>
+  </data>
+    <data name="DetailOpenCases" xml:space="preserve">
+    <value>{0} dossier(s) ouvert(s)</value>
+  </data>
+    <data name="DetailConfirmedCases" xml:space="preserve">
+    <value>{0} confirmé(s)</value>
+  </data>
+    <data name="DetailCollapsed" xml:space="preserve">
+    <value>{0} nœuds réduits</value>
+  </data>
+</root>

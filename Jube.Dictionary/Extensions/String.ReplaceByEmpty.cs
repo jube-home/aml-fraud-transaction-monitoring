@@ -4,7 +4,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string ReplaceByEmpty(this string @this, params string[] values)
+        [Description("Replaces specified values with an empty string.")]
+        public static string ReplaceByEmpty(this string @this,
+            [Description("The values to replace.")] params string[] values)
         {
             foreach (var value in values)
             {

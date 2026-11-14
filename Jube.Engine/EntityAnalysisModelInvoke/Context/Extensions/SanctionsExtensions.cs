@@ -14,9 +14,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Jube.Cache;
-using Jube.Cache.Redis.Models;
+using Jube.Cache.Resp.Models;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using Jube.Engine.Sanctions;
@@ -102,6 +106,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                                 AddToResponses(context, entityAnalysisModelSanction, sanction.Value.Value,
                                     multiPartStringValue);
 
+                                AddCachedMatchDetail(context, entityAnalysisModelSanction, sanction.MatchesJson);
+
                                 context.TraceLog(
                                     $"has extracted multi part string name value as {multiPartStringValue} from cache and is continuing to the next configured Sanctions check.");
 
@@ -161,6 +167,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 FindAllDistanceMatches(context, entityAnalysisModelSanction, multiPartStringValue);
 
             double? aggregateLevenshteinDistance = null;
+            string matchesJson = null;
 
             if (sanctionEntryReturns.Count == 0)
             {
@@ -186,6 +193,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 {
                     AddToResponses(context, entityAnalysisModelSanction, aggregateLevenshteinDistance.Value,
                         multiPartStringValue);
+
+                    matchesJson = AddMatchDetail(context, entityAnalysisModelSanction, sanctionEntryReturns);
                 }
                 else
                 {
@@ -200,7 +209,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                     $"has constructed a cache payload as Distance of {aggregateLevenshteinDistance}, MultiPartString of {multiPartStringValue} and a created date of now. Will upsert it in cache.");
 
                 UpsertSanctionInCache(context, cacheService, multiPartStringValue, entityAnalysisModelSanction,
-                    aggregateLevenshteinDistance.Value);
+                    aggregateLevenshteinDistance.Value, matchesJson);
             }
             else
             {
@@ -213,7 +222,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
         private static void UpsertSanctionInCache(Context context, CacheService cacheService,
             string multiPartStringValue, EntityAnalysisModelSanction entityAnalysisModelSanction,
-            double aggregateLevenshteinDistance)
+            double aggregateLevenshteinDistance, string matchesJson)
         {
             context.TraceLog($"is about to insert cache payload.");
 
@@ -221,19 +230,80 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 TaskType.CacheSanctionInsertAsync, async () => await cacheService.CacheSanctionRepository.InsertAsync(
                     context.EntityAnalysisModel.Instance.TenantRegistryId,
                     context.EntityAnalysisModel.Instance.Guid,
+                    BuildCacheVariant(context, entityAnalysisModelSanction),
                     multiPartStringValue,
-                    entityAnalysisModelSanction.Distance, aggregateLevenshteinDistance).ConfigureAwait(false),
+                    entityAnalysisModelSanction.Distance, aggregateLevenshteinDistance, matchesJson)
+                    .ConfigureAwait(false),
                 context.Log));
 
             context.TraceLog($"has inserted cache payload.");
         }
 
-        private static List<SanctionEntryReturn> FindAllDistanceMatches(Context context,
-            EntityAnalysisModelSanction entityAnalysisModelSanction, string multiPartStringValue)
+        private static int MatchDetailMaximum(Context context)
         {
-            context.TraceLog(
-                $"is evaluating Sanctions {entityAnalysisModelSanction.Name} and is about to execute the fuzzy logic with a distance of {entityAnalysisModelSanction.Distance}.");
+            return int.TryParse(context.Environment?.AppSettings("SanctionMatchDetailMaximum"), out var maximum)
+                ? Math.Clamp(maximum, 0, 50)
+                : 5;
+        }
 
+        private static string AddMatchDetail(Context context,
+            EntityAnalysisModelSanction entityAnalysisModelSanction, List<SanctionEntryReturn> matches)
+        {
+            var maximum = MatchDetailMaximum(context);
+
+            if (maximum == 0 || matches.Count == 0)
+            {
+                return null;
+            }
+
+            var detail = matches
+                .OrderBy(m => m.LevenshteinDistance)
+                .ThenBy(m => m.SanctionEntry.SanctionEntryId)
+                .Take(maximum)
+                .Select(m => new SanctionMatchDetail
+                {
+                    Id = m.SanctionEntry.SanctionEntryId,
+                    Source = m.SanctionEntry.SanctionEntrySourceId,
+                    Reference = m.SanctionEntry.SanctionEntryReference,
+                    Value = string.Join(' ', m.SanctionEntry.SanctionElementValue),
+                    Distance = m.LevenshteinDistance
+                })
+                .ToList();
+
+            context.EntityAnalysisModelInstanceEntryPayload.SanctionMatch ??= [];
+            context.EntityAnalysisModelInstanceEntryPayload.SanctionMatch[entityAnalysisModelSanction.Name] = detail;
+
+            return JsonConvert.SerializeObject(detail);
+        }
+
+        private static void AddCachedMatchDetail(Context context,
+            EntityAnalysisModelSanction entityAnalysisModelSanction, string matchesJson)
+        {
+            if (string.IsNullOrEmpty(matchesJson) || MatchDetailMaximum(context) == 0)
+            {
+                return;
+            }
+
+            try
+            {
+                var detail = JsonConvert.DeserializeObject<List<SanctionMatchDetail>>(matchesJson);
+
+                if (detail is { Count: > 0 })
+                {
+                    context.EntityAnalysisModelInstanceEntryPayload.SanctionMatch ??= [];
+                    context.EntityAnalysisModelInstanceEntryPayload.SanctionMatch[entityAnalysisModelSanction.Name] =
+                        detail.Take(MatchDetailMaximum(context)).ToList();
+                }
+            }
+            catch (JsonException ex)
+            {
+                context.Log.Warn($"Sanctions cached match detail could not be read: {ex.Message}");
+            }
+        }
+
+        private static (double? MaxDistanceRatio, double? MaxCoverageRatio) ResolveRatios(Context context,
+            EntityAnalysisModelSanction entityAnalysisModelSanction)
+        {
             var maxDistanceRatio = entityAnalysisModelSanction.MaxDistanceRatio ??
                                    LevenshteinDistance.ParseNullableDistanceRatio(
                                        context.Environment.AppSettings("SanctionsLevenshteinMaxDistanceRatio"));
@@ -242,10 +312,39 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                                    LevenshteinDistance.ParseNullableCoverageRatio(
                                        context.Environment.AppSettings("SanctionsLevenshteinMaxCoverageRatio"));
 
-            var sanctionEntryReturns = new LevenshteinDistance(maxDistanceRatio, maxCoverageRatio).CheckMultipartString(
+            return (maxDistanceRatio, maxCoverageRatio);
+        }
+
+        public static string BuildCacheVariant(Context context,
+            EntityAnalysisModelSanction entityAnalysisModelSanction)
+        {
+            var (maxDistanceRatio, maxCoverageRatio) = ResolveRatios(context, entityAnalysisModelSanction);
+
+            return string.Create(CultureInfo.InvariantCulture,
+                $"{entityAnalysisModelSanction.Name}|{entityAnalysisModelSanction.AggregationTypeId}|{maxDistanceRatio}|{maxCoverageRatio}|{entityAnalysisModelSanction.MatchAlgorithmId}|{entityAnalysisModelSanction.MinimumSimilarity}|{entityAnalysisModelSanction.Transliterate}|{SanctionExemptionSet.Shared.Fingerprint(context.EntityAnalysisModel.Instance.TenantRegistryId)}");
+        }
+
+        private static List<SanctionEntryReturn> FindAllDistanceMatches(Context context,
+            EntityAnalysisModelSanction entityAnalysisModelSanction, string multiPartStringValue)
+        {
+            context.TraceLog(
+                $"is evaluating Sanctions {entityAnalysisModelSanction.Name} and is about to execute the fuzzy logic with a distance of {entityAnalysisModelSanction.Distance}.");
+
+            var (maxDistanceRatio, maxCoverageRatio) = ResolveRatios(context, entityAnalysisModelSanction);
+
+            var sanctionEntryReturns = new LevenshteinDistance(maxDistanceRatio, maxCoverageRatio,
+                new SanctionMatchOptions(entityAnalysisModelSanction.MatchAlgorithmId,
+                    entityAnalysisModelSanction.MinimumSimilarity, entityAnalysisModelSanction.Transliterate)).CheckMultipartString(
                 multiPartStringValue,
                 entityAnalysisModelSanction.Distance, context.EntityAnalysisModel.Dependencies.SanctionsEntries,
                 context.EntityAnalysisModel.Dependencies.SanctionsStopTokens);
+
+            var tenantRegistryId = context.EntityAnalysisModel.Instance.TenantRegistryId;
+            var now = DateTime.UtcNow;
+
+            sanctionEntryReturns.RemoveAll(m => SanctionExemptionSet.Shared.IsExempt(tenantRegistryId,
+                multiPartStringValue, m.SanctionEntry.SanctionEntrySourceId, m.SanctionEntry.SanctionEntryReference,
+                now));
 
             context.TraceLog(
                 $"is evaluating Sanctions {entityAnalysisModelSanction.Name} and finished execute the fuzzy logic with a distance of {entityAnalysisModelSanction.Distance} and found {sanctionEntryReturns.Count} matches.");
@@ -436,7 +535,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             var sanction = await cacheService.CacheSanctionRepository
                 .GetByMultiPartStringDistanceThresholdAsync(
                     context.EntityAnalysisModel.Instance.TenantRegistryId,
-                    context.EntityAnalysisModel.Instance.Guid, multiPartStringValue,
+                    context.EntityAnalysisModel.Instance.Guid,
+                    BuildCacheVariant(context, entityAnalysisModelSanction), multiPartStringValue,
                     entityAnalysisModelSanction.Distance
                 ).ConfigureAwait(false);
 

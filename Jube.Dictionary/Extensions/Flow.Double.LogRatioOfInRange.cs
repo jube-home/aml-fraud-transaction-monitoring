@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchLogRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("True when: the natural log of the value over the denominator, symmetric for increases and decreases is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchLogRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleLogRatioOfInRange(flow.Value, denominator, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectLogRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("True when: the natural log of the value over the denominator, symmetric for increases and decreases is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectLogRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleLogRatioOfInRange(flow.Value, denominator, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakLogRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("True when: the natural log of the value over the denominator, symmetric for increases and decreases is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakLogRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleLogRatioOfInRange(flow.Value, denominator, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireLogRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("True when: the natural log of the value over the denominator, symmetric for increases and decreases is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireLogRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleLogRatioOfInRange(flow.Value, denominator, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureLogRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("True when: the natural log of the value over the denominator, symmetric for increases and decreases is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureLogRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchLogRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the natural log of the value over the denominator, symmetric for increases and decreases is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchLogRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchLogRatioOfInRange(denominator, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectLogRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the natural log of the value over the denominator, symmetric for increases and decreases is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectLogRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectLogRatioOfInRange(denominator, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakLogRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the natural log of the value over the denominator, symmetric for increases and decreases is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakLogRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakLogRatioOfInRange(denominator, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireLogRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the natural log of the value over the denominator, symmetric for increases and decreases is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireLogRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireLogRatioOfInRange(denominator, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureLogRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the natural log of the value over the denominator, symmetric for increases and decreases is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureLogRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureLogRatioOfInRange(denominator, lowerBound, upperBound);
             }

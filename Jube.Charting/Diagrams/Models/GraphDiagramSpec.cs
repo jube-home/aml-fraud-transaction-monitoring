@@ -24,7 +24,15 @@ namespace Jube.Charting.Diagrams.Models
         string Id,
         string Label,
         GraphNodeRole Role = GraphNodeRole.Feature,
-        string? Detail = null);
+        string? Detail = null)
+    {
+        public string? Group { get; init; }
+        public bool Dashed { get; init; }
+        public GraphNodeShape? Shape { get; init; }
+        public double? Size { get; init; }
+        public IReadOnlyList<GraphBadge>? Badges { get; init; }
+        public GraphEmphasis Emphasis { get; init; }
+    }
 
     public sealed record GraphEdge(string From, string To)
     {
@@ -32,6 +40,11 @@ namespace Jube.Charting.Diagrams.Models
         public double? Probability { get; init; }
         public string? Label { get; init; }
         public bool Dashed { get; init; }
+        public string? Id { get; init; }
+        public DateTimeOffset? First { get; init; }
+        public DateTimeOffset? Last { get; init; }
+        public bool? Directed { get; init; }
+        public int? Count { get; init; }
     }
 
     public sealed record GraphDiagramSpec
@@ -43,5 +56,15 @@ namespace Jube.Charting.Diagrams.Models
         public bool Directed { get; init; } = true;
         public string WeightName { get; init; } = "Weight";
         public int EdgeLabelLimit { get; init; } = 40;
+        public IReadOnlyList<string> GroupOrder { get; init; } = [];
+        public double MaxExtent { get; init; } = 3000;
+        public GraphDirection Direction { get; init; }
+        public int MaxPerLayer { get; init; }
+        public IReadOnlyList<GraphAnchor>? Anchors { get; init; }
+        public string? SeedId { get; init; }
+        public IReadOnlyDictionary<string, int>? Depths { get; init; }
+        public IReadOnlyDictionary<string, string>? Lanes { get; init; }
+        public IReadOnlyDictionary<string, DateTimeOffset>? Times { get; init; }
+        public GraphMeasure Size { get; init; }
     }
 }

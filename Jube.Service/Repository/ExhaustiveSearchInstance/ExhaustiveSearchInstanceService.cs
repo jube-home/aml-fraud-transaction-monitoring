@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
@@ -587,6 +588,7 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstance
                 EnsurePermitted(writePermissions, "ExhaustiveSearchInstance.Create");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                ExhaustiveFilterSqlSchemaCheck.Append(results, model.FilterSql);
 
                 if (!results.IsValid)
                 {
@@ -671,6 +673,7 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstance
                 EnsurePermitted(writePermissions, "ExhaustiveSearchInstance.Validate");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                ExhaustiveFilterSqlSchemaCheck.Append(results, model.FilterSql);
                 op.Rows(results.Errors.Count);
 
                 return ValidationResultMapper.ToDto(results);
@@ -718,6 +721,7 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstance
                 EnsurePermitted(writePermissions, "ExhaustiveSearchInstance.Update");
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
+                ExhaustiveFilterSqlSchemaCheck.Append(results, model.FilterSql);
 
                 if (!results.IsValid)
                 {
@@ -777,6 +781,12 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstance
                 op.Outcome("notfound");
                 throw;
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");

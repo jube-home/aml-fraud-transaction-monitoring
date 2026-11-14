@@ -17,7 +17,9 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchIsDelimitedMember(string? delimitedList, string? separator)
+            [Description("True when: equal, after trimming, to one of the entries of the delimited list split on the separator. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchIsDelimitedMember([Description("The delimited text whose entries are searched.")] string? delimitedList,
+                [Description("The text that separates the entries.")] string? separator)
             {
                 return flow.IsDecided
                     ? flow
@@ -25,7 +27,9 @@ namespace Jube.Dictionary.Extensions
                         FlowPredicates.StringIsDelimitedMember(flow.Value, delimitedList, separator));
             }
 
-            public Flow<string?> RejectIsDelimitedMember(string? delimitedList, string? separator)
+            [Description("True when: equal, after trimming, to one of the entries of the delimited list split on the separator. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectIsDelimitedMember([Description("The delimited text whose entries are searched.")] string? delimitedList,
+                [Description("The text that separates the entries.")] string? separator)
             {
                 return flow.IsDecided
                     ? flow
@@ -33,7 +37,9 @@ namespace Jube.Dictionary.Extensions
                         FlowPredicates.StringIsDelimitedMember(flow.Value, delimitedList, separator));
             }
 
-            public Flow<string?> BreakIsDelimitedMember(string? delimitedList, string? separator)
+            [Description("True when: equal, after trimming, to one of the entries of the delimited list split on the separator. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakIsDelimitedMember([Description("The delimited text whose entries are searched.")] string? delimitedList,
+                [Description("The text that separates the entries.")] string? separator)
             {
                 return flow.IsDecided
                     ? flow
@@ -41,7 +47,9 @@ namespace Jube.Dictionary.Extensions
                         FlowPredicates.StringIsDelimitedMember(flow.Value, delimitedList, separator));
             }
 
-            public Flow<string?> RequireIsDelimitedMember(string? delimitedList, string? separator)
+            [Description("True when: equal, after trimming, to one of the entries of the delimited list split on the separator. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireIsDelimitedMember([Description("The delimited text whose entries are searched.")] string? delimitedList,
+                [Description("The text that separates the entries.")] string? separator)
             {
                 return flow.IsDecided
                     ? flow
@@ -49,7 +57,9 @@ namespace Jube.Dictionary.Extensions
                         FlowPredicates.StringIsDelimitedMember(flow.Value, delimitedList, separator));
             }
 
-            public Flow<string?> EnsureIsDelimitedMember(string? delimitedList, string? separator)
+            [Description("True when: equal, after trimming, to one of the entries of the delimited list split on the separator. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureIsDelimitedMember([Description("The delimited text whose entries are searched.")] string? delimitedList,
+                [Description("The text that separates the entries.")] string? separator)
             {
                 return flow.IsDecided
                     ? flow
@@ -60,27 +70,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchIsDelimitedMember(string? delimitedList, string? separator)
+            [Description("Begins a pipeline from the value. True when: equal, after trimming, to one of the entries of the delimited list split on the separator. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchIsDelimitedMember([Description("The delimited text whose entries are searched.")] string? delimitedList,
+                [Description("The text that separates the entries.")] string? separator)
             {
                 return value.Start().MatchIsDelimitedMember(delimitedList, separator);
             }
 
-            public Flow<string?> RejectIsDelimitedMember(string? delimitedList, string? separator)
+            [Description("Begins a pipeline from the value. True when: equal, after trimming, to one of the entries of the delimited list split on the separator. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectIsDelimitedMember([Description("The delimited text whose entries are searched.")] string? delimitedList,
+                [Description("The text that separates the entries.")] string? separator)
             {
                 return value.Start().RejectIsDelimitedMember(delimitedList, separator);
             }
 
-            public Flow<string?> BreakIsDelimitedMember(string? delimitedList, string? separator)
+            [Description("Begins a pipeline from the value. True when: equal, after trimming, to one of the entries of the delimited list split on the separator. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakIsDelimitedMember([Description("The delimited text whose entries are searched.")] string? delimitedList,
+                [Description("The text that separates the entries.")] string? separator)
             {
                 return value.Start().BreakIsDelimitedMember(delimitedList, separator);
             }
 
-            public Flow<string?> RequireIsDelimitedMember(string? delimitedList, string? separator)
+            [Description("Begins a pipeline from the value. True when: equal, after trimming, to one of the entries of the delimited list split on the separator. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireIsDelimitedMember([Description("The delimited text whose entries are searched.")] string? delimitedList,
+                [Description("The text that separates the entries.")] string? separator)
             {
                 return value.Start().RequireIsDelimitedMember(delimitedList, separator);
             }
 
-            public Flow<string?> EnsureIsDelimitedMember(string? delimitedList, string? separator)
+            [Description("Begins a pipeline from the value. True when: equal, after trimming, to one of the entries of the delimited list split on the separator. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureIsDelimitedMember([Description("The delimited text whose entries are searched.")] string? delimitedList,
+                [Description("The text that separates the entries.")] string? separator)
             {
                 return value.Start().EnsureIsDelimitedMember(delimitedList, separator);
             }

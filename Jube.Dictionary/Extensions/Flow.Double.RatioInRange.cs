@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchRatioInRange(double denominator, double minimum, double maximum)
+            [Description("True when: the value divided by the denominator is between the bounds, both included. A zero denominator is false. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRatioInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleRatioInRange(flow.Value, denominator, minimum, maximum));
             }
 
-            public Flow<double> RejectRatioInRange(double denominator, double minimum, double maximum)
+            [Description("True when: the value divided by the denominator is between the bounds, both included. A zero denominator is false. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRatioInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleRatioInRange(flow.Value, denominator, minimum, maximum));
             }
 
-            public Flow<double> BreakRatioInRange(double denominator, double minimum, double maximum)
+            [Description("True when: the value divided by the denominator is between the bounds, both included. A zero denominator is false. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRatioInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleRatioInRange(flow.Value, denominator, minimum, maximum));
             }
 
-            public Flow<double> RequireRatioInRange(double denominator, double minimum, double maximum)
+            [Description("True when: the value divided by the denominator is between the bounds, both included. A zero denominator is false. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRatioInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleRatioInRange(flow.Value, denominator, minimum, maximum));
             }
 
-            public Flow<double> EnsureRatioInRange(double denominator, double minimum, double maximum)
+            [Description("True when: the value divided by the denominator is between the bounds, both included. A zero denominator is false. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRatioInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchRatioInRange(double denominator, double minimum, double maximum)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is between the bounds, both included. A zero denominator is false. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRatioInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return value.Start().MatchRatioInRange(denominator, minimum, maximum);
             }
 
-            public Flow<double> RejectRatioInRange(double denominator, double minimum, double maximum)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is between the bounds, both included. A zero denominator is false. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRatioInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return value.Start().RejectRatioInRange(denominator, minimum, maximum);
             }
 
-            public Flow<double> BreakRatioInRange(double denominator, double minimum, double maximum)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is between the bounds, both included. A zero denominator is false. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRatioInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return value.Start().BreakRatioInRange(denominator, minimum, maximum);
             }
 
-            public Flow<double> RequireRatioInRange(double denominator, double minimum, double maximum)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is between the bounds, both included. A zero denominator is false. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRatioInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return value.Start().RequireRatioInRange(denominator, minimum, maximum);
             }
 
-            public Flow<double> EnsureRatioInRange(double denominator, double minimum, double maximum)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is between the bounds, both included. A zero denominator is false. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRatioInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum)
             {
                 return value.Start().EnsureRatioInRange(denominator, minimum, maximum);
             }

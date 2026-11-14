@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Replaces the value being tested with the text read as a date using the invariant culture; text that is not a date errors the pipeline rather than throwing.")]
         public static Flow<DateTime> ParseDate(this Flow<string?> flow)
         {
             if (flow.IsDecided)
@@ -29,6 +30,7 @@ namespace Jube.Dictionary.Extensions
                 : flow.Carry(DateTime.MinValue).Decide(FlowOutcome.Errored, "Value could not be parsed as a date.");
         }
 
+        [Description("Begins a pipeline from the value. Replaces the value being tested with the text read as a date using the invariant culture; text that is not a date errors the pipeline rather than throwing.")]
         public static Flow<DateTime> ParseDate(this string? value)
         {
             return value.Start().ParseDate();

@@ -6,6 +6,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Converts to a valid DateTime or null.")]
         public static DateTime? ToValidDateTimeOrNull(this string @this)
         {
             if (DateTime.TryParse(@this, out var date))

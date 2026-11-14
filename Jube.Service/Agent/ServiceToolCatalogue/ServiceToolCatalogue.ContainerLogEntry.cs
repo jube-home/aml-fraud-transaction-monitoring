@@ -24,7 +24,7 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "ContainerLogEntryList", OperationKind.Read, true, false,
                     "Lists every container's own stdout/stderr on the Docker host (no name filtering -- covers " +
-                    "etcd/Patroni/Redis/Sentinel and every other container), most recent first, capped at " +
+                    "etcd/Patroni/RESP/Sentinel and every other container), most recent first, capped at " +
                     "100000, with optional date-range and substring search (ContainerName/Message) filters. " +
                     "Not scoped to any Model or tenant. Also accepts samplePercentage (0-100) to draw an " +
                     "unbiased random subset of matching rows instead of the most recent ones.",

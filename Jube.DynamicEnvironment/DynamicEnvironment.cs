@@ -73,6 +73,230 @@ namespace Jube.DynamicEnvironment
                     "CasesAutomationWait", "60000"
                 },
                 {
+                    "EnableCaseEscalation", "True"
+                },
+                {
+                    "CaseEscalationWait", "30000"
+                },
+                {
+                    "CaseEscalationBatchSize", "200"
+                },
+                {
+                    "CaseChecklistReconcileMaxAgeSeconds", "60"
+                },
+                {
+                    "CaseFileAllowedExtensions",
+                    "pdf,doc,docx,xls,xlsx,ppt,pptx,odt,ods,odp,rtf,txt,csv,tsv,json,xml,md,log,png,jpg,jpeg,gif,webp,bmp," +
+                    "tif,tiff,heic,zip,7z,gz,tgz,tar,eml,msg,mbox,mp3,wav,mp4,mov"
+                },
+                {
+                    "CaseFileAllowedContentTypes",
+                    "application/pdf,image/png,image/jpeg,image/gif,image/webp,image/bmp,image/tiff,application/zip," +
+                    "application/x-ole-storage,application/x-7z-compressed,application/gzip,application/x-tar," +
+                    "application/rtf,audio/mpeg,audio/wav,video/mp4,text/plain"
+                },
+                {
+                    "EnableCaseChecklistSlaSweep", "True"
+                },
+                {
+                    "CaseChecklistSlaSweepSeconds", "60"
+                },
+                {
+                    "CaseChecklistSlaSweepBatchSize", "200"
+                },
+                {
+                    "SanctionMatchDetailMaximum", "5"
+                },
+                {
+                    "AmqpPrefetch", "50"
+                },
+                {
+                    "AmqpInboundQueueDurable", "False"
+                },
+                {
+                    "EnableInboundQueue", "True"
+                },
+                {
+                    "InboundQueueBatchSize", "50"
+                },
+                {
+                    "InboundQueueConcurrency", "8"
+                },
+                {
+                    "InboundQueuePollMilliseconds", "250"
+                },
+                {
+                    "InboundQueueMaximumAttempts", "5"
+                },
+                {
+                    "InboundQueueVisibilitySeconds", "120"
+                },
+                {
+                    "InboundQueueMaximumDepth", "100000"
+                },
+                {
+                    "EnableGraphEntityResolution", "False"
+                },
+                {
+                    "WaitGraphEntityResolution", "3600000"
+                },
+                {
+                    "GraphEntityMatchMaximumCluster", "10"
+                },
+                {
+                    "GraphEntityMatchAutoConfirmHard", "False"
+                },
+                {
+                    "GraphEntityMatchFuzzyKeys", null
+                },
+                {
+                    "GraphEntityMatchMinimumPosterior", "0.2"
+                },
+                {
+                    "EnableEntityRiskReview", "False"
+                },
+                {
+                    "WaitEntityRiskReview", "86400000"
+                },
+                {
+                    "EnableCaseTriage", "False"
+                },
+                {
+                    "CaseTriageQaOverrideFactor", "3"
+                },
+                {
+                    "EnableCaseTriageReplay", "False"
+                },
+                {
+                    "WaitCaseTriageReplay", "30000"
+                },
+                {
+                    "WaitCaseTriage", "600000"
+                },
+                {
+                    "CaseTriageUsers", null
+                },
+                {
+                    "CaseTriageWorkflows", null
+                },
+                {
+                    "CaseTriageMaximumCases", "25"
+                },
+                {
+                    "EnableModelDriftMonitoring", "False"
+                },
+                {
+                    "WaitModelDrift", "86400000"
+                },
+                {
+                    "ModelDriftRecentDays", "7"
+                },
+                {
+                    "ModelDriftBaselineDays", "28"
+                },
+                {
+                    "ModelDriftMinimumSamples", "200"
+                },
+                {
+                    "ModelDriftMaximumSamples", "50000"
+                },
+                {
+                    "EnableCaseDigest", "False"
+                },
+                {
+                    "CaseDigestHourUtc", "7"
+                },
+                {
+                    "CaseDigestDays", "1,2,3,4,5"
+                },
+                {
+                    "CaseDigestEmail", "False"
+                },
+                {
+                    "EnableSanctionRescreen", "False"
+                },
+                {
+                    "SanctionRescreenDays", "30"
+                },
+                {
+                    "SanctionRescreenMaximumNames", "100000"
+                },
+                {
+                    "EnableRetentionPurge", "False"
+                },
+                {
+                    "RetentionPurgeDryRun", "True"
+                },
+                {
+                    "RetentionArchiveDays", "0"
+                },
+                {
+                    "RetentionPurgeDeleteLimit", "1000"
+                },
+                {
+                    "WaitRetentionPurge", "86400000"
+                },
+                {
+                    "EnableErasureExecution", "True"
+                },
+                {
+                    "WaitErasureExecution", "30000"
+                },
+                {
+                    "ErasureRetentionMinimumDays", "1825"
+                },
+                {
+                    "EnableCaseServiceLevelSweep", "False"
+                },
+                {
+                    "CaseServiceLevelSweepSeconds", "60"
+                },
+                {
+                    "CaseServiceLevelSweepBatchSize", "200"
+                },
+                {
+                    "EnableCaseRisk", "True"
+                },
+                {
+                    "CaseRiskWait", "30000"
+                },
+                {
+                    "CaseRiskSweepMinutes", "15"
+                },
+                {
+                    "CaseRiskBatchSize", "200"
+                },
+                {
+                    "CaseRiskKappa", "0.7"
+                },
+                {
+                    "CaseRiskRho", "0.3"
+                },
+                {
+                    "CaseRiskPriorStrength", "20"
+                },
+                {
+                    "CaseRiskBaseRatePrior", "0.08"
+                },
+                {
+                    "CaseRiskDeadlineLaneDays", "2"
+                },
+                {
+                    "CaseRiskKeyHistoryHalfLifeDays", "180"
+                },
+                {
+                    "CaseRiskImpactWeights", "1,3,10,30,100"
+                },
+                {
+                    "CaseRiskMoneyBands", "5000,100000,1000000,10000000"
+                },
+                {
+                    "CaseRiskQaSampleRate", "0.05"
+                },
+                {
+                    "CaseRiskQaMaxPriority", "25"
+                },
+                {
                     "EnableEntityModel", "True"
                 },
                 {
@@ -133,7 +357,28 @@ namespace Jube.DynamicEnvironment
                     "HttpAdaptationTimeout", "1000"
                 },
                 {
-                    "HttpAdaptationValidateSsl", "False"
+                    "HttpAdaptationValidateSsl", "True"
+                },
+                {
+                    "HttpAdaptationAllowInsecureTargets", "False"
+                },
+                {
+                    "ResilientHttpFailureRatio", "0.5"
+                },
+                {
+                    "ResilientHttpMinimumThroughput", "5"
+                },
+                {
+                    "ResilientHttpSamplingDurationSeconds", "30"
+                },
+                {
+                    "ResilientHttpBreakDurationSeconds", "30"
+                },
+                {
+                    "ResilientHttpMaxRetries", "0"
+                },
+                {
+                    "ResilientHttpRetryDelayMilliseconds", "100"
                 },
                 {
                     "ReprocessingBulkLimit", "10000"
@@ -193,6 +438,18 @@ namespace Jube.DynamicEnvironment
                     "ExhaustiveDatasetUploadMaxColumns", "500"
                 },
                 {
+                    "PreservationImportMaxBytes", "104857600"
+                },
+                {
+                    "PreservationImportMaxDecompressedBytes", "1073741824"
+                },
+                {
+                    "PreservationSnapshotMaxPerTenant", "200"
+                },
+                {
+                    "PreservationSnapshotMaxAgeDays", "365"
+                },
+                {
                     "ExhaustiveBatchRecallMaxRows", "2000"
                 },
                 {
@@ -217,10 +474,28 @@ namespace Jube.DynamicEnvironment
                     "EnableMockEndpoints", "True"
                 },
                 {
+                    "EnableMockMfaEndpoint", "False"
+                },
+                {
                     "EnableVisualisationDatasourceTableAllowList", "True"
                 },
                 {
+                    "ReportStatementTimeoutSeconds", "30"
+                },
+                {
+                    "ReportMaximumCellBytes", "1048576"
+                },
+                {
+                    "ReportMaximumResultBytes", "33554432"
+                },
+                {
                     "ApprovalsRequired", "1"
+                },
+                {
+                    "CaseSuppressionMaxDurationDays", "366"
+                },
+                {
+                    "CaseSuppressionPendingLapseDays", "14"
                 },
                 {
                     "EnableBacktest", "True"
@@ -233,6 +508,36 @@ namespace Jube.DynamicEnvironment
                 },
                 {
                     "BacktestOnlineMaxRows", "10000"
+                },
+                {
+                    "BacktestOnlineMaxSeconds", "60"
+                },
+                {
+                    "BacktestMaxPendingPerModel", "5"
+                },
+                {
+                    "BacktestMaxPendingPerTenant", "20"
+                },
+                {
+                    "ParseWindowSeconds", "60"
+                },
+                {
+                    "ParseMaxPerUserPerWindow", "120"
+                },
+                {
+                    "ParseMaxPerTenantPerWindow", "600"
+                },
+                {
+                    "SampleMaxBytes", "33554432"
+                },
+                {
+                    "SynchronisationScheduleWindowMinutes", "10"
+                },
+                {
+                    "SynchronisationScheduleMaxPerTenant", "100"
+                },
+                {
+                    "SynchronisationScheduleMaxPerModel", "30"
                 },
                 {
                     "BacktestPageSize", "5000"
@@ -275,9 +580,6 @@ namespace Jube.DynamicEnvironment
                 },
                 {
                     "PasswordHashingKey", null
-                },
-                {
-                    "PreservationSalt", null
                 },
                 {
                     "EnablePublicInvokeController", "True"
@@ -340,6 +642,9 @@ namespace Jube.DynamicEnvironment
                     "ExhaustiveRecallTimeout", "1000"
                 },
                 {
+                    "ExhaustiveZScoreClipBound", "5"
+                },
+                {
                     "AdvancedAnalyticsStageTimeout", "1000"
                 },
                 {
@@ -370,28 +675,28 @@ namespace Jube.DynamicEnvironment
                     "WaitTtlCounterDecrement", "1000"
                 },
                 {
-                    "RedisConnectionString", "localhost"
+                    "RespConnectionString", "localhost"
                 },
                 {
-                    "RedisSentinelConnectTimeout", "2000"
+                    "RespSentinelConnectTimeout", "2000"
                 },
                 {
-                    "RedisSentinelSyncTimeout", "2000"
+                    "RespSentinelSyncTimeout", "2000"
                 },
                 {
-                    "RedisSentinelConnectRetry", "1"
+                    "RespSentinelConnectRetry", "1"
                 },
                 {
-                    "RedisReconnectRetryBaseDelay", "100"
+                    "RespReconnectRetryBaseDelay", "100"
                 },
                 {
-                    "RedisReconnectRetryMaxDelay", "3000"
+                    "RespReconnectRetryMaxDelay", "3000"
                 },
                 {
-                    "RedisBacklogFailFast", "False"
+                    "RespBacklogFailFast", "False"
                 },
                 {
-                    "RedisCommandFlag", "0"
+                    "RespCommandFlag", "0"
                 },
                 {
                     "CachePruneServer", "True"
@@ -430,13 +735,37 @@ namespace Jube.DynamicEnvironment
                     "LocalCacheBytes", "1073741824"
                 },
                 {
-                    "RedisMessagePackCompression", "True"
+                    "RespMessagePackCompression", "True"
                 },
                 {
-                    "RedisStorePayloadCountsAndBytes", "False"
+                    "WireSerialisationMode", "MessagePack"
                 },
                 {
-                    "RedisPublishSubscribeEvents", "False"
+                    "WireMessagePackCompression", "Lz4"
+                },
+                {
+                    "WireGeneratedDecoders", "True"
+                },
+                {
+                    "WireEnvelopeEncryption", "False"
+                },
+                {
+                    "WireEnvelopeEncryptionPrivateKey", null
+                },
+                {
+                    "WireEnvelopeEncryptionPublicKey", null
+                },
+                {
+                    "WireHttpCompression", "Gzip"
+                },
+                {
+                    "WireHttpCompressionLevel", "Fastest"
+                },
+                {
+                    "RespStorePayloadCountsAndBytes", "False"
+                },
+                {
+                    "RespPublishSubscribeEvents", "False"
                 },
                 {
                     "MaxInvokeControllerRequestBytes", "4000"
@@ -460,22 +789,19 @@ namespace Jube.DynamicEnvironment
                     "PartialResponseMessageSerialisation", "True"
                 },
                 {
-                    "RedisBackplane", "True"
+                    "RespBackplane", "True"
                 },
                 {
-                    "DataProtectionRedisBackplane", "True"
+                    "DataProtectionRespBackplane", "True"
                 },
                 {
                     "SecretsPath", ""
                 },
                 {
-                    "JempFileLegacyEncryptionFallback", "True"
-                },
-                {
                     "ApiHmacKey", null
                 },
                 {
-                    "RedisHsetOffloadToPostgres", "False"
+                    "RespHsetOffloadToPostgres", "False"
                 },
                 {
                     "SecureHttpCookie", "False"
@@ -527,6 +853,15 @@ namespace Jube.DynamicEnvironment
                 },
                 {
                     "ElementSymmetricEncryptionKey", "SuperSecretEncryptionKeyGoesHere"
+                },
+                {
+                    "MultifactorAuthenticationProvider", "Rsa"
+                },
+                {
+                    "MfaSecretEncryptionKey", null
+                },
+                {
+                    "MfaTotpIssuer", "Jube"
                 },
                 {
                     "EnableMultifactorAuthentication", "False"
@@ -649,6 +984,15 @@ namespace Jube.DynamicEnvironment
                     "OAuthPrompt", null
                 },
                 {
+                    "SanctionSearchWindowSeconds", "60"
+                },
+                {
+                    "SanctionSearchMaxPerUserPerWindow", "300"
+                },
+                {
+                    "SanctionSearchMaxEntries", "1000"
+                },
+                {
                     "SanctionsLevenshteinMaxDistanceRatio", "0.3"
                 },
                 {
@@ -698,6 +1042,210 @@ namespace Jube.DynamicEnvironment
                 },
                 {
                     "PatroniDcsNamespace", "/service/"
+                },
+                {
+                    "EnableCaseSimilarity", "True"
+                },
+                {
+                    "WaitCaseSimilarity", "60000"
+                },
+                {
+                    "CaseSimilarityRefreshMinutes", "30"
+                },
+                {
+                    "CaseSimilarityWindowDays", "90"
+                },
+                {
+                    "CaseSimilarityMaximumRows", "500"
+                },
+                {
+                    "CaseSimilarityMaximumCases", "500"
+                },
+                {
+                    "CaseSimilarityHashingKey", null
+                },
+                {
+                    "EnableCaseKeyJournalPeers", "True"
+                },
+                {
+                    "WaitCaseKeyJournalPeers", "86400000"
+                },
+                {
+                    "CaseKeyJournalPeerWindowDays", "90"
+                },
+                {
+                    "CaseKeyJournalPeerMaximumRows", "200000"
+                },
+                {
+                    "EnableCaseKeyJournalTagJobs", "True"
+                },
+                {
+                    "WaitCaseKeyJournalTagJobs", "2000"
+                },
+                {
+                    "EnableGraphArchiveKeyIndex", "True"
+                },
+                {
+                    "WaitGraphArchiveKeyIndex", "3600000"
+                },
+                {
+                    "EnableGraphBuild", "True"
+                },
+                {
+                    "WaitGraphBuild", "60000"
+                },
+                {
+                    "GraphBuildBatchSize", "5000"
+                },
+                {
+                    "WaitGraphBuildQueue", "1000"
+                },
+                {
+                    "GraphBuildQueueBatchSize", "500"
+                },
+                {
+                    "GraphBuildMaximumBatchesPerCycle", "200"
+                },
+                {
+                    "GraphBuildRequiresArchiveKeyIndex", "True"
+                },
+                {
+                    "GraphRetentionDays", "365"
+                },
+                {
+                    "GraphReferenceAmount", "1000"
+                },
+                {
+                    "EnableGraphHubs", "True"
+                },
+                {
+                    "WaitGraphHubs", "3600000"
+                },
+                {
+                    "GraphHubPercentile", "0.999"
+                },
+                {
+                    "GraphHubMinimumDegree", "50"
+                },
+                {
+                    "EnableGraphCommunities", "True"
+                },
+                {
+                    "WaitGraphCommunities", "60000"
+                },
+                {
+                    "GraphCommunityResolution", "1.0"
+                },
+                {
+                    "GraphAlgorithmsMaximumEdges", "20000000"
+                },
+                {
+                    "EnableGraphDistance", "True"
+                },
+                {
+                    "WaitGraphDistance", "60000"
+                },
+                {
+                    "GraphDistanceCap", "4"
+                },
+                {
+                    "EnableGraphPatterns", "True"
+                },
+                {
+                    "WaitGraphPatterns", "60000"
+                },
+                {
+                    "GraphPatternWindowDays", "30"
+                },
+                {
+                    "GraphPatternMaximumEvents", "2000000"
+                },
+                {
+                    "GraphPatternStructuringThreshold", "10000"
+                },
+                {
+                    "CaseRiskNetworkHalfLifeDays", "90"
+                },
+                {
+                    "EnableGraphRetention", "True"
+                },
+                {
+                    "EnableGraphRecall", "False"
+                },
+                {
+                    "GraphRecallLoaderWait", "900000"
+                },
+                {
+                    "GraphRecallMaximumNodesPerTenant", "2000000"
+                },
+                {
+                    "GraphRecallMaximumEdgesPerTenant", "4000000"
+                },
+                {
+                    "GraphRecallHashKeys", "False"
+                },
+                {
+                    "EnableSvirfd", "True"
+                },
+                {
+                    "SvirfdApiKey", null
+                },
+                {
+                    "SvirfdMode", "Auto"
+                },
+                {
+                    "SvirfdBaseUrl", "https://svirfd.com"
+                },
+                {
+                    "SvirfdDirectory", null
+                },
+                {
+                    "SvirfdPollInterval", "3600000"
+                },
+                {
+                    "SvirfdSite", "jube"
+                },
+                {
+                    "EnableSvirfdRemoteEngineLookup", "True"
+                },
+                {
+                    "SvirfdRemoteLookupTimeout", "2000"
+                },
+                {
+                    "SvirfdRemoteCacheMinutes", "60"
+                },
+                {
+                    "SvirfdRemoteCacheMaximumEntries", "100000"
+                },
+                {
+                    "SvirfdWaitForReady", "False"
+                },
+                {
+                    "SvirfdStartupWait", "60000"
+                },
+                {
+                    "SvirfdCacheDirectory", "svirfd-cache"
+                },
+                {
+                    "SvirfdLocalRetryPause", "30000"
+                },
+                {
+                    "SvirfdStaleAfter", "10800000"
+                },
+                {
+                    "WaitGraphRetention", "86400000"
+                },
+                {
+                    "EnableCaseNarratives", "True"
+                },
+                {
+                    "WaitCaseNarratives", "3600000"
+                },
+                {
+                    "CaseNarrativeUsers", null
+                },
+                {
+                    "CaseNarrativeMaximumCases", "25"
                 },
                 {
                     "EnableInfrastructureHealthMetricsPurge", "True"
@@ -856,6 +1404,24 @@ namespace Jube.DynamicEnvironment
                     "AskJoobyReadOnly", "False"
                 },
                 {
+                    "AskJoobyRequireWriteApproval", "True"
+                },
+                {
+                    "AskJoobyRateWindowSeconds", "60"
+                },
+                {
+                    "AskJoobyMaxMessagesPerUserPerWindow", "20"
+                },
+                {
+                    "AskJoobyMaxMessagesPerTenantPerWindow", "120"
+                },
+                {
+                    "AskJoobyMaxConcurrentTurnsPerUser", "3"
+                },
+                {
+                    "AskJoobyMaxConcurrentTurnsPerTenant", "20"
+                },
+                {
                     "AskJoobyChatInputPromptInjectionMainThreshold", "0.97"
                 },
                 {
@@ -947,6 +1513,12 @@ namespace Jube.DynamicEnvironment
                 },
                 {
                     "AskJoobyOpenCorporatesMaxResults", "5"
+                },
+                {
+                    "JUBE_HOOK_ALLOWED_HOSTS", ""
+                },
+                {
+                    "JUBE_HOOK_ALLOWED_CIDRS", ""
                 }
             };
 
@@ -1020,6 +1592,10 @@ namespace Jube.DynamicEnvironment
             ValidateJwtKey();
             ValidatePasswordHashingKey();
             ValidatePasswordAsymmetricEncryptionKeys();
+            ValidateWireMode();
+            ValidateWireCompression();
+            ValidateWireHttpCompression();
+            ValidateWireEncryptionKeys();
         }
 
         public ILog Log { get; set; }
@@ -1235,6 +1811,64 @@ namespace Jube.DynamicEnvironment
             if (string.IsNullOrEmpty(appSettings["JWTKey"]))
             {
                 throw new Exception("Missing JWTKey in Environment Variables.");
+            }
+        }
+
+        private void ValidateWireEncryptionKeys()
+        {
+            if (!appSettings["WireEnvelopeEncryption"].Equals("True", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(appSettings["WireEnvelopeEncryptionPrivateKey"]) ||
+                string.IsNullOrEmpty(appSettings["WireEnvelopeEncryptionPublicKey"]))
+            {
+                throw new Exception(
+                    "WireEnvelopeEncryption is True but WireEnvelopeEncryptionPrivateKey and/or WireEnvelopeEncryptionPublicKey are not " +
+                    "set in Environment Variables. Generate a fresh RSA keypair of at least 2048 bits for this " +
+                    "environment and set both - do not reuse a keypair from documentation or another environment, " +
+                    "and do not reuse the PasswordAsymmetricEncryption keypair.");
+            }
+        }
+
+        private void ValidateWireHttpCompression()
+        {
+            var kind = appSettings["WireHttpCompression"];
+            var level = appSettings["WireHttpCompressionLevel"];
+
+            if (!new[] { "None", "Gzip", "Brotli" }.Contains(kind, StringComparer.OrdinalIgnoreCase))
+            {
+                throw new Exception(
+                    $"WireHttpCompression is '{kind}' in Environment Variables but must be one of None, Gzip or Brotli.");
+            }
+
+            if (!new[] { "Fastest", "Optimal", "SmallestSize" }.Contains(level, StringComparer.OrdinalIgnoreCase))
+            {
+                throw new Exception(
+                    $"WireHttpCompressionLevel is '{level}' in Environment Variables but must be one of Fastest, Optimal or SmallestSize.");
+            }
+        }
+
+        private void ValidateWireCompression()
+        {
+            var compression = appSettings["WireMessagePackCompression"];
+
+            if (!new[] { "None", "Lz4" }.Contains(compression, StringComparer.OrdinalIgnoreCase))
+            {
+                throw new Exception(
+                    $"WireMessagePackCompression is '{compression}' in Environment Variables but must be one of None or Lz4.");
+            }
+        }
+
+        private void ValidateWireMode()
+        {
+            var mode = appSettings["WireSerialisationMode"];
+
+            if (!new[] { "Json", "Mixed", "MessagePack" }.Contains(mode, StringComparer.OrdinalIgnoreCase))
+            {
+                throw new Exception(
+                    $"WireSerialisationMode is '{mode}' in Environment Variables but must be one of Json, Mixed or MessagePack.");
             }
         }
 

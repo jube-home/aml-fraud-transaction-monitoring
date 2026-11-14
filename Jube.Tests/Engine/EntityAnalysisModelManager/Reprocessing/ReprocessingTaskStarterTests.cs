@@ -25,6 +25,7 @@ using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Reproc
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.ModelScaffolding;
 using LinqToDB;
+using LinqToDB.Async;
 using LinqToDB.Data;
 using StackExchange.Redis;
 using Xunit;
@@ -363,6 +364,107 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
         }
 
         [Fact]
+        public async Task ACancelledRunIsRequeuedAndTheRerunProcessesEveryDocumentExactlyOnceAsync()
+        {
+            await SeedAsync(1, 600, i => SecondsAfterBase(i));
+            var instanceId = await CreateInstanceAsync("Return True");
+            using var cancellation = new CancellationTokenSource();
+            var starter = Starter(TimeSpan.Zero);
+
+            var run = Task.Run(async () =>
+            {
+                await using var dbContext = Db();
+
+                return await starter.RunNextAsync(dbContext, Model(), cancellation.Token);
+            });
+
+            var deadline = DateTime.UtcNow.AddSeconds(60);
+
+            while ((await InstanceAsync(instanceId)).ProcessedCount.GetValueOrDefault() == 0 &&
+                   DateTime.UtcNow < deadline)
+            {
+                await Task.Delay(20);
+            }
+
+            await cancellation.CancelAsync();
+
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => run);
+            var interrupted = await InstanceAsync(instanceId);
+            interrupted.StatusId.Should().Be(0);
+            interrupted.Deleted.GetValueOrDefault().Should().Be(0);
+
+            var result = await RunAsync();
+
+            result.Outcome.Should().Be(ReprocessingRunOutcome.Completed);
+            result.Processed.Should().Be(600);
+            var finished = await InstanceAsync(instanceId);
+            finished.StatusId.Should().Be(4);
+            finished.ProcessedCount.Should().Be(600);
+            var archive = await ArchiveAsync();
+            archive.Should().HaveCount(600);
+            archive.Select(a => a.EntityAnalysisModelInstanceEntryGuid).Distinct().Should().HaveCount(600);
+            archive.Should().OnlyContain(a => a.EntityAnalysisModelsReprocessingRuleInstanceId == instanceId);
+        }
+
+        [Fact]
+        public async Task AnInstanceAbandonedByACrashedProcessIsReclaimedOnlyOnceItsHeartbeatIsStaleAsync()
+        {
+            await SeedAsync(1, 10, i => SecondsAfterBase(i));
+            var instanceId = await CreateInstanceAsync("Return True");
+
+            await using (var dbContext = Db())
+            {
+                await dbContext.EntityAnalysisModelReprocessingRuleInstance.Where(w => w.Id == instanceId)
+                    .Set(s => s.StatusId, (byte)3)
+                    .Set(s => s.StartedDate, DateTime.UtcNow.AddMinutes(-5))
+                    .Set(s => s.UpdatedDate, DateTime.UtcNow.AddSeconds(-20))
+                    .UpdateAsync();
+            }
+
+            (await TryRunAsync()).Should().BeNull();
+            (await InstanceAsync(instanceId)).StatusId.Should().Be(3);
+
+            await using (var dbContext = Db())
+            {
+                await dbContext.EntityAnalysisModelReprocessingRuleInstance.Where(w => w.Id == instanceId)
+                    .Set(s => s.StartedDate, DateTime.UtcNow.AddHours(-2))
+                    .Set(s => s.UpdatedDate, DateTime.UtcNow.AddHours(-1))
+                    .UpdateAsync();
+            }
+
+            var result = await RunAsync();
+
+            result.Outcome.Should().Be(ReprocessingRunOutcome.Completed);
+            result.Processed.Should().Be(10);
+            (await InstanceAsync(instanceId)).StatusId.Should().Be(4);
+        }
+
+        [Fact]
+        public async Task AQueuedInstanceOfADeletedOrInactiveRuleIsNeverClaimedAsync()
+        {
+            await SeedAsync(1, 10, i => SecondsAfterBase(i));
+            var instanceId = await CreateInstanceAsync("Return True");
+            var ruleId = (await InstanceAsync(instanceId)).EntityAnalysisModelReprocessingRuleId!.Value;
+
+            await using (var dbContext = Db())
+            {
+                await dbContext.EntityAnalysisModelReprocessingRule.Where(w => w.Id == ruleId)
+                    .Set(s => s.Deleted, (byte)1).UpdateAsync();
+            }
+
+            (await TryRunAsync()).Should().BeNull();
+
+            await using (var dbContext = Db())
+            {
+                await dbContext.EntityAnalysisModelReprocessingRule.Where(w => w.Id == ruleId)
+                    .Set(s => s.Deleted, (byte)0).Set(s => s.Active, (byte)0).UpdateAsync();
+            }
+
+            (await TryRunAsync()).Should().BeNull();
+            (await InstanceAsync(instanceId)).StatusId.Should().Be(0);
+        }
+
+        [Fact]
         public async Task ReprocessingLeavesTheCacheExactlyAsLiveTrafficLeftItAsync()
         {
             await SeedAsync(1, 30, i => SecondsAfterBase(i));
@@ -373,7 +475,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.Reprocessing
             var modelGuid = fixture.Shared.ModelGuid;
 
             await using var multiplexer =
-                await ConnectionMultiplexer.ConnectAsync(ModelEngineHost.RedisConnectionString + ",allowAdmin=true");
+                await ConnectionMultiplexer.ConnectAsync(ModelEngineHost.RespConnectionString + ",allowAdmin=true");
 
             var database = multiplexer.GetDatabase();
             var server = multiplexer.GetServer(multiplexer.GetEndPoints()[0]);

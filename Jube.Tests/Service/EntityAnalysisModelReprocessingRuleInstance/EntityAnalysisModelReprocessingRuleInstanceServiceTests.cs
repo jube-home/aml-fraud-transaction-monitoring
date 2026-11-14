@@ -33,6 +33,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Infrastructure.Reactivity;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
@@ -230,8 +231,8 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
 
             updated.Id.Should().NotBe(saved.Id);
             updated.Version.Should().Be(2);
-            updated.StatusId.Should().Be(3);
-            updated.SampledCount.Should().Be(5);
+            updated.StatusId.Should().Be(0);
+            updated.SampledCount.Should().Be(0);
 
             var oldRow = await dbContext.GetTable<Data.Poco.EntityAnalysisModelReprocessingRuleInstance>()
                 .FirstAsync(w => w.Id == saved.Id);
@@ -525,7 +526,6 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
             var dto = NewDto(ruleId);
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
-            dto.Version = 999;
 
             var updated = await service.UpdateAsync(dto);
             createdInstanceIds.Add(updated.Id);
@@ -781,7 +781,8 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
 
             for (var i = 0; i < 3; i++)
             {
-                var saved = await service.InsertAsync(NewDto(ruleId));
+                var rule = await CreateParentReprocessingRuleAsync(dbContext, fx.Seed.UserWithPermission, modelId);
+                var saved = await service.InsertAsync(NewDto(rule));
                 createdInstanceIds.Add(saved.Id);
             }
 
@@ -790,6 +791,91 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance
 
             var oversized = await service.ListAsync(10_000);
             oversized.Items.Count.Should().BeLessThanOrEqualTo(200);
+        }
+
+        [Fact]
+        public async Task InsertQueuesServerAssignedStateAndRefusesASecondUncompletedInstanceAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var ruleId = await CreateParentReprocessingRuleAsync(dbContext, fx.Seed.UserWithPermission, modelId);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var forged = NewDto(ruleId);
+            forged.StatusId = 3;
+            forged.ProcessedCount = 12345;
+            forged.StartedDate = DateTimeOffset.UtcNow.AddYears(-20);
+
+            var saved = await service.InsertAsync(forged);
+            createdInstanceIds.Add(saved.Id);
+
+            saved.StatusId.Should().Be(0);
+            saved.ProcessedCount.Should().Be(0);
+            saved.StartedDate.Should().BeNull();
+
+            var ex = await Assert.ThrowsAsync<ConflictException>(() => service.InsertAsync(NewDto(ruleId)));
+            ex.Code.Should().Be("Conflict");
+        }
+
+        [Fact]
+        public async Task UpdateIgnoresClientSuppliedRunStateAndRequeuesAnInstanceThatWasRunningAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var ruleId = await CreateParentReprocessingRuleAsync(dbContext, fx.Seed.UserWithPermission, modelId);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var saved = await service.InsertAsync(NewDto(ruleId));
+            createdInstanceIds.Add(saved.Id);
+
+            await dbContext.GetTable<Data.Poco.EntityAnalysisModelReprocessingRuleInstance>()
+                .Where(w => w.Id == saved.Id)
+                .Set(s => s.StatusId, (byte)4)
+                .Set(s => s.ProcessedCount, 77)
+                .UpdateAsync();
+
+            var forged = NewDto(ruleId);
+            forged.Id = saved.Id;
+            forged.Version = saved.Version;
+            forged.StatusId = 0;
+            forged.ProcessedCount = 1;
+
+            var completedUpdate = await service.UpdateAsync(forged);
+            createdInstanceIds.Add(completedUpdate.Id);
+
+            completedUpdate.StatusId.Should().Be(4);
+            completedUpdate.ProcessedCount.Should().Be(77);
+
+            await dbContext.GetTable<Data.Poco.EntityAnalysisModelReprocessingRuleInstance>()
+                .Where(w => w.Id == completedUpdate.Id)
+                .Set(s => s.StatusId, (byte)3)
+                .UpdateAsync();
+
+            var running = NewDto(ruleId);
+            running.Id = completedUpdate.Id;
+            running.Version = completedUpdate.Version;
+            running.StatusId = 4;
+
+            var restarted = await service.UpdateAsync(running);
+            createdInstanceIds.Add(restarted.Id);
+
+            restarted.StatusId.Should().Be(0);
+        }
+
+        [Fact]
+        public async Task ListsNeverContainSoftDeletedRowsAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var ruleId = await CreateParentReprocessingRuleAsync(dbContext, fx.Seed.UserWithPermission, modelId);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var saved = await service.InsertAsync(NewDto(ruleId));
+            createdInstanceIds.Add(saved.Id);
+            await service.DeleteAsync(saved.Id);
+
+            (await service.GetAsync()).Should().NotContain(d => d.Id == saved.Id);
+            (await service.ListAsync(200)).Items.Should().NotContain(d => d.Id == saved.Id);
         }
     }
 }

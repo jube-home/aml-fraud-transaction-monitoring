@@ -8,23 +8,31 @@ namespace Jube.Dictionary.Extensions
     {
         extension(String @this)
         {
-            public String FormatWith(object arg0)
+            [Description("Replaces format items with a single object.")]
+            public String FormatWith([Description("The argument to format.")] object arg0)
             {
                 return string.Format(@this, arg0);
             }
 
-            public String FormatWith(object arg0, object arg1)
+            [Description("Replaces format items with two objects.")]
+            public String FormatWith([Description("The first argument to format.")] object arg0,
+                [Description("The second argument to format.")] object arg1)
             {
                 return string.Format(@this, arg0, arg1);
             }
 
-            public String FormatWith(object arg0, object arg1, object arg2)
+            [Description("Replaces format items with three objects.")]
+            public String FormatWith([Description("The first argument to format.")] object arg0,
+                [Description("The second argument to format.")] object arg1,
+                [Description("The third argument to format.")] object arg2)
             {
                 return string.Format(@this, arg0, arg1, arg2);
             }
         }
 
-        public static string FormatWith(this string @this, params object[] values)
+        [Description("Replaces format items with an array of objects.")]
+        public static string FormatWith(this string @this,
+            [Description("An Object array containing zero or more objects to format.")] params object[] values)
         {
             return string.Format(@this, values);
         }

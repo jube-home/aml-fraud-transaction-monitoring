@@ -38,7 +38,7 @@ namespace Jube.App.Code.AskJooby
             IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
             IChatClient chatClient, IChatClient validationChatClient,
             IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator,
-            IServiceProvider serviceProvider, CancellationToken token)
+            IServiceProvider serviceProvider, CancellationToken token, bool forceReadOnly = false)
         {
             var enableValidation = Flag(dynamicEnvironment, "AskJoobyEnableValidation");
             var enableReranking = FlagDefaultTrue(dynamicEnvironment, "AskJoobyEnableReranking");
@@ -54,7 +54,7 @@ namespace Jube.App.Code.AskJooby
             var maxFanOut = Integer(dynamicEnvironment, "AskJoobyMaxFanOut") ?? 8;
             var memoryDecayHalfLifeDays = Real(dynamicEnvironment, "AskJoobyMemoryDecayHalfLifeDays") ?? 30;
             var connectionString = dynamicEnvironment.AppSettings("ConnectionString");
-            var serviceToolsReadOnly = Flag(dynamicEnvironment, "AskJoobyReadOnly");
+            var serviceToolsReadOnly = forceReadOnly || Flag(dynamicEnvironment, "AskJoobyReadOnly");
             var maxConcurrentToolCalls = Integer(dynamicEnvironment, "AskJoobyMaxConcurrentToolCalls") ?? 4;
             var webSearchMaxResults = Integer(dynamicEnvironment, "AskJoobyWebSearchMaxResults") ?? 5;
 
@@ -92,7 +92,8 @@ namespace Jube.App.Code.AskJooby
                 serviceProvider.GetService<IAgentRoutingLedger>(),
                 serviceProvider.GetService<IWebSearchClient>(), webSearchMaxResults, webSearchDepth,
                 webSearchAnswerMode, webSearchRawContentMode,
-                serviceProvider.GetService<IOpenCorporatesClient>(), openCorporatesMaxResults, token);
+                serviceProvider.GetService<IOpenCorporatesClient>(), openCorporatesMaxResults,
+                serviceProvider.GetService<Jube.Svirfd.Interfaces.ISvirfdLookup>(), token);
         }
 
         public static bool Flag(DynamicEnvironment.DynamicEnvironment dynamicEnvironment, string key)

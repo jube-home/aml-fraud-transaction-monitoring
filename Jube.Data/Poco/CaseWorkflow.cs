@@ -45,56 +45,64 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(15)] public byte? EnableVisualisation { get; set; }
         [Column] [Nullable] [Key(16)] public int? Version { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "CaseWorkflowId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "CaseWorkflowId", CanBeNull = true)]
         [Key(17)]
         public IEnumerable<CaseWorkflowAction> CaseWorkflowAction { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "CaseWorkflowId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "CaseWorkflowId", CanBeNull = true)]
         [Key(18)]
         public IEnumerable<CaseWorkflowDisplay> CaseWorkflowDisplay { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "CaseWorkflowId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "CaseWorkflowId", CanBeNull = true)]
         [Key(19)]
         public IEnumerable<CaseWorkflowFilter> CaseWorkflowFilter { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "CaseWorkflowId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "CaseWorkflowId", CanBeNull = true)]
         [Key(20)]
         public IEnumerable<CaseWorkflowForm> CaseWorkflowForm { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "CaseWorkflowId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "CaseWorkflowId", CanBeNull = true)]
         [Key(21)]
         public IEnumerable<CaseWorkflowMacro> CaseWorkflowMacro { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "CaseWorkflowId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "CaseWorkflowId", CanBeNull = true)]
         [Key(22)]
         public IEnumerable<CaseWorkflowStatus> CaseWorkflowStatus { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "CaseWorkflowId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "CaseWorkflowId", CanBeNull = true)]
         [Key(23)]
         public IEnumerable<CaseWorkflowXPath> CaseWorkflowXPath { get; set; }
 
-        [Association(ThisKey = "TenantRegistryId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "TenantRegistryId", OtherKey = "Id", CanBeNull = true)]
         [Key(24)]
         public TenantRegistry TenantRegistry { get; set; }
 
-        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true)]
         [Key(25)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
 
         [Column] [Nullable] [Key(26)] public Guid Guid { get; set; }
         [Column] [Nullable] [Key(27)] public int? ImportId { get; set; }
+        [Column] [Nullable] [Key(29)] public string ValueField { get; set; }
+        [Column] [Key(30)] public byte TypologySeverityId { get; set; }
+        [Column] [Nullable] [Key(31)] public int? FirstViewTargetMinutes { get; set; }
+        [Column] [Nullable] [Key(32)] public int? OwnershipTargetMinutes { get; set; }
+        [Column] [Nullable] [Key(33)] public int? ResolutionTargetMinutes { get; set; }
+        [Column] [Nullable] [Key(34)] public double? RiskKappa { get; set; }
+        [Column] [Nullable] [Key(35)] public double? RiskRho { get; set; }
+        [Column] [Nullable] [Key(36)] public double? RiskPriorStrength { get; set; }
+        [Column] [Nullable] [Key(37)] public double? RiskBaseRatePrior { get; set; }
+        [Column] [Nullable] [Key(38)] public int? RiskDeadlineLaneDays { get; set; }
+        [Column] [Nullable] [Key(39)] public double? RiskKeyHistoryHalfLifeDays { get; set; }
+        [Column] [Nullable] [Key(40)] public string RiskImpactWeights { get; set; }
+        [Column] [Nullable] [Key(41)] public string RiskMoneyBands { get; set; }
+        [Column] [Nullable] [Key(42)] public double? RiskQaSampleRate { get; set; }
+        [Column] [Nullable] [Key(43)] public int? DailyGoal { get; set; }
+        [Column] [Nullable] [Key(44)] public byte? EnableNarrative { get; set; }
+        [Column] [Nullable] [Key(45)] public Guid GraphRegistryGuid { get; set; }
+        [Column] [Nullable] [Key(46)] public byte? EnableGraph { get; set; }
 
-        [Association(ThisKey = "Guid", OtherKey = "CaseWorkflowGuid", CanBeNull = false,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Guid", OtherKey = "CaseWorkflowGuid", CanBeNull = false)]
         [Key(28)]
         public CaseWorkflowRole CaseWorkflowRole { get; set; }
     }

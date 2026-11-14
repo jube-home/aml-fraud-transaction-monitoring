@@ -324,7 +324,7 @@ public abstract class CaseWorkflowChildTestBase(DatabaseFixture fx, ITestOutputH
                 b["createdUser"] = "forged-admin";
                 b["createdDate"] = "1999-01-01T00:00:00Z";
                 b["deleted"] = 1;
-                b["version"] = 500;
+                b["version"] = 1;
                 b["deletedUser"] = "forged-admin";
             })));
 
@@ -339,6 +339,15 @@ public abstract class CaseWorkflowChildTestBase(DatabaseFixture fx, ITestOutputH
         run.Expect(after[2] is "0" or "", update, "MASS", "update soft-deleted the row");
         run.Expect(after[3] == "2", update, "MASS", $"version not server managed: {after[3]}");
         run.Expect(after[4] == parts[5], update, "MASS", "created date changed by update");
+
+        var forgedUpdate = run.Check(await SendJsonAsync(PenTestUser.WithPermission, "PUT", Route + "/", WithId(
+            World.A, id, b =>
+            {
+                b["name"] = $"ZzTestPen{Kind}NewMass{World.Tag}";
+                b["version"] = 500;
+            })));
+
+        run.Expect(forgedUpdate.Status == 409, forgedUpdate, "MASS", "a forged version was accepted");
         await run.AssertCleanAsync(Output);
     }
 

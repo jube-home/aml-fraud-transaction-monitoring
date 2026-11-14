@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Validation;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -24,63 +25,81 @@ namespace Jube.Dto.Query.EntityAnalysisModelHistorySimulation
     [Description("The value an abstraction rule would have for the transaction in a context, worked out as the " +
                  "engine does: the transaction history for the search key value is fetched from the cache, " +
                  "filtered by the rule, limited to the window, and aggregated. Nothing is stored.")]
+    [MessagePackObject]
     public class AbstractionSimulationResultDto
     {
         [Description("True when the rule compiled and the simulation ran; when false, Errors says why.")]
+        [Key(0)]
         public bool Simulated { get; set; }
 
         [Description("Why the simulation did not run, e.g. the rule did not compile, the search key has no value " +
                      "in the context, or the cache is unavailable.")]
+        [Key(1)]
         public List<ValidationErrorDto> Errors { get; set; } = [];
 
         [Description("True when the search key is cache backed, so the engine reads a value computed in the " +
                      "background rather than aggregating history; Value is then that cached value.")]
+        [Key(2)]
         public bool CacheBacked { get; set; }
 
         [Description("The search key field, e.g. AccountId.")]
+        [Key(3)]
         public string SearchKey { get; set; } = string.Empty;
 
         [Description("The search key value taken from the context, e.g. the account id.")]
+        [Key(4)]
         public string? SearchKeyValue { get; set; }
 
         [Description("How many history entries the engine may fetch: the lower of the model's cache fetch limit " +
                      "and the search key's fetch limit.")]
+        [Key(5)]
         public int FetchLimit { get; set; }
 
         [Description("History entries fetched from the cache for the search key value.")]
+        [Key(6)]
         public int DocumentsFetched { get; set; }
 
         [Description("True when the fetch limit was reached, so older history the window might include was not " +
                      "considered, exactly as in the engine.")]
+        [Key(7)]
         public bool FetchLimitReached { get; set; }
 
         [Description("Documents the rule was evaluated against: the fetched history plus the current transaction.")]
+        [Key(8)]
         public int DocumentsEvaluated { get; set; }
 
         [Description("Documents the rule matched, before the window was applied.")]
+        [Key(9)]
         public int Matched { get; set; }
 
         [Description("Matched documents inside the window; these are what is aggregated.")]
+        [Key(10)]
         public int InWindow { get; set; }
 
         [Description("Start of the window, in UTC.")]
+        [Key(11)]
         public DateTime? WindowFrom { get; set; }
 
         [Description("End of the window (the reference date), in UTC.")]
+        [Key(12)]
         public DateTime? WindowTo { get; set; }
 
         [Description("True when the search key's TTL is shorter than the rule's interval, so the engine uses the " +
                      "shorter window without saying so.")]
+        [Key(13)]
         public bool WindowShortenedBySearchKey { get; set; }
 
         [Description("The abstraction value the engine would produce, as invariant text; null when not simulated.")]
+        [Key(14)]
         public string? Value { get; set; }
 
         [Description("Up to 20 matched documents inside the window, as field name to invariant text, for checking " +
                      "what was counted.")]
+        [Key(15)]
         public List<Dictionary<string, string?>> Sample { get; set; } = [];
 
         [Description("The error the rule raised while filtering the history, when it did; otherwise null.")]
+        [Key(16)]
         public string? RuntimeError { get; set; }
     }
 }

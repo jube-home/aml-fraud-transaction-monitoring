@@ -29,6 +29,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.RuleParser;
 using LinqToDB;
+using LinqToDB.Async;
 using LinqToDB.Data;
 using Newtonsoft.Json.Linq;
 using Xunit;

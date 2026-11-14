@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,15 +22,18 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.EntityAnalysisModelDependency
 {
     [Description("An entity of a model that can depend on, or be depended on by, others.")]
+    [MessagePackObject]
     public class ModelEntityDto
     {
         [Description("The kind of entity, e.g. ActivationRule, TtlCounter, List or RequestXPath.")]
+        [Key(0)]
         public string Kind { get; set; } = string.Empty;
 
-        [Description("The entity's id.")] public int Id { get; set; }
-        [Description("The entity's name.")] public string Name { get; set; } = string.Empty;
+        [Description("The entity's id.")] [Key(1)] public int Id { get; set; }
+        [Description("The entity's name.")] [Key(2)] public string Name { get; set; } = string.Empty;
 
         [Description("Whether the entity is active.")]
+        [Key(3)]
         public bool Active { get; set; }
     }
 }

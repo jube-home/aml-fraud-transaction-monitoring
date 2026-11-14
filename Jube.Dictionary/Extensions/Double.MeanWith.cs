@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double MeanWith(this double @this, params double[]? others)
+        [Description("The average of the value and the others.")]
+        public static double MeanWith(this double @this, [Description("The other numbers.")] params double[]? others)
         {
             return CalculationSupport.Finite((@this + (others ?? []).Sum()) / (1 + (others ?? []).Length));
         }

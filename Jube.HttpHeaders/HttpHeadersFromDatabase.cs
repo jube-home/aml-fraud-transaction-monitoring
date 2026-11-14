@@ -23,7 +23,7 @@ namespace Jube.HttpHeaders
 
         public HttpHeadersFromDatabase(string connectionString, ILog log, CancellationToken token = default)
         {
-            var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(connectionString, log);
+            using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(connectionString, log);
             var httpHeaderRepository = new HttpHeaderRepository(dbContext);
 
             HeaderValues = httpHeaderRepository.GetAsync(token)

@@ -35,7 +35,7 @@ namespace Jube.Parser.Dependency
         string Name,
         int? Line)
     {
-        public bool Dangling => Target == null;
+        public bool Dangling => Target == null && Namespace != RuleReference.Graph && Namespace != RuleReference.Svirfd;
         public bool TargetInactive => Target is { Active: false };
         public bool TargetUnapproved => Target is { Approved: false };
     }

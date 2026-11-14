@@ -10,17 +10,20 @@ namespace Jube.Dictionary.Extensions
     {
         extension(DateTime @this)
         {
+            [Description("Converts the date to a full date time string.")]
             public string ToFullDateTimeString()
             {
                 return @this.ToString("F", DateTimeFormatInfo.CurrentInfo);
             }
 
-            public string ToFullDateTimeString(string culture)
+            [Description("Converts the date to a full date time string using a culture.")]
+            public string ToFullDateTimeString([Description("The culture.")] string culture)
             {
                 return @this.ToString("F", new CultureInfo(culture));
             }
 
-            public string ToFullDateTimeString(CultureInfo culture)
+            [Description("Converts the date to a full date time string using a culture.")]
+            public string ToFullDateTimeString([Description("The culture.")] CultureInfo culture)
             {
                 return @this.ToString("F", culture);
             }

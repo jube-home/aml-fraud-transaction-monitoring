@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
@@ -37,6 +38,7 @@ namespace Jube.Service.Repository.RoleRegistryPermission
         private static readonly int[] permissions = [36];
         private readonly ILog auditLog;
         private readonly ILog log;
+        private readonly PrivilegeEscalationGuard guard;
         private readonly PermissionValidation permissionValidation;
         private readonly RuleRepository repository;
         private readonly IServiceChangeBus serviceChangeBus;
@@ -57,6 +59,7 @@ namespace Jube.Service.Repository.RoleRegistryPermission
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             repository = new RuleRepository(dbContext, userName);
+            guard = new PrivilegeEscalationGuard(dbContext, tenantRegistryId, permissionValidation);
             validator = new RoleRegistryPermissionDtoValidator(repository, strings);
         }
 
@@ -475,6 +478,8 @@ namespace Jube.Service.Repository.RoleRegistryPermission
                     throw new DtoValidationException(results);
                 }
 
+                EnsureMayGrant("RoleRegistryPermission.Insert", model.PermissionSpecificationId);
+
                 var saved = await repository.InsertAsync(RoleRegistryPermissionMapper.ToPoco(model), token)
                     .ConfigureAwait(false);
                 op.Entity(saved.Id);
@@ -589,6 +594,15 @@ namespace Jube.Service.Repository.RoleRegistryPermission
                     throw new DtoValidationException(results);
                 }
 
+                EnsureMayGrant("RoleRegistryPermission.Update", model.PermissionSpecificationId);
+
+                var existing = await repository.GetByIdAsync(model.Id, token).ConfigureAwait(false);
+
+                if (existing is not null)
+                {
+                    EnsureMayGrant("RoleRegistryPermission.Update", existing.PermissionSpecificationId);
+                }
+
                 RulePoco saved;
 
                 try
@@ -634,6 +648,12 @@ namespace Jube.Service.Repository.RoleRegistryPermission
                 op.Outcome("not_found");
                 throw;
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
@@ -668,6 +688,13 @@ namespace Jube.Service.Repository.RoleRegistryPermission
             try
             {
                 EnsurePermitted("RoleRegistryPermission.Delete");
+
+                var existing = await repository.GetByIdAsync(id, token).ConfigureAwait(false);
+
+                if (existing is not null)
+                {
+                    EnsureMayGrant("RoleRegistryPermission.Delete", existing.PermissionSpecificationId);
+                }
 
                 try
                 {
@@ -713,6 +740,21 @@ namespace Jube.Service.Repository.RoleRegistryPermission
                 log.Error($"RoleRegistryPermission.Delete: unexpected failure id={id} user={userName}", ex);
                 throw;
             }
+        }
+
+        private void EnsureMayGrant(string op, int? permissionSpecificationId)
+        {
+            if (guard.MayGrant(permissionSpecificationId))
+            {
+                return;
+            }
+
+            if (log.IsWarnEnabled)
+            {
+                log.Warn($"{op}: privilege escalation refused user={userName}");
+            }
+
+            throw new ForbiddenException(strings[RoleRegistryPermissionResources.InsufficientPrivilege], permissions);
         }
 
         private void EnsurePermitted(string op)

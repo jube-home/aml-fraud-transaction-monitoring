@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Anda tidak memiliki izin untuk melakukan tindakan ini.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Anda harus masuk untuk melakukan tindakan ini.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>Percakapan tidak ditemukan.</value>
+  </data>
+    <data name="TitleMaxLength" xml:space="preserve">
+    <value>Judul maksimal {0} karakter.</value>
+  </data>
+    <data name="FileNotFound" xml:space="preserve">
+    <value>File tidak ditemukan.</value>
+  </data>
+    <data name="FileTooLarge" xml:space="preserve">
+    <value>File maksimal {0} MB.</value>
+  </data>
+    <data name="FileTypeNotAllowed" xml:space="preserve">
+    <value>Jenis file tersebut tidak diizinkan.</value>
+  </data>
+    <data name="EmptyReply" xml:space="preserve">
+    <value>Jooby tidak menemukan jawaban. Coba tanyakan lagi atau ubah rumusan pertanyaan.</value>
+  </data>
+    <data name="NoInferenceBackend" xml:space="preserve">
+    <value>Saya Jooby. Ada {0} Bite, {1} Trail, {2} Saltlick, {3} Joobrik spesialis, dan {4} Yoke, tetapi belum ada backend inferensi yang dikonfigurasi sehingga semuanya belum berjalan. Atur AskJoobyApiEndpoint, AskJoobyModel, dan AskJoobyApiKey, lalu setel EnableAskJooby ke True dan saya siap.</value>
+  </data>
+    <data name="StreamFailed" xml:space="preserve">
+    <value>Balasan tidak dapat diselesaikan. Silakan coba lagi.</value>
+  </data>
+    <data name="ApprovalSummary" xml:space="preserve">
+    <value>Jooby ingin melakukan perubahan menggunakan {0} dan memerlukan persetujuan Anda terlebih dahulu. Belum ada yang diubah.</value>
+  </data>
+    <data name="ApprovalNotFound" xml:space="preserve">
+    <value>Permintaan persetujuan itu tidak ditemukan atau sudah diputuskan.</value>
+  </data>
+    <data name="RateLimited" xml:space="preserve">
+    <value>Anda mengirim pesan terlalu cepat atau terlalu banyak balasan sedang berjalan. Harap tunggu sebentar lalu coba lagi.</value>
+  </data>
+</root>

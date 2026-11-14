@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>آپ کو یہ کارروائی کرنے کی اجازت نہیں ہے۔</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>یہ کارروائی کرنے کے لیے آپ کا کسی ٹیننٹ میں سائن ان ہونا ضروری ہے۔</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>کیس نہیں ملا یا آپ کو اس تک رسائی نہیں ہے۔</value>
+  </data>
+    <data name="CaseClosed" xml:space="preserve">
+    <value>کیس بند ہے، اس لیے اس کی چیک لسٹ اب تبدیل نہیں کی جا سکتی۔</value>
+  </data>
+    <data name="NotLockHolder" xml:space="preserve">
+    <value>صرف وہی صارف جس کے پاس کیس ہے اس کی چیک لسٹ کی اشیا پر نشان لگا یا ہٹا سکتا ہے۔</value>
+  </data>
+    <data name="ItemNotFound" xml:space="preserve">
+    <value>چیک لسٹ کی شے اس کیس پر نہیں ملی۔</value>
+  </data>
+    <data name="ItemNotShown" xml:space="preserve">
+    <value>یہ شے فی الحال کیس پر ظاہر نہیں ہے، اس لیے اس پر نشان نہیں لگایا جا سکتا۔</value>
+  </data>
+    <data name="ItemAlreadyDone" xml:space="preserve">
+    <value>اس شے پر پہلے ہی نشان لگ چکا ہے۔</value>
+  </data>
+    <data name="ItemNotDone" xml:space="preserve">
+    <value>اس شے پر نشان نہیں لگا، اس لیے ہٹانے کے لیے کچھ نہیں ہے۔</value>
+  </data>
+    <data name="ValidationFailedDefault" xml:space="preserve">
+    <value>اس شے پر نشان لگانے کی شرط پوری نہیں ہوئی۔</value>
+  </data>
+    <data name="OverrideForbidden" xml:space="preserve">
+    <value>آپ کو چیک لسٹ گیٹ کو اوور رائیڈ کرنے کی اجازت نہیں ہے۔</value>
+  </data>
+    <data name="OverrideReasonRequired" xml:space="preserve">
+    <value>چیک لسٹ گیٹ کو اوور رائیڈ کرنے کے لیے وجہ درکار ہے۔</value>
+  </data>
+    <data name="OverrideReasonTooLong" xml:space="preserve">
+    <value>وجہ 1000 حروف سے زیادہ نہیں ہونی چاہیے۔</value>
+  </data>
+    <data name="OverrideHolderCannotOverride" xml:space="preserve">
+    <value>کیس رکھنے والا صارف اس کے چیک لسٹ گیٹ کو اوور رائیڈ نہیں کر سکتا؛ یہ سپروائزر کو کرنا ہوگا۔</value>
+  </data>
+    <data name="OverrideNothingOpen" xml:space="preserve">
+    <value>کوئی کھلی چیک لسٹ شے نہیں ہے، اس لیے اوور رائیڈ کرنے کے لیے کچھ نہیں ہے۔</value>
+  </data>
+    <data name="OverrideAlreadyGranted" xml:space="preserve">
+    <value>کیس جس حیثیت میں ہے اس کے لیے اوور رائیڈ پہلے ہی دیا جا چکا ہے۔</value>
+  </data>
+</root>

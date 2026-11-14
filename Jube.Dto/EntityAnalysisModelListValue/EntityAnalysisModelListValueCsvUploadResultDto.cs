@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,24 +22,31 @@ using System.ComponentModel;
 namespace Jube.Dto.EntityAnalysisModelListValue
 {
     [Description("The recorded outcome of one uploaded CSV file.")]
+    [MessagePackObject]
     public sealed class EntityAnalysisModelListValueCsvUploadResultDto
     {
         [Description("Identifier of the upload record created for the file.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("The original file name.")]
+        [Key(1)]
         public string? FileName { get; set; }
 
         [Description("Numeric identifier of the parent List the values were loaded into.")]
+        [Key(2)]
         public int EntityAnalysisModelListId { get; set; }
 
         [Description("Number of rows successfully loaded as List values.")]
+        [Key(3)]
         public int Records { get; set; }
 
         [Description("Number of rows that were rejected (blank, over-long or refused by the database) and skipped.")]
+        [Key(4)]
         public int Errors { get; set; }
 
         [Description("The size of the file in bytes.")]
+        [Key(5)]
         public long Length { get; set; }
     }
 }

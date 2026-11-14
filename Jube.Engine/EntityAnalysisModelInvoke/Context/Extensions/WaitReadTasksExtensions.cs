@@ -61,6 +61,12 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                                 pendingReadTasksResult.ThreadMemory);
 
                         break;
+                    case TaskType.GraphAsync:
+                        invokeTaskPerformance.TaskWrapperStats.Read.GraphAsync =
+                            new TaskPerformance(pendingReadTasksResult.ComputeTime,
+                                pendingReadTasksResult.ThreadMemory);
+
+                        break;
                     case TaskType.AbstractionRulesWithSearchKeysAsync:
                         invokeTaskPerformance.TaskWrapperStats.Read.AbstractionRulesWithSearchKeysAsync =
                             new TaskPerformance(pendingReadTasksResult.ComputeTime,

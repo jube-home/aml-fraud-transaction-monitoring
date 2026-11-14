@@ -22,6 +22,7 @@ using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Test.Infrastructure;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 
 namespace Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters

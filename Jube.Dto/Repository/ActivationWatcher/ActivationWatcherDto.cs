@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,29 +21,41 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Repository.ActivationWatcher
 {
+    [MessagePackObject]
     public sealed record ActivationWatcherDto(
-        [property: Description("Primary key of the ActivationWatcher row.")]
+        [property: Key(0)] [property: Description("Primary key of the ActivationWatcher row.")]
         int Id,
-        [property: Description("Tenant that owns this activation event.")]
+        [property: Key(1)] [property: Description("Tenant that owns this activation event.")]
         int? TenantRegistryId,
-        [property: Description("Name of the key/field that triggered the activation.")]
+        [property: Key(2)] [property: Description("Name of the key/field that triggered the activation.")]
         string? Key,
-        [property: Description("Value of the key/field that triggered the activation.")]
+        [property: Key(3)] [property: Description("Value of the key/field that triggered the activation.")]
         string? KeyValue,
-        [property: Description("Longitude associated with the activation, if geolocated.")]
+        [property: Key(4)] [property: Description("Longitude associated with the activation, if geolocated.")]
         double? Longitude,
-        [property: Description("Latitude associated with the activation, if geolocated.")]
+        [property: Key(5)] [property: Description("Latitude associated with the activation, if geolocated.")]
         double? Latitude,
-        [property: Description("Human-readable summary of the Activation Rule that fired.")]
+        [property: Key(6)] [property: Description("Human-readable summary of the Activation Rule that fired.")]
         string? ActivationRuleSummary,
-        [property: Description("Rendered content shown for the response elevation, if any.")]
+        [property: Key(7)] [property: Description("Rendered content shown for the response elevation, if any.")]
         string? ResponseElevationContent,
-        [property: Description("Numeric elevation of the response associated with the activation.")]
+        [property: Key(8)] [property: Description("Numeric elevation of the response associated with the activation.")]
         double? ResponseElevation,
-        [property: Description("Background colour used to render this activation on the watcher UI.")]
+        [property: Key(9)] [property: Description("Background colour used to render this activation on the watcher UI.")]
         string? BackColor,
-        [property: Description("Foreground colour used to render this activation on the watcher UI.")]
+        [property: Key(10)] [property: Description("Foreground colour used to render this activation on the watcher UI.")]
         string? ForeColor,
-        [property: Description("UTC timestamp the activation was created.")]
-        DateTime? CreatedDate);
+        [property: Key(11)] [property: Description("UTC timestamp the activation was created.")]
+        DateTime? CreatedDate,
+        [property: Key(12)] [property: Description("Latitude of the previous location the engine saw for the same Key and KeyValue, " +
+                               "whether or not that earlier activation was itself recorded; null when unknown.")]
+        double? PreviousLatitude = null,
+        [property: Key(13)] [property: Description("Longitude of the previous location the engine saw for the same Key and KeyValue; " +
+                               "null when unknown.")]
+        double? PreviousLongitude = null,
+        [property: Key(14)] [property: Description("UTC time the engine saw the entity at the previous location; null when unknown.")]
+        DateTime? PreviousCreatedDate = null,
+        [property: Key(15)] [property: Description("Name of the response elevation range the ResponseElevation falls inside; null when " +
+                               "it falls inside none.")]
+        string? ResponseElevationName = null);
 }

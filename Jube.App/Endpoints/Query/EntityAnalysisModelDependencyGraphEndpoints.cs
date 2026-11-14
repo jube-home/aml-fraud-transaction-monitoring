@@ -11,12 +11,17 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Dto.Query.EntityAnalysisModelIntegrity;
+using Jube.Resources;
+using Jube.Service.Charts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 
 namespace Jube.App.Endpoints.Query
 {
@@ -33,13 +38,38 @@ namespace Jube.App.Endpoints.Query
             group.MapGet("{entityAnalysisModelId:int}", GetAsync)
                 .Produces<ModelGraphDto>()
                 .WithName("EntityAnalysisModelDependencyGraphGet");
+
+            group.MapGet("{entityAnalysisModelId:int}/Svg", GetSvgAsync)
+                .Produces<string>(StatusCodes.Status200OK, "image/svg+xml")
+                .WithName("EntityAnalysisModelDependencyGraphSvgGet");
+        }
+
+        private const int DrawingMaxNodes = 5000;
+        private const string NoKinds = "-";
+
+        private static Task<IResult> GetSvgAsync(int entityAnalysisModelId, string focusKind, int? focusId,
+            int? radius, bool? dark, string expanded, HttpContext httpContext, CancellationToken token)
+        {
+            var kinds = expanded is null
+                ? null
+                : expanded == NoKinds
+                    ? []
+                    : expanded.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+            return IntegrityEndpoints.ExecuteAsync(Base + "/Svg", httpContext,
+                (service, t) => service.GraphAsync(entityAnalysisModelId, focusKind, focusId, radius ?? 2,
+                    DrawingMaxNodes, t), token,
+                graph => ChartsEndpoints.Svg(httpContext,
+                    ModelDependencyChartRenderer.Render(graph, dark ?? false, kinds,
+                        httpContext.RequestServices.GetRequiredService<IStringLocalizerFactory>()
+                            .Create(typeof(ModelDependencyChartResources)))));
         }
 
         private static Task<IResult> GetAsync(int entityAnalysisModelId, string focusKind, int? focusId,
             int? radius, HttpContext httpContext, CancellationToken token)
         {
             return IntegrityEndpoints.ExecuteAsync(Base, httpContext,
-                (service, t) => service.GraphAsync(entityAnalysisModelId, focusKind, focusId, radius ?? 2, t), token);
+                (service, t) => service.GraphAsync(entityAnalysisModelId, focusKind, focusId, radius ?? 2, token: t), token);
         }
     }
 }

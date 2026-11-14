@@ -20,6 +20,7 @@ using Jube.Data.Context;
 using Jube.Data.Helpers;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace Jube.Data.Repository
 {

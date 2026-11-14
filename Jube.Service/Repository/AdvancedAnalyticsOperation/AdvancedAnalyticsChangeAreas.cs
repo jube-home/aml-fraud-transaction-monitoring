@@ -15,7 +15,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsOperation
 {
     public static class AdvancedAnalyticsChangeAreas
     {
-        public const string Instance = "AdvancedAnalyticsInstance";
-        public const string TrainedModel = "AdvancedAnalyticsTrainedModel";
+        public const string Instance = "AskJoobyAnalyticsInstance";
+        public const string TrainedModel = "AskJoobyAnalyticsTrainedModel";
     }
 }

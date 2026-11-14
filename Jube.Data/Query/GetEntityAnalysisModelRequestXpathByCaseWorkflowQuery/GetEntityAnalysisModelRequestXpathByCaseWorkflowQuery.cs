@@ -18,10 +18,10 @@ namespace Jube.Data.Query.GetEntityAnalysisModelRequestXpathByCaseWorkflowQuery
     using System.Threading;
     using System.Threading.Tasks;
     using Context;
-    using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
 
-    public class GetEntityAnalysisModelRequestXpathByCaseWorkflowQuery(DbContext dbContext, int? tenantRegistryId)
+    public class GetEntityAnalysisModelRequestXpathByCaseWorkflowQuery(DbContext dbContext, int tenantRegistryId)
     {
         public async Task<IEnumerable<EntityAnalysisModelRequestXpath>> ExecuteAsync(int casesWorkflowId,
             CancellationToken token = default)
@@ -31,7 +31,7 @@ namespace Jube.Data.Query.GetEntityAnalysisModelRequestXpathByCaseWorkflowQuery
                 join m in dbContext.EntityAnalysisModel
                     on x.EntityAnalysisModelId equals m.Id
                 join c in dbContext.CaseWorkflow on m.Id equals c.EntityAnalysisModelId
-                where (m.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                where m.TenantRegistryId == tenantRegistryId
                       && c.Id == casesWorkflowId && (x.Deleted == 0 || x.Deleted == null)
                 select x;
 

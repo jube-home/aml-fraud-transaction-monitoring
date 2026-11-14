@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Nie masz uprawnień do wykonania tej czynności.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Musisz być zalogowany do tenanta, aby wykonać tę czynność.</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>Wymagany jest prawidłowy model.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>Nazwa jest wymagana.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Nazwa musi mieć {0} znaków lub mniej.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Ta nazwa już istnieje.</value>
+  </data>
+    <data name="AnomalyProbabilityRange" xml:space="preserve">
+    <value>Prawdopodobieństwo anomalii musi mieścić się w przedziale od 0 do 1.</value>
+  </data>
+    <data name="BootstrapWeightFactorRange" xml:space="preserve">
+    <value>Współczynnik wagi bootstrap musi mieścić się w przedziale od 0 do 1.</value>
+  </data>
+    <data name="ChallengerModelBaseProbabilityRange" xml:space="preserve">
+    <value>Bazowe prawdopodobieństwo modelu konkurencyjnego musi mieścić się w przedziale od 0 do 1.</value>
+  </data>
+    <data name="BaseRateRange" xml:space="preserve">
+    <value>Stopa bazowa musi być większa niż 0 i mniejsza niż 1.</value>
+  </data>
+    <data name="FilterJsonRequired" xml:space="preserve">
+    <value>Wymagany jest filtr danych treningowych.</value>
+  </data>
+    <data name="FilterSqlRequired" xml:space="preserve">
+    <value>Wymagany jest filtr danych treningowych.</value>
+  </data>
+    <data name="FilterTokensRequired" xml:space="preserve">
+    <value>Wymagany jest filtr danych treningowych.</value>
+  </data>
+    <data name="FilterJsonInvalid" xml:space="preserve">
+    <value>Definicja filtra musi być prawidłowym JSON o rozmiarze nie większym niż 1 MB.</value>
+  </data>
+    <data name="CategoricalOptionsInvalid" xml:space="preserve">
+    <value>Opcje kategorialne muszą być prawidłowym JSON o rozmiarze nie większym niż 1 MB.</value>
+  </data>
+    <data name="FilterSqlInvalid" xml:space="preserve">
+    <value>Filtr musi być zwykłym wyrażeniem logicznym bez instrukcji, komentarzy, podzapytań ani niezrównoważonych nawiasów.</value>
+  </data>
+    <data name="FilterTokensInvalid" xml:space="preserve">
+    <value>Tokeny filtra muszą być tablicą JSON.</value>
+  </data>
+    <data name="DataSourceInvalid" xml:space="preserve">
+    <value>Źródłem danych musi być Archive (0), DemoDataset (1) lub UploadedDataset (2).</value>
+  </data>
+    <data name="CalibrationMethodInvalid" xml:space="preserve">
+    <value>Metoda kalibracji musi być automatic, platt, isotonic lub beta.</value>
+  </data>
+    <data name="DatasetRequired" xml:space="preserve">
+    <value>Gdy źródłem danych jest UploadedDataset, należy wybrać przesłany zbiór danych.</value>
+  </data>
+    <data name="DatasetAmbiguous" xml:space="preserve">
+    <value>Należy wybrać dokładnie jeden ze zbiorów danych: CSV lub JSON.</value>
+  </data>
+    <data name="DatasetNotFound" xml:space="preserve">
+    <value>Wybrany zbiór danych nie istnieje, nie został potwierdzony lub nie jest dostępny dla Twojego tenanta.</value>
+  </data>
+    <data name="DatasetNotPermitted" xml:space="preserve">
+    <value>Zbiór danych można wybrać tylko wtedy, gdy źródłem danych jest UploadedDataset.</value>
+  </data>
+    <data name="DatasetFilterRequired" xml:space="preserve">
+    <value>Gdy źródłem danych jest UploadedDataset, należy ustawić filtr definicji klasy określający klasę pozytywną.</value>
+  </data>
+    <data name="AnomalyContaminationRange" xml:space="preserve">
+    <value>Dla tego algorytmu anomalii prawdopodobieństwo anomalii jest ułamkiem zanieczyszczenia i musi być większe niż 0 i co najwyżej 0,5.</value>
+  </data>
+    <data name="AnomalyAlgorithmInvalid" xml:space="preserve">
+    <value>Algorytm anomalii nie jest znanym algorytmem.</value>
+  </data>
+    <data name="AnomalyParametersInvalid" xml:space="preserve">
+    <value>Parametry anomalii są nieprawidłowe. {0}</value>
+  </data>
+</root>

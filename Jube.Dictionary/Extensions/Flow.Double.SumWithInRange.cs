@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchSumWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the value plus the others is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchSumWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleSumWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RejectSumWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the value plus the others is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectSumWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleSumWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> BreakSumWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the value plus the others is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakSumWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleSumWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RequireSumWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the value plus the others is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireSumWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleSumWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> EnsureSumWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the value plus the others is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureSumWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchSumWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value plus the others is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchSumWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().MatchSumWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RejectSumWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value plus the others is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectSumWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RejectSumWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> BreakSumWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value plus the others is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakSumWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().BreakSumWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RequireSumWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value plus the others is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireSumWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RequireSumWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> EnsureSumWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value plus the others is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureSumWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().EnsureSumWithInRange(lowerBound, upperBound, others);
             }

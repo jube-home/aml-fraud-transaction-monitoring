@@ -17,7 +17,8 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Int32 GreatestCommonDivisor(this Int32 @this, Int32 other)
+        [Description("Returns the greatest common divisor of the two values.")]
+        public static Int32 GreatestCommonDivisor(this Int32 @this, [Description("The other value.")] Int32 other)
         {
             var a = Math.Abs(@this);
             var b = Math.Abs(other);

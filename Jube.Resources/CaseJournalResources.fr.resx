@@ -42,4 +42,13 @@
     <data name="NotAuthenticated" xml:space="preserve">
     <value>Vous devez être connecté à un tenant pour effectuer cette action.</value>
   </data>
+    <data name="DrillNameNotArchiveKey" xml:space="preserve">
+    <value>Le nom de forage n’est pas un champ marqué Archive Key sur le modèle du flux de travail ; ses transactions ne peuvent pas être recherchées.</value>
+  </data>
+    <data name="DrillValueInvalid" xml:space="preserve">
+    <value>La valeur de forage ne peut pas être lue comme le type de données du champ.</value>
+  </data>
+    <data name="CaseWorkflowNotFound" xml:space="preserve">
+    <value>Le flux de travail du dossier est introuvable.</value>
+  </data>
 </root>

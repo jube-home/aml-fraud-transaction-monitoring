@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchShortfallBelowOutsideRange(double minimum, double lowerBound, double upperBound)
+            [Description("True when: how far the value is under the minimum, zero when at or above it is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchShortfallBelowOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleShortfallBelowOutsideRange(flow.Value, minimum, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectShortfallBelowOutsideRange(double minimum, double lowerBound, double upperBound)
+            [Description("True when: how far the value is under the minimum, zero when at or above it is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectShortfallBelowOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleShortfallBelowOutsideRange(flow.Value, minimum, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakShortfallBelowOutsideRange(double minimum, double lowerBound, double upperBound)
+            [Description("True when: how far the value is under the minimum, zero when at or above it is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakShortfallBelowOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleShortfallBelowOutsideRange(flow.Value, minimum, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireShortfallBelowOutsideRange(double minimum, double lowerBound, double upperBound)
+            [Description("True when: how far the value is under the minimum, zero when at or above it is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireShortfallBelowOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleShortfallBelowOutsideRange(flow.Value, minimum, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureShortfallBelowOutsideRange(double minimum, double lowerBound, double upperBound)
+            [Description("True when: how far the value is under the minimum, zero when at or above it is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureShortfallBelowOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchShortfallBelowOutsideRange(double minimum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how far the value is under the minimum, zero when at or above it is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchShortfallBelowOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchShortfallBelowOutsideRange(minimum, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectShortfallBelowOutsideRange(double minimum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how far the value is under the minimum, zero when at or above it is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectShortfallBelowOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectShortfallBelowOutsideRange(minimum, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakShortfallBelowOutsideRange(double minimum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how far the value is under the minimum, zero when at or above it is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakShortfallBelowOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakShortfallBelowOutsideRange(minimum, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireShortfallBelowOutsideRange(double minimum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how far the value is under the minimum, zero when at or above it is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireShortfallBelowOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireShortfallBelowOutsideRange(minimum, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureShortfallBelowOutsideRange(double minimum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how far the value is under the minimum, zero when at or above it is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureShortfallBelowOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureShortfallBelowOutsideRange(minimum, lowerBound, upperBound);
             }

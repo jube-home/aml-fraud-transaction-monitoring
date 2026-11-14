@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using FluentValidation;
 using Jube.Data.Context;
@@ -73,7 +74,8 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
             repository = new EntityAnalysisModelActivationRuleRepository(dbContext, userName);
 
             validator = new EntityAnalysisModelActivationRuleDtoValidator(repository, strings,
-                new RuleScriptParser(dbContext, tenantRegistryId));
+                new RuleScriptParser(dbContext, tenantRegistryId),
+                new EntityAnalysisModelResponseElevationRangeRepository(dbContext, userName));
 
             deleteValidator = new ModelEntityDeleteValidator(dbContext, tenantRegistryId, userName,
                 dependencyStrings);
@@ -620,9 +622,13 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
                     throw new DtoValidationException(results);
                 }
 
-                var saved = await repository
-                    .InsertAsync(EntityAnalysisModelActivationRuleMapper.ToPoco(model), token)
-                    .ConfigureAwait(false);
+                var toInsert = EntityAnalysisModelActivationRuleMapper.ToPoco(model);
+                toInsert.EvaluationCounter = 0;
+                toInsert.ActivationCounter = 0;
+                toInsert.ForcedActivationCounter = 0;
+                toInsert.ActivationCounterDate = null;
+
+                var saved = await repository.InsertAsync(toInsert, token).ConfigureAwait(false);
 
                 op.Entity(saved.Id);
                 op.Version(saved.Version.GetValueOrDefault());
@@ -667,6 +673,51 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
 
                 throw;
             }
+        }
+
+        public async Task<ShadowVariantResultDto> SaveShadowVariantAsync(ShadowVariantRequestDto? request,
+            CancellationToken token = default)
+        {
+            ArgumentNullException.ThrowIfNull(request);
+            EnsurePermitted(writePermissions, "EntityAnalysisModelActivationRule.SaveShadowVariant");
+
+            if (string.IsNullOrEmpty(request.Placeholder) || string.IsNullOrWhiteSpace(request.RuleText)
+                                                          || !request.RuleText.Contains(request.Placeholder,
+                                                              StringComparison.Ordinal))
+            {
+                throw new ArgumentException("The rule text must contain the placeholder.");
+            }
+
+            if (!decimal.TryParse(request.Value, System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture, out _))
+            {
+                throw new ArgumentException("The chosen value must be a plain number.");
+            }
+
+            var baseRule = await GetByIdAsync(request.BaseRuleId, token).ConfigureAwait(false)
+                           ?? throw new NotFoundException("The rule the variant is based on was not found.");
+
+            var suffix = $" shadow {request.Value.Trim()}";
+            var baseName = baseRule.Name ?? string.Empty;
+            const int limit = 256;
+
+            baseRule.Id = 0;
+            baseRule.Guid = Guid.Empty;
+            baseRule.Name = (baseName.Length + suffix.Length > limit ? baseName[..(limit - suffix.Length)] : baseName)
+                            + suffix;
+            baseRule.RuleScriptTypeId = 2;
+            baseRule.CoderRuleScript = request.RuleText.Replace(request.Placeholder, request.Value.Trim(),
+                StringComparison.Ordinal);
+            baseRule.BuilderRuleScript = string.Empty;
+            baseRule.Json = string.Empty;
+            baseRule.Shadow = true;
+            baseRule.Active = true;
+            baseRule.Locked = false;
+            baseRule.EnableReprocessing = false;
+
+            var saved = await InsertAsync(baseRule, token).ConfigureAwait(false);
+
+            return new ShadowVariantResultDto { Id = saved.Id, Guid = saved.Guid, Name = saved.Name ?? string.Empty };
         }
 
         [Description("Validates an Activation Rule without saving it, running every check a create (Id 0) or " +
@@ -954,6 +1005,12 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
                 op.Outcome("notfound");
                 throw;
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");

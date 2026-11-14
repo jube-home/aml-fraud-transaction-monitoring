@@ -7,7 +7,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static DateTime ConvertTimeFromUtc(this DateTime dateTime, TimeZoneInfo destinationTimeZone)
+        [Description("Converts UTC time to a specified time zone.")]
+        public static DateTime ConvertTimeFromUtc(this DateTime dateTime,
+            [Description("The time zone to convert to.")] TimeZoneInfo destinationTimeZone)
         {
             return TimeZoneInfo.ConvertTimeFromUtc(dateTime, destinationTimeZone);
         }

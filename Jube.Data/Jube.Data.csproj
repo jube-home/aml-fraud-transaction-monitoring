@@ -37,15 +37,15 @@
         <PackageReference Include="FluentMigrator.Runner.Postgres" Version="3.3.2"/>
         <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.3"/>
         <PackageReference Include="Isopoh.Cryptography.Argon2" Version="1.1.12"/>
-        <PackageReference Include="linq2db" Version="3.6.0"/>
+        <PackageReference Include="linq2db" Version="6.5.1"/>
         <PackageReference Include="log4net" Version="3.3.1"/>
-        <PackageReference Include="MessagePack" Version="3.1.7"/>
+        <PackageReference Include="MessagePack" Version="3.1.12"/>
         <PackageReference Include="Microsoft.Extensions.Primitives" Version="9.0.10"/>
         <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Npgsql.Json.NET" Version="5.0.13"/>
+        <PackageReference Include="Npgsql.Json.NET" Version="10.0.3"/>
         <PackageReference Include="Microsoft.CodeAnalysis" Version="4.10.0"/>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.10.0"/>
         <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="4.10.0"/>
@@ -57,6 +57,8 @@
         <ProjectReference Include="..\Jube.Analytics\Jube.Analytics.csproj"/>
         <ProjectReference Include="..\Jube.Dto\Jube.Dto.csproj"/>
         <ProjectReference Include="..\Jube.Extensions\Jube.Extensions.csproj"/>
+        <ProjectReference Include="..\Jube.GraphRecallProtocol\Jube.GraphRecallProtocol.csproj"/>
+        <ProjectReference Include="..\Jube.Svirfd\Jube.Svirfd.csproj"/>
         <ProjectReference Include="..\Jube.Dictionary\Jube.Dictionary.csproj"/>
         <ProjectReference Include="..\Jube.ResilientNpgsql\Jube.ResilientNpgsql.csproj"/>
         <ProjectReference Include="..\Jube.TaskCancellation\Jube.TaskCancellation.csproj"/>

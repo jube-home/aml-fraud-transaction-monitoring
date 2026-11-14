@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Number of different characters.")]
         public static int DistinctCharacterCount(this string? @this)
         {
             return (@this ?? "").Distinct().Count();

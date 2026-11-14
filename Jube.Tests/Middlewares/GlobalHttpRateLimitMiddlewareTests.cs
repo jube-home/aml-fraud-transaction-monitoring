@@ -125,7 +125,7 @@ namespace Jube.Test.Middlewares
             await nodeA.InvokeAsync(thirdOnEitherNode);
 
             thirdOnEitherNode.Response.StatusCode.Should().Be(StatusCodes.Status429TooManyRequests,
-                "with the backplane on, two nodes sharing one Redis-backed counter must see each other's " +
+                "with the backplane on, two nodes sharing one RESP-backed counter must see each other's " +
                 "requests, unlike the in-memory throttle which is local to a single process");
         }
 

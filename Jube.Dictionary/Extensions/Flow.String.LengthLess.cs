@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchLengthLess(int length)
+            [Description("True when: shorter than the length. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchLengthLess([Description("The length in characters.")] int length)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringLengthLess(flow.Value, length));
             }
 
-            public Flow<string?> RejectLengthLess(int length)
+            [Description("True when: shorter than the length. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectLengthLess([Description("The length in characters.")] int length)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringLengthLess(flow.Value, length));
             }
 
-            public Flow<string?> BreakLengthLess(int length)
+            [Description("True when: shorter than the length. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakLengthLess([Description("The length in characters.")] int length)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringLengthLess(flow.Value, length));
             }
 
-            public Flow<string?> RequireLengthLess(int length)
+            [Description("True when: shorter than the length. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireLengthLess([Description("The length in characters.")] int length)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringLengthLess(flow.Value, length));
             }
 
-            public Flow<string?> EnsureLengthLess(int length)
+            [Description("True when: shorter than the length. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureLengthLess([Description("The length in characters.")] int length)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchLengthLess(int length)
+            [Description("Begins a pipeline from the value. True when: shorter than the length. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchLengthLess([Description("The length in characters.")] int length)
             {
                 return value.Start().MatchLengthLess(length);
             }
 
-            public Flow<string?> RejectLengthLess(int length)
+            [Description("Begins a pipeline from the value. True when: shorter than the length. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectLengthLess([Description("The length in characters.")] int length)
             {
                 return value.Start().RejectLengthLess(length);
             }
 
-            public Flow<string?> BreakLengthLess(int length)
+            [Description("Begins a pipeline from the value. True when: shorter than the length. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakLengthLess([Description("The length in characters.")] int length)
             {
                 return value.Start().BreakLengthLess(length);
             }
 
-            public Flow<string?> RequireLengthLess(int length)
+            [Description("Begins a pipeline from the value. True when: shorter than the length. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireLengthLess([Description("The length in characters.")] int length)
             {
                 return value.Start().RequireLengthLess(length);
             }
 
-            public Flow<string?> EnsureLengthLess(int length)
+            [Description("Begins a pipeline from the value. True when: shorter than the length. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureLengthLess([Description("The length in characters.")] int length)
             {
                 return value.Start().EnsureLengthLess(length);
             }

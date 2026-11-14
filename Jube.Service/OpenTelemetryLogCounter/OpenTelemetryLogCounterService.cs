@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using FluentValidation.Results;
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
@@ -228,6 +230,8 @@ namespace Jube.Service.OpenTelemetryLogCounter
                     throw new DtoValidationException(results);
                 }
 
+                await EnsureNameIsUniqueAsync(model, token).ConfigureAwait(false);
+
                 var saved = await repository.InsertAsync(OpenTelemetryLogCounterMapper.ToPoco(model), token)
                     .ConfigureAwait(false);
 
@@ -237,7 +241,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
 
                 if (log.IsInfoEnabled)
                 {
-                    log.Info($"OpenTelemetryLogCounter.Create: created Id={saved.Id} user={userName}");
+                    log.Info($"OpenTelemetryLogCounter.Create: created Id={saved.Id} name={saved.Name} active={saved.Active} user={userName}");
                 }
 
                 return saved;
@@ -344,6 +348,8 @@ namespace Jube.Service.OpenTelemetryLogCounter
                     throw new DtoValidationException(results);
                 }
 
+                await EnsureNameIsUniqueAsync(model, token).ConfigureAwait(false);
+
                 LogCounterPoco saved;
 
                 try
@@ -366,7 +372,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
 
                 if (log.IsInfoEnabled)
                 {
-                    log.Info($"OpenTelemetryLogCounter.Update: updated Id={saved.Id} user={userName}");
+                    log.Info($"OpenTelemetryLogCounter.Update: updated Id={saved.Id} name={saved.Name} active={saved.Active} user={userName}");
                 }
 
                 return saved;
@@ -391,6 +397,12 @@ namespace Jube.Service.OpenTelemetryLogCounter
                 op.Outcome("locked");
                 throw;
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
@@ -475,6 +487,24 @@ namespace Jube.Service.OpenTelemetryLogCounter
                 log.Error($"OpenTelemetryLogCounter.Delete: unexpected failure id={id} user={userName}", ex);
                 throw;
             }
+        }
+
+        private async Task EnsureNameIsUniqueAsync(OpenTelemetryLogCounterDto model, CancellationToken token)
+        {
+            if (!await repository.NameExistsAsync(model.Name!, model.Id, token).ConfigureAwait(false))
+            {
+                return;
+            }
+
+            var failure = new ValidationFailure(nameof(OpenTelemetryLogCounterDto.Name),
+                strings[OpenTelemetryLogCounterResources.NameDuplicate]) { ErrorCode = "NameDuplicate" };
+
+            if (log.IsWarnEnabled)
+            {
+                log.Warn($"OpenTelemetryLogCounter: duplicate name refused id={model.Id} user={userName}");
+            }
+
+            throw new DtoValidationException(new ValidationResult([failure]));
         }
 
         private void EnsurePermitted(string op)

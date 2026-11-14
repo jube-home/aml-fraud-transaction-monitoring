@@ -23,8 +23,12 @@ namespace Jube.Service.Authentication
         ValidationResult? Validation = null,
         IReadOnlyList<string>? Errors = null,
         string? Message = null,
-        bool? WirePasswordHash = null)
+        bool? WirePasswordHash = null,
+        TotpEnrolmentDto? Enrolment = null)
     {
+        public static AuthenticationOutcome TotpEnrolment(TotpEnrolmentDto enrolment) =>
+            new(AuthenticationOutcomeKind.Enrolment, Enrolment: enrolment);
+
         public static AuthenticationOutcome WireScheme(bool wirePasswordHash) =>
             new(AuthenticationOutcomeKind.Ok, WirePasswordHash: wirePasswordHash);
 

@@ -75,7 +75,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void ARuleThatMatchesAddsOneToTheAbstractionDictionary()
         {
-            var rule = NewRule("HighAmount", (data, _, _, _) => (string)data["Currency"] == "AED");
+            var rule = NewRule("HighAmount", (data, _, _, _, _, _) => (string)data["Currency"] == "AED");
             var context = NewContext(rule);
 
             context.ExecuteAbstractionRulesWithoutSearchKeys();
@@ -86,7 +86,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void ARuleThatDoesNotMatchAddsZeroToTheAbstractionDictionary()
         {
-            var rule = NewRule("NeverMatches", (_, _, _, _) => false);
+            var rule = NewRule("NeverMatches", (_, _, _, _, _, _) => false);
             var context = NewContext(rule);
 
             context.ExecuteAbstractionRulesWithoutSearchKeys();
@@ -99,7 +99,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var wasEvaluated = false;
 
-            var searchRule = NewRule("SearchRule", (_, _, _, _) =>
+            var searchRule = NewRule("SearchRule", (_, _, _, _, _, _) =>
             {
                 wasEvaluated = true;
 
@@ -117,8 +117,8 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void MultipleNonSearchRulesAllRunIndependently()
         {
-            var first = NewRule("First", (_, _, _, _) => true);
-            var second = NewRule("Second", (_, _, _, _) => false);
+            var first = NewRule("First", (_, _, _, _, _, _) => true);
+            var second = NewRule("Second", (_, _, _, _, _, _) => false);
             var context = NewContext(first, second);
 
             context.ExecuteAbstractionRulesWithoutSearchKeys();
@@ -131,9 +131,9 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void AnExceptionThrownByARuleIsCaughtAndSubsequentRulesStillRun()
         {
             var secondEvaluated = false;
-            var throwing = NewRule("Throws", (_, _, _, _) => throw new InvalidOperationException("boom"));
+            var throwing = NewRule("Throws", (_, _, _, _, _, _) => throw new InvalidOperationException("boom"));
 
-            var second = NewRule("Second", (_, _, _, _) =>
+            var second = NewRule("Second", (_, _, _, _, _, _) =>
             {
                 secondEvaluated = true;
 
@@ -152,7 +152,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void AReportTableRuleAddsAnArchiveKeyWithTheAbstractionValue()
         {
-            var rule = NewRule("Reported", (_, _, _, _) => true, reportTable: true);
+            var rule = NewRule("Reported", (_, _, _, _, _, _) => true, reportTable: true);
             var context = NewContext(rule);
 
             context.ExecuteAbstractionRulesWithoutSearchKeys();
@@ -167,7 +167,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void ARuleWithoutReportTableDoesNotAddAnArchiveKey()
         {
-            var rule = NewRule("NotReported", (_, _, _, _) => true, reportTable: false);
+            var rule = NewRule("NotReported", (_, _, _, _, _, _) => true, reportTable: false);
             var context = NewContext(rule);
 
             context.ExecuteAbstractionRulesWithoutSearchKeys();
@@ -178,7 +178,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void WhenSampledTheStageTimingRecordsOneItemPerNonSearchRule()
         {
-            var rule = NewRule("Rule", (_, _, _, _) => true);
+            var rule = NewRule("Rule", (_, _, _, _, _, _) => true);
             var context = NewContext(rule);
 
             context.ExecuteAbstractionRulesWithoutSearchKeys();
@@ -192,7 +192,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void WhenNotSampledNoStageTimingIsBuiltButBusinessLogicStillRuns()
         {
-            var rule = NewRule("Rule", (_, _, _, _) => true);
+            var rule = NewRule("Rule", (_, _, _, _, _, _) => true);
             var context = NewContext(rule);
             context.LogSampled = false;
 

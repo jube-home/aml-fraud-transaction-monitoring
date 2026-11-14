@@ -199,7 +199,8 @@ activity early on and compare it against recent activity later.
 Each response is an envelope, not a bare array: `{ rows, total, statistics }`. `rows` is the page of results actually
 returned (respecting `take`); `total` is the true count of every row matching the filter, regardless of `take`;
 `statistics` is a summary-statistics block -- Min/Max/Mean/Median/StandardDeviation and a 10-bucket histogram, computed
-via Accord.NET over the full filtered set (capped at 100000, independent of `take`) -- keyed by the camelCase name of
+via the analytics library over the full filtered set (capped at 100000, independent of `take`) -- keyed by the camelCase
+name of
 every continuous/measured numeric column on that DTO: `totalMicroseconds`/`minMicroseconds`/`maxMicroseconds`/
 `invokeCount` for Stage; those four plus `totalAllocatedBytes`/`minAllocatedBytes`/`maxAllocatedBytes` for Response Time
 Pipeline and Task Performance Counter. Categorical numeric columns -- `stageId`, `sequenceNumber`, `directionId`,

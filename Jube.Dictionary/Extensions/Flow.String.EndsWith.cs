@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchEndsWith(string? suffix)
+            [Description("True when: ends with the suffix. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchEndsWith([Description("The text the value must end with.")] string? suffix)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringEndsWith(flow.Value, suffix));
             }
 
-            public Flow<string?> RejectEndsWith(string? suffix)
+            [Description("True when: ends with the suffix. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectEndsWith([Description("The text the value must end with.")] string? suffix)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringEndsWith(flow.Value, suffix));
             }
 
-            public Flow<string?> BreakEndsWith(string? suffix)
+            [Description("True when: ends with the suffix. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakEndsWith([Description("The text the value must end with.")] string? suffix)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringEndsWith(flow.Value, suffix));
             }
 
-            public Flow<string?> RequireEndsWith(string? suffix)
+            [Description("True when: ends with the suffix. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireEndsWith([Description("The text the value must end with.")] string? suffix)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringEndsWith(flow.Value, suffix));
             }
 
-            public Flow<string?> EnsureEndsWith(string? suffix)
+            [Description("True when: ends with the suffix. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureEndsWith([Description("The text the value must end with.")] string? suffix)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchEndsWith(string? suffix)
+            [Description("Begins a pipeline from the value. True when: ends with the suffix. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchEndsWith([Description("The text the value must end with.")] string? suffix)
             {
                 return value.Start().MatchEndsWith(suffix);
             }
 
-            public Flow<string?> RejectEndsWith(string? suffix)
+            [Description("Begins a pipeline from the value. True when: ends with the suffix. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectEndsWith([Description("The text the value must end with.")] string? suffix)
             {
                 return value.Start().RejectEndsWith(suffix);
             }
 
-            public Flow<string?> BreakEndsWith(string? suffix)
+            [Description("Begins a pipeline from the value. True when: ends with the suffix. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakEndsWith([Description("The text the value must end with.")] string? suffix)
             {
                 return value.Start().BreakEndsWith(suffix);
             }
 
-            public Flow<string?> RequireEndsWith(string? suffix)
+            [Description("Begins a pipeline from the value. True when: ends with the suffix. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireEndsWith([Description("The text the value must end with.")] string? suffix)
             {
                 return value.Start().RequireEndsWith(suffix);
             }
 
-            public Flow<string?> EnsureEndsWith(string? suffix)
+            [Description("Begins a pipeline from the value. True when: ends with the suffix. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureEndsWith([Description("The text the value must end with.")] string? suffix)
             {
                 return value.Start().EnsureEndsWith(suffix);
             }

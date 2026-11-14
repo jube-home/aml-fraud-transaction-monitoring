@@ -140,7 +140,7 @@ toolbar, since `search` against the Model name already covers the common case. `
 ## `CaptureQueueHealth`
 
 Every one of the four capture mechanisms above -- `ArchiverWarning`, `CaseCreationWarning`, `ModelInvokeWarning` -- and
-two more elsewhere in the platform (`RedisSentinelEvent` and `RedisConnectionEvent`, plus the in-process
+two more elsewhere in the platform (`RespSentinelEvent` and `RespConnectionEvent`, plus the in-process
 `OpenTelemetryMetric` aggregation described in
 [Infrastructure Health Metrics](../InfrastructureHealthMetrics/index.html#local-capture-of-jubes-own-opentelemetry-metrics))
 share the same shape: a bounded in-memory queue (20000 entries, or 10000 distinct series for `OpenTelemetryMetric`)
@@ -164,5 +164,5 @@ order by "CreatedDate" desc
 Up to the last 100000 rows are also browsable without a database connection: `GET /api/CaptureQueueHealth` (landlord
 tenant only, any other caller receives 403), or via the **Administration > Performance > Capture Queue Health** page in
 the UI. It accepts `from`/`to` (against `CreatedDate`), an exact-match `queueId` (`1`=`ModelInvokeWarning`,
-`2`=`CaseCreationWarning`, `3`=`ArchiverWarning`, `4`=`RedisSentinelEvent`, `5`=`RedisConnectionEvent`,
+`2`=`CaseCreationWarning`, `3`=`ArchiverWarning`, `4`=`RespSentinelEvent`, `5`=`RespConnectionEvent`,
 `6`=`OpenTelemetryMetric`), `take` and `samplePercentage`.

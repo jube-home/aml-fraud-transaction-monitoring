@@ -7,7 +7,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Boolean IsSurrogatePair(this Char highSurrogate, Char lowSurrogate)
+        [Description("Checks if two characters form a surrogate pair.")]
+        public static Boolean IsSurrogatePair(this Char highSurrogate,
+            [Description("The character to evaluate as low surrogate.")] Char lowSurrogate)
         {
             return char.IsSurrogatePair(highSurrogate, lowSurrogate);
         }

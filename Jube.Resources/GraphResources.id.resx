@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Anda tidak memiliki izin untuk melakukan tindakan ini.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Anda belum diautentikasi.</value>
+  </data>
+    <data name="RegistryNotFound" xml:space="preserve">
+    <value>Registri grafik tidak ditemukan atau tidak aktif.</value>
+  </data>
+    <data name="NodeNotFound" xml:space="preserve">
+    <value>Simpul tidak ditemukan.</value>
+  </data>
+    <data name="EdgeNotFound" xml:space="preserve">
+    <value>Sisi tidak ditemukan.</value>
+  </data>
+    <data name="KeyRequired" xml:space="preserve">
+    <value>Kunci dan nilai wajib diisi.</value>
+  </data>
+    <data name="KeyTooLong" xml:space="preserve">
+    <value>Kunci atau nilai terlalu panjang.</value>
+  </data>
+    <data name="HopsOutOfRange" xml:space="preserve">
+    <value>Jumlah lompatan harus antara 1 dan 3.</value>
+  </data>
+    <data name="FanOutOutOfRange" xml:space="preserve">
+    <value>Fan-out harus antara 1 dan 100.</value>
+  </data>
+    <data name="WindowInvalid" xml:space="preserve">
+    <value>Akhir jendela harus setelah awalnya.</value>
+  </data>
+    <data name="EdgesInvalid" xml:space="preserve">
+    <value>Daftar definisi sisi tidak valid.</value>
+  </data>
+    <data name="SentenceHub" xml:space="preserve">
+    <value>{0} {1} adalah hub yang dipakai bersama oleh {2} pihak lawan; penelusuran tidak melewatinya kecuali diminta.</value>
+  </data>
+    <data name="SentenceSharedDevice" xml:space="preserve">
+    <value>{0} {1} dipakai bersama oleh {2} akun.</value>
+  </data>
+    <data name="SentenceDistance" xml:space="preserve">
+    <value>{0} lompatan dari positif benar yang terkonfirmasi, dengan {1} dalam tiga lompatan.</value>
+  </data>
+    <data name="SentenceOpenCases" xml:space="preserve">
+    <value>{0} kasus terbuka pada kunci ini.</value>
+  </data>
+    <data name="SentenceConfirmedCases" xml:space="preserve">
+    <value>{0} kasus pada kunci ini ditutup sebagai terkonfirmasi.</value>
+  </data>
+    <data name="SentenceCommunity" xml:space="preserve">
+    <value>Anggota komunitas {0}.</value>
+  </data>
+    <data name="SentenceDegree" xml:space="preserve">
+    <value>{0} pihak lawan berbeda, {1} melalui aliran dana.</value>
+  </data>
+    <data name="LayoutInvalid" xml:space="preserve">
+    <value>Tata letak tidak dikenali.</value>
+  </data>
+    <data name="CaseNotFound" xml:space="preserve">
+    <value>Kasus tidak ditemukan atau tidak terbuka bagi Anda.</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>Kasus dikunci untuk pengguna lain.</value>
+  </data>
+    <data name="CaptureNote" xml:space="preserve">
+    <value>Tangkapan jaringan: {0} simpul dan {1} sisi antara {2} dan {3}.</value>
+  </data>
+    <data name="ExplorationNameInvalid" xml:space="preserve">
+    <value>Eksplorasi memerlukan nama paling banyak 120 karakter.</value>
+  </data>
+    <data name="ExplorationAddressInvalid" xml:space="preserve">
+    <value>Alamat eksplorasi hilang atau terlalu panjang.</value>
+  </data>
+    <data name="ExplorationNotFound" xml:space="preserve">
+    <value>Eksplorasi tidak ditemukan.</value>
+  </data>
+    <data name="NodeIdsRequired" xml:space="preserve">
+    <value>Kedua id simpul wajib diisi dan harus berbeda.</value>
+  </data>
+    <data name="PathHopsOutOfRange" xml:space="preserve">
+    <value>Jalur dapat 1 hingga 6 lompatan dan 1 hingga 20 dikembalikan.</value>
+  </data>
+    <data name="FlowInvalid" xml:space="preserve">
+    <value>Permintaan aliran memerlukan jendela lompatan 1 hingga 720 jam, toleransi 0 hingga 0,9, kedalaman 1 hingga 6 dan fan-out 1 hingga 50, dan hasil kali fan-out dan kedalaman tidak boleh terlalu besar.</value>
+  </data>
+    <data name="PatternNotFound" xml:space="preserve">
+    <value>Pola tidak ditemukan.</value>
+  </data>
+    <data name="CommunityNotFound" xml:space="preserve">
+    <value>Komunitas tidak ditemukan.</value>
+  </data>
+    <data name="PatternStateInvalid" xml:space="preserve">
+    <value>Pola dapat ditandai Dilihat, Ditolak atau Dijadikan kasus, dan Dijadikan kasus memerlukan id kasus.</value>
+  </data>
+    <data name="HubOverrideInvalid" xml:space="preserve">
+    <value>Penimpaan hub harus 0 (tidak ada), 1 (bukan hub) atau 2 (selalu hub).</value>
+  </data>
+    <data name="SentencePath" xml:space="preserve">
+    <value>{0} lompatan dari {1} {2} ke {3} {4} dengan bobot jalur {5:0.###}.</value>
+  </data>
+    <data name="SentenceFlow" xml:space="preserve">
+    <value>{0} tahap mencapai {1} simpul dalam {2} lompatan; {3} simpul meneruskan dana langsung.</value>
+  </data>
+    <data name="SentencePattern" xml:space="preserve">
+    <value>{0} berjangkar pada {1} {2}: {3} anggota, skor {4:0.###}, {5:yyyy-MM-dd} hingga {6:yyyy-MM-dd}.</value>
+  </data>
+    <data name="SentenceCommunityRate" xml:space="preserve">
+    <value>Komunitas {0} dari {1} simpul: {2} terkonfirmasi dari {3} kasus tertutup, {4:0.0}x tingkat tenant.</value>
+  </data>
+    <data name="SentencePatternMember" xml:space="preserve">
+    <value>Anggota {0} pola, terbaru {1}.</value>
+  </data>
+    <data name="SentenceTag" xml:space="preserve">
+    <value>{0} lompatan dari transaksi atau kasus bertanda {1}, dengan {2} dalam tiga lompatan.</value>
+  </data>
+    <data name="ExpandedInvalid" xml:space="preserve">
+    <value>Paling banyak 25 id simpul yang diperluas dapat diberikan.</value>
+  </data>
+    <data name="ExplorationPinnedInvalid" xml:space="preserve">
+    <value>Posisi yang disematkan terlalu besar.</value>
+  </data>
+    <data name="DetailDegree" xml:space="preserve">
+    <value>derajat {0}</value>
+  </data>
+    <data name="DetailHub" xml:space="preserve">
+    <value>hub</value>
+  </data>
+    <data name="DetailConfirmedDistance" xml:space="preserve">
+    <value>{0} lompatan dari kasus terkonfirmasi</value>
+  </data>
+    <data name="DetailOpenCases" xml:space="preserve">
+    <value>{0} kasus terbuka</value>
+  </data>
+    <data name="DetailConfirmedCases" xml:space="preserve">
+    <value>{0} terkonfirmasi</value>
+  </data>
+    <data name="DetailCollapsed" xml:space="preserve">
+    <value>{0} simpul diciutkan</value>
+  </data>
+</root>

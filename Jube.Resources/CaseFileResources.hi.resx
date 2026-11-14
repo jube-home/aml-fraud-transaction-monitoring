@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>आपको यह कार्रवाई करने की अनुमति नहीं है।</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>यह कार्रवाई करने के लिए आपको किसी टेनेंट में साइन इन होना चाहिए।</value>
+  </data>
+    <data name="NotVisible" xml:space="preserve">
+    <value>फ़ाइल या उसका केस नहीं मिला।</value>
+  </data>
+    <data name="CaseKeyRequired" xml:space="preserve">
+    <value>केस कुंजी आवश्यक है।</value>
+  </data>
+    <data name="CaseKeyValueRequired" xml:space="preserve">
+    <value>केस कुंजी का मान आवश्यक है।</value>
+  </data>
+    <data name="CaseIdInvalid" xml:space="preserve">
+    <value>एक मान्य केस पहचानकर्ता आवश्यक है।</value>
+  </data>
+    <data name="FileTooLarge" xml:space="preserve">
+    <value>फ़ाइल अनुमत अधिकतम आकार से बड़ी है।</value>
+  </data>
+    <data name="OneParentOnly" xml:space="preserve">
+    <value>एक फ़ाइल नोट या शोध की होती है, कभी दोनों की नहीं।</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>केस किसी अन्य उपयोगकर्ता द्वारा लॉक किया गया है।</value>
+  </data>
+    <data name="RemovalRestricted" xml:space="preserve">
+    <value>इस फ़ाइल को केवल अपलोड करने वाला उपयोगकर्ता, केस रखने वाला उपयोगकर्ता या पर्यवेक्षक हटा सकता है।</value>
+  </data>
+    <data name="FileTypeNotAllowed" xml:space="preserve">
+    <value>इस एक्सटेंशन वाली फ़ाइलें केस साक्ष्य के रूप में स्वीकार नहीं की जातीं।</value>
+  </data>
+    <data name="FileContentNotAllowed" xml:space="preserve">
+    <value>इस फ़ाइल की सामग्री ऐसे प्रकार की नहीं है जो केस साक्ष्य के रूप में स्वीकार्य हो।</value>
+  </data>
+    <data name="FileRejectedByScanner" xml:space="preserve">
+    <value>फ़ाइल को मैलवेयर स्कैन ने अस्वीकार कर दिया।</value>
+  </data>
+    <data name="FileScanUnavailable" xml:space="preserve">
+    <value>फ़ाइल को स्कैन नहीं किया जा सका, इसलिए उसे स्वीकार नहीं किया गया।</value>
+  </data>
+</root>

@@ -31,6 +31,8 @@ namespace Jube.Test.Charting.Diagrams
         private static readonly string[] features =
             ["amount_z", "velocity_1h", "channel", "merchant_risk", "account_age", "geo_mismatch"];
 
+        public static readonly DateTimeOffset Epoch = new(2026, 3, 2, 9, 0, 0, TimeSpan.Zero);
+
         public static IReadOnlyDictionary<string, ISvgChart> All()
         {
             return new SortedDictionary<string, ISvgChart>(StringComparer.Ordinal)
@@ -44,8 +46,115 @@ namespace Jube.Test.Charting.Diagrams
                 ["distributions"] = Distributions(4),
                 ["fuzzy"] = Fuzzy(),
                 ["components-pca"] = Pca(),
-                ["components-clusters"] = Clusters()
+                ["components-clusters"] = Clusters(),
+                ["graph-force-ring"] = ForceRing(),
+                ["graph-radial-ring"] = RadialRing(),
+                ["graph-flow-chain"] = FlowChain(),
+                ["graph-combos"] = Combos()
             };
+        }
+
+        public static GraphDiagramBuilder ForceRing()
+        {
+            var b = Diagram.Graph().Title("Account ring").Subtitle("Eight accounts cycling funds through one hub")
+                .Layout(GraphLayoutKind.Force).SizeBy(GraphMeasure.Degree).WeightName("Amount")
+                .GroupOrder("Accounts", "Devices", "Network")
+                .Node("hub", "Hub account", GraphNodeShape.Hexagon, group: "Accounts",
+                    badges: [new GraphBadge(GraphBadgeKind.Hub), new GraphBadge(GraphBadgeKind.OpenCase)]);
+
+            for (var i = 0; i < 8; i++)
+            {
+                b.Node("acct-" + i, "Account " + i, GraphNodeShape.Circle, group: "Accounts");
+                b.Edge("acct-" + i, "hub", Epoch.AddHours(i), Epoch.AddHours(i + 2), 1 + i % 3, 1000 + 250 * i,
+                    "t" + i);
+
+                if (i > 0)
+                {
+                    b.Edge("acct-" + (i - 1), "acct-" + i, Epoch.AddHours(12 + i), amount: 400 + 50 * i);
+                }
+            }
+
+            b.Node("dev-1", "Device 7f3a", GraphNodeShape.Square, group: "Devices").Edge("dev-1", "acct-2")
+                .Edge("dev-1", "acct-5");
+            b.Node("ip-1", "10.4.0.9", GraphNodeShape.Diamond, group: "Network").Edge("ip-1", "acct-1");
+            b.Node("cp-1", "Counterparty", GraphNodeShape.Triangle, group: "Accounts",
+                badges: [new GraphBadge(GraphBadgeKind.Confirmed)]).Edge("hub", "cp-1", 9800);
+
+            return b;
+        }
+
+        public static GraphDiagramBuilder RadialRing()
+        {
+            var b = Diagram.Graph().Title("Neighbourhood of account 0").Subtitle("Two hops, rings by distance")
+                .Layout(GraphLayoutKind.Radial).Seed("acct-0").GroupOrder("Accounts", "Devices", "Network")
+                .Node("acct-0", "Account 0", GraphNodeShape.Circle, group: "Accounts",
+                    badges: [new GraphBadge(GraphBadgeKind.OpenCase)]);
+
+            for (var i = 1; i <= 4; i++)
+            {
+                b.Node("acct-" + i, "Account " + i, GraphNodeShape.Circle, group: "Accounts")
+                    .Edge("acct-0", "acct-" + i, 500 * i);
+            }
+
+            b.Node("dev-1", "Device a1", GraphNodeShape.Square, group: "Devices").Edge("acct-1", "dev-1")
+                .Edge("acct-2", "dev-1");
+            b.Node("dev-2", "Device b2", GraphNodeShape.Square, group: "Devices").Edge("acct-3", "dev-2");
+            b.Node("ip-1", "10.0.0.1", GraphNodeShape.Diamond, group: "Network").Edge("acct-4", "ip-1");
+            b.Node("ip-2", "10.0.0.2", GraphNodeShape.Diamond, group: "Network").Edge("acct-4", "ip-2");
+            b.Node("cp-1", "Merchant", GraphNodeShape.Triangle, group: "Accounts").Edge("acct-1", "cp-1", 120);
+            b.Node("cp-2", "Exchange", GraphNodeShape.Triangle, group: "Accounts",
+                badges: [new GraphBadge(GraphBadgeKind.Confirmed)]).Edge("acct-2", "cp-2", 2400);
+
+            return b;
+        }
+
+        public static GraphDiagramBuilder FlowChain()
+        {
+            var b = Diagram.Graph().Title("Funds flow").Subtitle("Lanes by institution, columns by first movement")
+                .Layout(GraphLayoutKind.Flow).WeightName("Amount").GroupOrder("Bank A", "Bank B", "Mules")
+                .Node("a1", "Victim", GraphNodeShape.Circle, group: "Bank A",
+                    badges: [new GraphBadge(GraphBadgeKind.Records, "3")])
+                .Node("a2", "Account A2", GraphNodeShape.Circle, group: "Bank A")
+                .Node("b1", "Account B1", GraphNodeShape.Circle, group: "Bank B")
+                .Node("b2", "Account B2", GraphNodeShape.Circle, group: "Bank B")
+                .Node("m1", "Mule 1", GraphNodeShape.Circle, group: "Mules",
+                    badges: [new GraphBadge(GraphBadgeKind.Confirmed)])
+                .Node("m2", "Mule 2", GraphNodeShape.Circle, group: "Mules")
+                .Node("x1", "Exchange", GraphNodeShape.Triangle, group: "Mules")
+                .Time("a1", Epoch)
+                .Edge("a1", "a2", Epoch, Epoch.AddMinutes(5), 3, 4500, "p1")
+                .Edge("a2", "b1", Epoch.AddMinutes(20), Epoch.AddMinutes(20), 1, 3000, "p2")
+                .Edge("a2", "b2", Epoch.AddMinutes(25), Epoch.AddMinutes(25), 1, 1400, "p3")
+                .Edge("b1", "m1", Epoch.AddHours(1), Epoch.AddHours(1), 1, 2900, "p4")
+                .Edge("b1", "m1", Epoch.AddHours(2), Epoch.AddHours(2), 1, 100, "p5")
+                .Edge("b2", "m2", Epoch.AddHours(2).AddMinutes(10), Epoch.AddHours(2).AddMinutes(10), 1, 1350, "p6")
+                .Edge("m1", "x1", Epoch.AddHours(3), Epoch.AddHours(3), 2, 2950, "p7")
+                .Edge("m2", "x1", Epoch.AddHours(3).AddMinutes(30), Epoch.AddHours(3).AddMinutes(30), 1, 1300, "p8")
+                .Edge("m2", "m1", Epoch.AddHours(4), Epoch.AddHours(4), 1, 50, "p9");
+
+            return b;
+        }
+
+        public static GraphDiagramBuilder Combos()
+        {
+            var b = Diagram.Graph().Title("Collapsed clusters").Subtitle("Stacks stand for groups over the node cap")
+                .Layout(GraphLayoutKind.Force).SizeBy(GraphMeasure.Amount).GroupOrder("Accounts", "Clusters")
+                .Node("seed", "Seed account", GraphNodeShape.Circle, 1200, "Accounts",
+                    [new GraphBadge(GraphBadgeKind.OpenCase), new GraphBadge(GraphBadgeKind.Pattern)])
+                .Node("c1", "Mule cluster", GraphNodeShape.Stack, 24000, "Clusters",
+                    [new GraphBadge(GraphBadgeKind.Cluster, "12")])
+                .Node("c2", "Merchant cluster", GraphNodeShape.Stack, 8000, "Clusters",
+                    [new GraphBadge(GraphBadgeKind.Cluster, "40")])
+                .Node("p1", "Payee", GraphNodeShape.Circle, 900, "Accounts",
+                    [new GraphBadge(GraphBadgeKind.Confirmed), new GraphBadge(GraphBadgeKind.Records, "2")])
+                .Node("p2", "Employer", GraphNodeShape.Circle, 3000, "Accounts")
+                .Edge(new GraphEdge("seed", "c1") { Weight = 24000, Count = 12, Directed = true })
+                .Edge(new GraphEdge("seed", "c2") { Weight = 8000, Count = 40, Directed = true })
+                .Edge(new GraphEdge("seed", "p1") { Weight = 900, Directed = true })
+                .Edge(new GraphEdge("p2", "seed") { Weight = 3000, Directed = true, Dashed = true, Label = "salary" })
+                .Edge(new GraphEdge("p1", "c1") { Dashed = true, Directed = false, Label = "shared device" });
+
+            return b;
         }
 
         public static IReadOnlyDictionary<string, ISvgChart> Showcase()

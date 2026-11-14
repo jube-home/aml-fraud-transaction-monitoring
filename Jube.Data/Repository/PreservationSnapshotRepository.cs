@@ -19,11 +19,14 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace Jube.Data.Repository
 {
     public class PreservationSnapshotRepository
     {
+        private const byte BeforeImportSourceId = 4;
+
         private readonly DbContext dbContext;
         private readonly int tenantRegistryId;
         private readonly string userName;
@@ -112,9 +115,64 @@ namespace Jube.Data.Repository
 
             await dbContext.PreservationSnapshot
                 .Where(w => w.Id == id)
+                .Set(s => s.Json, (string)null)
                 .Set(s => s.Deleted, Convert.ToByte(1))
                 .Set(s => s.DeletedDate, DateTime.UtcNow)
                 .Set(s => s.DeletedUser, userName)
+                .UpdateAsync(token);
+        }
+
+        public async Task<int> PruneAsync(int maximumCount, int maximumAgeDays, DateTime now,
+            CancellationToken token = default)
+        {
+            var inFlightSince = now.AddHours(-6);
+
+            if (await dbContext.Import.AnyAsync(i => i.TenantRegistryId == tenantRegistryId
+                                                     && i.CompletedDate == null
+                                                     && (i.InError == null || i.InError == 0)
+                                                     && i.CreatedDate > inFlightSince, token))
+            {
+                return 0;
+            }
+
+            var live = dbContext.PreservationSnapshot.Where(w =>
+                w.TenantRegistryId == tenantRegistryId && (w.Deleted == 0 || w.Deleted == null));
+
+            var protectedId = await live
+                .Where(w => w.SnapshotSourceId == BeforeImportSourceId && (w.InError == null || w.InError == 0))
+                .OrderByDescending(o => o.Id)
+                .Select(s => (int?)s.Id)
+                .FirstOrDefaultAsync(token);
+
+            var doomed = new List<int>();
+
+            if (maximumCount > 0)
+            {
+                doomed.AddRange(await live.OrderByDescending(o => o.Id).Skip(maximumCount).Select(s => s.Id)
+                    .ToListAsync(token));
+            }
+
+            if (maximumAgeDays > 0)
+            {
+                var cutoff = now.AddDays(-maximumAgeDays);
+
+                doomed.AddRange(await live.Where(w => w.CreatedDate < cutoff).Select(s => s.Id)
+                    .ToListAsync(token));
+            }
+
+            var ids = doomed.Distinct().Where(id => id != protectedId).ToList();
+
+            if (ids.Count == 0)
+            {
+                return 0;
+            }
+
+            return await dbContext.PreservationSnapshot
+                .Where(w => ids.Contains(w.Id) && w.TenantRegistryId == tenantRegistryId)
+                .Set(s => s.Json, (string)null)
+                .Set(s => s.Deleted, Convert.ToByte(1))
+                .Set(s => s.DeletedDate, now)
+                .Set(s => s.DeletedUser, "retention")
                 .UpdateAsync(token);
         }
     }

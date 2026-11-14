@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchShareOfSumWithAbove(double other, double bound)
+            [Description("True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchShareOfSumWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleShareOfSumWithAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> RejectShareOfSumWithAbove(double other, double bound)
+            [Description("True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectShareOfSumWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleShareOfSumWithAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> BreakShareOfSumWithAbove(double other, double bound)
+            [Description("True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakShareOfSumWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleShareOfSumWithAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> RequireShareOfSumWithAbove(double other, double bound)
+            [Description("True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireShareOfSumWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleShareOfSumWithAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> EnsureShareOfSumWithAbove(double other, double bound)
+            [Description("True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureShareOfSumWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchShareOfSumWithAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchShareOfSumWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchShareOfSumWithAbove(other, bound);
             }
 
-            public Flow<double> RejectShareOfSumWithAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectShareOfSumWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectShareOfSumWithAbove(other, bound);
             }
 
-            public Flow<double> BreakShareOfSumWithAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakShareOfSumWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakShareOfSumWithAbove(other, bound);
             }
 
-            public Flow<double> RequireShareOfSumWithAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireShareOfSumWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireShareOfSumWithAbove(other, bound);
             }
 
-            public Flow<double> EnsureShareOfSumWithAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the value's share of the value plus the other (a decline ratio is declined over declined plus approved) is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureShareOfSumWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureShareOfSumWithAbove(other, bound);
             }

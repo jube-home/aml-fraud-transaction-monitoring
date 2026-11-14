@@ -30,6 +30,8 @@ namespace Jube.Service.UserLogin
     public sealed class UserLoginService
     {
         private const int MaxListTake = 100000;
+        private const int OAuthAuthenticationType = 3;
+        private const string MfaFailureReason = "Multi-factor authentication code was not accepted";
         private static readonly int[] permissions = [35];
         private readonly ILog auditLog;
         private readonly ILog log;
@@ -169,8 +171,8 @@ namespace Jube.Service.UserLogin
                 var dtos = rows.Select(r => new UserLoginDto(
                     r.Id, r.CreatedDate.GetValueOrDefault(), r.CreatedUser, r.Failed, r.AuthenticationTypeId,
                     DescribeAuthenticationScheme(r.AuthenticationTypeId), r.FailureTypeId,
-                    r.Failed == 1 ? DescribeFailureReason(r.FailureTypeId) : string.Empty, r.FailureMessage,
-                    r.RemoteIp, r.LocalIp, r.UserAgent)).ToList();
+                    r.Failed == 1 ? DescribeFailureReason(r.AuthenticationTypeId, r.FailureTypeId) : string.Empty,
+                    r.FailureMessage, r.RemoteIp, r.LocalIp, r.UserAgent)).ToList();
 
                 op.Rows(dtos.Count);
 
@@ -216,7 +218,7 @@ namespace Jube.Service.UserLogin
             };
         }
 
-        private static string DescribeFailureReason(int failureTypeId)
+        private static string DescribeFailureReason(int? authenticationTypeId, int failureTypeId)
         {
             return failureTypeId switch
             {
@@ -226,10 +228,12 @@ namespace Jube.Service.UserLogin
                 4 => "Password has expired and must be changed",
                 5 => "Bad credentials (password did not match)",
                 6 => "No password was supplied",
+                7 when authenticationTypeId != OAuthAuthenticationType => MfaFailureReason,
                 7 => "OAuth: no usable identity claim in principal payload",
                 8 => "OAuth: remote/identity-provider failure",
                 9 => "OAuth: local token validation failed",
                 10 => "OAuth: internal error during processing",
+                11 => MfaFailureReason,
                 _ => "(unknown)"
             };
         }

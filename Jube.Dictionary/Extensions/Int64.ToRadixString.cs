@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string ToRadixString(this long @this, int radix)
+        [Description("The value written in a base from 2 to 36.")]
+        public static string ToRadixString(this long @this, [Description("The base, 2 to 36.")] int radix)
         {
             if (radix is < 2 or > 36)
             {

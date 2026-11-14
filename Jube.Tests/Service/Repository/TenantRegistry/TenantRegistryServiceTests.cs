@@ -18,6 +18,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Jube.Data.Concurrency;
 using Jube.Data.Context;
 using Jube.Dto.Repository.TenantRegistry;
 using Jube.Resources;
@@ -31,6 +32,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -196,6 +198,36 @@ namespace Jube.Test.Service.Repository.TenantRegistry
             saved.Version.Should().Be(1);
         }
 
+        [Theory]
+        [InlineData("deactivate")]
+        [InlineData("delete")]
+        public async Task ALandlordSwitchedIntoATenantThatIsThenDisabledIsReturnedToTheirOwnTenantAsync(string how)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var created = await service.InsertAsync(ValidDto());
+            createdTenantRegistryIds.Add(created.Id);
+
+            var home = await dbContext.UserInTenant.Where(w => w.User == fx.Seed.LandlordUser)
+                .Select(w => w.TenantRegistryId).FirstAsync();
+
+            await dbContext.UserInTenant.Where(w => w.User == fx.Seed.LandlordUser)
+                .Set(w => w.TenantRegistryId, created.Id).UpdateAsync();
+
+            if (how == "deactivate")
+            {
+                created.Active = false;
+                await service.UpdateAsync(created);
+            }
+            else
+            {
+                await service.DeleteAsync(created.Id);
+            }
+
+            (await dbContext.UserInTenant.Where(w => w.User == fx.Seed.LandlordUser)
+                .Select(w => w.TenantRegistryId).FirstAsync()).Should().Be(home);
+        }
+
         [Fact]
         public async Task UpdateIncrementsVersionPreservesCreatedFieldsAndSetsUpdatedFieldsAsync()
         {
@@ -226,7 +258,6 @@ namespace Jube.Test.Service.Repository.TenantRegistry
             var originalCreatedDate = created.CreatedDate;
             created.CreatedUser = "tampered";
             created.CreatedDate = DateTimeOffset.UtcNow.AddYears(-5);
-            created.Version = 999;
             var updated = await service.UpdateAsync(created);
 
             updated.CreatedUser.Should().NotBe("tampered");
@@ -670,6 +701,137 @@ namespace Jube.Test.Service.Repository.TenantRegistry
             }
         }
 
+        private async Task<int> InsertLandlordTenantRowAsync(DbContext dbContext)
+        {
+            var id = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.TenantRegistry
+            {
+                Name = $"{DatabaseFixture.Prefix}Landlord{Guid.NewGuid():N}"[..40],
+                Active = 1,
+                Locked = 0,
+                Deleted = 0,
+                Landlord = 1,
+                Version = 1,
+                CreatedDate = DateTime.UtcNow,
+                CreatedUser = fx.Seed.LandlordUser
+            });
+
+            createdTenantRegistryIds.Add(id);
+
+            return id;
+        }
+
+        [Fact]
+        public async Task UpdateWithStaleVersionThrowsVersionConflictAndLeavesRowUnchangedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var created = await service.InsertAsync(ValidDto());
+            createdTenantRegistryIds.Add(created.Id);
+
+            var firstWriter = ValidDto(created.Name + "-a");
+            firstWriter.Id = created.Id;
+            firstWriter.Version = created.Version;
+            await service.UpdateAsync(firstWriter);
+
+            var secondWriter = ValidDto(created.Name + "-b");
+            secondWriter.Id = created.Id;
+            secondWriter.Version = created.Version;
+
+            var stale = () => service.UpdateAsync(secondWriter);
+
+            await stale.Should().ThrowAsync<VersionConflictException>();
+            (await service.GetByIdAsync(created.Id)).Required().Name.Should().Be(created.Name + "-a");
+        }
+
+        [Fact]
+        public async Task DeleteOfALandlordTenantThrowsNotFoundAndTheRowSurvivesAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var landlordTenantId = await InsertLandlordTenantRowAsync(dbContext);
+
+            await Assert.ThrowsAsync<NotFoundException>(() => service.DeleteAsync(landlordTenantId));
+
+            var row = await dbContext.TenantRegistry.FirstAsync(w => w.Id == landlordTenantId);
+            row.Deleted.GetValueOrDefault().Should().Be(0);
+            row.Landlord.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task UpdateDeactivatingALandlordTenantFailsValidationAndKeepsItActiveAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var landlordTenantId = await InsertLandlordTenantRowAsync(dbContext);
+            var dto = (await service.GetByIdAsync(landlordTenantId)).Required();
+            dto.Active = false;
+
+            var exception = await Assert.ThrowsAsync<DtoValidationException>(() => service.UpdateAsync(dto));
+
+            exception.Result.Errors.Should().Contain(e => e.ErrorCode == "LandlordMustStayActive");
+            (await dbContext.TenantRegistry.FirstAsync(w => w.Id == landlordTenantId)).Active.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task UpdateRenamingAnActiveLandlordTenantStillSucceedsAndKeepsTheFlagAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var landlordTenantId = await InsertLandlordTenantRowAsync(dbContext);
+            var dto = (await service.GetByIdAsync(landlordTenantId)).Required();
+            dto.Name += "-r";
+
+            var updated = await service.UpdateAsync(dto);
+
+            updated.Name.Should().Be(dto.Name);
+            (await dbContext.TenantRegistry.FirstAsync(w => w.Id == landlordTenantId)).Landlord.Should().Be(1);
+        }
+
+        [Theory]
+        [InlineData(" padded")]
+        [InlineData("padded ")]
+        [InlineData("tab\there")]
+        [InlineData("line\nbreak")]
+        [InlineData("bidi\u202Eoverride")]
+        [InlineData("isolate\u2066x\u2069")]
+        [InlineData("mark\u200Fx")]
+        [InlineData("arabic\u061Cmark")]
+        public async Task InsertWithControlBidirectionalOrPaddedNameFailsValidationAndWritesNoRowAsync(string suffix)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var name = suffix.StartsWith(' ')
+                ? suffix
+                : $"{DatabaseFixture.Prefix}Hostile{suffix}";
+
+            var exception =
+                await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(ValidDto(name)));
+
+            exception.Result.Errors.Should().Contain(e => e.ErrorCode == "NameInvalidCharacters");
+            (await dbContext.TenantRegistry.CountAsync(w => w.Name == name)).Should().Be(0);
+        }
+
+        [Theory]
+        [InlineData("Banque d'Épargne")]
+        [InlineData("银行 Bank")]
+        [InlineData("بنك الأمل")]
+        [InlineData("نیشنل بینک")]
+        [InlineData("बैंक ऑफ़ इंडिया")]
+        [InlineData("საქართველოს ბანკი")]
+        [InlineData("Bank Rakyat Indonesia")]
+        [InlineData("Svenska Handelsbanken AB")]
+        public async Task InsertWithOrdinaryInternationalNamesSucceedsAsync(string name)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var unique = $"{name} {Guid.NewGuid():N}"[..Math.Min(name.Length + 9, 80)];
+
+            var saved = await service.InsertAsync(ValidDto(unique));
+            createdTenantRegistryIds.Add(saved.Id);
+
+            saved.Name.Should().Be(unique);
+        }
+
         [Fact]
         public void CatalogueRegistersUniqueTenantRegistryToolNames()
         {
@@ -687,6 +849,161 @@ namespace Jube.Test.Service.Repository.TenantRegistry
             }
 
             tools.Select(t => t.Name).Should().OnlyHaveUniqueItems();
+        }
+
+        [Theory]
+        [InlineData("http://scoring.example.com")]
+        [InlineData("https://169.254.169.254")]
+        [InlineData("https://localhost")]
+        [InlineData("https://10.0.0.5")]
+        [InlineData("https://user:pass@scoring.example.com")]
+        [InlineData("https://scoring.example.com/?x=1")]
+        [InlineData("ftp://scoring.example.com")]
+        public async Task InsertWithAnUnsafeHttpAdaptationUrlThrowsValidationFailedAndWritesNoRowAsync(string url)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var dto = ValidDto();
+            dto.HttpAdaptationUrl = url;
+
+            await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
+            (await dbContext.TenantRegistry.AnyAsync(a => a.Name == dto.Name)).Should().BeFalse();
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(99)]
+        [InlineData(30001)]
+        [InlineData(-5)]
+        public async Task InsertWithAnHttpAdaptationTimeoutOutsideTheRangeThrowsValidationFailedAsync(int timeout)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var dto = ValidDto();
+            dto.HttpAdaptationTimeoutMilliseconds = timeout;
+
+            await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+        }
+
+        [Fact]
+        public async Task HttpAdaptationSettingsRoundTripAndAreSnapshottedToTheVersionTableOnUpdateAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var dto = ValidDto();
+            dto.HttpAdaptationUrl = "https://scoring.example.com";
+            dto.HttpAdaptationTimeoutMilliseconds = 750;
+            dto.HttpAdaptationValidateSsl = false;
+
+            var saved = await service.InsertAsync(dto);
+            createdTenantRegistryIds.Add(saved.Id);
+
+            var read = await service.GetByIdAsync(saved.Id);
+            read!.HttpAdaptationUrl.Should().Be("https://scoring.example.com");
+            read.HttpAdaptationTimeoutMilliseconds.Should().Be(750);
+            read.HttpAdaptationValidateSsl.Should().BeFalse();
+
+            read.HttpAdaptationUrl = null;
+            read.HttpAdaptationTimeoutMilliseconds = 0;
+            read.HttpAdaptationValidateSsl = true;
+            await service.UpdateAsync(read);
+
+            var after = await service.GetByIdAsync(saved.Id);
+            after!.HttpAdaptationUrl.Should().BeNull();
+            after.HttpAdaptationTimeoutMilliseconds.Should().Be(0);
+            after.HttpAdaptationValidateSsl.Should().BeTrue();
+
+            var audit = await dbContext.GetTable<Data.Poco.TenantRegistryVersion>().FirstAsync(f => f.TenantRegistryId == saved.Id);
+            audit.HttpAdaptationUrl.Should().Be("https://scoring.example.com");
+            audit.HttpAdaptationTimeoutMilliseconds.Should().Be(750);
+        }
+
+        [Fact]
+        public async Task ANewTenantInheritsTheGlobalHttpAdaptationSettingsAndValidatesSslAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
+            var saved = await service.InsertAsync(ValidDto());
+            createdTenantRegistryIds.Add(saved.Id);
+
+            var row = await dbContext.TenantRegistry.FirstAsync(f => f.Id == saved.Id);
+            row.HttpAdaptationUrl.Should().BeNull();
+            row.HttpAdaptationTimeoutMilliseconds.Should().BeNull();
+            (await service.GetByIdAsync(saved.Id))!.HttpAdaptationValidateSsl.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ANewTenantAllowsRemoteSvirfdLookupsByDefaultAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
+            var saved = await service.InsertAsync(ValidDto());
+            createdTenantRegistryIds.Add(saved.Id);
+
+            var row = await dbContext.TenantRegistry.FirstAsync(f => f.Id == saved.Id);
+            row.SvirfdRemoteLookupsEnabled.Should().Be(1);
+            (await service.GetByIdAsync(saved.Id))!.SvirfdRemoteLookupsEnabled.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ARowWithNoStoredSvirfdSwitchReadsAsEnabledAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+
+            var saved = await service.InsertAsync(ValidDto());
+            createdTenantRegistryIds.Add(saved.Id);
+
+            await dbContext.TenantRegistry.Where(w => w.Id == saved.Id)
+                .Set(s => s.SvirfdRemoteLookupsEnabled, (byte?)null).UpdateAsync();
+
+            (await service.GetByIdAsync(saved.Id))!.SvirfdRemoteLookupsEnabled.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task SvirfdRemoteLookupsSwitchRoundTripsAndIsSnapshottedToTheVersionTableAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var dto = ValidDto();
+            dto.SvirfdRemoteLookupsEnabled = false;
+
+            var saved = await service.InsertAsync(dto);
+            createdTenantRegistryIds.Add(saved.Id);
+
+            var read = await service.GetByIdAsync(saved.Id);
+            read!.SvirfdRemoteLookupsEnabled.Should().BeFalse();
+
+            read.SvirfdRemoteLookupsEnabled = true;
+            await service.UpdateAsync(read);
+
+            (await service.GetByIdAsync(saved.Id))!.SvirfdRemoteLookupsEnabled.Should().BeTrue();
+
+            var audit = await dbContext.GetTable<Data.Poco.TenantRegistryVersion>()
+                .FirstAsync(f => f.TenantRegistryId == saved.Id);
+
+            audit.SvirfdRemoteLookupsEnabled.Should().Be(0);
+        }
+
+        [Fact]
+        public async Task OnlyALandlordCanChangeTheSvirfdRemoteLookupsSwitchAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var landlord = await BuildServiceAsync(dbContext, fx.Seed.LandlordUser);
+            var saved = await landlord.InsertAsync(ValidDto());
+            createdTenantRegistryIds.Add(saved.Id);
+
+            var read = await landlord.GetByIdAsync(saved.Id);
+            read!.SvirfdRemoteLookupsEnabled = false;
+
+            var tenantAdministrator = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => tenantAdministrator.UpdateAsync(read));
+
+            (await landlord.GetByIdAsync(saved.Id))!.SvirfdRemoteLookupsEnabled.Should().BeTrue();
         }
     }
 }

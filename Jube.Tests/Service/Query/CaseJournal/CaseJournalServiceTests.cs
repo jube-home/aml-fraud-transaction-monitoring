@@ -34,6 +34,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
@@ -64,6 +65,7 @@ namespace Jube.Test.Service.Query.CaseJournal
         {
             await using var dbContext = fx.GetDbContext();
 
+            await ArchiveKeySeed.CleanupAsync(dbContext, createdModelIds, createdArchiveIds);
             await dbContext.Archive.Where(w => createdArchiveIds.Contains(w.Id)).DeleteAsync();
 
             var caseWorkflowXPathGuids = dbContext.CaseWorkflowXPath.Where(s => createdXPathIds.Contains(s.Id))
@@ -119,6 +121,7 @@ namespace Jube.Test.Service.Query.CaseJournal
                     Deleted = 0,
                 }).ConfigureAwait(false);
             createdModelIds.Add(saved.Id);
+            await ArchiveKeySeed.FieldAsync(dbContext, saved.Id, DrillName);
 
             return saved.Id;
         }
@@ -177,11 +180,11 @@ namespace Jube.Test.Service.Query.CaseJournal
                 Guid = guid,
                 CaseWorkflowId = workflowId,
                 Name = name,
-                XPath = xPath,
+                SourceKindId = 6,
+                SourceGuid = await ArchiveKeySeed.SourceByWorkflowAsync(dbContext, workflowId, ArchiveKeySeed.NameOf(xPath), archiveKey: true),
                 Active = 1,
                 Locked = 0,
                 Deleted = 0,
-                Drill = 0,
                 Version = 1,
                 BoldLineMatched = (byte)(boldLine ? 1 : 0),
                 BoldLineFormatBackColor = "#111111",
@@ -241,6 +244,7 @@ namespace Jube.Test.Service.Query.CaseJournal
                 ReferenceDate = created,
             }).ConfigureAwait(false);
             createdArchiveIds.Add(id);
+            await ArchiveKeySeed.KeysAsync(dbContext, modelId, guid, payload).ConfigureAwait(false);
 
             return (id, guid, created);
         }

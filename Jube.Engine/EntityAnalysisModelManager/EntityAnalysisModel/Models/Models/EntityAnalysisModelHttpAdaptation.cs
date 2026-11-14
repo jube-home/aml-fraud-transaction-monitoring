@@ -14,9 +14,13 @@
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models
 {
     using System;
+    using System.Linq;
     using System.Net.Http;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
+    using Jube.ResilientHttp;
+    using Jube.ResilientHttp.Extensions;
     using log4net;
     using Newtonsoft.Json;
     using EntityAnalysisModelInstanceEntryPayload =
@@ -25,22 +29,19 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
 
     public class EntityAnalysisModelHttpAdaptation
     {
+        public const long MaximumResponseBytes = 4 * 1024 * 1024;
+
         private readonly HttpClient httpClient;
         private Uri uri;
 
-        public EntityAnalysisModelHttpAdaptation(int maxConnections, bool validateSsl, int timeout)
+        public EntityAnalysisModelHttpAdaptation(int maxConnections, bool validateSsl, int timeout,
+            bool allowInsecureTargets = true, int? tenantRegistryId = null,
+            AdaptationHttpClientCache clientCache = null)
         {
-            var httpClientHandler = new HttpClientHandler();
-
-            if (!validateSsl)
-            {
-                httpClientHandler.ServerCertificateCustomValidationCallback = (_, _, _, _) => true;
-            }
-
-            httpClientHandler.MaxConnectionsPerServer = maxConnections;
-
-            httpClient = new HttpClient(httpClientHandler);
-            httpClient.Timeout = TimeSpan.FromMilliseconds(timeout);
+            httpClient = tenantRegistryId.HasValue
+                ? (clientCache ?? AdaptationHttpClientCache.Shared).Acquire(tenantRegistryId.Value, maxConnections,
+                    validateSsl, timeout, allowInsecureTargets)
+                : AdaptationHttpClientCache.Create(maxConnections, validateSsl, timeout, allowInsecureTargets);
         }
 
         public int Id { get; init; }
@@ -48,11 +49,35 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
         public bool ResponsePayload { get; set; }
         public bool ReportTable { get; set; }
         public double Priority { get; set; }
+        public string BreakerKey { get; set; }
+        public HttpResilienceOptions Resilience { get; set; }
 
         public string HttpEndpoint
         {
             get { return uri.ToString(); }
             set { uri = new Uri(value); }
+        }
+
+        public static bool IsPlainPath(string endpoint)
+        {
+            if (string.IsNullOrEmpty(endpoint) || endpoint[0] != '/')
+            {
+                return false;
+            }
+
+            if (endpoint.Any(c => char.IsControl(c) || char.IsWhiteSpace(c) || c == '\\'))
+            {
+                return false;
+            }
+
+            var decoded = Uri.UnescapeDataString(endpoint.Split('?', '#')[0]);
+
+            if (decoded.Any(c => char.IsControl(c) || c == '\\'))
+            {
+                return false;
+            }
+
+            return !decoded.Split('/').Any(segment => segment is "." or "..");
         }
 
         public async Task<string> PostAsync(EntityAnalysisModelInstanceEntryPayload payload,
@@ -68,14 +93,30 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
                 Encoding.UTF8,
                 "application/json");
 
-            var request = new HttpRequestMessage
+            var valueString = Resilience == null
+                ? await SendAsync(stringContent, log, CancellationToken.None).ConfigureAwait(false)
+                : await ResilientHttpExecutor.Shared.ExecuteAsync(BreakerKey ?? HttpEndpoint, Resilience,
+                    ct => SendAsync(stringContent, log, ct)).ConfigureAwait(false);
+
+            if (log.IsInfoEnabled)
+            {
+                log.Info(
+                    $"R Plumber Hook: Has received {valueString.Length} characters from {uri}. This is returned unparsed, as the HTTP Adaptation Protocol response shape (bare number or Adaptation object) is decided by the caller.");
+            }
+
+            return valueString;
+        }
+
+        private async Task<string> SendAsync(StringContent stringContent, ILog log, CancellationToken token)
+        {
+            using var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
                 RequestUri = uri,
                 Content = stringContent
             };
 
-            var task = await httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead)
+            using var task = await httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, token)
                 .ConfigureAwait(false);
 
             if (log.IsInfoEnabled)
@@ -84,15 +125,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
                     $"R Plumber Hook: Has received data from {uri} with status {task.StatusCode}.");
             }
 
-            var valueString = await task.Content.ReadAsStringAsync().ConfigureAwait(false);
+            task.ThrowIfUnsuccessful();
 
-            if (log.IsInfoEnabled)
-            {
-                log.Info(
-                    $"R Plumber Hook: Has received data from {uri} with payload {valueString}. This is returned unparsed, as the HTTP Adaptation Protocol response shape (bare number or Adaptation object) is decided by the caller.");
-            }
-
-            return valueString;
+            return await task.Content.ReadAsStringAsync(token).ConfigureAwait(false);
         }
     }
 }

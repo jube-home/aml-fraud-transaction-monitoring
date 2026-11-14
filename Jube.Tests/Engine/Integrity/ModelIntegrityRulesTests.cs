@@ -159,10 +159,80 @@ namespace Jube.Test.Engine.Integrity
             checks.Should().NotContain(c => c.Code == IntegrityCode.EngineNodeStale && c.EntityName == "node-c",
                 "an instance silent for longer than the retention window drops out of the findings");
 
-            checks.Should().ContainSingle(c => c.Code == IntegrityCode.EngineModelNotLoaded &&
-                                               c.EntityName == "node-b");
+            checks.Should().NotContain(c => c.Code == IntegrityCode.EngineModelNotLoaded &&
+                                            (c.EntityName == "node-b" || c.EntityName == "node-c"),
+                "an instance that is not running is reported as stopped, not as having failed to load the model");
 
             checks.Should().NotContain(c => c.EntityName == "NotCompared" || c.EntityName == "Unused");
+        }
+
+        [Fact]
+        public void ALiveInstanceWithNoStateForTheModelHasNotLoadedIt()
+        {
+            var observation = new EngineObservation(EngineStateSourceKind.Snapshot,
+                [new EngineModelState("node-a", 1, 1, true, now, [])],
+                [
+                    new EngineNode("node-a", now.AddSeconds(-30), now.AddMinutes(-5)),
+                    new EngineNode("node-d", now.AddSeconds(-30), now.AddMinutes(-5))
+                ]);
+
+            var checks = ModelIntegrityRules.EngineChecks(observation, true, Graph().Entities, now,
+                TimeSpan.FromMinutes(10)).ToList();
+
+            checks.Should().ContainSingle(c => c.Code == IntegrityCode.EngineModelNotLoaded &&
+                                               c.EntityName == "node-d");
+        }
+
+        [Fact]
+        public void EveryFindingCarriesAMessageKeyWhoseResourceTakesExactlyItsArguments()
+        {
+            var state = new EngineModelState("node-a", 1, 1, false, now,
+            [
+                new EngineLoadedEntity("TtlCounter", 2, "PerAccount"),
+                new EngineLoadedEntity("ActivationRule", 99, "Deactivated")
+            ]);
+
+            var observation = new EngineObservation(EngineStateSourceKind.Snapshot, [state],
+            [
+                new EngineNode("node-a", now.AddMinutes(-1), now.AddMinutes(-5)),
+                new EngineNode("node-b", now.AddMinutes(-30), now.AddMinutes(-30)),
+                new EngineNode("node-d", now.AddSeconds(-30), now.AddMinutes(-5))
+            ]);
+
+            var checks = ModelIntegrityRules.DependencyChecks(Graph())
+                .Concat(ModelIntegrityRules.CompilationChecks([
+                    new CompileStatus("GatewayRule", 1, "Broken", true, false, "boom"),
+                    new CompileStatus("GatewayRule", 2, "Silent", true, false, null)
+                ]))
+                .Concat(ModelIntegrityRules.ConfigurationChecks(false, false, Graph(),
+                [
+                    new SearchWindowInput(1, "Week", "d", 7, "AccountId", "h", 12),
+                    new SearchWindowInput(2, "Day", "d", 1, "AccountId", "h", 0)
+                ], now))
+                .Concat(ModelIntegrityRules.EngineChecks(observation, true, Graph().Entities, now,
+                    TimeSpan.FromMinutes(10)))
+                .Concat(ModelIntegrityRules.EngineChecks(
+                    new EngineObservation(EngineStateSourceKind.Unavailable, [], []), true, Graph().Entities, now,
+                    TimeSpan.FromMinutes(10)))
+                .ToList();
+
+            var resources = new System.Resources.ResourceManager(typeof(Jube.Resources.EntityAnalysisModelIntegrityResources));
+
+            checks.Should().NotBeEmpty();
+
+            foreach (var check in checks)
+            {
+                check.MessageKey.Should().NotBeNull(check.Code.ToString());
+
+                var template = resources.GetString("Message_" + check.MessageKey);
+                template.Should().NotBeNull(check.MessageKey);
+
+                var placeholders = System.Text.RegularExpressions.Regex.Matches(template!, @"\{(\d)\}")
+                    .Select(m => int.Parse(m.Groups[1].Value)).Distinct().Count();
+
+                (check.Arguments?.Count ?? 0).Should().Be(placeholders, check.MessageKey);
+                resources.GetString("Title_" + check.Code).Should().NotBeNullOrEmpty();
+            }
         }
 
         [Fact]

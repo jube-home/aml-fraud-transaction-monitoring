@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root"
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
                 xmlns="">
         <xsd:element name="root" msdata:IsDataSet="true">
             <xsd:complexType>
@@ -37,5 +38,68 @@
     </resheader>
     <data name="NameRequired" xml:space="preserve">
     <value>Un nom est requis.</value>
+  </data>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>Un modèle valide est requis.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Le nom doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Ce nom existe déjà.</value>
+  </data>
+    <data name="DataTypeIdInvalid" xml:space="preserve">
+    <value>Le type de données doit être String, Integer, Float, Date, Boolean, Latitude, Longitude ou IP.</value>
+  </data>
+    <data name="XPathRequired" xml:space="preserve">
+    <value>Un XPath (JSONPath) est requis.</value>
+  </data>
+    <data name="XPathMaxLength" xml:space="preserve">
+    <value>Le XPath doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="XPathRegexNotPermitted" xml:space="preserve">
+    <value>Le XPath ne doit pas utiliser l'opérateur d'expression régulière (=~).</value>
+  </data>
+    <data name="DefaultValueRequired" xml:space="preserve">
+    <value>Une valeur par défaut est requise.</value>
+  </data>
+    <data name="DefaultValueMaxLength" xml:space="preserve">
+    <value>La valeur par défaut doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="DefaultValueDateOffsetInvalid" xml:space="preserve">
+    <value>La valeur par défaut d'un champ Date doit être un nombre entier de jours de décalage par rapport à maintenant.</value>
+  </data>
+    <data name="EncryptionIdInvalid" xml:space="preserve">
+    <value>L'option de chiffrement doit être None, Deterministic ou Random.</value>
+  </data>
+    <data name="SearchKeyTtlIntervalInvalid" xml:space="preserve">
+    <value>L'intervalle TTL de la clé de recherche doit être Secondes, Minutes, Heures ou Jours.</value>
+  </data>
+    <data name="SearchKeyTtlIntervalValueRange" xml:space="preserve">
+    <value>La valeur de l'intervalle TTL de la clé de recherche doit être supérieure ou égale à zéro.</value>
+  </data>
+    <data name="SearchKeyFetchLimitRange" xml:space="preserve">
+    <value>La limite de récupération de la clé de recherche doit être supérieure ou égale à zéro.</value>
+  </data>
+    <data name="SearchKeyCacheIntervalInvalid" xml:space="preserve">
+    <value>L'intervalle de cache de la clé de recherche doit être Secondes, Minutes, Heures ou Jours.</value>
+  </data>
+    <data name="SearchKeyCacheValueRange" xml:space="preserve">
+    <value>La valeur de l'intervalle de cache de la clé de recherche doit être supérieure ou égale à zéro.</value>
+  </data>
+    <data name="SearchKeyCacheFetchLimitRange" xml:space="preserve">
+    <value>La limite de récupération du cache de la clé de recherche doit être supérieure ou égale à zéro.</value>
+  </data>
+    <data name="SearchKeyCacheTtlIntervalInvalid" xml:space="preserve">
+    <value>L'intervalle TTL du cache de la clé de recherche doit être Secondes, Minutes, Heures ou Jours.</value>
+  </data>
+    <data name="SearchKeyCacheTtlValueRange" xml:space="preserve">
+    <value>La valeur de l'intervalle TTL du cache de la clé de recherche doit être supérieure ou égale à zéro.</value>
   </data>
 </root>

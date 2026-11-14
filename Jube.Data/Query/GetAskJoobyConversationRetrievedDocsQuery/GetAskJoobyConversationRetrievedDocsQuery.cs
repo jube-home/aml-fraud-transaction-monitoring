@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Repository.Models;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace Jube.Data.Query.GetAskJoobyConversationRetrievedDocsQuery
 {

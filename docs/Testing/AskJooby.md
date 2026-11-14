@@ -359,17 +359,22 @@ memory services, guards, dynamic SQL table access and the streaming endpoints.
 
 ### AskJoobyChatTranscriptServiceTests
 
-`Jube.Test.AskJooby.AskJoobyChatTranscriptServiceTests` — 7 tests. Category: AskJooby. Collection: Database.
+`Jube.Test.AskJooby.AskJoobyChatTranscriptServiceTests` — 12 tests. Category: AskJooby. Collection: Database.
 
-| Test                                                                    | Kind | Verifies                                                                     |
-|-------------------------------------------------------------------------|------|------------------------------------------------------------------------------|
-| `GenerateAsyncSucceedsForANonLandlordUserHoldingAccessAsync`            | Fact | Generate async succeeds for a non landlord user holding access.              |
-| `GenerateAsyncSucceedsForALandlordUserWithNoOrdinaryPermissionsAsync`   | Fact | Generate async succeeds for a landlord user with no ordinary permissions.    |
-| `GenerateAsyncIsForbiddenForAUserWithNeitherLandlordNorAccessAsync`     | Fact | Generate async is forbidden for a user with neither landlord nor access.     |
-| `GenerateAsyncIsForbiddenForADifferentUserInTheSameTenantAsync`         | Fact | Generate async is forbidden for a different user in the same tenant.         |
-| `GenerateAsyncIsNotFoundForAUserInADifferentTenantAsync`                | Fact | Generate async is not found for a user in a different tenant.                |
-| `GenerateAsyncStatesHistoryWasNeverFoldedWhenThereWasNoCompactionAsync` | Fact | Generate async states history was never folded when there was no compaction. |
-| `GenerateAsyncStatesHistoryWasFoldedButNeverLostWhenCompactionRanAsync` | Fact | Generate async states history was folded but never lost when compaction ran. |
+| Test                                                                    | Kind   | Verifies                                                                     |
+|-------------------------------------------------------------------------|--------|------------------------------------------------------------------------------|
+| `GenerateAsyncSucceedsForANonLandlordUserHoldingAccessAsync`            | Fact   | Generate async succeeds for a non landlord user holding access.              |
+| `GenerateAsyncSucceedsForALandlordUserWithNoOrdinaryPermissionsAsync`   | Fact   | Generate async succeeds for a landlord user with no ordinary permissions.    |
+| `GenerateAsyncIsForbiddenForAnActiveUserWithoutTheAskJoobyGrantAsync`   | Fact   | Generate async is forbidden for an active user without the Ask Jooby grant.  |
+| `GenerateAsyncIsForbiddenForAnInactiveUserAsync`                        | Fact   | Generate async is forbidden for an inactive user.                            |
+| `GenerateAsyncIsForbiddenForAPasswordLockedUserAsync`                   | Fact   | Generate async is forbidden for a password locked user.                      |
+| `ActiveUserIsTrueForAnActiveUserWithoutAnExplicitAccessGrantAsync`      | Fact   | Active user is true for an active user without an explicit access grant.     |
+| `ActiveUserIsFalseForAnInactiveOrPasswordLockedUserAsync`               | Theory | Active user is false for an inactive or password locked user.                |
+| `ActiveUserIsFalseForAnUnknownUserAsync`                                | Fact   | Active user is false for an unknown user.                                    |
+| `GenerateAsyncIsForbiddenForADifferentUserInTheSameTenantAsync`         | Fact   | Generate async is forbidden for a different user in the same tenant.         |
+| `GenerateAsyncIsNotFoundForAUserInADifferentTenantAsync`                | Fact   | Generate async is not found for a user in a different tenant.                |
+| `GenerateAsyncStatesHistoryWasNeverFoldedWhenThereWasNoCompactionAsync` | Fact   | Generate async states history was never folded when there was no compaction. |
+| `GenerateAsyncStatesHistoryWasFoldedButNeverLostWhenCompactionRanAsync` | Fact   | Generate async states history was folded but never lost when compaction ran. |
 
 ### AskJoobyContentSafetyTests
 
@@ -500,7 +505,6 @@ memory services, guards, dynamic SQL table access and the streaming endpoints.
 
 | Test                                                                                                     | Kind   | Verifies                                                                                            |
 |----------------------------------------------------------------------------------------------------------|--------|-----------------------------------------------------------------------------------------------------|
-| `AHostileTopicJudgeWouldRejectADecontextualisedTabularRowUnderTheHumanInputPipelineAsync`                | Fact   | A hostile topic judge would reject a decontextualised tabular row under the human input pipeline.   |
 | `DescribeScreening_categorises_the_firing_rule_by_what_it_actually_is`                                   | Theory | Describe screening categorises the firing rule by what it actually is.                              |
 | `CheckToolContentAsync_passes_the_same_benign_row_with_no_topic_judgment_at_allAsync`                    | Fact   | Check tool content async passes the same benign row with no topic judgment at all.                  |
 | `CheckToolContentAsync_still_flags_a_genuine_instruction_override_in_tool_contentAsync`                  | Fact   | Check tool content async still flags a genuine instruction override in tool content.                |
@@ -510,15 +514,16 @@ memory services, guards, dynamic SQL table access and the streaming endpoints.
 | `TheDefaultSettings_KeepTheLiberalPromptInjectionThreshold`                                              | Fact   | The default settings keep the liberal prompt injection threshold.                                   |
 | `ResolveChatInputPromptInjectionMainThreshold_returns_the_configured_liberal_default`                    | Fact   | Resolve chat input prompt injection main threshold returns the configured liberal default.          |
 | `ResolveChatInputPromptInjectionMainThreshold_returns_null_once_explicitly_disabled`                     | Fact   | Resolve chat input prompt injection main threshold returns null once explicitly disabled.           |
-| `CheckAsync_still_detects_secrets_even_with_ChatInputPromptInjection_explicitly_disabledAsync`           | Fact   | Check async still detects secrets even with chat input prompt injection explicitly disabled.        |
-| `FindAsync_no_longer_reliably_catches_a_subtler_override_phrasing_at_the_liberal_default_thresholdAsync` | Fact   | Find async no longer reliably catches a subtler override phrasing at the liberal default threshold. |
 | `CheckToolContentAsync_can_be_disabled_through_the_ToolContentScreening_ruleAsync`                       | Fact   | Check tool content async can be disabled through the tool content screening rule.                   |
 | `FindAsync_flags_a_message_that_tries_to_override_the_instructionsAsync`                                 | Theory | Find async flags a message that tries to override the instructions.                                 |
 | `FindAsync_lets_an_ordinary_question_throughAsync`                                                       | Theory | Find async lets an ordinary question through.                                                       |
 | `FindAsync_flags_a_message_that_contains_an_aws_access_keyAsync`                                         | Fact   | Find async flags a message that contains an aws access key.                                         |
-| `FindAsync_flags_a_message_that_contains_a_credential_even_when_some_other_rule_catches_it_firstAsync`   | Fact   | Find async flags a message that contains a credential even when some other rule catches it first.   |
 | `FindAsync_still_lets_through_a_question_containing_ordinary_jube_domain_dataAsync`                      | Fact   | Find async still lets through a question containing ordinary jube domain data.                      |
 | `CheckOutputAsync_lets_an_ordinary_reply_through_when_no_judge_is_configuredAsync`                       | Fact   | Check output async lets an ordinary reply through when no judge is configured.                      |
+| `FindAsync_flags_a_message_that_contains_a_credential_even_when_some_other_rule_catches_it_firstAsync`   | Fact   | Find async flags a message that contains a credential even when some other rule catches it first.   |
+| `FindAsync_no_longer_reliably_catches_a_subtler_override_phrasing_at_the_liberal_default_thresholdAsync` | Fact   | Find async no longer reliably catches a subtler override phrasing at the liberal default threshold. |
+| `CheckAsync_still_detects_secrets_even_with_ChatInputPromptInjection_explicitly_disabledAsync`           | Fact   | Check async still detects secrets even with chat input prompt injection explicitly disabled.        |
+| `AHostileTopicJudgeWouldRejectADecontextualisedTabularRowUnderTheHumanInputPipelineAsync`                | Fact   | A hostile topic judge would reject a decontextualised tabular row under the human input pipeline.   |
 
 ### AskJoobyMemoryTests
 
@@ -576,24 +581,28 @@ memory services, guards, dynamic SQL table access and the streaming endpoints.
 
 ### AskJoobyRepositoryTests
 
-`Jube.Test.AskJooby.AskJoobyRepositoryTests` — 14 tests. Category: Service. Collection: Database.
+`Jube.Test.AskJooby.AskJoobyRepositoryTests` — 18 tests. Category: Service. Collection: Database.
 
-| Test                                                                             | Kind | Verifies                                                                              |
-|----------------------------------------------------------------------------------|------|---------------------------------------------------------------------------------------|
-| `ListMessagesByConversationAsyncExcludesNarrationEntriesAsync`                   | Fact | List messages by conversation async excludes narration entries.                       |
-| `InsertAsyncDefaultsEntryTypeToMessageWhenNotSpecifiedAsync`                     | Fact | Insert async defaults entry type to message when not specified.                       |
-| `ListEntriesByConversationAsyncExcludesCompactsButListMessagesIncludesThemAsync` | Fact | List entries by conversation async excludes compacts but list messages includes them. |
-| `InsertWithEmbeddingAsyncPersistsTheEmbeddingAndCompactFlagAsync`                | Fact | Insert with embedding async persists the embedding and compact flag.                  |
-| `InsertWithEmbeddingAsyncAcceptsAnEmptyEmbeddingWithoutThrowingAsync`            | Fact | Insert with embedding async accepts an empty embedding without throwing.              |
-| `GetTotalsByRunIdsAsyncSumsTokensOnlyAcrossTheGivenRunTreeAsync`                 | Fact | Get totals by run ids async sums tokens only across the given run tree.               |
-| `GetTotalsByRunIdsAsyncReturnsZeroForAnEmptyRunIdCollectionAsync`                | Fact | Get totals by run ids async returns zero for an empty run id collection.              |
-| `ListByConversationAsyncReturnsAllRunsInTheRunTreeAsync`                         | Fact | List by conversation async returns all runs in the run tree.                          |
-| `AttachToMessageAsyncLinksAnUploadedFileToTheMessageItWasSentWithAsync`          | Fact | Attach to message async links an uploaded file to the message it was sent with.       |
-| `ListByMessageIdsAsyncReturnsAnEmptyListForAnEmptyMessageIdCollectionAsync`      | Fact | List by message ids async returns an empty list for an empty message id collection.   |
-| `DeleteAsyncSoftDeletesAConversationSoItNoLongerLoadsAsync`                      | Fact | Delete async soft deletes a conversation so it no longer loads.                       |
-| `DeleteAsyncThrowsKeyNotFoundForAConversationThatDoesNotExistAsync`              | Fact | Delete async throws key not found for a conversation that does not exist.             |
-| `ListAsyncOrdersByMostRecentlyActiveRatherThanCreationOrderAsync`                | Fact | List async orders by most recently active rather than creation order.                 |
-| `ListAsyncFallsBackToCreatedDateWhenUpdatedDateIsNullAsync`                      | Fact | List async falls back to created date when updated date is null.                      |
+| Test                                                                             | Kind | Verifies                                                                                                                                         |
+|----------------------------------------------------------------------------------|------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ListMessagesByConversationAsyncExcludesNarrationEntriesAsync`                   | Fact | List messages by conversation async excludes narration entries.                                                                                  |
+| `InsertAsyncDefaultsEntryTypeToMessageWhenNotSpecifiedAsync`                     | Fact | Insert async defaults entry type to message when not specified.                                                                                  |
+| `ListEntriesByConversationAsyncExcludesCompactsButListMessagesIncludesThemAsync` | Fact | List entries by conversation async excludes compacts but list messages includes them.                                                            |
+| `InsertWithEmbeddingAsyncPersistsTheEmbeddingAndCompactFlagAsync`                | Fact | Insert with embedding async persists the embedding and compact flag.                                                                             |
+| `InsertWithEmbeddingAsyncAcceptsAnEmptyEmbeddingWithoutThrowingAsync`            | Fact | Insert with embedding async accepts an empty embedding without throwing.                                                                         |
+| `GetTotalsByRunIdsAsyncSumsTokensOnlyAcrossTheGivenRunTreeAsync`                 | Fact | Get totals by run ids async sums tokens only across the given run tree.                                                                          |
+| `GetTotalsByRunIdsAsyncReturnsZeroForAnEmptyRunIdCollectionAsync`                | Fact | Get totals by run ids async returns zero for an empty run id collection.                                                                         |
+| `ListByConversationAsyncReturnsAllRunsInTheRunTreeAsync`                         | Fact | List by conversation async returns all runs in the run tree.                                                                                     |
+| `AttachToMessageAsyncLinksAnUploadedFileToTheMessageItWasSentWithAsync`          | Fact | Attach to message async links an uploaded file to the message it was sent with.                                                                  |
+| `ListByMessageIdsAsyncReturnsAnEmptyListForAnEmptyMessageIdCollectionAsync`      | Fact | List by message ids async returns an empty list for an empty message id collection.                                                              |
+| `DeleteAsyncSoftDeletesAConversationSoItNoLongerLoadsAsync`                      | Fact | Delete async soft deletes a conversation so it no longer loads.                                                                                  |
+| `DeleteAsyncThrowsKeyNotFoundForAConversationThatDoesNotExistAsync`              | Fact | Delete async throws key not found for a conversation that does not exist.                                                                        |
+| `ListAsyncOrdersByMostRecentlyActiveRatherThanCreationOrderAsync`                | Fact | List async orders by most recently active rather than creation order.                                                                            |
+| `ListAsyncFallsBackToCreatedDateWhenUpdatedDateIsNullAsync`                      | Fact | List async falls back to created date when updated date is null.                                                                                 |
+| `OwnerRestrictedRepositoryNeverListsLoadsOrDeletesAnotherUsersConversationAsync` | Fact | An owner restricted conversation repository never lists, loads or deletes another user's conversation, and matches the owner case-insensitively. |
+| `UnrestrictedRepositoryStillSeesEveryConversationInTheTenantAsync`               | Fact | The unrestricted repository still sees every conversation in the tenant.                                                                         |
+| `OwnerRestrictedFileRepositoryNeverExposesOrChangesAnotherUsersFileAsync`        | Fact | An owner restricted file repository never exposes, lists or deletes another user's file.                                                         |
+| `AttachToMessageAsyncIgnoresAFileFromADifferentConversationWhenOneIsGivenAsync`  | Fact | Attaching files to a message ignores a file from a different conversation when a conversation is given.                                          |
 
 ### AskJoobySensitiveDataGuardTests
 
@@ -606,22 +615,29 @@ memory services, guards, dynamic SQL table access and the streaming endpoints.
 
 ### AskJoobySqlQueryClientTests
 
-`Jube.Test.AskJooby.AskJoobySqlQueryClientTests` — 12 tests. Category: AskJooby. Collection: Database.
+`Jube.Test.AskJooby.AskJoobySqlQueryClientTests` — 19 tests. Category: AskJooby. Collection: Database.
 
-| Test                                                                    | Kind | Verifies                                                                   |
-|-------------------------------------------------------------------------|------|----------------------------------------------------------------------------|
-| `RejectsAQueryReferencingAnUnregisteredTableAsync`                      | Fact | Rejects a query referencing an unregistered table.                         |
-| `RejectsANonSelectStatementAsync`                                       | Fact | Rejects a non select statement.                                            |
-| `LogsARejectedQueryWithTheFailureDetailsAsync`                          | Fact | Logs a rejected query with the failure details.                            |
-| `ValidateReportsTheColumnTheDatabaseCannotResolveWithoutExecutingAsync` | Fact | Validate reports the column the database cannot resolve without executing. |
-| `ValidateAcceptsAStatementThePlannerCanResolveAsync`                    | Fact | Validate accepts a statement the planner can resolve.                      |
-| `ValidateRefusesAnUnregisteredTableExactlyAsExecutionWouldAsync`        | Fact | Validate refuses an unregistered table exactly as execution would.         |
-| `ExplainReturnsAPlanAndACostWithoutReadingAnyRowAsync`                  | Fact | Explain returns a plan and a cost without reading any row.                 |
-| `TableStatisticsNamesOnlyTheTablesTheStatementActuallyTouchesAsync`     | Fact | Table statistics names only the tables the statement actually touches.     |
-| `TableStatisticsSizesNothingForATableTheCallerMayNotQueryAsync`         | Fact | Table statistics sizes nothing for a table the caller may not query.       |
-| `NoCallerCanReachARawCatalogueViewThroughDynamicSqlAsync`               | Fact | No caller can reach a raw catalogue view through dynamic sql.              |
-| `QueryHistoryReturnsAggregatesOrSaysThereIsNoneAsync`                   | Fact | Query history returns aggregates or says there is none.                    |
-| `LoggingAFailedLookupNeverMasksTheOriginalExceptionAsync`               | Fact | Logging a failed lookup never masks the original exception.                |
+| Test                                                                           | Kind | Verifies                                                                            |
+|--------------------------------------------------------------------------------|------|-------------------------------------------------------------------------------------|
+| `RejectsAQueryReferencingAnUnregisteredTableAsync`                             | Fact | Rejects aquery referencing an unregistered table.                                   |
+| `AValueOverTheCellByteLimitIsRefusedBeforeItIsHeldInMemoryAsync`               | Fact | Avalue over the cell byte limit is refused before it is held in memory.             |
+| `RejectsANonSelectStatementAsync`                                              | Fact | Rejects anon select statement.                                                      |
+| `LogsARejectedQueryWithTheFailureDetailsAsync`                                 | Fact | Logs arejected query with the failure details.                                      |
+| `ValidateReportsAColumnThatDoesNotExistFromTheCheckerWithoutTheDatabaseAsync`  | Fact | Validate reports acolumn that does not exist from the checker without the database. |
+| `AStatementOnlyThePlannerCanRejectIsAnsweredWithTheSqlStateAloneAsync`         | Fact | Astatement only the planner can reject is answered with the sql state alone.        |
+| `ValidateOffersADidYouMeanDrawnFromThePermittedColumnsAsync`                   | Fact | Validate offers adid you mean drawn from the permitted columns.                     |
+| `ExecuteRefusesAMissingColumnWithTheCheckersMessageNotADatabaseExceptionAsync` | Fact | Execute refuses amissing column with the checkers message not adatabase exception.  |
+| `ARunToolThatRequiresValidationRefusesAStatementThatWasNotValidatedAsync`      | Fact | Arun tool that requires validation refuses astatement that was not validated.       |
+| `ARunToolThatRequiresValidationRunsAStatementOnceItWasValidatedAsync`          | Fact | Arun tool that requires validation runs astatement once it was validated.           |
+| `AFailedValidationDoesNotUnlockTheRunToolAsync`                                | Fact | Afailed validation does not unlock the run tool.                                    |
+| `ValidateAcceptsAStatementThePlannerCanResolveAsync`                           | Fact | Validate accepts astatement the planner can resolve.                                |
+| `ValidateRefusesAnUnregisteredTableExactlyAsExecutionWouldAsync`               | Fact | Validate refuses an unregistered table exactly as execution would.                  |
+| `ExplainReturnsAPlanAndACostWithoutReadingAnyRowAsync`                         | Fact | Explain returns aplan and acost without reading any row.                            |
+| `TableStatisticsNamesOnlyTheTablesTheStatementActuallyTouchesAsync`            | Fact | Table statistics names only the tables the statement actually touches.              |
+| `TableStatisticsSizesNothingForATableTheCallerMayNotQueryAsync`                | Fact | Table statistics sizes nothing for atable the caller may not query.                 |
+| `NoCallerCanReachARawCatalogueViewThroughDynamicSqlAsync`                      | Fact | No caller can reach araw catalogue view through dynamic sql.                        |
+| `QueryHistoryReturnsAggregatesOrSaysThereIsNoneAsync`                          | Fact | Query history returns aggregates or says there is none.                             |
+| `LoggingAFailedLookupNeverMasksTheOriginalExceptionAsync`                      | Fact | Logging afailed lookup never masks the original exception.                          |
 
 ### AskJoobyStepIconReplayTests
 
@@ -822,18 +838,52 @@ memory services, guards, dynamic SQL table access and the streaming endpoints.
 
 ### DynamicSqlCommonTableExpressionTests
 
-`Jube.Test.AskJooby.DynamicSqlCommonTableExpressionTests` — 8 tests. Category: AskJooby.
+`Jube.Test.AskJooby.DynamicSqlCommonTableExpressionTests` — 13 tests (two theories expand to 4 cases each). Category:
+AskJooby.
 
-| Test                                                                          | Kind | Verifies                                                                                    |
-|-------------------------------------------------------------------------------|------|---------------------------------------------------------------------------------------------|
-| `ACommonTableExpressionNameIsNotJudgedAgainstTheAllowList`                    | Fact | A common table expression name is not judged against the allow list.                        |
-| `TheExactStatementTheAgentWasRefusedNowRewrites`                              | Fact | The exact statement the agent was refused now rewrites.                                     |
-| `OneExpressionCanBuildOnAnEarlierOne`                                         | Fact | One expression can build on an earlier one.                                                 |
-| `ARecursiveExpressionCanReferenceItself`                                      | Fact | A recursive expression can reference itself.                                                |
-| `ANonRecursiveExpressionCannotSeeItselfSoAnInnerReferenceIsStillTheRealTable` | Fact | A non recursive expression cannot see itself so an inner reference is still the real table. |
-| `AnUnregisteredTableInsideAnExpressionBodyIsStillRejected`                    | Fact | An unregistered table inside an expression body is still rejected.                          |
-| `AnExpressionMayNotTakeTheNameOfARegisteredTable`                             | Fact | An expression may not take the name of a registered table.                                  |
-| `CollectedTableReferencesExcludeExpressionNames`                              | Fact | Collected table references exclude expression names.                                        |
+| Test                                                                               | Kind   | Verifies                                                                                                                  |
+|------------------------------------------------------------------------------------|--------|---------------------------------------------------------------------------------------------------------------------------|
+| `ACommonTableExpressionNameIsNotJudgedAgainstTheAllowList`                         | Fact   | A common table expression name is not judged against the allow list.                                                      |
+| `TheExactStatementTheAgentWasRefusedNowRewrites`                                   | Fact   | The exact statement the agent was refused now rewrites.                                                                   |
+| `OneExpressionCanBuildOnAnEarlierOne`                                              | Fact   | One expression can build on an earlier one.                                                                               |
+| `ARecursiveExpressionCanReferenceItself`                                           | Fact   | A recursive expression can reference itself.                                                                              |
+| `ANonRecursiveExpressionCannotSeeItselfSoAnInnerReferenceIsStillTheRealTable`      | Fact   | A non recursive expression cannot see itself so an inner reference is still the real table.                               |
+| `AnUnregisteredTableInsideAnExpressionBodyIsStillRejected`                         | Fact   | An unregistered table inside an expression body is still rejected.                                                        |
+| `AnExpressionMayNotTakeTheNameOfARegisteredTable`                                  | Fact   | An expression may not take the name of a registered table.                                                                |
+| `CollectedTableReferencesExcludeExpressionNames`                                   | Fact   | Collected table references exclude expression names.                                                                      |
+| `ASchemaQualifiedNameIsNeverACommonTableExpressionSoItCannotShadowAForbiddenTable` | Theory | A schema-qualified name never resolves to an expression, so an expression named after a forbidden table cannot expose it. |
+| `CollectedTableReferencesIncludeASchemaQualifiedNameThatSharesAnExpressionName`    | Fact   | A schema-qualified reference that shares an expression name is still collected for permission checks.                     |
+| `AnInnerExpressionMayReuseAnOuterExpressionName`                                   | Fact   | An inner expression may reuse an outer expression name.                                                                   |
+| `CurrentRoleIsABlockedValueFunction`                                               | Fact   | current_role is refused like current_user.                                                                                |
+| `AnExpressionNamedAfterATableATemplateReadsCannotCaptureTheTemplateTenancyCheck`   | Theory | An expression named after a table a template reads cannot capture the template tenancy check.                             |
+
+### PostgresSqlValidatorCorpusTests
+
+`Jube.Test.AskJooby.PostgresSqlValidatorCorpusTests` — 20 theories and facts expanding to about 20,000 cases. Category:
+Unit.
+
+| Test                                                                           | Kind   | Verifies                                                                                        |
+|--------------------------------------------------------------------------------|--------|-------------------------------------------------------------------------------------------------|
+| `EveryNonSelectStatementAndEveryStackedOrMalformedSpellingIsRefused`           | Theory | Every non-SELECT statement, stacked statement and malformed spelling is refused.                |
+| `EveryDeniedFunctionInEverySpellingAndPositionIsRefused`                       | Theory | Every denied function in every spelling, quoting, schema qualification and position is refused. |
+| `EveryDeniedFunctionIsAlsoRefusedOnTheRewritePath`                             | Theory | The same corpus is refused on the allow-list rewrite path.                                      |
+| `EveryIdentityRevealingValueFunctionIsRefused`                                 | Theory | current_user, session_user, user, current_role, current_catalog and current_schema are refused. |
+| `EveryProtectedTableInEveryPositionAndSpellingIsRefusedInDenyMode`             | Theory | Every protected table in every position and spelling is refused in deny mode.                   |
+| `EveryProtectedTableInEveryPositionAndSpellingIsRefusedByTheAllowList`         | Theory | The same corpus is refused by the allow-list.                                                   |
+| `CatalogueAndInformationSchemaReachIsRefusedInBothModes`                       | Theory | pg_catalog and information_schema reach is refused in every mode.                               |
+| `TheAllowListRefusesEveryUnregisteredReachWhateverTheShadowingOrQualification` | Theory | CTE shadowing in every case and qualification variant cannot reach an unregistered table.       |
+| `LegitimateStatementsRewriteAndKeepTheTenancyCheckOfEveryTemplate`             | Theory | Legitimate statements rewrite and every template keeps its qualified tenancy relation.          |
+| `TheCollectedReferencesOfEveryRejectedShadowIncludeTheRealTable`               | Fact   | Collected references include the real table of every shadow.                                    |
+| `CommentsQuotesAndDollarStringsThatHideSemicolonsAreNotStackedStatements`      | Theory | Comments, quotes and dollar strings hiding semicolons are not stacked statements.               |
+| `ASqlStatementOverTheLengthLimitIsRefused`                                     | Fact   | An over-long statement is refused.                                                              |
+| `ANulCharacterIsRefused`                                                       | Fact   | A NUL character is refused.                                                                     |
+| `DeeplyParenthesisedSqlIsRefusedWithoutExhaustingTheStack`                     | Theory | Deep parentheses are refused.                                                                   |
+| `LongOperatorAndSetOperationChainsAreRefusedBeforeTheNativeParserRecurses`     | Theory | Long operator and set-operation chains are refused before the native parser recurses.           |
+| `ModerateChainsEitherRewriteOrAreRefusedButNeverCrash`                         | Theory | Moderate chains rewrite or are refused with InvalidOperationException.                          |
+| `PositionalParametersAreRefusedSoTheNamedParameterSwapCannotBeSmuggledInto`    | Theory | Positional parameters are refused.                                                              |
+| `NamedParametersAreRestoredExactlyEvenWhenInsideStringsAndMoreThanNineAreUsed` | Fact   | Named parameters round-trip exactly.                                                            |
+| `ANamedParameterCannotNameAFunctionOrRelationToEscapeTheGate`                  | Fact   | A named parameter cannot stand in for a function or relation name.                              |
+| `TheCorpusReallyCoversEveryDeniedFunctionPrefixAndName`                        | Fact   | The corpus keeps its size.                                                                      |
 
 ### DynamicSqlNamedParameterRewriteTests
 
@@ -860,12 +910,12 @@ memory services, guards, dynamic SQL table access and the streaming endpoints.
 
 ### DynamicSqlRoleFilteringTests
 
-`Jube.Test.AskJooby.DynamicSqlRoleFilteringTests` — 2 tests. Category: AskJooby. Collection: Database.
+`Jube.Test.AskJooby.DynamicSqlRoleFilteringTests` — 1 test. Category: AskJooby. Collection: Database.
 
 | Test                                                                                                 | Kind | Verifies                                                                                                           |
 |------------------------------------------------------------------------------------------------------|------|--------------------------------------------------------------------------------------------------------------------|
-| `EntityAnalysisModelWithARoleAssignedIsOnlyVisibleToAUserHoldingThatRoleNotJustAnyTenantMemberAsync` | Fact | Entity analysis model with a role assigned is only visible to a user holding that role not just any tenant member. |
 | `EntityAnalysisModelWithNoRolesAssignedAtAllIsVisibleToAnyTenantMemberAsync`                         | Fact | Entity analysis model with no roles assigned at all is visible to any tenant member.                               |
+| `EntityAnalysisModelWithARoleAssignedIsOnlyVisibleToAUserHoldingThatRoleNotJustAnyTenantMemberAsync` | Fact | Entity analysis model with a role assigned is only visible to a user holding that role not just any tenant member. |
 
 ### DynamicSqlTableAccessTests
 
@@ -989,7 +1039,7 @@ memory services, guards, dynamic SQL table access and the streaming endpoints.
 
 ### MemoryToolTests
 
-`Jube.Test.AskJooby.MemoryToolTests` — 18 tests. Category: AskJooby.
+`Jube.Test.AskJooby.MemoryToolTests` — 22 tests. Category: AskJooby.
 
 | Test                                                         | Kind | Verifies                                                        |
 |--------------------------------------------------------------|------|-----------------------------------------------------------------|
@@ -1011,6 +1061,10 @@ memory services, guards, dynamic SQL table access and the streaming endpoints.
 | `RecallExcludesReflectionsByDefaultAsync`                    | Fact | Recall excludes reflections by default.                         |
 | `RecallPassesIncludeReflectionsThroughWhenRequestedAsync`    | Fact | Recall passes include reflections through when requested.       |
 | `RecallTagsAReflectionHitInItsOutputAsync`                   | Fact | Recall tags a reflection hit in its output.                     |
+| `RememberRejectsContentOverTheLengthCapAsync`                | Fact | Remember rejects content over the length cap.                   |
+| `RememberRejectsBlankContentAsync`                           | Fact | Remember rejects blank content.                                 |
+| `ASystemScopeMemoryIsHeldBackUntilTheUserApprovesItAsync`    | Fact | A System scope memory is held back until the user approves it.  |
+| `UserAndConversationScopeMemoriesNeedNoApprovalAsync`        | Fact | User and conversation scope memories need no approval.          |
 
 ### MemoryVolatilityGuardTests
 
@@ -1229,26 +1283,33 @@ memory services, guards, dynamic SQL table access and the streaming endpoints.
 
 ### RenderChartToolTests
 
-`Jube.Test.AskJooby.RenderChartToolTests` — 16 tests. Category: AskJooby.
+`Jube.Test.AskJooby.RenderChartToolTests` — 23 tests. Category: AskJooby.
 
-| Test                                                              | Kind   | Verifies                                                                |
-|-------------------------------------------------------------------|--------|-------------------------------------------------------------------------|
-| `RenderChartNeverReturnsTheChartItselfOnlyThatItWasDrawnAsync`    | Fact   | Render chart never returns the chart itself only that it was drawn.     |
-| `RenderChartPutsRealSvgOntoTheReplyAsAnAttachmentAsync`           | Fact   | Render chart puts real svg onto the reply as an attachment.             |
-| `RenderChartDrawsSeveralSeriesWhenGivenSeveralValueColumnsAsync`  | Fact   | Render chart draws several series when given several value columns.     |
-| `RenderChartReportsAMissingPointerRatherThanThrowingAsync`        | Fact   | Render chart reports a missing pointer rather than throwing.            |
-| `RenderChartNamesTheRealColumnsWhenGivenOneThatDoesNotExistAsync` | Fact   | Render chart names the real columns when given one that does not exist. |
-| `RenderChartListsTheTypesItKnowsWhenGivenOneItDoesNotAsync`       | Fact   | Render chart lists the types it knows when given one it does not.       |
-| `RenderChartRefusesAColumnThatHoldsNothingNumericAsync`           | Fact   | Render chart refuses a column that holds nothing numeric.               |
-| `EveryCategoricalChartTypeTheToolAdvertisesActuallyDrawsAsync`    | Theory | Every categorical chart type the tool advertises actually draws.        |
-| `ScatterPlotsOneNumericColumnAgainstAnotherAsync`                 | Fact   | Scatter plots one numeric column against another.                       |
-| `RenderChartRefusesATableTooLargeToReadAsAChartAsync`             | Fact   | Render chart refuses a table too large to read as a chart.              |
-| `TheRendererAdvertisesExactlyTheTypesTheToolDescriptionNames`     | Fact   | The renderer advertises exactly the types the tool description names.   |
-| `AHistogramNeedsNoCategoryColumnBecauseItLabelsItsOwnAxisAsync`   | Fact   | A histogram needs no category column because it labels its own axis.    |
-| `AHistogramBinsTheRawValuesRatherThanDrawingOneMarkPerRow`        | Fact   | A histogram bins the raw values rather than drawing one mark per row.   |
-| `ABinCountIsHonouredBecauseAThresholdHasToLandOnAnEdge`           | Fact   | A bin count is honoured because a threshold has to land on an edge.     |
-| `AnOrdinaryChartStillDemandsItsCategoryColumn`                    | Fact   | An ordinary chart still demands its category column.                    |
-| `TheRendererDrawsWithInlineStylesSoAnImageTagCanShowIt`           | Fact   | The renderer draws with inline styles so an image tag can show it.      |
+| Test                                                                        | Kind   | Verifies                                                                             |
+|-----------------------------------------------------------------------------|--------|--------------------------------------------------------------------------------------|
+| `RenderChartNeverReturnsTheChartItselfOnlyThatItWasDrawnAsync`              | Fact   | Render chart never returns the chart itself only that it was drawn.                  |
+| `RenderChartPutsRealSvgOntoTheReplyAsAnAttachmentAsync`                     | Fact   | Render chart puts real svg onto the reply as an attachment.                          |
+| `RenderChartDrawsSeveralSeriesWhenGivenSeveralValueColumnsAsync`            | Fact   | Render chart draws several series when given several value columns.                  |
+| `RenderChartReportsAMissingPointerRatherThanThrowingAsync`                  | Fact   | Render chart reports a missing pointer rather than throwing.                         |
+| `RenderChartNamesTheRealColumnsWhenGivenOneThatDoesNotExistAsync`           | Fact   | Render chart names the real columns when given one that does not exist.              |
+| `RenderChartListsTheTypesItKnowsWhenGivenOneItDoesNotAsync`                 | Fact   | Render chart lists the types it knows when given one it does not.                    |
+| `RenderChartRefusesAColumnThatHoldsNothingNumericAsync`                     | Fact   | Render chart refuses a column that holds nothing numeric.                            |
+| `EveryCategoricalChartTypeTheToolAdvertisesActuallyDrawsAsync`              | Theory | Every categorical chart type the tool advertises actually draws.                     |
+| `ScatterPlotsOneNumericColumnAgainstAnotherAsync`                           | Fact   | Scatter plots one numeric column against another.                                    |
+| `RenderChartRefusesATableTooLargeToReadAsAChartAsync`                       | Fact   | Render chart refuses a table too large to read as a chart.                           |
+| `TheRendererAdvertisesExactlyTheTypesTheToolDescriptionNames`               | Fact   | The renderer advertises exactly the types the tool description names.                |
+| `EveryKindBeyondTheOriginalEightIsDrawnFromACachedTableAsync`               | Theory | Every kind beyond the original eight is drawn from a cached table.                   |
+| `ACountryMapIsDrawnFromCountryAndValueRolesAsync`                           | Fact   | A country map is drawn from country and value roles.                                 |
+| `AChartTypeIsMatchedWhateverItsSpacingOrCaseAsync`                          | Theory | A chart type is matched whatever its spacing or case.                                |
+| `WithNoRolesTheCategoryAndValueColumnsAreUsedInOrderAndTheRestIgnoredAsync` | Fact   | With no roles the category and value columns are used in order and the rest ignored. |
+| `ABadRolesArgumentIsRefusedWithAReasonTheModelCanActOnAsync`                | Theory | A bad roles argument is refused with a reason the model can act on.                  |
+| `AKindThatCannotBeSatisfiedNamesTheMissingRoleAsync`                        | Fact   | A kind that cannot be satisfied names the missing role.                              |
+| `ATypeThatDoesNotExistListsTheRealOnesIncludingTheNewKindsAsync`            | Fact   | A type that does not exist lists the real ones including the new kinds.              |
+| `AHistogramNeedsNoCategoryColumnBecauseItLabelsItsOwnAxisAsync`             | Fact   | A histogram needs no category column because it labels its own axis.                 |
+| `AHistogramBinsTheRawValuesRatherThanDrawingOneMarkPerRow`                  | Fact   | A histogram bins the raw values rather than drawing one mark per row.                |
+| `ABinCountIsHonouredBecauseAThresholdHasToLandOnAnEdge`                     | Fact   | A bin count is honoured because a threshold has to land on an edge.                  |
+| `AnOrdinaryChartStillDemandsItsCategoryColumn`                              | Fact   | An ordinary chart still demands its category column.                                 |
+| `TheRendererDrawsWithInlineStylesSoAnImageTagCanShowIt`                     | Fact   | The renderer draws with inline styles so an image tag can show it.                   |
 
 ### RepeatedToolLedgerTests
 
@@ -1621,7 +1682,6 @@ memory services, guards, dynamic SQL table access and the streaming endpoints.
 | `GetResponseAsync_passes_through_a_benign_tool_callAsync`                                                      | Fact | Get response async passes through a benign tool call.                                                      |
 | `GetResponseAsync_blocks_a_tool_call_with_a_shell_command_chaining_patternAsync`                               | Fact | Get response async blocks a tool call with a shell command chaining pattern.                               |
 | `GetResponseAsync_does_not_block_a_legitimate_union_select_for_the_allow_listed_sql_toolAsync`                 | Fact | Get response async does not block a legitimate union select for the allow listed sql tool.                 |
-| `GetResponseAsync_still_blocks_the_same_union_pattern_for_a_tool_that_is_not_allow_listedAsync`                | Fact | Get response async still blocks the same union pattern for a tool that is not allow listed.                |
 | `GetResponseAsync_does_not_block_delegation_text_mentioning_executeAsync`                                      | Fact | Get response async does not block delegation text mentioning execute.                                      |
 | `GetResponseAsync_does_not_block_a_search_query_mentioning_executeAsync`                                       | Fact | Get response async does not block a search query mentioning execute.                                       |
 | `GetResponseAsync_does_not_block_a_web_search_query_mentioning_executeAsync`                                   | Fact | Get response async does not block a web search query mentioning execute.                                   |
@@ -1629,14 +1689,15 @@ memory services, guards, dynamic SQL table access and the streaming endpoints.
 | `GetResponseAsync_does_not_block_r_source_for_the_allow_listed_validate_r_script_toolAsync`                    | Fact | Get response async does not block r source for the allow listed validate r script tool.                    |
 | `GetResponseAsync_does_not_block_r_source_for_the_allow_listed_run_script_toolAsync`                           | Fact | Get response async does not block r source for the allow listed run script tool.                           |
 | `GetResponseAsync_still_blocks_the_same_r_source_for_a_tool_that_is_not_allow_listedAsync`                     | Fact | Get response async still blocks the same r source for a tool that is not allow listed.                     |
-| `GetResponseAsync_blocks_an_instruction_override_hidden_in_a_tool_result_before_calling_the_inner_clientAsync` | Fact | Get response async blocks an instruction override hidden in a tool result before calling the inner client. |
 | `GetResponseAsync_passes_through_AskClarifyingQuestions_own_instruction_scaffoldingAsync`                      | Fact | Get response async passes through ask clarifying questions own instruction scaffolding.                    |
 | `GetResponseAsync_still_blocks_the_same_instruction_field_shape_from_an_unexempted_toolAsync`                  | Fact | Get response async still blocks the same instruction field shape from an unexempted tool.                  |
 | `GetResponseAsync_passes_through_a_benign_tool_resultAsync`                                                    | Fact | Get response async passes through a benign tool result.                                                    |
-| `GetResponseAsync_does_not_block_a_SearchRag_result_quoting_AgentGuards_own_documentationAsync`                | Fact | Get response async does not block a search rag result quoting agent guards own documentation.              |
-| `GetResponseAsync_still_blocks_the_same_injection_vocabulary_from_a_tool_that_is_not_exemptedAsync`            | Fact | Get response async still blocks the same injection vocabulary from a tool that is not exempted.            |
 | `GetResponseAsync_passes_through_a_plain_text_reply_with_no_tool_callsAsync`                                   | Fact | Get response async passes through a plain text reply with no tool calls.                                   |
 | `GetStreamingResponseAsync_passes_through_a_plain_text_reply_with_no_tool_callsAsync`                          | Fact | Get streaming response async passes through a plain text reply with no tool calls.                         |
+| `GetResponseAsync_still_blocks_the_same_injection_vocabulary_from_a_tool_that_is_not_exemptedAsync`            | Fact | Get response async still blocks the same injection vocabulary from a tool that is not exempted.            |
+| `GetResponseAsync_does_not_block_a_SearchRag_result_quoting_AgentGuards_own_documentationAsync`                | Fact | Get response async does not block a search rag result quoting agent guards own documentation.              |
+| `GetResponseAsync_blocks_an_instruction_override_hidden_in_a_tool_result_before_calling_the_inner_clientAsync` | Fact | Get response async blocks an instruction override hidden in a tool result before calling the inner client. |
+| `GetResponseAsync_still_blocks_the_same_union_pattern_for_a_tool_that_is_not_allow_listedAsync`                | Fact | Get response async still blocks the same union pattern for a tool that is not allow listed.                |
 
 ### TurnActivityLedgerTests
 
@@ -1682,7 +1743,7 @@ memory services, guards, dynamic SQL table access and the streaming endpoints.
 
 ### WebSearchToolTests
 
-`Jube.Test.AskJooby.WebSearchToolTests` — 20 tests. Category: AskJooby.
+`Jube.Test.AskJooby.WebSearchToolTests` — 21 tests. Category: AskJooby.
 
 | Test                                                                         | Kind | Verifies                                                                           |
 |------------------------------------------------------------------------------|------|------------------------------------------------------------------------------------|
@@ -1706,6 +1767,7 @@ memory services, guards, dynamic SQL table access and the streaming endpoints.
 | `RecordsNothingWhenNoResultIsWithheldAsync`                                  | Fact | Records nothing when no result is withheld.                                        |
 | `DoesNotSendTheSearchWhenTheQueryItselfMatchesPromptInjectionScreeningAsync` | Fact | Does not send the search when the query itself matches prompt injection screening. |
 | `RecordsARequestSideGuardRejectionUnderItsOwnPipelineNameAsync`              | Fact | Records a request side guard rejection under its own pipeline name.                |
+| `OversizedSnippetsPagesAndAnswersAreTruncatedBeforeTheyReachTheModelAsync`   | Fact | Oversized snippets, pages and answers are truncated before they reach the model.   |
 
 ### WithRealChunks
 
@@ -1731,3 +1793,83 @@ Database.
 | `AStepIdThatIsNotInTheGraphIsRefusedAndTheRealOnesAreNamedAsync`         | Fact | A step id that is not in the graph is refused and the real ones are named.     |
 | `AnUnknownWorkflowIsRefusedByBothOperationsRatherThanReportedEmptyAsync` | Fact | An unknown workflow is refused by both operations rather than reported empty.  |
 | `EveryStepDoneSaysSoRatherThanOfferingANextStepAsync`                    | Fact | Every step done says so rather than offering a next step.                      |
+
+### ToolApprovalTests
+
+`Jube.Test.AskJooby.ToolApprovalTests` — 11 tests. Category: Unit.
+
+| Test                                                                    | Kind | Verifies                                                                                       |
+|-------------------------------------------------------------------------|------|------------------------------------------------------------------------------------------------|
+| `AWriteIsHeldBackUntilTheUserApprovesAndThenRunsExactlyOnce`            | Fact | A write is held back until approved, then runs exactly once.                                   |
+| `ARepeatedRequestForTheSameChangeIsOneApprovalNotMany`                  | Fact | A repeated request is one approval.                                                            |
+| `ApprovalOfOneSetOfArgumentsNeverCoversDifferentArgumentsOrAnotherTool` | Fact | Approval never covers different arguments or another tool.                                     |
+| `ArgumentOrderDoesNotChangeWhichChangeWasApproved`                      | Fact | Argument order does not matter.                                                                |
+| `ADeclinedChangeIsRefusedOnceAndThenAsksAgain`                          | Fact | A declined change is refused once then asks again.                                             |
+| `OnlyTheSameUserTenantAndConversationCanDecideOrConsumeAnApproval`      | Fact | Only the same user, tenant and conversation can decide or consume an approval.                 |
+| `AnExpiredApprovalIsForgotten`                                          | Fact | An expired approval is forgotten.                                                              |
+| `TheLedgerIsBoundedInTotalAndPerConversation`                           | Fact | The ledger is bounded.                                                                         |
+| `TheGatedFunctionNeverRunsTheToolUntilApprovedAsync`                    | Fact | The gated function never runs the tool until approved.                                         |
+| `ADeclinedGatedFunctionTellsTheModelNotToLookForAnotherWayAsync`        | Fact | A declined call tells the model not to look for another way.                                   |
+| `TheApprovalDecisionIsNeverOfferedToAnAgentAsATool`                     | Fact | The approval decision carries no service operation attribute and is not in the tool catalogue. |
+
+### AskJoobyRateLimiterTests
+
+`Jube.Test.AskJooby.AskJoobyRateLimiterTests` — 6 tests. Category: Unit.
+
+| Test                                                                       | Kind | Verifies                                                 |
+|----------------------------------------------------------------------------|------|----------------------------------------------------------|
+| `AUserIsRefusedOnceTheyPassTheirWindowLimitAndAllowedAgainWhenItRollsOver` | Fact | Per-user window limit and rollover.                      |
+| `TheTenantWindowLimitCapsAllItsUsersTogether`                              | Fact | Per-tenant window limit.                                 |
+| `ConcurrentTurnsPerUserAreCappedAndTheSlotIsFreedOnDispose`                | Fact | Concurrent turns per user capped, slot freed on dispose. |
+| `ConcurrentTurnsPerTenantAreCapped`                                        | Fact | Concurrent turns per tenant capped.                      |
+| `ARefusedAttemptDoesNotHoldASlot`                                          | Fact | A refused attempt holds no slot.                         |
+| `LimitsFallBackToSaneDefaultsWhenNothingIsConfigured`                      | Fact | Defaults.                                                |
+
+### PenTestAskJoobyApprovals
+
+`Jube.Test.Security.Surface.PenTestAskJoobyApprovals` — 11 tests. Category: PenTest.
+
+| Test                                                                  | Kind   | Verifies                                                                                                               |
+|-----------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------------------------------------|
+| `AnAnonymousCallerCannotDecideAnApprovalAsync`                        | Fact   | Unauthenticated is 401 and the approval stays pending.                                                                 |
+| `ACookieSessionWithoutAntiforgeryEvidenceCannotDecideAnApprovalAsync` | Fact   | A cookie session without antiforgery evidence is 400.                                                                  |
+| `AnotherUserCannotApproveOrDeclineSomeoneElsesPendingChangeAsync`     | Theory | A same-tenant user, a user from another tenant and a landlord cannot approve or decline another user's pending change. |
+| `TheOwnerCanDecideOnceAndAReplayOrAChangeOfMindIsRefusedAsync`        | Fact   | The owner decides once; replay and flip are 404.                                                                       |
+| `AnApprovalIdFromAnotherConversationOrAnUnknownIdIsRefusedAsync`      | Fact   | An id from another conversation, or an unknown id, is 404.                                                             |
+| `ExtraBodyFieldsCannotChangeWhoDecidesOrWhatIsDecidedAsync`           | Fact   | Mass assignment of identity and state fields is ignored.                                                               |
+| `AMalformedDecisionBodyIsNeverASuccessOrAServerErrorAsync`            | Theory | Malformed bodies never cause a 5xx.                                                                                    |
+| `AHostileApprovalIdIsRefusedWithoutAServerErrorAsync`                 | Theory | Hostile ids are refused without a 5xx.                                                                                 |
+| `AnOversizedApprovalIdIsABadRequestAsync`                             | Fact   | An id over 64 characters is 400.                                                                                       |
+| `ADecisionOnADeletedConversationIsRefusedAsync`                       | Fact   | A decision on a deleted conversation is 404.                                                                           |
+| `AnApprovalForADifferentUserTenantOrToolNeverUnlocksTheGate`          | Fact   | An approval never unlocks the gate for another user, tenant or tool.                                                   |
+
+### ReprocessingPermissionParityTests
+
+`Jube.Test.AskJooby.ReprocessingPermissionParityTests` — 8 tests.
+Category: Unit.
+
+| Test                                                                                  | Kind | Verifies                                                                                              |
+|---------------------------------------------------------------------------------------|------|-------------------------------------------------------------------------------------------------------|
+| `TheOriginalPermissionKeepsItsNumberAndTheTwoNewOnesAreTheNextFreeNumbers`            | Fact | The original permission keeps its number and the two new ones are the next free numbers.              |
+| `EveryRuleEditToolDemandsTheServicesEditPermissionAndNothingElse`                     | Fact | Every rule edit tool demands the services edit permission and nothing else.                           |
+| `EveryRuleReadToolDemandsAnyOfTheThreePermissions`                                    | Fact | Every rule read tool demands any of the three permissions.                                            |
+| `EveryInstanceTriggerToolDemandsOnlyTheTriggerPermission`                             | Fact | Every instance trigger tool demands only the trigger permission.                                      |
+| `TheInstanceDeleteToolDemandsOnlyTheStopPermission`                                   | Fact | The instance delete tool demands only the stop permission.                                            |
+| `EveryInstanceReadToolDemandsAnyOfTheThreePermissions`                                | Fact | Every instance read tool demands any of the three permissions.                                        |
+| `TheTreeNodeAndBothSqlTablesAdmitEveryHolderOfAnyOfTheThreePermissions`               | Fact | The tree node and both sql tables admit every holder of any of the three permissions.                 |
+| `EveryHubOnThePathToReprocessingIsReachableWithOnlyTheTriggerOrOnlyTheStopPermission` | Fact | Every hub on the path to reprocessing is reachable with only the trigger or only the stop permission. |
+
+<!-- TODO(docs): owner to confirm this catalogue entry after the first run of the new tests (they were written, not run). -->
+
+### ValidateFirstPromptTests
+
+`Jube.Test.AskJooby.ValidateFirstPromptTests` — 6 tests. Category: AskJooby.
+
+| Test                                                      | Kind   | Verifies                                                          |
+|-----------------------------------------------------------|--------|-------------------------------------------------------------------|
+| `EveryAgentsInstructionsCarryTheValidateFirstDirection`   | Fact   | Every agents instructions carry the validate first direction.     |
+| `TheDirectionStatesEachRuleItExistsToTeach`               | Theory | The direction states each rule it exists to teach.                |
+| `TheSqlValidateToolDescriptionSaysToCallItBeforeRunning`  | Fact   | The sql validate tool description says to call it before running. |
+| `TheSqlRunToolDescriptionSaysToValidateFirst`             | Fact   | The sql run tool description says to validate first.              |
+| `TheRValidateAndRunToolDescriptionsCarryTheSameDirection` | Fact   | The rvalidate and run tool descriptions carry the same direction. |
+| `NoPromptOrToolDescriptionPromisesDatabaseErrorText`      | Fact   | No prompt or tool description promises database error text.       |

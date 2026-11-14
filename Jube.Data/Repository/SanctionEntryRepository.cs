@@ -20,6 +20,7 @@ namespace Jube.Data.Repository
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Models;
     using Poco;
 
@@ -42,7 +43,7 @@ namespace Jube.Data.Repository
         }
 
         public async Task<(SanctionEntry Entry, SanctionEntryUpsertOutcome Outcome)> UpsertAsync(SanctionEntry model,
-            CancellationToken token = default)
+            CancellationToken token = default, int? importId = null)
         {
             var existing =
                 await dbContext.SanctionEntry.FirstOrDefaultAsync(w =>
@@ -61,6 +62,7 @@ namespace Jube.Data.Repository
                     .Set(s => s.Deleted, (byte?)null)
                     .Set(s => s.DeletedDate, (DateTime?)null)
                     .Set(s => s.DeletedUser, (string)null)
+                    .Set(s => s.LastImportId, importId)
                     .UpdateAsync(token).ConfigureAwait(false);
 
                 existing.Deleted = null;
@@ -70,6 +72,7 @@ namespace Jube.Data.Repository
                 return (existing, SanctionEntryUpsertOutcome.Revived);
             }
 
+            model.LastImportId = importId;
             model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token);
 
             return (model, SanctionEntryUpsertOutcome.Inserted);

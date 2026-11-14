@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>ليس لديك إذن لتنفيذ هذا الإجراء.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>لم تتم مصادقتك.</value>
+  </data>
+    <data name="RegistryNotFound" xml:space="preserve">
+    <value>لم يتم العثور على سجل الرسم البياني أو أنه غير نشط.</value>
+  </data>
+    <data name="NodeNotFound" xml:space="preserve">
+    <value>لم يتم العثور على العقدة.</value>
+  </data>
+    <data name="EdgeNotFound" xml:space="preserve">
+    <value>لم يتم العثور على الحافة.</value>
+  </data>
+    <data name="KeyRequired" xml:space="preserve">
+    <value>المفتاح والقيمة مطلوبان.</value>
+  </data>
+    <data name="KeyTooLong" xml:space="preserve">
+    <value>المفتاح أو القيمة طويل جدًا.</value>
+  </data>
+    <data name="HopsOutOfRange" xml:space="preserve">
+    <value>يجب أن يكون عدد القفزات بين 1 و3.</value>
+  </data>
+    <data name="FanOutOutOfRange" xml:space="preserve">
+    <value>يجب أن يكون التفرع بين 1 و100.</value>
+  </data>
+    <data name="WindowInvalid" xml:space="preserve">
+    <value>يجب أن تكون نهاية النافذة بعد بدايتها.</value>
+  </data>
+    <data name="EdgesInvalid" xml:space="preserve">
+    <value>قائمة تعريفات الحواف غير صالحة.</value>
+  </data>
+    <data name="SentenceHub" xml:space="preserve">
+    <value>{0} {1} هو مركز مشترك بين {2} من الأطراف المقابلة؛ لا يمر الاجتياز عبره ما لم يُطلب ذلك.</value>
+  </data>
+    <data name="SentenceSharedDevice" xml:space="preserve">
+    <value>{0} {1} مشترك بين {2} من الحسابات.</value>
+  </data>
+    <data name="SentenceDistance" xml:space="preserve">
+    <value>{0} قفزة من إيجابية حقيقية مؤكدة، مع {1} ضمن ثلاث قفزات.</value>
+  </data>
+    <data name="SentenceOpenCases" xml:space="preserve">
+    <value>{0} قضية مفتوحة على هذا المفتاح.</value>
+  </data>
+    <data name="SentenceConfirmedCases" xml:space="preserve">
+    <value>{0} قضية على هذا المفتاح أُغلقت كمؤكدة.</value>
+  </data>
+    <data name="SentenceCommunity" xml:space="preserve">
+    <value>عضو في المجتمع {0}.</value>
+  </data>
+    <data name="SentenceDegree" xml:space="preserve">
+    <value>{0} طرفًا مقابلًا مميزًا، {1} عبر تدفق الأموال.</value>
+  </data>
+    <data name="LayoutInvalid" xml:space="preserve">
+    <value>التخطيط غير معروف.</value>
+  </data>
+    <data name="CaseNotFound" xml:space="preserve">
+    <value>لم يتم العثور على القضية أو أنها غير متاحة لك.</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>القضية مقفلة لمستخدم آخر.</value>
+  </data>
+    <data name="CaptureNote" xml:space="preserve">
+    <value>لقطة الشبكة: {0} عقدة و{1} حافة بين {2} و{3}.</value>
+  </data>
+    <data name="ExplorationNameInvalid" xml:space="preserve">
+    <value>يحتاج الاستكشاف إلى اسم لا يزيد عن 120 حرفًا.</value>
+  </data>
+    <data name="ExplorationAddressInvalid" xml:space="preserve">
+    <value>عنوان الاستكشاف مفقود أو طويل جدًا.</value>
+  </data>
+    <data name="ExplorationNotFound" xml:space="preserve">
+    <value>لم يتم العثور على الاستكشاف.</value>
+  </data>
+    <data name="NodeIdsRequired" xml:space="preserve">
+    <value>معرّفا العقدتين مطلوبان ويجب أن يختلفا.</value>
+  </data>
+    <data name="PathHopsOutOfRange" xml:space="preserve">
+    <value>يمكن أن تكون المسارات من 1 إلى 6 قفزات ويتم إرجاع من 1 إلى 20.</value>
+  </data>
+    <data name="FlowInvalid" xml:space="preserve">
+    <value>يتطلب طلب التدفق نافذة قفزة من 1 إلى 720 ساعة وتسامحًا من 0 إلى 0.9 وعمقًا من 1 إلى 6 وتفرعًا من 1 إلى 50، ويجب ألا يكون ناتج التفرع والعمق كبيرًا جدًا.</value>
+  </data>
+    <data name="PatternNotFound" xml:space="preserve">
+    <value>لم يتم العثور على النمط.</value>
+  </data>
+    <data name="CommunityNotFound" xml:space="preserve">
+    <value>لم يتم العثور على المجتمع.</value>
+  </data>
+    <data name="PatternStateInvalid" xml:space="preserve">
+    <value>يمكن وسم النمط بأنه تمت مشاهدته أو مرفوض أو محوّل إلى قضية، ويحتاج التحويل إلى معرّف قضية.</value>
+  </data>
+    <data name="HubOverrideInvalid" xml:space="preserve">
+    <value>يجب أن يكون تجاوز المركز 0 (لا شيء) أو 1 (ليس مركزًا أبدًا) أو 2 (مركز دائمًا).</value>
+  </data>
+    <data name="SentencePath" xml:space="preserve">
+    <value>{0} قفزة من {1} {2} إلى {3} {4} بوزن مسار {5:0.###}.</value>
+  </data>
+    <data name="SentenceFlow" xml:space="preserve">
+    <value>{0} شريحة تصل إلى {1} عقدة خلال {2} قفزة؛ {3} عقدة تمرر الأموال مباشرة.</value>
+  </data>
+    <data name="SentencePattern" xml:space="preserve">
+    <value>{0} مثبت على {1} {2}: {3} عضو، النتيجة {4:0.###}، من {5:yyyy-MM-dd} إلى {6:yyyy-MM-dd}.</value>
+  </data>
+    <data name="SentenceCommunityRate" xml:space="preserve">
+    <value>المجتمع {0} من {1} عقدة: {2} مؤكدة من {3} قضية مغلقة، أي {4:0.0} ضعف معدل المستأجر.</value>
+  </data>
+    <data name="SentencePatternMember" xml:space="preserve">
+    <value>عضو في {0} من الأنماط، الأحدث {1}.</value>
+  </data>
+    <data name="SentenceTag" xml:space="preserve">
+    <value>{0} قفزة من معاملة أو قضية موسومة {1}، مع {2} ضمن ثلاث قفزات.</value>
+  </data>
+    <data name="ExpandedInvalid" xml:space="preserve">
+    <value>يمكن تقديم 25 معرّف عقدة موسعة كحد أقصى.</value>
+  </data>
+    <data name="ExplorationPinnedInvalid" xml:space="preserve">
+    <value>المواضع المثبتة كبيرة جدًا.</value>
+  </data>
+    <data name="DetailDegree" xml:space="preserve">
+    <value>الدرجة {0}</value>
+  </data>
+    <data name="DetailHub" xml:space="preserve">
+    <value>مركز</value>
+  </data>
+    <data name="DetailConfirmedDistance" xml:space="preserve">
+    <value>{0} قفزة من قضية مؤكدة</value>
+  </data>
+    <data name="DetailOpenCases" xml:space="preserve">
+    <value>{0} قضية مفتوحة</value>
+  </data>
+    <data name="DetailConfirmedCases" xml:space="preserve">
+    <value>{0} مؤكدة</value>
+  </data>
+    <data name="DetailCollapsed" xml:space="preserve">
+    <value>{0} عقدة مطوية</value>
+  </data>
+</root>

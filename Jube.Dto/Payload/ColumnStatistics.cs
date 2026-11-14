@@ -13,13 +13,16 @@
 
 // ReSharper disable NotAccessedPositionalProperty.Global
 
+using MessagePack;
+
 namespace Jube.Dto.Payload
 {
+    [MessagePackObject]
     public sealed record ColumnStatistics(
-        double Min,
-        double Max,
-        double Mean,
-        double Median,
-        double StandardDeviation,
-        IReadOnlyList<HistogramBucket> Histogram);
+        [property: Key(0)] double Min,
+        [property: Key(1)] double Max,
+        [property: Key(2)] double Mean,
+        [property: Key(3)] double Median,
+        [property: Key(4)] double StandardDeviation,
+        [property: Key(5)] IReadOnlyList<HistogramBucket> Histogram);
 }

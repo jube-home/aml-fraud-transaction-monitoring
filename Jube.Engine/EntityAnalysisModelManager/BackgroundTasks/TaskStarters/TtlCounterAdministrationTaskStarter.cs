@@ -19,7 +19,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Cache.Observability.CacheCallCounters;
-using Jube.Cache.Redis.Models;
+using Jube.Cache.Resp.Models;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository;

@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
+            [Description("True when: non-empty, letters and digits only. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsAlphaNumeric()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringIsAlphaNumeric(flow.Value));
             }
 
+            [Description("True when: non-empty, letters and digits only. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsAlphaNumeric()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringIsAlphaNumeric(flow.Value));
             }
 
+            [Description("True when: non-empty, letters and digits only. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsAlphaNumeric()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringIsAlphaNumeric(flow.Value));
             }
 
+            [Description("True when: non-empty, letters and digits only. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsAlphaNumeric()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringIsAlphaNumeric(flow.Value));
             }
 
+            [Description("True when: non-empty, letters and digits only. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsAlphaNumeric()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
+            [Description("Begins a pipeline from the value. True when: non-empty, letters and digits only. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsAlphaNumeric()
             {
                 return value.Start().MatchIsAlphaNumeric();
             }
 
+            [Description("Begins a pipeline from the value. True when: non-empty, letters and digits only. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsAlphaNumeric()
             {
                 return value.Start().RejectIsAlphaNumeric();
             }
 
+            [Description("Begins a pipeline from the value. True when: non-empty, letters and digits only. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsAlphaNumeric()
             {
                 return value.Start().BreakIsAlphaNumeric();
             }
 
+            [Description("Begins a pipeline from the value. True when: non-empty, letters and digits only. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsAlphaNumeric()
             {
                 return value.Start().RequireIsAlphaNumeric();
             }
 
+            [Description("Begins a pipeline from the value. True when: non-empty, letters and digits only. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsAlphaNumeric()
             {
                 return value.Start().EnsureIsAlphaNumeric();

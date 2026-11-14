@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
+using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Security.PenTest;
 using LinqToDB;
@@ -74,7 +75,8 @@ internal static class VisModelSupport
 
         await db.InsertWithInt32IdentityAsync(new CaseWorkflowXPath
         {
-            CaseWorkflowId = workflow.Id, Name = Child("CaseWorkflowXPath"), XPath = "$.x", Active = 1, Locked = 0,
+            CaseWorkflowId = workflow.Id, Name = Child("CaseWorkflowXPath"), XPath = "$.x", SourceKindId = 6,
+            SourceGuid = await ArchiveKeySeed.SourceByWorkflowAsync(db, workflow.Id, "x"), Active = 1, Locked = 0,
             Deleted = 0, Version = 1, Guid = Guid.NewGuid(), CreatedUser = VisSupport.Prefix,
             CreatedDate = DateTime.UtcNow
         });

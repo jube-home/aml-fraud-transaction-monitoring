@@ -20,6 +20,7 @@ namespace Jube.Data.Query.GetEntityAnalysisModelSynchronisationNodeStatusEntries
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
 
     public class GetEntityAnalysisModelSynchronisationNodeStatusEntriesQuery
     {

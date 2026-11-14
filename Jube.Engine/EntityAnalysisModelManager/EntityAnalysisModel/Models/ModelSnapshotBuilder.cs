@@ -18,6 +18,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
     using System.Linq;
     using AdvancedAnalytics.Models;
     using Exhaustive.Models;
+    using GraphRecall;
+    using Svirfd;
     using Models;
     using Models.EntityAnalysisModelInlineScript;
     using EntityAnalysisModelDictionary = Models.EntityAnalysisModelDictionary;
@@ -44,10 +46,13 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
             ExhaustiveModels = this.previous.ExhaustiveModels;
             AdvancedAnalyticsModels = this.previous.AdvancedAnalyticsModels;
             EntityAnalysisModelRequestXPaths = this.previous.EntityAnalysisModelRequestXPaths;
+            GraphRecall = this.previous.GraphRecall;
+            Svirfd = this.previous.Svirfd;
             EntityAnalysisModelAbstractionCalculations = this.previous.EntityAnalysisModelAbstractionCalculations;
             EntityAnalysisModelInlineFunctions = this.previous.EntityAnalysisModelInlineFunctions;
             EntityAnalysisModelInlineScripts = this.previous.EntityAnalysisModelInlineScripts;
             EntityAnalysisModelTags = this.previous.EntityAnalysisModelTags;
+            EntityAnalysisModelResponseElevationRanges = this.previous.EntityAnalysisModelResponseElevationRanges;
             DistinctSearchKeys = new Dictionary<string, DistinctSearchKey>(this.previous.DistinctSearchKeys);
             ParseIndexCache = this.previous.ParseIndexCache;
             EntityAnalysisModelLists = this.previous.EntityAnalysisModelLists;
@@ -65,12 +70,15 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
         public List<ExhaustiveSearchInstance> ExhaustiveModels { get; set; }
         public IReadOnlyList<AdvancedAnalyticsModel> AdvancedAnalyticsModels { get; set; }
         public List<EntityAnalysisModelRequestXPath> EntityAnalysisModelRequestXPaths { get; set; }
+        public GraphRecallPlan GraphRecall { get; set; }
+        public SvirfdPlan Svirfd { get; set; }
 
         public List<EntityAnalysisModelAbstractionCalculation> EntityAnalysisModelAbstractionCalculations { get; set; }
 
         public List<EntityAnalysisModelInlineFunction> EntityAnalysisModelInlineFunctions { get; set; }
         public List<EntityAnalysisModelInlineScript> EntityAnalysisModelInlineScripts { get; set; }
         public List<EntityAnalysisModelTag> EntityAnalysisModelTags { get; set; }
+        public List<EntityAnalysisModelResponseElevationRange> EntityAnalysisModelResponseElevationRanges { get; set; }
         public Dictionary<string, DistinctSearchKey> DistinctSearchKeys { get; set; }
         public Dictionary<int, string> ParseIndexCache { get; set; }
         public Dictionary<string, List<string>> EntityAnalysisModelLists { get; set; }
@@ -144,10 +152,13 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
                 ExhaustiveModels = ExhaustiveModels,
                 AdvancedAnalyticsModels = AdvancedAnalyticsModels,
                 EntityAnalysisModelRequestXPaths = EntityAnalysisModelRequestXPaths,
+                GraphRecall = GraphRecall ?? GraphRecallPlan.Empty,
+                Svirfd = Svirfd ?? SvirfdPlan.Empty,
                 EntityAnalysisModelAbstractionCalculations = EntityAnalysisModelAbstractionCalculations,
                 EntityAnalysisModelInlineFunctions = EntityAnalysisModelInlineFunctions,
                 EntityAnalysisModelInlineScripts = EntityAnalysisModelInlineScripts,
                 EntityAnalysisModelTags = EntityAnalysisModelTags,
+                EntityAnalysisModelResponseElevationRanges = EntityAnalysisModelResponseElevationRanges,
                 DistinctSearchKeys = DistinctSearchKeys,
                 ParseIndexCache = ParseIndexCache,
                 EntityAnalysisModelLists = EntityAnalysisModelLists,

@@ -1,0 +1,59 @@
+{
+  "caseSql": {
+    "ka": {
+      "label": "ქეისის SQL",
+      "hint": "ერთი SELECT, რომელიც სრულდება ქეისისთვის, მხოლოდ წასაკითხად, თქვენს საკუთარ ჩანაწერებზე. გამოიყენეთ {'@'}Id ქეისისთვის და {'@'}CaseKeyValue მისი გასაღების მნიშვნელობისთვის. დაბრუნებული სტრიქონები ხელმისაწვდომია განლაგებისა და ელფოსტის და HTTP შაბლონებისთვის როგორც rows, მაგალითად [{'@'} rows[0].Name {'@'}]. დატოვეთ ცარიელი, რომ, როგორც ადრე, ქეისის შენახული payload-იდან დაიხატოს.",
+      "caseId": "ქეისის ID, რომელზეც გამოსცდით",
+      "run": "SQL-ის გაშვება",
+      "summary": "{count} სტრიქონი {ms} მწმ-ში",
+      "truncated": "დაბრუნდა უფრო მეტი სტრიქონი, ვიდრე ნაჩვენებია.",
+      "empty": "SQL შესრულდა და სტრიქონები არ დააბრუნა.",
+      "noCase": "შეიყვანეთ ქეისის ID, რომელზეც გამოსცდით.",
+      "grid": "SQL-ის დაბრუნებული სტრიქონები"
+    },
+    "id": {
+      "label": "SQL untuk kasus",
+      "hint": "Satu SELECT yang dijalankan untuk sebuah kasus, hanya-baca terhadap baris Anda sendiri. Gunakan {'@'}Id untuk kasus dan {'@'}CaseKeyValue untuk nilai kuncinya. Baris yang dikembalikan tersedia bagi tata letak serta templat email dan HTTP sebagai rows, misalnya [{'@'} rows[0].Name {'@'}]. Biarkan kosong untuk menggambar dari payload kasus yang tersimpan seperti sebelumnya.",
+      "caseId": "ID kasus untuk mencobanya",
+      "run": "Jalankan SQL",
+      "summary": "{count} baris dalam {ms} md",
+      "truncated": "Baris yang kembali lebih banyak daripada yang ditampilkan.",
+      "empty": "SQL berjalan dan tidak mengembalikan baris.",
+      "noCase": "Masukkan ID kasus untuk mencobanya.",
+      "grid": "Baris yang dikembalikan SQL"
+    },
+    "sv": {
+      "label": "SQL för ärendet",
+      "hint": "En enda SELECT som körs för ett ärende, skrivskyddad mot dina egna rader. Använd {'@'}Id för ärendet och {'@'}CaseKeyValue för dess nyckelvärde. Raderna som returneras är tillgängliga för layouten och för e-post- och HTTP-mallarna som rows, till exempel [{'@'} rows[0].Name {'@'}]. Lämna tomt för att rita från ärendets lagrade nyttolast som tidigare.",
+      "caseId": "Ärende-id att prova på",
+      "run": "Kör SQL",
+      "summary": "{count} rader på {ms} ms",
+      "truncated": "Fler rader kom tillbaka än de som visas.",
+      "empty": "SQL kördes och returnerade inga rader.",
+      "noCase": "Ange id för ett ärende att prova på.",
+      "grid": "Rader som SQL returnerade"
+    },
+    "ur": {
+      "label": "کیس کے لیے SQL",
+      "hint": "ایک واحد SELECT جو کسی کیس کے لیے چلتی ہے، صرف پڑھنے کے لیے، آپ کی اپنی قطاروں پر۔ کیس کے لیے {'@'}Id اور اس کی کلیدی قدر کے لیے {'@'}CaseKeyValue استعمال کریں۔ واپس آنے والی قطاریں لے آؤٹ اور ای میل اور HTTP ٹیمپلیٹس کو rows کے طور پر دستیاب ہوتی ہیں، مثلاً [{'@'} rows[0].Name {'@'}]۔ پہلے کی طرح کیس کے محفوظ شدہ پے لوڈ سے بنانے کے لیے خالی چھوڑ دیں۔",
+      "caseId": "آزمانے کے لیے کیس آئی ڈی",
+      "run": "SQL چلائیں",
+      "summary": "{ms} ملی سیکنڈ میں {count} قطاریں",
+      "truncated": "دکھائی گئی قطاروں سے زیادہ واپس آئیں۔",
+      "empty": "SQL چلی اور کوئی قطار واپس نہیں آئی۔",
+      "noCase": "آزمانے کے لیے کسی کیس کی آئی ڈی درج کریں۔",
+      "grid": "SQL کی واپس کی ہوئی قطاریں"
+    },
+    "hi": {
+      "label": "केस के लिए SQL",
+      "hint": "एक अकेली SELECT जो किसी केस के लिए चलती है, केवल-पढ़ने के लिए, आपकी अपनी पंक्तियों पर। केस के लिए {'@'}Id और उसके कुंजी मान के लिए {'@'}CaseKeyValue का उपयोग करें। लौटाई गई पंक्तियाँ लेआउट और ईमेल व HTTP टेम्पलेट को rows के रूप में उपलब्ध रहती हैं, जैसे [{'@'} rows[0].Name {'@'}]। पहले की तरह केस के संग्रहीत पेलोड से बनाने के लिए खाली छोड़ें।",
+      "caseId": "आज़माने के लिए केस आईडी",
+      "run": "SQL चलाएँ",
+      "summary": "{ms} मि.से. में {count} पंक्तियाँ",
+      "truncated": "दिखाई गई पंक्तियों से अधिक लौटीं।",
+      "empty": "SQL चली और कोई पंक्ति नहीं लौटी।",
+      "noCase": "आज़माने के लिए किसी केस की आईडी दर्ज करें।",
+      "grid": "SQL द्वारा लौटाई गई पंक्तियाँ"
+    }
+  }
+}

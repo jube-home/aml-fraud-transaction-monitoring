@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,18 +23,30 @@ namespace Jube.Dto.AskJoobyRagChunk
 {
     [Description("One Bite returned from a Pasture search -- a chunk of Jube documentation, rule taxonomy, " +
                  "code or database schema.")]
+    [MessagePackObject]
     public class AskJoobyRagChunkDto
     {
+        [Key(0)]
         public int Id { get; set; }
+        [Key(1)]
         public string? Hash { get; set; }
+        [Key(2)]
         public string? ParentHash { get; set; }
+        [Key(3)]
         public string? Category { get; set; }
+        [Key(4)]
         public string? Kind { get; set; }
+        [Key(5)]
         public string? SourceFile { get; set; }
+        [Key(6)]
         public int? StartLine { get; set; }
+        [Key(7)]
         public int? EndLine { get; set; }
+        [Key(8)]
         public string? QualifiedName { get; set; }
+        [Key(9)]
         public string? Content { get; set; }
+        [Key(10)]
         public double Score { get; set; }
     }
 }

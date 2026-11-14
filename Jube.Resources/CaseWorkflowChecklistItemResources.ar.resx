@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>ليس لديك صلاحية تنفيذ هذا الإجراء.</value>
+  </data>
+    <data name="SqlPermissionDenied" xml:space="preserve">
+    <value>ليس لديك صلاحية تأليف ⁨SQL⁩ لعناصر قائمة التحقق.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>يجب أن تكون مسجلاً الدخول إلى مستأجر لتنفيذ هذا الإجراء.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>لم يتم العثور على عنصر قائمة التحقق.</value>
+  </data>
+    <data name="CaseWorkflowChecklistGuidRequired" xml:space="preserve">
+    <value>قائمة التحقق مطلوبة.</value>
+  </data>
+    <data name="CaseWorkflowChecklistNotFound" xml:space="preserve">
+    <value>لم يتم العثور على قائمة التحقق.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>الاسم مطلوب.</value>
+  </data>
+    <data name="NameTooLong" xml:space="preserve">
+    <value>يجب ألا يزيد الاسم على 100 حرف.</value>
+  </data>
+    <data name="PriorityInvalid" xml:space="preserve">
+    <value>يجب أن تكون الأولوية صفرًا أو أكثر.</value>
+  </data>
+    <data name="SlaMinutesInvalid" xml:space="preserve">
+    <value>يجب أن يكون اتفاق مستوى الخدمة عددًا صحيحًا من الدقائق أكبر من صفر، أو فارغًا.</value>
+  </data>
+    <data name="ValidateMessageTooLong" xml:space="preserve">
+    <value>يجب ألا تزيد رسالة التحقق على 500 حرف.</value>
+  </data>
+    <data name="SqlTooLong" xml:space="preserve">
+    <value>يجب ألا يزيد ⁨SQL⁩ على 8000 حرف.</value>
+  </data>
+    <data name="ShowSqlRequired" xml:space="preserve">
+    <value>أدخل ⁨SQL⁩ العرض أو أوقف شرط العرض.</value>
+  </data>
+    <data name="ValidateSqlRequired" xml:space="preserve">
+    <value>أدخل ⁨SQL⁩ التحقق أو أوقف شرط التحقق.</value>
+  </data>
+    <data name="SqlEnableNeedsPermission" xml:space="preserve">
+    <value>تفعيل شرط العرض أو التحقق يتطلب صلاحية تأليف ⁨SQL⁩.</value>
+  </data>
+    <data name="SqlRejected" xml:space="preserve">
+    <value>تم رفض ⁨SQL⁩: ⁨{0}⁩</value>
+  </data>
+    <data name="SqlParameterUnknown" xml:space="preserve">
+    <value>يستخدم ⁨SQL⁩ المعامل ⁨@{0}⁩ وهو غير متاح. استخدم ⁨@Id⁩ أو ⁨@CaseKeyValue⁩.</value>
+  </data>
+    <data name="ConditionInvalid" xml:space="preserve">
+    <value>يجب أن يكون الشرط 1 (عرض) أو 2 (تحقق).</value>
+  </data>
+    <data name="SqlNotPassed" xml:space="preserve">
+    <value>لم يُرجع ⁨SQL⁩ القيمة ⁨true⁩.</value>
+  </data>
+    <data name="SqlFailed" xml:space="preserve">
+    <value>تعذر تشغيل ⁨SQL⁩.</value>
+  </data>
+</root>

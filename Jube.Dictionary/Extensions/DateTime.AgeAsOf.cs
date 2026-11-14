@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static int AgeAsOf(this DateTime @this, DateTime asOf)
+        [Description("Completed years from the date to an as-of date; the deterministic form of Age.")]
+        public static int AgeAsOf(this DateTime @this, [Description("The date the age is counted to.")] DateTime asOf)
         {
             var age = asOf.Year - @this.Year;
 

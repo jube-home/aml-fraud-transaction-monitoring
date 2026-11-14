@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,15 +23,19 @@ namespace Jube.Dto.Query.ExhaustiveSearchInstanceTrialInstanceVariableVariance
 {
     [Description("One multi-collinearity correlation between an Exhaustive Search Instance Variable and another " +
                  "(test) variable of the same Exhaustive Search Instance.")]
+    [MessagePackObject]
     public class ExhaustiveSearchInstanceTrialInstanceVariableVarianceDto
     {
         [Description("Name of the test variable the correlation is measured against.")]
+        [Key(0)]
         public string? Name { get; set; }
 
         [Description("Correlation coefficient between the variable and the test variable.")]
+        [Key(1)]
         public double Correlation { get; set; }
 
         [Description("Rank of the absolute correlation. Results are ordered by this rank ascending.")]
+        [Key(2)]
         public int CorrelationAbsRank { get; set; }
     }
 }

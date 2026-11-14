@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The pipeline's accumulated score, for a rule that returns a number.")]
         public static double ToScore<T>(this Flow<T> flow)
         {
             return flow.Score;

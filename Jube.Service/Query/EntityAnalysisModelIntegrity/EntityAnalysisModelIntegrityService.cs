@@ -24,6 +24,7 @@ using Jube.Parser.Dependency;
 using Jube.Parser.Dependency.Models;
 using Jube.Resources;
 using Jube.Service.Agent.Models;
+using Jube.Service.Charts;
 using Jube.Service.Exceptions.Query.EntityAnalysisModelIntegrity;
 using Jube.Service.Observability;
 using Jube.Service.Query.EntityAnalysisModelIntegrity.Interfaces;
@@ -150,22 +151,7 @@ namespace Jube.Service.Query.EntityAnalysisModelIntegrity
                 var graph = await ModelDependencyGraphBuilder
                     .BuildAsync(dbContext, tenantRegistryId, userName, model.Id, log, token).ConfigureAwait(false);
 
-                var inputs = await new GetModelIntegrityInputsQuery(dbContext, tenantRegistryId)
-                    .ExecuteAsync(model.Id, token).ConfigureAwait(false);
-
-                var observation = await ObserveAsync(model.Id, inputs, token).ConfigureAwait(false);
-                var now = DateTime.UtcNow;
-
-                var checks = ModelIntegrityRules.DependencyChecks(graph)
-                    .Concat(ModelIntegrityRules.CompilationChecks(inputs.CompileStatuses.Select(c =>
-                        new CompileStatus(c.Kind, c.Id, c.Name, c.Active, c.Compiled, c.CompileError))))
-                    .Concat(ModelIntegrityRules.ConfigurationChecks(model.Active == 1, model.EnableTtlCounter == 1,
-                        graph, inputs.SearchRules.Select(r => new SearchWindowInput(r.Id, r.Name, r.Interval, r.Value,
-                            r.SearchKey, r.SearchKeyTtlInterval, r.SearchKeyTtlValue)), now))
-                    .Concat(ModelIntegrityRules.EngineChecks(observation, model.Active == 1, graph.Entities, now,
-                        heartbeatTolerance))
-                    .OrderBy(c => c.Severity)
-                    .ToList();
+                var (checks, observation, now) = await ChecksAsync(model, graph, token).ConfigureAwait(false);
 
                 return new ModelIntegrityReportDto
                 {
@@ -178,10 +164,10 @@ namespace Jube.Service.Query.EntityAnalysisModelIntegrity
                     Infos = checks.Count(c => c.Severity == IntegritySeverity.Info),
                     Checks = checks.Select(c => new IntegrityCheckDto
                     {
-                        Code = c.Code.ToString(), Title = IntegrityCodeText.Describe(c.Code),
+                        Code = c.Code.ToString(), Title = Title(c.Code),
                         Severity = c.Severity.ToString(), Category = c.Category,
                         EntityKind = c.EntityKind, EntityId = c.EntityId, EntityName = c.EntityName,
-                        Message = c.Message
+                        Message = Message(c)
                     }).ToList()
                 };
             }, token);
@@ -251,6 +237,8 @@ namespace Jube.Service.Query.EntityAnalysisModelIntegrity
             int? focusId = null,
             [Description("How many steps from the focus to include; 1 to 5.")]
             int radius = 2,
+            [Description("The most entities to return, 10 to 5000; the least connected are left out beyond it.")]
+            int maxNodes = ModelGraphBuilder.MaxNodes,
             CancellationToken token = default)
         {
             return RunAsync("Graph", async () =>
@@ -275,19 +263,76 @@ namespace Jube.Service.Query.EntityAnalysisModelIntegrity
                     }
                 }
 
-                var built = ModelGraphBuilder.Build(graph, focus, Math.Clamp(radius, 1, 5));
+                var limit = Math.Clamp(maxNodes, 10, 5000);
+                var built = ModelGraphBuilder.Build(graph, focus, Math.Clamp(radius, 1, 5), limit);
+                var (checks, _, _) = await ChecksAsync(model, graph, token).ConfigureAwait(false);
+
+                var findings = checks.Where(c => c.EntityId.HasValue)
+                    .GroupBy(c => $"{c.EntityKind}:{c.EntityId}", StringComparer.Ordinal)
+                    .ToDictionary(g => g.Key,
+                        g => (Errors: g.Count(c => c.Severity == IntegritySeverity.Error),
+                            Warnings: g.Count(c => c.Severity == IntegritySeverity.Warning)),
+                        StringComparer.Ordinal);
 
                 return new ModelGraphDto
                 {
                     Nodes = built.Nodes.Select(n => new ModelGraphNodeDto
-                        { Id = n.Id, Label = n.Label, Kind = n.Kind, Active = n.Active, Detail = n.Detail }).ToList(),
+                    {
+                        Id = n.Id, Label = n.Label, Kind = n.Kind, Active = n.Active, Detail = n.Detail,
+                        Errors = findings.GetValueOrDefault(n.Id).Errors,
+                        Warnings = findings.GetValueOrDefault(n.Id).Warnings
+                    }).ToList(),
                     Edges = built.Edges.Select(e => new ModelGraphEdgeDto
                         { From = e.From, To = e.To, Label = e.Label, Dashed = e.Dashed }).ToList(),
                     Truncated = built.Truncated,
-                    MaxNodes = ModelGraphBuilder.MaxNodes,
-                    Focus = built.Focus
+                    MaxNodes = limit,
+                    Focus = built.Focus,
+                    CollapseAbove = ModelDependencyChartRenderer.CollapseAbove
                 };
             }, token);
+        }
+
+        private async Task<(List<IntegrityCheck> Checks, EngineObservation Observation, DateTime Now)> ChecksAsync(
+            Data.Poco.EntityAnalysisModel model, ModelDependencyGraph graph, CancellationToken token)
+        {
+            var inputs = await new GetModelIntegrityInputsQuery(dbContext, tenantRegistryId)
+                .ExecuteAsync(model.Id, token).ConfigureAwait(false);
+
+            var observation = await ObserveAsync(model.Id, inputs, token).ConfigureAwait(false);
+            var now = DateTime.UtcNow;
+
+            var checks = ModelIntegrityRules.DependencyChecks(graph)
+                .Concat(ModelIntegrityRules.CompilationChecks(inputs.CompileStatuses.Select(c =>
+                    new CompileStatus(c.Kind, c.Id, c.Name, c.Active, c.Compiled, c.CompileError))))
+                .Concat(ModelIntegrityRules.ConfigurationChecks(model.Active == 1, model.EnableTtlCounter == 1,
+                    graph, inputs.SearchRules.Select(r => new SearchWindowInput(r.Id, r.Name, r.Interval, r.Value,
+                        r.SearchKey, r.SearchKeyTtlInterval, r.SearchKeyTtlValue)), now))
+                .Concat(ModelIntegrityRules.EngineChecks(observation, model.Active == 1, graph.Entities, now,
+                    heartbeatTolerance))
+                .OrderBy(c => c.Severity)
+                .ToList();
+
+            return (checks, observation, now);
+        }
+
+        private string Title(IntegrityCode code)
+        {
+            var localised = strings["Title_" + code];
+
+            return localised.ResourceNotFound ? IntegrityCodeText.Describe(code) : localised.Value;
+        }
+
+        private string Message(IntegrityCheck check)
+        {
+            if (check.MessageKey == null)
+            {
+                return check.Message;
+            }
+
+            var localised = strings["Message_" + check.MessageKey,
+                (check.Arguments ?? []).Cast<object>().ToArray()];
+
+            return localised.ResourceNotFound ? check.Message : localised.Value;
         }
 
         private async Task<EngineObservation> ObserveAsync(int entityAnalysisModelId,
@@ -373,7 +418,7 @@ namespace Jube.Service.Query.EntityAnalysisModelIntegrity
             var model = await new EntityAnalysisModelRepository(dbContext, tenantRegistryId)
                 .GetByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false);
 
-            if (model == null || model.TenantRegistryId != tenantRegistryId)
+            if (model == null || model.TenantRegistryId != tenantRegistryId || model.Deleted is > 0)
             {
                 throw new NotFoundException(strings[EntityAnalysisModelIntegrityResources.ModelNotFound]);
             }

@@ -4,6 +4,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Extracts letters from the string.")]
         public static string ExtractLetter(this string @this)
         {
             return new string(@this.ToCharArray().Where(x => char.IsLetter(x)).ToArray());

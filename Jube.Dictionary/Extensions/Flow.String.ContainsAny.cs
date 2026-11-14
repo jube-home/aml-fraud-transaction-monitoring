@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchContainsAny(params string[] values)
+            [Description("True when: contains at least one of the listed strings. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsAny([Description("The substrings to search for.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringContainsAny(flow.Value, values));
             }
 
-            public Flow<string?> RejectContainsAny(params string[] values)
+            [Description("True when: contains at least one of the listed strings. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsAny([Description("The substrings to search for.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringContainsAny(flow.Value, values));
             }
 
-            public Flow<string?> BreakContainsAny(params string[] values)
+            [Description("True when: contains at least one of the listed strings. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsAny([Description("The substrings to search for.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringContainsAny(flow.Value, values));
             }
 
-            public Flow<string?> RequireContainsAny(params string[] values)
+            [Description("True when: contains at least one of the listed strings. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsAny([Description("The substrings to search for.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringContainsAny(flow.Value, values));
             }
 
-            public Flow<string?> EnsureContainsAny(params string[] values)
+            [Description("True when: contains at least one of the listed strings. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsAny([Description("The substrings to search for.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchContainsAny(params string[] values)
+            [Description("Begins a pipeline from the value. True when: contains at least one of the listed strings. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsAny([Description("The substrings to search for.")] params string[] values)
             {
                 return value.Start().MatchContainsAny(values);
             }
 
-            public Flow<string?> RejectContainsAny(params string[] values)
+            [Description("Begins a pipeline from the value. True when: contains at least one of the listed strings. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsAny([Description("The substrings to search for.")] params string[] values)
             {
                 return value.Start().RejectContainsAny(values);
             }
 
-            public Flow<string?> BreakContainsAny(params string[] values)
+            [Description("Begins a pipeline from the value. True when: contains at least one of the listed strings. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsAny([Description("The substrings to search for.")] params string[] values)
             {
                 return value.Start().BreakContainsAny(values);
             }
 
-            public Flow<string?> RequireContainsAny(params string[] values)
+            [Description("Begins a pipeline from the value. True when: contains at least one of the listed strings. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsAny([Description("The substrings to search for.")] params string[] values)
             {
                 return value.Start().RequireContainsAny(values);
             }
 
-            public Flow<string?> EnsureContainsAny(params string[] values)
+            [Description("Begins a pipeline from the value. True when: contains at least one of the listed strings. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsAny([Description("The substrings to search for.")] params string[] values)
             {
                 return value.Start().EnsureContainsAny(values);
             }

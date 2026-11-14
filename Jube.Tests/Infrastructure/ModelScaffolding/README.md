@@ -79,7 +79,7 @@ preservation import replaced the example model on 2026-09-19:
 
 Rules the example model's other rules depend on, for reference: `ThresholdTtlCounterAll` needs the TTL counter above 5
 (it accumulates across invocations of one account, so a test must not rely on it), `AllIPDenyList` needs the payload IP
-in the list (the documentation list holds 123.456.789.123, the payload IP is 123.456.789.200, so it does not fire), and
+in the list (the documentation list holds 123.456.789.123, the payload IP is 8.8.8.8, so it does not fire), and
 `VolumeThresholdByAccountId` compares the abstraction volume (123.45) with the dictionary value for
 `Test1` (1000), so it does not fire either. Only the sanction rule is expected to fire on the documentation payload.
 

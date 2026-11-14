@@ -31,8 +31,8 @@ namespace Jube.Test.Service.Agent
         public void TheHierarchyIsRegisteredAlongsideTheOriginalThreeAgents()
         {
             AgentDefinitions.All.Should().ContainKeys("general", "researcher", "validator", "web-researcher");
-            AgentDefinitions.All.Count.Should().Be(225);
-            AgentDefinitions.HierarchyToolNames.Should().HaveCount(166);
+            AgentDefinitions.All.Count.Should().Be(242);
+            AgentDefinitions.HierarchyToolNames.Should().HaveCount(183);
         }
 
         [Fact]
@@ -218,14 +218,23 @@ namespace Jube.Test.Service.Agent
         [Fact]
         public void EveryLeafDeclaresThePermissionsItsOwnToolsRequire()
         {
+            var mismatches = new List<string>();
+
             foreach (var (slug, toolNames) in AgentDefinitions.HierarchyToolNames)
             {
                 var expected = toolNames
                     .SelectMany(name => ServiceToolCatalogue.All.Single(t => t.Name == name).RequiredPermissions)
                     .Distinct().OrderBy(p => p).ToList();
 
-                AgentDefinitions.All[slug].RequiredPermissions.Should().BeEquivalentTo(expected, slug);
+                var declared = AgentDefinitions.All[slug].RequiredPermissions.OrderBy(p => p).ToList();
+
+                if (!declared.SequenceEqual(expected))
+                {
+                    mismatches.Add($"{slug}: declares [{string.Join(",", declared)}], tools need [{string.Join(",", expected)}]");
+                }
             }
+
+            mismatches.Should().BeEmpty();
         }
     }
 }

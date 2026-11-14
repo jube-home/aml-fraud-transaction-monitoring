@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,19 +21,24 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstancePredictedActual
 {
+    [MessagePackObject]
     public class ExhaustiveSearchInstancePromotedTrialInstancePredictedActualDto
     {
         [Description("Predicted value produced by the promoted neural network trial instance for one training row.")]
+        [Key(0)]
         public double Predicted { get; set; }
 
         [Description("Actual (observed) value for the same training row.")]
+        [Key(1)]
         public double Actual { get; set; }
 
         [Description("Prediction error for the row, calculated as Actual minus Predicted.")]
+        [Key(2)]
         public double Error { get; set; }
 
         [Description("Raw (reverse-normalised) value of the requested continuous variable for this row, when a " +
                      "variable was requested; null otherwise or when this row has no stored value for it.")]
+        [Key(3)]
         public double? Value { get; set; }
     }
 }

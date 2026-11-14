@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Lowercases an email address and strips any \"+tag\" alias from the local part, links accounts that abuse plus-addressing for multi-accounting.")]
         public static string NormalizeEmailAlias(this string? @this)
         {
             var value = (@this ?? "").Trim().ToLowerInvariant();

@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,22 +21,28 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Query.EntityAnalysisModelSynchronisationNodeStatusEntries
 {
+    [MessagePackObject]
     public class EntityAnalysisModelSynchronisationNodeStatusEntriesDto
     {
         [Description("True when a synchronisation has been scheduled and has come due, or the node has never " +
                      "synchronised, so the node has yet to pick up the latest model configuration.")]
+        [Key(0)]
         public bool SynchronisationPending { get; set; }
 
         [Description("True when the node has sent a heartbeat within the last two minutes.")]
+        [Key(1)]
         public bool InstanceAvailable { get; set; }
 
         [Description("Identifier of the node instance reporting its synchronisation status.")]
+        [Key(2)]
         public string? Instance { get; set; }
 
         [Description("UTC date the node last completed a synchronisation; the default date when it never has.")]
+        [Key(3)]
         public DateTime SynchronisedDate { get; set; }
 
         [Description("UTC date of the last heartbeat received from the node.")]
+        [Key(4)]
         public DateTime HeartbeatDate { get; set; }
     }
 }

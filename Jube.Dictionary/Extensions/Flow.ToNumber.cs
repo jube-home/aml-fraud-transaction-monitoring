@@ -15,11 +15,13 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The value being tested as a plain number, NaN if the pipeline errored, for a rule that returns a number.")]
         public static double ToNumber(this Flow<double> flow)
         {
             return flow.Outcome == FlowOutcome.Errored ? double.NaN : flow.Value;
         }
 
+        [Description("The value being tested as a plain number, NaN if the pipeline errored, for a rule that returns a number.")]
         public static double ToNumber(this Flow<int> flow)
         {
             return flow.Outcome == FlowOutcome.Errored ? double.NaN : flow.Value;

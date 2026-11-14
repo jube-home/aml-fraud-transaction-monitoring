@@ -15,8 +15,12 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double ImpliedTravelSpeedKmh(this double latitude1, double longitude1,
-            double latitude2, double longitude2, double hoursElapsed)
+        [Description("Returns the implied speed, in km/h, needed to travel between two coordinates in the given number of hours. Returns positive infinity when hoursElapsed is zero or negative, flagging simultaneous/backwards-in-time locations as impossible.")]
+        public static double ImpliedTravelSpeedKmh(this double latitude1,
+            [Description("Longitude of the first point.")] double longitude1,
+            [Description("Latitude of the second point.")] double latitude2,
+            [Description("Longitude of the second point.")] double longitude2,
+            [Description("Hours elapsed between the two observations.")] double hoursElapsed)
         {
             if (hoursElapsed <= 0)
             {

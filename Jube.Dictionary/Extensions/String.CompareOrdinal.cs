@@ -9,12 +9,17 @@ namespace Jube.Dictionary.Extensions
     {
         extension(String strA)
         {
-            public Int32 CompareOrdinal(String strB)
+            [Description("Compares two strings using ordinal rules.")]
+            public Int32 CompareOrdinal([Description("The second string to compare.")] String strB)
             {
                 return string.CompareOrdinal(strA, strB);
             }
 
-            public Int32 CompareOrdinal(Int32 indexA, String strB, Int32 indexB, Int32 length)
+            [Description("Compares substrings using ordinal rules.")]
+            public Int32 CompareOrdinal([Description("The starting index of the substring in strA.")] Int32 indexA,
+                [Description("The second string to use in the comparison.")] String strB,
+                [Description("The starting index of the substring in strB.")] Int32 indexB,
+                [Description("The maximum number of characters in the substrings to compare.")] Int32 length)
             {
                 return string.CompareOrdinal(strA, indexA, strB, indexB, length);
             }

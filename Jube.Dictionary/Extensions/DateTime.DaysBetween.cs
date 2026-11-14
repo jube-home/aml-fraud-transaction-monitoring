@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double DaysBetween(this DateTime @this, DateTime other)
+        [Description("Fractional days from this date-time to another; negative when the other is earlier.")]
+        public static double DaysBetween(this DateTime @this, [Description("The other date.")] DateTime other)
         {
             return (other - @this).TotalDays;
         }

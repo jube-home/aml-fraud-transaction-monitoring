@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -29,7 +30,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
+using Jube.Service.Repository.CaseFile.Interfaces;
 using Jube.Service.Repository.CaseFile.Models;
 
 namespace Jube.App.Endpoints.Repository
@@ -37,6 +40,7 @@ namespace Jube.App.Endpoints.Repository
     public static class CaseFileEndpoints
     {
         private const string Base = "/api/CaseFile";
+        private const long UploadBodyLimit = CaseFileService.MaxFileBytes / 3 * 4 + 65536;
 
         private static readonly HashSet<string> inlineSafeMediaTypes =
         [
@@ -51,12 +55,13 @@ namespace Jube.App.Endpoints.Repository
 
             group.MapPost("Upload", UploadAsync)
                 .ValidateAntiforgeryForCookieSessions()
+                .WithMetadata(new RequestSizeLimitAttribute(UploadBodyLimit))
                 .Produces<CaseFileDto>()
                 .Produces<ValidationResult>((int)HttpStatusCode.BadRequest)
                 .Produces((int)HttpStatusCode.Forbidden)
                 .WithName("CaseFileUpload");
 
-            group.MapPost("Remove", RemoveAsync)
+            group.MapDelete("{id:int}", RemoveAsync)
                 .ValidateAntiforgeryForCookieSessions()
                 .Produces((int)HttpStatusCode.OK)
                 .Produces((int)HttpStatusCode.Forbidden)
@@ -74,8 +79,7 @@ namespace Jube.App.Endpoints.Repository
         }
 
         private static async Task<IResult> UploadAsync(
-            IFormFileCollection files, [FromForm] string caseKey, [FromForm] string caseKeyValue,
-            [FromForm] int caseId, HttpContext httpContext, ILog log,
+            [FromBody] CaseFileUploadRequestDto model, HttpContext httpContext, ILog log,
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
@@ -83,7 +87,7 @@ namespace Jube.App.Endpoints.Repository
 
             if (log.IsDebugEnabled)
             {
-                log.Debug($"POST {Base}/Upload: entry caseId={caseId} user={user}");
+                log.Debug($"POST {Base}/Upload: entry caseId={model.CaseId} user={user}");
             }
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
@@ -92,12 +96,19 @@ namespace Jube.App.Endpoints.Repository
             try
             {
                 var service = await CaseFileService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
-                    serviceChangeBus, token);
+                    serviceChangeBus, dynamicEnvironment, httpContext.RequestServices.GetService<ICaseFileScanner>(),
+                    token);
 
-                var uploaded = files.Select(file =>
-                    new UploadedFileContent(file.OpenReadStream(), file.FileName, file.ContentType, file.Length));
+                var uploaded = model.Content is { Length: > 0 }
+                    ? new[]
+                    {
+                        new UploadedFileContent(new MemoryStream(model.Content, false), model.FileName ?? string.Empty,
+                            model.ContentType, model.Content.Length)
+                    }
+                    : [];
 
-                var result = await service.UploadAsync(uploaded, caseKey, caseKeyValue, caseId, token);
+                var result = await service.UploadAsync(uploaded, model.CaseKey, model.CaseKeyValue, model.CaseId,
+                    model.CaseNoteId, model.CaseResearchId, token);
 
                 return TypedResults.Ok(result);
             }
@@ -119,11 +130,20 @@ namespace Jube.App.Endpoints.Repository
 
                 return TypedResults.Forbid();
             }
+            catch (CaseLockedException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/Upload: 409 (case locked) user={user}");
+                }
+
+                return TypedResults.Conflict(new { code = ex.Code, message = ex.Message });
+            }
             catch (NotVisibleException)
             {
                 if (log.IsWarnEnabled)
                 {
-                    log.Warn($"POST {Base}/Upload: 403 (case not visible) caseId={caseId} user={user}");
+                    log.Warn($"POST {Base}/Upload: 403 (case not visible) caseId={model.CaseId} user={user}");
                 }
 
                 return TypedResults.Forbid();
@@ -155,7 +175,7 @@ namespace Jube.App.Endpoints.Repository
         }
 
         private static async Task<IResult> RemoveAsync(
-            [FromForm] int id, HttpContext httpContext, ILog log,
+            int id, HttpContext httpContext, ILog log,
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
@@ -163,7 +183,7 @@ namespace Jube.App.Endpoints.Repository
 
             if (log.IsDebugEnabled)
             {
-                log.Debug($"POST {Base}/Remove: entry id={id} user={user}");
+                log.Debug($"DELETE {Base}/{{id}}: entry id={id} user={user}");
             }
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
@@ -172,7 +192,8 @@ namespace Jube.App.Endpoints.Repository
             try
             {
                 var service = await CaseFileService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
-                    serviceChangeBus, token);
+                    serviceChangeBus, dynamicEnvironment, httpContext.RequestServices.GetService<ICaseFileScanner>(),
+                    token);
 
                 await service.RemoveAsync(id, token);
 
@@ -182,7 +203,7 @@ namespace Jube.App.Endpoints.Repository
             {
                 if (log.IsWarnEnabled)
                 {
-                    log.Warn($"POST {Base}/Remove: 403 (not authenticated) user={user}");
+                    log.Warn($"DELETE {Base}/{{id}}: 403 (not authenticated) user={user}");
                 }
 
                 return TypedResults.Forbid();
@@ -191,16 +212,25 @@ namespace Jube.App.Endpoints.Repository
             {
                 if (log.IsWarnEnabled)
                 {
-                    log.Warn($"POST {Base}/Remove: 403 user={user}");
+                    log.Warn($"DELETE {Base}/{{id}}: 403 user={user}");
                 }
 
                 return TypedResults.Forbid();
+            }
+            catch (CaseLockedException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"DELETE {Base}/{{id}}: 409 (case locked) user={user}");
+                }
+
+                return TypedResults.Conflict(new { code = ex.Code, message = ex.Message });
             }
             catch (NotVisibleException)
             {
                 if (log.IsWarnEnabled)
                 {
-                    log.Warn($"POST {Base}/Remove: 403 (not visible) id={id} user={user}");
+                    log.Warn($"DELETE {Base}/{{id}}: 403 (not visible) id={id} user={user}");
                 }
 
                 return TypedResults.Forbid();
@@ -209,14 +239,14 @@ namespace Jube.App.Endpoints.Repository
             {
                 if (log.IsDebugEnabled)
                 {
-                    log.Debug($"POST {Base}/Remove: client cancelled user={user}");
+                    log.Debug($"DELETE {Base}/{{id}}: client cancelled user={user}");
                 }
 
                 throw;
             }
             catch (Exception e)
             {
-                log.Error($"POST {Base}/Remove: 500 user={user}", e);
+                log.Error($"DELETE {Base}/{{id}}: 500 user={user}", e);
 
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
@@ -240,7 +270,8 @@ namespace Jube.App.Endpoints.Repository
             try
             {
                 var service = await CaseFileService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
-                    serviceChangeBus, token);
+                    serviceChangeBus, dynamicEnvironment, httpContext.RequestServices.GetService<ICaseFileScanner>(),
+                    token);
 
                 var content = await service.GenerateAsync(id, token);
                 var mediaType = (content.ContentType ?? string.Empty).Split(';')[0].Trim().ToLowerInvariant();
@@ -314,7 +345,8 @@ namespace Jube.App.Endpoints.Repository
             try
             {
                 var service = await CaseFileService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
-                    serviceChangeBus, token);
+                    serviceChangeBus, dynamicEnvironment, httpContext.RequestServices.GetService<ICaseFileScanner>(),
+                    token);
 
                 var result = await service.GetByCaseKeyValueAsync(key, value, token);
 

@@ -27,6 +27,7 @@ using Jube.Service.Query.TreeChildren.Models;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Security;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 
@@ -223,7 +224,8 @@ namespace Jube.Service.Query.TreeChildren
             }
 
             return await dbContext.EntityAnalysisModel
-                .Where(m => m.Guid == child.EntityAnalysisModelGuid.Value && m.TenantRegistryId == tenantRegistryId)
+                .Where(m => m.Guid == child.EntityAnalysisModelGuid.Value && m.TenantRegistryId == tenantRegistryId
+                            && (m.Deleted == 0 || m.Deleted == null))
                 .Select(m => (int?)m.Id)
                 .FirstOrDefaultAsync(token)
                 .ConfigureAwait(false);

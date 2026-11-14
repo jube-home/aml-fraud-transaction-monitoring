@@ -39,8 +39,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(10)] public string EntityAnalysisModelActivationRuleName { get; set; }
         [Column] [Nullable] [Key(11)] public int InheritedId { get; set; }
 
-        [Association(ThisKey = "EntityAnalysisModelGuid", OtherKey = "Guid", CanBeNull = false,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "EntityAnalysisModelGuid", OtherKey = "Guid", CanBeNull = false)]
         [Key(12)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
 

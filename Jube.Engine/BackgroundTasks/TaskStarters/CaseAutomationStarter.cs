@@ -14,6 +14,7 @@
 namespace Jube.Engine.BackgroundTasks.TaskStarters
 {
     using System;
+using Jube.Engine.CaseEscalation;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Context;
@@ -58,7 +59,11 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
                             try
                             {
-                                await UpdateCaseInDatabaseAsync(dbContext, processExpiredCase).ConfigureAwait(false);
+                                if (!await UpdateCaseInDatabaseAsync(dbContext, processExpiredCase)
+                                        .ConfigureAwait(false))
+                                {
+                                    continue;
+                                }
 
                                 if (context.Services.Log.IsInfoEnabled)
                                 {
@@ -188,16 +193,6 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
 
                             switch (expiredCase.OldClosedStatus)
                             {
-                                case 0:
-                                    expiredCase.NewClosedStatus = 0;
-
-                                    if (context.Services.Log.IsInfoEnabled)
-                                    {
-                                        context.Services.Log.Info(
-                                            $"Case Automation: Case ID {expiredCase.CaseId} has an open status and will be maintained.");
-                                    }
-
-                                    break;
                                 case 1:
                                     expiredCase.NewClosedStatus = 0;
 
@@ -268,7 +263,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
         {
             try
             {
-                var repository = new CaseEventRepository(dbContext);
+                var repository = new CaseEventRepository(dbContext, "Administrator");
 
                 var model = new CaseEvent
                 {
@@ -290,20 +285,43 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             }
         }
 
-        private async Task UpdateCaseInDatabaseAsync(DbContext dbContext, ExpiredCase processExpiredCase)
+        private async Task<bool> UpdateCaseInDatabaseAsync(DbContext dbContext, ExpiredCase processExpiredCase)
         {
             try
             {
                 var repository = new CaseRepository(dbContext);
 
-                await repository.UpdateExpiredCaseDiaryAsync(processExpiredCase.CaseId,
+                if (processExpiredCase.NewClosedStatus == 3)
+                {
+                    await CaseChecklistBypassSignal.RecordAsync(dbContext, processExpiredCase.CaseId,
+                        CaseChecklistBypassSignal.ExpiryActor, context.Services.TaskCoordinator.CancellationToken)
+                        .ConfigureAwait(false);
+                }
+
+                var changed = await repository.UpdateExpiredCaseDiaryAsync(processExpiredCase.CaseId,
                         processExpiredCase.NewClosedStatus,
                         processExpiredCase.OldClosedStatus, context.Services.TaskCoordinator.CancellationToken)
                     .ConfigureAwait(false);
+
+                if (changed == 0)
+                {
+                    return false;
+                }
+
+                if (processExpiredCase.NewClosedStatus == 3)
+                {
+                    await new CaseStatusTransitionRepository(dbContext).CloseAsync(processExpiredCase.CaseId,
+                        DateTime.UtcNow, null, context.Services.TaskCoordinator.CancellationToken)
+                        .ConfigureAwait(false);
+                }
+
+                return true;
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 context.Services.Log.Error($"UpdateCaseInDatabaseAsync: has produced an error {ex}");
+
+                return false;
             }
         }
     }

@@ -11,7 +11,10 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
+using Jube.Service.EntityAnalysisModel;
+using System.Linq;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
@@ -50,6 +53,10 @@ namespace Jube.App.Endpoints
             group.MapGet("ByEntityAnalysisModelId/{entityAnalysisModelId:int}", GetByEntityAnalysisModelIdAsync)
                 .Produces<List<EntityAnalysisModelListDto>>()
                 .WithName("EntityAnalysisModelListGetByEntityAnalysisModelId");
+
+            group.MapGet("ByEntityAnalysisModelGuid/{entityAnalysisModelGuid:guid}", GetByEntityAnalysisModelGuidAsync)
+                .Produces<List<EntityAnalysisModelListDto>>()
+                .WithName("EntityAnalysisModelListGetByEntityAnalysisModelGuidRoute");
 
             group.MapGet("{id:int}", GetByIdAsync)
                 .Produces<EntityAnalysisModelListDto>()
@@ -200,6 +207,73 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"GET {Base}/ByEntityAnalysisModelId/{entityAnalysisModelId}: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        private static async Task<IResult> GetByEntityAnalysisModelGuidAsync(
+            Guid entityAnalysisModelGuid, HttpContext httpContext, ILog log,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"GET {Base}/ByEntityAnalysisModelGuid/{entityAnalysisModelGuid}: entry user={user}");
+            }
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var models = await EntityAnalysisModelService.CreateAsync(dbContext, user, log,
+                    stringLocalizerFactory, serviceChangeBus, token);
+
+                var model = (await models.GetAsync(token)).FirstOrDefault(candidate =>
+                    candidate.Guid == entityAnalysisModelGuid);
+
+                if (model == null)
+                {
+                    return TypedResults.NotFound();
+                }
+
+                var service = await EntityAnalysisModelListService.CreateAsync(dbContext, user, log,
+                    stringLocalizerFactory, serviceChangeBus, token);
+
+                return TypedResults.Ok(await service.GetByEntityAnalysisModelIdAsync(model.Id, token));
+            }
+            catch (NotAuthenticatedException)
+            {
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"GET {Base}/ByEntityAnalysisModelGuid/{entityAnalysisModelGuid}: 403 user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (Jube.Service.Exceptions.EntityAnalysisModel.NotAuthenticatedException)
+            {
+                return TypedResults.Forbid();
+            }
+            catch (Jube.Service.Exceptions.EntityAnalysisModel.ForbiddenException)
+            {
+                return TypedResults.Forbid();
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"GET {Base}/ByEntityAnalysisModelGuid/{entityAnalysisModelGuid}: 500 user={user}", e);
 
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
@@ -392,6 +466,22 @@ namespace Jube.App.Endpoints
 
                 return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
             }
+            catch (VersionConflictException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}: 409 user={user} supplied={ex.SuppliedVersion} current={ex.CurrentVersion}");
+                }
+
+                return TypedResults.Conflict(new
+                {
+                    code = "VersionConflict",
+                    message = ex.Message,
+                    suppliedVersion = ex.SuppliedVersion,
+                    currentVersion = ex.CurrentVersion
+                });
+            }
+
             catch (OperationCanceledException)
             {
                 if (log.IsDebugEnabled)

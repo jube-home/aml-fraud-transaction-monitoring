@@ -20,6 +20,7 @@ using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Query.ApproveEntireModelQuery;
 using LinqToDB;
+using LinqToDB.Async;
 using Npgsql;
 using Fixture = Jube.Test.Infrastructure.DatabaseFixture.DatabaseFixture;
 

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>आपको यह कार्रवाई करने की अनुमति नहीं है।</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>यह कार्रवाई करने के लिए आपको किसी टेनेंट में साइन इन होना आवश्यक है।</value>
+  </data>
+    <data name="InstanceNotFound" xml:space="preserve">
+    <value>AskJooby Analytics इंस्टेंस नहीं मिला।</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>नाम आवश्यक है।</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>नाम अधिकतम {0} अक्षरों का होना चाहिए।</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>इस नाम का AskJooby Analytics इंस्टेंस पहले से मौजूद है।</value>
+  </data>
+    <data name="ModelInvalid" xml:space="preserve">
+    <value>मान्य मॉडल आवश्यक है।</value>
+  </data>
+    <data name="ModelNotFound" xml:space="preserve">
+    <value>मॉडल आपके टेनेंट में नहीं मिला, या हटा दिया गया है।</value>
+  </data>
+    <data name="AlreadyAllocated" xml:space="preserve">
+    <value>यह इंस्टेंस पहले से किसी अन्य मॉडल को आवंटित है। पहले आवंटन हटाएँ।</value>
+  </data>
+    <data name="ActiveRequiresAllocation" xml:space="preserve">
+    <value>इंस्टेंस मॉडल को आवंटित होने के बाद ही लाइव हो सकता है।</value>
+  </data>
+    <data name="PromotePermissionRequired" xml:space="preserve">
+    <value>इंस्टेंस के लाइव होने में बदलाव या आवंटित इंस्टेंस हटाने के लिए Promote Model अनुमति आवश्यक है।</value>
+  </data>
+    <data name="InstanceIdInvalid" xml:space="preserve">
+    <value>मान्य इंस्टेंस आवश्यक है।</value>
+  </data>
+</root>

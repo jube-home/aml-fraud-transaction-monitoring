@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,18 +22,38 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.Parser
 {
     [Description("The location of one parse or compile error within the rule text.")]
+    [MessagePackObject]
     public class ParseRuleErrorSpanDto
     {
         [Description("Zero based character offset of the error within the rule text.")]
+        [Key(0)]
         public int Start { get; set; }
 
         [Description("Length in characters of the erroneous span.")]
+        [Key(1)]
         public int Length { get; set; }
 
         [Description("Human readable error message.")]
+        [Key(2)]
         public string Message { get; set; } = string.Empty;
 
         [Description("Zero based line of the error within the rule text.")]
+        [Key(3)]
         public int Line { get; set; }
+
+        [Description("Zero based column in the rule text's own line where the error starts, in the text as typed " +
+                     "rather than as translated for compilation; absent when the position is unknown.")]
+        [Key(4)]
+        public int? Column { get; set; }
+
+        [Description("Zero based column in the rule text's own line where the error ends, exclusive; absent when the " +
+                     "position is unknown.")]
+        [Key(5)]
+        public int? EndColumn { get; set; }
+
+        [Description("A stable code for the kind of problem when one is known, such as ResultDiscarded, " +
+                     "NeverAnswers or RestrictedToken; otherwise null. Use it to offer a fix, never the message text.")]
+        [Key(6)]
+        public string? Code { get; set; }
     }
 }

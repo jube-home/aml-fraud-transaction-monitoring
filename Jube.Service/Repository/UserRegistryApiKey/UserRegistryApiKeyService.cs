@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿﻿﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -37,6 +37,7 @@ namespace Jube.Service.Repository.UserRegistryApiKey
         private readonly IUserRegistryApiKeyCacheInvalidator cacheInvalidator;
         private readonly DynamicEnvironment.DynamicEnvironment dynamicEnvironment;
         private readonly ILog log;
+        private readonly PrivilegeEscalationGuard guard;
         private readonly PermissionValidation permissionValidation;
         private readonly RuleRepository repository;
         private readonly IServiceChangeBus serviceChangeBus;
@@ -58,6 +59,7 @@ namespace Jube.Service.Repository.UserRegistryApiKey
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
+            guard = new PrivilegeEscalationGuard(dbContext, tenantRegistryId, permissionValidation);
             this.dynamicEnvironment = dynamicEnvironment;
             this.cacheInvalidator = cacheInvalidator;
             repository = new RuleRepository(dbContext, userName);
@@ -219,6 +221,17 @@ namespace Jube.Service.Repository.UserRegistryApiKey
                     throw new NotFoundException(strings[UserRegistryApiKeyResources.UserRegistryNotFound]);
                 }
 
+                if (!await guard.MayActAsUserAsync(model.UserRegistryId, token).ConfigureAwait(false))
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn($"UserRegistryApiKey.Insert: privilege escalation refused user={userName}");
+                    }
+
+                    throw new ForbiddenException(strings[UserRegistryApiKeyResources.InsufficientPrivilege],
+                        permissions);
+                }
+
                 var apiHmacKey = dynamicEnvironment.AppSettings("ApiHmacKey");
                 var generated = ApiKeyHelper.Generate(userRegistry.Name, apiHmacKey);
 
@@ -290,7 +303,7 @@ namespace Jube.Service.Repository.UserRegistryApiKey
 
         [Description("Revokes an API key. A key that no longer exists at all is treated as already revoked and " +
                      "returns successfully as a no-op; a key that exists but belongs to another tenant is " +
-                     "reported as not found rather than revoked, to avoid revoking another tenant's key.")]
+                     "likewise a successful no-op and is never revoked, so the caller cannot tell the two apart.")]
         [ServiceOperation("UserRegistryApiKeyDelete", OperationKind.Delete, Idempotent = true, Destructive = true)]
         public async Task DeleteAsync(
             [Description("Server-assigned identifier of the API key grant to revoke.")]
@@ -321,6 +334,17 @@ namespace Jube.Service.Repository.UserRegistryApiKey
                     }
 
                     return;
+                }
+
+                if (!await guard.MayActAsUserAsync(existingAnyTenant.UserRegistryId.GetValueOrDefault(), token).ConfigureAwait(false))
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn($"UserRegistryApiKey.Delete: privilege escalation refused user={userName}");
+                    }
+
+                    throw new ForbiddenException(strings[UserRegistryApiKeyResources.InsufficientPrivilege],
+                        permissions);
                 }
 
                 try

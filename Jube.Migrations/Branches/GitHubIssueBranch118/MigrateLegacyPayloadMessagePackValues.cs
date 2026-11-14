@@ -17,8 +17,8 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch118
     using System.Collections.Generic;
     using System.Linq;
     using Cache;
-    using Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack;
-    using Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack.Models;
+    using Cache.Resp.Serialization.DictionaryNoBoxing.MessagePack;
+    using Cache.Resp.Serialization.DictionaryNoBoxing.MessagePack.Models;
     using Data.Extensions;
     using Dictionary;
     using DynamicEnvironment;
@@ -123,7 +123,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch118
                 return;
             }
 
-            var useCompression = dynamicEnvironment.AppSettings("RedisMessagePackCompression")
+            var useCompression = dynamicEnvironment.AppSettings("RespMessagePackCompression")
                 .Equals("True", StringComparison.OrdinalIgnoreCase);
 
             var compression = useCompression ? MessagePackCompression.Lz4BlockArray : MessagePackCompression.None;
@@ -149,7 +149,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch118
                     var splits = key.ToString().Split(":");
 
                     foreach (var entry in
-                             cacheService.ResilientRedisResilientRedisDatabase.HashScan(key, pageSize: 500))
+                             cacheService.ResilientRespResilientRespDatabase.HashScan(key, pageSize: 500))
                     {
                         if (!entry.Value.HasValue)
                         {
@@ -188,7 +188,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch118
 
                             if (batch.Count >= batchSize)
                             {
-                                cacheService.ResilientRedisResilientRedisDatabase.HashSet(key, batch.ToArray());
+                                cacheService.ResilientRespResilientRespDatabase.HashSet(key, batch.ToArray());
                                 batch.Clear();
                             }
                         }
@@ -200,7 +200,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch118
 
                     if (batch.Count > 0)
                     {
-                        cacheService.ResilientRedisResilientRedisDatabase.HashSet(key, batch.ToArray());
+                        cacheService.ResilientRespResilientRespDatabase.HashSet(key, batch.ToArray());
                     }
                 }
                 catch (Exception ex)

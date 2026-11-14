@@ -186,7 +186,8 @@ namespace Jube.Service.Query.EntityAnalysisModelOverrideVersionHistory
 
         private async Task<bool> IsParentOwnedAsync(int parentId, CancellationToken token)
         {
-            return await parentRepository.GetByIdAsync(parentId, token).ConfigureAwait(false) is not null;
+            return await parentRepository.GetByIdIncludingRemovedAsync(parentId, token).ConfigureAwait(false) is not
+                null;
         }
 
         private void EnsurePermitted(string op)

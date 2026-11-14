@@ -12,6 +12,7 @@
  */
 
 using System.Diagnostics.CodeAnalysis;
+using Jube.Analytics.Aggregation;
 using Jube.Dto.EntityAnalysisModelAbstractionRule;
 
 namespace Jube.Service.EntityAnalysisModelAbstractionRule
@@ -46,6 +47,8 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
                     Offset = abstractionRule.Offset == 1,
                     OffsetTypeId = abstractionRule.OffsetTypeId.GetValueOrDefault(),
                     OffsetValue = abstractionRule.OffsetValue.GetValueOrDefault(),
+                    IterationOrderId = abstractionRule.IterationOrderId ?? 1,
+                    SearchFunctionParameters = Parameters(abstractionRule.SearchFunctionParameters),
                     ReportTable = abstractionRule.ReportTable == 1,
                     ResponsePayload = abstractionRule.ResponsePayload == 1,
                     InheritedId = abstractionRule.InheritedId.GetValueOrDefault(),
@@ -68,6 +71,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
         {
             return new AbstractionRulePoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelId = dto.EntityAnalysisModelId,
                 Name = dto.Name,
@@ -86,10 +90,19 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
                 Offset = (byte)(dto.Offset ? 1 : 0),
                 OffsetTypeId = (byte)dto.OffsetTypeId,
                 OffsetValue = dto.OffsetValue,
+                IterationOrderId = (byte)dto.IterationOrderId,
+                SearchFunctionParameters = AggregationParameters.Write(dto.SearchFunctionParameters),
                 ReportTable = (byte)(dto.ReportTable ? 1 : 0),
                 ResponsePayload = (byte)(dto.ResponsePayload ? 1 : 0),
                 InheritedId = dto.InheritedId
             };
+        }
+
+        private static Dictionary<string, double>? Parameters(string? stored)
+        {
+            var parameters = AggregationParameters.Read(stored);
+
+            return parameters == null ? null : new Dictionary<string, double>(parameters, StringComparer.Ordinal);
         }
 
         private static DateTimeOffset? ToOffset(DateTime? value)

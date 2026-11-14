@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
-            public Flow<DateTime> MatchYoungerThanDays(int days)
+            [Description("True when: the date is fewer than the number of days in the past. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchYoungerThanDays([Description("The number of days.")] int days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeYoungerThanDays(flow.Value, days));
             }
 
-            public Flow<DateTime> RejectYoungerThanDays(int days)
+            [Description("True when: the date is fewer than the number of days in the past. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectYoungerThanDays([Description("The number of days.")] int days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeYoungerThanDays(flow.Value, days));
             }
 
-            public Flow<DateTime> BreakYoungerThanDays(int days)
+            [Description("True when: the date is fewer than the number of days in the past. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakYoungerThanDays([Description("The number of days.")] int days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeYoungerThanDays(flow.Value, days));
             }
 
-            public Flow<DateTime> RequireYoungerThanDays(int days)
+            [Description("True when: the date is fewer than the number of days in the past. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireYoungerThanDays([Description("The number of days.")] int days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeYoungerThanDays(flow.Value, days));
             }
 
-            public Flow<DateTime> EnsureYoungerThanDays(int days)
+            [Description("True when: the date is fewer than the number of days in the past. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureYoungerThanDays([Description("The number of days.")] int days)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
-            public Flow<DateTime> MatchYoungerThanDays(int days)
+            [Description("Begins a pipeline from the value. True when: the date is fewer than the number of days in the past. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchYoungerThanDays([Description("The number of days.")] int days)
             {
                 return value.Start().MatchYoungerThanDays(days);
             }
 
-            public Flow<DateTime> RejectYoungerThanDays(int days)
+            [Description("Begins a pipeline from the value. True when: the date is fewer than the number of days in the past. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectYoungerThanDays([Description("The number of days.")] int days)
             {
                 return value.Start().RejectYoungerThanDays(days);
             }
 
-            public Flow<DateTime> BreakYoungerThanDays(int days)
+            [Description("Begins a pipeline from the value. True when: the date is fewer than the number of days in the past. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakYoungerThanDays([Description("The number of days.")] int days)
             {
                 return value.Start().BreakYoungerThanDays(days);
             }
 
-            public Flow<DateTime> RequireYoungerThanDays(int days)
+            [Description("Begins a pipeline from the value. True when: the date is fewer than the number of days in the past. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireYoungerThanDays([Description("The number of days.")] int days)
             {
                 return value.Start().RequireYoungerThanDays(days);
             }
 
-            public Flow<DateTime> EnsureYoungerThanDays(int days)
+            [Description("Begins a pipeline from the value. True when: the date is fewer than the number of days in the past. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureYoungerThanDays([Description("The number of days.")] int days)
             {
                 return value.Start().EnsureYoungerThanDays(days);
             }

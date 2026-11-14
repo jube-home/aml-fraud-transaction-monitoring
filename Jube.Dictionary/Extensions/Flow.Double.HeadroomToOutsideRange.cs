@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchHeadroomToOutsideRange(double limit, double lowerBound, double upperBound)
+            [Description("True when: the limit minus the value, the room left is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchHeadroomToOutsideRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleHeadroomToOutsideRange(flow.Value, limit, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectHeadroomToOutsideRange(double limit, double lowerBound, double upperBound)
+            [Description("True when: the limit minus the value, the room left is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectHeadroomToOutsideRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleHeadroomToOutsideRange(flow.Value, limit, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakHeadroomToOutsideRange(double limit, double lowerBound, double upperBound)
+            [Description("True when: the limit minus the value, the room left is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakHeadroomToOutsideRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleHeadroomToOutsideRange(flow.Value, limit, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireHeadroomToOutsideRange(double limit, double lowerBound, double upperBound)
+            [Description("True when: the limit minus the value, the room left is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireHeadroomToOutsideRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleHeadroomToOutsideRange(flow.Value, limit, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureHeadroomToOutsideRange(double limit, double lowerBound, double upperBound)
+            [Description("True when: the limit minus the value, the room left is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureHeadroomToOutsideRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchHeadroomToOutsideRange(double limit, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the limit minus the value, the room left is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchHeadroomToOutsideRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchHeadroomToOutsideRange(limit, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectHeadroomToOutsideRange(double limit, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the limit minus the value, the room left is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectHeadroomToOutsideRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectHeadroomToOutsideRange(limit, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakHeadroomToOutsideRange(double limit, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the limit minus the value, the room left is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakHeadroomToOutsideRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakHeadroomToOutsideRange(limit, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireHeadroomToOutsideRange(double limit, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the limit minus the value, the room left is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireHeadroomToOutsideRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireHeadroomToOutsideRange(limit, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureHeadroomToOutsideRange(double limit, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the limit minus the value, the room left is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureHeadroomToOutsideRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureHeadroomToOutsideRange(limit, lowerBound, upperBound);
             }

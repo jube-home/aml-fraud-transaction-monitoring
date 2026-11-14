@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string TokenAt(this string? @this, string? separator, int index)
+        [Description("The token at a zero-based position after splitting on a separator; negative positions count from the end.")]
+        public static string TokenAt(this string? @this,
+            [Description("The text that separates the tokens.")] string? separator,
+            [Description("The zero-based position of the token.")] int index)
         {
             var tokens = (@this ?? "").Split(string.IsNullOrEmpty(separator) ? " " : separator);
 

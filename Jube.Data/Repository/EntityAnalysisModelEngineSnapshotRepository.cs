@@ -21,6 +21,7 @@ namespace Jube.Data.Repository
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
 
     public class EntityAnalysisModelEngineSnapshotRepository(DbContext dbContext)

@@ -19,12 +19,15 @@ namespace Jube.Dictionary.Extensions
     {
         extension(string? @this)
         {
-            public string? FuzzyBestMatch(IEnumerable<string>? list)
+            [Description("The original text of the best entry, or null.")]
+            public string? FuzzyBestMatch([Description("The List token whose entries are compared.")] IEnumerable<string>? list)
             {
                 return FuzzyListMatcher.Evaluate(@this, list, FuzzyOptions.Default).BestEntry;
             }
 
-            public string? FuzzyBestMatch(IEnumerable<string>? list, string? options)
+            [Description("The original text of the best entry, or null.")]
+            public string? FuzzyBestMatch([Description("The List token whose entries are compared.")] IEnumerable<string>? list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return FuzzyListMatcher.Evaluate(@this, list, FuzzyOptions.Parse(options)).BestEntry;
             }

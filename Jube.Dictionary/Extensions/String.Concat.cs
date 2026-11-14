@@ -8,17 +8,23 @@ namespace Jube.Dictionary.Extensions
     {
         extension(String str0)
         {
-            public String Concat(String str1)
+            [Description("Concatenates two strings.")]
+            public String Concat([Description("The second string to concatenate.")] String str1)
             {
                 return string.Concat(str0, str1);
             }
 
-            public String Concat(String str1, String str2)
+            [Description("Concatenates three strings.")]
+            public String Concat([Description("The second string to concatenate.")] String str1,
+                [Description("The third string to concatenate.")] String str2)
             {
                 return string.Concat(str0, str1, str2);
             }
 
-            public String Concat(String str1, String str2, String str3)
+            [Description("Concatenates four strings.")]
+            public String Concat([Description("The second string to concatenate.")] String str1,
+                [Description("The third string to concatenate.")] String str2,
+                [Description("The fourth string to concatenate.")] String str3)
             {
                 return string.Concat(str0, str1, str2, str3);
             }

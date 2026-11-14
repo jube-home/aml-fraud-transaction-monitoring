@@ -19,12 +19,15 @@ namespace Jube.Dictionary.Extensions
     {
         extension(string? @this)
         {
-            public bool IsSomehowInList(IEnumerable<string>? list)
+            [Description("True when: fuzzily in the List token using the default profile: Jaro-Winkler or token sort, at least 0.92, after folding case, accents and punctuation.")]
+            public bool IsSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string>? list)
             {
                 return FuzzyListMatcher.Any(@this, list, FuzzyOptions.Default);
             }
 
-            public bool IsSomehowInList(IEnumerable<string>? list, string? options)
+            [Description("True when: fuzzily in the List token using an options string.")]
+            public bool IsSomehowInList([Description("The List token whose entries are compared.")] IEnumerable<string>? list,
+                [Description("The fuzzy options string, for example jw 0.9 nocase.")] string? options)
             {
                 return FuzzyListMatcher.Any(@this, list, FuzzyOptions.Parse(options));
             }

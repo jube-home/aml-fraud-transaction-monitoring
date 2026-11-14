@@ -42,4 +42,7 @@
     <data name="NotAuthenticated" xml:space="preserve">
     <value>Vous devez être connecté à un tenant pour effectuer cette action.</value>
   </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>La source de données est introuvable.</value>
+  </data>
 </root>

@@ -38,6 +38,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Infrastructure.Reactivity;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using MessagePack;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
@@ -562,6 +563,7 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
             row.BaseRate.Should().Be(0.02);
             (await service.GetByIdAsync(saved.Id))!.BaseRate.Should().Be(0.02);
 
+            dto = (await service.GetByIdAsync(saved.Id))!;
             dto.BaseRate = null;
             (await service.UpdateAsync(dto)).BaseRate.Should().BeNull();
         }
@@ -681,7 +683,6 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
 
             var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
-            dto.Version = 999;
 
             var updated = await service.UpdateAsync(dto);
             updated.Guid.Should().Be(saved.Guid);

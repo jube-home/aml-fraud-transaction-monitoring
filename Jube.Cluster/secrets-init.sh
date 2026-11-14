@@ -48,11 +48,12 @@ JUBE_APP_PASSWORD=$(genkey 16)
 JUBE_REPORTING_PASSWORD=$(genkey 16)
 JUBE_MIGRATION_PASSWORD=$(genkey 16)
 JUBE_PURGE_PASSWORD=$(genkey 16)
-REDIS_PASSWORD=$(genkey 16)
+RESP_PASSWORD=$(genkey 16)
 API_HMAC_KEY=$(genkey 32)
 JWT_KEY=$(genkey 32)
 PASSWORD_HASHING_KEY=$(genkey 32)
 ENCRYPTION_KEY=$(genkey 32)
+CASE_SIMILARITY_HASHING_KEY=$(genkey 32)
 
 ASK_JOOBY_API_KEY="${AskJoobyApiKey:-}"
 if [[ -z "$ASK_JOOBY_API_KEY" ]]; then
@@ -70,12 +71,13 @@ create_secret JUBE_APP_PASSWORD                          "$JUBE_APP_PASSWORD"
 create_secret JUBE_REPORTING_PASSWORD                    "$JUBE_REPORTING_PASSWORD"
 create_secret JUBE_MIGRATION_PASSWORD                    "$JUBE_MIGRATION_PASSWORD"
 create_secret JUBE_PURGE_PASSWORD                        "$JUBE_PURGE_PASSWORD"
-create_secret REDIS_PASSWORD                             "$REDIS_PASSWORD"
+create_secret RESP_PASSWORD                             "$RESP_PASSWORD"
 create_secret API_HMAC_KEY                               "$API_HMAC_KEY"
 create_secret JWT_KEY                                    "$JWT_KEY"
 create_secret PASSWORD_HASHING_KEY                       "$PASSWORD_HASHING_KEY"
 create_secret PASSWORD_ASYMMETRIC_ENCRYPTION_PRIVATE_KEY "$PRIVATE_KEY_B64"
 create_secret ENCRYPTION_KEY "$ENCRYPTION_KEY"
+create_secret CASE_SIMILARITY_HASHING_KEY "$CASE_SIMILARITY_HASHING_KEY"
 create_secret ASK_JOOBY_API_KEY "$ASK_JOOBY_API_KEY"
 
 cat <<EOF
@@ -94,13 +96,14 @@ JUBE_APP_PASSWORD=$JUBE_APP_PASSWORD
 JUBE_REPORTING_PASSWORD=$JUBE_REPORTING_PASSWORD
 JUBE_MIGRATION_PASSWORD=$JUBE_MIGRATION_PASSWORD
 JUBE_PURGE_PASSWORD=$JUBE_PURGE_PASSWORD
-REDIS_PASSWORD=$REDIS_PASSWORD
+RESP_PASSWORD=$RESP_PASSWORD
 API_HMAC_KEY=$API_HMAC_KEY
 JWT_KEY=$JWT_KEY
 PASSWORD_HASHING_KEY=$PASSWORD_HASHING_KEY
 PASSWORD_ASYMMETRIC_ENCRYPTION_PRIVATE_KEY=$PRIVATE_KEY_B64
 PASSWORD_ASYMMETRIC_ENCRYPTION_PUBLIC_KEY=$PUBLIC_KEY_B64
 ENCRYPTION_KEY=$ENCRYPTION_KEY
+CASE_SIMILARITY_HASHING_KEY=$CASE_SIMILARITY_HASHING_KEY
 
 Store the block above securely now, then clear your scrollback (most terminals: Ctrl+L then the "clear scrollback"
 shortcut, or just close this window/tab) so it doesn't linger in terminal history either. If you redirect this

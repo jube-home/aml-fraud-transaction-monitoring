@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static int LevenshteinDistance(this string? @this, string? other)
+        [Description("Returns the edit distance (insertions, deletions, substitutions) between two strings.")]
+        public static int LevenshteinDistance(this string? @this,
+            [Description("The string to compare with.")] string? other)
         {
             var source = @this ?? "";
             var target = other ?? "";

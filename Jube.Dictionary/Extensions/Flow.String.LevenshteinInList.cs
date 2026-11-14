@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchLevenshteinInList(IEnumerable<string> list, int maxDistance)
+            [Description("True when: within the edit distance of an entry (insertions, deletions, substitutions). Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchLevenshteinInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int maxDistance)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringLevenshteinInList(flow.Value, list, maxDistance));
             }
 
-            public Flow<string?> RejectLevenshteinInList(IEnumerable<string> list, int maxDistance)
+            [Description("True when: within the edit distance of an entry (insertions, deletions, substitutions). Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectLevenshteinInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int maxDistance)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringLevenshteinInList(flow.Value, list, maxDistance));
             }
 
-            public Flow<string?> BreakLevenshteinInList(IEnumerable<string> list, int maxDistance)
+            [Description("True when: within the edit distance of an entry (insertions, deletions, substitutions). Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakLevenshteinInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int maxDistance)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringLevenshteinInList(flow.Value, list, maxDistance));
             }
 
-            public Flow<string?> RequireLevenshteinInList(IEnumerable<string> list, int maxDistance)
+            [Description("True when: within the edit distance of an entry (insertions, deletions, substitutions). Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireLevenshteinInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int maxDistance)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringLevenshteinInList(flow.Value, list, maxDistance));
             }
 
-            public Flow<string?> EnsureLevenshteinInList(IEnumerable<string> list, int maxDistance)
+            [Description("True when: within the edit distance of an entry (insertions, deletions, substitutions). Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureLevenshteinInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int maxDistance)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchLevenshteinInList(IEnumerable<string> list, int maxDistance)
+            [Description("Begins a pipeline from the value. True when: within the edit distance of an entry (insertions, deletions, substitutions). Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchLevenshteinInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int maxDistance)
             {
                 return value.Start().MatchLevenshteinInList(list, maxDistance);
             }
 
-            public Flow<string?> RejectLevenshteinInList(IEnumerable<string> list, int maxDistance)
+            [Description("Begins a pipeline from the value. True when: within the edit distance of an entry (insertions, deletions, substitutions). Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectLevenshteinInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int maxDistance)
             {
                 return value.Start().RejectLevenshteinInList(list, maxDistance);
             }
 
-            public Flow<string?> BreakLevenshteinInList(IEnumerable<string> list, int maxDistance)
+            [Description("Begins a pipeline from the value. True when: within the edit distance of an entry (insertions, deletions, substitutions). Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakLevenshteinInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int maxDistance)
             {
                 return value.Start().BreakLevenshteinInList(list, maxDistance);
             }
 
-            public Flow<string?> RequireLevenshteinInList(IEnumerable<string> list, int maxDistance)
+            [Description("Begins a pipeline from the value. True when: within the edit distance of an entry (insertions, deletions, substitutions). Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireLevenshteinInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int maxDistance)
             {
                 return value.Start().RequireLevenshteinInList(list, maxDistance);
             }
 
-            public Flow<string?> EnsureLevenshteinInList(IEnumerable<string> list, int maxDistance)
+            [Description("Begins a pipeline from the value. True when: within the edit distance of an entry (insertions, deletions, substitutions). Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureLevenshteinInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int maxDistance)
             {
                 return value.Start().EnsureLevenshteinInList(list, maxDistance);
             }

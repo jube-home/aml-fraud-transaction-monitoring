@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The text escaped to match itself literally inside a pattern.")]
         public static string EscapedForRegex(this string? @this)
         {
             return Regex.Escape(@this ?? "");

@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Converts the character to its string representation.")]
         public static String ToString(this Char c)
         {
             return char.ToString(c);

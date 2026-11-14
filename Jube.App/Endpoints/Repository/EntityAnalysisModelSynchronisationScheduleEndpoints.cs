@@ -52,7 +52,7 @@ namespace Jube.App.Endpoints.Repository
                 .WithName("EntityAnalysisModelSynchronisationScheduleCreate");
         }
 
-        private static async Task<IResult> GetCurrentAsync(HttpContext httpContext, ILog log,
+        private static async Task<IResult> GetCurrentAsync(HttpContext httpContext, int? entityAnalysisModelId, ILog log,
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
@@ -71,7 +71,7 @@ namespace Jube.App.Endpoints.Repository
                 var service = await EntityAnalysisModelSynchronisationScheduleService.CreateAsync(dbContext, user,
                     log, stringLocalizerFactory, serviceChangeBus, token);
 
-                return TypedResults.Ok(await service.GetCurrentAsync(token));
+                return TypedResults.Ok(await service.GetCurrentAsync(entityAnalysisModelId, token));
             }
             catch (NotAuthenticatedException)
             {
@@ -126,7 +126,7 @@ namespace Jube.App.Endpoints.Repository
             try
             {
                 var service = await EntityAnalysisModelSynchronisationScheduleService.CreateAsync(dbContext, user,
-                    log, stringLocalizerFactory, serviceChangeBus, token);
+                    log, stringLocalizerFactory, serviceChangeBus, dynamicEnvironment, token);
 
                 return TypedResults.Ok(await service.InsertAsync(model, token));
             }
@@ -156,6 +156,15 @@ namespace Jube.App.Endpoints.Repository
                 }
 
                 return TypedResults.BadRequest(ex.Result);
+            }
+            catch (RateLimitedException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}: 429 user={user}");
+                }
+
+                return TypedResults.Json(new { ex.Message }, statusCode: (int)HttpStatusCode.TooManyRequests);
             }
             catch (OperationCanceledException)
             {

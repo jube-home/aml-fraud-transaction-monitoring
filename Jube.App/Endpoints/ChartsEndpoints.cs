@@ -18,10 +18,12 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Jube.App.Endpoints.AdvancedAnalytics;
+using Jube.App.Endpoints.AskJoobyAnalytics;
 using Jube.Data.Context;
 using Jube.Dto.Query.AdvancedAnalyticsNarrative;
 using Jube.Dto.Query.ExhaustiveNarrative;
+using Jube.Dto.Payload;
+using Jube.Resources;
 using Jube.Service.Charts;
 using Jube.Service.Charts.Models;
 using Jube.Service.Exceptions;
@@ -40,6 +42,9 @@ namespace Jube.App.Endpoints
         private const string ExhaustiveBase = Base + "/Exhaustive";
         private const string StatisticsBase = Base + "/ExhaustiveStatistics";
         private const string AnalyticsBase = Base + "/AnalyticsModelVersion";
+        private const string PayloadStatisticsBase = Base + "/PayloadStatistics";
+        private const string WatcherBase = Base + "/Watcher";
+        private const string BacktestBase = Base + "/Backtest";
         private const string SvgContentType = "image/svg+xml; charset=utf-8";
         private const string ThresholdSetting = "ExhaustiveValidationTestingActivationThreshold";
 
@@ -49,6 +54,7 @@ namespace Jube.App.Endpoints
             MapExhaustivePerformance(endpoints);
             MapExhaustiveStatistics(endpoints);
             MapAnalytics(endpoints);
+            MapPayloadStatistics(endpoints);
         }
 
         private static void MapExhaustive(IEndpointRouteBuilder endpoints)
@@ -117,7 +123,7 @@ namespace Jube.App.Endpoints
 
                     Harden(httpContext);
 
-                    return TypedResults.Json(narrative);
+                    return TypedResults.Ok(narrative);
                 });
         }
 
@@ -165,6 +171,112 @@ namespace Jube.App.Endpoints
                 .WithName("ExhaustiveStatisticsChartGridGet");
         }
 
+        private static void MapPayloadStatistics(IEndpointRouteBuilder endpoints)
+        {
+            var group = endpoints.MapGroup(PayloadStatisticsBase)
+                .RequireAuthorization()
+                .WithTags("PayloadStatisticsChart");
+
+            group.MapPost("Histogram", PayloadStatisticsHistogram)
+                .Produces<string>(StatusCodes.Status200OK, "image/svg+xml")
+                .WithName("PayloadStatisticsChartHistogramPost");
+
+            var backtest = endpoints.MapGroup(BacktestBase)
+                .RequireAuthorization()
+                .WithTags("BacktestChart");
+
+            backtest.MapPost("Funnel", (BacktestChartRequest request, HttpContext httpContext, ILog log,
+                    IStringLocalizerFactory stringLocalizerFactory) =>
+                    BacktestSvg(request, httpContext, log, stringLocalizerFactory, BacktestChartRenderer.Funnel, "Funnel"))
+                .Produces<string>(StatusCodes.Status200OK, "image/svg+xml")
+                .WithName("BacktestChartFunnelPost");
+            backtest.MapPost("Confusion", (BacktestChartRequest request, HttpContext httpContext, ILog log,
+                    IStringLocalizerFactory stringLocalizerFactory) =>
+                    BacktestSvg(request, httpContext, log, stringLocalizerFactory, BacktestChartRenderer.Confusion, "Confusion"))
+                .Produces<string>(StatusCodes.Status200OK, "image/svg+xml")
+                .WithName("BacktestChartConfusionPost");
+            backtest.MapPost("Rates", (BacktestChartRequest request, HttpContext httpContext, ILog log,
+                    IStringLocalizerFactory stringLocalizerFactory) =>
+                    BacktestSvg(request, httpContext, log, stringLocalizerFactory, BacktestChartRenderer.Rates, "Rates"))
+                .Produces<string>(StatusCodes.Status200OK, "image/svg+xml")
+                .WithName("BacktestChartRatesPost");
+            backtest.MapPost("Tags", (BacktestChartRequest request, HttpContext httpContext, ILog log,
+                    IStringLocalizerFactory stringLocalizerFactory) =>
+                    BacktestSvg(request, httpContext, log, stringLocalizerFactory, BacktestChartRenderer.Tags, "Tags"))
+                .Produces<string>(StatusCodes.Status200OK, "image/svg+xml")
+                .WithName("BacktestChartTagsPost");
+
+            endpoints.MapGroup(WatcherBase)
+                .RequireAuthorization()
+                .WithTags("WatcherChart")
+                .MapPost("ActivationSummary", WatcherActivationSummary)
+                .Produces<string>(StatusCodes.Status200OK, "image/svg+xml")
+                .WithName("WatcherChartActivationSummaryPost");
+        }
+
+        private static IResult BacktestSvg(BacktestChartRequest request, HttpContext httpContext, ILog log,
+            IStringLocalizerFactory stringLocalizerFactory,
+            Func<BacktestChartRequest, IStringLocalizer?, string> render, string kind)
+        {
+            try
+            {
+                return Svg(httpContext,
+                    render(request, stringLocalizerFactory.Create(typeof(BacktestChartResources))));
+            }
+            catch (ArgumentException)
+            {
+                return TypedResults.BadRequest();
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {BacktestBase}/{kind}: 500 user={httpContext.User.Identity?.Name}", e);
+
+                return TypedResults.StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        private static IResult WatcherActivationSummary(WatcherSummaryChartRequest request,
+            HttpContext httpContext, ILog log, IStringLocalizerFactory stringLocalizerFactory)
+        {
+            try
+            {
+                return Svg(httpContext,
+                    WatcherSummaryChartRenderer.Render(request,
+                        stringLocalizerFactory.Create(typeof(WatcherSummaryChartResources))));
+            }
+            catch (ArgumentException)
+            {
+                return TypedResults.BadRequest();
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {WatcherBase}/ActivationSummary: 500 user={httpContext.User.Identity?.Name}", e);
+
+                return TypedResults.StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        private static IResult PayloadStatisticsHistogram(StatisticsHistogramChartRequest request,
+            HttpContext httpContext, ILog log, IStringLocalizerFactory stringLocalizerFactory)
+        {
+            try
+            {
+                return Svg(httpContext,
+                    StatisticsHistogramChartRenderer.Render(request,
+                        stringLocalizerFactory.Create(typeof(StatisticsChartResources))));
+            }
+            catch (ArgumentException)
+            {
+                return TypedResults.BadRequest();
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {PayloadStatisticsBase}/Histogram: 500 user={httpContext.User.Identity?.Name}", e);
+
+                return TypedResults.StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         private static void MapAnalytics(IEndpointRouteBuilder endpoints)
         {
             var group = endpoints.MapGroup(AnalyticsBase)
@@ -190,7 +302,7 @@ namespace Jube.App.Endpoints
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
-            return AdvancedAnalyticsEndpointRunner.RunAsync("GET", $"{AnalyticsBase}/Narrative/{versionId}",
+            return AskJoobyAnalyticsEndpointRunner.RunAsync("GET", $"{AnalyticsBase}/Narrative/{versionId}",
                 httpContext, log, dynamicEnvironment, async dbContext =>
                 {
                     var narrative = await (await AdvancedAnalyticsNarrativeService.CreateAsync(dbContext,
@@ -199,7 +311,7 @@ namespace Jube.App.Endpoints
 
                     Harden(httpContext);
 
-                    return TypedResults.Json(narrative);
+                    return TypedResults.Ok(narrative);
                 });
         }
 
@@ -445,7 +557,7 @@ namespace Jube.App.Endpoints
 
                 Harden(httpContext);
 
-                return TypedResults.Json(items);
+                return TypedResults.Ok(items);
             });
         }
 
@@ -494,7 +606,7 @@ namespace Jube.App.Endpoints
             IServiceChangeBus serviceChangeBus, CancellationToken token,
             Func<AdvancedAnalyticsChartService, CancellationToken, Task<string>> render)
         {
-            return AdvancedAnalyticsEndpointRunner.RunAsync("GET", $"{AnalyticsBase}/{route}", httpContext, log,
+            return AskJoobyAnalyticsEndpointRunner.RunAsync("GET", $"{AnalyticsBase}/{route}", httpContext, log,
                 dynamicEnvironment, async dbContext =>
                 {
                     var service = await AdvancedAnalyticsChartService.CreateAsync(dbContext,
@@ -506,7 +618,7 @@ namespace Jube.App.Endpoints
                 });
         }
 
-        private static IResult Svg(HttpContext httpContext, string svg)
+        internal static IResult Svg(HttpContext httpContext, string svg)
         {
             Harden(httpContext);
 

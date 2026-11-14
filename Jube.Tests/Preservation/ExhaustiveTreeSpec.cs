@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Async;
 using LinqToDB.Mapping;
 
 namespace Jube.Test.Preservation

@@ -39,4 +39,106 @@
     <data name="NameRequired" xml:space="preserve">
     <value>Un nom est requis.</value>
   </data>
+    <data name="ResponseElevationRangeNotFound" xml:space="preserve">
+    <value>L'élévation de réponse doit se situer dans une plage d'élévation de réponse active du modèle.</value>
+  </data>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>Un modèle valide est requis.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Le nom ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Ce nom existe déjà.</value>
+  </data>
+    <data name="RuleScriptTypeIdInvalid" xml:space="preserve">
+    <value>Le type de script de règle doit être Builder ou Coder.</value>
+  </data>
+    <data name="BuilderRuleScriptRequired" xml:space="preserve">
+    <value>Un script de règle est requis.</value>
+  </data>
+    <data name="BuilderRuleScriptMaxLength" xml:space="preserve">
+    <value>Le script de règle ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="JsonRequired" xml:space="preserve">
+    <value>Une définition du générateur de règles est requise.</value>
+  </data>
+    <data name="CoderRuleScriptRequired" xml:space="preserve">
+    <value>Un script de règle Coder est requis.</value>
+  </data>
+    <data name="CoderRuleScriptMaxLength" xml:space="preserve">
+    <value>Le script de règle Coder ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="CaseWorkflowGuidRequired" xml:space="preserve">
+    <value>Un flux de travail de dossier est requis lorsque Cases est activé.</value>
+  </data>
+    <data name="CaseWorkflowStatusGuidRequired" xml:space="preserve">
+    <value>Un statut de flux de travail de dossier est requis lorsque Cases est activé.</value>
+  </data>
+    <data name="CaseKeyRequired" xml:space="preserve">
+    <value>Une clé de dossier est requise lorsque Cases est activé.</value>
+  </data>
+    <data name="CaseKeyMaxLength" xml:space="preserve">
+    <value>La clé de dossier ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="BypassSuspendSampleRange" xml:space="preserve">
+    <value>L'échantillon de contournement de suspension doit être compris entre 0 et 1.</value>
+  </data>
+    <data name="BypassSuspendIntervalInvalid" xml:space="preserve">
+    <value>L'intervalle de contournement de suspension doit être Minutes, Hours, Days ou Months (minutes, heures, jours ou mois).</value>
+  </data>
+    <data name="BypassSuspendValueRange" xml:space="preserve">
+    <value>La valeur de contournement de suspension ne peut pas être négative.</value>
+  </data>
+    <data name="ResponseElevationRange" xml:space="preserve">
+    <value>L'élévation de réponse ne peut pas être négative.</value>
+  </data>
+    <data name="ResponseElevationContentMaxLength" xml:space="preserve">
+    <value>Le contenu de l'élévation de réponse ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="ResponseElevationRedirectMaxLength" xml:space="preserve">
+    <value>La redirection de l'élévation de réponse ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="ResponseElevationKeyRequired" xml:space="preserve">
+    <value>Une clé d'élévation de réponse est requise lors de l'envoi à l'Activation Watcher.</value>
+  </data>
+    <data name="ResponseElevationForeColorRequired" xml:space="preserve">
+    <value>Une couleur de premier plan est requise lors de l'envoi à l'Activation Watcher.</value>
+  </data>
+    <data name="ResponseElevationForeColorInvalid" xml:space="preserve">
+    <value>La couleur de premier plan doit être une valeur hexadécimale, par exemple #0000FF.</value>
+  </data>
+    <data name="ResponseElevationBackColorRequired" xml:space="preserve">
+    <value>Une couleur d'arrière-plan est requise lors de l'envoi à l'Activation Watcher.</value>
+  </data>
+    <data name="ResponseElevationBackColorInvalid" xml:space="preserve">
+    <value>La couleur d'arrière-plan doit être une valeur hexadécimale, par exemple #FF0000.</value>
+  </data>
+    <data name="EntityAnalysisModelGuidTtlCounterRequired" xml:space="preserve">
+    <value>Un modèle est requis lorsque Increment TTL Counter est activé.</value>
+  </data>
+    <data name="EntityAnalysisModelTtlCounterGuidRequired" xml:space="preserve">
+    <value>Un compteur TTL est requis lorsque Increment TTL Counter est activé.</value>
+  </data>
+    <data name="EntityAnalysisModelTtlCounterGuidNotFound" xml:space="preserve">
+    <value>Le compteur TTL à incrémenter est introuvable dans le modèle sélectionné.</value>
+  </data>
+    <data name="CaseWorkflowStatusGuidNotFound" xml:space="preserve">
+    <value>Le statut de flux de travail de dossier est introuvable dans un flux de travail de dossier du modèle sélectionné.</value>
+  </data>
+    <data name="ActivationSampleRange" xml:space="preserve">
+    <value>L'échantillon d'activation doit être compris entre 0 et 1.</value>
+  </data>
+    <data name="PriorityRange" xml:space="preserve">
+    <value>La priorité ne peut pas être négative.</value>
+  </data>
+    <data name="JsonInvalid" xml:space="preserve">
+    <value>La définition du générateur de règles doit être un JSON valide d'au plus 1 Mo.</value>
+  </data>
 </root>

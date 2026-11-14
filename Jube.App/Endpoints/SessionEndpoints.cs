@@ -23,6 +23,7 @@ namespace Jube.App.Endpoints
         {
             endpoints.MapGet("/api/Session/Extend", Results.NoContent)
                 .RequireAuthorization()
+                .Produces(StatusCodes.Status204NoContent)
                 .WithName("SessionExtend")
                 .WithTags("Session");
         }

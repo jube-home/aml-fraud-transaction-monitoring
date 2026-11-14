@@ -17,35 +17,55 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchSlopeFromOutsideRange(double previous, double elapsed, double lowerBound, double upperBound)
+            [Description("True when: the change from the previous value per unit of time is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchSlopeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The time between the two values, in any unit; the result is per that unit.")] double elapsed,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleSlopeFromOutsideRange(flow.Value, previous, elapsed, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectSlopeFromOutsideRange(double previous, double elapsed, double lowerBound, double upperBound)
+            [Description("True when: the change from the previous value per unit of time is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectSlopeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The time between the two values, in any unit; the result is per that unit.")] double elapsed,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleSlopeFromOutsideRange(flow.Value, previous, elapsed, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakSlopeFromOutsideRange(double previous, double elapsed, double lowerBound, double upperBound)
+            [Description("True when: the change from the previous value per unit of time is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakSlopeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The time between the two values, in any unit; the result is per that unit.")] double elapsed,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleSlopeFromOutsideRange(flow.Value, previous, elapsed, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireSlopeFromOutsideRange(double previous, double elapsed, double lowerBound, double upperBound)
+            [Description("True when: the change from the previous value per unit of time is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireSlopeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The time between the two values, in any unit; the result is per that unit.")] double elapsed,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleSlopeFromOutsideRange(flow.Value, previous, elapsed, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureSlopeFromOutsideRange(double previous, double elapsed, double lowerBound, double upperBound)
+            [Description("True when: the change from the previous value per unit of time is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureSlopeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The time between the two values, in any unit; the result is per that unit.")] double elapsed,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +75,47 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchSlopeFromOutsideRange(double previous, double elapsed, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value per unit of time is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchSlopeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The time between the two values, in any unit; the result is per that unit.")] double elapsed,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchSlopeFromOutsideRange(previous, elapsed, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectSlopeFromOutsideRange(double previous, double elapsed, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value per unit of time is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectSlopeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The time between the two values, in any unit; the result is per that unit.")] double elapsed,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectSlopeFromOutsideRange(previous, elapsed, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakSlopeFromOutsideRange(double previous, double elapsed, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value per unit of time is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakSlopeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The time between the two values, in any unit; the result is per that unit.")] double elapsed,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakSlopeFromOutsideRange(previous, elapsed, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireSlopeFromOutsideRange(double previous, double elapsed, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value per unit of time is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireSlopeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The time between the two values, in any unit; the result is per that unit.")] double elapsed,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireSlopeFromOutsideRange(previous, elapsed, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureSlopeFromOutsideRange(double previous, double elapsed, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the change from the previous value per unit of time is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureSlopeFromOutsideRange([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The time between the two values, in any unit; the result is per that unit.")] double elapsed,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureSlopeFromOutsideRange(previous, elapsed, lowerBound, upperBound);
             }

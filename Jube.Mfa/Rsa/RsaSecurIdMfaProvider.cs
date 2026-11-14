@@ -26,7 +26,7 @@ namespace Jube.Mfa.Rsa
     using Request;
     using Response;
 
-    public sealed class RsaSecurIdMfaProvider : IMfaProvider
+    public sealed class RsaSecurIdMfaProvider : IMfaProvider, IDisposable
     {
         private const string AuthnAttemptIdMetadataKey = "AuthnAttemptId";
         private const string InResponseToMetadataKey = "InResponseTo";
@@ -51,6 +51,11 @@ namespace Jube.Mfa.Rsa
             {
                 log.Info($"MFA Instantiated ClientId: {clientId}");
             }
+        }
+
+        public void Dispose()
+        {
+            httpClient.Dispose();
         }
 
         public async Task<MfaVerificationResult> VerifyAsync(MfaVerificationRequest request,
@@ -167,7 +172,7 @@ namespace Jube.Mfa.Rsa
             {
                 handler.ServerCertificateCustomValidationCallback = (_, _, _, _) => true;
             }
-            else if (!String.IsNullOrWhiteSpace(outboundHttpCertificateThumbprint))
+            else if (!string.IsNullOrWhiteSpace(outboundHttpCertificateThumbprint))
             {
                 handler.ServerCertificateCustomValidationCallback = (_, cert, _, errors) =>
                 {
@@ -178,7 +183,7 @@ namespace Jube.Mfa.Rsa
 
                     return errors == SslPolicyErrors.RemoteCertificateChainErrors
                            && cert is not null
-                           && String.Equals(cert.GetCertHashString(), outboundHttpCertificateThumbprint,
+                           && string.Equals(cert.GetCertHashString(), outboundHttpCertificateThumbprint,
                                StringComparison.OrdinalIgnoreCase);
                 };
             }

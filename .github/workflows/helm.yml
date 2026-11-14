@@ -1,0 +1,33 @@
+name: Helm chart
+
+on:
+  push:
+    paths:
+      - 'Jube.Helm/**'
+      - '.github/workflows/helm.yml'
+  pull_request:
+    paths:
+      - 'Jube.Helm/**'
+      - '.github/workflows/helm.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  lint-and-render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: azure/setup-helm@v4
+        with:
+          version: v3.15.4
+
+      - name: Lint
+        run: helm lint Jube.Helm
+
+      - name: Render with the defaults
+        run: helm template jube Jube.Helm > /dev/null
+
+      - name: Render with ingress, a created secret and a read replica
+        run: helm template jube Jube.Helm --set ingress.enabled=true --set secrets.create=true --set postgres.replicaHost=replica --set postgres.replicaPort=5433 > /dev/null

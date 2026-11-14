@@ -69,4 +69,10 @@
     <data name="FilterJsonRequired" xml:space="preserve">
     <value>La configuration du filtre est requise.</value>
   </data>
+    <data name="FieldMaxLength" xml:space="preserve">
+    <value>Le champ {0} ne doit pas dépasser {1} caractères.</value>
+  </data>
+    <data name="JsonInvalid" xml:space="preserve">
+    <value>La valeur doit être un JSON valide.</value>
+  </data>
 </root>

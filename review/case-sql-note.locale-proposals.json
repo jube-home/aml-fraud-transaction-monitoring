@@ -1,0 +1,31 @@
+{
+  "caseSql": {
+    "en": {
+      "authorAccess": "This SQL runs with your access as its author, not the access of whoever opens the case. Everyone who can open a case in this workflow sees what it returns, whatever their own table permissions are. It only receives the case's own id and key value, as {'@'}Id and {'@'}CaseKeyValue."
+    },
+    "pl": {
+      "authorAccess": "Ten SQL działa z uprawnieniami jego autora, a nie osoby otwierającej sprawę. Każdy, kto może otworzyć sprawę w tym przepływie pracy, widzi jego wynik, niezależnie od własnych uprawnień do tabel. Otrzymuje tylko identyfikator sprawy i wartość jej klucza, jako {'@'}Id i {'@'}CaseKeyValue."
+    },
+    "ar": {
+      "authorAccess": "يعمل هذا الـ SQL بصلاحيات مؤلفه، لا بصلاحيات من يفتح القضية. يرى كل من يستطيع فتح قضية في مسار العمل هذا ما يعيده، مهما كانت صلاحياته على الجداول. ولا يتلقى سوى معرّف القضية وقيمة مفتاحها، باسم {'@'}Id و{'@'}CaseKeyValue."
+    },
+    "ka": {
+      "authorAccess": "ეს SQL სრულდება ავტორის წვდომით და არა იმ პირის წვდომით, ვინც ქეისს ხსნის. ყველა, ვისაც ამ სამუშაო პროცესში ქეისის გახსნა შეუძლია, ხედავს მის შედეგს, მიუხედავად საკუთარი ცხრილის უფლებებისა. ის იღებს მხოლოდ ქეისის საკუთარ id-სა და გასაღების მნიშვნელობას, როგორც {'@'}Id და {'@'}CaseKeyValue."
+    },
+    "id": {
+      "authorAccess": "SQL ini berjalan dengan akses penulisnya, bukan akses orang yang membuka kasus. Semua orang yang dapat membuka kasus dalam alur kerja ini melihat hasilnya, apa pun izin tabel mereka sendiri. SQL ini hanya menerima id kasus dan nilai kuncinya, sebagai {'@'}Id dan {'@'}CaseKeyValue."
+    },
+    "sv": {
+      "authorAccess": "Denna SQL körs med författarens behörighet, inte med behörigheten hos den som öppnar ärendet. Alla som kan öppna ett ärende i detta arbetsflöde ser vad den returnerar, oavsett sina egna tabellbehörigheter. Den får bara ärendets eget id och nyckelvärde, som {'@'}Id och {'@'}CaseKeyValue."
+    },
+    "ur": {
+      "authorAccess": "یہ SQL اپنے مصنف کی رسائی سے چلتی ہے، کیس کھولنے والے کی رسائی سے نہیں۔ اس ورک فلو میں جو بھی کیس کھول سکتا ہے وہ اس کا نتیجہ دیکھتا ہے، چاہے اس کی اپنی ٹیبل اجازتیں کچھ بھی ہوں۔ اسے صرف کیس کی اپنی id اور کلید کی قدر ملتی ہے، بطور {'@'}Id اور {'@'}CaseKeyValue۔"
+    },
+    "hi": {
+      "authorAccess": "यह SQL अपने लेखक की पहुँच से चलती है, केस खोलने वाले की पहुँच से नहीं। इस वर्कफ़्लो में जो भी केस खोल सकता है, वह इसका परिणाम देखता है, चाहे उसकी अपनी टेबल अनुमतियाँ कुछ भी हों। यह केवल केस की अपनी id और कुंजी मान प्राप्त करती है, {'@'}Id और {'@'}CaseKeyValue के रूप में।"
+    },
+    "fr": {
+      "authorAccess": "Ce SQL s'exécute avec les droits d'accès de son auteur, et non avec ceux de la personne qui ouvre le dossier. Toute personne pouvant ouvrir un dossier dans ce flux de travail voit ce qu'il renvoie, quelles que soient ses propres autorisations sur les tables. Il ne reçoit que l'identifiant du dossier et la valeur de sa clé, sous les noms {'@'}Id et {'@'}CaseKeyValue."
+    }
+  }
+}

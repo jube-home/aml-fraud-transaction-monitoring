@@ -36,6 +36,12 @@ jobs:
           - name: jube.patroni
             dockerfile: Jube.Cluster/patroni/Dockerfile
             context: Jube.Cluster/patroni
+          - name: jube.r
+            dockerfile: Jube.R/Dockerfile
+            context: Jube.R
+          - name: jube.loadtest
+            dockerfile: Jube.LoadTest/Dockerfile
+            context: .
 
     steps:
       - uses: actions/checkout@v5

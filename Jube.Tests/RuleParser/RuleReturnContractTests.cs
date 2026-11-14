@@ -93,6 +93,38 @@ namespace Jube.Test.RuleParser
         }
 
         [Fact]
+        public void TheContractRefusalsCarryACodeAFixCanBeOfferedFrom()
+        {
+            var discarded = RuleParse.Execute("Payload.Amount.Start().MatchGreater(100)", RuleParse.GatewayRule,
+                RuleParseTests.Environment(), TestLog.NoOp, RuleParse.DefaultReferences());
+
+            var silent = RuleParse.Execute("If Payload.Amount > 1 Then\nEnd If", RuleParse.GatewayRule,
+                RuleParseTests.Environment(), TestLog.NoOp, RuleParse.DefaultReferences());
+
+            discarded.ErrorSpans.Should().Contain(e => e.Code == RuleReturnContract.ResultDiscardedCode);
+            silent.ErrorSpans.Should().Contain(e => e.Code == RuleReturnContract.NeverAnswersCode);
+        }
+
+        [Fact]
+        public void AnAssignmentToTheCursorResultSatisfiesTheContractForAnAbstractionRule()
+        {
+            var result = RuleParse.Execute("Cursor.Result = Cursor.Result + Payload.Amount",
+                RuleParse.AbstractionRule, RuleParseTests.Environment(), TestLog.NoOp, RuleParse.DefaultReferences());
+
+            result.Message.Should().Be("Compiled");
+        }
+
+        [Fact]
+        public void AnAssignmentToAnotherCursorMemberDoesNotSatisfyTheContract()
+        {
+            var result = RuleParse.Execute("Cursor.Position.Start().MatchGreater(1)", RuleParse.AbstractionRule,
+                RuleParseTests.Environment(), TestLog.NoOp, RuleParse.DefaultReferences());
+
+            result.Compiled.Should().BeFalse();
+            result.ErrorSpans.Should().Contain(e => e.Message.Contains("result is discarded"));
+        }
+
+        [Fact]
         public void AReturnInsideAStringLiteralDoesNotSatisfyTheContract()
         {
             var result = RuleParse.Execute("Payload.Country.EqualsIgnoreCase(\"Return True\")",

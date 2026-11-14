@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Whether the text is an IPv6 address, including IPv4-mapped forms.")]
         public static bool IsIPv6Address(this string? @this)
         {
             return NetworkAddressSupport.TryParseAddress(@this, out _) && (@this ?? "").Contains(':');

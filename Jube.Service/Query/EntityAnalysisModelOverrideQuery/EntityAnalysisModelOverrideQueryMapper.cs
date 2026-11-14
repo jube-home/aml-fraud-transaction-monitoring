@@ -19,8 +19,9 @@ namespace Jube.Service.Query.EntityAnalysisModelOverrideQuery
     internal static class EntityAnalysisModelOverrideQueryMapper
     {
         private static EntityAnalysisModelOverrideQueryDto ToDto(
-            global::Jube.Data.Query.Models.EntityAnalysisModelOverrideQueryRow source) =>
-            new()
+            global::Jube.Data.Query.Models.EntityAnalysisModelOverrideQueryRow source)
+        {
+            return new EntityAnalysisModelOverrideQueryDto
             {
                 Name = source.Name,
                 EntityAnalysisModelGuid = source.EntityAnalysisModelGuid,
@@ -28,12 +29,16 @@ namespace Jube.Service.Query.EntityAnalysisModelOverrideQuery
                 OverrideKind = source.OverrideKind == (byte)EntityAnalysisModelOverrideKind.Force
                     ? EntityAnalysisModelOverrideKind.Force
                     : EntityAnalysisModelOverrideKind.Suppress,
-                DeleteExpiryDate = source.DeleteExpiryDate
+                DeleteExpiryDate = source.DeleteExpiryDate,
+                OverrideId = source.OverrideId,
+                PendingRemoval = source.PendingRemoval
             };
+        }
 
         private static EntityAnalysisModelOverrideValueQueryDto ToDto(
-            global::Jube.Data.Query.Models.EntityAnalysisModelOverrideValueQueryRow source) =>
-            new()
+            global::Jube.Data.Query.Models.EntityAnalysisModelOverrideValueQueryRow source)
+        {
+            return new EntityAnalysisModelOverrideValueQueryDto
             {
                 OverrideKeyValue = source.OverrideKeyValue,
                 Name = source.Name,
@@ -45,10 +50,12 @@ namespace Jube.Service.Query.EntityAnalysisModelOverrideQuery
                 CreatedDate = source.CreatedDate,
                 DeleteExpiryDate = source.DeleteExpiryDate
             };
+        }
 
         private static EntityAnalysisModelOverrideKeyQueryDto ToDto(
-            global::Jube.Data.Query.Models.EntityAnalysisModelOverrideKeyQueryRow source) =>
-            new()
+            global::Jube.Data.Query.Models.EntityAnalysisModelOverrideKeyQueryRow source)
+        {
+            return new EntityAnalysisModelOverrideKeyQueryDto
             {
                 OverrideKey = source.OverrideKey,
                 EnabledOnModels = source.EnabledOnModels,
@@ -60,17 +67,24 @@ namespace Jube.Service.Query.EntityAnalysisModelOverrideQuery
                 NextExpiryDate = source.NextExpiryDate,
                 LastCreatedDate = source.LastCreatedDate
             };
+        }
 
         public static List<EntityAnalysisModelOverrideKeyQueryDto> ToDto(
-            IEnumerable<global::Jube.Data.Query.Models.EntityAnalysisModelOverrideKeyQueryRow> source) =>
-            source.Select(ToDto).ToList();
+            IEnumerable<global::Jube.Data.Query.Models.EntityAnalysisModelOverrideKeyQueryRow> source)
+        {
+            return source.Select(ToDto).ToList();
+        }
 
         public static List<EntityAnalysisModelOverrideValueQueryDto> ToDto(
-            IEnumerable<global::Jube.Data.Query.Models.EntityAnalysisModelOverrideValueQueryRow> source) =>
-            source.Select(ToDto).ToList();
+            IEnumerable<global::Jube.Data.Query.Models.EntityAnalysisModelOverrideValueQueryRow> source)
+        {
+            return source.Select(ToDto).ToList();
+        }
 
         public static List<EntityAnalysisModelOverrideQueryDto> ToDto(
-            IEnumerable<global::Jube.Data.Query.Models.EntityAnalysisModelOverrideQueryRow> source) =>
-            source.Select(ToDto).ToList();
+            IEnumerable<global::Jube.Data.Query.Models.EntityAnalysisModelOverrideQueryRow> source)
+        {
+            return source.Select(ToDto).ToList();
+        }
     }
 }

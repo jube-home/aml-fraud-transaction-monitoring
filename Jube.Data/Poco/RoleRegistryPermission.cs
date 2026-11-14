@@ -42,13 +42,11 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(13)] public int? InheritedId { get; set; }
         [Column] [Nullable] [Key(14)] public int? Version { get; set; }
 
-        [Association(ThisKey = "PermissionSpecificationId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "PermissionSpecificationId", OtherKey = "Id", CanBeNull = true)]
         [Key(15)]
         public PermissionSpecification PermissionSpecification { get; set; }
 
-        [Association(ThisKey = "RoleRegistryId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "RoleRegistryId", OtherKey = "Id", CanBeNull = true)]
         [Key(16)]
         public RoleRegistry RoleRegistry { get; set; }
 

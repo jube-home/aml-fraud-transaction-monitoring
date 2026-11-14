@@ -12,8 +12,10 @@
  */
 
 using System.ComponentModel;
+using Jube.Dto.EntityAnalysisModelDictionaryKvp;
 using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,21 +25,26 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.EntityAnalysisModelDictionary
 {
     [FormEndpoint("EntityAnalysisModelDictionary")]
+    [FormApproval]
+    [FormValues(typeof(EntityAnalysisModelDictionaryKvpDto), nameof(EntityAnalysisModelDictionaryKvpDto.KvpKey), nameof(EntityAnalysisModelDictionaryKvpDto.KvpValue))]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelGuid), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
     [FormGroup("Lookup", Order = 20)]
     [FormGroup("Output", Order = 30)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
+    [MessagePackObject]
     public class EntityAnalysisModelDictionaryDto : IUpdated, IActivatable, ILockable, ITreeChild
     {
         [Description("Guid of the Model this Dictionary is registered against. Set from the parent Model " +
                      "context; not user-editable.")]
+        [Key(0)]
         public Guid EntityAnalysisModelGuid { get; set; }
 
         [Description("Display name of this Dictionary. Unique within the Model (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. High risk countries")]
         [ListColumn(Order = 10, Title = "Name")]
+        [Key(1)]
         public string? Name { get; set; }
 
         [Description("Name of the data element on the parent Model supplying the key to pair against this " +
@@ -46,63 +53,76 @@ namespace Jube.Dto.EntityAnalysisModelDictionary
         [Lookup("/api/GetEntityAnalysisPotentialMultiPartStringNames", TextField = "value", ValueField = "value",
             ParentField = nameof(EntityAnalysisModelGuid))]
         [ListColumn(Order = 30, Title = "Data Name")]
+        [Key(2)]
         public string? DataName { get; set; }
 
         [Description("When true, the value looked up from this Dictionary is included in the response payload " +
                      "for a matching transaction.")]
         [FormField(Group = "Output", Order = 10, Widget = "switch")]
         [NewDefault(false)]
+        [Key(3)]
         public bool ResponsePayload { get; set; }
 
         [Description("Globally-addressable identifier for this row, stable across environments and the form "
                      + "in which every other area refers to it. Server-assigned. Read-only.")]
+        [Key(4)]
         public Guid Guid { get; set; }
 
         [Description("When true, this Dictionary is available for lookup during model invocation.")]
         [FormField(Group = "Identity", Order = 20, Widget = "switch")]
         [NewDefault(false)]
         [ListColumn(Order = 20, Title = "Active")]
+        [Key(5)]
         public bool Active { get; set; }
 
         [Description("When true, this Dictionary registration is locked and cannot be edited or deleted.")]
         [FormField(Group = "Identity", Order = 30, Widget = "switch")]
         [NewDefault(false)]
+        [Key(6)]
         public bool Locked { get; set; }
 
         [Description("Server-assigned row identifier. Read-only.")]
         [FormField(Group = "Audit", Order = 10, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(7)]
         public int Id { get; set; }
 
         [Description("Timestamp (UTC) this Dictionary was created. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 20, ReadOnly = true, Widget = "date")]
+        [Key(8)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("User who last updated this Dictionary. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 30, ReadOnly = true)]
+        [Key(9)]
         public string? UpdatedUser { get; set; }
 
         [Description("Timestamp (UTC) this Dictionary was last updated. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 40, ReadOnly = true, Widget = "date")]
+        [Key(10)]
         public DateTimeOffset? UpdatedDate { get; set; }
 
         [Description("User who created this Dictionary. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 50, ReadOnly = true)]
+        [Key(11)]
         public string? CreatedUser { get; set; }
 
         [Description("Server-assigned optimistic-concurrency version number, incremented on every update. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 60, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(12)]
         public int Version { get; set; }
 
         [Description("User who deleted this Dictionary, if soft-deleted. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 70, ReadOnly = true)]
+        [Key(13)]
         public string? DeletedUser { get; set; }
 
         [Description("Timestamp (UTC) this Dictionary was soft-deleted, if applicable. Server-assigned. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 80, ReadOnly = true, Widget = "date")]
+        [Key(14)]
         public DateTimeOffset? DeletedDate { get; set; }
     }
 }

@@ -26,13 +26,13 @@ namespace Jube.Test.Cache
     [Collection("JubeCache")]
     public sealed class CacheServiceTests
     {
-        private static readonly EndPoint endPoint = new DnsEndPoint("redis-host", 6379);
+        private static readonly EndPoint endPoint = new DnsEndPoint("resp-host", 6379);
 
         [Fact]
         public void HandleConnectionFailedIncrementsCounterCapturesEventAndLogsError()
         {
-            RedisConnectionEventCapture.DrainAll();
-            var diagnostics = new RedisConnectionDiagnosticsCounters();
+            RespConnectionEventCapture.DrainAll();
+            var diagnostics = new RespConnectionDiagnosticsCounters();
             var log = new TestLog();
             var exception = new InvalidOperationException("boom");
 
@@ -43,9 +43,9 @@ namespace Jube.Test.Cache
 
             diagnostics.TakeSnapshot().ConnectionFailedCount.Should().Be(1);
 
-            var captured = RedisConnectionEventCapture.DrainAll();
+            var captured = RespConnectionEventCapture.DrainAll();
             captured.Should().ContainSingle();
-            captured[0].EventType.Should().Be(RedisConnectionEventType.ConnectionFailed);
+            captured[0].EventType.Should().Be(RespConnectionEventType.ConnectionFailed);
             captured[0].EndPoint.Should().Be(endPoint.ToString());
             captured[0].ConnectionType.Should().Be(ConnectionType.Interactive);
             captured[0].FailureType.Should().Be(ConnectionFailureType.SocketClosed);
@@ -57,8 +57,8 @@ namespace Jube.Test.Cache
         [Fact]
         public void HandleConnectionRestoredIncrementsCounterCapturesEventAndLogsWarning()
         {
-            RedisConnectionEventCapture.DrainAll();
-            var diagnostics = new RedisConnectionDiagnosticsCounters();
+            RespConnectionEventCapture.DrainAll();
+            var diagnostics = new RespConnectionDiagnosticsCounters();
             var log = new TestLog();
 
             var args = new ConnectionFailedEventArgs(new object(), endPoint, ConnectionType.Subscription,
@@ -68,9 +68,9 @@ namespace Jube.Test.Cache
 
             diagnostics.TakeSnapshot().ConnectionRestoredCount.Should().Be(1);
 
-            var captured = RedisConnectionEventCapture.DrainAll();
+            var captured = RespConnectionEventCapture.DrainAll();
             captured.Should().ContainSingle();
-            captured[0].EventType.Should().Be(RedisConnectionEventType.ConnectionRestored);
+            captured[0].EventType.Should().Be(RespConnectionEventType.ConnectionRestored);
             captured[0].ConnectionType.Should().Be(ConnectionType.Subscription);
 
             log.Entries.Should().ContainSingle(e => e.Level == "WARN" && e.Message.Contains("connection restored"));
@@ -79,8 +79,8 @@ namespace Jube.Test.Cache
         [Fact]
         public void HandleErrorMessageIncrementsCounterCapturesEventAndLogsError()
         {
-            RedisConnectionEventCapture.DrainAll();
-            var diagnostics = new RedisConnectionDiagnosticsCounters();
+            RespConnectionEventCapture.DrainAll();
+            var diagnostics = new RespConnectionDiagnosticsCounters();
             var log = new TestLog();
             var args = new RedisErrorEventArgs(new object(), endPoint, "ERR something went wrong");
 
@@ -88,9 +88,9 @@ namespace Jube.Test.Cache
 
             diagnostics.TakeSnapshot().ErrorMessageCount.Should().Be(1);
 
-            var captured = RedisConnectionEventCapture.DrainAll();
+            var captured = RespConnectionEventCapture.DrainAll();
             captured.Should().ContainSingle();
-            captured[0].EventType.Should().Be(RedisConnectionEventType.ErrorMessage);
+            captured[0].EventType.Should().Be(RespConnectionEventType.ErrorMessage);
             captured[0].Message.Should().Be("ERR something went wrong");
 
             log.Entries.Should().ContainSingle(e => e.Level == "ERROR" && e.Message.Contains("returned error message"));
@@ -99,8 +99,8 @@ namespace Jube.Test.Cache
         [Fact]
         public void HandleInternalErrorIncrementsCounterCapturesEventAndLogsError()
         {
-            RedisConnectionEventCapture.DrainAll();
-            var diagnostics = new RedisConnectionDiagnosticsCounters();
+            RespConnectionEventCapture.DrainAll();
+            var diagnostics = new RespConnectionDiagnosticsCounters();
             var log = new TestLog();
             var exception = new InvalidOperationException("internal boom");
 
@@ -111,9 +111,9 @@ namespace Jube.Test.Cache
 
             diagnostics.TakeSnapshot().InternalErrorCount.Should().Be(1);
 
-            var captured = RedisConnectionEventCapture.DrainAll();
+            var captured = RespConnectionEventCapture.DrainAll();
             captured.Should().ContainSingle();
-            captured[0].EventType.Should().Be(RedisConnectionEventType.InternalError);
+            captured[0].EventType.Should().Be(RespConnectionEventType.InternalError);
             captured[0].Origin.Should().Be("ReadFromPipe");
             captured[0].Exception.Should().Be(exception.ToString());
 
@@ -123,8 +123,8 @@ namespace Jube.Test.Cache
         [Fact]
         public void HandleConfigurationChangedIncrementsCounterCapturesEventAndLogsWarning()
         {
-            RedisConnectionEventCapture.DrainAll();
-            var diagnostics = new RedisConnectionDiagnosticsCounters();
+            RespConnectionEventCapture.DrainAll();
+            var diagnostics = new RespConnectionDiagnosticsCounters();
             var log = new TestLog();
             var args = new EndPointEventArgs(new object(), endPoint);
 
@@ -132,9 +132,9 @@ namespace Jube.Test.Cache
 
             diagnostics.TakeSnapshot().ConfigurationChangedCount.Should().Be(1);
 
-            var captured = RedisConnectionEventCapture.DrainAll();
+            var captured = RespConnectionEventCapture.DrainAll();
             captured.Should().ContainSingle();
-            captured[0].EventType.Should().Be(RedisConnectionEventType.ConfigurationChanged);
+            captured[0].EventType.Should().Be(RespConnectionEventType.ConfigurationChanged);
 
             log.Entries.Should().ContainSingle(e => e.Level == "WARN" && e.Message.Contains("configuration changed"));
         }
@@ -142,8 +142,8 @@ namespace Jube.Test.Cache
         [Fact]
         public void HandleConfigurationChangedBroadcastIncrementsCounterCapturesEventAndLogsWarning()
         {
-            RedisConnectionEventCapture.DrainAll();
-            var diagnostics = new RedisConnectionDiagnosticsCounters();
+            RespConnectionEventCapture.DrainAll();
+            var diagnostics = new RespConnectionDiagnosticsCounters();
             var log = new TestLog();
             var args = new EndPointEventArgs(new object(), endPoint);
 
@@ -151,9 +151,9 @@ namespace Jube.Test.Cache
 
             diagnostics.TakeSnapshot().ConfigurationChangedBroadcastCount.Should().Be(1);
 
-            var captured = RedisConnectionEventCapture.DrainAll();
+            var captured = RespConnectionEventCapture.DrainAll();
             captured.Should().ContainSingle();
-            captured[0].EventType.Should().Be(RedisConnectionEventType.ConfigurationChangedBroadcast);
+            captured[0].EventType.Should().Be(RespConnectionEventType.ConfigurationChangedBroadcast);
 
             log.Entries.Should()
                 .ContainSingle(e => e.Level == "WARN" && e.Message.Contains("configuration change broadcast"));

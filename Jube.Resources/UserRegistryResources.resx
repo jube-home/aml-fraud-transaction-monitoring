@@ -66,4 +66,7 @@
     <data name="RoleRegistryGuidNotFound" xml:space="preserve">
     <value>The Role could not be found in your tenant.</value>
   </data>
+    <data name="InsufficientPrivilege" xml:space="preserve">
+    <value>You do not have sufficient privilege to perform this action.</value>
+  </data>
 </root>

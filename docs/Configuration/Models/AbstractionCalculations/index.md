@@ -8,6 +8,8 @@ grand_parent: Configuration
 
 # Abstraction Calculation
 
+<!-- TODO(docs): this whole page pre-dates the Vue UI; owner to read end to end and re-check every Razor-era sentence (menu paths, tab names, button labels) against the Models story page -->
+
 An Abstraction Calculation applies a VB .Net code fragment to the values available in an invocation, and produces one
 named number. Its most common use is a ratio, for example the ratio of declined spend to total spend. The result is
 stored under the calculation's name, so any later stage can read it as `AbstractionCalculation.Name`.
@@ -42,8 +44,10 @@ The fluent calculation methods apply, for example `Matched = TTLCounter.Declined
 for the full list and a table of recipes.
 
 The page is available by navigating through the menu as Models > Abstraction >> Abstraction Calculation:
+<!-- TODO(docs): the menu path or synchronisation step above is Razor-era wording; confirm against the Vue Models story page, and whether synchronisation is still a manual step -->
 
-![Image](TopOfTreeForAbstractionCalculation.png)
+<!-- TODO(screenshot): file=model-abstraction-top-of-tree-for-abstraction-calculation.png route=/models state="Abstraction Calculations card with the model tree" -->
+![Image](model-abstraction-top-of-tree-for-abstraction-calculation.png)
 
 Clicking the required model in the tree towards the left hand side exposes the page for creating a new Abstraction
 Calculation. The parameters available to the page are described in the following table:
@@ -54,7 +58,7 @@ Calculation. The parameters available to the page are described in the following
 | Active           | Whether the calculation runs on invocation.                                                                                                                                            | Checked                                                   |
 | Locked           | Prevents the calculation being edited or deleted.                                                                                                                                      | Unchecked                                                 |
 | Function         | A VB .Net function fragment that assigns the result to `Matched`, and can read any of the values in [Values Available to a Calculation](#values-available-to-a-calculation). Required. | `Matched = TTLCounter.Declined.RatioOf(TTLCounter.Total)` |
-| Report Table     | Archives the value for SQL reporting and threshold analysis.                                                                                                                           | Checked                                                   |
+| Archive Key      | Archives the value for SQL reporting and threshold analysis.                                                                                                                           | Checked                                                   |
 | Response Payload | Returns the value in the response payload under `AbstractionCalculations`.                                                                                                             | Checked                                                   |
 
 For example, to provide the square of an Abstraction Rule named Sum, add a calculation with the function below:
@@ -65,10 +69,12 @@ Matched = Abstraction.Sum.Times(Abstraction.Sum)
 
 Upon the function fragment showing Parsed and Compiled, click Add to create the first version of the Abstraction
 Calculation. Synchronise the model via Entity >> Synchronisation and repeat the HTTP POST to endpoint
+<!-- TODO(docs): the menu path or synchronisation step above is Razor-era wording; confirm against the Vue Models story page, and whether synchronisation is still a manual step -->
 [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc)
 for a response as follows:
 
-![Image](SameResponsePayloadGivenCode.png)
+<!-- TODO(screenshot): file=model-abstraction-same-response-payload-given-code.png route=/models state="Invocation response payload with the calculation value" -->
+![Image](model-abstraction-same-response-payload-given-code.png)
 
 The result of the Abstraction Rule has been squared and presented in an AbstractionCalculations element. Far more
 complex functions can be embedded, indeed anything supported by the fluent methods, and the Abstraction Calculation can
@@ -85,7 +91,7 @@ Abstraction Calculation is the preferred construction, for these reasons:
 | Reuse                                    | The ratio is defined once and named. Ten Activation Rules read `AbstractionCalculation.DeclineRate`, and changing how the ratio is built changes it in one place.                                                                       |
 | One meaning                              | Every rule that reads the ratio agrees what it is, so thresholds on it can be compared and tuned.                                                                                                                                       |
 | It reaches models                        | Abstraction Calculations run before Exhaustive, HTTP and other model recall, so the ratio can be a model input as well as a rule input (see [Where a Calculation Runs in the Invocation](#where-a-calculation-runs-in-the-invocation)). |
-| It is reportable                         | With Report Table enabled, the value is archived for SQL reporting and threshold analysis.                                                                                                                                              |
+| It is reportable                         | With Archive Key enabled, the value is archived for SQL reporting and threshold analysis.                                                                                                                                               |
 | Organised concerns                       | The calculation defines the number, and the Activation Rule makes the decision, so each can be read, tested and changed on its own.                                                                                                     |
 | It is auditable                          | The value is recorded in the payload and response under its name, so a case shows what the ratio was when the rule fired.                                                                                                               |
 
@@ -229,3 +235,12 @@ Symptoms of a misbuilt Abstraction Calculation, with the likely cause.
 | A low-ratio rule fires on new customers      | An undefined ratio is stored as zero. Add a `Require` guard on a count, or drop `ZeroIfUndefined()`.                                                                        |
 | A calculation cannot read a model score      | Models are recalled after calculations. Threshold the score in the Activation Rule instead.                                                                                 |
 | A migrated calculation is inactive           | Its Left or Right name could not be written as a token, and its function is a comment describing what it was. Rewrite it as a function. See the query above.                |
+
+## Validation
+
+* Name is required, 256 characters or fewer, and unique within the Model (case-insensitive).
+* The function script must be 65,536 characters or fewer and must compile.
+* The Model must exist in the caller's tenant and must not be deleted. Editing needs permission 14.
+
+<!-- TODO(docs): confirm permission 14 against the Roles and Permissions pages -->
+<!-- TODO(screenshot): file=model-abstraction-calculation-compile-error.png route=/models state="Abstraction Calculation Coder tab showing a compile error refused on save" -->

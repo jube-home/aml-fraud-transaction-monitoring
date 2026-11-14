@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Globalization;
 using FluentAssertions;
 using Jube.Dictionary.Extensions;
@@ -194,6 +195,17 @@ namespace Jube.Test.Dictionary.Extensions
         public void RepeatBuildsAStringOfTheCharacterRepeatedNTimes()
         {
             'x'.Repeat(3).Should().Be("xxx");
+        }
+
+        [Fact]
+        public void RepeatRefusesAResultOverTheCharacterLimitInsteadOfAllocatingIt()
+        {
+            Action over = () => 'x'.Repeat(100001);
+            Action huge = () => 'x'.Repeat(int.MaxValue);
+
+            over.Should().Throw<ArgumentOutOfRangeException>();
+            huge.Should().Throw<ArgumentOutOfRangeException>();
+            'x'.Repeat(100000).Length.Should().Be(100000);
         }
 
         [Fact]

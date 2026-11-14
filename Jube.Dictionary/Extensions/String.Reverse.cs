@@ -5,6 +5,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Reverses the string.")]
         public static string Reverse(this string @this)
         {
             if (@this.Length <= 1)

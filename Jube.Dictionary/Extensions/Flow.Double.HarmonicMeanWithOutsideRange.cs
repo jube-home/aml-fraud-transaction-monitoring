@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchHarmonicMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the harmonic mean of the value and another, for averaging rates is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchHarmonicMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleHarmonicMeanWithOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectHarmonicMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the harmonic mean of the value and another, for averaging rates is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectHarmonicMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleHarmonicMeanWithOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakHarmonicMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the harmonic mean of the value and another, for averaging rates is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakHarmonicMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleHarmonicMeanWithOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireHarmonicMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the harmonic mean of the value and another, for averaging rates is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireHarmonicMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleHarmonicMeanWithOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureHarmonicMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the harmonic mean of the value and another, for averaging rates is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureHarmonicMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchHarmonicMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the harmonic mean of the value and another, for averaging rates is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchHarmonicMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchHarmonicMeanWithOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectHarmonicMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the harmonic mean of the value and another, for averaging rates is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectHarmonicMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectHarmonicMeanWithOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakHarmonicMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the harmonic mean of the value and another, for averaging rates is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakHarmonicMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakHarmonicMeanWithOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireHarmonicMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the harmonic mean of the value and another, for averaging rates is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireHarmonicMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireHarmonicMeanWithOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureHarmonicMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the harmonic mean of the value and another, for averaging rates is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureHarmonicMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureHarmonicMeanWithOutsideRange(other, lowerBound, upperBound);
             }

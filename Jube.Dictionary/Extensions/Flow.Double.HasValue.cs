@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
+            [Description("True when: the value is a real number (not NaN). Use it after a calculation that can be undefined, such as RatioOf. Decides matched if so; otherwise continues.")]
             public Flow<double> MatchHasValue()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleHasValue(flow.Value));
             }
 
+            [Description("True when: the value is a real number (not NaN). Use it after a calculation that can be undefined, such as RatioOf. Decides rejected if so; otherwise continues.")]
             public Flow<double> RejectHasValue()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleHasValue(flow.Value));
             }
 
+            [Description("True when: the value is a real number (not NaN). Use it after a calculation that can be undefined, such as RatioOf. Decides broken if so; otherwise continues.")]
             public Flow<double> BreakHasValue()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleHasValue(flow.Value));
             }
 
+            [Description("True when: the value is a real number (not NaN). Use it after a calculation that can be undefined, such as RatioOf. Continues if so; otherwise decides rejected.")]
             public Flow<double> RequireHasValue()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleHasValue(flow.Value));
             }
 
+            [Description("True when: the value is a real number (not NaN). Use it after a calculation that can be undefined, such as RatioOf. Continues if so; otherwise decides broken.")]
             public Flow<double> EnsureHasValue()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
+            [Description("Begins a pipeline from the value. True when: the value is a real number (not NaN). Use it after a calculation that can be undefined, such as RatioOf. Decides matched if so; otherwise continues.")]
             public Flow<double> MatchHasValue()
             {
                 return value.Start().MatchHasValue();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is a real number (not NaN). Use it after a calculation that can be undefined, such as RatioOf. Decides rejected if so; otherwise continues.")]
             public Flow<double> RejectHasValue()
             {
                 return value.Start().RejectHasValue();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is a real number (not NaN). Use it after a calculation that can be undefined, such as RatioOf. Decides broken if so; otherwise continues.")]
             public Flow<double> BreakHasValue()
             {
                 return value.Start().BreakHasValue();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is a real number (not NaN). Use it after a calculation that can be undefined, such as RatioOf. Continues if so; otherwise decides rejected.")]
             public Flow<double> RequireHasValue()
             {
                 return value.Start().RequireHasValue();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is a real number (not NaN). Use it after a calculation that can be undefined, such as RatioOf. Continues if so; otherwise decides broken.")]
             public Flow<double> EnsureHasValue()
             {
                 return value.Start().EnsureHasValue();

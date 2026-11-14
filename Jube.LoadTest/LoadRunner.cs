@@ -37,9 +37,9 @@ namespace Jube.LoadTest
                 ? new PostgresStatsSampler(pgConnectionString)
                 : null;
 
-        private readonly RedisStatsSampler? redisStatsSampler =
-            settings.RedisConnectionString is { Length: > 0 } redisConnectionString
-                ? new RedisStatsSampler(redisConnectionString)
+        private readonly RespStatsSampler? respStatsSampler =
+            settings.RespConnectionString is { Length: > 0 } respConnectionString
+                ? new RespStatsSampler(respConnectionString)
                 : null;
 
         private readonly Channel<ResponseSample> responseSampleChannel = Channel.CreateUnbounded<ResponseSample>();
@@ -56,7 +56,7 @@ namespace Jube.LoadTest
         private (double Connections, double TxnPerSec, double CacheHitPct, double TempMiBPerSec,
             double ReplicationLagSeconds, double ReplicaCount)? latestPostgresStats;
 
-        private (double ConnectedClients, double UsedMemMiB, double OpsPerSec, double HitRatePct)? latestRedisStats;
+        private (double ConnectedClients, double UsedMemMiB, double OpsPerSec, double HitRatePct)? latestRespStats;
         private int requests;
         private int throttledTicks;
         private List<double> windowResponseTimesMs = [];
@@ -194,7 +194,7 @@ namespace Jube.LoadTest
                 await postgresStatsSampler.DisposeAsync();
             }
 
-            redisStatsSampler?.Dispose();
+            respStatsSampler?.Dispose();
 
             WriteFinalSummary(txnId);
         }
@@ -322,7 +322,7 @@ namespace Jube.LoadTest
                 BuildContainerColumnsHeader() + ",Host_CpuPct,Host_MemUsedMiB," +
                 "Postgres_Connections,Postgres_TxnPerSec,Postgres_CacheHitPct,Postgres_TempMiBPerSec," +
                 "Postgres_ReplicationLagSeconds,Postgres_ReplicaCount," +
-                "Redis_ConnectedClients,Redis_UsedMemMiB,Redis_OpsPerSec,Redis_HitRatePct");
+                "Resp_ConnectedClients,Resp_UsedMemMiB,Resp_OpsPerSec,Resp_HitRatePct");
 
             while (!token.IsCancellationRequested)
             {
@@ -348,14 +348,14 @@ namespace Jube.LoadTest
                 (double Connections, double TxnPerSec, double CacheHitPct, double TempMiBPerSec,
                     double ReplicationLagSeconds, double ReplicaCount)? postgresStats;
 
-                (double ConnectedClients, double UsedMemMiB, double OpsPerSec, double HitRatePct)? redisStats;
+                (double ConnectedClients, double UsedMemMiB, double OpsPerSec, double HitRatePct)? respStats;
 
                 lock (statsLock)
                 {
                     containerStats = latestContainerStats;
                     hostStats = latestHostStats;
                     postgresStats = latestPostgresStats;
-                    redisStats = latestRedisStats;
+                    respStats = latestRespStats;
                 }
 
                 await outputFileTpsSnapshot.WriteLineAsync(
@@ -365,7 +365,7 @@ namespace Jube.LoadTest
                     BuildContainerColumnsRow(containerStats) + "," +
                     BuildHostColumnsRow(hostStats) + "," +
                     BuildPostgresColumnsRow(postgresStats) + "," +
-                    BuildRedisColumnsRow(redisStats));
+                    BuildRespColumnsRow(respStats));
             }
         }
 
@@ -383,8 +383,8 @@ namespace Jube.LoadTest
                     ? await postgresStatsSampler.SampleAsync(CancellationToken.None)
                     : null;
 
-                var redisStats = redisStatsSampler != null
-                    ? await redisStatsSampler.SampleAsync()
+                var respStats = respStatsSampler != null
+                    ? await respStatsSampler.SampleAsync()
                     : null;
 
                 lock (statsLock)
@@ -392,7 +392,7 @@ namespace Jube.LoadTest
                     latestContainerStats = containerStats;
                     latestHostStats = hostStats;
                     latestPostgresStats = postgresStats;
-                    latestRedisStats = redisStats;
+                    latestRespStats = respStats;
                 }
 
                 try
@@ -466,7 +466,7 @@ namespace Jube.LoadTest
                 : ",,,,,";
         }
 
-        private static string BuildRedisColumnsRow(
+        private static string BuildRespColumnsRow(
             (double ConnectedClients, double UsedMemMiB, double OpsPerSec, double HitRatePct)? sample)
         {
             return sample is { } stat

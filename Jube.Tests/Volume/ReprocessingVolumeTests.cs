@@ -25,6 +25,7 @@ using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Reproc
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.ModelScaffolding;
 using LinqToDB;
+using LinqToDB.Async;
 using LinqToDB.Data;
 using Xunit;
 using Xunit.Abstractions;
@@ -121,8 +122,15 @@ namespace Jube.Test.Volume
             await dbContext.ExecuteAsync("ANALYZE \"Archive\"");
         }
 
-        public Task InitializeAsync() => ClearAsync();
-        public Task DisposeAsync() => ClearAsync();
+        public Task InitializeAsync()
+        {
+            return ClearAsync();
+        }
+
+        public Task DisposeAsync()
+        {
+            return ClearAsync();
+        }
 
         [Fact]
         public async Task ReprocessingProcessesEveryArchivedDocumentOnceUpdatesEveryMatchInBoundedMemoryAsync()

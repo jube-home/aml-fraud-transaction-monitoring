@@ -50,24 +50,24 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelReprocessingRuleInstanceCreate", OperationKind.Write, false, false,
                     "Registers a Reprocessing Rule instance under a Reprocessing Rule in the caller's tenant; calling twice creates two.",
-                    EntityAnalysisModelReprocessingRuleInstanceService.RequiredPermissions),
+                    EntityAnalysisModelReprocessingRuleInstanceService.TriggerPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelReprocessingRuleInstanceValidate", OperationKind.Read, true, false,
                     "Validates a Reprocessing Rule Instance without saving it and returns every failure.",
-                    EntityAnalysisModelReprocessingRuleInstanceService.RequiredPermissions),
+                    EntityAnalysisModelReprocessingRuleInstanceService.TriggerPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelReprocessingRuleInstanceInsertByExistingUpdateUncompleted",
                     OperationKind.Write, false, false,
                     "Triggers a new reprocessing run for a Reprocessing Rule; fails if one is already uncompleted.",
-                    EntityAnalysisModelReprocessingRuleInstanceService.RequiredPermissions),
+                    EntityAnalysisModelReprocessingRuleInstanceService.TriggerPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelReprocessingRuleInstanceUpdate", OperationKind.Write, false, false,
                     "Supersedes a Reprocessing Rule instance in the caller's tenant by id, assigning it a new id.",
-                    EntityAnalysisModelReprocessingRuleInstanceService.RequiredPermissions),
+                    EntityAnalysisModelReprocessingRuleInstanceService.TriggerPermissions),
                 new ServiceToolDescriptor(
                     "EntityAnalysisModelReprocessingRuleInstanceDelete", OperationKind.Delete, true, true,
                     "Soft-deletes a Reprocessing Rule instance in the caller's tenant by id.",
-                    EntityAnalysisModelReprocessingRuleInstanceService.RequiredPermissions)
+                    EntityAnalysisModelReprocessingRuleInstanceService.StopPermissions)
             ]);
         }
     }

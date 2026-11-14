@@ -33,7 +33,6 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(3)] public byte? Active { get; set; }
         [Column] [Nullable] [Key(4)] public byte? Locked { get; set; }
         [Column] [Nullable] [Key(5)] public DateTime? CreatedDate { get; set; }
-        [Column] [Nullable] [Key(6)] public byte? ShowInDirectory { get; set; }
         [Column] [Nullable] [Key(7)] public byte? Deleted { get; set; }
         [Column] [Nullable] [Key(8)] public DateTime? DeletedDate { get; set; }
         [Column] [Nullable] [Key(9)] public string DeletedUser { get; set; }
@@ -45,26 +44,23 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(15)] public int? RowHeight { get; set; }
         [Column] [Nullable] [Key(16)] public int? Version { get; set; }
 
-        [Association(ThisKey = "TenantRegistryId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "TenantRegistryId", OtherKey = "Id", CanBeNull = true)]
         [Key(17)]
         public TenantRegistry TenantRegistry { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "VisualisationRegistryId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "VisualisationRegistryId", CanBeNull = true)]
         [Key(18)]
         public IEnumerable<VisualisationRegistryDatasource> VisualisationRegistryDatasource { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "VisualisationRegistryId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "VisualisationRegistryId", CanBeNull = true)]
         [Key(19)]
         public IEnumerable<VisualisationRegistryParameter> VisualisationRegistryParameter { get; set; }
 
         [Column] [Nullable] [Key(20)] public Guid Guid { get; set; }
         [Column] [Nullable] [Key(21)] public int? ImportId { get; set; }
+        [Column] [Nullable] [Key(22)] public byte? ContextKindId { get; set; }
 
-        [Association(ThisKey = "Guid", OtherKey = "VisualisationRegistryGuid", CanBeNull = false,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Guid", OtherKey = "VisualisationRegistryGuid", CanBeNull = false)]
         [Key(25)]
         public VisualisationRegistryRole VisualisationRegistryRole { get; set; }
     }

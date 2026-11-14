@@ -20,6 +20,7 @@ using Jube.Data.Poco;
 using Jube.Data.Repository;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 
 namespace Jube.Test.ArchiveWrites
@@ -158,8 +159,8 @@ namespace Jube.Test.ArchiveWrites
         [Fact]
         public async Task AnotherRecordsKeysAreNeverTouchedAsync()
         {
-            var guid = await ArchiveAsync(Key("A", "1"));
-            var other = await ArchiveAsync(Key("A", "1"), Key("B", "2"));
+            var guid = await ArchiveAsync(Key("A", "1", 2));
+            var other = await ArchiveAsync(Key("A", "1", 2), Key("B", "2", 2));
 
             await ReplaceAsync(guid);
 

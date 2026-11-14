@@ -53,8 +53,8 @@ namespace Jube.Parser.Compiler
 
             if (log.IsInfoEnabled)
             {
-                log.Info("Roslyn Compilation in VB.net: Is about to compile the code " + code +
-                         " with the assembly GUID of " + assemblyGuid + ".");
+                log.Info("Roslyn Compilation in VB.net: Is about to compile " + (code?.Length ?? 0) +
+                         " characters of code with the assembly GUID of " + assemblyGuid + ".");
             }
 
             var peStream = new MemoryStream();
@@ -205,7 +205,7 @@ namespace Jube.Parser.Compiler
 
         private static MetadataReference[] MetadataReferences(ILog log, IReadOnlyList<string> refs)
         {
-            var references = new MetadataReference[refs.Count + 3];
+            var references = new MetadataReference[refs.Count + 4];
             int i;
 
             for (i = 0; i < refs.Count; i++)
@@ -223,6 +223,7 @@ namespace Jube.Parser.Compiler
             references[i] = CachedReference(typeof(object).Assembly.Location); //Dummy
             references[i + 1] = CachedReference(Path.Join(directoryForDll, "System.Runtime.dll")); //Dummy
             references[i + 2] = CachedReference(Path.Join(directoryForDll, "netstandard.dll")); //Dummy
+            references[i + 3] = CachedReference(Path.Join(directoryForDll, "System.Linq.dll"));
 
             if (log.IsInfoEnabled)
             {

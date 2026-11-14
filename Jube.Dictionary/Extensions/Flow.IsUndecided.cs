@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("True when nothing in the pipeline has decided yet.")]
         public static bool IsUndecided<T>(this Flow<T> flow)
         {
             return flow.Outcome == FlowOutcome.Undecided;

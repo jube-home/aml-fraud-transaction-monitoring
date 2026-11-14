@@ -30,6 +30,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.Repository.VisualisationRegistryDatasource.Models;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
@@ -242,8 +243,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasource
                 Priority = 1,
                 RowSpan = 1,
                 ColumnSpan = 1,
-                IncludeGrid = true,
-                IncludeDisplay = false
+                IncludeGrid = true
             };
         }
 
@@ -363,6 +363,59 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasource
 
             var afterRoleGrant = await service.GetByVisualisationRegistryIdActiveOnlyAsync(registryId);
             afterRoleGrant.Should().Contain(d => d.Id == saved.Id);
+        }
+
+        [Fact]
+        public async Task GetByVisualisationRegistryIdActiveOnlyWithholdsTheSqlFromACallerWhoCannotAuthorAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var (tenantId, userName) =
+                await CreateTenantWithPermissionAsync(dbContext, "SqlHidden", [DatasourcePermissionSpec, 28]);
+
+            var registryId = await CreateParentVisualisationRegistryAsync(dbContext, tenantId, userName);
+            var author = await BuildServiceAsync(dbContext, userName);
+
+            var saved = await author.InsertAsync(NewDto(registryId, UniqueName("SqlHidden")));
+            createdDatasourceIds.Add(saved.Id);
+
+            var role = await dbContext.RoleRegistry.FirstAsync(r =>
+                r.TenantRegistryId == tenantId && r.Name != null && r.Name.Contains("SqlHidden"));
+
+            var registry = await dbContext.VisualisationRegistry.FirstAsync(r => r.Id == registryId);
+
+            await dbContext.InsertAsync(new Data.Poco.VisualisationRegistryRole
+            {
+                Guid = Guid.NewGuid(),
+                VisualisationRegistryGuid = registry.Guid,
+                RoleRegistryGuid = role.Guid,
+                CreatedUser = userName,
+                CreatedDate = DateTime.UtcNow,
+                Deleted = 0,
+                Version = 1
+            });
+            await dbContext.InsertAsync(new Data.Poco.VisualisationRegistryDatasourceRole
+            {
+                Guid = Guid.NewGuid(),
+                VisualisationRegistryDatasourceGuid = saved.Guid,
+                RoleRegistryGuid = role.Guid,
+                CreatedUser = userName,
+                CreatedDate = DateTime.UtcNow,
+                Deleted = 0,
+                Version = 1
+            });
+
+            var asAuthor = await author.GetByVisualisationRegistryIdActiveOnlyAsync(registryId);
+            asAuthor.Single(d => d.Id == saved.Id).Command.Should().Be(ValidCommand);
+
+            await dbContext.GetTable<Data.Poco.RoleRegistryPermission>()
+                .Where(w => w.RoleRegistryId == role.Id && w.PermissionSpecificationId == DatasourcePermissionSpec)
+                .DeleteAsync();
+
+            var viewer = await BuildServiceAsync(dbContext, userName);
+            var asViewer = await viewer.GetByVisualisationRegistryIdActiveOnlyAsync(registryId);
+
+            asViewer.Single(d => d.Id == saved.Id).Command.Should().BeNull();
         }
 
         [Fact]
@@ -722,7 +775,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasource
         }
 
         [Fact]
-        public async Task VisualisationTypeAndTextAreValidatedOnlyWhenIncludeDisplayEnabledAsync()
+        public async Task ADatasourceMustShowAChartAGridOrBothAsync()
         {
             await using var dbContext = fx.GetDbContext();
 
@@ -732,34 +785,23 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasource
             var registryId = await CreateParentVisualisationRegistryAsync(dbContext, tenantId, userName);
             var service = await BuildServiceAsync(dbContext, userName);
 
-            var disabledDto = NewDto(registryId, UniqueName("DisplayOff"));
-            disabledDto.IncludeDisplay = false;
-            disabledDto.VisualisationTypeId = 0;
-            disabledDto.VisualisationText = null;
-            var saved = await service.InsertAsync(disabledDto);
-            createdDatasourceIds.Add(saved.Id);
-            saved.VisualisationTypeId.Should().Be(0);
+            var nothing = NewDto(registryId, UniqueName("ShowNothing"));
+            nothing.IncludeGrid = false;
+            nothing.DisplayKindId = 0;
+            var refused = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(nothing));
+            refused.Result.Errors.Should().Contain(e => e.ErrorCode == "DisplayRequired" &&
+                                                       e.PropertyName == "DisplayKindId");
 
-            var missingTypeDto = NewDto(registryId, UniqueName("DisplayBadType"));
-            missingTypeDto.IncludeDisplay = true;
-            missingTypeDto.VisualisationTypeId = 99;
-            missingTypeDto.VisualisationText = "text";
-            var typeEx = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(missingTypeDto));
-            typeEx.Result.Errors.Should().Contain(e => e.ErrorCode == "VisualisationTypeIdInvalid");
+            var gridOnly = NewDto(registryId, UniqueName("ShowGrid"));
+            gridOnly.IncludeGrid = true;
+            gridOnly.DisplayKindId = 0;
+            createdDatasourceIds.Add((await service.InsertAsync(gridOnly)).Id);
 
-            var missingTextDto = NewDto(registryId, UniqueName("DisplayNoText"));
-            missingTextDto.IncludeDisplay = true;
-            missingTextDto.VisualisationTypeId = 1;
-            missingTextDto.VisualisationText = "";
-            var textEx = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(missingTextDto));
-            textEx.Result.Errors.Should().Contain(e => e.ErrorCode == "VisualisationTextNotEmpty");
-
-            var validDisplayDto = NewDto(registryId, UniqueName("DisplayOk"));
-            validDisplayDto.IncludeDisplay = true;
-            validDisplayDto.VisualisationTypeId = 1;
-            validDisplayDto.VisualisationText = "({})";
-            var validDisplaySaved = await service.InsertAsync(validDisplayDto);
-            createdDatasourceIds.Add(validDisplaySaved.Id);
+            var chartOnly = NewDto(registryId, UniqueName("ShowChart"));
+            chartOnly.IncludeGrid = false;
+            chartOnly.Command = "SELECT 'a' AS \"Day\", 1.5 AS \"Alpha\"";
+            chartOnly.DisplayKindId = (int)Jube.Dto.Options.DatasourceDisplayKind.Column;
+            createdDatasourceIds.Add((await service.InsertAsync(chartOnly)).Id);
         }
 
         [Fact]
@@ -782,11 +824,11 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasource
         }
 
         [Theory]
-        [InlineData("select 1 as \"A\" where 1 = @Missing", "column \"missing\" does not exist", "42703")]
+        [InlineData("select 1 as \"A\" where 1 = @Missing", "The parameter @Missing is not available here.")]
         [InlineData("select \"NoSuchColumn\" from \"ExampleCustomerCaseManagement\"",
-            "column \"NoSuchColumn\" does not exist", "42703")]
-        public async Task InsertWithSqlTheDatabaseRefusesSurfacesTheDatabaseMessageAsync(string command, string message,
-            string sqlState)
+            "There is no column \"NoSuchColumn\" in this query.")]
+        public async Task InsertWithSqlTheCheckerRefusesSurfacesOnlyTheCheckersOwnMessageAsync(string command,
+            string expected)
         {
             await using var dbContext = fx.GetDbContext();
 
@@ -802,10 +844,11 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasource
             var ex = await Assert.ThrowsAsync<SqlValidationFailedException>(() => service.InsertAsync(dto));
 
             var text = ex.Result.Errors.Single(e => e.PropertyName == "SQL").ErrorMessage;
-            text.Should().Contain(message).And.Contain(sqlState);
+            text.Should().StartWith(expected);
 
             text.Should().NotContain("Npgsql").And.NotContain("Exception").And.NotContain(" at ")
-                .And.NotContain("select ", "the statement is never echoed");
+                .And.NotContain("select ", "the statement is never echoed").And.NotContain("does not exist")
+                .And.NotContain("42703");
         }
 
         [Fact]
@@ -825,11 +868,11 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasource
             var ex = await Assert.ThrowsAsync<SqlValidationFailedException>(() => service.InsertAsync(dto));
 
             ex.Result.Errors.Single(e => e.PropertyName == "SQL").ErrorMessage
-                .Should().Contain("\"NoSuchTableZz\" is not permitted in this query");
+                .Should().Contain("There is no table \"NoSuchTableZz\" that you may query.");
         }
 
         [Fact]
-        public async Task InsertWithAnUnregisteredTableSurfacesTheDatabaseMessageWhenTheAllowListIsDisabledAsync()
+        public async Task InsertWithAnUnregisteredTableSurfacesOnlyTheCheckersMessageWhenTheAllowListIsDisabledAsync()
         {
             await using var dbContext = fx.GetDbContext();
 
@@ -850,7 +893,8 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasource
             var ex = await Assert.ThrowsAsync<SqlValidationFailedException>(() => service.InsertAsync(dto));
 
             var text = ex.Result.Errors.Single(e => e.PropertyName == "SQL").ErrorMessage;
-            text.Should().Contain("relation \"NoSuchTableZz\" does not exist").And.Contain("42P01");
+            text.Should().Be("There is no table \"NoSuchTableZz\" that you may query.")
+                .And.NotContain("42P01");
         }
 
         [Fact]
@@ -966,6 +1010,32 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasource
             updated.Guid.Should().Be(saved.Guid);
             updated.Version.Should().Be(2);
             updated.UpdatedUser.Should().Be(userName);
+        }
+
+        [Fact]
+        public async Task UpdateCannotMoveADatasourceToAnotherRegistryOfTheSameTenantAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+
+            var (tenantId, userName) =
+                await CreateTenantWithPermissionAsync(dbContext, "MoveUpdate", [DatasourcePermissionSpec]);
+
+            var registryId = await CreateParentVisualisationRegistryAsync(dbContext, tenantId, userName);
+            var otherRegistryId = await CreateParentVisualisationRegistryAsync(dbContext, tenantId, userName);
+            var service = await BuildServiceAsync(dbContext, userName);
+
+            var saved = await service.InsertAsync(NewDto(registryId, UniqueName("MoveUpdate")));
+            createdDatasourceIds.Add(saved.Id);
+
+            var dto = NewDto(otherRegistryId, saved.Name);
+            dto.Id = saved.Id;
+
+            await service.UpdateAsync(dto);
+
+            var stored = await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasource>()
+                .FirstAsync(w => w.Id == saved.Id);
+
+            stored.VisualisationRegistryId.Should().Be(registryId);
         }
 
         [Fact]

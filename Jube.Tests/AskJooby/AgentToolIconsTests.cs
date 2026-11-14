@@ -90,10 +90,10 @@ namespace Jube.Test.AskJooby
         [Fact]
         public void EveryIconInTheEnumHasABrowserBody()
         {
-            var script = ReadRepositoryFile("Jube.App/wwwroot/js/AskJooby/AskJoobyToolIcons.js");
+            var script = ReadRepositoryFile("Jube.App/Vue/src/askjooby/toolIcons.ts");
 
             Enum.GetValues<AgentToolIcon>()
-                .Where(icon => !script.Contains($"    {(int)icon}: \"", StringComparison.Ordinal))
+                .Where(icon => !script.Contains($"  {(int)icon}: '", StringComparison.Ordinal))
                 .Should().BeEmpty();
         }
 

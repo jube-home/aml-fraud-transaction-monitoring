@@ -16,8 +16,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Jube.Data.Poco;
+using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using Jube.Test.Security.DynamicSql.Models;
 
 namespace Jube.Test.Security.DynamicSql;
@@ -127,7 +129,7 @@ internal sealed class CaseSeedData(DatabaseFixture fx)
         return new Seeded(workflowGuid, key, caseId, modelId, modelGuid);
     }
 
-    public async Task AddXpathAsync(int modelId, string name, int dataTypeId)
+    public async Task AddXpathAsync(int modelId, string name, int dataTypeId, bool archiveKey = false)
     {
         await using var db = fx.GetDbContext();
 
@@ -137,6 +139,7 @@ internal sealed class CaseSeedData(DatabaseFixture fx)
             Name = name,
             DataTypeId = dataTypeId,
             XPath = $"$.{name}",
+            ReportTable = archiveKey ? (byte)1 : null,
             Active = 1,
             Locked = 0,
             Deleted = 0,
@@ -169,6 +172,7 @@ internal sealed class CaseSeedData(DatabaseFixture fx)
             ActivationRuleCount = 3,
             EntryKeyValue = "ZzW12Entry"
         }));
+        await ArchiveKeySeed.KeysAsync(db, modelId, entry, Newtonsoft.Json.Linq.JObject.Parse(payloadJson));
     }
 
     public async Task DisposeAsync()
@@ -192,6 +196,7 @@ internal sealed class CaseSeedData(DatabaseFixture fx)
         await db.CaseWorkflowStatus.Where(w => statusIds.Contains(w.Id)).DeleteAsync();
         await db.CaseWorkflow.Where(w => workflowIds.Contains(w.Id)).DeleteAsync();
         var models = modelIds.Select(id => (int?)id).ToList();
+        await ArchiveKeySeed.CleanupAsync(db, modelIds, archiveIds);
         await db.Archive.Where(w => archiveIds.Contains(w.Id)).DeleteAsync();
 
         await db.GetTable<EntityAnalysisModelSampleExecutionLog>().Where(w => models.Contains(w.EntityAnalysisModelId))

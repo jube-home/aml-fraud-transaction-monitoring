@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("True when: a valid IPv4 address.")]
         public static bool IsValidIp(this string obj)
         {
             return Regex.IsMatch(obj,

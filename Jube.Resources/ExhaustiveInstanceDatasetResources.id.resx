@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+        <value>Anda tidak memiliki izin untuk mengelola dataset Exhaustive.</value>
+    </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+        <value>Autentikasi diperlukan.</value>
+    </data>
+    <data name="NotFound" xml:space="preserve">
+        <value>Dataset tidak ditemukan.</value>
+    </data>
+    <data name="FileRequired" xml:space="preserve">
+        <value>File CSV wajib diisi.</value>
+    </data>
+    <data name="FileNameInvalid" xml:space="preserve">
+        <value>Nama file tidak dapat diterima. Hanya file .csv atau .txt yang diterima.</value>
+    </data>
+    <data name="ContentTypeInvalid" xml:space="preserve">
+        <value>Tipe konten tidak dapat diterima. Unggah file CSV teks biasa.</value>
+    </data>
+    <data name="NameRequired" xml:space="preserve">
+        <value>Nama wajib diisi.</value>
+    </data>
+    <data name="NameMaxLength" xml:space="preserve">
+        <value>Nama tidak boleh melebihi {0} karakter.</value>
+    </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+        <value>Dataset dengan nama tersebut sudah ada.</value>
+    </data>
+    <data name="DatasetInUse" xml:space="preserve">
+        <value>Dataset digunakan oleh Exhaustive Adaptation yang belum selesai dilatih dan tidak dapat diubah atau dihapus.</value>
+    </data>
+    <data name="AlreadyConfirmed" xml:space="preserve">
+        <value>Dataset digunakan oleh Exhaustive Adaptation dan pemetaannya tidak dapat diubah lagi.</value>
+    </data>
+    <data name="MappingColumnsRequired" xml:space="preserve">
+        <value>Pemetaan kolom wajib diisi.</value>
+    </data>
+    <data name="MappingColumnCountMismatch" xml:space="preserve">
+        <value>Pemetaan harus mencantumkan setiap kolom dataset.</value>
+    </data>
+    <data name="MappingColumnIndexInvalid" xml:space="preserve">
+        <value>Pemetaan merujuk ke kolom yang tidak ada.</value>
+    </data>
+    <data name="MappingColumnIndexDuplicate" xml:space="preserve">
+        <value>Pemetaan mencantumkan satu kolom lebih dari sekali.</value>
+    </data>
+    <data name="MappingNoVariables" xml:space="preserve">
+        <value>Setidaknya satu kolom variabel harus disertakan.</value>
+    </data>
+    <data name="MappingVariableNotNumeric" xml:space="preserve">
+        <value>Kolom yang disertakan tidak numerik dan tidak dapat difit sebagai kategorikal.</value>
+    </data>
+    <data name="MappingVariableConstant" xml:space="preserve">
+        <value>Kolom yang disertakan bersifat konstan dan tidak membawa informasi.</value>
+    </data>
+    <data name="MappingNameInvalid" xml:space="preserve">
+        <value>Nama variabel harus diawali huruf dan hanya berisi huruf, angka, dan garis bawah, hingga 64 karakter.</value>
+    </data>
+    <data name="MappingNameDuplicate" xml:space="preserve">
+        <value>Nama variabel harus unik.</value>
+    </data>
+    <data name="MappingProcessingTypeInvalid" xml:space="preserve">
+        <value>Tipe pemrosesan harus Payload (1) atau Abstraction (5).</value>
+    </data>
+    <data name="SourceLabelInvalid" xml:space="preserve">
+    <value>Label sumber paling banyak 256 karakter tanpa karakter kontrol, markup, pemisah path, atau karakter shell.</value>
+  </data>
+    <data name="JsonRequired" xml:space="preserve">
+    <value>Konten JSON wajib diisi.</value>
+  </data>
+    <data name="UploadTooLarge" xml:space="preserve">
+        <value>File melebihi ukuran yang diizinkan.</value>
+    </data>
+</root>

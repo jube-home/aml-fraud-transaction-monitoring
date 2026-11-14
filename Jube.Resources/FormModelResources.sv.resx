@@ -1,0 +1,689 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="EntityAnalysisModelTag.name" xml:space="preserve">
+        <value>Namn</value>
+    </data>
+    <data name="EntityAnalysisModelTag.active" xml:space="preserve">
+        <value>Aktiv</value>
+    </data>
+    <data name="EntityAnalysisModelTag.locked" xml:space="preserve">
+        <value>Låst</value>
+    </data>
+    <data name="EntityAnalysisModelTag.id" xml:space="preserve">
+        <value>ID</value>
+    </data>
+    <data name="EntityAnalysisModelTag.createdUser" xml:space="preserve">
+        <value>Skapad av</value>
+    </data>
+    <data name="EntityAnalysisModelTag.createdDate" xml:space="preserve">
+        <value>Skapad den</value>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedUser" xml:space="preserve">
+        <value>Uppdaterad av</value>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedDate" xml:space="preserve">
+        <value>Uppdaterad den</value>
+    </data>
+    <data name="EntityAnalysisModelTag.version" xml:space="preserve">
+        <value>Version</value>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedUser" xml:space="preserve">
+        <value>Borttagen av</value>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedDate" xml:space="preserve">
+        <value>Borttagen den</value>
+    </data>
+    <data name="EntityAnalysisModelTag.group.Identity" xml:space="preserve">
+        <value>Identitet</value>
+    </data>
+    <data name="EntityAnalysisModelTag.group.Audit" xml:space="preserve">
+        <value>Revision</value>
+    </data>
+    <data name="EntityAnalysisModelTag.column.name" xml:space="preserve">
+        <value>Namn</value>
+    </data>
+    <data name="EntityAnalysisModelTag.column.active" xml:space="preserve">
+        <value>Aktiv</value>
+    </data>
+    <data name="option.IntervalUnit.Second" xml:space="preserve">
+        <value>Sekunder</value>
+    </data>
+    <data name="option.IntervalUnit.Minute" xml:space="preserve">
+        <value>Minuter</value>
+    </data>
+    <data name="option.IntervalUnit.Hour" xml:space="preserve">
+        <value>Timmar</value>
+    </data>
+    <data name="option.IntervalUnit.Day" xml:space="preserve">
+        <value>Dagar</value>
+    </data>
+    <data name="option.IntervalUnit.Month" xml:space="preserve">
+        <value>Månader</value>
+    </data>
+    <data name="option.IntervalUnit.Year" xml:space="preserve">
+        <value>År</value>
+    </data>
+    <data name="option.NotificationType.Email" xml:space="preserve">
+        <value>E-post</value>
+    </data>
+    <data name="option.NotificationType.Sms" xml:space="preserve">
+        <value>SMS</value>
+    </data>
+    <data name="EntityAnalysisModelTag.name.description" xml:space="preserve">
+        <value>Visningsnamn för taggen. Unikt inom modellen (skiftlägesokänsligt). Slås samman med taggsektionen i arkivets nyttolast för motsvarande EntityAnalysisModelEntityInstanceGuid.</value>
+        <comment>a46002d2</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.active.description" xml:space="preserve">
+        <value>När sant kan taggen tillämpas på en arkivnyttolast.</value>
+        <comment>9ecf021f</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.locked.description" xml:space="preserve">
+        <value>När sant är taggregistreringen låst och kan inte redigeras eller tas bort.</value>
+        <comment>c427ac09</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.id.description" xml:space="preserve">
+        <value>Radidentifierare tilldelad av servern. Skrivskyddad.</value>
+        <comment>254b452e</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.createdUser.description" xml:space="preserve">
+        <value>Användaren som skapade taggen. Satt av servern. Skrivskyddad.</value>
+        <comment>b8b7a648</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.createdDate.description" xml:space="preserve">
+        <value>Tidsstämpel (UTC) för när taggen skapades. Satt av servern. Skrivskyddad.</value>
+        <comment>2a046216</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedUser.description" xml:space="preserve">
+        <value>Användaren som senast uppdaterade taggen. Satt av servern. Skrivskyddad.</value>
+        <comment>692dc498</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedDate.description" xml:space="preserve">
+        <value>Tidsstämpel (UTC) för taggens senaste uppdatering. Satt av servern. Skrivskyddad.</value>
+        <comment>b845bd79</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.version.description" xml:space="preserve">
+        <value>Versionsnummer för optimistisk samtidighetskontroll, satt av servern och ökas vid varje uppdatering. Skrivskyddad.</value>
+        <comment>937d398b</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedUser.description" xml:space="preserve">
+        <value>Användaren som tog bort taggen (mjuk borttagning). Satt av servern. Skrivskyddad.</value>
+        <comment>2e8d7efb</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedDate.description" xml:space="preserve">
+        <value>Tidsstämpel (UTC) för taggens mjuka borttagning, om sådan finns. Satt av servern. Skrivskyddad.</value>
+        <comment>68166826</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.name.placeholder" xml:space="preserve">
+        <value>t.ex. Granskad av regelefterlevnad</value>
+        <comment>2ebb83c4</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.name" xml:space="preserve">
+        <value>Namn</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.name.description" xml:space="preserve">
+        <value>Namnet som regler använder för att läsa entiteten som Graph.{Namn}, till exempel AccountId eller Payee. Endast bokstäver och siffror, börjar med en bokstav; unikt inom modellen.</value>
+        <comment>4a7fc4f0</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.name.placeholder" xml:space="preserve">
+        <value>t.ex. Payee</value>
+        <comment>81ff940b</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.name" xml:space="preserve">
+        <value>Namn</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.active" xml:space="preserve">
+        <value>Aktiv</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.active.description" xml:space="preserve">
+        <value>När sant läses entiteten från grafen vid varje anrop av modellen.</value>
+        <comment>ba3c6a3d</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.active" xml:space="preserve">
+        <value>Aktiv</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.locked" xml:space="preserve">
+        <value>Låst</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.locked.description" xml:space="preserve">
+        <value>När sant är entiteten låst och kan inte redigeras eller tas bort.</value>
+        <comment>17318987</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.requestXPathName" xml:space="preserve">
+        <value>Fält</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.requestXPathName.description" xml:space="preserve">
+        <value>Modellens begäranfält, markerat som Arkivnyckel, vars värde identifierar entiteten i grafen, till exempel AccountId eller ToAccountId.</value>
+        <comment>af382e5f</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.requestXPathName" xml:space="preserve">
+        <value>Fält</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.nodeKey" xml:space="preserve">
+        <value>Nodnyckel</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.nodeKey.description" xml:space="preserve">
+        <value>Grafnodens nyckel som värdet lagras under när den skiljer sig från fältnamnet, som To Node Key i en kantdefinition: värdet i ToAccountId lagras som noden AccountId. Lämna tomt för att använda fältnamnet.</value>
+        <comment>49a08603</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.counterpartName" xml:space="preserve">
+        <value>Motpart</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.counterpartName.description" xml:space="preserve">
+        <value>Namnet på en annan entitet i modellen som den här paras med för kantfakta (antal, belopp, första förekomst) och brodetektering, till exempel en Payer-entitet med sin Payee. Parningar är explicita och gissas aldrig; lämna tomt om ingen finns.</value>
+        <comment>60120df2</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.counterpartName" xml:space="preserve">
+        <value>Motpart</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.graphRegistryGuid" xml:space="preserve">
+        <value>Grafregister</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.graphRegistryGuid.description" xml:space="preserve">
+        <value>Grafregistret vars kantdefinitioner begränsar kantfakta mot motparten. Lämna tomt för att använda varje aktiv definition som tillhör hyresgästen.</value>
+        <comment>d48d9af2</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.responsePayload" xml:space="preserve">
+        <value>Svarsnyttolast</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.responsePayload.description" xml:space="preserve">
+        <value>När sant returneras entitetsobjektet i svarets JSON under Graph. Utesluter Arkivnyckel: entiteten returneras eller lagras, inte båda.</value>
+        <comment>8648201c</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.reportTable" xml:space="preserve">
+        <value>Arkivnyckel</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.reportTable.description" xml:space="preserve">
+        <value>När sant skrivs entitetsobjektet till arkivets JSON för rapportering och träning. Utesluter Response Payload.</value>
+        <comment>87f888f3</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdDate" xml:space="preserve">
+        <value>Skapad den</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdDate.description" xml:space="preserve">
+        <value>Skapandetidsstämpel som sätts av servern. Skrivskyddad.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdUser" xml:space="preserve">
+        <value>Skapad av</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdUser.description" xml:space="preserve">
+        <value>Användaren som skapade raden, satt av servern. Skrivskyddad.</value>
+        <comment>c7492dc3</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedUser" xml:space="preserve">
+        <value>Uppdaterad av</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedUser.description" xml:space="preserve">
+        <value>Användaren som senast uppdaterade raden, satt av servern. Skrivskyddad.</value>
+        <comment>dfe8daba</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedDate" xml:space="preserve">
+        <value>Uppdaterad den</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedDate.description" xml:space="preserve">
+        <value>Tidsstämpel för senaste uppdatering, satt av servern. Skrivskyddad.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.version" xml:space="preserve">
+        <value>Version</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.version.description" xml:space="preserve">
+        <value>Versionsnummer satt av servern, ökas vid varje uppdatering. Skrivskyddad.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Identity" xml:space="preserve">
+        <value>Identitet</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Entity" xml:space="preserve">
+        <value>Entitet</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Output" xml:space="preserve">
+        <value>Utdata</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Audit" xml:space="preserve">
+        <value>Revision</value>
+    </data>
+    <data name="EntityAnalysisModel.hub.Network" xml:space="preserve">
+        <value>Nätverk</value>
+    </data>
+    <data name="EntityAnalysisModel.child.EntityAnalysisModelGraphRecall" xml:space="preserve">
+        <value>Grafavläsning</value>
+    </data>
+    <data name="CaseWorkflowXPath.sourceGuid" xml:space="preserve">
+        <value>Källfält</value>
+    </data>
+    <data name="CaseWorkflowXPath.sourceGuid.description" xml:space="preserve">
+        <value>Modellfältet som extraktionen läser, valt bland begärans XPath, inbyggda funktioner, abstraktionsregler, abstraktionsberäkningar, TTL-räknare, HTTP-anpassningar och arbetsflödesmodellens aktiveringsregler (modellen representerar själv sin indatanyckel). JSON-sökväg, arkivnyckel och datatyp härleds från det, och extraktionen kan borras ned exakt när fältet är markerat som Arkivnyckel.</value>
+        <comment>9af5ba6a</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.name" xml:space="preserve">
+        <value>Namn</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.name.description" xml:space="preserve">
+        <value>Postens namn som regler använder för att läsa IP-underrättelseposten som Svirfd.{Namn}.{Komponent}, till exempel Svirfd.Customer.Privacy.Vpn. Endast bokstäver och siffror, börjar med en bokstav; unikt inom modellen.</value>
+        <comment>26ee861d</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.name.placeholder" xml:space="preserve">
+        <value>t.ex. Customer</value>
+        <comment>d4f90c87</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.active" xml:space="preserve">
+        <value>Aktiv</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.active.description" xml:space="preserve">
+        <value>När aktiverat slås adressen upp vid varje anrop av modellen.</value>
+        <comment>a03783be</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.locked" xml:space="preserve">
+        <value>Låst</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.locked.description" xml:space="preserve">
+        <value>När aktiverat är posten låst och kan inte redigeras eller tas bort.</value>
+        <comment>d3777afa</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.requestXPathName" xml:space="preserve">
+        <value>Fält</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.requestXPathName.description" xml:space="preserve">
+        <value>Modellens begäranfält med datatypen IP vars värde är adressen som slås upp.</value>
+        <comment>bfb592ae</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.responsePayload" xml:space="preserve">
+        <value>Svarsnyttolast</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.responsePayload.description" xml:space="preserve">
+        <value>När aktiverat returneras hela IP-underrättelseposten i svarets JSON under Svirfd.</value>
+        <comment>bd6e75d5</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.reportTable" xml:space="preserve">
+        <value>Arkiv</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.reportTable.description" xml:space="preserve">
+        <value>När aktiverat skrivs posten till arkivets JSON för rapportering, träning och ärendejournalen som jämför den med en ny uppslagning för att visa avvikelse.</value>
+        <comment>08bbf83a</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.narrative" xml:space="preserve">
+        <value>Berättelse</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.narrative.description" xml:space="preserve">
+        <value>När aktiverat bifogas en berättelse i klartext till posten så att den returneras i svaret och arkiveras tillsammans med den. Stäng av för att posten bara ska innehålla data.</value>
+        <comment>98a1314b</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdDate" xml:space="preserve">
+        <value>Skapad den</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdDate.description" xml:space="preserve">
+        <value>Skapandetidsstämpel som sätts av servern. Skrivskyddad.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdUser" xml:space="preserve">
+        <value>Skapad av</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdUser.description" xml:space="preserve">
+        <value>Användaren som skapade raden, satt av servern. Skrivskyddad.</value>
+        <comment>c7492dc3</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedUser" xml:space="preserve">
+        <value>Uppdaterad av</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedUser.description" xml:space="preserve">
+        <value>Användaren som senast uppdaterade raden, satt av servern. Skrivskyddad.</value>
+        <comment>dfe8daba</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedDate" xml:space="preserve">
+        <value>Uppdaterad den</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedDate.description" xml:space="preserve">
+        <value>Tidsstämpel för senaste uppdatering, satt av servern. Skrivskyddad.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.version" xml:space="preserve">
+        <value>Version</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.version.description" xml:space="preserve">
+        <value>Versionsnummer satt av servern, ökas vid varje uppdatering. Skrivskyddad.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.column.name" xml:space="preserve">
+        <value>Namn</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.column.active" xml:space="preserve">
+        <value>Aktiv</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.column.requestXPathName" xml:space="preserve">
+        <value>Fält</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Identity" xml:space="preserve">
+        <value>Identitet</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Field" xml:space="preserve">
+        <value>Fält</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Output" xml:space="preserve">
+        <value>Utdata</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Audit" xml:space="preserve">
+        <value>Revision</value>
+    </data>
+    <data name="EntityAnalysisModel.child.EntityAnalysisModelSvirfd" xml:space="preserve">
+        <value>Svirfd</value>
+    </data>
+    <data name="option.FieldDataType.Ip" xml:space="preserve">
+        <value>IP</value>
+    </data>
+    <data name="TenantRegistry.svirfdRemoteLookupsEnabled" xml:space="preserve">
+        <value>Svirfd-fjärrsökningar</value>
+    </data>
+    <data name="TenantRegistry.svirfdRemoteLookupsEnabled.description" xml:space="preserve">
+        <value>När den är avstängd skickas ingen IP-adress för den här hyresgästen till fjärrtjänsten Svirfd. Lokala sökningar och katalogsökningar påverkas inte. Bara en landlord kan ändra detta.</value>
+        <comment>8c1916e8</comment>
+    </data>
+    <data name="TenantRegistry.group.DataProtection" xml:space="preserve">
+        <value>Dataskydd</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationUrl" xml:space="preserve">
+        <value>URL för HTTP-anpassning</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationTimeoutMilliseconds" xml:space="preserve">
+        <value>Tidsgräns för HTTP-anpassning (ms)</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationValidateSsl" xml:space="preserve">
+        <value>Validera SSL för HTTP-anpassning</value>
+    </data>
+    <data name="TenantRegistry.group.HttpAdaptation" xml:space="preserve">
+        <value>HTTP-anpassning</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationUrl.description" xml:space="preserve">
+        <value>Endast landlord. Bas-URL som den här Tenantens ändpunkter för HTTP-anpassning läggs till på. Lämna tomt för att använda HttpAdaptationUrl för hela installationen. Måste vara en https-URL till en publik värd utan autentiseringsuppgifter, frågesträng eller fragment.</value>
+        <comment>ee19d732</comment>
+    </data>
+    <data name="TenantRegistry.httpAdaptationTimeoutMilliseconds.description" xml:space="preserve">
+        <value>Endast landlord. Tidsgräns i millisekunder för den här Tenantens anrop för HTTP-anpassning, mellan 100 och 30000. Noll använder HttpAdaptationTimeout för hela installationen.</value>
+        <comment>f8d39b15</comment>
+    </data>
+    <data name="TenantRegistry.httpAdaptationValidateSsl.description" xml:space="preserve">
+        <value>Endast landlord. När sant valideras TLS-certifikatet för den här Tenantens ändpunkt för HTTP-anpassning. Gäller bara när en HttpAdaptationUrl är angiven för Tenanten.</value>
+        <comment>2cf1b2e6</comment>
+    </data>
+    <data name="TenantRegistry.httpAdaptationUrl.placeholder" xml:space="preserve">
+        <value>https://scoring.example.com</value>
+        <comment>9591a0fb</comment>
+    </data>
+    <data name="TenantRegistry.name.description" xml:space="preserve">
+        <value>Visningsnamn för hyresgästen, visas i hyresgästväljaren och under Administration &gt; Säkerhet &gt; Hyresgäster. Unikt bland alla hyresgäster i installationen (denna tabell har inget eget överordnat omfång att vara unik inom).</value>
+        <comment>9a55131b</comment>
+    </data>
+    <data name="TenantRegistry.name.placeholder" xml:space="preserve">
+        <value>t.ex. Acme Bank</value>
+        <comment>c18a9b46</comment>
+    </data>
+    <data name="TenantRegistry.active.description" xml:space="preserve">
+        <value>När värdet är sant är hyresgästen tillgänglig för användning (t.ex. valbar i hyresgästväljaren).</value>
+        <comment>81029c1e</comment>
+    </data>
+    <data name="TenantRegistry.locked.description" xml:space="preserve">
+        <value>När värdet är sant är hyresgästen låst till skrivskyddad och kan inte redigeras eller raderas.</value>
+        <comment>01ae7e98</comment>
+    </data>
+    <data name="TenantRegistry.createdDate.description" xml:space="preserve">
+        <value>Tidsstämpel för skapande, tilldelad av servern. Skrivskyddad.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="TenantRegistry.createdUser.description" xml:space="preserve">
+        <value>Användaren som skapade denna hyresgäst, tilldelad av servern. Skrivskyddad.</value>
+        <comment>8352b7ce</comment>
+    </data>
+    <data name="TenantRegistry.updatedUser.description" xml:space="preserve">
+        <value>Användaren som senast uppdaterade denna hyresgäst, tilldelad av servern. Skrivskyddad.</value>
+        <comment>6fe961d0</comment>
+    </data>
+    <data name="TenantRegistry.updatedDate.description" xml:space="preserve">
+        <value>Tidsstämpel för senaste uppdatering, tilldelad av servern. Skrivskyddad.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="TenantRegistry.version.description" xml:space="preserve">
+        <value>Versionsnummer tilldelat av servern, ökas vid varje uppdatering. Skrivskyddat.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="RoleRegistry.name.description" xml:space="preserve">
+        <value>Visningsnamn för rollen, visas för administratörer vid tilldelning av behörigheter eller användare. Unikt inom hyresgästen (skiftlägesokänsligt).</value>
+        <comment>31293430</comment>
+    </data>
+    <data name="RoleRegistry.name.placeholder" xml:space="preserve">
+        <value>t.ex. Bedrägerianalytiker</value>
+        <comment>07225315</comment>
+    </data>
+    <data name="RoleRegistry.active.description" xml:space="preserve">
+        <value>När värdet är sant kan rollen tilldelas en användare eller en modell.</value>
+        <comment>bd788127</comment>
+    </data>
+    <data name="RoleRegistry.locked.description" xml:space="preserve">
+        <value>När värdet är sant är rollen låst till skrivskyddad och kan inte redigeras eller raderas.</value>
+        <comment>5ae0abde</comment>
+    </data>
+    <data name="RoleRegistry.createdDate.description" xml:space="preserve">
+        <value>Tidsstämpel för skapande, tilldelad av servern. Skrivskyddad.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="RoleRegistry.createdUser.description" xml:space="preserve">
+        <value>Användaren som skapade denna roll, tilldelad av servern. Skrivskyddad.</value>
+        <comment>8ec04d32</comment>
+    </data>
+    <data name="RoleRegistry.updatedUser.description" xml:space="preserve">
+        <value>Användaren som senast uppdaterade denna roll, tilldelad av servern. Skrivskyddad.</value>
+        <comment>fb01581b</comment>
+    </data>
+    <data name="RoleRegistry.updatedDate.description" xml:space="preserve">
+        <value>Tidsstämpel för senaste uppdatering, tilldelad av servern. Skrivskyddad.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="RoleRegistry.version.description" xml:space="preserve">
+        <value>Versionsnummer tilldelat av servern, ökas vid varje uppdatering. Skrivskyddat.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="RoleRegistryPermission.permissionSpecificationId.description" xml:space="preserve">
+        <value>Identifierare för den behörighetsspecifikation som beviljas rollen -- samma heltalsliteral som varje tjänsts egen behörighetskontroll är hårdkodad mot. Måste referera till en befintlig rad i katalogen över behörighetsspecifikationer.</value>
+        <comment>a04fe2e8</comment>
+    </data>
+    <data name="RoleRegistryPermission.active.description" xml:space="preserve">
+        <value>När värdet är sant tillämpas denna behörighetstilldelning. När det är falskt ignoreras den och rollen får inte behörigheten.</value>
+        <comment>f16785e0</comment>
+    </data>
+    <data name="RoleRegistryPermission.locked.description" xml:space="preserve">
+        <value>När värdet är sant är denna tilldelning låst och kan inte redigeras eller raderas.</value>
+        <comment>51b4242c</comment>
+    </data>
+    <data name="RoleRegistryPermission.createdUser.description" xml:space="preserve">
+        <value>Användaren som skapade denna rad. Tilldelad av servern. Skrivskyddad.</value>
+        <comment>3b8cd8cf</comment>
+    </data>
+    <data name="RoleRegistryPermission.createdDate.description" xml:space="preserve">
+        <value>Tidsstämpel (UTC) för när raden skapades. Tilldelad av servern. Skrivskyddad.</value>
+        <comment>bb91d7cb</comment>
+    </data>
+    <data name="RoleRegistryPermission.updatedUser.description" xml:space="preserve">
+        <value>Användaren som senast uppdaterade denna rad. Tilldelad av servern. Skrivskyddad.</value>
+        <comment>eeb46a72</comment>
+    </data>
+    <data name="RoleRegistryPermission.updatedDate.description" xml:space="preserve">
+        <value>Tidsstämpel (UTC) för när raden senast uppdaterades. Tilldelad av servern. Skrivskyddad.</value>
+        <comment>666366bf</comment>
+    </data>
+    <data name="RoleRegistryPermission.version.description" xml:space="preserve">
+        <value>Versionsnummer för optimistisk samtidighetskontroll, tilldelat av servern. Skrivskyddat.</value>
+        <comment>755d4fe7</comment>
+    </data>
+    <data name="PermissionSpecification.id.description" xml:space="preserve">
+        <value>Heltalsidentifierare för denna behörighetsspecifikation, tilldelad av servern -- samma heltalsliteral som varje tjänsts egna behörighetskontroller är hårdkodade mot. Skrivskyddad: katalogen fylls via databasmigrering och skapas eller redigeras inte via detta API.</value>
+        <comment>d881018b</comment>
+    </data>
+    <data name="PermissionSpecification.name.description" xml:space="preserve">
+        <value>Visningsnamn för behörighetsspecifikationen, visas i behörighetsrullgardinsmenyn vid beviljande av en rolls behörigheter. Skrivskyddat: katalogen fylls via databasmigrering och skapas eller redigeras inte via detta API.</value>
+        <comment>cda60556</comment>
+    </data>
+    <data name="UserRegistry.name.description" xml:space="preserve">
+        <value>Användarens inloggningsnamn, motsvarar Name-anspråket i den JSON Web Token som utfärdas vid autentisering. Unikt inom hyresgästen.</value>
+        <comment>1114b6a1</comment>
+    </data>
+    <data name="UserRegistry.roleRegistryGuid.description" xml:space="preserve">
+        <value>Identifierare för det rollregister som användaren är tilldelad. Avgör användarens hyresgäst och de behörigheter användaren har.</value>
+        <comment>f99c9842</comment>
+    </data>
+    <data name="UserRegistry.email.description" xml:space="preserve">
+        <value>Användarens e-postadress, används för att identifiera kontoinnehavaren. Används inte för att leverera det tillfälliga lösenordet, som returneras en gång till den som återställer det.</value>
+        <comment>2767b97d</comment>
+    </data>
+    <data name="UserRegistry.email.placeholder" xml:space="preserve">
+        <value>namn@exempel.se</value>
+        <comment>7b17fb0b</comment>
+    </data>
+    <data name="UserRegistry.wirePasswordHash.description" xml:space="preserve">
+        <value>När värdet är sant saltas ett tillfälligt lösenord som utfärdas av lösenordsåterställningen dessutom med användarens Name och SHA-256-hashas före Argon2-hashning (lösenordsformatet "wire" som vissa klientintegrationer förväntar sig). Ändrar inte hur lösenordet visas för den som utför återställningen.</value>
+        <comment>13612f72</comment>
+    </data>
+    <data name="UserRegistry.passwordLocked.description" xml:space="preserve">
+        <value>När värdet är sant är kontot låst efter upprepade misslyckade lösenordsförsök och kan inte autentisera förrän en lösenordsåterställning hävt låsningen. Skrivskyddat här; hävs endast av lösenordsåterställningen.</value>
+        <comment>6c727df1</comment>
+    </data>
+    <data name="UserRegistry.id.description" xml:space="preserve">
+        <value>Radidentifierare tilldelad av servern. Skrivskyddad.</value>
+        <comment>254b452e</comment>
+    </data>
+    <data name="UserRegistry.createdUser.description" xml:space="preserve">
+        <value>Användaren som skapade detta konto. Tilldelad av servern. Skrivskyddad.</value>
+        <comment>7eb019f3</comment>
+    </data>
+    <data name="UserRegistry.createdDate.description" xml:space="preserve">
+        <value>Tidsstämpel (UTC) för när kontot skapades. Tilldelad av servern. Skrivskyddad.</value>
+        <comment>2c31adef</comment>
+    </data>
+    <data name="UserRegistry.version.description" xml:space="preserve">
+        <value>Versionsnummer för optimistisk samtidighetskontroll, tilldelat av servern och ökat vid varje uppdatering. Skrivskyddat.</value>
+        <comment>937d398b</comment>
+    </data>
+    <data name="UserRegistry.inheritedId.description" xml:space="preserve">
+        <value>Identifierare som förts över från en bevarandeimport av en tidigare installations rad, om detta konto härstammar från en sådan. Fylls och används inte annars. Skrivskyddad.</value>
+        <comment>cacf7d8d</comment>
+    </data>
+    <data name="UserRegistry.active.description" xml:space="preserve">
+        <value>När värdet är sant får användaren autentisera sig. När det är falskt nekas inloggning oavsett om lösenordet är korrekt.</value>
+        <comment>13f02082</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.name.description" xml:space="preserve">
+        <value>Namnet på den OpenTelemetry-räknare som ökas vid en träff, t.ex. "jube.logcounter.postgres_deadlock". Unikt bland aktiva rader, skiftlägesokänsligt. Endast bokstäver, siffror, '.', '_' och '-', enligt namnkonventionerna för OpenTelemetry-instrument.</value>
+        <comment>49fd6ad9</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.name.placeholder" xml:space="preserve">
+        <value>jube.logcounter.postgres_deadlock</value>
+        <comment>415927e2</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.regex.description" xml:space="preserve">
+        <value>Ett reguljärt .NET-uttryck som kontrolleras mot varje ostrukturerad loggrad/meddelande som når denna instans (ApplicationLogEntry, PostgresLogEntry, ContainerLogEntry, RespSlowOperation, EtcdClusterEvent, PatroniClusterEvent). Varje träff ökar Name med ett. Måste kompilera -- valideras vid sparande, inte vid matchning. Matchningen körs i linjär tid där mönstret tillåter det; mönster med lookarounds, bakåtreferenser eller atomära grupper faller tillbaka på en backtracking-matchare begränsad till 100 ms per rad, och en regel som överskrider tiden på fem rader i följd stängs av till nästa minutuppdatering.</value>
+        <comment>dfb2a18d</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.regex.placeholder" xml:space="preserve">
+        <value>deadlock detected</value>
+        <comment>5561729c</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.active.description" xml:space="preserve">
+        <value>När värdet är sant kontrolleras denna regel mot inkommande loggrader. När det är falskt ignoreras den (och dess räknare slutar bara öka -- raden raderas inte).</value>
+        <comment>d7167dd5</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.locked.description" xml:space="preserve">
+        <value>När värdet är sant är denna rad låst och kan inte redigeras eller raderas.</value>
+        <comment>c9f595ac</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.createdUser.description" xml:space="preserve">
+        <value>Användaren som skapade denna rad. Tilldelad av servern. Skrivskyddad.</value>
+        <comment>3b8cd8cf</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.createdDate.description" xml:space="preserve">
+        <value>Tidsstämpel (UTC) för när raden skapades. Tilldelad av servern. Skrivskyddad.</value>
+        <comment>bb91d7cb</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.updatedUser.description" xml:space="preserve">
+        <value>Användaren som senast uppdaterade denna rad. Tilldelad av servern. Skrivskyddad.</value>
+        <comment>eeb46a72</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.updatedDate.description" xml:space="preserve">
+        <value>Tidsstämpel (UTC) för när raden senast uppdaterades. Tilldelad av servern. Skrivskyddad.</value>
+        <comment>666366bf</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.version.description" xml:space="preserve">
+        <value>Versionsnummer för optimistisk samtidighetskontroll, tilldelat av servern. Skrivskyddat.</value>
+        <comment>755d4fe7</comment>
+    </data>
+    <data name="OpenTelemetryExclude.name.description" xml:space="preserve">
+        <value>Det exakta namnet på det OpenTelemetry-instrument/den räknare som ska sluta exporteras, t.ex. "jube.engine.logs.warn.count". Matchas i sin helhet, skiftlägesokänsligt -- inga jokertecken. Endast bokstäver, siffror, '.', '_', '/' och '-'. Unikt bland aktiva rader. Gäller varje instrument, även de som OpenTelemetryLogCounter skapar dynamiskt: ett uteslutet namn skapas där aldrig, så det börjar aldrig öka. För varje annan, redan befintlig namngiven räknare gäller detta bara för ett instrument som ännu inte exporterar aktivt -- ett som redan exporterar fortsätter göra det tills processen startas om.</value>
+        <comment>7e24ca9e</comment>
+    </data>
+    <data name="OpenTelemetryExclude.name.placeholder" xml:space="preserve">
+        <value>jube.engine.logs.warn.count</value>
+        <comment>2ddc8a48</comment>
+    </data>
+    <data name="OpenTelemetryExclude.active.description" xml:space="preserve">
+        <value>När värdet är sant tillämpas denna uteslutning. När det är falskt ignoreras den (instrumentet exporteras som vanligt, med förbehåll för eventuell annan uteslutning).</value>
+        <comment>7d0dc62e</comment>
+    </data>
+    <data name="OpenTelemetryExclude.locked.description" xml:space="preserve">
+        <value>När värdet är sant är denna rad låst och kan inte redigeras eller raderas.</value>
+        <comment>c9f595ac</comment>
+    </data>
+    <data name="OpenTelemetryExclude.createdUser.description" xml:space="preserve">
+        <value>Användaren som skapade denna rad. Tilldelad av servern. Skrivskyddad.</value>
+        <comment>3b8cd8cf</comment>
+    </data>
+    <data name="OpenTelemetryExclude.createdDate.description" xml:space="preserve">
+        <value>Tidsstämpel (UTC) för när raden skapades. Tilldelad av servern. Skrivskyddad.</value>
+        <comment>bb91d7cb</comment>
+    </data>
+    <data name="OpenTelemetryExclude.updatedUser.description" xml:space="preserve">
+        <value>Användaren som senast uppdaterade denna rad. Tilldelad av servern. Skrivskyddad.</value>
+        <comment>eeb46a72</comment>
+    </data>
+    <data name="OpenTelemetryExclude.updatedDate.description" xml:space="preserve">
+        <value>Tidsstämpel (UTC) för när raden senast uppdaterades. Tilldelad av servern. Skrivskyddad.</value>
+        <comment>666366bf</comment>
+    </data>
+    <data name="OpenTelemetryExclude.version.description" xml:space="preserve">
+        <value>Versionsnummer för optimistisk samtidighetskontroll, tilldelat av servern. Skrivskyddat.</value>
+        <comment>755d4fe7</comment>
+    </data>
+</root>

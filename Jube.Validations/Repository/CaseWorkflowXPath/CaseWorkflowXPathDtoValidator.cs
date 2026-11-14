@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Text.RegularExpressions;
 using FluentValidation;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.CaseWorkflowXPath;
@@ -22,13 +23,18 @@ namespace Jube.Validations.Repository.CaseWorkflowXPath
     public sealed class CaseWorkflowXPathDtoValidator : AbstractValidator<CaseWorkflowXPathDto>
     {
         private const int MaxNameLength = 256;
-        private const int MaxXPathLength = 1024;
+        private const int MaxRoleId = 6;
         private const int MaxRegularExpressionLength = 1024;
         private const int MaxColorLength = 32;
-        private const string ColorPattern = @"^(#[0-9A-Fa-f]{3,8}|[A-Za-z]{3,30}|rgba?\([0-9., %]{5,28}\))$";
+        private const string ColorPattern = @"^(#[0-9A-Fa-f]{3,8}|[A-Za-z]{3,30}|rgba?\([0-9., %]{5,28}\))\z";
 
         public CaseWorkflowXPathDtoValidator(CaseWorkflowXPathRepository repository, IStringLocalizer localiser)
         {
+            RuleFor(p => p.RoleId)
+                .InclusiveBetween(0, MaxRoleId)
+                .WithMessage(_ => localiser[CaseWorkflowXPathResources.RoleIdInvalid])
+                .WithErrorCode("RoleIdInvalid");
+
             RuleFor(p => p.CaseWorkflowId)
                 .Cascade(CascadeMode.Stop)
                 .GreaterThan(0)
@@ -57,15 +63,15 @@ namespace Jube.Validations.Repository.CaseWorkflowXPath
                 .WithMessage(_ => localiser[CaseWorkflowXPathResources.NameAlreadyExists])
                 .WithErrorCode("NameDuplicate");
 
-            RuleFor(p => p.XPath)
+            RuleFor(p => p.SourceGuid)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty()
-                .WithMessage(_ => localiser[CaseWorkflowXPathResources.XPathRequired])
-                .WithErrorCode("XPathNotEmpty")
-                .MaximumLength(MaxXPathLength)
-                .WithMessage(_ =>
-                    string.Format(localiser[CaseWorkflowXPathResources.XPathMaxLength], MaxXPathLength))
-                .WithErrorCode("XPathMaximumLength");
+                .WithMessage(_ => localiser[CaseWorkflowXPathResources.SourceRequired])
+                .WithErrorCode("SourceNotEmpty")
+                .MustAsync(async (dto, sourceGuid, cancellation) =>
+                    await repository.FindSourceAsync(dto.CaseWorkflowId, sourceGuid, cancellation) is not null)
+                .WithMessage(_ => localiser[CaseWorkflowXPathResources.SourceNotFound])
+                .WithErrorCode("SourceNotFound");
 
             RuleFor(p => p.BoldLineFormatForeColor)
                 .NotEmpty()
@@ -96,6 +102,13 @@ namespace Jube.Validations.Repository.CaseWorkflowXPath
                     MaxRegularExpressionLength))
                 .WithErrorCode("RegularExpressionMaximumLength")
                 .When(w => w.ConditionalRegularExpressionFormatting);
+
+            RuleFor(p => p.RegularExpression)
+                .Must(Compiles)
+                .WithMessage(_ => localiser[CaseWorkflowXPathResources.RegularExpressionInvalid])
+                .WithErrorCode("RegularExpressionInvalid")
+                .When(w => w.ConditionalRegularExpressionFormatting && !string.IsNullOrEmpty(w.RegularExpression)
+                           && w.RegularExpression.Length <= MaxRegularExpressionLength);
 
             RuleFor(p => p.ConditionalFormatForeColor)
                 .NotEmpty()
@@ -140,6 +153,21 @@ namespace Jube.Validations.Repository.CaseWorkflowXPath
                 .When(w => !string.IsNullOrEmpty(w.ConditionalFormatBackColor))
                 .WithMessage(_ => localiser[CaseWorkflowXPathResources.ColorInvalid])
                 .WithErrorCode("ConditionalFormatBackColorInvalid");
+        }
+
+        private static bool Compiles(string? pattern)
+        {
+            try
+            {
+                _ = new Regex(pattern!, RegexOptions.NonBacktracking | RegexOptions.CultureInvariant,
+                    TimeSpan.FromMilliseconds(250));
+
+                return true;
+            }
+            catch (Exception e) when (e is ArgumentException or NotSupportedException)
+            {
+                return false;
+            }
         }
     }
 }

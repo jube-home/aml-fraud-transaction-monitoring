@@ -72,5 +72,75 @@ namespace Jube.Test.Exhaustive
 
             ExhaustiveExtensions.BuildScoreInputs(variables, body)[0].Should().Be(0);
         }
+
+        [Fact]
+        public void BuildScoreInputs_ExtremeContinuousValue_IsClampedToTheConfiguredBoundBothDirections()
+        {
+            var body = JObject.Parse("{\"Abstraction.A\": 110, \"Abstraction.C\": 5}");
+
+            var inputs = ExhaustiveExtensions.BuildScoreInputs(variables, body);
+
+            inputs[0].Should().Be(5);
+        }
+
+        [Fact]
+        public void BuildScoreInputs_ExtremeNegativeContinuousValue_IsClampedToTheConfiguredBound()
+        {
+            var body = JObject.Parse("{\"Abstraction.A\": -90, \"Abstraction.C\": 5}");
+
+            var inputs = ExhaustiveExtensions.BuildScoreInputs(variables, body);
+
+            inputs[0].Should().Be(-5);
+        }
+
+        [Fact]
+        public void ZScore_ExtremeValue_IsClampedToTheConfiguredBoundInBothDirections()
+        {
+            var variable = new ExhaustiveSearchInstancePromotedTrialInstanceVariable
+                { Mean = 10, Sd = 2, NormalisationTypeId = 2 };
+
+            variable.ZScore(10 + 2 * 50).Should().Be(5);
+            variable.ZScore(10 - 2 * 50).Should().Be(-5);
+        }
+
+        [Fact]
+        public void ZScore_ValueExactlyAtTheBound_IsUnaffected()
+        {
+            var variable = new ExhaustiveSearchInstancePromotedTrialInstanceVariable
+                { Mean = 10, Sd = 2, NormalisationTypeId = 2 };
+
+            variable.ZScore(10 + 2 * 5).Should().Be(5);
+            variable.ZScore(10 - 2 * 5).Should().Be(-5);
+        }
+
+        [Fact]
+        public void ZScore_ValueWithinTheBound_IsByteIdenticalToTheUnclampedZScore()
+        {
+            var variable = new ExhaustiveSearchInstancePromotedTrialInstanceVariable
+                { Mean = 10, Sd = 2, NormalisationTypeId = 2 };
+
+            variable.ZScore(10 + 2 * 4.9).Should().Be(4.9);
+        }
+
+        [Theory]
+        [InlineData((byte)0)]
+        [InlineData((byte)1)]
+        public void ZScore_NonStandardisedVariable_IsNeverClampedEvenWhenLarge(byte normalisationTypeId)
+        {
+            var variable = new ExhaustiveSearchInstancePromotedTrialInstanceVariable
+                { Mean = 0, Sd = 1, NormalisationTypeId = normalisationTypeId };
+
+            variable.ZScore(999).Should().Be(999);
+        }
+
+        [Fact]
+        public void ZScore_UsesTheVariablesConfiguredClipBoundNotAHardcodedFive()
+        {
+            var variable = new ExhaustiveSearchInstancePromotedTrialInstanceVariable
+                { Mean = 10, Sd = 2, NormalisationTypeId = 2, ZScoreClipBound = 3 };
+
+            variable.ZScore(10 + 2 * 50).Should().Be(3);
+            variable.ZScore(10 - 2 * 50).Should().Be(-3);
+        }
     }
 }

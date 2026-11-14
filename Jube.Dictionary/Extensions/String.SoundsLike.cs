@@ -18,7 +18,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool SoundsLike(this string? @this, string? other)
+        [Description("Whether two names sound alike word by word under Soundex.")]
+        public static bool SoundsLike(this string? @this,
+            [Description("The text the value is compared with.")] string? other)
         {
             return FuzzyScorers.Soundex(FuzzyNormaliser.Normalise(@this, FuzzyNormalisation.Default),
                 FuzzyNormaliser.Normalise(other, FuzzyNormalisation.Default)) >= 1d;

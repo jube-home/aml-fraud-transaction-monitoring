@@ -123,3 +123,38 @@ instantiation.
 
 There are a variety of options available to Log4Net, and it is advisable to read the documentation associated with that
 project, yet most of the functionality is available should instantiation be via XML Serialisation file.
+
+# Telemetry settings (landlord only)
+
+<!-- TODO(docs): owner to read this section end to end; written from code, not from running the UI -->
+<!-- TODO(screenshot): file=admin-telemetry-log-counters.png route=/administration/telemetry state="Log counters tab, two rules, one inactive" -->
+<!-- TODO(screenshot): file=admin-telemetry-exclusions.png route=/administration/telemetry?area=OpenTelemetryExclude state="Exclusions tab, two exclusions" -->
+<!-- TODO(screenshot): file=admin-telemetry-denied.png route=/administration/telemetry state="Signed in as a tenant user: the denied alert" -->
+
+The Telemetry settings page (Administration, Telemetry settings) has two tabs: Log counters and Exclusions. Both are
+restricted to users of the Landlord tenant on every route and verb, and the page shows a denied alert to anyone else.
+A tenant administrator holding every permission is still refused with 403. The specifications "Read Write OpenTelemetry
+Log Counter" (42) and "Read Write OpenTelemetry Exclude" (43) are retired: the routes were never gated by them (the
+service and the original Razor pages both check only the Landlord tenant, and the service tool catalogue lists no
+required permission), so a migration relabels them "Retired - no effect" and granting them does nothing.
+<!-- TODO(docs): owner to confirm the rows may be deleted outright in a later release; they are relabelled rather than removed because existing roles reference them -->
+
+Rules enforced when saving:
+
+* Log counter name: letters, digits, `.`, `_` and `-` only, up to 255 characters, unique among active rows ignoring
+  case.
+* Log counter regex: up to 2000 characters, must compile. Patterns are matched in linear time where the engine allows
+  it. Patterns that use lookarounds, backreferences or atomic groups run on a backtracking matcher capped at 100 ms per
+  log line, and a rule that times out five lines in a row is suspended until the next one-minute refresh.
+* Exclusion name: letters, digits, `.`, `_`, `/` and `-` only, up to 255 characters, unique among active rows ignoring
+  case, and matched against the instrument name in full ignoring case (no wildcards).
+* Every create, update and delete writes an audit line (`Jube.Audit`) naming the landlord user and the row id, and the
+  application log records the name and active flag. The row keeps created, updated and deleted user and date.
+  <!-- TODO(docs): there is no per-change history table, an update overwrites the previous name -->
+
+What an exclusion does: it stops the named instrument being exported to the external OpenTelemetry backend. It does not
+affect the audit log, application logs or the locally stored per-minute metric table. Exclusions are refreshed every
+60 seconds, but the exporter decides whether to drop an instrument only when it first sees it, so adding or removing an
+exclusion for an instrument that is already exporting takes effect after a restart. A log counter whose name is excluded
+stops counting at the next refresh.
+<!-- TODO(docs): owner to confirm the restart wording against a live collector -->

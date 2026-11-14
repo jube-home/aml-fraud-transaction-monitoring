@@ -1,0 +1,771 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="Kind.Column.Name" xml:space="preserve">
+        <value>کالم چارٹ</value>
+        <comment>d03c5399</comment>
+    </data>
+    <data name="Kind.Column.Description" xml:space="preserve">
+        <value>عمودی بارز کے ساتھ زمروں میں اقدار کا موازنہ کرتا ہے، ہر قدر والے کالم کے لیے ایک سیریز۔</value>
+        <comment>fbeeeac9</comment>
+    </data>
+    <data name="Kind.Bar.Name" xml:space="preserve">
+        <value>بار چارٹ</value>
+        <comment>e006cb3f</comment>
+    </data>
+    <data name="Kind.Bar.Description" xml:space="preserve">
+        <value>افقی بارز کے ساتھ زمروں میں اقدار کا موازنہ کرتا ہے، جو لمبے زمرہ ناموں کے لیے موزوں ہے۔</value>
+        <comment>661f4e08</comment>
+    </data>
+    <data name="Kind.StackedColumn.Name" xml:space="preserve">
+        <value>اسٹیکڈ کالم چارٹ</value>
+        <comment>a1c546a4</comment>
+    </data>
+    <data name="Kind.StackedColumn.Description" xml:space="preserve">
+        <value>ہر سیریز کو دوسری کے اوپر جماتا ہے تاکہ کل اور اس کے حصے نظر آئیں۔</value>
+        <comment>f875004b</comment>
+    </data>
+    <data name="Kind.StackedBar.Name" xml:space="preserve">
+        <value>اسٹیکڈ بار چارٹ</value>
+        <comment>fa509936</comment>
+    </data>
+    <data name="Kind.StackedBar.Description" xml:space="preserve">
+        <value>ہر سیریز کو افقی طور پر جماتا ہے تاکہ کل اور اس کے حصے نظر آئیں۔</value>
+        <comment>236c196c</comment>
+    </data>
+    <data name="Kind.PercentStackedColumn.Name" xml:space="preserve">
+        <value>فیصدی اسٹیکڈ کالم چارٹ</value>
+        <comment>b6da04aa</comment>
+    </data>
+    <data name="Kind.PercentStackedColumn.Description" xml:space="preserve">
+        <value>ہر سیریز کو زمرے کے کل کے حصے کے طور پر دکھاتا ہے۔</value>
+        <comment>1bd78239</comment>
+    </data>
+    <data name="Kind.PercentStackedBar.Name" xml:space="preserve">
+        <value>فیصدی اسٹیکڈ بار چارٹ</value>
+        <comment>ce4c17ff</comment>
+    </data>
+    <data name="Kind.PercentStackedBar.Description" xml:space="preserve">
+        <value>ہر سیریز کو زمرے کے کل کے حصے کے طور پر افقی طور پر دکھاتا ہے۔</value>
+        <comment>dc79cf9f</comment>
+    </data>
+    <data name="Kind.Line.Name" xml:space="preserve">
+        <value>لائن چارٹ</value>
+        <comment>22089151</comment>
+    </data>
+    <data name="Kind.Line.Description" xml:space="preserve">
+        <value>دکھاتا ہے کہ اقدار ایک ترتیب شدہ زمرے، عدد یا وقت کے ساتھ کیسے بدلتی ہیں۔</value>
+        <comment>71c21e56</comment>
+    </data>
+    <data name="Kind.Area.Name" xml:space="preserve">
+        <value>ایریا چارٹ</value>
+        <comment>c79cf6b2</comment>
+    </data>
+    <data name="Kind.Area.Description" xml:space="preserve">
+        <value>ایک لائن چارٹ جس میں ہر لائن کے نیچے کا علاقہ بھرا ہوا ہوتا ہے۔</value>
+        <comment>4d7fcd4b</comment>
+    </data>
+    <data name="Kind.StackedArea.Name" xml:space="preserve">
+        <value>اسٹیکڈ ایریا چارٹ</value>
+        <comment>c5670419</comment>
+    </data>
+    <data name="Kind.StackedArea.Description" xml:space="preserve">
+        <value>بھرے ہوئے علاقوں کو جماتا ہے تاکہ ترتیب شدہ محور پر کل اور اس کے حصے نظر آئیں۔</value>
+        <comment>0236928f</comment>
+    </data>
+    <data name="Kind.PercentStackedArea.Name" xml:space="preserve">
+        <value>فیصدی اسٹیکڈ ایریا چارٹ</value>
+        <comment>6aaa1850</comment>
+    </data>
+    <data name="Kind.PercentStackedArea.Description" xml:space="preserve">
+        <value>ہر سیریز کو ترتیب شدہ محور پر کل کے حصے کے طور پر دکھاتا ہے۔</value>
+        <comment>ae4c02dc</comment>
+    </data>
+    <data name="Kind.Pie.Name" xml:space="preserve">
+        <value>پائی چارٹ</value>
+        <comment>9899e8ba</comment>
+    </data>
+    <data name="Kind.Pie.Description" xml:space="preserve">
+        <value>کل کے حصے دکھاتا ہے۔ چند زمروں کے لیے بہترین۔</value>
+        <comment>2846aafc</comment>
+    </data>
+    <data name="Kind.Donut.Name" xml:space="preserve">
+        <value>ڈونٹ چارٹ</value>
+        <comment>5469e407</comment>
+    </data>
+    <data name="Kind.Donut.Description" xml:space="preserve">
+        <value>کھوکھلے مرکز والا پائی چارٹ۔</value>
+        <comment>4e0bb12a</comment>
+    </data>
+    <data name="Kind.Scatter.Name" xml:space="preserve">
+        <value>اسکیٹر یا بلبلہ چارٹ</value>
+        <comment>2f6655ee</comment>
+    </data>
+    <data name="Kind.Scatter.Description" xml:space="preserve">
+        <value>ایک عددی کالم کو دوسرے کے مقابل بناتا ہے؛ سائز کا کالم نقطوں کو بلبلوں میں بدل دیتا ہے۔</value>
+        <comment>3563c3db</comment>
+    </data>
+    <data name="Kind.Histogram.Name" xml:space="preserve">
+        <value>ہسٹوگرام</value>
+        <comment>b32dc489</comment>
+    </data>
+    <data name="Kind.Histogram.Description" xml:space="preserve">
+        <value>ہر عددی کالم کی خام اقدار کو خانوں میں بانٹتا ہے تاکہ ان کی تقسیم نظر آئے۔</value>
+        <comment>3ecccbbb</comment>
+    </data>
+    <data name="Kind.Heatmap.Name" xml:space="preserve">
+        <value>ہیٹ میپ</value>
+        <comment>3aa6826d</comment>
+    </data>
+    <data name="Kind.Heatmap.Description" xml:space="preserve">
+        <value>اس خانے کو عددی قدر کے مطابق رنگتا ہے جہاں قطار کا زمرہ کالم کے زمرے سے ملتا ہے۔</value>
+        <comment>c1a2697a</comment>
+    </data>
+    <data name="Kind.Combo.Name" xml:space="preserve">
+        <value>مرکب چارٹ</value>
+        <comment>0a373f64</comment>
+    </data>
+    <data name="Kind.Combo.Description" xml:space="preserve">
+        <value>ایک ہی زمروں پر کالم اور لائنیں بناتا ہے، اختیاری ثانوی محور کے ساتھ۔</value>
+        <comment>bbf5881c</comment>
+    </data>
+    <data name="Kind.BoxPlot.Name" xml:space="preserve">
+        <value>باکس پلاٹ</value>
+        <comment>e4d59eb4</comment>
+    </data>
+    <data name="Kind.BoxPlot.Description" xml:space="preserve">
+        <value>ہر زمرے کا پھیلاؤ کم از کم سے زیادہ سے زیادہ تک، وسطانیہ کے گرد دکھاتا ہے۔</value>
+        <comment>145fe237</comment>
+    </data>
+    <data name="Kind.Candlestick.Name" xml:space="preserve">
+        <value>کینڈل اسٹک چارٹ</value>
+        <comment>516cc7a4</comment>
+    </data>
+    <data name="Kind.Candlestick.Description" xml:space="preserve">
+        <value>ہر مدت کے لیے آغاز، بلند ترین، کم ترین اور اختتام دکھاتا ہے۔</value>
+        <comment>d0008aeb</comment>
+    </data>
+    <data name="Kind.Waterfall.Name" xml:space="preserve">
+        <value>واٹر فال چارٹ</value>
+        <comment>6d31c875</comment>
+    </data>
+    <data name="Kind.Waterfall.Description" xml:space="preserve">
+        <value>دکھاتا ہے کہ ہر قدم کے ساتھ چلتا ہوا کل کیسے بڑھتا اور گھٹتا ہے۔</value>
+        <comment>aee0d7e9</comment>
+    </data>
+    <data name="Kind.Funnel.Name" xml:space="preserve">
+        <value>فنل چارٹ</value>
+        <comment>0dce84e9</comment>
+    </data>
+    <data name="Kind.Funnel.Description" xml:space="preserve">
+        <value>دکھاتا ہے کہ ترتیب شدہ مراحل میں قدر کیسے تنگ ہوتی ہے۔</value>
+        <comment>a259c9c8</comment>
+    </data>
+    <data name="Kind.Radar.Name" xml:space="preserve">
+        <value>ریڈار چارٹ</value>
+        <comment>4df56b16</comment>
+    </data>
+    <data name="Kind.Radar.Description" xml:space="preserve">
+        <value>قطبی گرڈ پر کئی محوروں میں سیریز کا موازنہ کرتا ہے۔</value>
+        <comment>2fbcc105</comment>
+    </data>
+    <data name="Kind.Polar.Name" xml:space="preserve">
+        <value>قطبی چارٹ</value>
+        <comment>a0b4504c</comment>
+    </data>
+    <data name="Kind.Polar.Description" xml:space="preserve">
+        <value>زاویے (ڈگری میں) کے مقابل رداس بناتا ہے۔</value>
+        <comment>2a1ba732</comment>
+    </data>
+    <data name="Kind.Gauge.Name" xml:space="preserve">
+        <value>گیج</value>
+        <comment>f6d8f4c8</comment>
+    </data>
+    <data name="Kind.Gauge.Description" xml:space="preserve">
+        <value>پہلی قطار سے، ایک حد اور اختیاری ہدف کے مقابل ایک قدر دکھاتا ہے۔</value>
+        <comment>f1932ac7</comment>
+    </data>
+    <data name="Kind.Bullet.Name" xml:space="preserve">
+        <value>بلٹ چارٹ</value>
+        <comment>6b523bb9</comment>
+    </data>
+    <data name="Kind.Bullet.Description" xml:space="preserve">
+        <value>ہر قطار کی قدر کو اس کے ہدف کے مقابل ایک مختصر بار کے طور پر دکھاتا ہے۔</value>
+        <comment>4dbf42f7</comment>
+    </data>
+    <data name="Kind.Sparkline.Name" xml:space="preserve">
+        <value>اسپارک لائن</value>
+        <comment>30f095a6</comment>
+    </data>
+    <data name="Kind.Sparkline.Description" xml:space="preserve">
+        <value>ترتیب شدہ اقدار کی ایک چھوٹی، لفظ کے سائز کی لائن۔</value>
+        <comment>078a5cfd</comment>
+    </data>
+    <data name="Kind.Treemap.Name" xml:space="preserve">
+        <value>ٹری میپ</value>
+        <comment>66ba877f</comment>
+    </data>
+    <data name="Kind.Treemap.Description" xml:space="preserve">
+        <value>مستطیلوں کا سائز قدر کے مطابق رکھتا ہے، اختیاری طور پر والدین کے تحت گروپ کیا ہوا۔</value>
+        <comment>0ed12325</comment>
+    </data>
+    <data name="Kind.Gantt.Name" xml:space="preserve">
+        <value>گینٹ چارٹ</value>
+        <comment>13a84a89</comment>
+    </data>
+    <data name="Kind.Gantt.Description" xml:space="preserve">
+        <value>کاموں کو آغاز اور اختتام کے وقت کے درمیان بارز کے طور پر دکھاتا ہے۔</value>
+        <comment>aacbdedd</comment>
+    </data>
+    <data name="Kind.Map.Name" xml:space="preserve">
+        <value>نقشہ</value>
+        <comment>be176b00</comment>
+    </data>
+    <data name="Kind.Map.Description" xml:space="preserve">
+        <value>عرض بلد اور طول بلد کے لحاظ سے نقطے بناتا ہے، قدر کے مطابق سائز اور سیریز کے مطابق تقسیم، یا ممالک کو قدر کے مطابق رنگتا ہے۔</value>
+        <comment>7f550c6f</comment>
+    </data>
+    <data name="Kind.Template.Name" xml:space="preserve">
+        <value>ٹیمپلیٹ</value>
+        <comment>0575f29d</comment>
+    </data>
+    <data name="Kind.Template.Description" xml:space="preserve">
+        <value>قطاروں کو آپ کے اپنے مارک اپ میں ترتیب دیتا ہے، ایک چھوٹی Vue جیسی بولی کے ساتھ: انٹرپولیشن، v-for، v-if اور محفوظ ٹیگز کے مقررہ مجموعے پر بندھی کلاسیں۔</value>
+        <comment>e723625c</comment>
+    </data>
+    <data name="Role.Category.Name" xml:space="preserve">
+        <value>زمرہ</value>
+        <comment>292c06f0</comment>
+    </data>
+    <data name="Role.Category.Description" xml:space="preserve">
+        <value>محور کے ساتھ زمرہ یا لیبل</value>
+        <comment>01a15784</comment>
+    </data>
+    <data name="Role.Value.Name" xml:space="preserve">
+        <value>قدر</value>
+        <comment>8e37953d</comment>
+    </data>
+    <data name="Role.Value.Description" xml:space="preserve">
+        <value>عددی قدر، ہر کالم کے لیے ایک سیریز</value>
+        <comment>12bdb3c5</comment>
+    </data>
+    <data name="Role.Series.Name" xml:space="preserve">
+        <value>سیریز</value>
+        <comment>a8295e08</comment>
+    </data>
+    <data name="Role.Series.Description" xml:space="preserve">
+        <value>وہ کالم جس کی منفرد اقدار ڈیٹا کو سیریز میں تقسیم کرتی ہیں</value>
+        <comment>27fbf1c9</comment>
+    </data>
+    <data name="Role.X.Name" xml:space="preserve">
+        <value>X</value>
+        <comment>4b68ab38</comment>
+    </data>
+    <data name="Role.X.Description" xml:space="preserve">
+        <value>افقی عددی یا وقتی قدر</value>
+        <comment>85cb9420</comment>
+    </data>
+    <data name="Role.Y.Name" xml:space="preserve">
+        <value>Y</value>
+        <comment>18f5384d</comment>
+    </data>
+    <data name="Role.Y.Description" xml:space="preserve">
+        <value>عمودی عددی قدر</value>
+        <comment>4c72f0e4</comment>
+    </data>
+    <data name="Role.Size.Name" xml:space="preserve">
+        <value>سائز</value>
+        <comment>1af85190</comment>
+    </data>
+    <data name="Role.Size.Description" xml:space="preserve">
+        <value>عددی قدر جو نقطے کا سائز طے کرتی ہے</value>
+        <comment>c018dfef</comment>
+    </data>
+    <data name="Role.Open.Name" xml:space="preserve">
+        <value>آغاز</value>
+        <comment>ed077f3d</comment>
+    </data>
+    <data name="Role.Open.Description" xml:space="preserve">
+        <value>آغاز کی قدر</value>
+        <comment>f18f6b3c</comment>
+    </data>
+    <data name="Role.High.Name" xml:space="preserve">
+        <value>بلند</value>
+        <comment>c4ebc6d4</comment>
+    </data>
+    <data name="Role.High.Description" xml:space="preserve">
+        <value>بلند ترین قدر</value>
+        <comment>1f22ea8d</comment>
+    </data>
+    <data name="Role.Low.Name" xml:space="preserve">
+        <value>پست</value>
+        <comment>f793de20</comment>
+    </data>
+    <data name="Role.Low.Description" xml:space="preserve">
+        <value>کم ترین قدر</value>
+        <comment>6b5f1bfc</comment>
+    </data>
+    <data name="Role.Close.Name" xml:space="preserve">
+        <value>اختتام</value>
+        <comment>7d9eb7ac</comment>
+    </data>
+    <data name="Role.Close.Description" xml:space="preserve">
+        <value>اختتام کی قدر</value>
+        <comment>b883f877</comment>
+    </data>
+    <data name="Role.Minimum.Name" xml:space="preserve">
+        <value>کم از کم</value>
+        <comment>735beee2</comment>
+    </data>
+    <data name="Role.Minimum.Description" xml:space="preserve">
+        <value>کم از کم قدر</value>
+        <comment>6b537b88</comment>
+    </data>
+    <data name="Role.FirstQuartile.Name" xml:space="preserve">
+        <value>پہلا چوتھائی</value>
+        <comment>e3fdcf10</comment>
+    </data>
+    <data name="Role.FirstQuartile.Description" xml:space="preserve">
+        <value>پہلا چوتھائی</value>
+        <comment>d5438fca</comment>
+    </data>
+    <data name="Role.Median.Name" xml:space="preserve">
+        <value>وسطانیہ</value>
+        <comment>daab7c43</comment>
+    </data>
+    <data name="Role.Median.Description" xml:space="preserve">
+        <value>وسطانی قدر</value>
+        <comment>ab24877b</comment>
+    </data>
+    <data name="Role.ThirdQuartile.Name" xml:space="preserve">
+        <value>تیسرا چوتھائی</value>
+        <comment>d5a21e8a</comment>
+    </data>
+    <data name="Role.ThirdQuartile.Description" xml:space="preserve">
+        <value>تیسرا چوتھائی</value>
+        <comment>8e0bdf22</comment>
+    </data>
+    <data name="Role.Maximum.Name" xml:space="preserve">
+        <value>زیادہ سے زیادہ</value>
+        <comment>66c9ab17</comment>
+    </data>
+    <data name="Role.Maximum.Description" xml:space="preserve">
+        <value>زیادہ سے زیادہ قدر</value>
+        <comment>6a30476d</comment>
+    </data>
+    <data name="Role.Latitude.Name" xml:space="preserve">
+        <value>عرض بلد</value>
+        <comment>238a676d</comment>
+    </data>
+    <data name="Role.Latitude.Description" xml:space="preserve">
+        <value>ڈگری میں عرض بلد</value>
+        <comment>8da77868</comment>
+    </data>
+    <data name="Role.Longitude.Name" xml:space="preserve">
+        <value>طول بلد</value>
+        <comment>6d80458f</comment>
+    </data>
+    <data name="Role.Longitude.Description" xml:space="preserve">
+        <value>ڈگری میں طول بلد</value>
+        <comment>e46962f6</comment>
+    </data>
+    <data name="Role.Country.Name" xml:space="preserve">
+        <value>ملک</value>
+        <comment>701d021d</comment>
+    </data>
+    <data name="Role.Country.Description" xml:space="preserve">
+        <value>ISO ملک کا کوڈ یا ملک کا نام</value>
+        <comment>3dfd71ba</comment>
+    </data>
+    <data name="Role.Label.Name" xml:space="preserve">
+        <value>لیبل</value>
+        <comment>0e66373f</comment>
+    </data>
+    <data name="Role.Label.Description" xml:space="preserve">
+        <value>متنی لیبل</value>
+        <comment>bebffaca</comment>
+    </data>
+    <data name="Role.Parent.Name" xml:space="preserve">
+        <value>والدین</value>
+        <comment>5f7953f7</comment>
+    </data>
+    <data name="Role.Parent.Description" xml:space="preserve">
+        <value>والدین گروپ</value>
+        <comment>ffd307ce</comment>
+    </data>
+    <data name="Role.Start.Name" xml:space="preserve">
+        <value>شروع</value>
+        <comment>e4bb9f1e</comment>
+    </data>
+    <data name="Role.Start.Description" xml:space="preserve">
+        <value>آغاز کا وقت</value>
+        <comment>babe9dda</comment>
+    </data>
+    <data name="Role.End.Name" xml:space="preserve">
+        <value>اختتام</value>
+        <comment>f4db1e48</comment>
+    </data>
+    <data name="Role.End.Description" xml:space="preserve">
+        <value>اختتام کا وقت</value>
+        <comment>2e46006a</comment>
+    </data>
+    <data name="Role.Target.Name" xml:space="preserve">
+        <value>ہدف</value>
+        <comment>978354db</comment>
+    </data>
+    <data name="Role.Target.Description" xml:space="preserve">
+        <value>ہدف کی قدر</value>
+        <comment>06e12bb4</comment>
+    </data>
+    <data name="Role.Row.Name" xml:space="preserve">
+        <value>قطار</value>
+        <comment>95110d74</comment>
+    </data>
+    <data name="Role.Row.Description" xml:space="preserve">
+        <value>قطار کا زمرہ</value>
+        <comment>4e6a83ba</comment>
+    </data>
+    <data name="Role.Column.Name" xml:space="preserve">
+        <value>کالم</value>
+        <comment>3fdc9a58</comment>
+    </data>
+    <data name="Role.Column.Description" xml:space="preserve">
+        <value>کالم کا زمرہ</value>
+        <comment>d4f23558</comment>
+    </data>
+    <data name="Role.Line.Name" xml:space="preserve">
+        <value>لائن</value>
+        <comment>d7852cd0</comment>
+    </data>
+    <data name="Role.Line.Description" xml:space="preserve">
+        <value>عددی قدر جو لائن کے طور پر بنائی جاتی ہے</value>
+        <comment>e86f9332</comment>
+    </data>
+    <data name="Role.SecondaryLine.Name" xml:space="preserve">
+        <value>ثانوی لائن</value>
+        <comment>3b8ac79e</comment>
+    </data>
+    <data name="Role.SecondaryLine.Description" xml:space="preserve">
+        <value>عددی قدر جو ثانوی محور پر لائن کے طور پر بنائی جاتی ہے</value>
+        <comment>5b821522</comment>
+    </data>
+    <data name="Message.ColumnMissing" xml:space="preserve">
+        <value>نتیجے میں "{0}" نام کا کوئی کالم نہیں ہے۔</value>
+        <comment>f4b10dc8</comment>
+    </data>
+    <data name="Message.ColumnNotATime" xml:space="preserve">
+        <value>کالم "{0}" میں ایسی قدر ہے جو تاریخ اور وقت نہیں ہے۔</value>
+        <comment>1107afc3</comment>
+    </data>
+    <data name="Message.KindUnknown" xml:space="preserve">
+        <value>{0} قسم کا کوئی چارٹ نہیں ہے۔</value>
+        <comment>56f83cac</comment>
+    </data>
+    <data name="Message.RoleNotUsed" xml:space="preserve">
+        <value>{0} کردار {1} استعمال نہیں کرتا۔</value>
+        <comment>76631e05</comment>
+    </data>
+    <data name="Message.RoleTakesOne" xml:space="preserve">
+        <value>کردار {0} ایک کالم لیتا ہے، {1} نہیں۔</value>
+        <comment>1665883b</comment>
+    </data>
+    <data name="Message.OverrideColumnMissing" xml:space="preserve">
+        <value>نتیجے میں کردار {1} کے لیے "{0}" نام کا کوئی کالم نہیں ہے۔</value>
+        <comment>163083ce</comment>
+    </data>
+    <data name="Message.OverrideColumnType" xml:space="preserve">
+        <value>کالم "{0}" کردار {1} نہیں بھر سکتا: اسے {2} درکار ہے۔</value>
+        <comment>aefcc97e</comment>
+    </data>
+    <data name="Message.RoleUnsatisfied" xml:space="preserve">
+        <value>{0} کو کردار {1} کے لیے کالم چاہیے، لیکن نتیجے میں کوئی غیر استعمال شدہ {2} باقی نہیں۔</value>
+        <comment>c1728ebe</comment>
+    </data>
+    <data name="Message.PivotDuplicate" xml:space="preserve">
+        <value>نتیجے میں "{1}" میں "{0}" کے لیے ایک سے زیادہ قطاریں ہیں۔ SQL میں مجموعہ بنائیں تاکہ ہر جوڑی ایک بار آئے۔</value>
+        <comment>6048c012</comment>
+    </data>
+    <data name="Message.HeatmapDuplicate" xml:space="preserve">
+        <value>نتیجے میں "{0}" اور "{1}" کے لیے ایک سے زیادہ قطاریں ہیں۔ SQL میں مجموعہ بنائیں تاکہ ہر جوڑی ایک بار آئے۔</value>
+        <comment>04a7dcf9</comment>
+    </data>
+    <data name="Message.NoRows" xml:space="preserve">
+        <value>کوئری نے کوئی قطار واپس نہیں کی، اس لیے بنانے کو کچھ نہیں۔</value>
+        <comment>9b03b26f</comment>
+    </data>
+    <data name="Message.LimitExceeded" xml:space="preserve">
+        <value>{0} اتنا ڈیٹا نہیں بنا سکتا ({3} کے لیے {2} کی حد کے مقابل {1})۔ کوئری کو SQL میں مجموعہ بنائیں یا فلٹر کریں۔</value>
+        <comment>872cd167</comment>
+    </data>
+    <data name="Message.SeriesNeedsOneValue" xml:space="preserve">
+        <value>جب قطاریں کسی کالم کے ذریعے سیریز میں تقسیم ہوں تو بالکل ایک قدر کا کالم بنایا جاتا ہے۔</value>
+        <comment>b97549ba</comment>
+    </data>
+    <data name="Message.SeriesNeedsOneVertical" xml:space="preserve">
+        <value>جب قطاریں کسی کالم کے ذریعے سیریز میں تقسیم ہوں تو بالکل ایک عمودی کالم بنایا جاتا ہے۔</value>
+        <comment>20c83fb5</comment>
+    </data>
+    <data name="Message.MapNeedsBoth" xml:space="preserve">
+        <value>نقطوں کے نقشے کو عرض بلد اور طول بلد دونوں کالم چاہئیں۔</value>
+        <comment>d3678715</comment>
+    </data>
+    <data name="Message.MapNeedsPlace" xml:space="preserve">
+        <value>نقشے کو یا تو عرض بلد اور طول بلد کا کالم چاہیے، یا ملک کا کالم۔ اگر نام واضح نہ ہوں تو میپنگ میں ان کا نام دیں۔</value>
+        <comment>18791a5c</comment>
+    </data>
+    <data name="Message.MapEither" xml:space="preserve">
+        <value>نقشہ یا تو نقطے بناتا ہے یا ممالک، دونوں نہیں۔</value>
+        <comment>147de694</comment>
+    </data>
+    <data name="Message.MapNeedsValue" xml:space="preserve">
+        <value>ممالک کے نقشے کو انہیں رنگنے کے لیے عددی قدر کا کالم چاہیے۔</value>
+        <comment>90303986</comment>
+    </data>
+    <data name="Message.GaugeNeedsRow" xml:space="preserve">
+        <value>گیج کو اپنی قدر پڑھنے کے لیے ایک قطار چاہیے۔</value>
+        <comment>81b14a44</comment>
+    </data>
+    <data name="Message.CardEmpty" xml:space="preserve">
+        <value>کوئری نے کوئی قطار واپس نہیں کی۔</value>
+        <comment>3737892d</comment>
+    </data>
+    <data name="Message.CardFailed" xml:space="preserve">
+        <value>کارڈ نہیں بنایا جا سکا۔</value>
+        <comment>997d5e5e</comment>
+    </data>
+    <data name="Message.MappingColumnUnknown" xml:space="preserve">
+        <value>میپنگ کالم "{0}" کا نام لیتی ہے، جو SQL کمانڈ واپس نہیں کرتی۔</value>
+        <comment>e6bf721b</comment>
+    </data>
+    <data name="Message.MappingEntryEmpty" xml:space="preserve">
+        <value>میپنگ کی ایک اندراج خالی ہے۔</value>
+        <comment>922cee50</comment>
+    </data>
+    <data name="Message.ParameterEmpty" xml:space="preserve">
+        <value>ایک پیرامیٹر خالی ہے۔</value>
+        <comment>c1ef5acb</comment>
+    </data>
+    <data name="Message.ParameterDuplicate" xml:space="preserve">
+        <value>ایک پیرامیٹر ایک سے زیادہ بار فراہم کیا گیا ہے۔</value>
+        <comment>df7e1866</comment>
+    </data>
+    <data name="Message.RoleUndefined" xml:space="preserve">
+        <value>چارٹ کا کوئی کردار {0} نہیں ہے۔</value>
+        <comment>06aba576</comment>
+    </data>
+    <data name="Message.RoleAssignedTwice" xml:space="preserve">
+        <value>کردار {0} دو بار تفویض کیا گیا ہے۔</value>
+        <comment>060ffd39</comment>
+    </data>
+    <data name="Message.SqlEmpty" xml:space="preserve">
+        <value>SQL کمانڈ خالی ہے۔</value>
+        <comment>f63fdd6c</comment>
+    </data>
+    <data name="Message.ColumnDuplicate" xml:space="preserve">
+        <value>کالم کا نام "{0}" ایک سے زیادہ بار آتا ہے۔ ہر کالم کو اس کا اپنا عرف دیں۔</value>
+        <comment>f90b807f</comment>
+    </data>
+    <data name="Message.ColumnsUnnamed" xml:space="preserve">
+        <value>ایک سے زیادہ کالموں کا نام نہیں ہے۔ ہر کالم کو عرف دیں، مثلاً: AS "Total"۔</value>
+        <comment>5f39f33e</comment>
+    </data>
+    <data name="Message.ParameterForeign" xml:space="preserve">
+        <value>پیرامیٹر {0} اس ویژولائزیشن رجسٹری سے تعلق نہیں رکھتا۔</value>
+        <comment>3eaf1abf</comment>
+    </data>
+    <data name="Message.ParameterValue" xml:space="preserve">
+        <value>"{0}" کی قدر {1} ہونی چاہیے۔</value>
+        <comment>a4e92df1</comment>
+    </data>
+    <data name="Message.SqlSelectOnly" xml:space="preserve">
+        <value>SQL کمانڈ ایک واحد SELECT بیان ہونی چاہیے جو کوئی بلاک شدہ بیان، فنکشن یا ٹیبل استعمال نہ کرے۔</value>
+        <comment>d78a5302</comment>
+    </data>
+    <data name="Message.SqlRejectedGeneric" xml:space="preserve">
+        <value>SQL کمانڈ کو رپورٹنگ ڈیٹا بیس نے مسترد کر دیا۔</value>
+        <comment>fa5788ee</comment>
+    </data>
+    <data name="Message.TemplateEmpty" xml:space="preserve">
+        <value>ٹیمپلیٹ خالی ہے۔</value>
+        <comment>f8ba96ec</comment>
+    </data>
+    <data name="Message.TemplateTooLong" xml:space="preserve">
+        <value>ٹیمپلیٹ {0} حروف کی حد سے لمبا ہے۔</value>
+        <comment>04caf596</comment>
+    </data>
+    <data name="Message.TemplateUnclosedTag" xml:space="preserve">
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: ٹیگ &lt;{2}&gt; کبھی بند نہیں ہوتا۔</value>
+        <comment>1dfdfb51</comment>
+    </data>
+    <data name="Message.TemplateUnexpectedClose" xml:space="preserve">
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: بند کرنے والے ٹیگ &lt;/{2}&gt; کا کوئی مماثل کھولنے والا ٹیگ نہیں۔</value>
+        <comment>f49f0d09</comment>
+    </data>
+    <data name="Message.TemplateTagNotAllowed" xml:space="preserve">
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: ٹیگ &lt;{2}&gt; کی اجازت نہیں۔</value>
+        <comment>e500c51a</comment>
+    </data>
+    <data name="Message.TemplateAttributeNotAllowed" xml:space="preserve">
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: &lt;{3}&gt; پر وصف "{2}" کی اجازت نہیں۔</value>
+        <comment>5b0a354c</comment>
+    </data>
+    <data name="Message.TemplateDirectiveInvalid" xml:space="preserve">
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: ہدایت "{2}" یہاں درست نہیں۔</value>
+        <comment>f1db507b</comment>
+    </data>
+    <data name="Message.TemplateLoopInvalid" xml:space="preserve">
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: v-for "{2}" کی شکل "row in rows" یا "(row, index) in rows" ہونی چاہیے۔</value>
+        <comment>fd4e2a77</comment>
+    </data>
+    <data name="Message.TemplateExpressionInvalid" xml:space="preserve">
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: اظہار "{2}" "{3}" کے قریب درست نہیں۔</value>
+        <comment>b9ea12e7</comment>
+    </data>
+    <data name="Message.TemplateNameUnknown" xml:space="preserve">
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: "{2}" یہاں معلوم نہیں۔ rows، columns، rowCount، truncated یا لوپ متغیر استعمال کریں۔</value>
+        <comment>78917f7e</comment>
+    </data>
+    <data name="Message.TemplateFilterUnknown" xml:space="preserve">
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: فلٹر "{2}" موجود نہیں۔</value>
+        <comment>c2e86ee7</comment>
+    </data>
+    <data name="Message.TemplateFilterArguments" xml:space="preserve">
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: فلٹر "{2}" اتنے دلائل نہیں لیتا۔</value>
+        <comment>8e8117a1</comment>
+    </data>
+    <data name="Message.TemplateInterpolationOpen" xml:space="preserve">
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: کھولنے والا [@ کبھی @] سے بند نہیں ہوتا۔</value>
+        <comment>1fe5aca8</comment>
+    </data>
+    <data name="Message.TemplateTooDeep" xml:space="preserve">
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: ٹیمپلیٹ {2} سطحوں سے زیادہ گہرا ہے۔</value>
+        <comment>245d0d29</comment>
+    </data>
+    <data name="Message.TemplateTooLarge" xml:space="preserve">
+        <value>ٹیمپلیٹ نے {0} حروف سے زیادہ آؤٹ پٹ بنایا۔ SQL میں قطاریں کم کریں۔</value>
+        <comment>12c64c4c</comment>
+    </data>
+    <data name="Message.TemplateTooManySteps" xml:space="preserve">
+        <value>ٹیمپلیٹ کو رینڈر کرنے کے لیے {0} سے زیادہ مراحل درکار تھے۔ SQL میں قطاریں کم کریں یا کم لوپ کریں۔</value>
+        <comment>804b3271</comment>
+    </data>
+    <data name="Message.FormFieldNameMissing" xml:space="preserve">
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: &lt;{2}&gt; کو نام چاہیے۔</value>
+        <comment>f8954ba8</comment>
+    </data>
+    <data name="Message.FormFieldNameInvalid" xml:space="preserve">
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: فیلڈ کا نام "{2}" حرف سے شروع ہونا چاہیے اور صرف حروف، ہندسے اور انڈر اسکور استعمال کرے۔</value>
+        <comment>097e4e98</comment>
+    </data>
+    <data name="Message.FormFieldNameDuplicate" xml:space="preserve">
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: فیلڈ کا نام "{2}" ایک سے زیادہ بار استعمال ہوا ہے۔</value>
+        <comment>f9746e4a</comment>
+    </data>
+    <data name="Message.FormFieldInLoop" xml:space="preserve">
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: &lt;{2}&gt; فیلڈ v-for کے اندر نہیں ہو سکتی، کیونکہ فیلڈ کا نام مقررہ ہونا چاہیے۔</value>
+        <comment>c9d8ae0e</comment>
+    </data>
+    <data name="Message.FormInputTypeInvalid" xml:space="preserve">
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: ان پٹ کی قسم "{2}" کی اجازت نہیں۔</value>
+        <comment>4f4b76f6</comment>
+    </data>
+    <data name="Message.FormOptionsFixed" xml:space="preserve">
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: فیلڈ "{2}" کو مقررہ اختیارات چاہئیں، ہر ایک سادہ قدر کے ساتھ اور کوئی v-for کے اندر نہیں۔</value>
+        <comment>2214a81e</comment>
+    </data>
+    <data name="Message.FormLabelTargetUnknown" xml:space="preserve">
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: لیبل "{2}" کے لیے ہے، جو اس فارم میں فیلڈ نہیں۔</value>
+        <comment>47a842a6</comment>
+    </data>
+    <data name="Term.Needs.Numeric" xml:space="preserve">
+        <value>ایک عددی کالم</value>
+        <comment>5cf35ad9</comment>
+    </data>
+    <data name="Term.Needs.Time" xml:space="preserve">
+        <value>ایک تاریخ اور وقت کا کالم</value>
+        <comment>da7c5eeb</comment>
+    </data>
+    <data name="Term.Needs.NumericOrTime" xml:space="preserve">
+        <value>ایک عددی یا تاریخ اور وقت کا کالم</value>
+        <comment>5af5bdf9</comment>
+    </data>
+    <data name="Term.Needs.Any" xml:space="preserve">
+        <value>ایک کالم</value>
+        <comment>90a51ba2</comment>
+    </data>
+    <data name="Term.Noun.Numeric" xml:space="preserve">
+        <value>عددی کالم</value>
+        <comment>b1fe86d8</comment>
+    </data>
+    <data name="Term.Noun.Time" xml:space="preserve">
+        <value>تاریخ اور وقت کا کالم</value>
+        <comment>967c9293</comment>
+    </data>
+    <data name="Term.Noun.NumericOrTime" xml:space="preserve">
+        <value>عددی یا تاریخ اور وقت کا کالم</value>
+        <comment>a48df5a3</comment>
+    </data>
+    <data name="Term.Noun.Any" xml:space="preserve">
+        <value>کالم</value>
+        <comment>881d5fb6</comment>
+    </data>
+    <data name="Term.Expected.WholeNumber" xml:space="preserve">
+        <value>ایک پورا عدد</value>
+        <comment>ef06b86b</comment>
+    </data>
+    <data name="Term.Expected.Number" xml:space="preserve">
+        <value>ایک عدد</value>
+        <comment>d24f1fa1</comment>
+    </data>
+    <data name="Term.Expected.DateTime" xml:space="preserve">
+        <value>ایک ISO 8601 تاریخ اور وقت</value>
+        <comment>66f8770d</comment>
+    </data>
+    <data name="Term.Expected.Flag" xml:space="preserve">
+        <value>1 یا 0</value>
+        <comment>b2206c45</comment>
+    </data>
+    <data name="Message.CellTooLarge" xml:space="preserve">
+        <value>کالم "{0}" میں ایک قدر {1} بائٹ کی حد سے بڑی ہے۔ SQL میں اس کا کم حصہ منتخب کریں۔</value>
+        <comment>1a676418</comment>
+    </data>
+    <data name="Message.ResultTooLarge" xml:space="preserve">
+        <value>نتیجہ {0} بائٹ کی حد سے بڑا ہے۔ SQL میں مجموعہ بنائیں یا فلٹر کریں۔</value>
+        <comment>8b09f611</comment>
+    </data>
+</root>

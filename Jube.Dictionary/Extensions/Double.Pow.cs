@@ -7,7 +7,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Double Pow(this Double x, Double y)
+        [Description("Returns a number raised to a specified power.")]
+        public static Double Pow(this Double x,
+            [Description("A double-precision floating-point number that specifies a power.")] Double y)
         {
             return Math.Pow(x, y);
         }

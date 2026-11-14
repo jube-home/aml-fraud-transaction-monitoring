@@ -11,8 +11,10 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Globalization;
 using Jube.Dictionary;
+using Jube.GraphRecallProtocol;
 using Jube.HttpAdaptationProtocol;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
@@ -21,6 +23,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
     {
         internal static string CleanName(string name)
         {
+            if (name.StartsWith("Svirfd.", StringComparison.Ordinal))
+            {
+                return name["Svirfd.".Length..];
+            }
+
             return name.Contains('.') ? name.Split(".")[1] : name;
         }
 
@@ -33,6 +40,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 3 => ProtocolConstants.Source.TtlCounter,
                 4 => ProtocolConstants.Source.Sanction,
                 6 => ProtocolConstants.Source.AbstractionCalculation,
+                8 => ProtocolConstants.Source.Graph,
+                9 => ProtocolConstants.Source.Svirfd,
                 _ => ProtocolConstants.Source.Abstraction
             };
         }
@@ -62,6 +71,10 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                     return payload.Sanction.TryGetValue(cleanName, out value);
                 case 6:
                     return payload.AbstractionCalculation.TryGetValue(cleanName, out value);
+                case 8:
+                    return GraphEntityMembers.TryReadNumber(payload.Graph, cleanName, out value);
+                case 9:
+                    return Jube.Svirfd.SvirfdMembers.TryReadNumber(payload.Svirfd, cleanName, out value);
                 default:
                     return payload.Abstraction.TryGetValue(cleanName, out value);
             }

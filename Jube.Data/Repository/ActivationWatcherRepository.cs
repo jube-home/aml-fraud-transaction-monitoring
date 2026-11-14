@@ -20,6 +20,7 @@ namespace Jube.Data.Repository
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
 
     public class ActivationWatcherRepository
@@ -27,12 +28,10 @@ namespace Jube.Data.Repository
         private readonly DbContext dbContext;
         private readonly int? tenantRegistryId;
 
-        public ActivationWatcherRepository(DbContext dbContext, string userName)
+        public ActivationWatcherRepository(DbContext dbContext, int tenantRegistryId)
         {
             this.dbContext = dbContext;
-
-            tenantRegistryId = dbContext.UserInTenant.Where(w => w.User == userName)
-                .Select(s => s.TenantRegistryId).FirstOrDefault();
+            this.tenantRegistryId = tenantRegistryId;
         }
 
         public ActivationWatcherRepository(DbContext dbContext)
@@ -54,13 +53,25 @@ namespace Jube.Data.Repository
         }
 
         public async Task<IEnumerable<ActivationWatcher>> GetByDateRangeAscendingAsync(DateTime? dateFrom,
-            DateTime? dateTo, int limit, CancellationToken token = default)
+            DateTime? dateTo, int limit, string key = null, string keyValue = null,
+            CancellationToken token = default)
         {
-            return await dbContext.ActivationWatcher
+            if (!tenantRegistryId.HasValue)
+            {
+                return [];
+            }
+
+            var newest = await dbContext.ActivationWatcher
                 .Where(w =>
                     (dateFrom == null || w.CreatedDate > dateFrom) && (dateTo == null || w.CreatedDate <= dateTo)
+                                                                   && (key == null || w.Key == key)
+                                                                   && (keyValue == null || w.KeyValue == keyValue)
                                                                    && w.TenantRegistryId == tenantRegistryId)
-                .OrderBy(s => s.Id).Take(limit).ToListAsync(token);
+                .OrderByDescending(s => s.Id).Take(limit).ToListAsync(token);
+
+            newest.Reverse();
+
+            return newest;
         }
 
         public async Task<ActivationWatcher> InsertAsync(ActivationWatcher model, CancellationToken token = default)

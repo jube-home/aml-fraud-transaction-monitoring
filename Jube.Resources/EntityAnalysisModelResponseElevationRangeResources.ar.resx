@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>ليس لديك إذن لتنفيذ هذا الإجراء.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>يجب تسجيل الدخول إلى مستأجر لتنفيذ هذا الإجراء.</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>مطلوب نموذج صالح.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>الاسم مطلوب.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>يجب ألا يتجاوز الاسم ⁨{0}⁩ حرفًا.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>هذا الاسم موجود بالفعل.</value>
+  </data>
+    <data name="MinimumRange" xml:space="preserve">
+    <value>لا يمكن أن يكون المستوى الأول سالبًا.</value>
+  </data>
+    <data name="MaximumRange" xml:space="preserve">
+    <value>لا يمكن أن يكون المستوى الأخير أقل من المستوى الأول.</value>
+  </data>
+    <data name="RangeOverlaps" xml:space="preserve">
+    <value>يتداخل هذا النطاق مع النطاق المسمى ⁨{0}⁩.</value>
+  </data>
+    <data name="DeclineAndHold" xml:space="preserve">
+    <value>لا يمكن للنطاق أن يرفض ويعلّق في الوقت نفسه؛ فالرفض لا يعلّق أبدًا.</value>
+  </data>
+    <data name="ColourInvalid" xml:space="preserve">
+    <value>يجب أن يكون اللون قيمة سداسية عشرية مثل ⁨#A1B2C3⁩.</value>
+  </data>
+    <data name="ContentMaxLength" xml:space="preserve">
+    <value>يجب ألا يتجاوز المحتوى ⁨{0}⁩ حرفًا.</value>
+  </data>
+    <data name="RedirectMaxLength" xml:space="preserve">
+    <value>يجب ألا يتجاوز إعادة التوجيه ⁨{0}⁩ حرفًا.</value>
+  </data>
+    <data name="HttpEndpointRequired" xml:space="preserve">
+    <value>عنوان ⁨URL⁩ لخطاف الويب مطلوب عند تفعيل خطاف الويب.</value>
+  </data>
+    <data name="HttpEndpointInvalid" xml:space="preserve">
+    <value>يجب أن يكون خطاف الويب عنوان ⁨URL⁩ مطلقًا بصيغة ⁨http⁩ أو ⁨https⁩ تُكتب فيه الصيغة والمضيف والمنفذ حرفيًا، مع وجود الرموز في المسار والاستعلام فقط.</value>
+  </data>
+    <data name="HttpEndpointMaxLength" xml:space="preserve">
+    <value>يجب ألا يتجاوز عنوان ⁨URL⁩ لخطاف الويب ⁨{0}⁩ حرفًا.</value>
+  </data>
+    <data name="HttpEndpointHostBlocked" xml:space="preserve">
+    <value>عنوان خطاف الويب محظور بموجب سياسة المضيفين الصادرة: فهو يشير إلى عنوان حلقة مرتدة أو محلي الارتباط أو بيانات وصفية أو خاص أو مشترك أو محلي فريد أو محجوز، أو إلى ⁨localhost⁩، أو إلى صيغة غير ⁨http⁩ و⁨https⁩. أدرج المستقبل الداخلي الموثوق في ⁨JUBE_HOOK_ALLOWED_HOSTS⁩ أو ⁨JUBE_HOOK_ALLOWED_CIDRS⁩.</value>
+  </data>
+    <data name="HttpEndpointTypeIdInvalid" xml:space="preserve">
+    <value>يجب أن تكون طريقة خطاف الويب ⁨POST⁩ أو ⁨GET⁩.</value>
+  </data>
+    <data name="HttpEndpointHeaderRequired" xml:space="preserve">
+    <value>اسم ترويسة بيانات الاعتماد مطلوب عند تحديد متغير بيانات اعتماد.</value>
+  </data>
+    <data name="HttpEndpointHeaderInvalid" xml:space="preserve">
+    <value>يجب أن يكون اسم ترويسة بيانات الاعتماد اسم ترويسة عاديًا وليس محجوزًا.</value>
+  </data>
+    <data name="HttpEndpointCredentialRequired" xml:space="preserve">
+    <value>متغير بيانات الاعتماد مطلوب عند تحديد اسم ترويسة بيانات الاعتماد.</value>
+  </data>
+    <data name="HttpEndpointCredentialInvalid" xml:space="preserve">
+    <value>يجب أن يكون متغير بيانات الاعتماد اسم متغير بيئة يبدأ بـ ⁨JUBE_HOOK_⁩ متبوعًا بأحرف كبيرة أو أرقام أو شرطات سفلية.</value>
+  </data>
+    <data name="NotificationTypeIdInvalid" xml:space="preserve">
+    <value>يجب أن تكون قناة الإشعار بريدًا إلكترونيًا أو ⁨SMS⁩.</value>
+  </data>
+    <data name="NotificationDestinationRequired" xml:space="preserve">
+    <value>الوجهة مطلوبة عند تفعيل الإشعار.</value>
+  </data>
+    <data name="NotificationDestinationMaxLength" xml:space="preserve">
+    <value>يجب ألا تتجاوز الوجهة ⁨{0}⁩ حرفًا.</value>
+  </data>
+    <data name="NotificationSubjectMaxLength" xml:space="preserve">
+    <value>يجب ألا يتجاوز الموضوع ⁨{0}⁩ حرفًا.</value>
+  </data>
+    <data name="NotificationBodyMaxLength" xml:space="preserve">
+    <value>يجب ألا يتجاوز النص ⁨{0}⁩ حرفًا.</value>
+  </data>
+</root>

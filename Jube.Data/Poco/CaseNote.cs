@@ -35,9 +35,15 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(6)] public string CreatedUser { get; set; }
         [Column] [Nullable] [Key(7)] public string CaseKeyValue { get; set; }
         [Column] [Nullable] [Key(8)] public int? CaseId { get; set; }
+        [Column] [Key(10)] public int SourceId { get; set; } = 1;
+        [Column] [Key(11)] public int KindId { get; set; } = 1;
+        [Column] [Key(13)] public bool IsFinding { get; set; }
+        [Column] [Key(14)] public int Version { get; set; } = 1;
+        [Column] [Nullable] [Key(15)] public int? SupersedesNoteId { get; set; }
+        [Column] [Nullable] [Key(16)] public string FactsHash { get; set; }
+        [Column] [Nullable] [Key(19)] public int? AskJoobyConversationId { get; set; }
 
-        [Association(ThisKey = "CaseId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "CaseId", OtherKey = "Id", CanBeNull = true)]
         [Key(9)]
         public Case Case { get; set; }
     }

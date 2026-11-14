@@ -72,4 +72,13 @@
     <data name="PayloadRequired" xml:space="preserve">
     <value>La charge utile est requise.</value>
   </data>
+    <data name="NoteNotFound" xml:space="preserve">
+    <value>La note est introuvable.</value>
+  </data>
+    <data name="NoteMaxLength" xml:space="preserve">
+    <value>Une note ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>Le dossier est verrouillé par un autre utilisateur.</value>
+  </data>
 </root>

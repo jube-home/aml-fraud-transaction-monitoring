@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double RatioOf(this double @this, double denominator)
+        [Description("The value divided by the denominator.")]
+        public static double RatioOf(this double @this,
+            [Description("The number the value is divided by.")] double denominator)
         {
             return CalculationSupport.Finite(@this / denominator);
         }

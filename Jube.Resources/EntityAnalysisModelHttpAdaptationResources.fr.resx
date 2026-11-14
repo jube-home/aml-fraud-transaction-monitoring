@@ -39,4 +39,34 @@
     <data name="NameRequired" xml:space="preserve">
     <value>Un nom est requis.</value>
   </data>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>Un modèle valide est requis.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Le nom ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Ce nom existe déjà.</value>
+  </data>
+    <data name="HttpEndpointRequired" xml:space="preserve">
+    <value>Un point de terminaison HTTP est requis.</value>
+  </data>
+    <data name="HttpEndpointMaxLength" xml:space="preserve">
+    <value>Le point de terminaison HTTP ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="HttpEndpointMustBeAbsolutePath" xml:space="preserve">
+    <value>Le point de terminaison HTTP doit commencer par '/'.</value>
+  </data>
+    <data name="PriorityRange" xml:space="preserve">
+    <value>La priorité doit être supérieure ou égale à zéro.</value>
+  </data>
+    <data name="HttpEndpointInvalidPath" xml:space="preserve">
+    <value>Le point de terminaison HTTP doit être un chemin simple, sans caractères de contrôle, espaces ni segments de points.</value>
+  </data>
 </root>

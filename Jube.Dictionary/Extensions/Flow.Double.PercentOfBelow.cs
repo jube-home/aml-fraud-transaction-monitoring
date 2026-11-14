@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchPercentOfBelow(double total, double bound)
+            [Description("True when: the value as a percentage of the total is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentOfBelow([Description("The total the value is a part of.")] double total,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoublePercentOfBelow(flow.Value, total, bound));
             }
 
-            public Flow<double> RejectPercentOfBelow(double total, double bound)
+            [Description("True when: the value as a percentage of the total is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentOfBelow([Description("The total the value is a part of.")] double total,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoublePercentOfBelow(flow.Value, total, bound));
             }
 
-            public Flow<double> BreakPercentOfBelow(double total, double bound)
+            [Description("True when: the value as a percentage of the total is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentOfBelow([Description("The total the value is a part of.")] double total,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoublePercentOfBelow(flow.Value, total, bound));
             }
 
-            public Flow<double> RequirePercentOfBelow(double total, double bound)
+            [Description("True when: the value as a percentage of the total is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentOfBelow([Description("The total the value is a part of.")] double total,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoublePercentOfBelow(flow.Value, total, bound));
             }
 
-            public Flow<double> EnsurePercentOfBelow(double total, double bound)
+            [Description("True when: the value as a percentage of the total is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentOfBelow([Description("The total the value is a part of.")] double total,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchPercentOfBelow(double total, double bound)
+            [Description("Begins a pipeline from the value. True when: the value as a percentage of the total is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentOfBelow([Description("The total the value is a part of.")] double total,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchPercentOfBelow(total, bound);
             }
 
-            public Flow<double> RejectPercentOfBelow(double total, double bound)
+            [Description("Begins a pipeline from the value. True when: the value as a percentage of the total is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentOfBelow([Description("The total the value is a part of.")] double total,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectPercentOfBelow(total, bound);
             }
 
-            public Flow<double> BreakPercentOfBelow(double total, double bound)
+            [Description("Begins a pipeline from the value. True when: the value as a percentage of the total is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentOfBelow([Description("The total the value is a part of.")] double total,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakPercentOfBelow(total, bound);
             }
 
-            public Flow<double> RequirePercentOfBelow(double total, double bound)
+            [Description("Begins a pipeline from the value. True when: the value as a percentage of the total is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentOfBelow([Description("The total the value is a part of.")] double total,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequirePercentOfBelow(total, bound);
             }
 
-            public Flow<double> EnsurePercentOfBelow(double total, double bound)
+            [Description("Begins a pipeline from the value. True when: the value as a percentage of the total is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentOfBelow([Description("The total the value is a part of.")] double total,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsurePercentOfBelow(total, bound);
             }

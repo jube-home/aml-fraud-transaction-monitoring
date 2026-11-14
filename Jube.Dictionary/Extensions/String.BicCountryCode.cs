@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The country code of a valid BIC, otherwise empty.")]
         public static string BicCountryCode(this string? @this)
         {
             return @this.IsValidBic() ? @this!.Substring(4, 2).ToUpperInvariant() : "";

@@ -18,7 +18,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double TokenSortSimilarity(this string? @this, string? other)
+        [Description("Jaro-Winkler similarity after sorting words, so word order does not matter.")]
+        public static double TokenSortSimilarity(this string? @this,
+            [Description("The text the value is compared with.")] string? other)
         {
             return FuzzyScorers.TokenSort(FuzzyNormaliser.Normalise(@this, FuzzyNormalisation.Default),
                 FuzzyNormaliser.Normalise(other, FuzzyNormalisation.Default));

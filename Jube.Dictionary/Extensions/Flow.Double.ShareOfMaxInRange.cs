@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchShareOfMaxInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the value over the largest of it and the others is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchShareOfMaxInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleShareOfMaxInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RejectShareOfMaxInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the value over the largest of it and the others is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectShareOfMaxInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleShareOfMaxInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> BreakShareOfMaxInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the value over the largest of it and the others is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakShareOfMaxInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleShareOfMaxInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RequireShareOfMaxInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the value over the largest of it and the others is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireShareOfMaxInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleShareOfMaxInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> EnsureShareOfMaxInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the value over the largest of it and the others is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureShareOfMaxInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchShareOfMaxInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value over the largest of it and the others is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchShareOfMaxInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().MatchShareOfMaxInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RejectShareOfMaxInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value over the largest of it and the others is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectShareOfMaxInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RejectShareOfMaxInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> BreakShareOfMaxInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value over the largest of it and the others is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakShareOfMaxInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().BreakShareOfMaxInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RequireShareOfMaxInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value over the largest of it and the others is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireShareOfMaxInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RequireShareOfMaxInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> EnsureShareOfMaxInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value over the largest of it and the others is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureShareOfMaxInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().EnsureShareOfMaxInRange(lowerBound, upperBound, others);
             }

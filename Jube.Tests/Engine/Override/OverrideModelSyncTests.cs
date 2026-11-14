@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Jube.Data.Context;
 using Jube.Data.Poco;
+using Jube.Data.Repository.Models;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Extensions;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using Jube.Test.Infrastructure;
@@ -37,6 +38,7 @@ namespace Jube.Test.Engine.Override
     {
         private readonly List<int> createdModelIdsForCleanup = [];
         private readonly List<Guid> createdModelGuidsForCleanup = [];
+        private readonly List<(EntityApprovalKind Kind, int Id)> approvalsForCleanup = [];
 
         private static string ConnectionString =>
             Environment.GetEnvironmentVariable("JubeTestConnectionString")
@@ -54,8 +56,17 @@ namespace Jube.Test.Engine.Override
             await using var dbContext =
                 DataConnectionDbContext.GetResilientDbContextDataConnection(ConnectionString, TestLog.NoOp);
 
+            foreach (var (kind, id) in approvalsForCleanup)
+            {
+                await EntityApprovalSeed.RemoveForEntityAsync(dbContext, kind, id);
+            }
+
             foreach (var modelGuid in createdModelGuidsForCleanup)
             {
+                await dbContext.GetTable<EntityAnalysisModelActivationRuleOverrideVersion>()
+                    .Where(w => w.EntityAnalysisModelGuid == modelGuid).DeleteAsync();
+                await dbContext.GetTable<EntityAnalysisModelOverrideVersion>()
+                    .Where(w => w.EntityAnalysisModelGuid == modelGuid).DeleteAsync();
                 await dbContext.EntityAnalysisModelActivationRuleOverride
                     .Where(w => w.EntityAnalysisModelGuid == modelGuid).DeleteAsync();
                 await dbContext.EntityAnalysisModelOverride
@@ -115,10 +126,10 @@ namespace Jube.Test.Engine.Override
             context.Snapshots.Publish();
         }
 
-        private static Task InsertModelOverrideAsync(DbContext dbContext, Guid modelGuid, string key, string value,
-            byte overrideKind = 0)
+        private async Task<int> InsertModelOverrideAsync(DbContext dbContext, Guid modelGuid, string key,
+            string value, byte overrideKind = 0)
         {
-            return dbContext.InsertAsync(new OverridePoco
+            var id = await dbContext.InsertWithInt32IdentityAsync(new OverridePoco
             {
                 EntityAnalysisModelGuid = modelGuid,
                 OverrideKey = key,
@@ -129,12 +140,16 @@ namespace Jube.Test.Engine.Override
                 CreatedUser = "OverrideModelSyncTests",
                 Version = 1
             });
+
+            approvalsForCleanup.Add((EntityApprovalKind.EntityAnalysisModelOverride, id));
+
+            return id;
         }
 
-        private static Task InsertActivationRuleOverrideAsync(DbContext dbContext, Guid modelGuid, string key,
+        private async Task<int> InsertActivationRuleOverrideAsync(DbContext dbContext, Guid modelGuid, string key,
             string value, string activationRuleName, byte overrideKind = 0)
         {
-            return dbContext.InsertAsync(new ActivationRuleOverridePoco
+            var id = await dbContext.InsertWithInt32IdentityAsync(new ActivationRuleOverridePoco
             {
                 EntityAnalysisModelGuid = modelGuid,
                 OverrideKey = key,
@@ -146,6 +161,10 @@ namespace Jube.Test.Engine.Override
                 CreatedUser = "OverrideModelSyncTests",
                 Version = 1
             });
+
+            approvalsForCleanup.Add((EntityApprovalKind.EntityAnalysisModelActivationRuleOverride, id));
+
+            return id;
         }
 
         [Fact]
@@ -266,8 +285,12 @@ namespace Jube.Test.Engine.Override
 
             var (modelId, modelGuid) = await CreateModelAsync(dbContext);
 
-            await InsertActivationRuleOverrideAsync(dbContext, modelGuid, "CardFingerprint", "cdb7",
+            var forceId = await InsertActivationRuleOverrideAsync(dbContext, modelGuid, "CardFingerprint", "cdb7",
                 "BlacklistCard", (byte)EntityAnalysisModelOverrideKind.Force);
+
+            await EntityApprovalSeed.ApproveAsync(dbContext,
+                EntityApprovalKind.EntityAnalysisModelActivationRuleOverride,
+                forceId);
 
             await InsertActivationRuleOverrideAsync(dbContext, modelGuid, "CardFingerprint", "cdb7",
                 "QuietRule");
@@ -292,8 +315,12 @@ namespace Jube.Test.Engine.Override
 
             await InsertModelOverrideAsync(dbContext, modelGuid, "CardFingerprint", "cdb7");
 
-            await InsertActivationRuleOverrideAsync(dbContext, modelGuid, "CardFingerprint", "cdb7",
+            var forceId = await InsertActivationRuleOverrideAsync(dbContext, modelGuid, "CardFingerprint", "cdb7",
                 "BlacklistCard", (byte)EntityAnalysisModelOverrideKind.Force);
+
+            await EntityApprovalSeed.ApproveAsync(dbContext,
+                EntityApprovalKind.EntityAnalysisModelActivationRuleOverride,
+                forceId);
 
             var model = new EntityAnalysisModelDomain();
             await SyncAsync(dbContext, modelId, modelGuid, model);
@@ -370,6 +397,154 @@ namespace Jube.Test.Engine.Override
 
             model.Snapshot.EntityAnalysisModelOverrides.Should().BeEmpty(
                 "a removed override must not survive the next synchronisation");
+        }
+
+        [Fact]
+        public async Task SyncIgnoresAForceOverrideThatHasNeverBeenApprovedAsync()
+        {
+            await using var dbContext =
+                DataConnectionDbContext.GetResilientDbContextDataConnection(ConnectionString, TestLog.NoOp);
+
+            var (modelId, modelGuid) = await CreateModelAsync(dbContext);
+
+            await InsertModelOverrideAsync(dbContext, modelGuid, "CardFingerprint", "pendingModel",
+                (byte)EntityAnalysisModelOverrideKind.Force);
+
+            await InsertActivationRuleOverrideAsync(dbContext, modelGuid, "CardFingerprint", "pendingRule",
+                "BlacklistCard", (byte)EntityAnalysisModelOverrideKind.Force);
+
+            await InsertModelOverrideAsync(dbContext, modelGuid, "CardFingerprint", "suppressed");
+
+            var model = new EntityAnalysisModelDomain();
+            await SyncAsync(dbContext, modelId, modelGuid, model);
+
+            model.Snapshot.EntityAnalysisModelOverrides["CardFingerprint"].Keys.Should()
+                .BeEquivalentTo(["suppressed"], "a pending Force override must never reach the engine, " +
+                                                "while a Suppress override keeps its behaviour with no approval");
+        }
+
+        [Fact]
+        public async Task SyncIgnoresARejectedForceOverrideAsync()
+        {
+            await using var dbContext =
+                DataConnectionDbContext.GetResilientDbContextDataConnection(ConnectionString, TestLog.NoOp);
+
+            var (modelId, modelGuid) = await CreateModelAsync(dbContext);
+
+            var modelForce = await InsertModelOverrideAsync(dbContext, modelGuid, "CardFingerprint", "rejectedModel",
+                (byte)EntityAnalysisModelOverrideKind.Force);
+
+            var ruleForce = await InsertActivationRuleOverrideAsync(dbContext, modelGuid, "CardFingerprint",
+                "rejectedRule", "BlacklistCard", (byte)EntityAnalysisModelOverrideKind.Force);
+
+            await EntityApprovalSeed.RejectAsync(dbContext, EntityApprovalKind.EntityAnalysisModelOverride, modelForce);
+
+            await EntityApprovalSeed.RejectAsync(dbContext,
+                EntityApprovalKind.EntityAnalysisModelActivationRuleOverride, ruleForce);
+
+            var model = new EntityAnalysisModelDomain();
+            await SyncAsync(dbContext, modelId, modelGuid, model);
+
+            model.Snapshot.EntityAnalysisModelOverrides.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task SyncAppliesAnApprovedForceOverrideAsync()
+        {
+            await using var dbContext =
+                DataConnectionDbContext.GetResilientDbContextDataConnection(ConnectionString, TestLog.NoOp);
+
+            var (modelId, modelGuid) = await CreateModelAsync(dbContext);
+
+            var forceId = await InsertModelOverrideAsync(dbContext, modelGuid, "CardFingerprint", "approved",
+                (byte)EntityAnalysisModelOverrideKind.Force);
+
+            await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModelOverride, forceId);
+
+            var model = new EntityAnalysisModelDomain();
+            await SyncAsync(dbContext, modelId, modelGuid, model);
+
+            model.Snapshot.EntityAnalysisModelOverrides["CardFingerprint"]["approved"].KindFor("AnyRule").Should()
+                .Be(EntityAnalysisModelOverrideKind.Force);
+        }
+
+        [Fact]
+        public async Task SyncKeepsTheApprovedVersionLiveWhileAnEditOrARemovalIsPendingAsync()
+        {
+            await using var dbContext =
+                DataConnectionDbContext.GetResilientDbContextDataConnection(ConnectionString, TestLog.NoOp);
+
+            var (modelId, modelGuid) = await CreateModelAsync(dbContext);
+
+            var forceId = await InsertModelOverrideAsync(dbContext, modelGuid, "CardFingerprint", "pendingRemoval",
+                (byte)EntityAnalysisModelOverrideKind.Force);
+
+            await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModelOverride, forceId);
+
+            await dbContext.InsertAsync(new EntityAnalysisModelOverrideVersion
+            {
+                EntityAnalysisModelOverrideId = forceId,
+                EntityAnalysisModelGuid = modelGuid,
+                OverrideKey = "CardFingerprint",
+                OverrideKeyValue = "pendingRemoval",
+                OverrideKind = (byte)EntityAnalysisModelOverrideKind.Force,
+                Deleted = 0,
+                CreatedDate = DateTime.UtcNow,
+                CreatedUser = "OverrideModelSyncTests",
+                Version = 1
+            });
+
+            await dbContext.EntityAnalysisModelOverride.Where(w => w.Id == forceId)
+                .Set(s => s.Deleted, (byte)1)
+                .Set(s => s.DeletedUser, "OverrideModelSyncTests")
+                .Set(s => s.DeletedDate, DateTime.UtcNow)
+                .Set(s => s.Version, 2)
+                .UpdateAsync();
+
+            var model = new EntityAnalysisModelDomain();
+            await SyncAsync(dbContext, modelId, modelGuid, model);
+
+            model.Snapshot.EntityAnalysisModelOverrides["CardFingerprint"].Should().ContainKey("pendingRemoval",
+                "a removal of a Force override is itself a pending change and the approved version stays in force");
+
+            await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModelOverride, forceId,
+                2);
+
+            await SyncAsync(dbContext, modelId, modelGuid, model);
+
+            model.Snapshot.EntityAnalysisModelOverrides.Should().BeEmpty(
+                "once the removal is approved the Force override stops applying");
+        }
+
+        [Fact]
+        public async Task SyncStillSkipsAnApprovedForceOverrideThatHasExpiredAsync()
+        {
+            await using var dbContext =
+                DataConnectionDbContext.GetResilientDbContextDataConnection(ConnectionString, TestLog.NoOp);
+
+            var (modelId, modelGuid) = await CreateModelAsync(dbContext);
+
+            var forceId = await dbContext.InsertWithInt32IdentityAsync(new OverridePoco
+            {
+                EntityAnalysisModelGuid = modelGuid,
+                OverrideKey = "CardFingerprint",
+                OverrideKeyValue = "expiredForce",
+                OverrideKind = (byte)EntityAnalysisModelOverrideKind.Force,
+                Deleted = 0,
+                DeleteExpiryDate = DateTime.UtcNow.AddMinutes(-5),
+                CreatedDate = DateTime.UtcNow,
+                CreatedUser = "OverrideModelSyncTests",
+                Version = 1
+            });
+
+            approvalsForCleanup.Add((EntityApprovalKind.EntityAnalysisModelOverride, forceId));
+
+            await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModelOverride, forceId);
+
+            var model = new EntityAnalysisModelDomain();
+            await SyncAsync(dbContext, modelId, modelGuid, model);
+
+            model.Snapshot.EntityAnalysisModelOverrides.Should().BeEmpty();
         }
     }
 }

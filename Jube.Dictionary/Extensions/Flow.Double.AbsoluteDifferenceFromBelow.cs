@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchAbsoluteDifferenceFromBelow(double other, double bound)
+            [Description("True when: the size of the gap between the value and the other is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchAbsoluteDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleAbsoluteDifferenceFromBelow(flow.Value, other, bound));
             }
 
-            public Flow<double> RejectAbsoluteDifferenceFromBelow(double other, double bound)
+            [Description("True when: the size of the gap between the value and the other is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectAbsoluteDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleAbsoluteDifferenceFromBelow(flow.Value, other, bound));
             }
 
-            public Flow<double> BreakAbsoluteDifferenceFromBelow(double other, double bound)
+            [Description("True when: the size of the gap between the value and the other is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakAbsoluteDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleAbsoluteDifferenceFromBelow(flow.Value, other, bound));
             }
 
-            public Flow<double> RequireAbsoluteDifferenceFromBelow(double other, double bound)
+            [Description("True when: the size of the gap between the value and the other is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireAbsoluteDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleAbsoluteDifferenceFromBelow(flow.Value, other, bound));
             }
 
-            public Flow<double> EnsureAbsoluteDifferenceFromBelow(double other, double bound)
+            [Description("True when: the size of the gap between the value and the other is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureAbsoluteDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchAbsoluteDifferenceFromBelow(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the size of the gap between the value and the other is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchAbsoluteDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchAbsoluteDifferenceFromBelow(other, bound);
             }
 
-            public Flow<double> RejectAbsoluteDifferenceFromBelow(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the size of the gap between the value and the other is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectAbsoluteDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectAbsoluteDifferenceFromBelow(other, bound);
             }
 
-            public Flow<double> BreakAbsoluteDifferenceFromBelow(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the size of the gap between the value and the other is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakAbsoluteDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakAbsoluteDifferenceFromBelow(other, bound);
             }
 
-            public Flow<double> RequireAbsoluteDifferenceFromBelow(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the size of the gap between the value and the other is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireAbsoluteDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireAbsoluteDifferenceFromBelow(other, bound);
             }
 
-            public Flow<double> EnsureAbsoluteDifferenceFromBelow(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the size of the gap between the value and the other is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureAbsoluteDifferenceFromBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureAbsoluteDifferenceFromBelow(other, bound);
             }

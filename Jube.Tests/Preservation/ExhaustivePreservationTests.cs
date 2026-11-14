@@ -20,6 +20,7 @@ using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 
 namespace Jube.Test.Preservation
@@ -265,17 +266,16 @@ namespace Jube.Test.Preservation
         }
 
         [Fact]
-        public async Task PeekCarriesTheExhaustiveAndAnalyticsCollectionsAsync()
+        public async Task LivePayloadCarriesTheExhaustiveAndAnalyticsCollectionsAsync()
         {
             var tenant = await harness.CreateTenantAsync("Pk");
             var modelId = await harness.CreateModelAsync(tenant, "Pk");
             await using var db = fx.GetDbContext();
             await SeedTreeAsync(db, modelId, 0);
             await AdvancedAnalyticsSeed.SeedAsync(db, tenant.Id, modelId, "Pk");
-            var service = await PreservationHarness.BuildServiceAsync(db, tenant.UserName);
-
-            var json = await service.ExportPeekAsync(true, false, false, false, true);
-            var without = await service.ExportPeekAsync(true, false, false, false);
+            var json = await PreservationHarness.LiveJsonAsync(db, tenant.UserName, true, false, false, false,
+                advancedAnalytics: true);
+            var without = await PreservationHarness.LiveJsonAsync(db, tenant.UserName, true, false, false, false);
 
             json.Should().Contain("ExhaustiveSearchInstancePrescriptionHistogram");
             json.Should().Contain("TrainedModelVersions");

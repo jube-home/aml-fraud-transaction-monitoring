@@ -11,7 +11,9 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Linq;
 using FluentValidation;
+using Jube.Case.Outbound;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.TenantRegistry;
 using Jube.Resources;
@@ -22,6 +24,9 @@ namespace Jube.Validations.Repository.TenantRegistry
     public sealed class TenantRegistryDtoValidator : AbstractValidator<TenantRegistryDto>
     {
         private const int MaxNameLength = 256;
+        private const int MaxHttpAdaptationUrlLength = 2048;
+        private const int MinHttpAdaptationTimeout = 100;
+        private const int MaxHttpAdaptationTimeout = 30000;
 
         public TenantRegistryDtoValidator(TenantRegistryRepository repository, IStringLocalizer localiser)
         {
@@ -33,6 +38,9 @@ namespace Jube.Validations.Repository.TenantRegistry
                 .MaximumLength(MaxNameLength)
                 .WithMessage(_ => string.Format(localiser[TenantRegistryResources.NameMaxLength], MaxNameLength))
                 .WithErrorCode("NameMaximumLength")
+                .Must(HasNoControlOrBidirectionalCharactersAndIsTrimmed)
+                .WithMessage(_ => localiser[TenantRegistryResources.NameInvalidCharacters])
+                .WithErrorCode("NameInvalidCharacters")
                 .MustAsync(async (dto, name, cancellation) =>
                 {
                     var existing = await repository.GetByNameAsync(name, cancellation);
@@ -41,6 +49,53 @@ namespace Jube.Validations.Repository.TenantRegistry
                 })
                 .WithMessage(_ => localiser[TenantRegistryResources.NameAlreadyExists])
                 .WithErrorCode("NameDuplicate");
+
+            RuleFor(p => p.Active)
+                .MustAsync(async (dto, active, cancellation) =>
+                {
+                    if (active || dto.Id == 0)
+                    {
+                        return true;
+                    }
+
+                    var existing = await repository.GetByIdAsync(dto.Id, cancellation);
+
+                    return existing?.Landlord != 1;
+                })
+                .WithMessage(_ => localiser[TenantRegistryResources.LandlordMustStayActive])
+                .WithErrorCode("LandlordMustStayActive");
+
+            RuleFor(p => p.HttpAdaptationUrl)
+                .Must(m => TenantBaseUrlPolicy.Check(m, false) == null)
+                .WithMessage(_ => localiser[TenantRegistryResources.HttpAdaptationUrlInvalid])
+                .WithErrorCode("HttpAdaptationUrlInvalid")
+                .When(w => !string.IsNullOrWhiteSpace(w.HttpAdaptationUrl));
+
+            RuleFor(p => p.HttpAdaptationUrl)
+                .MaximumLength(MaxHttpAdaptationUrlLength)
+                .WithMessage(_ => localiser[TenantRegistryResources.HttpAdaptationUrlInvalid])
+                .WithErrorCode("HttpAdaptationUrlMaximumLength");
+
+            RuleFor(p => p.HttpAdaptationTimeoutMilliseconds)
+                .Must(m => m == 0 || m is >= MinHttpAdaptationTimeout and <= MaxHttpAdaptationTimeout)
+                .WithMessage(_ => localiser[TenantRegistryResources.HttpAdaptationTimeoutRange])
+                .WithErrorCode("HttpAdaptationTimeoutRange");
+        }
+
+        private static bool HasNoControlOrBidirectionalCharactersAndIsTrimmed(string? name)
+        {
+            if (name == null)
+            {
+                return true;
+            }
+
+            return name == name.Trim() && !name.Any(c => char.IsControl(c) || IsBidirectionalControl(c));
+        }
+
+        private static bool IsBidirectionalControl(char c)
+        {
+            return c is '\u061C' or '\u200E' or '\u200F' or (>= '\u202A' and <= '\u202E') or
+                (>= '\u2066' and <= '\u2069');
         }
     }
 }

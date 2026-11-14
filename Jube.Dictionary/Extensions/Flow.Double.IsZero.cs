@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
+            [Description("True when: the value is zero. Decides matched if so; otherwise continues.")]
             public Flow<double> MatchIsZero()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleIsZero(flow.Value));
             }
 
+            [Description("True when: the value is zero. Decides rejected if so; otherwise continues.")]
             public Flow<double> RejectIsZero()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleIsZero(flow.Value));
             }
 
+            [Description("True when: the value is zero. Decides broken if so; otherwise continues.")]
             public Flow<double> BreakIsZero()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleIsZero(flow.Value));
             }
 
+            [Description("True when: the value is zero. Continues if so; otherwise decides rejected.")]
             public Flow<double> RequireIsZero()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleIsZero(flow.Value));
             }
 
+            [Description("True when: the value is zero. Continues if so; otherwise decides broken.")]
             public Flow<double> EnsureIsZero()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
+            [Description("Begins a pipeline from the value. True when: the value is zero. Decides matched if so; otherwise continues.")]
             public Flow<double> MatchIsZero()
             {
                 return value.Start().MatchIsZero();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is zero. Decides rejected if so; otherwise continues.")]
             public Flow<double> RejectIsZero()
             {
                 return value.Start().RejectIsZero();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is zero. Decides broken if so; otherwise continues.")]
             public Flow<double> BreakIsZero()
             {
                 return value.Start().BreakIsZero();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is zero. Continues if so; otherwise decides rejected.")]
             public Flow<double> RequireIsZero()
             {
                 return value.Start().RequireIsZero();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is zero. Continues if so; otherwise decides broken.")]
             public Flow<double> EnsureIsZero()
             {
                 return value.Start().EnsureIsZero();

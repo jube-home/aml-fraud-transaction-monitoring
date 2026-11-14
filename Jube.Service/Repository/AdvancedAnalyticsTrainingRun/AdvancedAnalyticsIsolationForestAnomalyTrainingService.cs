@@ -39,7 +39,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
             this.runner = runner;
             var tenant = runner.TenantRegistryId;
             var user = runner.UserName;
-            var instances = new AdvancedAnalyticsInstanceRepository(runner.DbContext, tenant, user);
+            var instances = new AskJoobyAnalyticsInstanceRepository(runner.DbContext, tenant, user);
             runs = new AdvancedAnalyticsTrainingRunRepository(runner.DbContext, tenant, user);
 
             validator = new AdvancedAnalyticsIsolationForestAnomalyTrainingValidator(runner.Strings,
@@ -115,7 +115,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
 
                 var run = await runs.InsertAsync(new Jube.Data.Poco.AdvancedAnalyticsTrainingRun
                 {
-                    AdvancedAnalyticsInstanceId = request.AdvancedAnalyticsInstanceId,
+                    AskJoobyAnalyticsInstanceId = request.AskJoobyAnalyticsInstanceId,
                     KindId = AdvancedAnalyticsKind.AnomalyDetector,
                     ModelKindId = AdvancedAnalyticsModelKind.IsolationForestAnomalyPipeline,
                     JobMode = AdvancedAnalyticsJobMode.Batch,
@@ -126,7 +126,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
                 op.Entity(run.Id);
                 op.Created();
 
-                runner.Info($"AdvancedAnalyticsTrainedModel.SubmitIsolationForestAnomalyTraining: run {run.Id} " +
+                runner.Info($"AskJoobyAnalyticsTrainedModel.SubmitIsolationForestAnomalyTraining: run {run.Id} " +
                             $"queued rows={arguments.Rows} labelled={request.Labels != null} user={runner.UserName}");
 
                 return new AdvancedAnalyticsTrainingSubmissionDto

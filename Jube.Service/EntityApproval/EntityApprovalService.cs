@@ -347,7 +347,7 @@ namespace Jube.Service.EntityApproval
             }
 
             return new EntityApprovalChanges(true,
-                VersionDiff.Compare(earlier, current, EntityApprovalChangeSources.ReviewIgnoredFields));
+                VersionDiff.Compare(earlier, current, EntityApprovalChangeSources.IgnoredFieldsFor(kind)));
         }
 
         public async Task<BulkApprovalResult> ApproveValuesAsync(EntityApprovalKind parentKind, int parentId,
@@ -503,7 +503,7 @@ namespace Jube.Service.EntityApproval
             {
                 EntityApprovalKind.EntityAnalysisModelList => EntityApprovalKind.EntityAnalysisModelListValue,
                 EntityApprovalKind.EntityAnalysisModelDictionary => EntityApprovalKind.EntityAnalysisModelDictionaryKvp,
-                EntityApprovalKind.EntityAnalysisModel => EntityApprovalKind.AdvancedAnalyticsInstance,
+                EntityApprovalKind.EntityAnalysisModel => EntityApprovalKind.AskJoobyAnalyticsInstance,
                 _ => throw new ApprovalRefusedException(
                     "Only lists, dictionaries and models have values to approve.", [])
             };

@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,16 +21,19 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Query.CaseJournal
 {
+    [MessagePackObject]
     public class CaseJournalDto
     {
         [Description("Column name to declared type ('number', 'string', 'date', 'array', ...) for every column " +
                      "present in each row. Fixed columns are Id, Activation, EntityAnalysisModelInstanceEntryGuid, " +
                      "ReferenceDate, CreatedDate, ResponseElevation, EntryKeyValue and Tag; one further column is " +
                      "added for each Case Workflow XPath the caller's roles may see.")]
+        [Key(0)]
         public Dictionary<string, string>? Schema { get; set; }
 
         [Description("Journal rows, newest Archive entry first. Each row is a column name to value map matching " +
                      "Schema, with optional 'CellFormat' and 'BoldLine' entries carrying conditional formatting.")]
+        [Key(1)]
         public List<Dictionary<string, object?>>? Rows { get; set; }
     }
 }

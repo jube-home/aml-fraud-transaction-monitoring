@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,18 +21,23 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Repository.Case
 {
+    [MessagePackObject]
     public class CreateCaseDto
     {
         [Description("Identifier of the CaseWorkflow the new case will belong to.")]
+        [Key(0)]
         public Guid CaseWorkflowGuid { get; set; }
 
         [Description("Identifier of the CaseWorkflowStatus the new case will start in.")]
+        [Key(1)]
         public Guid CaseWorkflowStatusGuid { get; set; }
 
         [Description("The key field name (e.g. account number) identifying the transaction to raise the case from.")]
+        [Key(2)]
         public string? CaseKey { get; set; }
 
         [Description("The value of CaseKey identifying the specific transaction to raise the case from.")]
+        [Key(3)]
         public string? CaseKeyValue { get; set; }
     }
 }

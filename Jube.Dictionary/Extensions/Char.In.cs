@@ -6,7 +6,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static bool In(this Char @this, params Char[] values)
+        [Description("Checks if the character is equal to any in the provided array.")]
+        public static bool In(this Char @this,
+            [Description("The value list to compare with the object.")] params Char[] values)
         {
             return Array.IndexOf(values, @this) != -1;
         }

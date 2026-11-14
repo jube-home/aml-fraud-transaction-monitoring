@@ -26,7 +26,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Xunit;
 using Jube.Service.Repository.AdvancedAnalyticsTrainingRun.Models;
-using Jube.Service.Repository.AdvancedAnalyticsModel.Models;
+using Jube.Service.Repository.AskJoobyAnalyticsModel.Models;
 
 namespace Jube.Test.AdvancedAnalytics.Service
 {
@@ -82,7 +82,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             var submission = await service.SubmitTrainingAsync(
                 new AdvancedAnalyticsKNearestNeighboursRegressorTrainingDto
                 {
-                    AdvancedAnalyticsInstanceId = instance.Id,
+                    AskJoobyAnalyticsInstanceId = instance.Id,
                     ModelName = modelName,
                     VariableNames = names,
                     ProcessingTypeIds = [1, 1],
@@ -115,7 +115,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             executed.CreatedModel.Should().BeTrue();
             executed.Version.Should().NotBeNull();
 
-            var versionRow = await new AdvancedAnalyticsTrainedModelVersionRepository(Db, TenantA, Permitted)
+            var versionRow = await new AskJoobyAnalyticsTrainedModelVersionRepository(Db, TenantA, Permitted)
                 .GetByRunIdAsync(submission.RunId);
             versionRow.Should().NotBeNull();
 

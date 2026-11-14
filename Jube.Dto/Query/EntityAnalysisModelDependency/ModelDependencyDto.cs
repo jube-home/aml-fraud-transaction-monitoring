@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,29 +22,37 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.EntityAnalysisModelDependency
 {
     [Description("One use of an entity by another.")]
+    [MessagePackObject]
     public class ModelDependencyDto
     {
         [Description("The entity that uses the other.")]
+        [Key(0)]
         public ModelEntityDto Dependent { get; set; } = new();
 
         [Description("The entity that is used; null when the name does not resolve to any entity.")]
+        [Key(1)]
         public ModelEntityDto? Target { get; set; }
 
         [Description("How it is used: RuleText (named in rule text) or a setting such as SearchKey, " +
                      "TtlCounterDataName, CaseKey or CaseWorkflow.")]
+        [Key(2)]
         public string DependencyKind { get; set; } = string.Empty;
 
         [Description("The name as written, with its namespace, e.g. TTLCounter.PerAccount.")]
+        [Key(3)]
         public string Name { get; set; } = string.Empty;
 
         [Description(
             "The line of the rule text it appears on, for RuleText uses, counted from 0 as the parser counts lines.")]
+        [Key(4)]
         public int? Line { get; set; }
 
         [Description("1 for a direct use; 2 or more when it is used through another entity, which Via names.")]
+        [Key(5)]
         public int Depth { get; set; } = 1;
 
         [Description("For an indirect use, the entity it goes through, as Kind:Name.")]
+        [Key(6)]
         public string? Via { get; set; }
     }
 }

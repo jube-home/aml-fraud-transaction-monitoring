@@ -52,6 +52,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
         {
             return new DictionaryKvpPoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelDictionaryId = dto.EntityAnalysisModelDictionaryId,
                 KvpKey = dto.KvpKey,

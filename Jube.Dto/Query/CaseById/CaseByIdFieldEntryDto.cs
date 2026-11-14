@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,30 +22,39 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.CaseById
 {
     [Description("A formatted payload field of a case.")]
+    [MessagePackObject]
     public class CaseByIdFieldEntryDto
     {
         [Description("Display name of the field.")]
+        [Key(0)]
         public string? Name { get; set; }
 
         [Description("Value of the field selected from the case JSON.")]
+        [Key(1)]
         public string? Value { get; set; }
 
         [Description("Foreground colour applied when the conditional format matches.")]
+        [Key(2)]
         public string? CellFormatForeColor { get; set; }
 
         [Description("True when the foreground colour applies to the whole row.")]
+        [Key(3)]
         public bool CellFormatForeRow { get; set; }
 
         [Description("Background colour applied when the conditional format matches.")]
+        [Key(4)]
         public string? CellFormatBackColor { get; set; }
 
         [Description("True when the background colour applies to the whole row.")]
+        [Key(5)]
         public bool CellFormatBackRow { get; set; }
 
         [Description("True when the regular expression matched the value.")]
+        [Key(6)]
         public bool ExistsMatch { get; set; }
 
         [Description("True when conditional regular expression formatting is enabled for the field.")]
+        [Key(7)]
         public bool ConditionalRegularExpressionFormatting { get; set; }
     }
 }

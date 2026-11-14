@@ -69,6 +69,9 @@
     <data name="HttpEndpointRequired" xml:space="preserve">
     <value>A webhook URL is required when the HTTP endpoint is enabled.</value>
   </data>
+    <data name="HttpEndpointInvalid" xml:space="preserve">
+    <value>The HTTP endpoint must be an absolute http or https URL whose scheme, host and port are written out literally, with tokens only in the path and query.</value>
+  </data>
     <data name="HttpEndpointTypeIdInvalid" xml:space="preserve">
     <value>A valid HTTP method is required when the HTTP endpoint is enabled.</value>
   </data>

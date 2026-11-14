@@ -25,7 +25,7 @@ namespace Jube.Engine.AdvancedAnalytics.Models
         public bool ReportTable { get; set; }
         public int Id { get; init; }
         public Guid Guid { get; init; }
-        public int AdvancedAnalyticsInstanceId { get; init; }
+        public int AskJoobyAnalyticsInstanceId { get; init; }
         public int VersionId { get; init; }
         public Func<double[], double[]> Recall { get; set; }
         public Func<double[], IAdvancedAnalyticsExplanation> Explain { get; set; }

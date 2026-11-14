@@ -25,7 +25,7 @@ maintains a Docker Swarm Reference Cluster, the monitoring leans towards providi
 This page is specifically about *shared infrastructure* Jube depends on. The Archiver and case creation pipelines --
 Jube's own background work, not a dependency -- get the equivalent per-minute rollup and warn-threshold capture
 treatment in [Background Processing Performance](../BackgroundProcessingPerformance/index.html), including the
-`CaptureQueueHealth` table that reports on this page's own `RedisSentinelEvent`/`RedisConnectionEvent` capture queues
+`CaptureQueueHealth` table that reports on this page's own `RespSentinelEvent`/`RespConnectionEvent` capture queues
 alongside those two pipelines'.
 
 ## What is captured
@@ -92,7 +92,7 @@ queries, not per-minute history -- documented in their own page,
 
 ### Redis
 
-- **`RedisMetric`** -- connected/blocked clients, memory usage and configured maximum, ops/sec, cumulative
+- **`RespMetric`** -- connected/blocked clients, memory usage and configured maximum, ops/sec, cumulative
   commands/connections/evictions/expirations, a derived keyspace hit-rate percentage (same delta-based technique as
   Postgres' cache-hit ratio), replica count, replication offset, uptime, total key count across every logical database
   (`TotalKeys`), memory fragmentation ratio (`MemoryFragmentationRatio`), age of the last successful RDB snapshot
@@ -101,16 +101,16 @@ queries, not per-minute history -- documented in their own page,
   from Redis' own `rdb_last_save_time`) and of the last completed AOF rewrite (`LastAofRewriteDate`) -- comparing the
   two flags up the fork contention that happens when a BGSAVE and an AOF rewrite overlap, since both fork the Redis
   process and compete for the same copy-on-write memory. Redis exposes no absolute last-AOF-rewrite timestamp of its own
-  (only the duration of the most recent one), so `RedisMetricSampler` derives it by watching `aof_rewrites` (a monotonic
+  (only the duration of the most recent one), so `RespMetricSampler` derives it by watching `aof_rewrites` (a monotonic
   counter) advance between samples and stamping that moment -- `LastAofRewriteDate` is therefore null until the first
   rewrite is observed after the sampler starts, even if earlier rewrites happened before then.
-- **`RedisSlowOperation`** -- a narrow table dumping Redis' own slow-command log: one row per `SLOWLOG` entry,
-  `RedisSlowLogId` (Redis' own monotonic sequence number, used to avoid inserting the same entry twice across
+- **`RespSlowOperation`** -- a narrow table dumping Redis' own slow-command log: one row per `SLOWLOG` entry,
+  `RespSlowLogId` (Redis' own monotonic sequence number, used to avoid inserting the same entry twice across
   consecutive one-minute samples of the same rolling buffer), `OccurredDate`, `DurationMicroseconds`, the command and
   its arguments (`Command`), the command verb pulled out of it (`CommandName`, e.g. `SET`, `HGETALL`) so slow commands
   can be grouped by type, a best-effort key name (`KeyName` -- not meaningful for multi-key or scripted commands such as
   `MSET`/`EVAL`), and the issuing client's address/name (when Redis reports them).
-- **`RedisConnectionMultiplexerMetric`** -- different from the two tables above in one important way: sampled from the
+- **`RespConnectionMultiplexerMetric`** -- different from the two tables above in one important way: sampled from the
   application's own live connection, not a dedicated diagnostic one. A per-minute snapshot of
   `Jube.Cache.CacheService`'s actual, real, production `ConnectionMultiplexer` (the one every cache read and write in
   the engine goes through), covering both its interactive (command) connection and its subscription (pub/sub)
@@ -121,24 +121,24 @@ queries, not per-minute history -- documented in their own page,
   up with the application, and it shows up here before it shows up as elevated invocation response times. It also
   carries counts of the multiplexer's own diagnostic events -- `ConnectionFailedCount`, `ConnectionRestoredCount`,
   `ErrorMessageCount`, `InternalErrorCount`, `ConfigurationChangedCount`, `ConfigurationChangedBroadcastCount` -- which
-  otherwise reach only log4net. Unlike the queue-depth and operation-count columns above, these six are
-  **per-minute counts, not cumulative**: each is atomically read and reset to zero at sample time
-  (`RedisConnectionDiagnosticsCounters.TakeSnapshot()`), so a row's value is "how many of this event happened in that
+  otherwise reach only log4net. Unlike the queue-depth and operation-count columns above, these six are **per-minute
+  counts, not cumulative**: each is atomically read and reset to zero at sample time
+  (`RespConnectionDiagnosticsCounters.TakeSnapshot()`), so a row's value is "how many of this event happened in that
   one minute," not a running total since process start -- the question these answer is simply whether one tripped, and
   when. A Sentinel-driven failover typically shows up as a jump in `ConfigurationChangedBroadcastCount` in exactly the
   minute it happened.
 
   A count only ever answers "did one trip" -- it necessarily discards which endpoint, which connection, and what
-  actually failed. **`RedisConnectionEvent`** is the detail behind it: `CacheService`'s event handlers capture every
+  actually failed. **`RespConnectionEvent`** is the detail behind it: `CacheService`'s event handlers capture every
   individual `ConnectionFailed`/`ConnectionRestored`/`ErrorMessage`/`InternalError`/`ConfigurationChanged`/
-  `ConfigurationChangedBroadcast` occurrence (mirroring `RedisSentinelEvent`'s capture-queue-and-bulk-flush shape below)
+  `ConfigurationChangedBroadcast` occurrence (mirroring `RespSentinelEvent`'s capture-queue-and-bulk-flush shape below)
   into `EventType`, `EndPoint`, `ConnectionType` (Interactive/Subscription, when applicable), `FailureType`, `Origin`
   (InternalError only), `Message` (ErrorMessage only) and `Exception` (full exception text, when the event carried one).
-  Every captured event is also logged at Error/Warn, so it reaches `ApplicationLogEntry` too -- `RedisConnectionEvent`
+  Every captured event is also logged at Error/Warn, so it reaches `ApplicationLogEntry` too -- `RespConnectionEvent`
   is the structured, per-event view of the same information, independent of whether Sentinel is in use.
 
-  `RedisConnectionEvent` also carries a seventh `EventType`, **`ReconnectRetry`**, that none of the six above raise.
-  `CacheService` configures `ConfigurationOptions.ReconnectRetryPolicy` with `RedisReconnectRetryPolicy`, a thin wrapper
+  `RespConnectionEvent` also carries a seventh `EventType`, **`ReconnectRetry`**, that none of the six above raise.
+  `CacheService` configures `ConfigurationOptions.ReconnectRetryPolicy` with `RespReconnectRetryPolicy`, a thin wrapper
   around the real `ExponentialRetry` policy that observes, rather than changes, every call StackExchange.Redis'
   multiplexer makes to `ShouldRetry` while disconnected -- the exact point the exponential backoff is decided. Each time
   the wrapped policy says a retry is actually due (not the more frequent "not yet" calls made while still waiting out
@@ -149,7 +149,7 @@ queries, not per-minute history -- documented in their own page,
   stalling). This is what turns "Redis went away for a while" into "it took N retries growing to M ms apart, stalling as
   many as K in-flight calls at the worst point" -- the retry/backoff/impact story a bare `ConnectionFailed`/
   `ConnectionRestored` pair cannot tell on its own.
-- **`RedisCallCounter`** -- one row per distinct `Call` label (a `Jube.Cache.Redis` repository method, e.g.
+- **`RespCallCounter`** -- one row per distinct `Call` label (a `Jube.Cache.Resp` repository method, e.g.
   `"CachePayloadRepository.InsertAsync"`, never a Redis key or value) per one-minute window, with `Count`,
   `TotalMicroseconds`, `MinMicroseconds` and `MaxMicroseconds` for every call to that label during the window. This is
   the dedicated, reset-each-minute counterpart to `CacheDiagnostics`' live `jube.cache.redis.call.count`/
@@ -161,7 +161,7 @@ queries, not per-minute history -- documented in their own page,
   `Interlocked.Exchange` idiom `ManageCountersStarter` already uses for the per-model Task/Stage/Response Time Pipeline
   counters. Answers, directly and without needing an external OTel collector, exactly where Redis load is coming from by
   area of the system -- which repository method, how often, and how slow.
-- **`RedisSentinelStatus`** -- one row per entity (`master`/`slave`/`sentinel`) reported by `SENTINEL MASTERS`/
+- **`RespSentinelStatus`** -- one row per entity (`master`/`slave`/`sentinel`) reported by `SENTINEL MASTERS`/
   `SENTINEL SLAVES`/`SENTINEL SENTINELS` per one-minute sample, taken over the same Sentinel connection
   `Jube.Cache.CacheService` already holds when the Redis connection string configures a `ServiceName`: `EntityType`,
   `Name`, `Ip`/`Port`, `Flags` (Sentinel's own state flags -- watch for `s_down`, `o_down`, `failover_in_progress`),
@@ -170,18 +170,18 @@ queries, not per-minute history -- documented in their own page,
 
   Sentinel's own replies carry a raw replication offset for each slave but no lag *time* -- only the actual master's own
   `INFO replication` reply has that (a `slaveN:...,lag=N` field, seconds since that replica's last ACK). So on each
-  cycle, the same dedicated Redis connection `RedisMetricSampler` already holds is also asked for `INFO replication`,
-  and the per-replica lag it reports is matched onto the corresponding `RedisSentinelStatus` slave row by `ip:port`,
+  cycle, the same dedicated Redis connection `RespMetricSampler` already holds is also asked for `INFO replication`,
+  and the per-replica lag it reports is matched onto the corresponding `RespSentinelStatus` slave row by `ip:port`,
   populating **`ReplicationLagSeconds`** (null for master/sentinel rows, or if the master couldn't be reached that
   cycle). This is the most direct "is a replica falling behind" signal Sentinel-monitored Redis offers.
-- **`RedisSentinelEvent`** -- `RedisSentinelStatus` above is a once-a-minute poll, which can miss a transition that
+- **`RespSentinelEvent`** -- `RespSentinelStatus` above is a once-a-minute poll, which can miss a transition that
   happens and resolves between two samples; this fills that gap. `CacheService` subscribes to every channel Sentinel
   publishes on (the `"*"` pattern -- `+sdown`, `-sdown`, `+odown`, `-odown`, `+switch-master`, `+failover-state`,
   `+slave`, `+sentinel`, and any future channel type), captures each one the moment it happens into a bounded in-memory
   queue (mirroring `ApplicationLogEntry`'s capture-and-bulk-flush shape exactly), and
   `InfrastructureHealthMetricsStarter` bulk-inserts whatever accumulated each minute. Each row is just `OccurredDate`,
   `Channel` and `Message` (Sentinel's raw payload for that channel). Every captured event is also logged at Warn, so it
-  reaches `ApplicationLogEntry` too via the same log4net capture appender -- `RedisSentinelEvent` is the structured,
+  reaches `ApplicationLogEntry` too via the same log4net capture appender -- `RespSentinelEvent` is the structured,
   Sentinel-specific view of the same information. Only populated when Sentinel is actually in use.
 
 ## etcd and Patroni
@@ -214,15 +214,16 @@ use.
 Patroni's REST API is unauthenticated in the deployments this samples, so `PatroniMemberStatus` needs no credential for
 the Patroni hop itself. etcd is different: an etcd cluster with `auth enable` set rejects every v3 call that arrives
 without a token, including the `cluster/member/list` and `maintenance/status` calls both samplers make. Set
-`EtcdClientUsername` and `EtcdClientPassword` and each sampler authenticates once
-(`POST /v3/auth/authenticate`) and caches the token across all of the endpoints it polls -- etcd's authentication
+`EtcdClientUsername` and `EtcdClientPassword` and each sampler authenticates once (`POST /v3/auth/authenticate`) and
+caches the token across all of the endpoints it polls -- etcd's authentication
 request is itself replicated through raft, so a token issued by one member is accepted by every other member -- then
 re-authenticates on a `401`, which is what a member that has restarted and lost its in-memory tokens returns. Left
 unset, the calls go out unauthenticated -- correct only against an etcd cluster with auth disabled.
 
 Note what this does *not* need a token for: `/version`, `/health` and `/metrics` are plain HTTP handlers on the client
 port rather than v3 RPCs, and answer unauthenticated even with auth on. Because `EtcdMemberStatus` is assembled from a
-mix of those three handlers and the authenticated v3 RPCs, a wrong or missing credential is a *partial* failure, and an easy
+mix of those three handlers and the authenticated v3 RPCs, a wrong or missing credential is a *partial* failure, and an
+easy
 one to misread: a sampler that parsed etcd's JSON error body without first checking the response status would read a
 refusal as though it were a reply with no fields in it, and still write a row -- `Version`,
 `ClusterVersion`, `HealthOk` and every Prometheus-derived column correct, `MemberId`, `LeaderId`, `DbSizeBytes`,
@@ -264,7 +265,7 @@ documentation alone:
   some operations).
 
 `LeaderChangesTotal` and every `*Total` proposal/slow-operation counter are etcd's own cumulative counters (`/metrics`
-is never reset by Jube), unlike `RedisConnectionMultiplexerMetric`'s per-minute event counts above -- diff two rows for
+is never reset by Jube), unlike `RespConnectionMultiplexerMetric`'s per-minute event counts above -- diff two rows for
 a rate.
 
 ### `PatroniMemberStatus`
@@ -319,7 +320,7 @@ timestamp parsing instead.
 Both event tables reset their "have we seen this" state on a Jube restart -- `EtcdClusterEvent`'s diffs simply
 re-baseline (a change that happens to straddle a restart is missed, not mis-reported), while `PatroniClusterEvent`'s
 `history` reader re-emits every entry currently in Patroni's history once, the same accepted one-time-replay tradeoff
-`RedisSlowOperation` already makes for Redis' own `SLOWLOG` buffer after a restart.
+`RespSlowOperation` already makes for Redis' own `SLOWLOG` buffer after a restart.
 
 ## Docker Monitoring Sidecar (Jube.Monitoring)
 
@@ -333,7 +334,8 @@ uses.
 
 It shares `Jube.Data`'s `Poco`/`DbContext`/`Repository` classes with the rest of the system rather than defining its own
 copies, specifically to avoid the two independently-maintained-schema class of bug -- the one real cost is pulling in
-`Jube.Data`'s transitive dependencies (`Accord.*` included), which only grows the image's disk footprint since the .NET
+`Jube.Data`'s transitive dependencies (the analytics libraries included), which only grows the image's disk footprint
+since the .NET
 runtime never loads an assembly it doesn't call into. It has no dependency on `DynamicEnvironment`, log4net, or anything
 else from Jube.App/Jube.Engine: configuration is read directly from five environment variables (`ConnectionString`;
 `DockerSocketPath`, defaulting to `/var/run/docker.sock`; `SampleIntervalSeconds`, defaulting to `60`;
@@ -363,7 +365,7 @@ the host, in any state:
 ### `DockerHostMetric`
 
 A wide table -- one row per host per one-minute sample, filtered by `CreatedDate` (there is no `OccurredDate` on this
-one, the same convention `PostgresMetric`/`RedisMetric` use):
+one, the same convention `PostgresMetric`/`RespMetric` use):
 
 - **Counts** -- `ContainersTotal`/`ContainersRunning`/`ContainersPaused`/`ContainersStopped`, `ImagesCount`.
 - **Host identity** -- `NCpu`, `MemTotalBytes`, `DockerVersion`, `ApiVersion`, `KernelVersion`, `OperatingSystem`,
@@ -514,13 +516,13 @@ or worker -- runs its own instance reporting on its own local Docker daemon.
 
 ## Dedicated diagnostic connections
 
-The Postgres and Redis *server* samples (`PostgresMetric`, `RedisMetric`, `RedisSlowOperation`) are taken over
+The Postgres and Redis *server* samples (`PostgresMetric`, `RespMetric`, `RespSlowOperation`) are taken over
 connections dedicated to this purpose, entirely separate from the application's own pooled connections (`Jube.Data`'s
 connection pool, and `Jube.Cache.CacheService`'s own Redis multiplexer). This is deliberate: diagnostics need to keep
 working even when the application's own connections are the thing in trouble, which is exactly the kind of incident
 these tables exist to help diagnose. The Redis diagnostic connection additionally sets `AllowAdmin`, since `INFO` and
 `SLOWLOG` are admin-only commands and the application's own production connection deliberately does not set that flag.
-`RedisConnectionMultiplexerMetric` is the deliberate exception: it samples the application's *own* connection precisely
+`RespConnectionMultiplexerMetric` is the deliberate exception: it samples the application's *own* connection precisely
 because that connection's health is the thing being measured.
 
 ## Postgres's own server log (`PostgresLogEntry`)
@@ -638,23 +640,23 @@ eleven groups are:
 
 1. `DotNetRuntimeMetric`
 2. `PostgresMetric` + `PostgresReplicationStatus`
-3. `RedisMetric` + `RedisSlowOperation` + `RedisSentinelStatus`
-4. `RedisConnectionMultiplexerMetric`
-5. `RedisConnectionEvent`
-6. `RedisSentinelEvent`
-7. `RedisCallCounter`
+3. `RespMetric` + `RespSlowOperation` + `RespSentinelStatus`
+4. `RespConnectionMultiplexerMetric`
+5. `RespConnectionEvent`
+6. `RespSentinelEvent`
+7. `RespCallCounter`
 8. `EtcdMemberStatus`
 9. `PatroniMemberStatus`
 10. `OpenTelemetryMetric`
 11. `PostgresLogEntry`
 
-Groups 2 and 3 bundle more than one original sample because `PostgresMetricSampler` and `RedisMetricSampler` each hold
+Groups 2 and 3 bundle more than one original sample because `PostgresMetricSampler` and `RespMetricSampler` each hold
 one long-lived connection plus delta/dedup state (`lastSample`, `lastSeenSlowLogId`, ...) across their own methods that
 isn't safe to call concurrently with itself -- those samples stay sequential *within* their group, while the group as a
 whole still runs in parallel with every other group. Every other sampler here is either stateless or keeps its mutable
 state scoped to one group's own sequential call chain, so no locking is needed between groups; `EtcdPatroniDiscovery`,
 used by both groups 8 and 9, is itself a stateless helper (constants only, no instance fields), so calling it
-concurrently from two different groups is safe. Group 7, `RedisCallCounter`, is the same read-and-reset shape as
+concurrently from two different groups is safe. Group 7, `RespCallCounter`, is the same read-and-reset shape as
 `ManageCountersStarter`'s per-model Task/Stage/Response Time Pipeline counters, just global rather than per-model -- it
 drains `Jube.Cache.Observability.CacheCallCounters`, the dedicated accumulator every Jube.Cache repository method's
 `CacheDiagnostics.Record` call also feeds, rather than polling an external dependency. Group 10 is a different shape
@@ -808,7 +810,7 @@ capture story: `OpenTelemetry.Instrumentation.StackExchangeRedis` (wired above) 
 its own, and Npgsql is pinned too old for any OpenTelemetry hook at all -- so neither was reaching the local table
 despite the Redis/Postgres *server-side* tables above already being rich.
 
-- **Redis** -- `RedisCommandMetricBridge` (`Jube.Engine.Observability`) attaches a second, independent
+- **Redis** -- `RespCommandMetricBridge` (`Jube.Engine.Observability`) attaches a second, independent
   `ActivityListener` to `OpenTelemetry.Instrumentation.StackExchangeRedis`'s own `ActivitySource` (the same "listen
   alongside whatever else is already listening" technique `OpenTelemetryMetricCapture` uses for Meters) and records each
   finished span's duration into `jube.redis.command.count`/`jube.redis.command.duration` on the `Jube.Engine` meter,
@@ -908,14 +910,14 @@ Up to the last 100,000 rows of each table are browsable directly, most recent fi
 
 - `GET /api/DotNetRuntimeMetric`
 - `GET /api/PostgresMetric`
-- `GET /api/RedisMetric`
-- `GET /api/RedisSlowOperation`
-- `GET /api/RedisConnectionMultiplexerMetric`
+- `GET /api/RespMetric`
+- `GET /api/RespSlowOperation`
+- `GET /api/RespConnectionMultiplexerMetric`
 - `GET /api/PostgresReplicationStatus`
-- `GET /api/RedisSentinelStatus`
-- `GET /api/RedisSentinelEvent`
-- `GET /api/RedisConnectionEvent`
-- `GET /api/RedisCallCounter`
+- `GET /api/RespSentinelStatus`
+- `GET /api/RespSentinelEvent`
+- `GET /api/RespConnectionEvent`
+- `GET /api/RespCallCounter`
 - `GET /api/EtcdMemberStatus`
 - `GET /api/PatroniMemberStatus`
 - `GET /api/EtcdClusterEvent`
@@ -939,12 +941,12 @@ fact:
   for the narrow ones), inclusive at both ends. Each defaults independently to the last 24 hours when omitted, so a
   plain call without either returns the last day's samples rather than the whole table.
 - **`search`** -- a case-insensitive substring match against the text-bearing columns each table has (`Instance` for
-  `DotNetRuntimeMetric`/`PostgresMetric`/`RedisMetric`; `Instance` or `ClientName` for
-  `RedisConnectionMultiplexerMetric`; `Command`, `CommandName`, `KeyName`, `ClientAddress` or `ClientName` for
-  `RedisSlowOperation`; `UserName`, `ApplicationName`, `ClientAddress`, `State` or `SyncState` for
-  `PostgresReplicationStatus`; `EntityType`, `Name`, `Ip`, `Flags` or `MasterLinkStatus` for `RedisSentinelStatus`;
-  `Channel` or `Message` for `RedisSentinelEvent`; `EventType`, `EndPoint`, `FailureType`, `Message` or `Exception` for
-  `RedisConnectionEvent`; `Call` for `RedisCallCounter`; `Endpoint`, `Name`, `HealthReason` or `Alarms` for
+  `DotNetRuntimeMetric`/`PostgresMetric`/`RespMetric`; `Instance` or `ClientName` for
+  `RespConnectionMultiplexerMetric`; `Command`, `CommandName`, `KeyName`, `ClientAddress` or `ClientName` for
+  `RespSlowOperation`; `UserName`, `ApplicationName`, `ClientAddress`, `State` or `SyncState` for
+  `PostgresReplicationStatus`; `EntityType`, `Name`, `Ip`, `Flags` or `MasterLinkStatus` for `RespSentinelStatus`;
+  `Channel` or `Message` for `RespSentinelEvent`; `EventType`, `EndPoint`, `FailureType`, `Message` or `Exception` for
+  `RespConnectionEvent`; `Call` for `RespCallCounter`; `Endpoint`, `Name`, `HealthReason` or `Alarms` for
   `EtcdMemberStatus`; `Name`, `Host`, `Role`, `State` or `Scope` for `PatroniMemberStatus`; `Endpoint`, `Name`,
   `EventType`, `PreviousValue` or `NewValue` for `EtcdClusterEvent`; `Scope`, `Name`, `EventType`, `PreviousValue`,
   `NewValue` or `Reason` for `PatroniClusterEvent`; `Name`, `Image`, `State` or `Status` for `DockerContainerMetric`;

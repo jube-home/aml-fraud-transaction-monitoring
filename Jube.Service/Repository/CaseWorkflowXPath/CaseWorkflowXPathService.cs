@@ -11,6 +11,9 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Dto.Options;
+
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
@@ -419,8 +422,9 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
             {
                 EnsurePermitted("CaseWorkflowXPath.ListByWorkflowIdActiveDrillOnly", activeOnlyPermissions);
 
-                var dtos = CaseWorkflowXPathMapper.ToDto(
-                    await repository.GetByCasesWorkflowIdActiveDrillOnlyAsync(id, token).ConfigureAwait(false));
+                var dtos = CaseWorkflowXPathMapper.ToDto(await ArchiveKeysOnlyAsync(id,
+                    await repository.GetByCasesWorkflowIdActiveDrillOnlyAsync(id, token).ConfigureAwait(false),
+                    token).ConfigureAwait(false));
                 op.Rows(dtos.Count);
 
                 if (log.IsDebugEnabled)
@@ -475,8 +479,12 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
             {
                 EnsurePermitted("CaseWorkflowXPath.ListByWorkflowGuidActiveDrillOnly", activeOnlyPermissions);
 
-                var dtos = CaseWorkflowXPathMapper.ToDto(
-                    await repository.GetByCasesWorkflowGuidActiveDrillOnlyAsync(guid, token).ConfigureAwait(false));
+                var rows = (await repository.GetByCasesWorkflowGuidActiveDrillOnlyAsync(guid, token)
+                    .ConfigureAwait(false)).ToList();
+                var dtos = CaseWorkflowXPathMapper.ToDto(rows.Count == 0
+                    ? rows
+                    : await ArchiveKeysOnlyAsync(rows[0].CaseWorkflowId.GetValueOrDefault(), rows, token)
+                        .ConfigureAwait(false));
                 op.Rows(dtos.Count);
 
                 if (log.IsDebugEnabled)
@@ -603,6 +611,83 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
             }
         }
 
+        [Description("Lists the fields of the workflow's model a Case Workflow XPath extraction may read: request " +
+                     "XPaths, the entry key, inline functions, abstraction rules, abstraction calculations, TTL " +
+                     "counters, HTTP adaptations and activation rules, each with whether it is flagged Archive " +
+                     "Key, which an extraction needs to be drilled.")]
+        [ServiceOperation("CaseWorkflowXPathFields", OperationKind.Read, Idempotent = true)]
+        public async Task<List<CaseWorkflowXPathFieldDto>> FieldsAsync(
+            [Description("Identifier of the parent Case Workflow.")] int caseWorkflowId,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("CaseWorkflowXPath", "Fields", userName, tenantRegistryId, auditLog,
+                log, serviceChangeBus);
+
+            try
+            {
+                EnsurePermitted("CaseWorkflowXPath.Fields", permissions);
+
+                var dtos = (await repository.GetSourcesAsync(caseWorkflowId, token).ConfigureAwait(false))
+                    .Select(f => new CaseWorkflowXPathFieldDto
+                    {
+                        Guid = f.Guid,
+                        Name = f.Name,
+                        KindId = (int)f.Kind,
+                        DataTypeId = f.DataTypeId,
+                        ArchiveKey = f.IsArchiveKey,
+                        Label = $"{f.Name} ({KindLabel(f.Kind)})" + (f.IsArchiveKey ? string.Empty : " (not an Archive Key)")
+                    })
+                    .OrderBy(f => f.Label, StringComparer.OrdinalIgnoreCase).ToList();
+
+                op.Rows(dtos.Count);
+
+                return dtos;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"CaseWorkflowXPath.Fields: unexpected failure caseWorkflowId={caseWorkflowId} user={userName}", ex);
+                throw;
+            }
+        }
+
+        private static string KindLabel(ArchiveKeySourceKind kind)
+        {
+            return typeof(ArchiveKeySourceKind).GetField(kind.ToString())
+                ?.GetCustomAttributes(typeof(DescriptionAttribute), false)
+                .OfType<DescriptionAttribute>().FirstOrDefault()?.Description ?? kind.ToString();
+        }
+
+        private async Task<IEnumerable<Jube.Data.Poco.CaseWorkflowXPath>> ArchiveKeysOnlyAsync(int caseWorkflowId,
+            IEnumerable<Jube.Data.Poco.CaseWorkflowXPath> rows, CancellationToken token)
+        {
+            var sources = (await repository.GetSourcesAsync(caseWorkflowId, token).ConfigureAwait(false))
+                .Where(f => f.IsArchiveKey).Select(f => f.Guid).ToHashSet();
+
+            return rows.Where(r => r.SourceGuid.HasValue && sources.Contains(r.SourceGuid.Value)).ToList();
+        }
+
+        private async Task<Jube.Data.Poco.CaseWorkflowXPath> WithSourceKindAsync(CaseWorkflowXPathDto model,
+            CancellationToken token)
+        {
+            var poco = CaseWorkflowXPathMapper.ToPoco(model);
+            var source = await repository.FindSourceAsync(model.CaseWorkflowId, model.SourceGuid, token)
+                .ConfigureAwait(false);
+            poco.SourceKindId = source is null ? null : (byte)(int)source.Kind;
+
+            return poco;
+        }
+
         [Description("Creates a new Case Workflow XPath extraction under a parent Case Workflow.")]
         [ServiceOperation("CaseWorkflowXPathCreate", OperationKind.Write, Idempotent = false)]
         public async Task<CaseWorkflowXPathDto> InsertAsync(CaseWorkflowXPathDto? model,
@@ -634,8 +719,8 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
                     throw new DtoValidationException(results);
                 }
 
-                var saved = await repository.InsertAsync(CaseWorkflowXPathMapper.ToPoco(model), token)
-                    .ConfigureAwait(false);
+                var saved = await repository.InsertAsync(await WithSourceKindAsync(model, token).ConfigureAwait(false),
+                    token).ConfigureAwait(false);
                 op.Entity(saved.Id);
                 op.Version(saved.Version.GetValueOrDefault());
                 op.Created();
@@ -748,8 +833,8 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
                     throw new DtoValidationException(results);
                 }
 
-                var saved = await repository.UpdateAsync(CaseWorkflowXPathMapper.ToPoco(model), token)
-                    .ConfigureAwait(false);
+                var saved = await repository.UpdateAsync(await WithSourceKindAsync(model, token).ConfigureAwait(false),
+                    token).ConfigureAwait(false);
                 op.Entity(saved.Id);
                 op.Version(saved.Version.GetValueOrDefault());
                 op.Updated();
@@ -783,6 +868,12 @@ namespace Jube.Service.Repository.CaseWorkflowXPath
 
                 throw new NotFoundException(strings[CaseWorkflowXPathResources.NotFound]);
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");

@@ -15,6 +15,7 @@ using System.ComponentModel;
 using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
 using Jube.Dto.Overrides;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -24,23 +25,29 @@ using Jube.Dto.Overrides;
 namespace Jube.Dto.EntityAnalysisModelActivationRuleOverride
 {
     [FormEndpoint("EntityAnalysisModelActivationRuleOverride")]
+    [FormApproval]
     [FormKeys(Id = nameof(Id), NaturalKey = nameof(OverrideKeyValue))]
+    [MessagePackObject]
     public class EntityAnalysisModelActivationRuleOverrideDto : IUpdated
     {
         [Description("Guid of the Model this Override applies to. Required; must reference an existing Model " +
                      "visible to the caller's tenant.")]
+        [Key(0)]
         public Guid EntityAnalysisModelGuid { get; set; }
 
         [Description("The Request XPath name (flagged Enable Override) that this Override matches against, " +
                      "e.g. an IP address field. Required.")]
+        [Key(1)]
         public string? OverrideKey { get; set; }
 
         [Description("The value of OverrideKey to suppress on, e.g. a specific IP address. Required.")]
+        [Key(2)]
         public string? OverrideKeyValue { get; set; }
 
         [Description("Name of the Activation Rule this Override is scoped to, within the Model given by " +
                      "EntityAnalysisModelGuid. Required; must reference an existing, non-deleted Activation Rule " +
                      "belonging to that Model.")]
+        [Key(3)]
         public string? EntityAnalysisModelActivationRuleName { get; set; }
 
         [Description("Wire-compatibility field carried from the legacy DTO. The presence of a (non-deleted, " +
@@ -48,11 +55,13 @@ namespace Jube.Dto.EntityAnalysisModelActivationRuleOverride
                      "EntityAnalysisModelActivationRuleName IS the override state -- this flag has no backing " +
                      "column and is ignored by every operation. See the migration report for the toggle semantics " +
                      "of Update.")]
+        [Key(4)]
         public bool Active { get; set; }
 
         [Description("When set, the Override is automatically removed once this date/time (UTC) is reached, " +
                      "with no further synchronisation required. Must be in the future. Leave null for a " +
                      "Override that never expires.")]
+        [Key(5)]
         public DateTimeOffset? DeleteExpiryDate { get; set; }
 
         [Description("How the override acts on the Activation Rule it is bound to. Suppress mutes the rule's " +
@@ -60,32 +69,41 @@ namespace Jube.Dto.EntityAnalysisModelActivationRuleOverride
                      "-- while the rule still evaluates. Force treats the rule as matched for this value without " +
                      "evaluating it, so its consequences fire, and works even where the Activation Rule has been " +
                      "retired. Defaults to Suppress.")]
+        [Key(6)]
         public EntityAnalysisModelOverrideKind OverrideKind { get; set; }
 
         [Description("Server-assigned row identifier. Read-only.")]
+        [Key(7)]
         public int Id { get; set; }
 
         [Description("Timestamp (UTC) this Override was created. Server-assigned. Read-only.")]
+        [Key(8)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("No backing column -- always null when read back (pre-existing quirk, see migration " +
                      "report). Read-only.")]
+        [Key(9)]
         public string? UpdatedUser { get; set; }
 
         [Description("No backing column -- always null when read back (pre-existing quirk, see migration " +
                      "report). Read-only.")]
+        [Key(10)]
         public DateTimeOffset? UpdatedDate { get; set; }
 
         [Description("User who created this Override. Server-assigned. Read-only.")]
+        [Key(11)]
         public string? CreatedUser { get; set; }
 
         [Description("Server-assigned optimistic-concurrency version number. Read-only.")]
+        [Key(12)]
         public int Version { get; set; }
 
         [Description("User who removed this Override, if soft-deleted. Server-assigned. Read-only.")]
+        [Key(13)]
         public string? DeletedUser { get; set; }
 
         [Description("Timestamp (UTC) this Override was removed, if applicable. Server-assigned. Read-only.")]
+        [Key(14)]
         public DateTimeOffset? DeletedDate { get; set; }
     }
 }

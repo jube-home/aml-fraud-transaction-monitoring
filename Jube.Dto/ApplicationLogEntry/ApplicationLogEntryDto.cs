@@ -12,6 +12,8 @@
  */
 
 using System.ComponentModel;
+using Jube.Dto.Forms;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,23 +22,36 @@ using System.ComponentModel;
 
 namespace Jube.Dto.ApplicationLogEntry
 {
+    [GridEndpoint("ApplicationLogEntry", Title = "Application log", DefaultSort = "occurredDate")]
+    [GridSearch(Label = "Message contains")]
+    [MessagePackObject]
     public sealed record ApplicationLogEntryDto(
-        [property: Description("Server-assigned identifier of the row, most recent first when listed.")]
+        [property: Key(0)] [property: Description("Server-assigned identifier of the row, most recent first when listed.")]
+        [property: ListColumn(Hidden = true)]
         int Id,
-        [property: Description("UTC timestamp the event was logged.")]
+        [property: Key(1)] [property: Description("UTC timestamp the event was logged.")]
+        [property: ListColumn(Order = 10, Title = "Occurred")]
+        [property: GridTimeRange]
         DateTime OccurredDate,
-        [property: Description("The log level: WARN, ERROR or FATAL. Events below WARN are never captured.")]
+        [property: Key(2)] [property: Description("The log level: WARN, ERROR or FATAL. Events below WARN are never captured.")]
+        [property: ListColumn(Order = 20)]
         string Level,
-        [property: Description("The fully-qualified class that logged the event (log4net's logger name).")]
+        [property: Key(3)] [property: Description("The fully-qualified class that logged the event (log4net's logger name).")]
+        [property: ListColumn(Order = 30, Title = "Logger")]
         string LoggerName,
-        [property: Description("The thread that logged the event.")]
+        [property: Key(4)] [property: Description("The thread that logged the event.")]
+        [property: ListColumn(Order = 40, Title = "Thread")]
         string ThreadContext,
-        [property: Description("The rendered log message.")]
+        [property: Key(5)] [property: Description("The rendered log message.")]
+        [property: ListColumn(Order = 50)]
         string Message,
-        [property: Description("The full exception text, if the event carried one; otherwise null.")]
+        [property: Key(6)] [property: Description("The full exception text, if the event carried one; otherwise null.")]
+        [property: ListColumn(Order = 60)]
         string Exception,
-        [property: Description("UTC timestamp this row was flushed to the database.")]
+        [property: Key(7)] [property: Description("UTC timestamp this row was flushed to the database.")]
+        [property: ListColumn(Order = 70, Title = "Flushed")]
         DateTime CreatedDate,
-        [property: Description("Hostname of the node that flushed this row.")]
+        [property: Key(8)] [property: Description("Hostname of the node that flushed this row.")]
+        [property: ListColumn(Order = 80)]
         string Instance);
 }

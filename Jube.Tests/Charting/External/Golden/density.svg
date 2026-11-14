@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" class="jc jc-bands" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet"
-     role="img" aria-labelledby="jc-ffcd103e-t jc-ffcd103e-d">
-    <title id="jc-ffcd103e-t">Transaction amount distribution</title>
-    <desc id="jc-ffcd103e-d">Density chart with 2 series: Retail (n=400, bandwidth 5.429), Corporate (n=400, bandwidth
+     role="img" aria-labelledby="jc-3ffb7628-t jc-3ffb7628-d">
+    <title id="jc-3ffb7628-t">Transaction amount distribution</title>
+    <desc id="jc-3ffb7628-d">Density chart with 2 series: Retail (n=400, bandwidth 5.429), Corporate (n=400, bandwidth
         20.7). Y values range from 0 to 0.01924. Interval bands are shown.
     </desc>
     <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
@@ -681,12 +681,12 @@
         <circle class="cx s0" cx="144.89" cy="313.46" r="4.5"/>
         <circle class="cx s1" cx="144.89" cy="344.63" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="156.89" y="283.46" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="166.89" y="301.46">17.98</text>
-            <rect class="tsw s0" x="166.89" y="309.46" width="9" height="9" rx="2"/>
-            <text class="tx" x="180.89" y="318.46">Retail (n=400, bandwidth 5.429): 0.002542</text>
-            <rect class="tsw s1" x="166.89" y="326.46" width="9" height="9" rx="2"/>
-            <text class="tx" x="180.89" y="335.46">Corporate (n=400, bandwidth 20.7): 0.0001072</text>
+            <rect class="tb" x="156.89" y="282.96" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="166.89" y="300.96">17.98</text>
+            <rect class="tsw s0" x="166.89" y="308.96" width="9" height="9" rx="2"/>
+            <text class="tx" x="180.89" y="317.96">Retail (n=400, bandwidth 5.429): 0.002542</text>
+            <rect class="tsw s1" x="166.89" y="325.96" width="9" height="9" rx="2"/>
+            <text class="tx" x="180.89" y="334.96">Corporate (n=400, bandwidth 20.7): 0.0001072</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -697,12 +697,12 @@
         <circle class="cx s0" cx="145.24" cy="313.46" r="4.5"/>
         <circle class="cx s1" cx="145.24" cy="344.63" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="157.24" y="283.46" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="167.24" y="301.46">18.3</text>
-            <rect class="tsw s0" x="167.24" y="309.46" width="9" height="9" rx="2"/>
-            <text class="tx" x="181.24" y="318.46">Retail (n=400, bandwidth 5.429): 0.002542</text>
-            <rect class="tsw s1" x="167.24" y="326.46" width="9" height="9" rx="2"/>
-            <text class="tx" x="181.24" y="335.46">Corporate (n=400, bandwidth 20.7): 0.0001072</text>
+            <rect class="tb" x="157.24" y="282.96" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="167.24" y="300.96">18.3</text>
+            <rect class="tsw s0" x="167.24" y="308.96" width="9" height="9" rx="2"/>
+            <text class="tx" x="181.24" y="317.96">Retail (n=400, bandwidth 5.429): 0.002542</text>
+            <rect class="tsw s1" x="167.24" y="325.96" width="9" height="9" rx="2"/>
+            <text class="tx" x="181.24" y="334.96">Corporate (n=400, bandwidth 20.7): 0.0001072</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="19.51, Retail (n=400, bandwidth 5.429): 0.002854">
@@ -725,12 +725,12 @@
         <circle class="cx s0" cx="147.93" cy="305.13" r="4.5"/>
         <circle class="cx s1" cx="147.93" cy="344.21" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="159.93" y="275.13" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="169.93" y="293.13">20.72</text>
-            <rect class="tsw s0" x="169.93" y="301.13" width="9" height="9" rx="2"/>
-            <text class="tx" x="183.93" y="310.13">Retail (n=400, bandwidth 5.429): 0.003193</text>
-            <rect class="tsw s1" x="169.93" y="318.13" width="9" height="9" rx="2"/>
-            <text class="tx" x="183.93" y="327.13">Corporate (n=400, bandwidth 20.7): 0.0001401</text>
+            <rect class="tb" x="159.93" y="274.63" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="169.93" y="292.63">20.72</text>
+            <rect class="tsw s0" x="169.93" y="300.63" width="9" height="9" rx="2"/>
+            <text class="tx" x="183.93" y="309.63">Retail (n=400, bandwidth 5.429): 0.003193</text>
+            <rect class="tsw s1" x="169.93" y="317.63" width="9" height="9" rx="2"/>
+            <text class="tx" x="183.93" y="326.63">Corporate (n=400, bandwidth 20.7): 0.0001401</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -741,12 +741,12 @@
         <circle class="cx s0" cx="148.67" cy="300.43" r="4.5"/>
         <circle class="cx s1" cx="148.67" cy="344.21" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="160.67" y="270.43" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="170.67" y="288.43">21.39</text>
-            <rect class="tsw s0" x="170.67" y="296.43" width="9" height="9" rx="2"/>
-            <text class="tx" x="184.67" y="305.43">Retail (n=400, bandwidth 5.429): 0.00356</text>
-            <rect class="tsw s1" x="170.67" y="313.43" width="9" height="9" rx="2"/>
-            <text class="tx" x="184.67" y="322.43">Corporate (n=400, bandwidth 20.7): 0.0001401</text>
+            <rect class="tb" x="160.67" y="269.93" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="170.67" y="287.93">21.39</text>
+            <rect class="tsw s0" x="170.67" y="295.93" width="9" height="9" rx="2"/>
+            <text class="tx" x="184.67" y="304.93">Retail (n=400, bandwidth 5.429): 0.00356</text>
+            <rect class="tsw s1" x="170.67" y="312.93" width="9" height="9" rx="2"/>
+            <text class="tx" x="184.67" y="321.93">Corporate (n=400, bandwidth 20.7): 0.0001401</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -757,12 +757,12 @@
         <circle class="cx s0" cx="149.27" cy="300.43" r="4.5"/>
         <circle class="cx s1" cx="149.27" cy="344.21" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="161.27" y="270.43" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="171.27" y="288.43">21.93</text>
-            <rect class="tsw s0" x="171.27" y="296.43" width="9" height="9" rx="2"/>
-            <text class="tx" x="185.27" y="305.43">Retail (n=400, bandwidth 5.429): 0.00356</text>
-            <rect class="tsw s1" x="171.27" y="313.43" width="9" height="9" rx="2"/>
-            <text class="tx" x="185.27" y="322.43">Corporate (n=400, bandwidth 20.7): 0.0001401</text>
+            <rect class="tb" x="161.27" y="269.93" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="171.27" y="287.93">21.93</text>
+            <rect class="tsw s0" x="171.27" y="295.93" width="9" height="9" rx="2"/>
+            <text class="tx" x="185.27" y="304.93">Retail (n=400, bandwidth 5.429): 0.00356</text>
+            <rect class="tsw s1" x="171.27" y="312.93" width="9" height="9" rx="2"/>
+            <text class="tx" x="185.27" y="321.93">Corporate (n=400, bandwidth 20.7): 0.0001401</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="23.13, Retail (n=400, bandwidth 5.429): 0.003956">
@@ -785,12 +785,12 @@
         <circle class="cx s0" cx="151.95" cy="289.92" r="4.5"/>
         <circle class="cx s1" cx="151.95" cy="343.69" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="163.95" y="259.92" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="173.95" y="277.92">24.34</text>
-            <rect class="tsw s0" x="173.95" y="285.92" width="9" height="9" rx="2"/>
-            <text class="tx" x="187.95" y="294.92">Retail (n=400, bandwidth 5.429): 0.004381</text>
-            <rect class="tsw s1" x="173.95" y="302.92" width="9" height="9" rx="2"/>
-            <text class="tx" x="187.95" y="311.92">Corporate (n=400, bandwidth 20.7): 0.0001809</text>
+            <rect class="tb" x="163.95" y="259.42" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="173.95" y="277.42">24.34</text>
+            <rect class="tsw s0" x="173.95" y="285.42" width="9" height="9" rx="2"/>
+            <text class="tx" x="187.95" y="294.42">Retail (n=400, bandwidth 5.429): 0.004381</text>
+            <rect class="tsw s1" x="173.95" y="302.42" width="9" height="9" rx="2"/>
+            <text class="tx" x="187.95" y="311.42">Corporate (n=400, bandwidth 20.7): 0.0001809</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -801,12 +801,12 @@
         <circle class="cx s0" cx="152.45" cy="289.92" r="4.5"/>
         <circle class="cx s1" cx="152.45" cy="343.69" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="164.45" y="259.92" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="174.45" y="277.92">24.8</text>
-            <rect class="tsw s0" x="174.45" y="285.92" width="9" height="9" rx="2"/>
-            <text class="tx" x="188.45" y="294.92">Retail (n=400, bandwidth 5.429): 0.004381</text>
-            <rect class="tsw s1" x="174.45" y="302.92" width="9" height="9" rx="2"/>
-            <text class="tx" x="188.45" y="311.92">Corporate (n=400, bandwidth 20.7): 0.0001809</text>
+            <rect class="tb" x="164.45" y="259.42" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="174.45" y="277.42">24.8</text>
+            <rect class="tsw s0" x="174.45" y="285.42" width="9" height="9" rx="2"/>
+            <text class="tx" x="188.45" y="294.42">Retail (n=400, bandwidth 5.429): 0.004381</text>
+            <rect class="tsw s1" x="174.45" y="302.42" width="9" height="9" rx="2"/>
+            <text class="tx" x="188.45" y="311.42">Corporate (n=400, bandwidth 20.7): 0.0001809</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -817,12 +817,12 @@
         <circle class="cx s0" cx="153.29" cy="284.11" r="4.5"/>
         <circle class="cx s1" cx="153.29" cy="343.69" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="165.29" y="254.11" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="175.29" y="272.11">25.55</text>
-            <rect class="tsw s0" x="175.29" y="280.11" width="9" height="9" rx="2"/>
-            <text class="tx" x="189.29" y="289.11">Retail (n=400, bandwidth 5.429): 0.004835</text>
-            <rect class="tsw s1" x="175.29" y="297.11" width="9" height="9" rx="2"/>
-            <text class="tx" x="189.29" y="306.11">Corporate (n=400, bandwidth 20.7): 0.0001809</text>
+            <rect class="tb" x="165.29" y="253.61" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="175.29" y="271.61">25.55</text>
+            <rect class="tsw s0" x="175.29" y="279.61" width="9" height="9" rx="2"/>
+            <text class="tx" x="189.29" y="288.61">Retail (n=400, bandwidth 5.429): 0.004835</text>
+            <rect class="tsw s1" x="175.29" y="296.61" width="9" height="9" rx="2"/>
+            <text class="tx" x="189.29" y="305.61">Corporate (n=400, bandwidth 20.7): 0.0001809</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="26.76, Retail (n=400, bandwidth 5.429): 0.005319">
@@ -845,12 +845,12 @@
         <circle class="cx s0" cx="155.97" cy="271.37" r="4.5"/>
         <circle class="cx s1" cx="155.97" cy="343.05" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="167.97" y="241.37" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="177.97" y="259.37">27.97</text>
-            <rect class="tsw s0" x="177.97" y="267.37" width="9" height="9" rx="2"/>
-            <text class="tx" x="191.97" y="276.37">Retail (n=400, bandwidth 5.429): 0.00583</text>
-            <rect class="tsw s1" x="177.97" y="284.37" width="9" height="9" rx="2"/>
-            <text class="tx" x="191.97" y="293.37">Corporate (n=400, bandwidth 20.7): 0.0002308</text>
+            <rect class="tb" x="167.97" y="240.87" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="177.97" y="258.87">27.97</text>
+            <rect class="tsw s0" x="177.97" y="266.87" width="9" height="9" rx="2"/>
+            <text class="tx" x="191.97" y="275.87">Retail (n=400, bandwidth 5.429): 0.00583</text>
+            <rect class="tsw s1" x="177.97" y="283.87" width="9" height="9" rx="2"/>
+            <text class="tx" x="191.97" y="292.87">Corporate (n=400, bandwidth 20.7): 0.0002308</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -861,12 +861,12 @@
         <circle class="cx s0" cx="156.23" cy="271.37" r="4.5"/>
         <circle class="cx s1" cx="156.23" cy="343.05" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="168.23" y="241.37" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="178.23" y="259.37">28.2</text>
-            <rect class="tsw s0" x="178.23" y="267.37" width="9" height="9" rx="2"/>
-            <text class="tx" x="192.23" y="276.37">Retail (n=400, bandwidth 5.429): 0.00583</text>
-            <rect class="tsw s1" x="178.23" y="284.37" width="9" height="9" rx="2"/>
-            <text class="tx" x="192.23" y="293.37">Corporate (n=400, bandwidth 20.7): 0.0002308</text>
+            <rect class="tb" x="168.23" y="240.87" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="178.23" y="258.87">28.2</text>
+            <rect class="tsw s0" x="178.23" y="266.87" width="9" height="9" rx="2"/>
+            <text class="tx" x="192.23" y="275.87">Retail (n=400, bandwidth 5.429): 0.00583</text>
+            <rect class="tsw s1" x="178.23" y="283.87" width="9" height="9" rx="2"/>
+            <text class="tx" x="192.23" y="292.87">Corporate (n=400, bandwidth 20.7): 0.0002308</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="29.18, Retail (n=400, bandwidth 5.429): 0.00637">
@@ -901,12 +901,12 @@
         <circle class="cx s0" cx="159.99" cy="249.68" r="4.5"/>
         <circle class="cx s1" cx="159.99" cy="342.27" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="171.99" y="219.68" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="181.99" y="237.68">31.6</text>
-            <rect class="tsw s0" x="181.99" y="245.68" width="9" height="9" rx="2"/>
-            <text class="tx" x="195.99" y="254.68">Retail (n=400, bandwidth 5.429): 0.007525</text>
-            <rect class="tsw s1" x="181.99" y="262.68" width="9" height="9" rx="2"/>
-            <text class="tx" x="195.99" y="271.68">Corporate (n=400, bandwidth 20.7): 0.0002914</text>
+            <rect class="tb" x="171.99" y="219.18" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="181.99" y="237.18">31.6</text>
+            <rect class="tsw s0" x="181.99" y="245.18" width="9" height="9" rx="2"/>
+            <text class="tx" x="195.99" y="254.18">Retail (n=400, bandwidth 5.429): 0.007525</text>
+            <rect class="tsw s1" x="181.99" y="262.18" width="9" height="9" rx="2"/>
+            <text class="tx" x="195.99" y="271.18">Corporate (n=400, bandwidth 20.7): 0.0002914</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -917,12 +917,12 @@
         <circle class="cx s0" cx="160" cy="249.68" r="4.5"/>
         <circle class="cx s1" cx="160" cy="342.27" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="172" y="219.68" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="182" y="237.68">31.61</text>
-            <rect class="tsw s0" x="182" y="245.68" width="9" height="9" rx="2"/>
-            <text class="tx" x="196" y="254.68">Retail (n=400, bandwidth 5.429): 0.007525</text>
-            <rect class="tsw s1" x="182" y="262.68" width="9" height="9" rx="2"/>
-            <text class="tx" x="196" y="271.68">Corporate (n=400, bandwidth 20.7): 0.0002914</text>
+            <rect class="tb" x="172" y="219.18" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="182" y="237.18">31.61</text>
+            <rect class="tsw s0" x="182" y="245.18" width="9" height="9" rx="2"/>
+            <text class="tx" x="196" y="254.18">Retail (n=400, bandwidth 5.429): 0.007525</text>
+            <rect class="tsw s1" x="182" y="262.18" width="9" height="9" rx="2"/>
+            <text class="tx" x="196" y="271.18">Corporate (n=400, bandwidth 20.7): 0.0002914</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="32.8, Retail (n=400, bandwidth 5.429): 0.008137">
@@ -957,12 +957,12 @@
         <circle class="cx s0" cx="163.78" cy="225.44" r="4.5"/>
         <circle class="cx s1" cx="163.78" cy="341.34" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="175.78" y="195.44" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="185.78" y="213.44">35.02</text>
-            <rect class="tsw s0" x="185.78" y="221.44" width="9" height="9" rx="2"/>
-            <text class="tx" x="199.78" y="230.44">Retail (n=400, bandwidth 5.429): 0.009419</text>
-            <rect class="tsw s1" x="185.78" y="238.44" width="9" height="9" rx="2"/>
-            <text class="tx" x="199.78" y="247.44">Corporate (n=400, bandwidth 20.7): 0.0003641</text>
+            <rect class="tb" x="175.78" y="194.94" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="185.78" y="212.94">35.02</text>
+            <rect class="tsw s0" x="185.78" y="220.94" width="9" height="9" rx="2"/>
+            <text class="tx" x="199.78" y="229.94">Retail (n=400, bandwidth 5.429): 0.009419</text>
+            <rect class="tsw s1" x="185.78" y="237.94" width="9" height="9" rx="2"/>
+            <text class="tx" x="199.78" y="246.94">Corporate (n=400, bandwidth 20.7): 0.0003641</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -973,12 +973,12 @@
         <circle class="cx s0" cx="164.01" cy="225.44" r="4.5"/>
         <circle class="cx s1" cx="164.01" cy="341.34" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="176.01" y="195.44" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="186.01" y="213.44">35.22</text>
-            <rect class="tsw s0" x="186.01" y="221.44" width="9" height="9" rx="2"/>
-            <text class="tx" x="200.01" y="230.44">Retail (n=400, bandwidth 5.429): 0.009419</text>
-            <rect class="tsw s1" x="186.01" y="238.44" width="9" height="9" rx="2"/>
-            <text class="tx" x="200.01" y="247.44">Corporate (n=400, bandwidth 20.7): 0.0003641</text>
+            <rect class="tb" x="176.01" y="194.94" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="186.01" y="212.94">35.22</text>
+            <rect class="tsw s0" x="186.01" y="220.94" width="9" height="9" rx="2"/>
+            <text class="tx" x="200.01" y="229.94">Retail (n=400, bandwidth 5.429): 0.009419</text>
+            <rect class="tsw s1" x="186.01" y="237.94" width="9" height="9" rx="2"/>
+            <text class="tx" x="200.01" y="246.94">Corporate (n=400, bandwidth 20.7): 0.0003641</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="36.43, Retail (n=400, bandwidth 5.429): 0.01008">
@@ -1001,12 +1001,12 @@
         <circle class="cx s0" cx="166.69" cy="208.33" r="4.5"/>
         <circle class="cx s1" cx="166.69" cy="340.23" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="178.69" y="178.33" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="188.69" y="196.33">37.64</text>
-            <rect class="tsw s0" x="188.69" y="204.33" width="9" height="9" rx="2"/>
-            <text class="tx" x="202.69" y="213.33">Retail (n=400, bandwidth 5.429): 0.01076</text>
-            <rect class="tsw s1" x="188.69" y="221.33" width="9" height="9" rx="2"/>
-            <text class="tx" x="202.69" y="230.33">Corporate (n=400, bandwidth 20.7): 0.0004506</text>
+            <rect class="tb" x="178.69" y="177.83" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="188.69" y="195.83">37.64</text>
+            <rect class="tsw s0" x="188.69" y="203.83" width="9" height="9" rx="2"/>
+            <text class="tx" x="202.69" y="212.83">Retail (n=400, bandwidth 5.429): 0.01076</text>
+            <rect class="tsw s1" x="188.69" y="220.83" width="9" height="9" rx="2"/>
+            <text class="tx" x="202.69" y="229.83">Corporate (n=400, bandwidth 20.7): 0.0004506</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1017,12 +1017,12 @@
         <circle class="cx s0" cx="167.56" cy="199.64" r="4.5"/>
         <circle class="cx s1" cx="167.56" cy="340.23" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="179.56" y="169.64" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="189.56" y="187.64">38.42</text>
-            <rect class="tsw s0" x="189.56" y="195.64" width="9" height="9" rx="2"/>
-            <text class="tx" x="203.56" y="204.64">Retail (n=400, bandwidth 5.429): 0.01143</text>
-            <rect class="tsw s1" x="189.56" y="212.64" width="9" height="9" rx="2"/>
-            <text class="tx" x="203.56" y="221.64">Corporate (n=400, bandwidth 20.7): 0.0004506</text>
+            <rect class="tb" x="179.56" y="169.14" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="189.56" y="187.14">38.42</text>
+            <rect class="tsw s0" x="189.56" y="195.14" width="9" height="9" rx="2"/>
+            <text class="tx" x="203.56" y="204.14">Retail (n=400, bandwidth 5.429): 0.01143</text>
+            <rect class="tsw s1" x="189.56" y="212.14" width="9" height="9" rx="2"/>
+            <text class="tx" x="203.56" y="221.14">Corporate (n=400, bandwidth 20.7): 0.0004506</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1033,12 +1033,12 @@
         <circle class="cx s0" cx="168.03" cy="199.64" r="4.5"/>
         <circle class="cx s1" cx="168.03" cy="340.23" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="180.03" y="169.64" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="190.03" y="187.64">38.85</text>
-            <rect class="tsw s0" x="190.03" y="195.64" width="9" height="9" rx="2"/>
-            <text class="tx" x="204.03" y="204.64">Retail (n=400, bandwidth 5.429): 0.01143</text>
-            <rect class="tsw s1" x="190.03" y="212.64" width="9" height="9" rx="2"/>
-            <text class="tx" x="204.03" y="221.64">Corporate (n=400, bandwidth 20.7): 0.0004506</text>
+            <rect class="tb" x="180.03" y="169.14" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="190.03" y="187.14">38.85</text>
+            <rect class="tsw s0" x="190.03" y="195.14" width="9" height="9" rx="2"/>
+            <text class="tx" x="204.03" y="204.14">Retail (n=400, bandwidth 5.429): 0.01143</text>
+            <rect class="tsw s1" x="190.03" y="212.14" width="9" height="9" rx="2"/>
+            <text class="tx" x="204.03" y="221.14">Corporate (n=400, bandwidth 20.7): 0.0004506</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="40.06, Retail (n=400, bandwidth 5.429): 0.01212">
@@ -1061,12 +1061,12 @@
         <circle class="cx s0" cx="170.71" cy="182.25" r="4.5"/>
         <circle class="cx s1" cx="170.71" cy="338.93" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="182.71" y="152.25" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="192.71" y="170.25">41.26</text>
-            <rect class="tsw s0" x="192.71" y="178.25" width="9" height="9" rx="2"/>
-            <text class="tx" x="206.71" y="187.25">Retail (n=400, bandwidth 5.429): 0.01279</text>
-            <rect class="tsw s1" x="192.71" y="195.25" width="9" height="9" rx="2"/>
-            <text class="tx" x="206.71" y="204.25">Corporate (n=400, bandwidth 20.7): 0.0005526</text>
+            <rect class="tb" x="182.71" y="151.75" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="192.71" y="169.75">41.26</text>
+            <rect class="tsw s0" x="192.71" y="177.75" width="9" height="9" rx="2"/>
+            <text class="tx" x="206.71" y="186.75">Retail (n=400, bandwidth 5.429): 0.01279</text>
+            <rect class="tsw s1" x="192.71" y="194.75" width="9" height="9" rx="2"/>
+            <text class="tx" x="206.71" y="203.75">Corporate (n=400, bandwidth 20.7): 0.0005526</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1077,12 +1077,12 @@
         <circle class="cx s0" cx="171.34" cy="182.25" r="4.5"/>
         <circle class="cx s1" cx="171.34" cy="338.93" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="183.34" y="152.25" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="193.34" y="170.25">41.83</text>
-            <rect class="tsw s0" x="193.34" y="178.25" width="9" height="9" rx="2"/>
-            <text class="tx" x="207.34" y="187.25">Retail (n=400, bandwidth 5.429): 0.01279</text>
-            <rect class="tsw s1" x="193.34" y="195.25" width="9" height="9" rx="2"/>
-            <text class="tx" x="207.34" y="204.25">Corporate (n=400, bandwidth 20.7): 0.0005526</text>
+            <rect class="tb" x="183.34" y="151.75" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="193.34" y="169.75">41.83</text>
+            <rect class="tsw s0" x="193.34" y="177.75" width="9" height="9" rx="2"/>
+            <text class="tx" x="207.34" y="186.75">Retail (n=400, bandwidth 5.429): 0.01279</text>
+            <rect class="tsw s1" x="193.34" y="194.75" width="9" height="9" rx="2"/>
+            <text class="tx" x="207.34" y="203.75">Corporate (n=400, bandwidth 20.7): 0.0005526</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1093,12 +1093,12 @@
         <circle class="cx s0" cx="172.05" cy="173.68" r="4.5"/>
         <circle class="cx s1" cx="172.05" cy="338.93" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="184.05" y="143.68" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="194.05" y="161.68">42.47</text>
-            <rect class="tsw s0" x="194.05" y="169.68" width="9" height="9" rx="2"/>
-            <text class="tx" x="208.05" y="178.68">Retail (n=400, bandwidth 5.429): 0.01346</text>
-            <rect class="tsw s1" x="194.05" y="186.68" width="9" height="9" rx="2"/>
-            <text class="tx" x="208.05" y="195.68">Corporate (n=400, bandwidth 20.7): 0.0005526</text>
+            <rect class="tb" x="184.05" y="143.18" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="194.05" y="161.18">42.47</text>
+            <rect class="tsw s0" x="194.05" y="169.18" width="9" height="9" rx="2"/>
+            <text class="tx" x="208.05" y="178.18">Retail (n=400, bandwidth 5.429): 0.01346</text>
+            <rect class="tsw s1" x="194.05" y="186.18" width="9" height="9" rx="2"/>
+            <text class="tx" x="208.05" y="195.18">Corporate (n=400, bandwidth 20.7): 0.0005526</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="43.68, Retail (n=400, bandwidth 5.429): 0.01412">
@@ -1121,12 +1121,12 @@
         <circle class="cx s0" cx="174.73" cy="157.1" r="4.5"/>
         <circle class="cx s1" cx="174.73" cy="337.4" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="186.73" y="127.1" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="196.73" y="145.1">44.89</text>
-            <rect class="tsw s0" x="196.73" y="153.1" width="9" height="9" rx="2"/>
-            <text class="tx" x="210.73" y="162.1">Retail (n=400, bandwidth 5.429): 0.01476</text>
-            <rect class="tsw s1" x="196.73" y="170.1" width="9" height="9" rx="2"/>
-            <text class="tx" x="210.73" y="179.1">Corporate (n=400, bandwidth 20.7): 0.0006715</text>
+            <rect class="tb" x="186.73" y="126.6" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="196.73" y="144.6">44.89</text>
+            <rect class="tsw s0" x="196.73" y="152.6" width="9" height="9" rx="2"/>
+            <text class="tx" x="210.73" y="161.6">Retail (n=400, bandwidth 5.429): 0.01476</text>
+            <rect class="tsw s1" x="196.73" y="169.6" width="9" height="9" rx="2"/>
+            <text class="tx" x="210.73" y="178.6">Corporate (n=400, bandwidth 20.7): 0.0006715</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1137,12 +1137,12 @@
         <circle class="cx s0" cx="175.11" cy="157.1" r="4.5"/>
         <circle class="cx s1" cx="175.11" cy="337.4" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="187.11" y="127.1" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="197.11" y="145.1">45.23</text>
-            <rect class="tsw s0" x="197.11" y="153.1" width="9" height="9" rx="2"/>
-            <text class="tx" x="211.11" y="162.1">Retail (n=400, bandwidth 5.429): 0.01476</text>
-            <rect class="tsw s1" x="197.11" y="170.1" width="9" height="9" rx="2"/>
-            <text class="tx" x="211.11" y="179.1">Corporate (n=400, bandwidth 20.7): 0.0006715</text>
+            <rect class="tb" x="187.11" y="126.6" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="197.11" y="144.6">45.23</text>
+            <rect class="tsw s0" x="197.11" y="152.6" width="9" height="9" rx="2"/>
+            <text class="tx" x="211.11" y="161.6">Retail (n=400, bandwidth 5.429): 0.01476</text>
+            <rect class="tsw s1" x="197.11" y="169.6" width="9" height="9" rx="2"/>
+            <text class="tx" x="211.11" y="178.6">Corporate (n=400, bandwidth 20.7): 0.0006715</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="46.1, Retail (n=400, bandwidth 5.429): 0.01537">
@@ -1177,12 +1177,12 @@
         <circle class="cx s0" cx="178.76" cy="134.66" r="4.5"/>
         <circle class="cx s1" cx="178.76" cy="335.65" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="190.76" y="104.66" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="200.76" y="122.66">48.52</text>
-            <rect class="tsw s0" x="200.76" y="130.66" width="9" height="9" rx="2"/>
-            <text class="tx" x="214.76" y="139.66">Retail (n=400, bandwidth 5.429): 0.01651</text>
-            <rect class="tsw s1" x="200.76" y="147.66" width="9" height="9" rx="2"/>
-            <text class="tx" x="214.76" y="156.66">Corporate (n=400, bandwidth 20.7): 0.0008089</text>
+            <rect class="tb" x="190.76" y="104.16" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="200.76" y="122.16">48.52</text>
+            <rect class="tsw s0" x="200.76" y="130.16" width="9" height="9" rx="2"/>
+            <text class="tx" x="214.76" y="139.16">Retail (n=400, bandwidth 5.429): 0.01651</text>
+            <rect class="tsw s1" x="200.76" y="147.16" width="9" height="9" rx="2"/>
+            <text class="tx" x="214.76" y="156.16">Corporate (n=400, bandwidth 20.7): 0.0008089</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1193,12 +1193,12 @@
         <circle class="cx s0" cx="178.89" cy="134.66" r="4.5"/>
         <circle class="cx s1" cx="178.89" cy="335.65" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="190.89" y="104.66" width="284.68" height="61" rx="6"/>
-            <text class="tx b" x="200.89" y="122.66">48.64</text>
-            <rect class="tsw s0" x="200.89" y="130.66" width="9" height="9" rx="2"/>
-            <text class="tx" x="214.89" y="139.66">Retail (n=400, bandwidth 5.429): 0.01651</text>
-            <rect class="tsw s1" x="200.89" y="147.66" width="9" height="9" rx="2"/>
-            <text class="tx" x="214.89" y="156.66">Corporate (n=400, bandwidth 20.7): 0.0008089</text>
+            <rect class="tb" x="190.89" y="104.16" width="284.68" height="61" rx="6"/>
+            <text class="tx b" x="200.89" y="122.16">48.64</text>
+            <rect class="tsw s0" x="200.89" y="130.16" width="9" height="9" rx="2"/>
+            <text class="tx" x="214.89" y="139.16">Retail (n=400, bandwidth 5.429): 0.01651</text>
+            <rect class="tsw s1" x="200.89" y="147.16" width="9" height="9" rx="2"/>
+            <text class="tx" x="214.89" y="156.16">Corporate (n=400, bandwidth 20.7): 0.0008089</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="49.73, Retail (n=400, bandwidth 5.429): 0.01702">
@@ -1509,12 +1509,12 @@
         <circle class="cx s0" cx="201.54" cy="122.08" r="4.5"/>
         <circle class="cx s1" cx="201.54" cy="319.59" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="213.54" y="92.08" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="223.54" y="110.08">69.07</text>
-            <rect class="tsw s0" x="223.54" y="118.08" width="9" height="9" rx="2"/>
-            <text class="tx" x="237.54" y="127.08">Retail (n=400, bandwidth 5.429): 0.01749</text>
-            <rect class="tsw s1" x="223.54" y="135.08" width="9" height="9" rx="2"/>
-            <text class="tx" x="237.54" y="144.08">Corporate (n=400, bandwidth 20.7): 0.002064</text>
+            <rect class="tb" x="213.54" y="91.58" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="223.54" y="109.58">69.07</text>
+            <rect class="tsw s0" x="223.54" y="117.58" width="9" height="9" rx="2"/>
+            <text class="tx" x="237.54" y="126.58">Retail (n=400, bandwidth 5.429): 0.01749</text>
+            <rect class="tsw s1" x="223.54" y="134.58" width="9" height="9" rx="2"/>
+            <text class="tx" x="237.54" y="143.58">Corporate (n=400, bandwidth 20.7): 0.002064</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1525,12 +1525,12 @@
         <circle class="cx s0" cx="201.56" cy="122.08" r="4.5"/>
         <circle class="cx s1" cx="201.56" cy="319.59" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="213.56" y="92.08" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="223.56" y="110.08">69.08</text>
-            <rect class="tsw s0" x="223.56" y="118.08" width="9" height="9" rx="2"/>
-            <text class="tx" x="237.56" y="127.08">Retail (n=400, bandwidth 5.429): 0.01749</text>
-            <rect class="tsw s1" x="223.56" y="135.08" width="9" height="9" rx="2"/>
-            <text class="tx" x="237.56" y="144.08">Corporate (n=400, bandwidth 20.7): 0.002064</text>
+            <rect class="tb" x="213.56" y="91.58" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="223.56" y="109.58">69.08</text>
+            <rect class="tsw s0" x="223.56" y="117.58" width="9" height="9" rx="2"/>
+            <text class="tx" x="237.56" y="126.58">Retail (n=400, bandwidth 5.429): 0.01749</text>
+            <rect class="tsw s1" x="223.56" y="134.58" width="9" height="9" rx="2"/>
+            <text class="tx" x="237.56" y="143.58">Corporate (n=400, bandwidth 20.7): 0.002064</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="70.27, Retail (n=400, bandwidth 5.429): 0.01702">
@@ -1565,12 +1565,12 @@
         <circle class="cx s0" cx="205.34" cy="141.73" r="4.5"/>
         <circle class="cx s1" cx="205.34" cy="316.04" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="217.34" y="111.73" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="227.34" y="129.73">72.48</text>
-            <rect class="tsw s0" x="227.34" y="137.73" width="9" height="9" rx="2"/>
-            <text class="tx" x="241.34" y="146.73">Retail (n=400, bandwidth 5.429): 0.01596</text>
-            <rect class="tsw s1" x="227.34" y="154.73" width="9" height="9" rx="2"/>
-            <text class="tx" x="241.34" y="163.73">Corporate (n=400, bandwidth 20.7): 0.002341</text>
+            <rect class="tb" x="217.34" y="111.23" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="227.34" y="129.23">72.48</text>
+            <rect class="tsw s0" x="227.34" y="137.23" width="9" height="9" rx="2"/>
+            <text class="tx" x="241.34" y="146.23">Retail (n=400, bandwidth 5.429): 0.01596</text>
+            <rect class="tsw s1" x="227.34" y="154.23" width="9" height="9" rx="2"/>
+            <text class="tx" x="241.34" y="163.23">Corporate (n=400, bandwidth 20.7): 0.002341</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1581,12 +1581,12 @@
         <circle class="cx s0" cx="205.56" cy="141.73" r="4.5"/>
         <circle class="cx s1" cx="205.56" cy="316.04" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="217.56" y="111.73" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="227.56" y="129.73">72.69</text>
-            <rect class="tsw s0" x="227.56" y="137.73" width="9" height="9" rx="2"/>
-            <text class="tx" x="241.56" y="146.73">Retail (n=400, bandwidth 5.429): 0.01596</text>
-            <rect class="tsw s1" x="227.56" y="154.73" width="9" height="9" rx="2"/>
-            <text class="tx" x="241.56" y="163.73">Corporate (n=400, bandwidth 20.7): 0.002341</text>
+            <rect class="tb" x="217.56" y="111.23" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="227.56" y="129.23">72.69</text>
+            <rect class="tsw s0" x="227.56" y="137.23" width="9" height="9" rx="2"/>
+            <text class="tx" x="241.56" y="146.23">Retail (n=400, bandwidth 5.429): 0.01596</text>
+            <rect class="tsw s1" x="227.56" y="154.23" width="9" height="9" rx="2"/>
+            <text class="tx" x="241.56" y="163.23">Corporate (n=400, bandwidth 20.7): 0.002341</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="73.9, Retail (n=400, bandwidth 5.429): 0.01537">
@@ -1609,12 +1609,12 @@
         <circle class="cx s0" cx="208.25" cy="157.1" r="4.5"/>
         <circle class="cx s1" cx="208.25" cy="312.31" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="220.25" y="127.1" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="230.25" y="145.1">75.11</text>
-            <rect class="tsw s0" x="230.25" y="153.1" width="9" height="9" rx="2"/>
-            <text class="tx" x="244.25" y="162.1">Retail (n=400, bandwidth 5.429): 0.01476</text>
-            <rect class="tsw s1" x="230.25" y="170.1" width="9" height="9" rx="2"/>
-            <text class="tx" x="244.25" y="179.1">Corporate (n=400, bandwidth 20.7): 0.002632</text>
+            <rect class="tb" x="220.25" y="126.6" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="230.25" y="144.6">75.11</text>
+            <rect class="tsw s0" x="230.25" y="152.6" width="9" height="9" rx="2"/>
+            <text class="tx" x="244.25" y="161.6">Retail (n=400, bandwidth 5.429): 0.01476</text>
+            <rect class="tsw s1" x="230.25" y="169.6" width="9" height="9" rx="2"/>
+            <text class="tx" x="244.25" y="178.6">Corporate (n=400, bandwidth 20.7): 0.002632</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1625,12 +1625,12 @@
         <circle class="cx s0" cx="209.11" cy="165.27" r="4.5"/>
         <circle class="cx s1" cx="209.11" cy="312.31" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="221.11" y="135.27" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="231.11" y="153.27">75.89</text>
-            <rect class="tsw s0" x="231.11" y="161.27" width="9" height="9" rx="2"/>
-            <text class="tx" x="245.11" y="170.27">Retail (n=400, bandwidth 5.429): 0.01412</text>
-            <rect class="tsw s1" x="231.11" y="178.27" width="9" height="9" rx="2"/>
-            <text class="tx" x="245.11" y="187.27">Corporate (n=400, bandwidth 20.7): 0.002632</text>
+            <rect class="tb" x="221.11" y="134.77" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="231.11" y="152.77">75.89</text>
+            <rect class="tsw s0" x="231.11" y="160.77" width="9" height="9" rx="2"/>
+            <text class="tx" x="245.11" y="169.77">Retail (n=400, bandwidth 5.429): 0.01412</text>
+            <rect class="tsw s1" x="231.11" y="177.77" width="9" height="9" rx="2"/>
+            <text class="tx" x="245.11" y="186.77">Corporate (n=400, bandwidth 20.7): 0.002632</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1641,12 +1641,12 @@
         <circle class="cx s0" cx="209.59" cy="165.27" r="4.5"/>
         <circle class="cx s1" cx="209.59" cy="312.31" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="221.59" y="135.27" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="231.59" y="153.27">76.32</text>
-            <rect class="tsw s0" x="231.59" y="161.27" width="9" height="9" rx="2"/>
-            <text class="tx" x="245.59" y="170.27">Retail (n=400, bandwidth 5.429): 0.01412</text>
-            <rect class="tsw s1" x="231.59" y="178.27" width="9" height="9" rx="2"/>
-            <text class="tx" x="245.59" y="187.27">Corporate (n=400, bandwidth 20.7): 0.002632</text>
+            <rect class="tb" x="221.59" y="134.77" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="231.59" y="152.77">76.32</text>
+            <rect class="tsw s0" x="231.59" y="160.77" width="9" height="9" rx="2"/>
+            <text class="tx" x="245.59" y="169.77">Retail (n=400, bandwidth 5.429): 0.01412</text>
+            <rect class="tsw s1" x="231.59" y="177.77" width="9" height="9" rx="2"/>
+            <text class="tx" x="245.59" y="186.77">Corporate (n=400, bandwidth 20.7): 0.002632</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="77.53, Retail (n=400, bandwidth 5.429): 0.01346">
@@ -1669,12 +1669,12 @@
         <circle class="cx s0" cx="212.27" cy="182.25" r="4.5"/>
         <circle class="cx s1" cx="212.27" cy="308.44" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="224.27" y="152.25" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="234.27" y="170.25">78.74</text>
-            <rect class="tsw s0" x="234.27" y="178.25" width="9" height="9" rx="2"/>
-            <text class="tx" x="248.27" y="187.25">Retail (n=400, bandwidth 5.429): 0.01279</text>
-            <rect class="tsw s1" x="234.27" y="195.25" width="9" height="9" rx="2"/>
-            <text class="tx" x="248.27" y="204.25">Corporate (n=400, bandwidth 20.7): 0.002934</text>
+            <rect class="tb" x="224.27" y="151.75" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="234.27" y="169.75">78.74</text>
+            <rect class="tsw s0" x="234.27" y="177.75" width="9" height="9" rx="2"/>
+            <text class="tx" x="248.27" y="186.75">Retail (n=400, bandwidth 5.429): 0.01279</text>
+            <rect class="tsw s1" x="234.27" y="194.75" width="9" height="9" rx="2"/>
+            <text class="tx" x="248.27" y="203.75">Corporate (n=400, bandwidth 20.7): 0.002934</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1685,12 +1685,12 @@
         <circle class="cx s0" cx="212.89" cy="182.25" r="4.5"/>
         <circle class="cx s1" cx="212.89" cy="308.44" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="224.89" y="152.25" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="234.89" y="170.25">79.3</text>
-            <rect class="tsw s0" x="234.89" y="178.25" width="9" height="9" rx="2"/>
-            <text class="tx" x="248.89" y="187.25">Retail (n=400, bandwidth 5.429): 0.01279</text>
-            <rect class="tsw s1" x="234.89" y="195.25" width="9" height="9" rx="2"/>
-            <text class="tx" x="248.89" y="204.25">Corporate (n=400, bandwidth 20.7): 0.002934</text>
+            <rect class="tb" x="224.89" y="151.75" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="234.89" y="169.75">79.3</text>
+            <rect class="tsw s0" x="234.89" y="177.75" width="9" height="9" rx="2"/>
+            <text class="tx" x="248.89" y="186.75">Retail (n=400, bandwidth 5.429): 0.01279</text>
+            <rect class="tsw s1" x="234.89" y="194.75" width="9" height="9" rx="2"/>
+            <text class="tx" x="248.89" y="203.75">Corporate (n=400, bandwidth 20.7): 0.002934</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1701,12 +1701,12 @@
         <circle class="cx s0" cx="213.61" cy="190.92" r="4.5"/>
         <circle class="cx s1" cx="213.61" cy="308.44" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="225.61" y="160.92" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="235.61" y="178.92">79.94</text>
-            <rect class="tsw s0" x="235.61" y="186.92" width="9" height="9" rx="2"/>
-            <text class="tx" x="249.61" y="195.92">Retail (n=400, bandwidth 5.429): 0.01212</text>
-            <rect class="tsw s1" x="235.61" y="203.92" width="9" height="9" rx="2"/>
-            <text class="tx" x="249.61" y="212.92">Corporate (n=400, bandwidth 20.7): 0.002934</text>
+            <rect class="tb" x="225.61" y="160.42" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="235.61" y="178.42">79.94</text>
+            <rect class="tsw s0" x="235.61" y="186.42" width="9" height="9" rx="2"/>
+            <text class="tx" x="249.61" y="195.42">Retail (n=400, bandwidth 5.429): 0.01212</text>
+            <rect class="tsw s1" x="235.61" y="203.42" width="9" height="9" rx="2"/>
+            <text class="tx" x="249.61" y="212.42">Corporate (n=400, bandwidth 20.7): 0.002934</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="81.15, Retail (n=400, bandwidth 5.429): 0.01143">
@@ -1729,12 +1729,12 @@
         <circle class="cx s0" cx="216.29" cy="208.33" r="4.5"/>
         <circle class="cx s1" cx="216.29" cy="304.5" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="228.29" y="178.33" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="238.29" y="196.33">82.36</text>
-            <rect class="tsw s0" x="238.29" y="204.33" width="9" height="9" rx="2"/>
-            <text class="tx" x="252.29" y="213.33">Retail (n=400, bandwidth 5.429): 0.01076</text>
-            <rect class="tsw s1" x="238.29" y="221.33" width="9" height="9" rx="2"/>
-            <text class="tx" x="252.29" y="230.33">Corporate (n=400, bandwidth 20.7): 0.003242</text>
+            <rect class="tb" x="228.29" y="177.83" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="238.29" y="195.83">82.36</text>
+            <rect class="tsw s0" x="238.29" y="203.83" width="9" height="9" rx="2"/>
+            <text class="tx" x="252.29" y="212.83">Retail (n=400, bandwidth 5.429): 0.01076</text>
+            <rect class="tsw s1" x="238.29" y="220.83" width="9" height="9" rx="2"/>
+            <text class="tx" x="252.29" y="229.83">Corporate (n=400, bandwidth 20.7): 0.003242</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1745,12 +1745,12 @@
         <circle class="cx s0" cx="216.67" cy="208.33" r="4.5"/>
         <circle class="cx s1" cx="216.67" cy="304.5" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="228.67" y="178.33" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="238.67" y="196.33">82.7</text>
-            <rect class="tsw s0" x="238.67" y="204.33" width="9" height="9" rx="2"/>
-            <text class="tx" x="252.67" y="213.33">Retail (n=400, bandwidth 5.429): 0.01076</text>
-            <rect class="tsw s1" x="238.67" y="221.33" width="9" height="9" rx="2"/>
-            <text class="tx" x="252.67" y="230.33">Corporate (n=400, bandwidth 20.7): 0.003242</text>
+            <rect class="tb" x="228.67" y="177.83" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="238.67" y="195.83">82.7</text>
+            <rect class="tsw s0" x="238.67" y="203.83" width="9" height="9" rx="2"/>
+            <text class="tx" x="252.67" y="212.83">Retail (n=400, bandwidth 5.429): 0.01076</text>
+            <rect class="tsw s1" x="238.67" y="220.83" width="9" height="9" rx="2"/>
+            <text class="tx" x="252.67" y="229.83">Corporate (n=400, bandwidth 20.7): 0.003242</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="83.57, Retail (n=400, bandwidth 5.429): 0.01008">
@@ -1785,12 +1785,12 @@
         <circle class="cx s0" cx="220.31" cy="233.75" r="4.5"/>
         <circle class="cx s1" cx="220.31" cy="300.53" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="232.31" y="203.75" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="242.31" y="221.75">85.99</text>
-            <rect class="tsw s0" x="242.31" y="229.75" width="9" height="9" rx="2"/>
-            <text class="tx" x="256.31" y="238.75">Retail (n=400, bandwidth 5.429): 0.00877</text>
-            <rect class="tsw s1" x="242.31" y="246.75" width="9" height="9" rx="2"/>
-            <text class="tx" x="256.31" y="255.75">Corporate (n=400, bandwidth 20.7): 0.003552</text>
+            <rect class="tb" x="232.31" y="203.25" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="242.31" y="221.25">85.99</text>
+            <rect class="tsw s0" x="242.31" y="229.25" width="9" height="9" rx="2"/>
+            <text class="tx" x="256.31" y="238.25">Retail (n=400, bandwidth 5.429): 0.00877</text>
+            <rect class="tsw s1" x="242.31" y="246.25" width="9" height="9" rx="2"/>
+            <text class="tx" x="256.31" y="255.25">Corporate (n=400, bandwidth 20.7): 0.003552</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1801,12 +1801,12 @@
         <circle class="cx s0" cx="220.45" cy="233.75" r="4.5"/>
         <circle class="cx s1" cx="220.45" cy="300.53" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="232.45" y="203.75" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="242.45" y="221.75">86.11</text>
-            <rect class="tsw s0" x="242.45" y="229.75" width="9" height="9" rx="2"/>
-            <text class="tx" x="256.45" y="238.75">Retail (n=400, bandwidth 5.429): 0.00877</text>
-            <rect class="tsw s1" x="242.45" y="246.75" width="9" height="9" rx="2"/>
-            <text class="tx" x="256.45" y="255.75">Corporate (n=400, bandwidth 20.7): 0.003552</text>
+            <rect class="tb" x="232.45" y="203.25" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="242.45" y="221.25">86.11</text>
+            <rect class="tsw s0" x="242.45" y="229.25" width="9" height="9" rx="2"/>
+            <text class="tx" x="256.45" y="238.25">Retail (n=400, bandwidth 5.429): 0.00877</text>
+            <rect class="tsw s1" x="242.45" y="246.25" width="9" height="9" rx="2"/>
+            <text class="tx" x="256.45" y="255.25">Corporate (n=400, bandwidth 20.7): 0.003552</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="87.2, Retail (n=400, bandwidth 5.429): 0.008137">
@@ -1841,12 +1841,12 @@
         <circle class="cx s0" cx="224.22" cy="257.23" r="4.5"/>
         <circle class="cx s1" cx="224.22" cy="296.62" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="236.22" y="227.23" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="246.22" y="245.23">89.52</text>
-            <rect class="tsw s0" x="246.22" y="253.23" width="9" height="9" rx="2"/>
-            <text class="tx" x="260.22" y="262.23">Retail (n=400, bandwidth 5.429): 0.006935</text>
-            <rect class="tsw s1" x="246.22" y="270.23" width="9" height="9" rx="2"/>
-            <text class="tx" x="260.22" y="279.23">Corporate (n=400, bandwidth 20.7): 0.003858</text>
+            <rect class="tb" x="236.22" y="226.73" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="246.22" y="244.73">89.52</text>
+            <rect class="tsw s0" x="246.22" y="252.73" width="9" height="9" rx="2"/>
+            <text class="tx" x="260.22" y="261.73">Retail (n=400, bandwidth 5.429): 0.006935</text>
+            <rect class="tsw s1" x="246.22" y="269.73" width="9" height="9" rx="2"/>
+            <text class="tx" x="260.22" y="278.73">Corporate (n=400, bandwidth 20.7): 0.003858</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1857,12 +1857,12 @@
         <circle class="cx s0" cx="224.33" cy="257.23" r="4.5"/>
         <circle class="cx s1" cx="224.33" cy="296.62" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="236.33" y="227.23" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="246.33" y="245.23">89.61</text>
-            <rect class="tsw s0" x="246.33" y="253.23" width="9" height="9" rx="2"/>
-            <text class="tx" x="260.33" y="262.23">Retail (n=400, bandwidth 5.429): 0.006935</text>
-            <rect class="tsw s1" x="246.33" y="270.23" width="9" height="9" rx="2"/>
-            <text class="tx" x="260.33" y="279.23">Corporate (n=400, bandwidth 20.7): 0.003858</text>
+            <rect class="tb" x="236.33" y="226.73" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="246.33" y="244.73">89.61</text>
+            <rect class="tsw s0" x="246.33" y="252.73" width="9" height="9" rx="2"/>
+            <text class="tx" x="260.33" y="261.73">Retail (n=400, bandwidth 5.429): 0.006935</text>
+            <rect class="tsw s1" x="246.33" y="269.73" width="9" height="9" rx="2"/>
+            <text class="tx" x="260.33" y="278.73">Corporate (n=400, bandwidth 20.7): 0.003858</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="90.82, Retail (n=400, bandwidth 5.429): 0.00637">
@@ -1897,12 +1897,12 @@
         <circle class="cx s0" cx="228" cy="277.92" r="4.5"/>
         <circle class="cx s1" cx="228" cy="292.84" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="240" y="247.92" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="250" y="265.92">92.92</text>
-            <rect class="tsw s0" x="250" y="273.92" width="9" height="9" rx="2"/>
-            <text class="tx" x="264" y="282.92">Retail (n=400, bandwidth 5.429): 0.005319</text>
-            <rect class="tsw s1" x="250" y="290.92" width="9" height="9" rx="2"/>
-            <text class="tx" x="264" y="299.92">Corporate (n=400, bandwidth 20.7): 0.004153</text>
+            <rect class="tb" x="240" y="247.42" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="250" y="265.42">92.92</text>
+            <rect class="tsw s0" x="250" y="273.42" width="9" height="9" rx="2"/>
+            <text class="tx" x="264" y="282.42">Retail (n=400, bandwidth 5.429): 0.005319</text>
+            <rect class="tsw s1" x="250" y="290.42" width="9" height="9" rx="2"/>
+            <text class="tx" x="264" y="299.42">Corporate (n=400, bandwidth 20.7): 0.004153</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1913,12 +1913,12 @@
         <circle class="cx s0" cx="228.35" cy="277.92" r="4.5"/>
         <circle class="cx s1" cx="228.35" cy="292.84" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="240.35" y="247.92" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="250.35" y="265.92">93.24</text>
-            <rect class="tsw s0" x="250.35" y="273.92" width="9" height="9" rx="2"/>
-            <text class="tx" x="264.35" y="282.92">Retail (n=400, bandwidth 5.429): 0.005319</text>
-            <rect class="tsw s1" x="250.35" y="290.92" width="9" height="9" rx="2"/>
-            <text class="tx" x="264.35" y="299.92">Corporate (n=400, bandwidth 20.7): 0.004153</text>
+            <rect class="tb" x="240.35" y="247.42" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="250.35" y="265.42">93.24</text>
+            <rect class="tsw s0" x="250.35" y="273.42" width="9" height="9" rx="2"/>
+            <text class="tx" x="264.35" y="282.42">Retail (n=400, bandwidth 5.429): 0.005319</text>
+            <rect class="tsw s1" x="250.35" y="290.42" width="9" height="9" rx="2"/>
+            <text class="tx" x="264.35" y="299.42">Corporate (n=400, bandwidth 20.7): 0.004153</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="94.45, Retail (n=400, bandwidth 5.429): 0.004835">
@@ -1941,12 +1941,12 @@
         <circle class="cx s0" cx="231.03" cy="289.92" r="4.5"/>
         <circle class="cx s1" cx="231.03" cy="289.27" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="243.03" y="259.27" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="253.03" y="277.27">95.66</text>
-            <rect class="tsw s0" x="253.03" y="285.27" width="9" height="9" rx="2"/>
-            <text class="tx" x="267.03" y="294.27">Retail (n=400, bandwidth 5.429): 0.004381</text>
-            <rect class="tsw s1" x="253.03" y="302.27" width="9" height="9" rx="2"/>
-            <text class="tx" x="267.03" y="311.27">Corporate (n=400, bandwidth 20.7): 0.004432</text>
+            <rect class="tb" x="243.03" y="258.77" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="253.03" y="276.77">95.66</text>
+            <rect class="tsw s0" x="253.03" y="284.77" width="9" height="9" rx="2"/>
+            <text class="tx" x="267.03" y="293.77">Retail (n=400, bandwidth 5.429): 0.004381</text>
+            <rect class="tsw s1" x="253.03" y="301.77" width="9" height="9" rx="2"/>
+            <text class="tx" x="267.03" y="310.77">Corporate (n=400, bandwidth 20.7): 0.004432</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1957,12 +1957,12 @@
         <circle class="cx s0" cx="231.78" cy="295.36" r="4.5"/>
         <circle class="cx s1" cx="231.78" cy="289.27" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="243.78" y="259.27" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="253.78" y="277.27">96.33</text>
-            <rect class="tsw s0" x="253.78" y="285.27" width="9" height="9" rx="2"/>
-            <text class="tx" x="267.78" y="294.27">Retail (n=400, bandwidth 5.429): 0.003956</text>
-            <rect class="tsw s1" x="253.78" y="302.27" width="9" height="9" rx="2"/>
-            <text class="tx" x="267.78" y="311.27">Corporate (n=400, bandwidth 20.7): 0.004432</text>
+            <rect class="tb" x="243.78" y="258.77" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="253.78" y="276.77">96.33</text>
+            <rect class="tsw s0" x="253.78" y="284.77" width="9" height="9" rx="2"/>
+            <text class="tx" x="267.78" y="293.77">Retail (n=400, bandwidth 5.429): 0.003956</text>
+            <rect class="tsw s1" x="253.78" y="301.77" width="9" height="9" rx="2"/>
+            <text class="tx" x="267.78" y="310.77">Corporate (n=400, bandwidth 20.7): 0.004432</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1973,12 +1973,12 @@
         <circle class="cx s0" cx="232.37" cy="295.36" r="4.5"/>
         <circle class="cx s1" cx="232.37" cy="289.27" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="244.37" y="259.27" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="254.37" y="277.27">96.87</text>
-            <rect class="tsw s0" x="254.37" y="285.27" width="9" height="9" rx="2"/>
-            <text class="tx" x="268.37" y="294.27">Retail (n=400, bandwidth 5.429): 0.003956</text>
-            <rect class="tsw s1" x="254.37" y="302.27" width="9" height="9" rx="2"/>
-            <text class="tx" x="268.37" y="311.27">Corporate (n=400, bandwidth 20.7): 0.004432</text>
+            <rect class="tb" x="244.37" y="258.77" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="254.37" y="276.77">96.87</text>
+            <rect class="tsw s0" x="254.37" y="284.77" width="9" height="9" rx="2"/>
+            <text class="tx" x="268.37" y="293.77">Retail (n=400, bandwidth 5.429): 0.003956</text>
+            <rect class="tsw s1" x="254.37" y="301.77" width="9" height="9" rx="2"/>
+            <text class="tx" x="268.37" y="310.77">Corporate (n=400, bandwidth 20.7): 0.004432</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="98.07, Retail (n=400, bandwidth 5.429): 0.00356">
@@ -2001,12 +2001,12 @@
         <circle class="cx s0" cx="235.05" cy="305.13" r="4.5"/>
         <circle class="cx s1" cx="235.05" cy="285.98" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="247.05" y="255.98" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="257.05" y="273.98">99.28</text>
-            <rect class="tsw s0" x="257.05" y="281.98" width="9" height="9" rx="2"/>
-            <text class="tx" x="271.05" y="290.98">Retail (n=400, bandwidth 5.429): 0.003193</text>
-            <rect class="tsw s1" x="257.05" y="298.98" width="9" height="9" rx="2"/>
-            <text class="tx" x="271.05" y="307.98">Corporate (n=400, bandwidth 20.7): 0.004689</text>
+            <rect class="tb" x="247.05" y="255.48" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="257.05" y="273.48">99.28</text>
+            <rect class="tsw s0" x="257.05" y="281.48" width="9" height="9" rx="2"/>
+            <text class="tx" x="271.05" y="290.48">Retail (n=400, bandwidth 5.429): 0.003193</text>
+            <rect class="tsw s1" x="257.05" y="298.48" width="9" height="9" rx="2"/>
+            <text class="tx" x="271.05" y="307.48">Corporate (n=400, bandwidth 20.7): 0.004689</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -2017,12 +2017,12 @@
         <circle class="cx s0" cx="235.56" cy="305.13" r="4.5"/>
         <circle class="cx s1" cx="235.56" cy="285.98" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="247.56" y="255.98" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="257.56" y="273.98">99.73</text>
-            <rect class="tsw s0" x="257.56" y="281.98" width="9" height="9" rx="2"/>
-            <text class="tx" x="271.56" y="290.98">Retail (n=400, bandwidth 5.429): 0.003193</text>
-            <rect class="tsw s1" x="257.56" y="298.98" width="9" height="9" rx="2"/>
-            <text class="tx" x="271.56" y="307.98">Corporate (n=400, bandwidth 20.7): 0.004689</text>
+            <rect class="tb" x="247.56" y="255.48" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="257.56" y="273.48">99.73</text>
+            <rect class="tsw s0" x="257.56" y="281.48" width="9" height="9" rx="2"/>
+            <text class="tx" x="271.56" y="290.48">Retail (n=400, bandwidth 5.429): 0.003193</text>
+            <rect class="tsw s1" x="257.56" y="298.48" width="9" height="9" rx="2"/>
+            <text class="tx" x="271.56" y="307.48">Corporate (n=400, bandwidth 20.7): 0.004689</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -2033,12 +2033,12 @@
         <circle class="cx s0" cx="236.4" cy="309.47" r="4.5"/>
         <circle class="cx s1" cx="236.4" cy="285.98" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="248.4" y="255.98" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="258.4" y="273.98">100.5</text>
-            <rect class="tsw s0" x="258.4" y="281.98" width="9" height="9" rx="2"/>
-            <text class="tx" x="272.4" y="290.98">Retail (n=400, bandwidth 5.429): 0.002854</text>
-            <rect class="tsw s1" x="258.4" y="298.98" width="9" height="9" rx="2"/>
-            <text class="tx" x="272.4" y="307.98">Corporate (n=400, bandwidth 20.7): 0.004689</text>
+            <rect class="tb" x="248.4" y="255.48" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="258.4" y="273.48">100.5</text>
+            <rect class="tsw s0" x="258.4" y="281.48" width="9" height="9" rx="2"/>
+            <text class="tx" x="272.4" y="290.48">Retail (n=400, bandwidth 5.429): 0.002854</text>
+            <rect class="tsw s1" x="258.4" y="298.48" width="9" height="9" rx="2"/>
+            <text class="tx" x="272.4" y="307.48">Corporate (n=400, bandwidth 20.7): 0.004689</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="101.7, Retail (n=400, bandwidth 5.429): 0.002542">
@@ -2061,12 +2061,12 @@
         <circle class="cx s0" cx="239.08" cy="317.11" r="4.5"/>
         <circle class="cx s1" cx="239.08" cy="283.05" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="251.08" y="253.05" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="261.08" y="271.05">102.9</text>
-            <rect class="tsw s0" x="261.08" y="279.05" width="9" height="9" rx="2"/>
-            <text class="tx" x="275.08" y="288.05">Retail (n=400, bandwidth 5.429): 0.002257</text>
-            <rect class="tsw s1" x="261.08" y="296.05" width="9" height="9" rx="2"/>
-            <text class="tx" x="275.08" y="305.05">Corporate (n=400, bandwidth 20.7): 0.004918</text>
+            <rect class="tb" x="251.08" y="252.55" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="261.08" y="270.55">102.9</text>
+            <rect class="tsw s0" x="261.08" y="278.55" width="9" height="9" rx="2"/>
+            <text class="tx" x="275.08" y="287.55">Retail (n=400, bandwidth 5.429): 0.002257</text>
+            <rect class="tsw s1" x="261.08" y="295.55" width="9" height="9" rx="2"/>
+            <text class="tx" x="275.08" y="304.55">Corporate (n=400, bandwidth 20.7): 0.004918</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -2077,12 +2077,12 @@
         <circle class="cx s0" cx="239.33" cy="317.11" r="4.5"/>
         <circle class="cx s1" cx="239.33" cy="283.05" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="251.33" y="253.05" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="261.33" y="271.05">103.1</text>
-            <rect class="tsw s0" x="261.33" y="279.05" width="9" height="9" rx="2"/>
-            <text class="tx" x="275.33" y="288.05">Retail (n=400, bandwidth 5.429): 0.002257</text>
-            <rect class="tsw s1" x="261.33" y="296.05" width="9" height="9" rx="2"/>
-            <text class="tx" x="275.33" y="305.05">Corporate (n=400, bandwidth 20.7): 0.004918</text>
+            <rect class="tb" x="251.33" y="252.55" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="261.33" y="270.55">103.1</text>
+            <rect class="tsw s0" x="261.33" y="278.55" width="9" height="9" rx="2"/>
+            <text class="tx" x="275.33" y="287.55">Retail (n=400, bandwidth 5.429): 0.002257</text>
+            <rect class="tsw s1" x="261.33" y="295.55" width="9" height="9" rx="2"/>
+            <text class="tx" x="275.33" y="304.55">Corporate (n=400, bandwidth 20.7): 0.004918</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="104.1, Retail (n=400, bandwidth 5.429): 0.001996">
@@ -2117,12 +2117,12 @@
         <circle class="cx s0" cx="243.1" cy="326.21" r="4.5"/>
         <circle class="cx s1" cx="243.1" cy="280.56" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="255.1" y="250.56" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="265.1" y="268.56">106.5</text>
-            <rect class="tsw s0" x="265.1" y="276.56" width="9" height="9" rx="2"/>
-            <text class="tx" x="279.1" y="285.56">Retail (n=400, bandwidth 5.429): 0.001546</text>
-            <rect class="tsw s1" x="265.1" y="293.56" width="9" height="9" rx="2"/>
-            <text class="tx" x="279.1" y="302.56">Corporate (n=400, bandwidth 20.7): 0.005113</text>
+            <rect class="tb" x="255.1" y="250.06" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="265.1" y="268.06">106.5</text>
+            <rect class="tsw s0" x="265.1" y="276.06" width="9" height="9" rx="2"/>
+            <text class="tx" x="279.1" y="285.06">Retail (n=400, bandwidth 5.429): 0.001546</text>
+            <rect class="tsw s1" x="265.1" y="293.06" width="9" height="9" rx="2"/>
+            <text class="tx" x="279.1" y="302.06">Corporate (n=400, bandwidth 20.7): 0.005113</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -2133,12 +2133,12 @@
         <circle class="cx s0" cx="243.11" cy="326.21" r="4.5"/>
         <circle class="cx s1" cx="243.11" cy="280.56" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="255.11" y="250.56" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="265.11" y="268.56">106.5</text>
-            <rect class="tsw s0" x="265.11" y="276.56" width="9" height="9" rx="2"/>
-            <text class="tx" x="279.11" y="285.56">Retail (n=400, bandwidth 5.429): 0.001546</text>
-            <rect class="tsw s1" x="265.11" y="293.56" width="9" height="9" rx="2"/>
-            <text class="tx" x="279.11" y="302.56">Corporate (n=400, bandwidth 20.7): 0.005113</text>
+            <rect class="tb" x="255.11" y="250.06" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="265.11" y="268.06">106.5</text>
+            <rect class="tsw s0" x="265.11" y="276.06" width="9" height="9" rx="2"/>
+            <text class="tx" x="279.11" y="285.06">Retail (n=400, bandwidth 5.429): 0.001546</text>
+            <rect class="tsw s1" x="265.11" y="293.06" width="9" height="9" rx="2"/>
+            <text class="tx" x="279.11" y="302.06">Corporate (n=400, bandwidth 20.7): 0.005113</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="107.7, Retail (n=400, bandwidth 5.429): 0.001354">
@@ -2173,12 +2173,12 @@
         <circle class="cx s0" cx="246.89" cy="332.85" r="4.5"/>
         <circle class="cx s1" cx="246.89" cy="278.55" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="258.89" y="248.55" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="268.89" y="266.55">110</text>
-            <rect class="tsw s0" x="268.89" y="274.55" width="9" height="9" rx="2"/>
-            <text class="tx" x="282.89" y="283.55">Retail (n=400, bandwidth 5.429): 0.001027</text>
-            <rect class="tsw s1" x="268.89" y="291.55" width="9" height="9" rx="2"/>
-            <text class="tx" x="282.89" y="300.55">Corporate (n=400, bandwidth 20.7): 0.005269</text>
+            <rect class="tb" x="258.89" y="248.05" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="268.89" y="266.05">110</text>
+            <rect class="tsw s0" x="268.89" y="274.05" width="9" height="9" rx="2"/>
+            <text class="tx" x="282.89" y="283.05">Retail (n=400, bandwidth 5.429): 0.001027</text>
+            <rect class="tsw s1" x="268.89" y="291.05" width="9" height="9" rx="2"/>
+            <text class="tx" x="282.89" y="300.05">Corporate (n=400, bandwidth 20.7): 0.005269</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -2189,12 +2189,12 @@
         <circle class="cx s0" cx="247.12" cy="332.85" r="4.5"/>
         <circle class="cx s1" cx="247.12" cy="278.55" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="259.12" y="248.55" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="269.12" y="266.55">110.2</text>
-            <rect class="tsw s0" x="269.12" y="274.55" width="9" height="9" rx="2"/>
-            <text class="tx" x="283.12" y="283.55">Retail (n=400, bandwidth 5.429): 0.001027</text>
-            <rect class="tsw s1" x="269.12" y="291.55" width="9" height="9" rx="2"/>
-            <text class="tx" x="283.12" y="300.55">Corporate (n=400, bandwidth 20.7): 0.005269</text>
+            <rect class="tb" x="259.12" y="248.05" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="269.12" y="266.05">110.2</text>
+            <rect class="tsw s0" x="269.12" y="274.05" width="9" height="9" rx="2"/>
+            <text class="tx" x="283.12" y="283.05">Retail (n=400, bandwidth 5.429): 0.001027</text>
+            <rect class="tsw s1" x="269.12" y="291.05" width="9" height="9" rx="2"/>
+            <text class="tx" x="283.12" y="300.05">Corporate (n=400, bandwidth 20.7): 0.005269</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="111.4, Retail (n=400, bandwidth 5.429): 0.0008916">
@@ -2217,12 +2217,12 @@
         <circle class="cx s0" cx="249.8" cy="336.11" r="4.5"/>
         <circle class="cx s1" cx="249.8" cy="277.09" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="261.8" y="247.09" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="271.8" y="265.09">112.6</text>
-            <rect class="tsw s0" x="271.8" y="273.09" width="9" height="9" rx="2"/>
-            <text class="tx" x="285.8" y="282.09">Retail (n=400, bandwidth 5.429): 0.0007729</text>
-            <rect class="tsw s1" x="271.8" y="290.09" width="9" height="9" rx="2"/>
-            <text class="tx" x="285.8" y="299.09">Corporate (n=400, bandwidth 20.7): 0.005384</text>
+            <rect class="tb" x="261.8" y="246.59" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="271.8" y="264.59">112.6</text>
+            <rect class="tsw s0" x="271.8" y="272.59" width="9" height="9" rx="2"/>
+            <text class="tx" x="285.8" y="281.59">Retail (n=400, bandwidth 5.429): 0.0007729</text>
+            <rect class="tsw s1" x="271.8" y="289.59" width="9" height="9" rx="2"/>
+            <text class="tx" x="285.8" y="298.59">Corporate (n=400, bandwidth 20.7): 0.005384</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -2233,12 +2233,12 @@
         <circle class="cx s0" cx="250.67" cy="337.42" r="4.5"/>
         <circle class="cx s1" cx="250.67" cy="277.09" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="262.67" y="247.09" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="272.67" y="265.09">113.4</text>
-            <rect class="tsw s0" x="272.67" y="273.09" width="9" height="9" rx="2"/>
-            <text class="tx" x="286.67" y="282.09">Retail (n=400, bandwidth 5.429): 0.0006701</text>
-            <rect class="tsw s1" x="272.67" y="290.09" width="9" height="9" rx="2"/>
-            <text class="tx" x="286.67" y="299.09">Corporate (n=400, bandwidth 20.7): 0.005384</text>
+            <rect class="tb" x="262.67" y="246.59" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="272.67" y="264.59">113.4</text>
+            <rect class="tsw s0" x="272.67" y="272.59" width="9" height="9" rx="2"/>
+            <text class="tx" x="286.67" y="281.59">Retail (n=400, bandwidth 5.429): 0.0006701</text>
+            <rect class="tsw s1" x="272.67" y="289.59" width="9" height="9" rx="2"/>
+            <text class="tx" x="286.67" y="298.59">Corporate (n=400, bandwidth 20.7): 0.005384</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -2249,12 +2249,12 @@
         <circle class="cx s0" cx="251.14" cy="337.42" r="4.5"/>
         <circle class="cx s1" cx="251.14" cy="277.09" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="263.14" y="247.09" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="273.14" y="265.09">113.8</text>
-            <rect class="tsw s0" x="273.14" y="273.09" width="9" height="9" rx="2"/>
-            <text class="tx" x="287.14" y="282.09">Retail (n=400, bandwidth 5.429): 0.0006701</text>
-            <rect class="tsw s1" x="273.14" y="290.09" width="9" height="9" rx="2"/>
-            <text class="tx" x="287.14" y="299.09">Corporate (n=400, bandwidth 20.7): 0.005384</text>
+            <rect class="tb" x="263.14" y="246.59" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="273.14" y="264.59">113.8</text>
+            <rect class="tsw s0" x="273.14" y="272.59" width="9" height="9" rx="2"/>
+            <text class="tx" x="287.14" y="281.59">Retail (n=400, bandwidth 5.429): 0.0006701</text>
+            <rect class="tsw s1" x="273.14" y="289.59" width="9" height="9" rx="2"/>
+            <text class="tx" x="287.14" y="298.59">Corporate (n=400, bandwidth 20.7): 0.005384</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="115, Retail (n=400, bandwidth 5.429): 0.0005819">
@@ -2277,12 +2277,12 @@
         <circle class="cx s0" cx="253.82" cy="339.52" r="4.5"/>
         <circle class="cx s1" cx="253.82" cy="276.21" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="265.82" y="246.21" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="275.82" y="264.21">116.2</text>
-            <rect class="tsw s0" x="275.82" y="272.21" width="9" height="9" rx="2"/>
-            <text class="tx" x="289.82" y="281.21">Retail (n=400, bandwidth 5.429): 0.0005066</text>
-            <rect class="tsw s1" x="275.82" y="289.21" width="9" height="9" rx="2"/>
-            <text class="tx" x="289.82" y="298.21">Corporate (n=400, bandwidth 20.7): 0.005453</text>
+            <rect class="tb" x="265.82" y="245.71" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="275.82" y="263.71">116.2</text>
+            <rect class="tsw s0" x="275.82" y="271.71" width="9" height="9" rx="2"/>
+            <text class="tx" x="289.82" y="280.71">Retail (n=400, bandwidth 5.429): 0.0005066</text>
+            <rect class="tsw s1" x="275.82" y="288.71" width="9" height="9" rx="2"/>
+            <text class="tx" x="289.82" y="297.71">Corporate (n=400, bandwidth 20.7): 0.005453</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -2293,12 +2293,12 @@
         <circle class="cx s0" cx="254.44" cy="339.52" r="4.5"/>
         <circle class="cx s1" cx="254.44" cy="276.21" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="266.44" y="246.21" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="276.44" y="264.21">116.8</text>
-            <rect class="tsw s0" x="276.44" y="272.21" width="9" height="9" rx="2"/>
-            <text class="tx" x="290.44" y="281.21">Retail (n=400, bandwidth 5.429): 0.0005066</text>
-            <rect class="tsw s1" x="276.44" y="289.21" width="9" height="9" rx="2"/>
-            <text class="tx" x="290.44" y="298.21">Corporate (n=400, bandwidth 20.7): 0.005453</text>
+            <rect class="tb" x="266.44" y="245.71" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="276.44" y="263.71">116.8</text>
+            <rect class="tsw s0" x="276.44" y="271.71" width="9" height="9" rx="2"/>
+            <text class="tx" x="290.44" y="280.71">Retail (n=400, bandwidth 5.429): 0.0005066</text>
+            <rect class="tsw s1" x="276.44" y="288.71" width="9" height="9" rx="2"/>
+            <text class="tx" x="290.44" y="297.71">Corporate (n=400, bandwidth 20.7): 0.005453</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -2309,12 +2309,12 @@
         <circle class="cx s0" cx="255.16" cy="340.34" r="4.5"/>
         <circle class="cx s1" cx="255.16" cy="276.21" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="267.16" y="246.21" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="277.16" y="264.21">117.4</text>
-            <rect class="tsw s0" x="277.16" y="272.21" width="9" height="9" rx="2"/>
-            <text class="tx" x="291.16" y="281.21">Retail (n=400, bandwidth 5.429): 0.0004421</text>
-            <rect class="tsw s1" x="277.16" y="289.21" width="9" height="9" rx="2"/>
-            <text class="tx" x="291.16" y="298.21">Corporate (n=400, bandwidth 20.7): 0.005453</text>
+            <rect class="tb" x="267.16" y="245.71" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="277.16" y="263.71">117.4</text>
+            <rect class="tsw s0" x="277.16" y="271.71" width="9" height="9" rx="2"/>
+            <text class="tx" x="291.16" y="280.71">Retail (n=400, bandwidth 5.429): 0.0004421</text>
+            <rect class="tsw s1" x="277.16" y="288.71" width="9" height="9" rx="2"/>
+            <text class="tx" x="291.16" y="297.71">Corporate (n=400, bandwidth 20.7): 0.005453</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="118.6, Retail (n=400, bandwidth 5.429): 0.0003859">
@@ -2337,12 +2337,12 @@
         <circle class="cx s0" cx="257.84" cy="341.7" r="4.5"/>
         <circle class="cx s1" cx="257.84" cy="275.92" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="269.84" y="245.92" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="279.84" y="263.92">119.8</text>
-            <rect class="tsw s0" x="279.84" y="271.92" width="9" height="9" rx="2"/>
-            <text class="tx" x="293.84" y="280.92">Retail (n=400, bandwidth 5.429): 0.0003357</text>
-            <rect class="tsw s1" x="279.84" y="288.92" width="9" height="9" rx="2"/>
-            <text class="tx" x="293.84" y="297.92">Corporate (n=400, bandwidth 20.7): 0.005475</text>
+            <rect class="tb" x="269.84" y="245.42" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="279.84" y="263.42">119.8</text>
+            <rect class="tsw s0" x="279.84" y="271.42" width="9" height="9" rx="2"/>
+            <text class="tx" x="293.84" y="280.42">Retail (n=400, bandwidth 5.429): 0.0003357</text>
+            <rect class="tsw s1" x="279.84" y="288.42" width="9" height="9" rx="2"/>
+            <text class="tx" x="293.84" y="297.42">Corporate (n=400, bandwidth 20.7): 0.005475</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -2353,12 +2353,12 @@
         <circle class="cx s0" cx="258.22" cy="341.7" r="4.5"/>
         <circle class="cx s1" cx="258.22" cy="275.92" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="270.22" y="245.92" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="280.22" y="263.92">120.2</text>
-            <rect class="tsw s0" x="280.22" y="271.92" width="9" height="9" rx="2"/>
-            <text class="tx" x="294.22" y="280.92">Retail (n=400, bandwidth 5.429): 0.0003357</text>
-            <rect class="tsw s1" x="280.22" y="288.92" width="9" height="9" rx="2"/>
-            <text class="tx" x="294.22" y="297.92">Corporate (n=400, bandwidth 20.7): 0.005475</text>
+            <rect class="tb" x="270.22" y="245.42" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="280.22" y="263.42">120.2</text>
+            <rect class="tsw s0" x="280.22" y="271.42" width="9" height="9" rx="2"/>
+            <text class="tx" x="294.22" y="280.42">Retail (n=400, bandwidth 5.429): 0.0003357</text>
+            <rect class="tsw s1" x="280.22" y="288.42" width="9" height="9" rx="2"/>
+            <text class="tx" x="294.22" y="297.42">Corporate (n=400, bandwidth 20.7): 0.005475</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="121, Retail (n=400, bandwidth 5.429): 0.0002893">
@@ -2393,12 +2393,12 @@
         <circle class="cx s0" cx="261.86" cy="343.39" r="4.5"/>
         <circle class="cx s1" cx="261.86" cy="276.24" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="273.86" y="246.24" width="271.24" height="61" rx="6"/>
-            <text class="tx b" x="283.86" y="264.24">123.5</text>
-            <rect class="tsw s0" x="283.86" y="272.24" width="9" height="9" rx="2"/>
-            <text class="tx" x="297.86" y="281.24">Retail (n=400, bandwidth 5.429): 0.0002039</text>
-            <rect class="tsw s1" x="283.86" y="289.24" width="9" height="9" rx="2"/>
-            <text class="tx" x="297.86" y="298.24">Corporate (n=400, bandwidth 20.7): 0.00545</text>
+            <rect class="tb" x="273.86" y="245.74" width="271.24" height="61" rx="6"/>
+            <text class="tx b" x="283.86" y="263.74">123.5</text>
+            <rect class="tsw s0" x="283.86" y="271.74" width="9" height="9" rx="2"/>
+            <text class="tx" x="297.86" y="280.74">Retail (n=400, bandwidth 5.429): 0.0002039</text>
+            <rect class="tsw s1" x="283.86" y="288.74" width="9" height="9" rx="2"/>
+            <text class="tx" x="297.86" y="297.74">Corporate (n=400, bandwidth 20.7): 0.00545</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -2409,12 +2409,12 @@
         <circle class="cx s0" cx="262" cy="343.39" r="4.5"/>
         <circle class="cx s1" cx="262" cy="276.24" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="274" y="246.24" width="271.24" height="61" rx="6"/>
-            <text class="tx b" x="284" y="264.24">123.6</text>
-            <rect class="tsw s0" x="284" y="272.24" width="9" height="9" rx="2"/>
-            <text class="tx" x="298" y="281.24">Retail (n=400, bandwidth 5.429): 0.0002039</text>
-            <rect class="tsw s1" x="284" y="289.24" width="9" height="9" rx="2"/>
-            <text class="tx" x="298" y="298.24">Corporate (n=400, bandwidth 20.7): 0.00545</text>
+            <rect class="tb" x="274" y="245.74" width="271.24" height="61" rx="6"/>
+            <text class="tx b" x="284" y="263.74">123.6</text>
+            <rect class="tsw s0" x="284" y="271.74" width="9" height="9" rx="2"/>
+            <text class="tx" x="298" y="280.74">Retail (n=400, bandwidth 5.429): 0.0002039</text>
+            <rect class="tsw s1" x="284" y="288.74" width="9" height="9" rx="2"/>
+            <text class="tx" x="298" y="297.74">Corporate (n=400, bandwidth 20.7): 0.00545</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="124.7, Retail (n=400, bandwidth 5.429): 0.0001647">
@@ -2449,12 +2449,12 @@
         <circle class="cx s0" cx="265.78" cy="344.76" r="4.5"/>
         <circle class="cx s1" cx="265.78" cy="277.16" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="277.78" y="247.16" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="287.78" y="265.16">127</text>
-            <rect class="tsw s0" x="287.78" y="273.16" width="9" height="9" rx="2"/>
-            <text class="tx" x="301.78" y="282.16">Retail (n=400, bandwidth 5.429): 0.00009701</text>
-            <rect class="tsw s1" x="287.78" y="290.16" width="9" height="9" rx="2"/>
-            <text class="tx" x="301.78" y="299.16">Corporate (n=400, bandwidth 20.7): 0.005378</text>
+            <rect class="tb" x="277.78" y="246.66" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="287.78" y="264.66">127</text>
+            <rect class="tsw s0" x="287.78" y="272.66" width="9" height="9" rx="2"/>
+            <text class="tx" x="301.78" y="281.66">Retail (n=400, bandwidth 5.429): 0.00009701</text>
+            <rect class="tsw s1" x="287.78" y="289.66" width="9" height="9" rx="2"/>
+            <text class="tx" x="301.78" y="298.66">Corporate (n=400, bandwidth 20.7): 0.005378</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -2465,12 +2465,12 @@
         <circle class="cx s0" cx="265.89" cy="344.76" r="4.5"/>
         <circle class="cx s1" cx="265.89" cy="277.16" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="277.89" y="247.16" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="287.89" y="265.16">127.1</text>
-            <rect class="tsw s0" x="287.89" y="273.16" width="9" height="9" rx="2"/>
-            <text class="tx" x="301.89" y="282.16">Retail (n=400, bandwidth 5.429): 0.00009701</text>
-            <rect class="tsw s1" x="287.89" y="290.16" width="9" height="9" rx="2"/>
-            <text class="tx" x="301.89" y="299.16">Corporate (n=400, bandwidth 20.7): 0.005378</text>
+            <rect class="tb" x="277.89" y="246.66" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="287.89" y="264.66">127.1</text>
+            <rect class="tsw s0" x="287.89" y="272.66" width="9" height="9" rx="2"/>
+            <text class="tx" x="301.89" y="281.66">Retail (n=400, bandwidth 5.429): 0.00009701</text>
+            <rect class="tsw s1" x="287.89" y="289.66" width="9" height="9" rx="2"/>
+            <text class="tx" x="301.89" y="298.66">Corporate (n=400, bandwidth 20.7): 0.005378</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="128.3, Retail (n=400, bandwidth 5.429): 0.00007022">
@@ -2505,12 +2505,12 @@
         <circle class="cx s0" cx="269.55" cy="345.59" r="4.5"/>
         <circle class="cx s1" cx="269.55" cy="278.65" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="281.55" y="248.65" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="291.55" y="266.65">130.4</text>
-            <rect class="tsw s0" x="291.55" y="274.65" width="9" height="9" rx="2"/>
-            <text class="tx" x="305.55" y="283.65">Retail (n=400, bandwidth 5.429): 0.00003232</text>
-            <rect class="tsw s1" x="291.55" y="291.65" width="9" height="9" rx="2"/>
-            <text class="tx" x="305.55" y="300.65">Corporate (n=400, bandwidth 20.7): 0.005262</text>
+            <rect class="tb" x="281.55" y="248.15" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="291.55" y="266.15">130.4</text>
+            <rect class="tsw s0" x="291.55" y="274.15" width="9" height="9" rx="2"/>
+            <text class="tx" x="305.55" y="283.15">Retail (n=400, bandwidth 5.429): 0.00003232</text>
+            <rect class="tsw s1" x="291.55" y="291.15" width="9" height="9" rx="2"/>
+            <text class="tx" x="305.55" y="300.15">Corporate (n=400, bandwidth 20.7): 0.005262</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -2521,12 +2521,12 @@
         <circle class="cx s0" cx="269.91" cy="345.59" r="4.5"/>
         <circle class="cx s1" cx="269.91" cy="278.65" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="281.91" y="248.65" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="291.91" y="266.65">130.7</text>
-            <rect class="tsw s0" x="291.91" y="274.65" width="9" height="9" rx="2"/>
-            <text class="tx" x="305.91" y="283.65">Retail (n=400, bandwidth 5.429): 0.00003232</text>
-            <rect class="tsw s1" x="291.91" y="291.65" width="9" height="9" rx="2"/>
-            <text class="tx" x="305.91" y="300.65">Corporate (n=400, bandwidth 20.7): 0.005262</text>
+            <rect class="tb" x="281.91" y="248.15" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="291.91" y="266.15">130.7</text>
+            <rect class="tsw s0" x="291.91" y="274.15" width="9" height="9" rx="2"/>
+            <text class="tx" x="305.91" y="283.15">Retail (n=400, bandwidth 5.429): 0.00003232</text>
+            <rect class="tsw s1" x="291.91" y="291.15" width="9" height="9" rx="2"/>
+            <text class="tx" x="305.91" y="300.15">Corporate (n=400, bandwidth 20.7): 0.005262</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="131.9, Retail (n=400, bandwidth 5.429): 0.00002049">
@@ -2549,12 +2549,12 @@
         <circle class="cx s0" cx="272.59" cy="345.84" r="4.5"/>
         <circle class="cx s1" cx="272.59" cy="280.66" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="284.59" y="250.66" width="277.96" height="61" rx="6"/>
-            <text class="tx b" x="294.59" y="268.66">133.1</text>
-            <rect class="tsw s0" x="294.59" y="276.66" width="9" height="9" rx="2"/>
-            <text class="tx" x="308.59" y="285.66">Retail (n=400, bandwidth 5.429): 0.0000124</text>
-            <rect class="tsw s1" x="294.59" y="293.66" width="9" height="9" rx="2"/>
-            <text class="tx" x="308.59" y="302.66">Corporate (n=400, bandwidth 20.7): 0.005105</text>
+            <rect class="tb" x="284.59" y="250.16" width="277.96" height="61" rx="6"/>
+            <text class="tx b" x="294.59" y="268.16">133.1</text>
+            <rect class="tsw s0" x="294.59" y="276.16" width="9" height="9" rx="2"/>
+            <text class="tx" x="308.59" y="285.16">Retail (n=400, bandwidth 5.429): 0.0000124</text>
+            <rect class="tsw s1" x="294.59" y="293.16" width="9" height="9" rx="2"/>
+            <text class="tx" x="308.59" y="302.16">Corporate (n=400, bandwidth 20.7): 0.005105</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -2565,12 +2565,12 @@
         <circle class="cx s0" cx="273.33" cy="345.91" r="4.5"/>
         <circle class="cx s1" cx="273.33" cy="280.66" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="285.33" y="250.66" width="283.48" height="61" rx="6"/>
-            <text class="tx b" x="295.33" y="268.66">133.8</text>
-            <rect class="tsw s0" x="295.33" y="276.66" width="9" height="9" rx="2"/>
-            <text class="tx" x="309.33" y="285.66">Retail (n=400, bandwidth 5.429): 0.000007153</text>
-            <rect class="tsw s1" x="295.33" y="293.66" width="9" height="9" rx="2"/>
-            <text class="tx" x="309.33" y="302.66">Corporate (n=400, bandwidth 20.7): 0.005105</text>
+            <rect class="tb" x="285.33" y="250.16" width="283.48" height="61" rx="6"/>
+            <text class="tx b" x="295.33" y="268.16">133.8</text>
+            <rect class="tsw s0" x="295.33" y="276.16" width="9" height="9" rx="2"/>
+            <text class="tx" x="309.33" y="285.16">Retail (n=400, bandwidth 5.429): 0.000007153</text>
+            <rect class="tsw s1" x="295.33" y="293.16" width="9" height="9" rx="2"/>
+            <text class="tx" x="309.33" y="302.16">Corporate (n=400, bandwidth 20.7): 0.005105</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -2581,12 +2581,12 @@
         <circle class="cx s0" cx="273.93" cy="345.91" r="4.5"/>
         <circle class="cx s1" cx="273.93" cy="280.66" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="285.93" y="250.66" width="283.48" height="61" rx="6"/>
-            <text class="tx b" x="295.93" y="268.66">134.3</text>
-            <rect class="tsw s0" x="295.93" y="276.66" width="9" height="9" rx="2"/>
-            <text class="tx" x="309.93" y="285.66">Retail (n=400, bandwidth 5.429): 0.000007153</text>
-            <rect class="tsw s1" x="295.93" y="293.66" width="9" height="9" rx="2"/>
-            <text class="tx" x="309.93" y="302.66">Corporate (n=400, bandwidth 20.7): 0.005105</text>
+            <rect class="tb" x="285.93" y="250.16" width="283.48" height="61" rx="6"/>
+            <text class="tx b" x="295.93" y="268.16">134.3</text>
+            <rect class="tsw s0" x="295.93" y="276.16" width="9" height="9" rx="2"/>
+            <text class="tx" x="309.93" y="285.16">Retail (n=400, bandwidth 5.429): 0.000007153</text>
+            <rect class="tsw s1" x="295.93" y="293.16" width="9" height="9" rx="2"/>
+            <text class="tx" x="309.93" y="302.16">Corporate (n=400, bandwidth 20.7): 0.005105</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="135.5, Retail (n=400, bandwidth 5.429): 0.000003933">
@@ -2609,12 +2609,12 @@
         <circle class="cx s0" cx="276.61" cy="345.97" r="4.5"/>
         <circle class="cx s1" cx="276.61" cy="283.14" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="288.61" y="253.14" width="283.48" height="61" rx="6"/>
-            <text class="tx b" x="298.61" y="271.14">136.8</text>
-            <rect class="tsw s0" x="298.61" y="279.14" width="9" height="9" rx="2"/>
-            <text class="tx" x="312.61" y="288.14">Retail (n=400, bandwidth 5.429): 0.000002061</text>
-            <rect class="tsw s1" x="298.61" y="296.14" width="9" height="9" rx="2"/>
-            <text class="tx" x="312.61" y="305.14">Corporate (n=400, bandwidth 20.7): 0.004911</text>
+            <rect class="tb" x="288.61" y="252.64" width="283.48" height="61" rx="6"/>
+            <text class="tx b" x="298.61" y="270.64">136.8</text>
+            <rect class="tsw s0" x="298.61" y="278.64" width="9" height="9" rx="2"/>
+            <text class="tx" x="312.61" y="287.64">Retail (n=400, bandwidth 5.429): 0.000002061</text>
+            <rect class="tsw s1" x="298.61" y="295.64" width="9" height="9" rx="2"/>
+            <text class="tx" x="312.61" y="304.64">Corporate (n=400, bandwidth 20.7): 0.004911</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"
@@ -2625,12 +2625,12 @@
         <circle class="cx s0" cx="277.11" cy="345.97" r="4.5"/>
         <circle class="cx s1" cx="277.11" cy="283.14" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="289.11" y="253.14" width="283.48" height="61" rx="6"/>
-            <text class="tx b" x="299.11" y="271.14">137.2</text>
-            <rect class="tsw s0" x="299.11" y="279.14" width="9" height="9" rx="2"/>
-            <text class="tx" x="313.11" y="288.14">Retail (n=400, bandwidth 5.429): 0.000002061</text>
-            <rect class="tsw s1" x="299.11" y="296.14" width="9" height="9" rx="2"/>
-            <text class="tx" x="313.11" y="305.14">Corporate (n=400, bandwidth 20.7): 0.004911</text>
+            <rect class="tb" x="289.11" y="252.64" width="283.48" height="61" rx="6"/>
+            <text class="tx b" x="299.11" y="270.64">137.2</text>
+            <rect class="tsw s0" x="299.11" y="278.64" width="9" height="9" rx="2"/>
+            <text class="tx" x="313.11" y="287.64">Retail (n=400, bandwidth 5.429): 0.000002061</text>
+            <rect class="tsw s1" x="299.11" y="295.64" width="9" height="9" rx="2"/>
+            <text class="tx" x="313.11" y="304.64">Corporate (n=400, bandwidth 20.7): 0.004911</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol" aria-label="140.6, Corporate (n=400, bandwidth 20.7): 0.004686">

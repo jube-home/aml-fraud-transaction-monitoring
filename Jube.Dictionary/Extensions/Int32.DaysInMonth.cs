@@ -7,7 +7,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Int32 DaysInMonth(this Int32 year, Int32 month)
+        [Description("Returns the number of days in the specified month and year.")]
+        public static Int32 DaysInMonth(this Int32 year,
+            [Description("The month (a number ranging from 1 to 12).")] Int32 month)
         {
             return DateTime.DaysInMonth(year, month);
         }

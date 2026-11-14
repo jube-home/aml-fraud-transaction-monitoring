@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,9 +22,11 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.Icons
 {
     [Description("An icon file available to the user interface.")]
+    [MessagePackObject]
     public class IconDto
     {
         [Description("File name of the icon, including its extension.")]
+        [Key(0)]
         public string? Name { get; set; }
     }
 }

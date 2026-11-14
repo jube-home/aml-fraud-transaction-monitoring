@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>Le dossier est introuvable ou vous n'y avez pas accès.</value>
+  </data>
+    <data name="CaseClosed" xml:space="preserve">
+    <value>Le dossier est clôturé ; sa liste de contrôle ne peut donc plus être modifiée.</value>
+  </data>
+    <data name="NotLockHolder" xml:space="preserve">
+    <value>Seul l'utilisateur qui détient le dossier peut cocher ou décocher les éléments de sa liste de contrôle.</value>
+  </data>
+    <data name="ItemNotFound" xml:space="preserve">
+    <value>L'élément de la liste de contrôle est introuvable sur ce dossier.</value>
+  </data>
+    <data name="ItemNotShown" xml:space="preserve">
+    <value>Cet élément n'est pas actuellement affiché sur le dossier ; il ne peut donc pas être coché.</value>
+  </data>
+    <data name="ItemAlreadyDone" xml:space="preserve">
+    <value>Cet élément a déjà été coché.</value>
+  </data>
+    <data name="ItemNotDone" xml:space="preserve">
+    <value>Cet élément n'a pas été coché ; il n'y a donc rien à décocher.</value>
+  </data>
+    <data name="ValidationFailedDefault" xml:space="preserve">
+    <value>La condition pour cocher cet élément n'est pas remplie.</value>
+  </data>
+    <data name="OverrideForbidden" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation de contourner le verrou de la liste de contrôle.</value>
+  </data>
+    <data name="OverrideReasonRequired" xml:space="preserve">
+    <value>Un motif est requis pour contourner le verrou de la liste de contrôle.</value>
+  </data>
+    <data name="OverrideReasonTooLong" xml:space="preserve">
+    <value>Le motif ne doit pas dépasser 1000 caractères.</value>
+  </data>
+    <data name="OverrideHolderCannotOverride" xml:space="preserve">
+    <value>L'utilisateur qui détient le dossier ne peut pas contourner le verrou de sa liste de contrôle ; un superviseur doit le faire.</value>
+  </data>
+    <data name="OverrideNothingOpen" xml:space="preserve">
+    <value>Il n'y a aucun élément de liste de contrôle ouvert ; il n'y a donc rien à contourner.</value>
+  </data>
+    <data name="OverrideAlreadyGranted" xml:space="preserve">
+    <value>Une dérogation a déjà été accordée pour le statut dans lequel se trouve le dossier.</value>
+  </data>
+</root>

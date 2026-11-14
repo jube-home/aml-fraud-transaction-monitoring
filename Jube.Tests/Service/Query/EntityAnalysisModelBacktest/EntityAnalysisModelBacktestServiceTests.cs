@@ -35,6 +35,7 @@ using Jube.TaskCancellation;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
@@ -301,6 +302,57 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelBacktest
         }
 
         [Fact]
+        public async Task ATuningSweepReturnsOneConfusionMatrixPerCandidateThresholdAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await ServiceAsync(dbContext);
+            var request = Request();
+            request.RuleText = Rule.Replace("100", "{{threshold}}");
+
+            var result = await service.TuneAsync(new BacktestTuneRequestDto
+            {
+                Request = request, Placeholder = "{{threshold}}", Candidates = ["10", "100", "600", "100"]
+            });
+
+            result.Valid.Should().BeTrue(string.Join("; ", result.Errors.Select(e => e.Message)));
+            result.Variants.Select(v => v.Value).Should().Equal("10", "100", "600");
+
+            result.Variants.Select(v => (v.TruePositives, v.FalsePositives, v.FalseNegatives, v.TrueNegatives))
+                .Should().Equal((3L, 2L, 0L, 0L), (2L, 1L, 1L, 1L), (1L, 1L, 2L, 1L));
+
+            result.Variants[1].Precision.Should().BeApproximately(2d / 3, 1e-9);
+            result.Variants[1].Recall.Should().BeApproximately(2d / 3, 1e-9);
+            result.Variants[2].Recall.Should().BeApproximately(1d / 3, 1e-9);
+        }
+
+        [Fact]
+        public async Task ATuningSweepRefusesAMissingPlaceholderBadCandidatesAndTooManyAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await ServiceAsync(dbContext);
+            var request = Request();
+            request.RuleText = Rule.Replace("100", "{{threshold}}");
+
+            (await service.TuneAsync(new BacktestTuneRequestDto
+                    { Request = Request(), Placeholder = "{{threshold}}", Candidates = ["1"] }))
+                .Errors.Should().ContainSingle(e => e.ErrorCode == "PlaceholderNotInRule");
+
+            (await service.TuneAsync(new BacktestTuneRequestDto
+                    { Request = request, Placeholder = "{{threshold}}", Candidates = ["1); DROP"] }))
+                .Errors.Should().ContainSingle(e => e.ErrorCode == "CandidatesInvalid");
+
+            (await service.TuneAsync(new BacktestTuneRequestDto
+                    { Request = request, Placeholder = "{{threshold}}", Candidates = [] }))
+                .Errors.Should().ContainSingle(e => e.ErrorCode == "CandidatesInvalid");
+
+            (await service.TuneAsync(new BacktestTuneRequestDto
+                {
+                    Request = request, Placeholder = "{{threshold}}",
+                    Candidates = Enumerable.Range(1, 13).Select(i => i.ToString()).ToList()
+                })).Errors.Should().ContainSingle(e => e.ErrorCode == "CandidatesInvalid");
+        }
+
+        [Fact]
         public async Task AReprocessingRuleRunsAsAGatewayRuleInReprocessingModeAsync()
         {
             await using var dbContext = fx.GetDbContext();
@@ -343,6 +395,46 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelBacktest
         }
 
         [Fact]
+        public async Task TheMessagesOfAnInvalidRequestComeFromTheResourcesInTheCallersLanguageAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await ServiceAsync(dbContext);
+            var badType = Request();
+            badType.RuleType = "InlineFunction";
+            var badRange = Request();
+            (badRange.From, badRange.To) = (start.AddDays(1), start);
+            var tooMany = Request();
+            tooMany.Limit = 20_000;
+            var original = System.Globalization.CultureInfo.CurrentUICulture;
+
+            try
+            {
+                System.Globalization.CultureInfo.CurrentUICulture = new System.Globalization.CultureInfo("en");
+
+                (await service.RunRuleAsync(badType)).Errors.Should().ContainSingle().Which.Message.Should()
+                    .Be("The rule type InlineFunction cannot be backtested; use GatewayRule, ActivationRule or ReprocessingRule.");
+
+                (await service.RunRuleAsync(badRange)).Errors.Should().ContainSingle().Which.Message.Should()
+                    .Be("From must be earlier than To.");
+
+                (await service.RunRuleAsync(tooMany)).Errors.Should().ContainSingle().Which.Message.Should()
+                    .Contain("10000");
+
+                System.Globalization.CultureInfo.CurrentUICulture = new System.Globalization.CultureInfo("pl");
+
+                (await service.RunRuleAsync(badType)).Errors.Should().ContainSingle().Which.Message.Should()
+                    .Contain("InlineFunction").And.NotContain("cannot be backtested");
+
+                (await service.RunRuleAsync(badRange)).Errors.Should().ContainSingle().Which.Message.Should()
+                    .NotBe("From must be earlier than To.");
+            }
+            finally
+            {
+                System.Globalization.CultureInfo.CurrentUICulture = original;
+            }
+        }
+
+        [Fact]
         public async Task TheFieldsIncludeTheModelsTagsForTheClassOnlyAsync()
         {
             await using var dbContext = fx.GetDbContext();
@@ -376,6 +468,58 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelBacktest
             result.Valid.Should().BeFalse();
             result.Errors.Should().ContainSingle(e => e.ErrorCode == "ResultUnavailable");
             (await service.SubmitAsync(Request("{\"rules\":[]}"))).Valid.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task AModelWithTheMostUncompletedBacktestsRefusesAnotherUntilOneIsStoppedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await ServiceAsync(dbContext);
+            var submitted = new List<int>();
+
+            for (var i = 0; i < 5; i++)
+            {
+                var accepted = await service.SubmitAsync(Request());
+                accepted.Valid.Should().BeTrue();
+                submitted.Add(accepted.Instance!.Id);
+            }
+
+            var refused = await service.SubmitAsync(Request());
+
+            refused.Valid.Should().BeFalse();
+            refused.Instance.Should().BeNull();
+            refused.Errors.Should().ContainSingle(e => e.ErrorCode == "PendingLimitModel" && e.Message.Contains("5"));
+            (await service.ListAsync(modelId, null, null, 100)).Should().HaveCount(5);
+
+            await service.StopAsync(submitted[0]);
+
+            (await service.SubmitAsync(Request())).Valid.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task TheRefusalOfAnotherBacktestIsWordedByTheResourcesInTheCallersLanguageAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await ServiceAsync(dbContext);
+            var original = System.Globalization.CultureInfo.CurrentUICulture;
+
+            for (var i = 0; i < 5; i++)
+            {
+                (await service.SubmitAsync(Request())).Valid.Should().BeTrue();
+            }
+
+            try
+            {
+                System.Globalization.CultureInfo.CurrentUICulture = new System.Globalization.CultureInfo("pl");
+
+                var refused = await service.SubmitAsync(Request());
+
+                refused.Errors.Should().ContainSingle().Which.Message.Should().NotStartWith("This model already has");
+            }
+            finally
+            {
+                System.Globalization.CultureInfo.CurrentUICulture = original;
+            }
         }
 
         [Fact]

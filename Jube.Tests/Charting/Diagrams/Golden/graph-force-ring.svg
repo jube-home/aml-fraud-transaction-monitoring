@@ -1,0 +1,798 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="jc-4f659020" viewBox="0 0 640 634" preserveAspectRatio="xMidYMid meet"
+     role="img" aria-labelledby="jc-4f659020-t jc-4f659020-d">
+    <title id="jc-4f659020-t">Account ring</title>
+    <desc id="jc-4f659020-d">Network graph diagram with 12 nodes and 19 directed edges; edge thickness shows amount.
+    </desc>
+    <style>
+        .jc-4f659020{display:block;width:100%;height:auto;max-width:100%;direction:ltr;color-scheme:light;--jc-surface:#fcfcfb;--jc-text:#0b0b0b;--jc-text2:#52514e;--jc-muted:#66655f;--jc-grid:#e8e7e3;--jc-axis:#b3b2ab;--jc-tip:#ffffff;--jc-c0:#2a78d6;--jc-ct0:#0b0b0b;--jc-c1:#eb6834;--jc-ct1:#0b0b0b;--jc-c2:#1baf7a;--jc-ct2:#0b0b0b;--jc-c3:#eda100;--jc-ct3:#0b0b0b;--jc-c4:#e87ba4;--jc-ct4:#0b0b0b;--jc-c5:#008300;--jc-ct5:#fcfcfb;--jc-c6:#4a3aa7;--jc-ct6:#fcfcfb;--jc-c7:#e34948;--jc-ct7:#0b0b0b;--jc-q0:#cde2fb;--jc-qt0:#0b0b0b;--jc-q1:#9ec5f4;--jc-qt1:#0b0b0b;--jc-q2:#86b6ef;--jc-qt2:#0b0b0b;--jc-q3:#6da7ec;--jc-qt3:#0b0b0b;--jc-q4:#3987e5;--jc-qt4:#0b0b0b;--jc-q5:#2a78d6;--jc-qt5:#0b0b0b;--jc-q6:#1c5cab;--jc-qt6:#fcfcfb;--jc-q7:#184f95;--jc-qt7:#fcfcfb;--jc-q8:#0d366b;--jc-qt8:#fcfcfb;--jc-d0:#1c5cab;--jc-dt0:#fcfcfb;--jc-d1:#4679b8;--jc-dt1:#0b0b0b;--jc-d2:#7197c5;--jc-dt2:#0b0b0b;--jc-d3:#9bb4d2;--jc-dt3:#0b0b0b;--jc-d4:#c6d2df;--jc-dt4:#0b0b0b;--jc-d5:#f0efec;--jc-dt5:#0b0b0b;--jc-d6:#e7cbc8;--jc-dt6:#0b0b0b;--jc-d7:#dea7a4;--jc-dt7:#0b0b0b;--jc-d8:#d48281;--jc-dt8:#0b0b0b;--jc-d9:#cb5e5d;--jc-dt9:#0b0b0b;--jc-d10:#c23a39;--jc-dt10:#fcfcfb;font-family:system-ui,-apple-system,'Segoe
+        UI',Roboto,'Helvetica Neue',Arial,'Noto Sans','Noto Sans Arabic','Noto Nastaliq Urdu','Noto Sans
+        Devanagari','Noto Sans Georgian',sans-serif;font-size:12px}@media
+        (prefers-color-scheme:dark){:root:not([data-theme="light"])
+        .jc-4f659020:not([data-theme="light"]),.jc-4f659020:root:not([data-theme="light"]){color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}}:root[data-theme="dark"]
+        .jc-4f659020:not([data-theme="light"]),.jc-4f659020[data-theme="dark"]{color-scheme:dark;--jc-surface:#1a1a19;--jc-text:#ffffff;--jc-text2:#c3c2b7;--jc-muted:#a3a297;--jc-grid:#2e2e2c;--jc-axis:#57564f;--jc-tip:#2a2a28;--jc-c0:#3987e5;--jc-ct0:#1a1a19;--jc-c1:#d95926;--jc-ct1:#1a1a19;--jc-c2:#199e70;--jc-ct2:#1a1a19;--jc-c3:#c98500;--jc-ct3:#1a1a19;--jc-c4:#d55181;--jc-ct4:#1a1a19;--jc-c5:#008300;--jc-ct5:#ffffff;--jc-c6:#9085e9;--jc-ct6:#1a1a19;--jc-c7:#e66767;--jc-ct7:#1a1a19;--jc-q0:#0d366b;--jc-qt0:#ffffff;--jc-q1:#184f95;--jc-qt1:#ffffff;--jc-q2:#1c5cab;--jc-qt2:#ffffff;--jc-q3:#2a78d6;--jc-qt3:#ffffff;--jc-q4:#3987e5;--jc-qt4:#1a1a19;--jc-q5:#6da7ec;--jc-qt5:#1a1a19;--jc-q6:#86b6ef;--jc-qt6:#1a1a19;--jc-q7:#9ec5f4;--jc-qt7:#1a1a19;--jc-q8:#cde2fb;--jc-qt8:#1a1a19;--jc-d0:#3987e5;--jc-dt0:#1a1a19;--jc-d1:#3977c2;--jc-dt1:#ffffff;--jc-d2:#39679f;--jc-dt2:#ffffff;--jc-d3:#38587b;--jc-dt3:#ffffff;--jc-d4:#384858;--jc-dt4:#ffffff;--jc-d5:#383835;--jc-dt5:#ffffff;--jc-d6:#5b413f;--jc-dt6:#ffffff;--jc-d7:#7e4b49;--jc-dt7:#ffffff;--jc-d8:#a05453;--jc-dt8:#ffffff;--jc-d9:#c35e5d;--jc-dt9:#1a1a19;--jc-d10:#e66767;--jc-dt10:#1a1a19;}.jc-4f659020
+        text{fill:var(--jc-text);font-size:12px}.jc-4f659020 .bg{fill:var(--jc-surface)}.jc-4f659020
+        .ttl{font-size:16px;font-weight:600}.jc-4f659020 .sub{fill:var(--jc-text2)}.jc-4f659020
+        .tk{fill:var(--jc-muted);font-size:11px}.jc-4f659020 .at{fill:var(--jc-text2);font-weight:500}.jc-4f659020
+        .gl{stroke:var(--jc-grid);stroke-width:1;fill:none}.jc-4f659020
+        .ax{stroke:var(--jc-axis);stroke-width:1;fill:none}.jc-4f659020
+        .ref{stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:5 4;fill:none}.jc-4f659020 .ref.s0,.jc-4f659020
+        .ref.s1,.jc-4f659020 .ref.s2,.jc-4f659020 .ref.s3,.jc-4f659020 .ref.s4,.jc-4f659020 .ref.s5,.jc-4f659020
+        .ref.s6,.jc-4f659020 .ref.s7{stroke:var(--sc)}.jc-4f659020
+        .band{fill:var(--jc-muted);fill-opacity:.12;stroke:none}.jc-4f659020
+        .and{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:1.5}.jc-4f659020
+        .ant{font-size:11px;paint-order:stroke;stroke:var(--jc-surface);stroke-width:3px;stroke-linejoin:round}.jc-4f659020
+        .box{fill:var(--sc);fill-opacity:.3;stroke:var(--sc);stroke-width:1.5}.jc-4f659020 .wh,.jc-4f659020
+        .wk{stroke:var(--sc);stroke-width:1.5;fill:none}.jc-4f659020
+        .med{stroke:var(--jc-text);stroke-width:2.5}.jc-4f659020
+        .out{fill:none;stroke:var(--sc);stroke-width:1.5}.jc-4f659020
+        .cd{fill:var(--sc);stroke:var(--sc);stroke-width:1.5}.jc-4f659020 .cd.hollow{fill:var(--jc-surface)}.jc-4f659020
+        .conn{stroke:var(--jc-muted);stroke-width:1;stroke-dasharray:2 3;fill:none}.jc-4f659020
+        .ar.off{fill-opacity:0}.jc-4f659020 .ring{font-size:10px}.jc-4f659020
+        .gtrack{fill:var(--jc-grid);stroke:none}.jc-4f659020 .needle{fill:var(--jc-text);stroke:none}.jc-4f659020
+        .hub{fill:var(--jc-text);stroke:var(--jc-surface);stroke-width:2}.jc-4f659020
+        .tgt{stroke:var(--jc-text);stroke-width:3;stroke-linecap:round}.jc-4f659020
+        .big{font-size:28px;font-weight:600}.jc-4f659020 .rg0,.jc-4f659020 .rg1,.jc-4f659020
+        .rg2{fill:var(--jc-muted);stroke:none}.jc-4f659020 .rg0{fill-opacity:.1}.jc-4f659020
+        .rg1{fill-opacity:.2}.jc-4f659020 .rg2{fill-opacity:.32}.jc-4f659020
+        .tgroup{fill:var(--sc);fill-opacity:.12;stroke:var(--jc-surface);stroke-width:2}.jc-4f659020
+        .bar.part{fill-opacity:.35}.jc-4f659020 .lgt{fill:var(--jc-text2)}.jc-4f659020
+        .sw{fill:var(--sc);transform-box:fill-box;transform-origin:center}.jc-4f659020
+        .hit{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-4f659020
+        .ln{fill:none;stroke:var(--sc);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.jc-4f659020
+        .ar{fill:var(--sc);fill-opacity:.28;stroke:none}.jc-4f659020 .bar{fill:var(--sc)}.jc-4f659020
+        .ov{fill:var(--sc);fill-opacity:.55;stroke:var(--sc);stroke-width:1}.jc-4f659020
+        .pt{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-4f659020
+        .bub{fill:var(--sc);fill-opacity:.6;stroke:var(--sc);stroke-width:1.5;transform-box:fill-box;transform-origin:center}.jc-4f659020
+        .sl{fill:var(--sc);stroke:var(--jc-surface);stroke-width:2}.jc-4f659020
+        .eb{stroke:var(--jc-text2);stroke-width:1.5;fill:none}.jc-4f659020
+        .pt.h{fill-opacity:0;stroke-opacity:0}.jc-4f659020 .mk:hover .pt.h,.jc-4f659020 .mk:focus-visible
+        .pt.h{fill-opacity:1;stroke-opacity:1}.jc-4f659020 .pt.sm{fill-opacity:.55;stroke:none}.jc-4f659020
+        .na{fill:var(--jc-grid)}.jc-4f659020 .mk:hover .sl,.jc-4f659020 .mk:focus-visible
+        .sl{transform:translate(var(--dx,0),var(--dy,0))}.jc-4f659020
+        .cell{stroke:var(--jc-surface);stroke-width:2}.jc-4f659020
+        .vl{stroke:var(--jc-text2);stroke-width:1;stroke-dasharray:3 3;opacity:0;transition:opacity .15s}.jc-4f659020
+        .cx{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5;opacity:0;transition:opacity .15s}.jc-4f659020
+        .mkr{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-4f659020
+        .lbl{font-size:11px;font-weight:500;pointer-events:none}.jc-4f659020 .ctr{text-anchor:middle}.jc-4f659020
+        .end{text-anchor:end}.jc-4f659020 .mid{dominant-baseline:central}.jc-4f659020 .mk{outline:none}.jc-4f659020
+        .m,.jc-4f659020 .pt,.jc-4f659020 .bub,.jc-4f659020 .bar,.jc-4f659020 .ov,.jc-4f659020 .sl,.jc-4f659020
+        .cell{transition:opacity .15s ease,stroke-width .15s ease,transform .15s ease,fill-opacity .15s
+        ease}.jc-4f659020 .mk:hover .m,.jc-4f659020 .mk:focus-visible
+        .m{stroke:var(--jc-text);stroke-width:2}.jc-4f659020 .mk:hover .pt,.jc-4f659020 .mk:focus-visible
+        .pt{transform:scale(1.6)}.jc-4f659020 .mk:hover .bub,.jc-4f659020 .mk:focus-visible
+        .bub{transform:scale(1.08);fill-opacity:.85}.jc-4f659020 .mk:hover .bar,.jc-4f659020 .mk:focus-visible
+        .bar{filter:none;stroke:var(--jc-text);stroke-width:2}.jc-4f659020 .mk:hover .ov,.jc-4f659020 .mk:focus-visible
+        .ov{fill-opacity:.85;stroke-width:2}.jc-4f659020 .mk:hover .sl,.jc-4f659020 .mk:focus-visible
+        .sl{stroke:var(--jc-text);stroke-width:2.5}.jc-4f659020 .mk:hover .box,.jc-4f659020 .mk:focus-visible
+        .box{fill-opacity:.55;stroke-width:2.5}.jc-4f659020 .mk:hover .wk,.jc-4f659020 .mk:focus-visible
+        .wk,.jc-4f659020 .mk:hover .cd,.jc-4f659020 .mk:focus-visible .cd{stroke-width:2.5}.jc-4f659020 .mk:hover
+        .cell,.jc-4f659020 .mk:focus-visible .cell{stroke:var(--jc-text);stroke-width:2.5}.jc-4f659020 .mk:hover
+        .vl,.jc-4f659020 .mk:focus-visible .vl,.jc-4f659020 .mk:hover .cx,.jc-4f659020 .mk:focus-visible
+        .cx{opacity:1}.jc-4f659020 .mk:hover .mkr,.jc-4f659020 .mk:focus-visible .mkr{stroke-width:3}.jc-4f659020
+        .tt{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s}.jc-4f659020
+        .mk:hover .tt,.jc-4f659020 .mk:focus-visible .tt{opacity:1;visibility:visible}.jc-4f659020
+        .tb{fill:var(--jc-tip);stroke:var(--jc-axis);stroke-width:1}.jc-4f659020
+        .tx{fill:var(--jc-text);font-size:12px}.jc-4f659020 .tx.b{font-weight:600}.jc-4f659020
+        .tsw{fill:var(--sc)}.jc-4f659020 .lg{cursor:default;transition:opacity .15s ease}.jc-4f659020 .lg:hover
+        .lgt{fill:var(--jc-text)}.jc-4f659020 .sr{transition:opacity .15s ease}.jc-4f659020:has(.mk:hover)
+        .mk:not(:hover) .m,.jc-4f659020:has(.mk:hover) .mk:not(:hover) .pt,.jc-4f659020:has(.mk:hover) .mk:not(:hover)
+        .bub,.jc-4f659020:has(.mk:hover) .mk:not(:hover) .bar,.jc-4f659020:has(.mk:hover) .mk:not(:hover)
+        .ov,.jc-4f659020:has(.mk:hover) .mk:not(:hover) .cell{opacity:.4}.jc-4f659020:has(.mk:focus-visible)
+        .mk:not(:focus-visible) .m{opacity:.4}.jc-4f659020 .s0{--sc:var(--jc-c0)}.jc-4f659020 .s0
+        .on{fill:var(--jc-ct0)}.jc-4f659020:has(.lg.s0:hover) .sr:not(.s0){opacity:.16}.jc-4f659020:has(.sr.s0:hover)
+        .sr:not(.s0){opacity:.3}.jc-4f659020:has(.sr.s0:hover) .lg:not(.s0){opacity:.4}.jc-4f659020:has(.sr.s0:hover)
+        .lg.s0 .sw{transform:scale(1.35)}.jc-4f659020:has(.lg.s0:hover) .lg.s0 .sw{transform:scale(1.35)}.jc-4f659020
+        .s1{--sc:var(--jc-c1)}.jc-4f659020 .s1 .on{fill:var(--jc-ct1)}.jc-4f659020:has(.lg.s1:hover)
+        .sr:not(.s1){opacity:.16}.jc-4f659020:has(.sr.s1:hover) .sr:not(.s1){opacity:.3}.jc-4f659020:has(.sr.s1:hover)
+        .lg:not(.s1){opacity:.4}.jc-4f659020:has(.sr.s1:hover) .lg.s1
+        .sw{transform:scale(1.35)}.jc-4f659020:has(.lg.s1:hover) .lg.s1 .sw{transform:scale(1.35)}.jc-4f659020
+        .s2{--sc:var(--jc-c2)}.jc-4f659020 .s2 .on{fill:var(--jc-ct2)}.jc-4f659020:has(.lg.s2:hover)
+        .sr:not(.s2){opacity:.16}.jc-4f659020:has(.sr.s2:hover) .sr:not(.s2){opacity:.3}.jc-4f659020:has(.sr.s2:hover)
+        .lg:not(.s2){opacity:.4}.jc-4f659020:has(.sr.s2:hover) .lg.s2
+        .sw{transform:scale(1.35)}.jc-4f659020:has(.lg.s2:hover) .lg.s2 .sw{transform:scale(1.35)}.jc-4f659020
+        .s3{--sc:var(--jc-c3)}.jc-4f659020 .s3 .on{fill:var(--jc-ct3)}.jc-4f659020:has(.lg.s3:hover)
+        .sr:not(.s3){opacity:.16}.jc-4f659020:has(.sr.s3:hover) .sr:not(.s3){opacity:.3}.jc-4f659020:has(.sr.s3:hover)
+        .lg:not(.s3){opacity:.4}.jc-4f659020:has(.sr.s3:hover) .lg.s3
+        .sw{transform:scale(1.35)}.jc-4f659020:has(.lg.s3:hover) .lg.s3 .sw{transform:scale(1.35)}.jc-4f659020
+        .s4{--sc:var(--jc-c4)}.jc-4f659020 .s4 .on{fill:var(--jc-ct4)}.jc-4f659020:has(.lg.s4:hover)
+        .sr:not(.s4){opacity:.16}.jc-4f659020:has(.sr.s4:hover) .sr:not(.s4){opacity:.3}.jc-4f659020:has(.sr.s4:hover)
+        .lg:not(.s4){opacity:.4}.jc-4f659020:has(.sr.s4:hover) .lg.s4
+        .sw{transform:scale(1.35)}.jc-4f659020:has(.lg.s4:hover) .lg.s4 .sw{transform:scale(1.35)}.jc-4f659020
+        .s5{--sc:var(--jc-c5)}.jc-4f659020 .s5 .on{fill:var(--jc-ct5)}.jc-4f659020:has(.lg.s5:hover)
+        .sr:not(.s5){opacity:.16}.jc-4f659020:has(.sr.s5:hover) .sr:not(.s5){opacity:.3}.jc-4f659020:has(.sr.s5:hover)
+        .lg:not(.s5){opacity:.4}.jc-4f659020:has(.sr.s5:hover) .lg.s5
+        .sw{transform:scale(1.35)}.jc-4f659020:has(.lg.s5:hover) .lg.s5 .sw{transform:scale(1.35)}.jc-4f659020
+        .s6{--sc:var(--jc-c6)}.jc-4f659020 .s6 .on{fill:var(--jc-ct6)}.jc-4f659020:has(.lg.s6:hover)
+        .sr:not(.s6){opacity:.16}.jc-4f659020:has(.sr.s6:hover) .sr:not(.s6){opacity:.3}.jc-4f659020:has(.sr.s6:hover)
+        .lg:not(.s6){opacity:.4}.jc-4f659020:has(.sr.s6:hover) .lg.s6
+        .sw{transform:scale(1.35)}.jc-4f659020:has(.lg.s6:hover) .lg.s6 .sw{transform:scale(1.35)}.jc-4f659020
+        .s7{--sc:var(--jc-c7)}.jc-4f659020 .s7 .on{fill:var(--jc-ct7)}.jc-4f659020:has(.lg.s7:hover)
+        .sr:not(.s7){opacity:.16}.jc-4f659020:has(.sr.s7:hover) .sr:not(.s7){opacity:.3}.jc-4f659020:has(.sr.s7:hover)
+        .lg:not(.s7){opacity:.4}.jc-4f659020:has(.sr.s7:hover) .lg.s7
+        .sw{transform:scale(1.35)}.jc-4f659020:has(.lg.s7:hover) .lg.s7 .sw{transform:scale(1.35)}@media
+        (prefers-reduced-motion:reduce){.jc-4f659020,.jc-4f659020
+        *{transition:none!important;animation:none!important}}.jc-4f659020 .q0{fill:var(--jc-q0)}.jc-4f659020
+        .qt0{fill:var(--jc-qt0)}.jc-4f659020 .q1{fill:var(--jc-q1)}.jc-4f659020 .qt1{fill:var(--jc-qt1)}.jc-4f659020
+        .q2{fill:var(--jc-q2)}.jc-4f659020 .qt2{fill:var(--jc-qt2)}.jc-4f659020 .q3{fill:var(--jc-q3)}.jc-4f659020
+        .qt3{fill:var(--jc-qt3)}.jc-4f659020 .q4{fill:var(--jc-q4)}.jc-4f659020 .qt4{fill:var(--jc-qt4)}.jc-4f659020
+        .q5{fill:var(--jc-q5)}.jc-4f659020 .qt5{fill:var(--jc-qt5)}.jc-4f659020 .q6{fill:var(--jc-q6)}.jc-4f659020
+        .qt6{fill:var(--jc-qt6)}.jc-4f659020 .q7{fill:var(--jc-q7)}.jc-4f659020 .qt7{fill:var(--jc-qt7)}.jc-4f659020
+        .q8{fill:var(--jc-q8)}.jc-4f659020 .qt8{fill:var(--jc-qt8)}.jc-4f659020 .d0{fill:var(--jc-d0)}.jc-4f659020
+        .dt0{fill:var(--jc-dt0)}.jc-4f659020 .d1{fill:var(--jc-d1)}.jc-4f659020 .dt1{fill:var(--jc-dt1)}.jc-4f659020
+        .d2{fill:var(--jc-d2)}.jc-4f659020 .dt2{fill:var(--jc-dt2)}.jc-4f659020 .d3{fill:var(--jc-d3)}.jc-4f659020
+        .dt3{fill:var(--jc-dt3)}.jc-4f659020 .d4{fill:var(--jc-d4)}.jc-4f659020 .dt4{fill:var(--jc-dt4)}.jc-4f659020
+        .d5{fill:var(--jc-d5)}.jc-4f659020 .dt5{fill:var(--jc-dt5)}.jc-4f659020 .d6{fill:var(--jc-d6)}.jc-4f659020
+        .dt6{fill:var(--jc-dt6)}.jc-4f659020 .d7{fill:var(--jc-d7)}.jc-4f659020 .dt7{fill:var(--jc-dt7)}.jc-4f659020
+        .d8{fill:var(--jc-d8)}.jc-4f659020 .dt8{fill:var(--jc-dt8)}.jc-4f659020 .d9{fill:var(--jc-d9)}.jc-4f659020
+        .dt9{fill:var(--jc-dt9)}.jc-4f659020 .d10{fill:var(--jc-d10)}.jc-4f659020 .dt10{fill:var(--jc-dt10)}.jc-4f659020
+        .nb{fill:var(--jc-surface);stroke:var(--sc,var(--jc-axis));stroke-width:2}.jc-4f659020
+        .nt{fill:var(--sc,var(--jc-muted));fill-opacity:.2;stroke:none}.jc-4f659020 .nb.dash{stroke-dasharray:4
+        3}.jc-4f659020 .nd,.jc-4f659020 .eg,.jc-4f659020 .pn{transition:opacity .15s ease}.jc-4f659020 .mk:hover
+        .nb,.jc-4f659020 .mk:focus-visible .nb{stroke:var(--jc-text);stroke-width:3.5}.jc-4f659020
+        .ep{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:.68;transition:stroke-opacity .15s
+        ease}.jc-4f659020 .ep.en{stroke:var(--jc-axis)}.jc-4f659020
+        .ep.et{stroke:var(--jc-muted);stroke-opacity:.5}.jc-4f659020 .vt{fill:var(--jc-grid)}.jc-4f659020
+        .nt.lf{fill-opacity:.38}.jc-4f659020 .ep.ed{stroke-dasharray:5 4}.jc-4f659020
+        .eh{fill:none;stroke:transparent;stroke-width:12;pointer-events:stroke}.jc-4f659020 .eg:hover .ep,.jc-4f659020
+        .eg:focus-visible .ep{stroke-opacity:1}.jc-4f659020 .ah{fill:var(--jc-text2);stroke:none}.jc-4f659020 .mk:hover
+        .ah,.jc-4f659020 .mk:focus-visible .ah{fill:var(--jc-text)}.jc-4f659020
+        .hl{fill:var(--jc-text);fill-opacity:0;stroke:none;transition:fill-opacity .15s ease}.jc-4f659020 .mk:hover
+        .hl,.jc-4f659020 .mk:focus-visible .hl{fill-opacity:.07}.jc-4f659020
+        .hb{fill:var(--jc-surface);fill-opacity:0;stroke:none}.jc-4f659020 .mk:hover .bs,.jc-4f659020 .mk:focus-visible
+        .bs{stroke:var(--jc-text);stroke-width:2}.jc-4f659020
+        .sh{fill:var(--jc-text);fill-opacity:.05;stroke:none}.jc-4f659020
+        .key{font-size:11px;fill:var(--jc-text2)}.jc-4f659020 .kn{font-size:10.5px;fill:var(--jc-muted)}.jc-4f659020
+        .ph{font-size:12px;font-weight:600}.jc-4f659020 .pf{fill:none;stroke:var(--jc-grid);stroke-width:1}.jc-4f659020
+        .tps{pointer-events:none}.jc-4f659020 .dsh{stroke-dasharray:3 3}.jc-4f659020
+        .ln.thin{stroke-width:1.5}.jc-4f659020 .ln.hi{stroke-width:2.5}.jc-4f659020
+        .rb{fill:var(--sc);fill-opacity:.85;stroke:none}.jc-4f659020 .mk:hover .rb,.jc-4f659020 .mk:focus-visible
+        .rb{fill-opacity:1;stroke:var(--jc-text);stroke-width:1.5}.jc-4f659020
+        .ci{stroke:var(--sc);stroke-width:2;fill:none;stroke-linecap:round}.jc-4f659020
+        .dmd{fill:var(--sc);stroke:var(--jc-surface);stroke-width:1.5}.jc-4f659020
+        .dmd.hollow{fill:var(--jc-surface);stroke:var(--sc);stroke-width:2}.jc-4f659020 .mk:hover .dmd,.jc-4f659020
+        .mk:focus-visible .dmd{stroke:var(--jc-text);stroke-width:2.5}.jc-4f659020 .mk:hover .ci,.jc-4f659020
+        .mk:focus-visible .ci{stroke-width:3}.jc-4f659020
+        .tri{fill:var(--jc-surface);stroke:var(--jc-muted);stroke-width:1.5;stroke-dasharray:3 2}.jc-4f659020 .mk:hover
+        .tri,.jc-4f659020 .mk:focus-visible .tri{stroke:var(--jc-text);stroke-width:2.5}.jc-4f659020
+        .cl{fill:var(--sc)}.jc-4f659020 .db{fill:var(--sc);fill-opacity:.42;stroke:var(--sc);stroke-width:1}.jc-4f659020
+        .ax.dsh{stroke-dasharray:3 3}.jc-4f659020 .sd0{stroke:var(--jc-d0)}.jc-4f659020
+        .sd1{stroke:var(--jc-d1)}.jc-4f659020 .sd2{stroke:var(--jc-d2)}.jc-4f659020
+        .sd3{stroke:var(--jc-d3)}.jc-4f659020 .sd4{stroke:var(--jc-d4)}.jc-4f659020
+        .sd5{stroke:var(--jc-d5)}.jc-4f659020 .sd6{stroke:var(--jc-d6)}.jc-4f659020
+        .sd7{stroke:var(--jc-d7)}.jc-4f659020 .sd8{stroke:var(--jc-d8)}.jc-4f659020
+        .sd9{stroke:var(--jc-d9)}.jc-4f659020 .sd10{stroke:var(--jc-d10)}.jc-4f659020:has(.eg:hover)
+        .eg:not(:hover){opacity:.12}.jc-4f659020:has(.eg:hover) .nd{opacity:.45}.jc-4f659020:has(.lg.s0:hover)
+        .nd:not(.s0){opacity:.2}.jc-4f659020:has(.lg.s0:hover) .eg{opacity:.3}.jc-4f659020:has(.lg.s1:hover)
+        .nd:not(.s1){opacity:.2}.jc-4f659020:has(.lg.s1:hover) .eg{opacity:.3}.jc-4f659020:has(.lg.s2:hover)
+        .nd:not(.s2){opacity:.2}.jc-4f659020:has(.lg.s2:hover) .eg{opacity:.3}.jc-4f659020:has(.lg.s3:hover)
+        .nd:not(.s3){opacity:.2}.jc-4f659020:has(.lg.s3:hover) .eg{opacity:.3}.jc-4f659020:has(.lg.s4:hover)
+        .nd:not(.s4){opacity:.2}.jc-4f659020:has(.lg.s4:hover) .eg{opacity:.3}.jc-4f659020:has(.lg.s5:hover)
+        .nd:not(.s5){opacity:.2}.jc-4f659020:has(.lg.s5:hover) .eg{opacity:.3}.jc-4f659020:has(.lg.s6:hover)
+        .nd:not(.s6){opacity:.2}.jc-4f659020:has(.lg.s6:hover) .eg{opacity:.3}.jc-4f659020:has(.lg.s7:hover)
+        .nd:not(.s7){opacity:.2}.jc-4f659020:has(.lg.s7:hover) .eg{opacity:.3}.jc-4f659020
+        [data-hidden]{opacity:.08;pointer-events:none}.jc-4f659020 [data-selected]
+        .ep{stroke:var(--jc-text);stroke-opacity:1;stroke-width:3px}.jc-4f659020 [data-selected]
+        .nb{stroke:var(--jc-text);stroke-width:3.5}.jc-4f659020 [data-kind="hexagon"]
+        .nt{fill:var(--jc-c3);fill-opacity:.4}.jc-4f659020 [data-kind="stack"]
+        .nt{fill-opacity:.32}.jc-4f659020:has(.mk.x0:hover,.mk.x0:focus-visible) .tp.tx0
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.mk.x1:hover,.mk.x1:focus-visible) .tp.tx1
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.mk.x2:hover,.mk.x2:focus-visible) .tp.tx2
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.mk.x3:hover,.mk.x3:focus-visible) .tp.tx3
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.mk.x4:hover,.mk.x4:focus-visible) .tp.tx4
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.mk.x5:hover,.mk.x5:focus-visible) .tp.tx5
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.mk.x6:hover,.mk.x6:focus-visible) .tp.tx6
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.mk.x7:hover,.mk.x7:focus-visible) .tp.tx7
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.mk.x8:hover,.mk.x8:focus-visible) .tp.tx8
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.mk.x9:hover,.mk.x9:focus-visible) .tp.tx9
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.mk.x10:hover,.mk.x10:focus-visible) .tp.tx10
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.mk.x11:hover,.mk.x11:focus-visible) .tp.tx11
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.mk.x12:hover,.mk.x12:focus-visible) .tp.tx12
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.mk.x13:hover,.mk.x13:focus-visible) .tp.tx13
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.mk.x14:hover,.mk.x14:focus-visible) .tp.tx14
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.mk.x15:hover,.mk.x15:focus-visible) .tp.tx15
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.mk.x16:hover,.mk.x16:focus-visible) .tp.tx16
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.mk.x17:hover,.mk.x17:focus-visible) .tp.tx17
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.mk.x18:hover,.mk.x18:focus-visible) .tp.tx18
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.mk.n0:hover,.mk.n0:focus-visible) .tp.tn0
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.nd.n0:hover,.nd.n0:focus-visible)
+        .nd:not(.n0):not(.j0){opacity:.22}.jc-4f659020:has(.nd.n0:hover,.nd.n0:focus-visible)
+        .eg:not(.e0){opacity:.07}.jc-4f659020:has(.nd.n0:hover,.nd.n0:focus-visible) .eg.e0
+        .ep{stroke-opacity:1}.jc-4f659020:has(.mk.n1:hover,.mk.n1:focus-visible) .tp.tn1
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.nd.n1:hover,.nd.n1:focus-visible)
+        .nd:not(.n1):not(.j1){opacity:.22}.jc-4f659020:has(.nd.n1:hover,.nd.n1:focus-visible)
+        .eg:not(.e1){opacity:.07}.jc-4f659020:has(.nd.n1:hover,.nd.n1:focus-visible) .eg.e1
+        .ep{stroke-opacity:1}.jc-4f659020:has(.mk.n2:hover,.mk.n2:focus-visible) .tp.tn2
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.nd.n2:hover,.nd.n2:focus-visible)
+        .nd:not(.n2):not(.j2){opacity:.22}.jc-4f659020:has(.nd.n2:hover,.nd.n2:focus-visible)
+        .eg:not(.e2){opacity:.07}.jc-4f659020:has(.nd.n2:hover,.nd.n2:focus-visible) .eg.e2
+        .ep{stroke-opacity:1}.jc-4f659020:has(.mk.n3:hover,.mk.n3:focus-visible) .tp.tn3
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.nd.n3:hover,.nd.n3:focus-visible)
+        .nd:not(.n3):not(.j3){opacity:.22}.jc-4f659020:has(.nd.n3:hover,.nd.n3:focus-visible)
+        .eg:not(.e3){opacity:.07}.jc-4f659020:has(.nd.n3:hover,.nd.n3:focus-visible) .eg.e3
+        .ep{stroke-opacity:1}.jc-4f659020:has(.mk.n4:hover,.mk.n4:focus-visible) .tp.tn4
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.nd.n4:hover,.nd.n4:focus-visible)
+        .nd:not(.n4):not(.j4){opacity:.22}.jc-4f659020:has(.nd.n4:hover,.nd.n4:focus-visible)
+        .eg:not(.e4){opacity:.07}.jc-4f659020:has(.nd.n4:hover,.nd.n4:focus-visible) .eg.e4
+        .ep{stroke-opacity:1}.jc-4f659020:has(.mk.n5:hover,.mk.n5:focus-visible) .tp.tn5
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.nd.n5:hover,.nd.n5:focus-visible)
+        .nd:not(.n5):not(.j5){opacity:.22}.jc-4f659020:has(.nd.n5:hover,.nd.n5:focus-visible)
+        .eg:not(.e5){opacity:.07}.jc-4f659020:has(.nd.n5:hover,.nd.n5:focus-visible) .eg.e5
+        .ep{stroke-opacity:1}.jc-4f659020:has(.mk.n6:hover,.mk.n6:focus-visible) .tp.tn6
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.nd.n6:hover,.nd.n6:focus-visible)
+        .nd:not(.n6):not(.j6){opacity:.22}.jc-4f659020:has(.nd.n6:hover,.nd.n6:focus-visible)
+        .eg:not(.e6){opacity:.07}.jc-4f659020:has(.nd.n6:hover,.nd.n6:focus-visible) .eg.e6
+        .ep{stroke-opacity:1}.jc-4f659020:has(.mk.n7:hover,.mk.n7:focus-visible) .tp.tn7
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.nd.n7:hover,.nd.n7:focus-visible)
+        .nd:not(.n7):not(.j7){opacity:.22}.jc-4f659020:has(.nd.n7:hover,.nd.n7:focus-visible)
+        .eg:not(.e7){opacity:.07}.jc-4f659020:has(.nd.n7:hover,.nd.n7:focus-visible) .eg.e7
+        .ep{stroke-opacity:1}.jc-4f659020:has(.mk.n8:hover,.mk.n8:focus-visible) .tp.tn8
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.nd.n8:hover,.nd.n8:focus-visible)
+        .nd:not(.n8):not(.j8){opacity:.22}.jc-4f659020:has(.nd.n8:hover,.nd.n8:focus-visible)
+        .eg:not(.e8){opacity:.07}.jc-4f659020:has(.nd.n8:hover,.nd.n8:focus-visible) .eg.e8
+        .ep{stroke-opacity:1}.jc-4f659020:has(.mk.n9:hover,.mk.n9:focus-visible) .tp.tn9
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.nd.n9:hover,.nd.n9:focus-visible)
+        .nd:not(.n9):not(.j9){opacity:.22}.jc-4f659020:has(.nd.n9:hover,.nd.n9:focus-visible)
+        .eg:not(.e9){opacity:.07}.jc-4f659020:has(.nd.n9:hover,.nd.n9:focus-visible) .eg.e9
+        .ep{stroke-opacity:1}.jc-4f659020:has(.mk.n10:hover,.mk.n10:focus-visible) .tp.tn10
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.nd.n10:hover,.nd.n10:focus-visible)
+        .nd:not(.n10):not(.j10){opacity:.22}.jc-4f659020:has(.nd.n10:hover,.nd.n10:focus-visible)
+        .eg:not(.e10){opacity:.07}.jc-4f659020:has(.nd.n10:hover,.nd.n10:focus-visible) .eg.e10
+        .ep{stroke-opacity:1}.jc-4f659020:has(.mk.n11:hover,.mk.n11:focus-visible) .tp.tn11
+        .tt{opacity:1;visibility:visible}.jc-4f659020:has(.nd.n11:hover,.nd.n11:focus-visible)
+        .nd:not(.n11):not(.j11){opacity:.22}.jc-4f659020:has(.nd.n11:hover,.nd.n11:focus-visible)
+        .eg:not(.e11){opacity:.07}.jc-4f659020:has(.nd.n11:hover,.nd.n11:focus-visible) .eg.e11 .ep{stroke-opacity:1}
+    </style>
+    <rect class="bg" x="0" y="0" width="640" height="634" rx="8"/>
+    <text class="ttl" x="16" y="32">Account ring</text>
+    <text class="sub" x="16" y="50">Eight accounts cycling funds through one hub</text>
+    <g class="lg s0">
+        <rect class="hit" x="14" y="62" width="69.12" height="18"/>
+        <rect class="sw" x="16" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="34" y="75">Accounts</text>
+    </g>
+    <g class="lg s1">
+        <rect class="hit" x="101.12" y="62" width="61.68" height="18"/>
+        <rect class="sw" x="103.12" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="121.12" y="75">Devices</text>
+    </g>
+    <g class="lg s2">
+        <rect class="hit" x="180.8" y="62" width="63.72" height="18"/>
+        <rect class="sw" x="182.8" y="66" width="10" height="10" rx="2"/>
+        <text class="lgt" x="200.8" y="75">Network</text>
+    </g>
+    <g transform="translate(111.72 90)">
+        <defs>
+            <marker id="jc-4f659020-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9"
+                    markerUnits="userSpaceOnUse" orient="auto">
+                <path class="ah" d="M0 0L10 5L0 10Z"/>
+            </marker>
+        </defs>
+        <g class="mk x0 eg e1 e0" tabindex="0" role="graphics-symbol"
+           aria-label="Account 0 to Hub account, Amount: 1000, First: 2026-03-02 09:00, Last: 2026-03-02 11:00"
+           data-from="acct-0" data-to="hub" data-edge="t0" data-kind="directed" data-first="1772442000"
+           data-last="1772449200">
+            <title>Account 0 to Hub account, Amount: 1000, First: 2026-03-02 09:00, Last: 2026-03-02 11:00</title>
+            <path class="eh" d="M311.23 190.98L230.76 266.61"/>
+            <path class="ep et" d="M311.23 190.98L230.76 266.61" style="stroke-width:1.27"
+                  marker-end="url(#jc-4f659020-ar)"/>
+            <text class="ant ctr" x="270.99" y="224.8">1000</text>
+        </g>
+        <g class="mk x1 eg e2 e0" tabindex="0" role="graphics-symbol"
+           aria-label="Account 1 to Hub account, Amount: 1250, Events: 2, First: 2026-03-02 10:00, Last: 2026-03-02 12:00"
+           data-from="acct-1" data-to="hub" data-edge="t1" data-kind="directed" data-first="1772445600"
+           data-last="1772452800">
+            <title>Account 1 to Hub account, Amount: 1250, Events: 2, First: 2026-03-02 10:00, Last: 2026-03-02 12:00
+            </title>
+            <path class="eh" d="M233.31 185.26L214.26 256.76"/>
+            <path class="ep et" d="M233.31 185.26L214.26 256.76" style="stroke-width:1.36"
+                  marker-end="url(#jc-4f659020-ar)"/>
+            <text class="ant ctr" x="223.79" y="217.01">×2 1250</text>
+        </g>
+        <g class="mk x2 eg e1 e2" tabindex="0" role="graphics-symbol"
+           aria-label="Account 0 to Account 1, Amount: 450, First: 2026-03-02 22:00" data-from="acct-0" data-to="acct-1"
+           data-edge="x2" data-kind="directed" data-first="1772488800" data-last="1772488800">
+            <title>Account 0 to Account 1, Amount: 450, First: 2026-03-02 22:00</title>
+            <path class="eh" d="M306.99 176.6L260.46 168.07"/>
+            <path class="ep et" d="M306.99 176.6L260.46 168.07" style="stroke-width:1.07"
+                  marker-end="url(#jc-4f659020-ar)"/>
+            <text class="ant ctr" x="283.72" y="168.33">450</text>
+        </g>
+        <g class="mk x3 eg e3 e0" tabindex="0" role="graphics-symbol"
+           aria-label="Account 2 to Hub account, Amount: 1500, Events: 3, First: 2026-03-02 11:00, Last: 2026-03-02 13:00"
+           data-from="acct-2" data-to="hub" data-edge="t2" data-kind="directed" data-first="1772449200"
+           data-last="1772456400">
+            <title>Account 2 to Hub account, Amount: 1500, Events: 3, First: 2026-03-02 11:00, Last: 2026-03-02 13:00
+            </title>
+            <path class="eh" d="M299.81 281.44L240.09 287.21"/>
+            <path class="ep et" d="M299.81 281.44L240.09 287.21" style="stroke-width:1.45"
+                  marker-end="url(#jc-4f659020-ar)"/>
+            <text class="ant ctr" x="269.95" y="280.33">×3 1500</text>
+        </g>
+        <g class="mk x4 eg e2 e3" tabindex="0" role="graphics-symbol"
+           aria-label="Account 1 to Account 2, Amount: 500, First: 2026-03-02 23:00" data-from="acct-1" data-to="acct-2"
+           data-edge="x4" data-kind="directed" data-first="1772492400" data-last="1772492400">
+            <title>Account 1 to Account 2, Amount: 500, First: 2026-03-02 23:00</title>
+            <path class="eh" d="M251.69 181.9L308.83 261.56"/>
+            <path class="ep et" d="M251.69 181.9L308.83 261.56" style="stroke-width:1.08"
+                  marker-end="url(#jc-4f659020-ar)"/>
+            <text class="ant ctr" x="280.26" y="203.73">500</text>
+        </g>
+        <g class="mk x5 eg e4 e0" tabindex="0" role="graphics-symbol"
+           aria-label="Account 3 to Hub account, Amount: 1750, First: 2026-03-02 12:00, Last: 2026-03-02 14:00"
+           data-from="acct-3" data-to="hub" data-edge="t3" data-kind="directed" data-first="1772452800"
+           data-last="1772460000">
+            <title>Account 3 to Hub account, Amount: 1750, First: 2026-03-02 12:00, Last: 2026-03-02 14:00</title>
+            <path class="eh" d="M344.4 339.34L238.28 302.15"/>
+            <path class="ep et" d="M344.4 339.34L238.28 302.15" style="stroke-width:1.54"
+                  marker-end="url(#jc-4f659020-ar)"/>
+            <text class="ant ctr" x="291.34" y="330.74">1750</text>
+        </g>
+        <g class="mk x6 eg e3 e4" tabindex="0" role="graphics-symbol"
+           aria-label="Account 2 to Account 3, Amount: 550, First: 2026-03-03 00:00" data-from="acct-2" data-to="acct-3"
+           data-edge="x6" data-kind="directed" data-first="1772496000" data-last="1772496000">
+            <title>Account 2 to Account 3, Amount: 550, First: 2026-03-03 00:00</title>
+            <path class="eh" d="M333.08 297.95L352.45 329.32"/>
+            <path class="ep et" d="M333.08 297.95L352.45 329.32" style="stroke-width:1.1"
+                  marker-end="url(#jc-4f659020-ar)"/>
+            <text class="ant ctr" x="342.76" y="309.64">550</text>
+        </g>
+        <g class="mk x7 eg e5 e0" tabindex="0" role="graphics-symbol"
+           aria-label="Account 4 to Hub account, Amount: 2000, Events: 2, First: 2026-03-02 13:00, Last: 2026-03-02 15:00"
+           data-from="acct-4" data-to="hub" data-edge="t4" data-kind="directed" data-first="1772456400"
+           data-last="1772463600">
+            <title>Account 4 to Hub account, Amount: 2000, Events: 2, First: 2026-03-02 13:00, Last: 2026-03-02 15:00
+            </title>
+            <path class="eh" d="M257.43 382.69L222.5 321.03"/>
+            <path class="ep et" d="M257.43 382.69L222.5 321.03" style="stroke-width:1.63"
+                  marker-end="url(#jc-4f659020-ar)"/>
+            <text class="ant ctr" x="239.96" y="361.86">×2 2000</text>
+        </g>
+        <g class="mk x8 eg e4 e5" tabindex="0" role="graphics-symbol"
+           aria-label="Account 3 to Account 4, Amount: 600, First: 2026-03-03 01:00" data-from="acct-3" data-to="acct-4"
+           data-edge="x8" data-kind="directed" data-first="1772499600" data-last="1772499600">
+            <title>Account 3 to Account 4, Amount: 600, First: 2026-03-03 01:00</title>
+            <path class="eh" d="M345.78 355.13L283.7 390.01"/>
+            <path class="ep et" d="M345.78 355.13L283.7 390.01" style="stroke-width:1.12"
+                  marker-end="url(#jc-4f659020-ar)"/>
+            <text class="ant ctr" x="314.74" y="368.57">600</text>
+        </g>
+        <g class="mk x9 eg e6 e0" tabindex="0" role="graphics-symbol"
+           aria-label="Account 5 to Hub account, Amount: 2250, Events: 3, First: 2026-03-02 14:00, Last: 2026-03-02 16:00"
+           data-from="acct-5" data-to="hub" data-edge="t5" data-kind="directed" data-first="1772460000"
+           data-last="1772467200">
+            <title>Account 5 to Hub account, Amount: 2250, Events: 3, First: 2026-03-02 14:00, Last: 2026-03-02 16:00
+            </title>
+            <path class="eh" d="M197.58 424.51L203.25 325.52"/>
+            <path class="ep et" d="M197.58 424.51L203.25 325.52" style="stroke-width:1.73"
+                  marker-end="url(#jc-4f659020-ar)"/>
+            <text class="ant ctr" x="200.41" y="385.02">×3 2250</text>
+        </g>
+        <g class="mk x10 eg e5 e6" tabindex="0" role="graphics-symbol"
+           aria-label="Account 4 to Account 5, Amount: 650, First: 2026-03-03 02:00" data-from="acct-4" data-to="acct-5"
+           data-edge="x10" data-kind="directed" data-first="1772503200" data-last="1772503200">
+            <title>Account 4 to Account 5, Amount: 650, First: 2026-03-03 02:00</title>
+            <path class="eh" d="M250.88 410.09L214.54 434.24"/>
+            <path class="ep et" d="M250.88 410.09L214.54 434.24" style="stroke-width:1.14"
+                  marker-end="url(#jc-4f659020-ar)"/>
+            <text class="ant ctr" x="232.71" y="404.17">650</text>
+        </g>
+        <g class="mk x11 eg e7 e0" tabindex="0" role="graphics-symbol"
+           aria-label="Account 6 to Hub account, Amount: 2500, First: 2026-03-02 15:00, Last: 2026-03-02 17:00"
+           data-from="acct-6" data-to="hub" data-edge="t6" data-kind="directed" data-first="1772463600"
+           data-last="1772470800">
+            <title>Account 6 to Hub account, Amount: 2500, First: 2026-03-02 15:00, Last: 2026-03-02 17:00</title>
+            <path class="eh" d="M116.91 376.65L180.18 315"/>
+            <path class="ep et" d="M116.91 376.65L180.18 315" style="stroke-width:1.82"
+                  marker-end="url(#jc-4f659020-ar)"/>
+            <text class="ant ctr" x="148.55" y="341.83">2500</text>
+        </g>
+        <g class="mk x12 eg e6 e7" tabindex="0" role="graphics-symbol"
+           aria-label="Account 5 to Account 6, Amount: 700, First: 2026-03-03 03:00" data-from="acct-5" data-to="acct-6"
+           data-edge="x12" data-kind="directed" data-first="1772506800" data-last="1772506800">
+            <title>Account 5 to Account 6, Amount: 700, First: 2026-03-03 03:00</title>
+            <path class="eh" d="M177.6 435.05L119.61 400.03"/>
+            <path class="ep et" d="M177.6 435.05L119.61 400.03" style="stroke-width:1.16"
+                  marker-end="url(#jc-4f659020-ar)"/>
+            <text class="ant ctr" x="148.6" y="413.54">700</text>
+        </g>
+        <g class="mk x13 eg e8 e0" tabindex="0" role="graphics-symbol"
+           aria-label="Account 7 to Hub account, Amount: 2750, Events: 2, First: 2026-03-02 16:00, Last: 2026-03-02 18:00"
+           data-from="acct-7" data-to="hub" data-edge="t7" data-kind="directed" data-first="1772467200"
+           data-last="1772474400">
+            <title>Account 7 to Hub account, Amount: 2750, Events: 2, First: 2026-03-02 16:00, Last: 2026-03-02 18:00
+            </title>
+            <path class="eh" d="M74.6 298.36L170.31 292.66"/>
+            <path class="ep et" d="M74.6 298.36L170.31 292.66" style="stroke-width:1.91"
+                  marker-end="url(#jc-4f659020-ar)"/>
+            <text class="ant ctr" x="122.45" y="291.51">×2 2750</text>
+        </g>
+        <g class="mk x14 eg e7 e8" tabindex="0" role="graphics-symbol"
+           aria-label="Account 6 to Account 7, Amount: 750, First: 2026-03-03 04:00" data-from="acct-6" data-to="acct-7"
+           data-edge="x14" data-kind="directed" data-first="1772510400" data-last="1772510400">
+            <title>Account 6 to Account 7, Amount: 750, First: 2026-03-03 04:00</title>
+            <path class="eh" d="M94.55 372.85L65.4 314.23"/>
+            <path class="ep et" d="M94.55 372.85L65.4 314.23" style="stroke-width:1.18"
+                  marker-end="url(#jc-4f659020-ar)"/>
+            <text class="ant ctr" x="79.98" y="353.54">750</text>
+        </g>
+        <g class="mk x15 eg e9 e3" tabindex="0" role="graphics-symbol" aria-label="Device 7f3a to Account 2"
+           data-from="dev-1" data-to="acct-2" data-edge="x15" data-kind="directed">
+            <title>Device 7f3a to Account 2</title>
+            <path class="eh" d="M343.21 442.32L324.46 301.02"/>
+            <path class="ep et" d="M343.21 442.32L324.46 301.02" style="stroke-width:1.6"
+                  marker-end="url(#jc-4f659020-ar)"/>
+        </g>
+        <g class="mk x16 eg e9 e6" tabindex="0" role="graphics-symbol" aria-label="Device 7f3a to Account 5"
+           data-from="dev-1" data-to="acct-5" data-edge="x16" data-kind="directed">
+            <title>Device 7f3a to Account 5</title>
+            <path class="eh" d="M328.83 457.42L218.12 448.17"/>
+            <path class="ep et" d="M328.83 457.42L218.12 448.17" style="stroke-width:1.6"
+                  marker-end="url(#jc-4f659020-ar)"/>
+        </g>
+        <g class="mk x17 eg e10 e2" tabindex="0" role="graphics-symbol" aria-label="10.4.0.9 to Account 1"
+           data-from="ip-1" data-to="acct-1" data-edge="x17" data-kind="directed">
+            <title>10.4.0.9 to Account 1</title>
+            <path class="eh" d="M263.03 37.75L243.04 142.64"/>
+            <path class="ep et" d="M263.03 37.75L243.04 142.64" style="stroke-width:1.6"
+                  marker-end="url(#jc-4f659020-ar)"/>
+        </g>
+        <g class="mk x18 eg e0 e11" tabindex="0" role="graphics-symbol"
+           aria-label="Hub account to Counterparty, Amount: 9800" data-from="hub" data-to="cp-1" data-edge="x18"
+           data-kind="directed">
+            <title>Hub account to Counterparty, Amount: 9800</title>
+            <path class="eh" d="M179.2 267.2L104.68 200.32"/>
+            <path class="ep et" d="M179.2 267.2L104.68 200.32" style="stroke-width:4.5"
+                  marker-end="url(#jc-4f659020-ar)"/>
+            <text class="ant ctr" x="141.94" y="243.76">9800</text>
+        </g>
+        <g class="mk n0 nd s0 j1 j2 j3 j4 j5 j6 j7 j8 j11" tabindex="0" role="graphics-symbol"
+           aria-label="Hub account, Accounts, Edges in: 8, out: 1, hub, ○" data-node="hub" data-kind="hexagon">
+            <title>Hub account, Accounts, Edges in: 8, out: 1, hub, ○</title>
+            <path class="nb" d="M235.56 308.08L205.25 325.58L174.94 308.08L174.94 273.08L205.25 255.58L235.56 273.08Z"/>
+            <path class="nt" d="M235.56 308.08L205.25 325.58L174.94 308.08L174.94 273.08L205.25 255.58L235.56 273.08Z"/>
+            <text class="lbl ctr" x="205.25" y="337.58">Hub account</text>
+            <rect class="nb" x="236.25" y="250.58" width="23.45" height="14" rx="7"/>
+            <text class="lbl ctr mid fs10" x="247.98" y="257.58">hub</text>
+            <rect class="nb" x="261.71" y="250.58" width="14" height="14" rx="7"/>
+            <text class="lbl ctr mid fs10" x="268.71" y="257.58">○</text>
+        </g>
+        <g class="mk n1 nd s0 j0 j2" tabindex="0" role="graphics-symbol"
+           aria-label="Account 0, Accounts, Edges in: 0, out: 2" data-node="acct-0" data-kind="circle">
+            <title>Account 0, Accounts, Edges in: 0, out: 2</title>
+            <circle class="nb" cx="323.34" cy="179.6" r="16.63"/>
+            <circle class="nt" cx="323.34" cy="179.6" r="16.63"/>
+            <text class="lbl ctr" x="323.34" y="208.22">Account 0</text>
+        </g>
+        <g class="mk n2 nd s0 j0 j1 j3 j10" tabindex="0" role="graphics-symbol"
+           aria-label="Account 1, Accounts, Edges in: 2, out: 2" data-node="acct-1" data-kind="circle">
+            <title>Account 1, Accounts, Edges in: 2, out: 2</title>
+            <circle class="nb" cx="238.94" cy="164.12" r="21.88"/>
+            <circle class="nt" cx="238.94" cy="164.12" r="21.88"/>
+            <text class="lbl ctr" x="238.94" y="198">Account 1</text>
+        </g>
+        <g class="mk n3 nd s0 j0 j2 j4 j9" tabindex="0" role="graphics-symbol"
+           aria-label="Account 2, Accounts, Edges in: 2, out: 2" data-node="acct-2" data-kind="circle">
+            <title>Account 2, Accounts, Edges in: 2, out: 2</title>
+            <circle class="nb" cx="321.58" cy="279.34" r="21.88"/>
+            <circle class="nt" cx="321.58" cy="279.34" r="21.88"/>
+            <text class="lbl ctr" x="321.58" y="313.21">Account 2</text>
+        </g>
+        <g class="mk n4 nd s0 j0 j3 j5" tabindex="0" role="graphics-symbol"
+           aria-label="Account 3, Accounts, Edges in: 1, out: 2" data-node="acct-3" data-kind="circle">
+            <title>Account 3, Accounts, Edges in: 1, out: 2</title>
+            <circle class="nb" cx="362.56" cy="345.7" r="19.25"/>
+            <circle class="nt" cx="362.56" cy="345.7" r="19.25"/>
+            <text class="lbl ctr" x="362.56" y="376.95">Account 3</text>
+        </g>
+        <g class="mk n5 nd s0 j0 j4 j6" tabindex="0" role="graphics-symbol"
+           aria-label="Account 4, Accounts, Edges in: 1, out: 2" data-node="acct-4" data-kind="circle">
+            <title>Account 4, Accounts, Edges in: 1, out: 2</title>
+            <circle class="nb" cx="266.91" cy="399.43" r="19.25"/>
+            <circle class="nt" cx="266.91" cy="399.43" r="19.25"/>
+            <text class="lbl ctr" x="266.91" y="430.68">Account 4</text>
+        </g>
+        <g class="mk n6 nd s0 j0 j5 j7 j9" tabindex="0" role="graphics-symbol"
+           aria-label="Account 5, Accounts, Edges in: 2, out: 2" data-node="acct-5" data-kind="circle">
+            <title>Account 5, Accounts, Edges in: 2, out: 2</title>
+            <circle class="nb" cx="196.33" cy="446.35" r="21.88"/>
+            <circle class="nt" cx="196.33" cy="446.35" r="21.88"/>
+            <text class="lbl ctr" x="196.33" y="480.23">Account 5</text>
+        </g>
+        <g class="mk n7 nd s0 j0 j6 j8" tabindex="0" role="graphics-symbol"
+           aria-label="Account 6, Accounts, Edges in: 1, out: 2" data-node="acct-6" data-kind="circle">
+            <title>Account 6, Accounts, Edges in: 1, out: 2</title>
+            <circle class="nb" cx="103.13" cy="390.08" r="19.25"/>
+            <circle class="nt" cx="103.13" cy="390.08" r="19.25"/>
+            <text class="lbl ctr" x="103.13" y="421.33">Account 6</text>
+        </g>
+        <g class="mk n8 nd s0 j0 j7" tabindex="0" role="graphics-symbol"
+           aria-label="Account 7, Accounts, Edges in: 1, out: 1" data-node="acct-7" data-kind="circle">
+            <title>Account 7, Accounts, Edges in: 1, out: 1</title>
+            <circle class="nb" cx="58" cy="299.35" r="16.63"/>
+            <circle class="nt" cx="58" cy="299.35" r="16.63"/>
+            <text class="lbl ctr" x="58" y="327.97">Account 7</text>
+        </g>
+        <g class="mk n9 nd s1 j3 j6" tabindex="0" role="graphics-symbol"
+           aria-label="Device 7f3a, Devices, Edges in: 0, out: 2" data-node="dev-1" data-kind="square">
+            <title>Device 7f3a, Devices, Edges in: 0, out: 2</title>
+            <rect class="nb" x="330.44" y="443.84" width="29.93" height="29.93" rx="3"/>
+            <rect class="nt" x="330.44" y="443.84" width="29.93" height="29.93" rx="3"/>
+            <text class="lbl ctr" x="345.4" y="487.43">Device 7f3a</text>
+        </g>
+        <g class="mk n10 nd s2 j2" tabindex="0" role="graphics-symbol"
+           aria-label="10.4.0.9, Network, Edges in: 0, out: 1" data-node="ip-1" data-kind="diamond">
+            <title>10.4.0.9, Network, Edges in: 0, out: 1</title>
+            <path class="nb" d="M265.65 10L279.65 24L265.65 38L251.65 24Z"/>
+            <path class="nt" d="M265.65 10L279.65 24L265.65 38L251.65 24Z"/>
+            <text class="lbl ctr" x="265.65" y="50">10.4.0.9</text>
+        </g>
+        <g class="mk n11 nd s0 j0" tabindex="0" role="graphics-symbol"
+           aria-label="Counterparty, Accounts, Edges in: 1, out: 0, ★" data-node="cp-1" data-kind="triangle">
+            <title>Counterparty, Accounts, Edges in: 1, out: 0, ★</title>
+            <path class="nb" d="M94.26 176.97L107.56 199.37L80.96 199.37Z"/>
+            <path class="nt" d="M94.26 176.97L107.56 199.37L80.96 199.37Z"/>
+            <text class="lbl ctr" x="94.26" y="216.97">Counterparty</text>
+            <rect class="nb" x="104.26" y="171.97" width="14" height="14" rx="7"/>
+            <text class="lbl ctr mid fs10" x="111.26" y="178.97">★</text>
+        </g>
+    </g>
+    <text class="kn" x="111.72" y="610.43">thickness = amount</text>
+    <g class="tps">
+        <g class="tp tx0">
+            <g class="tt">
+                <rect class="tb" x="392.71" y="275.8" width="167.81" height="78" rx="6"/>
+                <text class="tx b" x="402.71" y="293.8">Account 0 to Hub account</text>
+                <text class="tx" x="402.71" y="310.8">Amount: 1000</text>
+                <text class="tx" x="402.71" y="327.8">First: 2026-03-02 09:00</text>
+                <text class="tx" x="402.71" y="344.8">Last: 2026-03-02 11:00</text>
+            </g>
+        </g>
+        <g class="tp tx1">
+            <g class="tt">
+                <rect class="tb" x="345.5" y="259.51" width="167.81" height="95" rx="6"/>
+                <text class="tx b" x="355.5" y="277.51">Account 1 to Hub account</text>
+                <text class="tx" x="355.5" y="294.51">Amount: 1250</text>
+                <text class="tx" x="355.5" y="311.51">Events: 2</text>
+                <text class="tx" x="355.5" y="328.51">First: 2026-03-02 10:00</text>
+                <text class="tx" x="355.5" y="345.51">Last: 2026-03-02 12:00</text>
+            </g>
+        </g>
+        <g class="tp tx2">
+            <g class="tt">
+                <rect class="tb" x="405.44" y="227.83" width="154.32" height="61" rx="6"/>
+                <text class="tx b" x="415.44" y="245.83">Account 0 to Account 1</text>
+                <text class="tx" x="415.44" y="262.83">Amount: 450</text>
+                <text class="tx" x="415.44" y="279.83">First: 2026-03-02 22:00</text>
+            </g>
+        </g>
+        <g class="tp tx3">
+            <g class="tt">
+                <rect class="tb" x="391.67" y="322.83" width="167.81" height="95" rx="6"/>
+                <text class="tx b" x="401.67" y="340.83">Account 2 to Hub account</text>
+                <text class="tx" x="401.67" y="357.83">Amount: 1500</text>
+                <text class="tx" x="401.67" y="374.83">Events: 3</text>
+                <text class="tx" x="401.67" y="391.83">First: 2026-03-02 11:00</text>
+                <text class="tx" x="401.67" y="408.83">Last: 2026-03-02 13:00</text>
+            </g>
+        </g>
+        <g class="tp tx4">
+            <g class="tt">
+                <rect class="tb" x="401.98" y="277.23" width="154.32" height="61" rx="6"/>
+                <text class="tx b" x="411.98" y="295.23">Account 1 to Account 2</text>
+                <text class="tx" x="411.98" y="312.23">Amount: 500</text>
+                <text class="tx" x="411.98" y="329.23">First: 2026-03-02 23:00</text>
+            </g>
+        </g>
+        <g class="tp tx5">
+            <g class="tt">
+                <rect class="tb" x="413.06" y="367.74" width="167.81" height="78" rx="6"/>
+                <text class="tx b" x="423.06" y="385.74">Account 3 to Hub account</text>
+                <text class="tx" x="423.06" y="402.74">Amount: 1750</text>
+                <text class="tx" x="423.06" y="419.74">First: 2026-03-02 12:00</text>
+                <text class="tx" x="423.06" y="436.74">Last: 2026-03-02 14:00</text>
+            </g>
+        </g>
+        <g class="tp tx6">
+            <g class="tt">
+                <rect class="tb" x="464.48" y="369.14" width="154.32" height="61" rx="6"/>
+                <text class="tx b" x="474.48" y="387.14">Account 2 to Account 3</text>
+                <text class="tx" x="474.48" y="404.14">Amount: 550</text>
+                <text class="tx" x="474.48" y="421.14">First: 2026-03-03 00:00</text>
+            </g>
+        </g>
+        <g class="tp tx7">
+            <g class="tt">
+                <rect class="tb" x="361.68" y="390.36" width="167.81" height="95" rx="6"/>
+                <text class="tx b" x="371.68" y="408.36">Account 4 to Hub account</text>
+                <text class="tx" x="371.68" y="425.36">Amount: 2000</text>
+                <text class="tx" x="371.68" y="442.36">Events: 2</text>
+                <text class="tx" x="371.68" y="459.36">First: 2026-03-02 13:00</text>
+                <text class="tx" x="371.68" y="476.36">Last: 2026-03-02 15:00</text>
+            </g>
+        </g>
+        <g class="tp tx8">
+            <g class="tt">
+                <rect class="tb" x="436.46" y="428.07" width="154.32" height="61" rx="6"/>
+                <text class="tx b" x="446.46" y="446.07">Account 3 to Account 4</text>
+                <text class="tx" x="446.46" y="463.07">Amount: 600</text>
+                <text class="tx" x="446.46" y="480.07">First: 2026-03-03 01:00</text>
+            </g>
+        </g>
+        <g class="tp tx9">
+            <g class="tt">
+                <rect class="tb" x="322.13" y="413.52" width="167.81" height="95" rx="6"/>
+                <text class="tx b" x="332.13" y="431.52">Account 5 to Hub account</text>
+                <text class="tx" x="332.13" y="448.52">Amount: 2250</text>
+                <text class="tx" x="332.13" y="465.52">Events: 3</text>
+                <text class="tx" x="332.13" y="482.52">First: 2026-03-02 14:00</text>
+                <text class="tx" x="332.13" y="499.52">Last: 2026-03-02 16:00</text>
+            </g>
+        </g>
+        <g class="tp tx10">
+            <g class="tt">
+                <rect class="tb" x="354.43" y="477.67" width="154.32" height="61" rx="6"/>
+                <text class="tx b" x="364.43" y="495.67">Account 4 to Account 5</text>
+                <text class="tx" x="364.43" y="512.67">Amount: 650</text>
+                <text class="tx" x="364.43" y="529.67">First: 2026-03-03 02:00</text>
+            </g>
+        </g>
+        <g class="tp tx11">
+            <g class="tt">
+                <rect class="tb" x="270.27" y="392.83" width="167.81" height="78" rx="6"/>
+                <text class="tx b" x="280.27" y="410.83">Account 6 to Hub account</text>
+                <text class="tx" x="280.27" y="427.83">Amount: 2500</text>
+                <text class="tx" x="280.27" y="444.83">First: 2026-03-02 15:00</text>
+                <text class="tx" x="280.27" y="461.83">Last: 2026-03-02 17:00</text>
+            </g>
+        </g>
+        <g class="tp tx12">
+            <g class="tt">
+                <rect class="tb" x="270.32" y="473.04" width="154.32" height="61" rx="6"/>
+                <text class="tx b" x="280.32" y="491.04">Account 5 to Account 6</text>
+                <text class="tx" x="280.32" y="508.04">Amount: 700</text>
+                <text class="tx" x="280.32" y="525.04">First: 2026-03-03 03:00</text>
+            </g>
+        </g>
+        <g class="tp tx13">
+            <g class="tt">
+                <rect class="tb" x="244.17" y="334.01" width="167.81" height="95" rx="6"/>
+                <text class="tx b" x="254.17" y="352.01">Account 7 to Hub account</text>
+                <text class="tx" x="254.17" y="369.01">Amount: 2750</text>
+                <text class="tx" x="254.17" y="386.01">Events: 2</text>
+                <text class="tx" x="254.17" y="403.01">First: 2026-03-02 16:00</text>
+                <text class="tx" x="254.17" y="420.01">Last: 2026-03-02 18:00</text>
+            </g>
+        </g>
+        <g class="tp tx14">
+            <g class="tt">
+                <rect class="tb" x="201.7" y="399.04" width="154.32" height="61" rx="6"/>
+                <text class="tx b" x="211.7" y="417.04">Account 6 to Account 7</text>
+                <text class="tx" x="211.7" y="434.04">Amount: 750</text>
+                <text class="tx" x="211.7" y="451.04">First: 2026-03-03 04:00</text>
+            </g>
+        </g>
+        <g class="tp tx15">
+            <g class="tt">
+                <rect class="tb" x="455.55" y="444.17" width="164.75" height="27" rx="6"/>
+                <text class="tx b" x="465.55" y="462.17">Device 7f3a to Account 2</text>
+            </g>
+        </g>
+        <g class="tp tx16">
+            <g class="tt">
+                <rect class="tb" x="395.2" y="525.3" width="164.75" height="27" rx="6"/>
+                <text class="tx b" x="405.2" y="543.3">Device 7f3a to Account 5</text>
+            </g>
+        </g>
+        <g class="tp tx17">
+            <g class="tt">
+                <rect class="tb" x="374.75" y="162.69" width="141.86" height="27" rx="6"/>
+                <text class="tx b" x="384.75" y="180.69">10.4.0.9 to Account 1</text>
+            </g>
+        </g>
+        <g class="tp tx18">
+            <g class="tt">
+                <rect class="tb" x="263.66" y="297.76" width="183.83" height="44" rx="6"/>
+                <text class="tx b" x="273.66" y="315.76">Hub account to Counterparty</text>
+                <text class="tx" x="273.66" y="332.76">Amount: 9800</text>
+            </g>
+        </g>
+        <g class="tp tn0">
+            <g class="tt">
+                <rect class="tb" x="361.97" y="341.58" width="116.96" height="78" rx="6"/>
+                <text class="tx b" x="371.97" y="359.58">Hub account</text>
+                <text class="tx" x="371.97" y="376.58">Accounts</text>
+                <text class="tx" x="371.97" y="393.58">Edges in: 8, out: 1</text>
+                <text class="tx" x="371.97" y="410.58">hub, ○</text>
+            </g>
+        </g>
+        <g class="tp tn1">
+            <g class="tt">
+                <rect class="tb" x="461.69" y="239.1" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="471.69" y="257.1">Account 0</text>
+                <text class="tx" x="471.69" y="274.1">Accounts</text>
+                <text class="tx" x="471.69" y="291.1">Edges in: 0, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn2">
+            <g class="tt">
+                <rect class="tb" x="382.54" y="223.62" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="392.54" y="241.62">Account 1</text>
+                <text class="tx" x="392.54" y="258.62">Accounts</text>
+                <text class="tx" x="392.54" y="275.62">Edges in: 2, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn3">
+            <g class="tt">
+                <rect class="tb" x="465.17" y="338.84" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="475.17" y="356.84">Account 2</text>
+                <text class="tx" x="475.17" y="373.84">Accounts</text>
+                <text class="tx" x="475.17" y="390.84">Edges in: 2, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn4">
+            <g class="tt">
+                <rect class="tb" x="503.53" y="405.2" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="513.53" y="423.2">Account 3</text>
+                <text class="tx" x="513.53" y="440.2">Accounts</text>
+                <text class="tx" x="513.53" y="457.2">Edges in: 1, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn5">
+            <g class="tt">
+                <rect class="tb" x="407.88" y="458.93" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="417.88" y="476.93">Account 4</text>
+                <text class="tx" x="417.88" y="493.93">Accounts</text>
+                <text class="tx" x="417.88" y="510.93">Edges in: 1, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn6">
+            <g class="tt">
+                <rect class="tb" x="339.92" y="505.85" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="349.92" y="523.85">Account 5</text>
+                <text class="tx" x="349.92" y="540.85">Accounts</text>
+                <text class="tx" x="349.92" y="557.85">Edges in: 2, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn7">
+            <g class="tt">
+                <rect class="tb" x="244.09" y="449.58" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="254.09" y="467.58">Account 6</text>
+                <text class="tx" x="254.09" y="484.58">Accounts</text>
+                <text class="tx" x="254.09" y="501.58">Edges in: 1, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn8">
+            <g class="tt">
+                <rect class="tb" x="196.34" y="358.85" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="206.34" y="376.85">Account 7</text>
+                <text class="tx" x="206.34" y="393.85">Accounts</text>
+                <text class="tx" x="206.34" y="410.85">Edges in: 1, out: 1</text>
+            </g>
+        </g>
+        <g class="tp tn9">
+            <g class="tt">
+                <rect class="tb" x="483.74" y="518.3" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="493.74" y="536.3">Device 7f3a</text>
+                <text class="tx" x="493.74" y="553.3">Devices</text>
+                <text class="tx" x="493.74" y="570.3">Edges in: 0, out: 2</text>
+            </g>
+        </g>
+        <g class="tp tn10">
+            <g class="tt">
+                <rect class="tb" x="401.37" y="83.5" width="116.96" height="61" rx="6"/>
+                <text class="tx b" x="411.37" y="101.5">10.4.0.9</text>
+                <text class="tx" x="411.37" y="118.5">Network</text>
+                <text class="tx" x="411.37" y="135.5">Edges in: 0, out: 1</text>
+            </g>
+        </g>
+        <g class="tp tn11">
+            <g class="tt">
+                <rect class="tb" x="229.97" y="241.97" width="116.96" height="78" rx="6"/>
+                <text class="tx b" x="239.97" y="259.97">Counterparty</text>
+                <text class="tx" x="239.97" y="276.97">Accounts</text>
+                <text class="tx" x="239.97" y="293.97">Edges in: 1, out: 0</text>
+                <text class="tx" x="239.97" y="310.97">★</text>
+            </g>
+        </g>
+    </g>
+</svg>

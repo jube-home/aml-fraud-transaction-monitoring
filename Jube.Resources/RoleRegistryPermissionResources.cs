@@ -16,6 +16,7 @@ namespace Jube.Resources
     public sealed class RoleRegistryPermissionResources
     {
         public const string PermissionDenied = nameof(PermissionDenied);
+        public const string InsufficientPrivilege = nameof(InsufficientPrivilege);
         public const string NotAuthenticated = nameof(NotAuthenticated);
         public const string NotFound = nameof(NotFound);
         public const string RoleRegistryIdInvalid = nameof(RoleRegistryIdInvalid);

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>ამ მოქმედების შესასრულებლად უფლება არ გაქვთ.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>ამ მოქმედების შესასრულებლად უნდა შეხვიდეთ სისტემაში.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>საუბარი ვერ მოიძებნა.</value>
+  </data>
+    <data name="TitleMaxLength" xml:space="preserve">
+    <value>სათაური არ უნდა აღემატებოდეს {0} სიმბოლოს.</value>
+  </data>
+    <data name="FileNotFound" xml:space="preserve">
+    <value>ფაილი ვერ მოიძებნა.</value>
+  </data>
+    <data name="FileTooLarge" xml:space="preserve">
+    <value>ფაილები არ უნდა აღემატებოდეს {0} მბ-ს.</value>
+  </data>
+    <data name="FileTypeNotAllowed" xml:space="preserve">
+    <value>ამ ტიპის ფაილი დაუშვებელია.</value>
+  </data>
+    <data name="EmptyReply" xml:space="preserve">
+    <value>Jooby-მ პასუხი ვერ იპოვა. სცადეთ ხელახლა ან სხვაგვარად ჩამოაყალიბეთ.</value>
+  </data>
+    <data name="NoInferenceBackend" xml:space="preserve">
+    <value>მე ვარ Jooby. საძოვარზე არის {0} Bite, {1} Trail, {2} Saltlick, {3} სპეციალიზებული Joobrik და {4} Yoke, მაგრამ დასკვნის ბექენდი ჯერ არ არის კონფიგურირებული, ამიტომ ეს ჯერ არ მუშაობს. დააყენეთ AskJoobyApiEndpoint, AskJoobyModel და AskJoobyApiKey, ხოლო EnableAskJooby - True და მზად ვიქნები.</value>
+  </data>
+    <data name="StreamFailed" xml:space="preserve">
+    <value>პასუხის დასრულება ვერ მოხერხდა. გთხოვთ, სცადოთ ხელახლა.</value>
+  </data>
+    <data name="ApprovalSummary" xml:space="preserve">
+    <value>Jooby-ს სურს ცვლილების შეტანა {0}-ის გამოყენებით და ჯერ თქვენი თანხმობა სჭირდება. ჯერ არაფერი შეცვლილა.</value>
+  </data>
+    <data name="ApprovalNotFound" xml:space="preserve">
+    <value>ეს თანხმობის მოთხოვნა ვერ მოიძებნა ან უკვე გადაწყვეტილია.</value>
+  </data>
+    <data name="RateLimited" xml:space="preserve">
+    <value>შეტყობინებებს ძალიან სწრაფად აგზავნით ან ძალიან ბევრი პასუხი გაქვთ გაშვებული. გთხოვთ, ცოტა ხანი დაელოდოთ და სცადოთ ხელახლა.</value>
+  </data>
+</root>

@@ -12,11 +12,13 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Jube.Cache.Redis.Models;
-using Jube.Cache.Redis.Serialization;
+using Jube.Cache.Resp.Models;
+using Jube.Cache.Resp.Serialization;
 using Jube.Dictionary;
 using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
@@ -27,6 +29,7 @@ using Jube.Engine.Sanctions.Models;
 using Jube.Test.Infrastructure;
 using MessagePack;
 using Xunit;
+using JubeDynamicEnvironment = Jube.DynamicEnvironment.DynamicEnvironment;
 using Context = Jube.Engine.EntityAnalysisModelInvoke.Context.Context;
 using EntityAnalysisModel = Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel;
 
@@ -54,12 +57,18 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             };
         }
 
-        private static (Context Context, FakeHybridResilientRedisDatabase Redis) NewContextWithRedis(
+        private static (Context Context, FakeHybridResilientRespDatabase RESP) NewContextWithResp(
             params EntityAnalysisModelSanction[] sanctionChecks)
+        {
+            return NewContextWithResp(TestDynamicEnvironment.Create(), sanctionChecks);
+        }
+
+        private static (Context Context, FakeHybridResilientRespDatabase RESP) NewContextWithResp(
+            JubeDynamicEnvironment environment, params EntityAnalysisModelSanction[] sanctionChecks)
         {
             var entityAnalysisModel = new EntityAnalysisModel();
             entityAnalysisModel.Snapshot.EntityAnalysisModelSanctions.AddRange(sanctionChecks);
-            entityAnalysisModel.Services.CacheService = TestCacheService.Create(out var redis);
+            entityAnalysisModel.Services.CacheService = TestCacheService.Create(out var resp);
 
             var context = new Context
             {
@@ -71,11 +80,12 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                     InvokeTaskPerformance = new InvokeTaskPerformance()
                 },
                 Log = TestLog.NoOp,
+                Environment = environment,
                 Stopwatch = Stopwatch.StartNew(),
                 LogSampled = true
             };
 
-            return (context, redis);
+            return (context, resp);
         }
 
         private static void AddSanctionEntry(Context context, int id, params string[] elementValues)
@@ -92,7 +102,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public async Task ExecuteSanctionsAsyncWithAnExactMatchPopulatesTheSanctionResponseAsync()
         {
-            var (context, _) = NewContextWithRedis(NewSanctionCheck());
+            var (context, _) = NewContextWithResp(NewSanctionCheck());
             AddSanctionEntry(context, 1, "osama bin laden");
             context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd("JoinedName", "Osama bin Laden");
 
@@ -105,7 +115,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public async Task ExecuteSanctionsAsyncWithNoMatchDoesNotPopulateTheSanctionResponseAsync()
         {
-            var (context, _) = NewContextWithRedis(NewSanctionCheck(distance: 1));
+            var (context, _) = NewContextWithResp(NewSanctionCheck(distance: 1));
             AddSanctionEntry(context, 1, "osama bin laden");
             context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd("JoinedName", "John Smith");
 
@@ -117,7 +127,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public async Task ExecuteSanctionsAsyncWhenPayloadIsMissingTheConfiguredFieldSkipsTheCheckAsync()
         {
-            var (context, _) = NewContextWithRedis(NewSanctionCheck());
+            var (context, _) = NewContextWithResp(NewSanctionCheck());
             AddSanctionEntry(context, 1, "osama bin laden");
 
             await context.ExecuteSanctionsAsync();
@@ -128,7 +138,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public async Task ExecuteSanctionsAsyncDispatchesToTheConfiguredAggregationTypeAsync()
         {
-            var (context, _) = NewContextWithRedis(NewSanctionCheck(distance: 3,
+            var (context, _) = NewContextWithResp(NewSanctionCheck(distance: 3,
                 aggregationTypeId: ConfidenceAggregation));
 
             AddSanctionEntry(context, 1, "osama bin laden");
@@ -149,7 +159,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public async Task ExecuteSanctionsAsyncEvaluatesEveryConfiguredCheckIndependentlyAsync()
         {
-            var (context, _) = NewContextWithRedis(
+            var (context, _) = NewContextWithResp(
                 NewSanctionCheck("SDN", 0),
                 NewSanctionCheck("BOE", 0));
 
@@ -165,7 +175,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public async Task ExecuteSanctionsAsyncRecordsPerCheckTaskPerformanceWhenLogSampledAsync()
         {
-            var (context, _) = NewContextWithRedis(NewSanctionCheck());
+            var (context, _) = NewContextWithResp(NewSanctionCheck());
             AddSanctionEntry(context, 1, "osama bin laden");
             context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd("JoinedName", "Osama bin Laden");
 
@@ -183,34 +193,38 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public async Task ExecuteSanctionsAsyncOnCacheMissWritesTheComputedValueIntoCacheAsync()
         {
-            var (context, redis) = NewContextWithRedis(NewSanctionCheck());
+            var check = NewSanctionCheck();
+            var (context, resp) = NewContextWithResp(check);
             AddSanctionEntry(context, 1, "osama bin laden");
             context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd("JoinedName", "Osama bin Laden");
 
             await context.ExecuteSanctionsAsync();
             await Task.WhenAll(context.PendingWriteTasks);
 
-            var redisKey = $"Sanction:{context.EntityAnalysisModel.Instance.TenantRegistryId}:" +
+            var respKey = $"Sanction:{context.EntityAnalysisModel.Instance.TenantRegistryId}:" +
                            $"{context.EntityAnalysisModel.Instance.Guid:N}";
 
-            var stored = await redis.HashGetAsync(redisKey, "Osama bin Laden:1");
+            var stored = await resp.HashGetAsync(respKey,
+                $"{SanctionsExtensions.BuildCacheVariant(context, check)}:Osama bin Laden:1");
             stored.HasValue.Should().BeTrue();
         }
 
         [Fact]
         public async Task ExecuteSanctionsAsyncOnANoMatchDoesNotWriteAnythingToCacheAsync()
         {
-            var (context, redis) = NewContextWithRedis(NewSanctionCheck(distance: 0));
+            var check = NewSanctionCheck(distance: 0);
+            var (context, resp) = NewContextWithResp(check);
             AddSanctionEntry(context, 1, "osama bin laden");
             context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd("JoinedName", "Completely Different");
 
             await context.ExecuteSanctionsAsync();
             await Task.WhenAll(context.PendingWriteTasks);
 
-            var redisKey = $"Sanction:{context.EntityAnalysisModel.Instance.TenantRegistryId}:" +
+            var respKey = $"Sanction:{context.EntityAnalysisModel.Instance.TenantRegistryId}:" +
                            $"{context.EntityAnalysisModel.Instance.Guid:N}";
 
-            var stored = await redis.HashGetAsync(redisKey, "Completely Different:0");
+            var stored = await resp.HashGetAsync(respKey,
+                $"{SanctionsExtensions.BuildCacheVariant(context, check)}:Completely Different:0");
             stored.HasValue.Should().BeFalse();
         }
 
@@ -218,11 +232,11 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task ExecuteSanctionsAsyncOnAFreshNonExpiredCacheHitDoesNotRecomputeAsync()
         {
             var check = NewSanctionCheck(distance: 0, cacheInterval: 'h', cacheValue: 1);
-            var (context, _) = NewContextWithRedis(check);
+            var (context, _) = NewContextWithResp(check);
 
             await context.EntityAnalysisModel.Services.CacheService.CacheSanctionRepository.InsertAsync(
                 context.EntityAnalysisModel.Instance.TenantRegistryId, context.EntityAnalysisModel.Instance.Guid,
-                "Osama bin Laden", check.Distance, 0.42);
+                SanctionsExtensions.BuildCacheVariant(context, check), "Osama bin Laden", check.Distance, 0.42);
 
             context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd("JoinedName", "Osama bin Laden");
 
@@ -235,11 +249,11 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task ExecuteSanctionsAsyncOnAnExpiredCacheHitRecomputesFromLiveEntriesAsync()
         {
             var check = NewSanctionCheck(distance: 0, cacheInterval: 's', cacheValue: 30);
-            var (context, redis) = NewContextWithRedis(check);
+            var (context, resp) = NewContextWithResp(check);
             AddSanctionEntry(context, 1, "osama bin laden");
             context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd("JoinedName", "Osama bin Laden");
 
-            var redisKey = $"Sanction:{context.EntityAnalysisModel.Instance.TenantRegistryId}:" +
+            var respKey = $"Sanction:{context.EntityAnalysisModel.Instance.TenantRegistryId}:" +
                            $"{context.EntityAnalysisModel.Instance.Guid:N}";
 
             var stale = new Sanction
@@ -252,7 +266,8 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 MessagePackSerializerOptionsHelper
                     .StandardMessagePackSerializerWithCompressionOptions(false));
 
-            await redis.HashSetAsync(redisKey, "Osama bin Laden:0", bytes);
+            await resp.HashSetAsync(respKey,
+                $"{SanctionsExtensions.BuildCacheVariant(context, check)}:Osama bin Laden:0", bytes);
 
             await context.ExecuteSanctionsAsync();
 
@@ -263,11 +278,11 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task ExecuteSanctionsAsyncOnANonExpiredCachedNullValueStillRecomputesAsync()
         {
             var check = NewSanctionCheck(distance: 0, cacheInterval: 'h', cacheValue: 1);
-            var (context, _) = NewContextWithRedis(check);
+            var (context, _) = NewContextWithResp(check);
 
             await context.EntityAnalysisModel.Services.CacheService.CacheSanctionRepository.InsertAsync(
                 context.EntityAnalysisModel.Instance.TenantRegistryId, context.EntityAnalysisModel.Instance.Guid,
-                "Osama bin Laden", check.Distance, null);
+                SanctionsExtensions.BuildCacheVariant(context, check), "Osama bin Laden", check.Distance, null);
 
             AddSanctionEntry(context, 1, "osama bin laden");
             context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd("JoinedName", "Osama bin Laden");
@@ -280,9 +295,9 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public async Task ExecuteSanctionsAsyncCacheKeyIsScopedByDistanceThresholdAsync()
         {
-            var (context, redis) = NewContextWithRedis(
-                NewSanctionCheck("Loose", 3),
-                NewSanctionCheck("AlsoMatches"));
+            var loose = NewSanctionCheck("Loose", 3);
+            var alsoMatches = NewSanctionCheck("AlsoMatches");
+            var (context, resp) = NewContextWithResp(loose, alsoMatches);
 
             AddSanctionEntry(context, 1, "osama bin laden");
             context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd("JoinedName", "Osama bin Ladenn");
@@ -290,14 +305,113 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             await context.ExecuteSanctionsAsync();
             await Task.WhenAll(context.PendingWriteTasks);
 
-            var redisKey = $"Sanction:{context.EntityAnalysisModel.Instance.TenantRegistryId}:" +
+            var respKey = $"Sanction:{context.EntityAnalysisModel.Instance.TenantRegistryId}:" +
                            $"{context.EntityAnalysisModel.Instance.Guid:N}";
 
-            (await redis.HashGetAsync(redisKey, "Osama bin Ladenn:3")).HasValue.Should().BeTrue();
-            (await redis.HashGetAsync(redisKey, "Osama bin Ladenn:1")).HasValue.Should().BeTrue();
+            (await resp.HashGetAsync(respKey,
+                $"{SanctionsExtensions.BuildCacheVariant(context, loose)}:Osama bin Ladenn:3")).HasValue.Should()
+                .BeTrue();
+            (await resp.HashGetAsync(respKey,
+                $"{SanctionsExtensions.BuildCacheVariant(context, alsoMatches)}:Osama bin Ladenn:1")).HasValue
+                .Should().BeTrue();
 
             context.EntityAnalysisModelInstanceEntryPayload.Sanction.Should().ContainKey("Loose");
             context.EntityAnalysisModelInstanceEntryPayload.Sanction.Should().ContainKey("AlsoMatches");
+        }
+
+        [Fact]
+        public async Task ExecuteSanctionsAsyncTwoChecksWithTheSameDistanceDoNotShareACachedResultAsync()
+        {
+            var first = NewSanctionCheck("First");
+            var second = NewSanctionCheck("Second", aggregationTypeId: 3);
+            var (context, _) = NewContextWithResp(first, second);
+            AddSanctionEntry(context, 1, "osama bin laden");
+            AddSanctionEntry(context, 2, "osama bin laden");
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd("JoinedName", "Osama bin Laden");
+
+            await context.EntityAnalysisModel.Services.CacheService.CacheSanctionRepository.InsertAsync(
+                context.EntityAnalysisModel.Instance.TenantRegistryId, context.EntityAnalysisModel.Instance.Guid,
+                SanctionsExtensions.BuildCacheVariant(context, first), "Osama bin Laden", first.Distance, 0.42);
+
+            await context.ExecuteSanctionsAsync();
+
+            context.EntityAnalysisModelInstanceEntryPayload.Sanction["First"].Should().Be(0.42);
+            context.EntityAnalysisModelInstanceEntryPayload.Sanction["Second"].Should().Be(2);
+        }
+
+        [Fact]
+        public async Task ExecuteSanctionsAsyncRecordsTheMatchedEntriesClosestFirstAndCapsThemAsync()
+        {
+            var check = NewSanctionCheck("SDN", 1);
+            var (context, _) = NewContextWithResp(check);
+
+            for (var id = 10; id < 17; id++)
+            {
+                AddSanctionEntry(context, id, "osama", "bin", "laden");
+            }
+
+            AddSanctionEntry(context, 3, "osama", "bin", "ladin");
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd("JoinedName", "Osama bin Laden");
+
+            await context.ExecuteSanctionsAsync();
+
+            var detail = context.EntityAnalysisModelInstanceEntryPayload.SanctionMatch!["SDN"];
+            detail.Should().HaveCount(5, "the default keeps the five closest");
+            detail.Select(d => d.Distance).Should().BeInAscendingOrder();
+            detail.Take(5).Select(d => d.Id).Should().Equal(10, 11, 12, 13, 14);
+            detail[0].Reference.Should().Be("REF10");
+            detail[0].Source.Should().Be(1);
+            detail[0].Value.Should().Be("osama bin laden");
+        }
+
+        [Fact]
+        public async Task ExecuteSanctionsAsyncRecordsNoMatchDetailWhenThereIsNoMatchAsync()
+        {
+            var (context, _) = NewContextWithResp(NewSanctionCheck());
+            AddSanctionEntry(context, 1, "osama", "bin", "laden");
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd("JoinedName", "Completely Different");
+
+            await context.ExecuteSanctionsAsync();
+
+            context.EntityAnalysisModelInstanceEntryPayload.SanctionMatch.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task ExecuteSanctionsAsyncRecordsNoMatchDetailWhenTheSettingIsZeroAsync()
+        {
+            var (context, _) = NewContextWithResp(
+                TestDynamicEnvironment.Create(new Dictionary<string, string>
+                {
+                    ["SanctionMatchDetailMaximum"] = "0"
+                }), NewSanctionCheck());
+            AddSanctionEntry(context, 1, "osama", "bin", "laden");
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd("JoinedName", "Osama bin Laden");
+
+            await context.ExecuteSanctionsAsync();
+
+            context.EntityAnalysisModelInstanceEntryPayload.Sanction.Should().ContainKey("SDN");
+            context.EntityAnalysisModelInstanceEntryPayload.SanctionMatch.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task ExecuteSanctionsAsyncRestoresTheMatchDetailFromACachedResultAsync()
+        {
+            var check = NewSanctionCheck(distance: 0, cacheInterval: 'h', cacheValue: 1);
+            var (context, _) = NewContextWithResp(check);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd("JoinedName", "Osama bin Laden");
+
+            await context.EntityAnalysisModel.Services.CacheService.CacheSanctionRepository.InsertAsync(
+                context.EntityAnalysisModel.Instance.TenantRegistryId, context.EntityAnalysisModel.Instance.Guid,
+                SanctionsExtensions.BuildCacheVariant(context, check), "Osama bin Laden", check.Distance, 0.42,
+                "[{\"Id\":7,\"Source\":2,\"Reference\":\"R7\",\"Value\":\"osama bin laden\",\"Distance\":0}]");
+
+            await context.ExecuteSanctionsAsync();
+
+            context.EntityAnalysisModelInstanceEntryPayload.Sanction["SDN"].Should().Be(0.42);
+            var detail = context.EntityAnalysisModelInstanceEntryPayload.SanctionMatch!["SDN"].Should().ContainSingle()
+                .Subject;
+            detail.Id.Should().Be(7);
+            detail.Reference.Should().Be("R7");
         }
     }
 }

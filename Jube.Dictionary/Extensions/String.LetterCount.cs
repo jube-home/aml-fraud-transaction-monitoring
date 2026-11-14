@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Counts the letter characters in the string.")]
         public static int LetterCount(this string? @this)
         {
             return @this?.Count(char.IsLetter) ?? 0;

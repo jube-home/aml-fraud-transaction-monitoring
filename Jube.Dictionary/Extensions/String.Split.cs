@@ -4,8 +4,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string[] Split(this string @this, string separator,
-            StringSplitOptions option = StringSplitOptions.None)
+        [Description("Splits the string using a separator.")]
+        public static string[] Split(this string @this,
+            [Description("A string that delimit the substrings in this string.")] string separator,
+            [Description("Specify RemoveEmptyEntries to omit empty array elements, or None to include empty array elements.")] StringSplitOptions option = StringSplitOptions.None)
         {
             return @this.Split(new[]
             {

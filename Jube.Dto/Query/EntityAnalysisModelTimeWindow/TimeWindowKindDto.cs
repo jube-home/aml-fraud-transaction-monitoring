@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,14 +22,17 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.EntityAnalysisModelTimeWindow
 {
     [Description("A kind of window and the interval codes it allows.")]
+    [MessagePackObject]
     public class TimeWindowKindDto
     {
-        [Description("The window's kind.")] public string Kind { get; set; } = string.Empty;
+        [Description("The window's kind.")] [Key(0)] public string Kind { get; set; } = string.Empty;
 
         [Description("The interval codes it allows.")]
+        [Key(1)]
         public List<TimeWindowIntervalDto> Intervals { get; set; } = [];
 
         [Description("How the engine subtracts the interval for this kind.")]
+        [Key(2)]
         public string Arithmetic { get; set; } = string.Empty;
     }
 }

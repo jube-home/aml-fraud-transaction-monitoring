@@ -7,7 +7,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Double Max(this Double val1, Double val2)
+        [Description("Returns the larger of two numbers.")]
+        public static Double Max(this Double val1,
+            [Description("The second of two double-precision floating-point numbers to compare.")] Double val2)
         {
             return Math.Max(val1, val2);
         }

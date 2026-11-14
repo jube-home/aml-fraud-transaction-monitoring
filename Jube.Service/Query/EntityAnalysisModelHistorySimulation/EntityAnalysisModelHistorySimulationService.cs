@@ -12,8 +12,9 @@
  */
 
 using System.ComponentModel;
+using Jube.Analytics.Aggregation;
 using Jube.Cache;
-using Jube.Cache.Redis.Models;
+using Jube.Cache.Resp.Models;
 using Jube.Data.Context;
 using Jube.Data.Query.GetModelListsQuery;
 using Jube.Data.Query.GetRuleParseEnvironmentQuery;
@@ -274,7 +275,8 @@ namespace Jube.Service.Query.EntityAnalysisModelHistorySimulation
 
             var settings = AbstractionSettings.FromRecord(rule.Id, rule.Name, rule.SearchKey, rule.SearchFunctionKey,
                 rule.SearchFunctionTypeId, rule.SearchInterval, rule.SearchValue, rule.Offset, rule.OffsetTypeId,
-                rule.OffsetValue);
+                rule.OffsetValue, rule.IterationOrderId,
+                AggregationParameters.Write(rule.SearchFunctionParameters));
 
             if (searchKeyXPath.SearchKeyCache == 1)
             {

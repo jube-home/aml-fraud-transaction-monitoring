@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>ليست لديك صلاحية لتنفيذ هذا الإجراء.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>يجب تسجيل الدخول إلى مستأجر لتنفيذ هذا الإجراء.</value>
+  </data>
+    <data name="ModelNotFound" xml:space="preserve">
+    <value>لم يتم العثور على نموذج تحليل الكيانات.</value>
+  </data>
+    <data name="EntityNotFound" xml:space="preserve">
+    <value>لم يتم العثور على ⁨{0}⁩ بالمعرّف ⁨{1}⁩ في هذا النموذج.</value>
+  </data>
+    <data name="Title_DependencyDangling" xml:space="preserve">
+    <value>يستخدم اسمًا غير موجود</value>
+  </data>
+    <data name="Title_DependencyOnInactive" xml:space="preserve">
+    <value>يستخدم كيانًا غير نشط</value>
+  </data>
+    <data name="Title_DependencyOnUnapproved" xml:space="preserve">
+    <value>يستخدم كيانًا لم تتم الموافقة عليه بعد</value>
+  </data>
+    <data name="Title_EntityPendingApproval" xml:space="preserve">
+    <value>تم تغييره وينتظر الموافقة</value>
+  </data>
+    <data name="Title_EntityUnreferenced" xml:space="preserve">
+    <value>غير مستخدم من أي شيء</value>
+  </data>
+    <data name="Title_EngineCompileFailed" xml:space="preserve">
+    <value>لم تتم الترجمة البرمجية في المحرك</value>
+  </data>
+    <data name="Title_ModelInactive" xml:space="preserve">
+    <value>النموذج غير نشط</value>
+  </data>
+    <data name="Title_NoActiveActivationRules" xml:space="preserve">
+    <value>لا توجد قواعد تفعيل نشطة</value>
+  </data>
+    <data name="Title_TtlCountersDisabled" xml:space="preserve">
+    <value>عدّادات TTL معطّلة</value>
+  </data>
+    <data name="Title_SearchKeyTtlShortensWindow" xml:space="preserve">
+    <value>سجل مفتاح البحث أقصر من نافذة القاعدة</value>
+  </data>
+    <data name="Title_SearchKeyTtlCollapsesWindow" xml:space="preserve">
+    <value>مفتاح البحث لا يحتفظ بسجل لنافذة القاعدة</value>
+  </data>
+    <data name="Title_EngineStateUnavailable" xml:space="preserve">
+    <value>حالة المحرك غير متاحة</value>
+  </data>
+    <data name="Title_EngineNoNodes" xml:space="preserve">
+    <value>لم تقم أي نسخة من المحرك بالمزامنة</value>
+  </data>
+    <data name="Title_EngineNodeStale" xml:space="preserve">
+    <value>توقفت نسخة المحرك عن الإبلاغ</value>
+  </data>
+    <data name="Title_EngineModelNotLoaded" xml:space="preserve">
+    <value>النموذج غير محمّل بواسطة نسخة المحرك</value>
+  </data>
+    <data name="Title_EngineModelNotStarted" xml:space="preserve">
+    <value>النموذج محمّل ولكن لم يبدأ</value>
+  </data>
+    <data name="Title_EngineEntityNotLoaded" xml:space="preserve">
+    <value>غير محمّل بواسطة نسخة المحرك</value>
+  </data>
+    <data name="Title_EngineEntityStale" xml:space="preserve">
+    <value>لا يزال المحرك يشغّل كيانًا لم يعد نشطًا</value>
+  </data>
+    <data name="Message_DependencyDanglingActiveRuleText" xml:space="preserve">
+    <value>نص القاعدة في ⁨{0}⁩ ⁨{1}⁩ يسمّي ⁨{2}⁩ وهو غير موجود، لذا لن يعمل.</value>
+  </data>
+    <data name="Message_DependencyDanglingInactiveRuleText" xml:space="preserve">
+    <value>نص القاعدة في ⁨{0}⁩ ⁨{1}⁩ يسمّي ⁨{2}⁩ وهو غير موجود؛ وهو غير نشط، لذا لا يهم ذلك إلا عند تفعيله.</value>
+  </data>
+    <data name="Message_DependencyDanglingActiveSetting" xml:space="preserve">
+    <value>إعداد ⁨{0}⁩ في ⁨{1}⁩ ⁨{2}⁩ يسمّي ⁨{3}⁩ وهو غير موجود، لذا لن يعمل.</value>
+  </data>
+    <data name="Message_DependencyDanglingInactiveSetting" xml:space="preserve">
+    <value>إعداد ⁨{0}⁩ في ⁨{1}⁩ ⁨{2}⁩ يسمّي ⁨{3}⁩ وهو غير موجود؛ وهو غير نشط، لذا لا يهم ذلك إلا عند تفعيله.</value>
+  </data>
+    <data name="Message_DependencyOnInactiveRuleText" xml:space="preserve">
+    <value>نص القاعدة في ⁨{0}⁩ ⁨{1}⁩ يستخدم ⁨{2}⁩ ⁨{3}⁩ وهو غير نشط، لذا لا يحمّله المحرك ولن يعمل هذا الاستخدام.</value>
+  </data>
+    <data name="Message_DependencyOnInactiveSetting" xml:space="preserve">
+    <value>إعداد ⁨{0}⁩ في ⁨{1}⁩ ⁨{2}⁩ يستخدم ⁨{3}⁩ ⁨{4}⁩ وهو غير نشط، لذا لا يحمّله المحرك ولن يعمل هذا الاستخدام.</value>
+  </data>
+    <data name="Message_DependencyOnUnapprovedRuleText" xml:space="preserve">
+    <value>نص القاعدة في ⁨{0}⁩ ⁨{1}⁩ يستخدم ⁨{2}⁩ ⁨{3}⁩ لم تتم الموافقة عليه بعد، لذا لا يشغّله المحرك ولن يعمل هذا الاستخدام حتى تتم الموافقة.</value>
+  </data>
+    <data name="Message_DependencyOnUnapprovedSetting" xml:space="preserve">
+    <value>إعداد ⁨{0}⁩ في ⁨{1}⁩ ⁨{2}⁩ يستخدم ⁨{3}⁩ ⁨{4}⁩ لم تتم الموافقة عليه بعد، لذا لا يشغّله المحرك ولن يعمل هذا الاستخدام حتى تتم الموافقة.</value>
+  </data>
+    <data name="Message_EntityUnreferenced" xml:space="preserve">
+    <value>⁨{0}⁩ ⁨{1}⁩ نشط لكن لا شيء في النموذج يستخدمه.</value>
+  </data>
+    <data name="Message_EngineCompileFailed" xml:space="preserve">
+    <value>تعذّرت على المحرك ترجمة ⁨{0}⁩ ⁨{1}⁩ عند آخر مزامنة، لذا فهو لا يعمل: ⁨{2}⁩.</value>
+  </data>
+    <data name="Message_EngineCompileFailedNoError" xml:space="preserve">
+    <value>تعذّرت على المحرك ترجمة ⁨{0}⁩ ⁨{1}⁩ عند آخر مزامنة، لذا فهو لا يعمل: لم يُسجَّل أي خطأ.</value>
+  </data>
+    <data name="Message_ModelInactive" xml:space="preserve">
+    <value>النموذج غير نشط، لذا لا يحمّله المحرك ولا يستدعيه.</value>
+  </data>
+    <data name="Message_NoActiveActivationRules" xml:space="preserve">
+    <value>لا توجد في النموذج قواعد تفعيل نشطة، لذا لا يمكن لأي معاملة أن تُفعَّل.</value>
+  </data>
+    <data name="Message_TtlCountersDisabled" xml:space="preserve">
+    <value>عدّادات TTL معطّلة للنموذج، لذا لا يزيد المحرك ⁨{0}⁩ ولا يقرؤه؛ وترى القواعد القيمة 0.</value>
+  </data>
+    <data name="Message_SearchKeyTtlCollapsesWindow" xml:space="preserve">
+    <value>مفتاح البحث ⁨{0}⁩ بلا TTL، لذا يقصر المحرك نافذة ⁨{1}⁩ ⁨{2}⁩ لقاعدة التجريد على تاريخ المرجع وحده فلا يجمع تقريبًا أي شيء.</value>
+  </data>
+    <data name="Message_SearchKeyTtlShortensWindow" xml:space="preserve">
+    <value>يحتفظ مفتاح البحث ⁨{0}⁩ بالسجل لمدة ⁨{1}⁩ ⁨{2}⁩، وهي أقصر من ⁨{3}⁩ ⁨{4}⁩ للقاعدة، لذا يستخدم المحرك النافذة الأقصر بصمت.</value>
+  </data>
+    <data name="Message_EngineStateUnavailable" xml:space="preserve">
+    <value>لا يعمل أي محرك في هذه العملية ولم يسجّل أي محرك ما حمّله لهذا النموذج، لذا لا يمكن التحقق مما يشغّله المحرك.</value>
+  </data>
+    <data name="Message_EngineNoNodes" xml:space="preserve">
+    <value>لم تقم أي نسخة من المحرك بمزامنة نماذج هذا المستأجر.</value>
+  </data>
+    <data name="Message_EngineNodeStale" xml:space="preserve">
+    <value>آخر إبلاغ من نسخة المحرك ⁨{0}⁩ كان في ⁨{1}⁩ وهي لا تعمل. ستُزال عند المزامنة التالية، أو تسقط من هذه القائمة في ⁨{2}⁩ إذا لم تجرِ مزامنة.</value>
+  </data>
+    <data name="Message_EngineModelNotStarted" xml:space="preserve">
+    <value>نسخة المحرك ⁨{0}⁩ حمّلت النموذج لكنها لم تبدأه.</value>
+  </data>
+    <data name="Message_EntityPendingApprovalWaiting" xml:space="preserve">
+    <value>⁨{0}⁩ ⁨{1}⁩ ينتظر الموافقة، لذا لا تشغّله نسخة المحرك ⁨{2}⁩ بعد.</value>
+  </data>
+    <data name="Message_EntityPendingApprovalChanged" xml:space="preserve">
+    <value>⁨{0}⁩ ⁨{1}⁩ له تغيير ينتظر الموافقة، لذا لا تزال نسخة المحرك ⁨{2}⁩ تشغّل آخر إصدار تمت الموافقة عليه.</value>
+  </data>
+    <data name="Message_EngineEntityNotLoaded" xml:space="preserve">
+    <value>⁨{0}⁩ ⁨{1}⁩ معتمد ونشط لكن نسخة المحرك ⁨{2}⁩ لم تحمّله: زامن النموذج وتحقق من أنه يُترجم بنجاح.</value>
+  </data>
+    <data name="Message_EngineEntityStale" xml:space="preserve">
+    <value>لا تزال نسخة المحرك ⁨{0}⁩ تشغّل ⁨{1}⁩ ⁨{2}⁩ الذي لم يعد نشطًا؛ زامن النموذج لإلغاء تحميله.</value>
+  </data>
+    <data name="Message_EngineModelNotLoaded" xml:space="preserve">
+    <value>لم تحمّل نسخة المحرك ⁨{0}⁩ النموذج؛ زامنه.</value>
+  </data>
+</root>

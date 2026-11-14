@@ -669,7 +669,9 @@ namespace Jube.Test.Security.QueryExhaustive
                 run.Expect(!text.Contains("evil.example", StringComparison.Ordinal), response, "HEADER-REFLECTED",
                     header.Name);
 
-                if (response.Status == 200 && header.Name is not ("Range" or "Cookie" or "Host"))
+                if (response.Status == 200 && header.Name is not ("Range" or "Cookie" or "Host") &&
+                !(header.Name == "Accept-Encoding" && response.Headers.Any(h =>
+                    h.Key.Equals("Content-Encoding", StringComparison.OrdinalIgnoreCase))))
                 {
                     run.Expect(Same(response, baseline), response, "HEADER-CHANGES-RESULT", header.Name);
                     CheckSvg(run, response, "HEADER");

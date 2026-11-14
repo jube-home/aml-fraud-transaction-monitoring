@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double HerfindahlWith(this double @this, params double[] others)
+        [Description("How concentrated the total is in a few of the value and the others, from 1 over the count to 1.")]
+        public static double HerfindahlWith(this double @this,
+            [Description("The other numbers.")] params double[] others)
         {
             return CalculationSupport.Herfindahl(@this, others);
         }

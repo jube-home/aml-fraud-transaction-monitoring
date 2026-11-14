@@ -139,9 +139,9 @@ namespace Jube.Test.AskJooby
             var query = new SearchAskJoobyMemoryQuery(dbContext);
 
             await repository.InsertAsync(
-                "The Piecrust Redis extension supports hash expiry directly.", (byte)AskJoobyMemoryScope.System, null);
+                "The Piecrust RESP extension supports hash expiry directly.", (byte)AskJoobyMemoryScope.System, null);
 
-            var asDave = await query.ExecuteAsync("piecrust redis", string.Empty, tenantId, "dave", 10);
+            var asDave = await query.ExecuteAsync("piecrust resp", string.Empty, tenantId, "dave", 10);
 
             asDave.Should().ContainSingle(m => m.CreatedUser == "bob" && m.ScopeId == (byte)AskJoobyMemoryScope.System,
                 "System scope is deliberately shared tenant-wide, even to a user who created nothing");

@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchRatioAbove(double denominator, double threshold)
+            [Description("True when: the value divided by the denominator is above the threshold. A zero denominator is false. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRatioAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The threshold the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleRatioAbove(flow.Value, denominator, threshold));
             }
 
-            public Flow<double> RejectRatioAbove(double denominator, double threshold)
+            [Description("True when: the value divided by the denominator is above the threshold. A zero denominator is false. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRatioAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The threshold the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleRatioAbove(flow.Value, denominator, threshold));
             }
 
-            public Flow<double> BreakRatioAbove(double denominator, double threshold)
+            [Description("True when: the value divided by the denominator is above the threshold. A zero denominator is false. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRatioAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The threshold the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleRatioAbove(flow.Value, denominator, threshold));
             }
 
-            public Flow<double> RequireRatioAbove(double denominator, double threshold)
+            [Description("True when: the value divided by the denominator is above the threshold. A zero denominator is false. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRatioAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The threshold the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleRatioAbove(flow.Value, denominator, threshold));
             }
 
-            public Flow<double> EnsureRatioAbove(double denominator, double threshold)
+            [Description("True when: the value divided by the denominator is above the threshold. A zero denominator is false. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRatioAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The threshold the value is tested against.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchRatioAbove(double denominator, double threshold)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is above the threshold. A zero denominator is false. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRatioAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The threshold the value is tested against.")] double threshold)
             {
                 return value.Start().MatchRatioAbove(denominator, threshold);
             }
 
-            public Flow<double> RejectRatioAbove(double denominator, double threshold)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is above the threshold. A zero denominator is false. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRatioAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The threshold the value is tested against.")] double threshold)
             {
                 return value.Start().RejectRatioAbove(denominator, threshold);
             }
 
-            public Flow<double> BreakRatioAbove(double denominator, double threshold)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is above the threshold. A zero denominator is false. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRatioAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The threshold the value is tested against.")] double threshold)
             {
                 return value.Start().BreakRatioAbove(denominator, threshold);
             }
 
-            public Flow<double> RequireRatioAbove(double denominator, double threshold)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is above the threshold. A zero denominator is false. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRatioAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The threshold the value is tested against.")] double threshold)
             {
                 return value.Start().RequireRatioAbove(denominator, threshold);
             }
 
-            public Flow<double> EnsureRatioAbove(double denominator, double threshold)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is above the threshold. A zero denominator is false. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRatioAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The threshold the value is tested against.")] double threshold)
             {
                 return value.Start().EnsureRatioAbove(denominator, threshold);
             }

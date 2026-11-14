@@ -36,6 +36,7 @@ using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using Jube.Test.Service.Query.CaseWorkflowMacroExecution.Models;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -62,7 +63,11 @@ namespace Jube.Test.Service.Query.CaseWorkflowMacroExecution
                                                           "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=postgres;Pooling=true;MinPoolSize=1;MaxPoolSize=50;";
 
         private static readonly JubeDynamicEnvironment dynamicEnvironment = TestDynamicEnvironment.Create(
-            new Dictionary<string, string> { ["ConnectionString"] = connectionString });
+            new Dictionary<string, string>
+            {
+                ["ConnectionString"] = connectionString,
+                [Jube.Case.Outbound.OutboundHostPolicy.AllowedCidrsKey] = Jube.Test.Infrastructure.LoopbackAllowed.Cidrs
+            });
 
         private static readonly EngineJsonSerializationHelper jsonSerializationHelper = new();
         private readonly List<int> createdCaseIds = [];
@@ -76,6 +81,8 @@ namespace Jube.Test.Service.Query.CaseWorkflowMacroExecution
         {
             await using var dbContext = fx.GetDbContext();
 
+            await dbContext.GetTable<Data.Poco.CaseWorkflowDispatch>()
+                .Where(w => w.CaseId != null && createdCaseIds.Contains(w.CaseId.Value)).DeleteAsync();
             await dbContext.Case.Where(w => createdCaseIds.Contains(w.Id)).DeleteAsync();
 
             var macroGuids = dbContext.CaseWorkflowMacro.Where(s => createdMacroIds.Contains(s.Id))
@@ -115,7 +122,8 @@ namespace Jube.Test.Service.Query.CaseWorkflowMacroExecution
 
         private async Task<Seeded> SeedAsync(DbContext dbContext, string ownerUser, string? endpoint = null,
             byte httpEndpointTypeId = 1, string? workflowRoleUser = null, string? statusRoleUser = null,
-            string? macroRoleUser = null, bool macroActive = true, string? caseJson = null)
+            string? macroRoleUser = null, bool macroActive = true, string? caseJson = null, string? sql = null,
+            string? notificationDestination = null)
         {
             var modelRepository = new EntityAnalysisModelRepository(dbContext, ownerUser);
 
@@ -200,7 +208,12 @@ namespace Jube.Test.Service.Query.CaseWorkflowMacroExecution
                 EnableHttpEndpoint = (byte)(endpoint == null ? 0 : 1),
                 HttpEndpoint = endpoint,
                 HttpEndpointTypeId = httpEndpointTypeId,
-                EnableNotification = 0,
+                EnableNotification = (byte)(notificationDestination == null ? 0 : 1),
+                NotificationTypeId = 1,
+                NotificationDestination = notificationDestination,
+                NotificationSubject = "Case [@ rows[0].ckv @]",
+                NotificationBody = "Body [@ rows[0].ckv @]",
+                Sql = sql,
                 CreatedUser = ownerUser,
                 CreatedDate = DateTime.UtcNow,
             });
@@ -419,6 +432,22 @@ namespace Jube.Test.Service.Query.CaseWorkflowMacroExecution
         }
 
         [Fact]
+        public async Task ExecuteMacroOfAnotherWorkflowThrowsNotFoundAndCallsNothingAsync()
+        {
+            using var hook = new Hook();
+            await using var dbContext = fx.GetDbContext();
+            var user = fx.Seed.UserWithPermission;
+            var seeded = await SeedAsync(dbContext, user, hook.BaseUrl + "hook");
+            var other = await SeedAsync(dbContext, user, hook.BaseUrl + "hook");
+            var service = await BuildServiceAsync(dbContext, user);
+
+            await Assert.ThrowsAsync<NotFoundException>(() => service.ExecuteAsync(
+                new CaseWorkflowMacroExecutionDto { CaseId = seeded.CaseId, CaseWorkflowMacroId = other.MacroId }));
+
+            hook.Snapshot().Should().BeEmpty();
+        }
+
+        [Fact]
         public async Task ExecuteAcrossTenantsBehavesAsNotFoundInBothDirectionsAsync()
         {
             using var hook = new Hook();
@@ -486,6 +515,142 @@ namespace Jube.Test.Service.Query.CaseWorkflowMacroExecution
             var dto = await service.ExecuteAsync(Request(seeded));
 
             dto.CaseId.Should().Be(seeded.CaseId);
+        }
+
+        [Fact]
+        public async Task ExecuteInSqlModePostsTheRowsAndAuditsTheCallAsync()
+        {
+            using var hook = new Hook();
+            await using var dbContext = fx.GetDbContext();
+            var user = fx.Seed.UserWithPermission;
+            var seeded = await SeedAsync(dbContext, user, hook.BaseUrl + "case/[@ rows[0].caseid @]",
+                sql: "select \"CaseKeyValue\" as ckv, \"Id\" as caseid from \"Case\" where \"Id\" = @Id");
+            var service = await BuildServiceAsync(dbContext, user);
+
+            await service.ExecuteAsync(Request(seeded));
+
+            var received = hook.Snapshot().Should().ContainSingle().Subject;
+
+            received.Path.Should().Be($"/case/{seeded.CaseId}");
+            JObject.Parse(received.Body)["rows"]![0]!["caseid"]!.Value<int>().Should().Be(seeded.CaseId);
+            JObject.Parse(received.Body)["source"]!.Value<string>().Should().Be("macro");
+
+            var audit = await dbContext.GetTable<Data.Poco.CaseWorkflowDispatch>()
+                .SingleAsync(d => d.CaseId == seeded.CaseId);
+
+            audit.OutcomeId.Should().Be(1);
+            audit.ModeId.Should().Be(2);
+            audit.ChannelId.Should().Be(3);
+            audit.SourceKindId.Should().Be(2);
+            audit.ResponseStatus.Should().Be(200);
+            audit.Destination.Should().EndWith($"/case/{seeded.CaseId}");
+            audit.Rows.Should().Contain("caseid");
+        }
+
+        [Fact]
+        public async Task ExecuteInSqlModeRefusesAnEndpointWhoseHostComesFromTheRowsAsync()
+        {
+            using var hook = new Hook();
+            await using var dbContext = fx.GetDbContext();
+            var user = fx.Seed.UserWithPermission;
+            var seeded = await SeedAsync(dbContext, user, "http://[@ rows[0].ckv @]/x",
+                sql: "select \"CaseKeyValue\" as ckv from \"Case\" where \"Id\" = @Id");
+            var service = await BuildServiceAsync(dbContext, user);
+
+            await service.ExecuteAsync(Request(seeded));
+
+            hook.Snapshot().Should().BeEmpty();
+
+            var audit = await dbContext.GetTable<Data.Poco.CaseWorkflowDispatch>()
+                .SingleAsync(d => d.CaseId == seeded.CaseId);
+
+            audit.OutcomeId.Should().Be(3);
+            audit.Detail.Should().Contain("authorityNotLiteral");
+        }
+
+        [Fact]
+        public async Task ExecuteInSqlModeRefusesEveryChannelWhenTheSqlFailsAsync()
+        {
+            using var hook = new Hook();
+            await using var dbContext = fx.GetDbContext();
+            var user = fx.Seed.UserWithPermission;
+            var seeded = await SeedAsync(dbContext, user, hook.BaseUrl + "hook", notificationDestination: "a@b.io",
+                sql: "select count(*) from \"UserRegistry\"");
+            var service = await BuildServiceAsync(dbContext, user);
+
+            await service.ExecuteAsync(Request(seeded));
+
+            hook.Snapshot().Should().BeEmpty();
+
+            var audits = await dbContext.GetTable<Data.Poco.CaseWorkflowDispatch>()
+                .Where(d => d.CaseId == seeded.CaseId).ToListAsync();
+
+            audits.Should().HaveCount(2).And.OnlyContain(a => a.OutcomeId == 3 && a.ModeId == 2);
+            audits.Select(a => a.ChannelId).Should().BeEquivalentTo(new byte?[] { 1, 3 });
+        }
+
+        [Fact]
+        public async Task ExecuteInSqlModeRefusesAnEmailDestinationThatIsNotAnAddressAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var user = fx.Seed.UserWithPermission;
+            var seeded = await SeedAsync(dbContext, user, notificationDestination: "[@ rows[0].ckv @]",
+                sql: "select \"CaseKeyValue\" as ckv from \"Case\" where \"Id\" = @Id");
+            var service = await BuildServiceAsync(dbContext, user);
+
+            await service.ExecuteAsync(Request(seeded));
+
+            var audit = await dbContext.GetTable<Data.Poco.CaseWorkflowDispatch>()
+                .SingleAsync(d => d.CaseId == seeded.CaseId);
+
+            audit.OutcomeId.Should().Be(3);
+            audit.ChannelId.Should().Be(1);
+            audit.Subject.Should().StartWith("Case ").And.Contain(DatabaseFixture.Prefix);
+            audit.Body.Should().Contain("Body ");
+            audit.Detail.Should().Contain("email addresses");
+        }
+
+        [Fact]
+        public async Task ExecuteInPayloadModeAuditsTheEarlierCallAsync()
+        {
+            using var hook = new Hook();
+            await using var dbContext = fx.GetDbContext();
+            var user = fx.Seed.UserWithPermission;
+            var seeded = await SeedAsync(dbContext, user, hook.BaseUrl + "hook");
+            var service = await BuildServiceAsync(dbContext, user);
+
+            await service.ExecuteAsync(Request(seeded));
+
+            hook.Snapshot().Should().ContainSingle();
+
+            var audit = await dbContext.GetTable<Data.Poco.CaseWorkflowDispatch>()
+                .SingleAsync(d => d.CaseId == seeded.CaseId);
+
+            audit.OutcomeId.Should().Be(1);
+            audit.ModeId.Should().Be(1);
+            audit.Rows.Should().BeNull();
+            audit.Body.Should().NotBeNullOrWhiteSpace();
+        }
+
+        [Fact]
+        public async Task ExecuteAuditsAFailedCallWithoutRaisingAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var user = fx.Seed.UserWithPermission;
+            var probe = new TcpListener(IPAddress.Loopback, 0);
+            probe.Start();
+            var port = ((IPEndPoint)probe.LocalEndpoint).Port;
+            probe.Stop();
+            var seeded = await SeedAsync(dbContext, user, $"http://127.0.0.1:{port}/nobody-home");
+            var service = await BuildServiceAsync(dbContext, user);
+
+            await service.ExecuteAsync(Request(seeded));
+
+            var audit = await dbContext.GetTable<Data.Poco.CaseWorkflowDispatch>()
+                .SingleAsync(d => d.CaseId == seeded.CaseId);
+
+            audit.OutcomeId.Should().Be(2);
+            audit.Detail.Should().NotBeNullOrWhiteSpace();
         }
 
         [Fact]

@@ -21,5 +21,7 @@ namespace Jube.Dto.Forms
     public sealed class FormEndpointAttribute(string area) : Attribute
     {
         public string Area { get; } = area;
+
+        public FormOperations Operations { get; init; } = FormOperations.All;
     }
 }

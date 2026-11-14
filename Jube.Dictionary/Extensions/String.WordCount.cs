@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Number of whitespace-separated words.")]
         public static int WordCount(this string? @this)
         {
             return (@this ?? "").Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries).Length;

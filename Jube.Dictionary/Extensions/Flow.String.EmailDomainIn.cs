@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchEmailDomainIn(params string[] domains)
+            [Description("True when: the domain of the email is one of the listed domains. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchEmailDomainIn([Description("The domains the email's domain is compared with.")] params string[] domains)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringEmailDomainIn(flow.Value, domains));
             }
 
-            public Flow<string?> RejectEmailDomainIn(params string[] domains)
+            [Description("True when: the domain of the email is one of the listed domains. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectEmailDomainIn([Description("The domains the email's domain is compared with.")] params string[] domains)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringEmailDomainIn(flow.Value, domains));
             }
 
-            public Flow<string?> BreakEmailDomainIn(params string[] domains)
+            [Description("True when: the domain of the email is one of the listed domains. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakEmailDomainIn([Description("The domains the email's domain is compared with.")] params string[] domains)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringEmailDomainIn(flow.Value, domains));
             }
 
-            public Flow<string?> RequireEmailDomainIn(params string[] domains)
+            [Description("True when: the domain of the email is one of the listed domains. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireEmailDomainIn([Description("The domains the email's domain is compared with.")] params string[] domains)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringEmailDomainIn(flow.Value, domains));
             }
 
-            public Flow<string?> EnsureEmailDomainIn(params string[] domains)
+            [Description("True when: the domain of the email is one of the listed domains. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureEmailDomainIn([Description("The domains the email's domain is compared with.")] params string[] domains)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchEmailDomainIn(params string[] domains)
+            [Description("Begins a pipeline from the value. True when: the domain of the email is one of the listed domains. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchEmailDomainIn([Description("The domains the email's domain is compared with.")] params string[] domains)
             {
                 return value.Start().MatchEmailDomainIn(domains);
             }
 
-            public Flow<string?> RejectEmailDomainIn(params string[] domains)
+            [Description("Begins a pipeline from the value. True when: the domain of the email is one of the listed domains. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectEmailDomainIn([Description("The domains the email's domain is compared with.")] params string[] domains)
             {
                 return value.Start().RejectEmailDomainIn(domains);
             }
 
-            public Flow<string?> BreakEmailDomainIn(params string[] domains)
+            [Description("Begins a pipeline from the value. True when: the domain of the email is one of the listed domains. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakEmailDomainIn([Description("The domains the email's domain is compared with.")] params string[] domains)
             {
                 return value.Start().BreakEmailDomainIn(domains);
             }
 
-            public Flow<string?> RequireEmailDomainIn(params string[] domains)
+            [Description("Begins a pipeline from the value. True when: the domain of the email is one of the listed domains. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireEmailDomainIn([Description("The domains the email's domain is compared with.")] params string[] domains)
             {
                 return value.Start().RequireEmailDomainIn(domains);
             }
 
-            public Flow<string?> EnsureEmailDomainIn(params string[] domains)
+            [Description("Begins a pipeline from the value. True when: the domain of the email is one of the listed domains. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureEmailDomainIn([Description("The domains the email's domain is compared with.")] params string[] domains)
             {
                 return value.Start().EnsureEmailDomainIn(domains);
             }

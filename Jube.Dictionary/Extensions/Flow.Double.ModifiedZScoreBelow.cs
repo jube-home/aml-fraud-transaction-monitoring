@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchModifiedZScoreBelow(double median, double medianAbsoluteDeviation, double bound)
+            [Description("True when: a robust z-score from the median and the median absolute deviation, unmoved by outliers is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchModifiedZScoreBelow([Description("The median the value is measured from.")] double median,
+                [Description("The median absolute deviation the distance is measured in.")] double medianAbsoluteDeviation,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleModifiedZScoreBelow(flow.Value, median, medianAbsoluteDeviation, bound));
             }
 
-            public Flow<double> RejectModifiedZScoreBelow(double median, double medianAbsoluteDeviation, double bound)
+            [Description("True when: a robust z-score from the median and the median absolute deviation, unmoved by outliers is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectModifiedZScoreBelow([Description("The median the value is measured from.")] double median,
+                [Description("The median absolute deviation the distance is measured in.")] double medianAbsoluteDeviation,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleModifiedZScoreBelow(flow.Value, median, medianAbsoluteDeviation, bound));
             }
 
-            public Flow<double> BreakModifiedZScoreBelow(double median, double medianAbsoluteDeviation, double bound)
+            [Description("True when: a robust z-score from the median and the median absolute deviation, unmoved by outliers is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakModifiedZScoreBelow([Description("The median the value is measured from.")] double median,
+                [Description("The median absolute deviation the distance is measured in.")] double medianAbsoluteDeviation,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleModifiedZScoreBelow(flow.Value, median, medianAbsoluteDeviation, bound));
             }
 
-            public Flow<double> RequireModifiedZScoreBelow(double median, double medianAbsoluteDeviation, double bound)
+            [Description("True when: a robust z-score from the median and the median absolute deviation, unmoved by outliers is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireModifiedZScoreBelow([Description("The median the value is measured from.")] double median,
+                [Description("The median absolute deviation the distance is measured in.")] double medianAbsoluteDeviation,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleModifiedZScoreBelow(flow.Value, median, medianAbsoluteDeviation, bound));
             }
 
-            public Flow<double> EnsureModifiedZScoreBelow(double median, double medianAbsoluteDeviation, double bound)
+            [Description("True when: a robust z-score from the median and the median absolute deviation, unmoved by outliers is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureModifiedZScoreBelow([Description("The median the value is measured from.")] double median,
+                [Description("The median absolute deviation the distance is measured in.")] double medianAbsoluteDeviation,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchModifiedZScoreBelow(double median, double medianAbsoluteDeviation, double bound)
+            [Description("Begins a pipeline from the value. True when: a robust z-score from the median and the median absolute deviation, unmoved by outliers is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchModifiedZScoreBelow([Description("The median the value is measured from.")] double median,
+                [Description("The median absolute deviation the distance is measured in.")] double medianAbsoluteDeviation,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchModifiedZScoreBelow(median, medianAbsoluteDeviation, bound);
             }
 
-            public Flow<double> RejectModifiedZScoreBelow(double median, double medianAbsoluteDeviation, double bound)
+            [Description("Begins a pipeline from the value. True when: a robust z-score from the median and the median absolute deviation, unmoved by outliers is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectModifiedZScoreBelow([Description("The median the value is measured from.")] double median,
+                [Description("The median absolute deviation the distance is measured in.")] double medianAbsoluteDeviation,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectModifiedZScoreBelow(median, medianAbsoluteDeviation, bound);
             }
 
-            public Flow<double> BreakModifiedZScoreBelow(double median, double medianAbsoluteDeviation, double bound)
+            [Description("Begins a pipeline from the value. True when: a robust z-score from the median and the median absolute deviation, unmoved by outliers is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakModifiedZScoreBelow([Description("The median the value is measured from.")] double median,
+                [Description("The median absolute deviation the distance is measured in.")] double medianAbsoluteDeviation,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakModifiedZScoreBelow(median, medianAbsoluteDeviation, bound);
             }
 
-            public Flow<double> RequireModifiedZScoreBelow(double median, double medianAbsoluteDeviation, double bound)
+            [Description("Begins a pipeline from the value. True when: a robust z-score from the median and the median absolute deviation, unmoved by outliers is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireModifiedZScoreBelow([Description("The median the value is measured from.")] double median,
+                [Description("The median absolute deviation the distance is measured in.")] double medianAbsoluteDeviation,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireModifiedZScoreBelow(median, medianAbsoluteDeviation, bound);
             }
 
-            public Flow<double> EnsureModifiedZScoreBelow(double median, double medianAbsoluteDeviation, double bound)
+            [Description("Begins a pipeline from the value. True when: a robust z-score from the median and the median absolute deviation, unmoved by outliers is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureModifiedZScoreBelow([Description("The median the value is measured from.")] double median,
+                [Description("The median absolute deviation the distance is measured in.")] double medianAbsoluteDeviation,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureModifiedZScoreBelow(median, medianAbsoluteDeviation, bound);
             }

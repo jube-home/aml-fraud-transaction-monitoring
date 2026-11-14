@@ -6,6 +6,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Extracts all Int64 from the string.")]
         public static long[] ExtractManyInt64(this string @this)
         {
             return Regex.Matches(@this, @"[-]?\d+")

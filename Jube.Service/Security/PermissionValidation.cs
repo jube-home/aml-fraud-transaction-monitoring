@@ -37,6 +37,9 @@ namespace Jube.Service.Security
         }
 
         public bool Landlord => dto.Landlord;
+        public bool ActiveUser => dto.ActiveUser;
         public bool Validate(int[] specs) => specs.Any(s => dto.Permissions.Contains(s));
+        public bool Holds(int spec) => dto.Permissions.Contains(spec);
+        public bool HoldsAll(IEnumerable<int> specs) => specs.All(s => dto.Permissions.Contains(s));
     }
 }

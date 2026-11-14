@@ -22,16 +22,24 @@ namespace Jube.Case
             string notificationBody, CancellationToken token = default
         )
         {
+            await TrySendAsync(notificationType, notificationDestination, notificationSubject, notificationBody, true,
+                token).ConfigureAwait(false);
+        }
+
+        public async Task<DispatchResult> TrySendAsync(int notificationType, string notificationDestination,
+            string notificationSubject, string notificationBody, bool decodeBody, CancellationToken token = default)
+        {
             if (notificationType == 1)
             {
                 var sendMail = new SendMail(dynamicEnvironment, log);
-                sendMail.Send(notificationDestination, notificationSubject, notificationBody);
+
+                return sendMail.TrySend(notificationDestination, notificationSubject, notificationBody, decodeBody);
             }
-            else
-            {
-                var sendSms = new SendSms(dynamicEnvironment, log);
-                await sendSms.SendAsync(notificationDestination, notificationBody, token);
-            }
+
+            var sendSms = new SendSms(dynamicEnvironment, log);
+
+            return await sendSms.TrySendAsync(notificationDestination, notificationBody, token)
+                .ConfigureAwait(false);
         }
     }
 }

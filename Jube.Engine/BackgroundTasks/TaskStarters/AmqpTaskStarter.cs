@@ -14,129 +14,36 @@
 namespace Jube.Engine.BackgroundTasks.TaskStarters
 {
     using System;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
-    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using Context;
     using EntityAnalysisModelInvoke;
-    using EntityAnalysisModelManager.EntityAnalysisModel;
-    using RabbitMQ.Client;
-    using RabbitMQ.Client.Events;
+    using InboundQueue;
 
     public class AmqpTaskStarter(Context context)
     {
-        private readonly IModel channel = context.Services.RabbitMqConnection.CreateModel();
-        private EventingBasicConsumer consumer;
-        private string consumerTag;
-        private int inFlight;
+        public const string QueueName = "jubeInbound";
+
+        private readonly RabbitMQ.Client.IModel channel = context.Services.RabbitMqConnection.CreateModel();
 
         public async Task StartAsync()
         {
             try
             {
-                channel.QueueDeclare("jubeInbound", false, false, false, null);
+                var environment = context.Services.DynamicEnvironment;
 
-                consumer = new EventingBasicConsumer(channel);
+                var consumer = new AmqpInboundConsumer(channel, context.Services.Log, QueueName,
+                    "True".Equals(environment.AppSettings("AmqpInboundQueueDurable"),
+                        StringComparison.OrdinalIgnoreCase),
+                    ushort.Parse(environment.AppSettings("AmqpPrefetch"), CultureInfo.InvariantCulture),
+                    () => context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels
+                        .EntityModelsHasLoadedForStartup,
+                    StateOf, InvokeAsync, context.Services.TaskCoordinator.CancellationToken);
 
-                consumer.Received += (o, ea) =>
-                {
-                    Interlocked.Increment(ref inFlight);
-
-                    _ = Task.Run(async () =>
-                    {
-                        try
-                        {
-                            if (context.Services.TaskCoordinator.CancellationToken.IsCancellationRequested)
-                            {
-                                context.Services.Log.Info(
-                                    "Cancellation requested before processing message; requeueing.");
-
-                                return;
-                            }
-
-                            if (context.Services.Log.IsInfoEnabled)
-                            {
-                                context.Services.Log.Info("AMQP Inbound: Received message, checking headers.");
-                            }
-
-                            if (ea.BasicProperties.Headers == null)
-                            {
-                                context.Services.Log.Info("AMQP Inbound: Header is null, rejecting message.");
-
-                                return;
-                            }
-
-                            if (!ea.BasicProperties.Headers.TryGetValue("EntityAnalysisModelGuid", out var header))
-                            {
-                                context.Services.Log.Info(
-                                    "AMQP Inbound: EntityAnalysisModelGuid header missing, rejecting message.");
-
-                                return;
-                            }
-
-                            var entityAnalysisModelGuid = Encoding.UTF8.GetString((byte[])header);
-                            EntityAnalysisModel entityAnalysisModel = null;
-
-                            foreach (var (_, value) in
-                                     from modelKvp in context.Tasks.EntityAnalysisModelManager.Context
-                                         .EntityAnalysisModels.ActiveEntityAnalysisModels
-                                     where entityAnalysisModelGuid == modelKvp.Value.Instance.Guid.ToString()
-                                     select modelKvp)
-                            {
-                                if (!context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels
-                                        .EntityModelsHasLoadedForStartup)
-                                {
-                                    channel.BasicReject(ea.DeliveryTag, false);
-                                    context.Services.Log.Info("Models not ready; requeueing.");
-
-                                    return;
-                                }
-
-
-                                entityAnalysisModel = value;
-                                break;
-                            }
-
-                            channel.BasicAck(ea.DeliveryTag, false);
-
-                            if (entityAnalysisModel is not { Started: true })
-                            {
-                                context.Services.Log.Info(
-                                    $"AMQP Inbound: Model not found or not started, rejecting message for GUID {entityAnalysisModelGuid}.");
-
-                                return;
-                            }
-
-                            try
-                            {
-                                using var inputStream = new MemoryStream(ea.Body.ToArray());
-
-                                await EntityAnalysisModelInvoke.InvokeAsync(entityAnalysisModel, inputStream)
-                                    .ConfigureAwait(false);
-
-                                context.Services.Log.Info(
-                                    $"AMQP Inbound: Successfully processed message for GUID {entityAnalysisModelGuid}.");
-                            }
-                            catch (Exception ex) when (ex is not OperationCanceledException)
-                            {
-                                context.Services.Log.Error(
-                                    $"AMQP Inbound: Error during processing message for GUID {entityAnalysisModelGuid}: {ex}");
-                            }
-                        }
-                        finally
-                        {
-                            Interlocked.Decrement(ref inFlight);
-                        }
-                    });
-                };
-
-                consumerTag = channel.BasicConsume(
-                    "jubeInbound",
-                    false,
-                    consumer
-                );
+                consumer.Start();
 
                 _ = context.Services.TaskCoordinator.CancellationToken.Register(() =>
                 {
@@ -145,13 +52,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                         try
                         {
                             context.Services.Log.Info("Cancellation requested: stopping RabbitMQ consumer...");
-                            channel.BasicCancel(consumerTag);
-
-                            while (Volatile.Read(ref inFlight) > 0)
-                            {
-                                await Task.Delay(100, CancellationToken.None).ConfigureAwait(false);
-                            }
-
+                            await consumer.StopAsync().ConfigureAwait(false);
                             context.Services.RabbitMqConnection.Close();
                             context.Services.Log.Info(
                                 "RabbitMQ channel closed safely after in-flight messages completed.");
@@ -160,7 +61,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                         {
                             context.Services.Log.Error("Error during RabbitMQ teardown: " + ex);
                         }
-                    }, context.Services.TaskCoordinator.CancellationToken);
+                    }, CancellationToken.None);
                 });
 
                 await Task.Delay(Timeout.Infinite, context.Services.TaskCoordinator.CancellationToken);
@@ -173,6 +74,39 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             {
                 context.Services.Log.Error($"StartAmqp: has produced an error {ex}");
             }
+        }
+
+        private InboundModelState StateOf(Guid guid)
+        {
+            var model = context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels
+                .ActiveEntityAnalysisModels.Where(kvp => kvp.Value.Instance.Guid == guid)
+                .Select(kvp => kvp.Value).FirstOrDefault();
+
+            return model is null
+                ? InboundModelState.Unknown
+                : model.Started
+                    ? InboundModelState.Ready
+                    : InboundModelState.NotStarted;
+        }
+
+        private async Task<bool> InvokeAsync(Guid guid, byte[] payload, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+
+            var model = context.Tasks.EntityAnalysisModelManager.Context.EntityAnalysisModels
+                .ActiveEntityAnalysisModels.Where(kvp => kvp.Value.Instance.Guid == guid)
+                .Select(kvp => kvp.Value).FirstOrDefault();
+
+            if (model is not { Started: true })
+            {
+                return false;
+            }
+
+            using var input = new MemoryStream(payload);
+            var result = await EntityAnalysisModelInvoke.InvokeAsync(model, input).ConfigureAwait(false);
+            var payloadResult = result.EntityAnalysisModelInstanceEntryPayload;
+
+            return payloadResult.ResponseJson is { Length: > 0 } || payloadResult.ArchiveJson is { Length: > 0 };
         }
     }
 }

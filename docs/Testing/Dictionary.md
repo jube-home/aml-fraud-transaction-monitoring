@@ -11,6 +11,16 @@ Tests of the dictionary data structures, fuzzy matching and serialisation that s
 
 ## General
 
+### AbstractionCursorTests
+
+`Jube.Test.Dictionary.AbstractionCursorTests` — 3 tests. Category: Unit.
+
+| Test                                                    | Kind | Verifies                                                           |
+|---------------------------------------------------------|------|--------------------------------------------------------------------|
+| `PositionIsOneAheadOfIndexAndFirstAndLastFollowTheSize` | Fact | Position is one ahead of index and first and last follow the size. |
+| `TheStateSlotHoldsWhatTheCompiledRuleKeepsForTheScan`   | Fact | The state slot holds what the compiled rule keeps for the scan.    |
+| `BeginClearsEverythingFromThePreviousScan`              | Fact | Begin clears everything from the previous scan.                    |
+
 ### DictionaryNoBoxingTests
 
 `Jube.Test.Dictionary.DictionaryNoBoxingTests` — 36 tests. Category: Unit.

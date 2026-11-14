@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double PercentOf(this double @this, double total)
+        [Description("The value as a percentage of the total.")]
+        public static double PercentOf(this double @this,
+            [Description("The total the value is a part of.")] double total)
         {
             return CalculationSupport.Finite(100.0 * @this / total);
         }

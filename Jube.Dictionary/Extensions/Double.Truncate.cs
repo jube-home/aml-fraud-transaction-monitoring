@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Calculates the integral part of the number.")]
         public static Double Truncate(this Double d)
         {
             return Math.Truncate(d);

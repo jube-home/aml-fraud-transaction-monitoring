@@ -12,6 +12,7 @@
  */
 
 using FluentValidation;
+using Jube.CaseRisk;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.CaseWorkflow;
 using Jube.Resources;
@@ -23,6 +24,8 @@ namespace Jube.Validations.Repository.CaseWorkflow
     {
         private const int MaxNameLength = 256;
         private const int MaxDescriptionLength = 1024;
+        private const int MaxRiskSettingLength = 200;
+        private const int MaxDailyGoal = 1000;
 
         public CaseWorkflowDtoValidator(CaseWorkflowRepository repository, IStringLocalizer localiser)
         {
@@ -58,6 +61,72 @@ namespace Jube.Validations.Repository.CaseWorkflow
                     string.Format(localiser[CaseWorkflowResources.DescriptionMaxLength], MaxDescriptionLength))
                 .WithErrorCode("DescriptionMaximumLength");
 
+            RuleFor(p => p.RiskKappa)
+                .Must((dto, _) => !CaseRiskSettingsResolver.Check(CaseWorkflowRiskOverrides.From(dto))
+                    .Contains(CaseRiskSettingsProblem.KappaOutOfRange))
+                .WithMessage(_ => localiser[CaseWorkflowResources.RiskKappaOutOfRange])
+                .WithErrorCode("RiskKappaOutOfRange");
+
+            RuleFor(p => p.RiskRho)
+                .Must((dto, _) => !CaseRiskSettingsResolver.Check(CaseWorkflowRiskOverrides.From(dto))
+                    .Contains(CaseRiskSettingsProblem.RhoOutOfRange))
+                .WithMessage(_ => localiser[CaseWorkflowResources.RiskRhoOutOfRange])
+                .WithErrorCode("RiskRhoOutOfRange");
+
+            RuleFor(p => p.RiskPriorStrength)
+                .Must((dto, _) => !CaseRiskSettingsResolver.Check(CaseWorkflowRiskOverrides.From(dto))
+                    .Contains(CaseRiskSettingsProblem.PriorStrengthOutOfRange))
+                .WithMessage(_ => localiser[CaseWorkflowResources.RiskPriorStrengthOutOfRange])
+                .WithErrorCode("RiskPriorStrengthOutOfRange");
+
+            RuleFor(p => p.RiskBaseRatePrior)
+                .Must((dto, _) => !CaseRiskSettingsResolver.Check(CaseWorkflowRiskOverrides.From(dto))
+                    .Contains(CaseRiskSettingsProblem.BaseRatePriorOutOfRange))
+                .WithMessage(_ => localiser[CaseWorkflowResources.RiskBaseRatePriorOutOfRange])
+                .WithErrorCode("RiskBaseRatePriorOutOfRange");
+
+            RuleFor(p => p.RiskDeadlineLaneDays)
+                .Must((dto, _) => !CaseRiskSettingsResolver.Check(CaseWorkflowRiskOverrides.From(dto))
+                    .Contains(CaseRiskSettingsProblem.DeadlineLaneDaysOutOfRange))
+                .WithMessage(_ => localiser[CaseWorkflowResources.RiskDeadlineLaneDaysOutOfRange])
+                .WithErrorCode("RiskDeadlineLaneDaysOutOfRange");
+
+            RuleFor(p => p.RiskKeyHistoryHalfLifeDays)
+                .Must((dto, _) => !CaseRiskSettingsResolver.Check(CaseWorkflowRiskOverrides.From(dto))
+                    .Contains(CaseRiskSettingsProblem.KeyHistoryHalfLifeOutOfRange))
+                .WithMessage(_ => localiser[CaseWorkflowResources.RiskKeyHistoryHalfLifeOutOfRange])
+                .WithErrorCode("RiskKeyHistoryHalfLifeOutOfRange");
+
+            RuleFor(p => p.RiskImpactWeights)
+                .MaximumLength(MaxRiskSettingLength)
+                .WithMessage(_ => localiser[CaseWorkflowResources.RiskImpactWeightsTooLong])
+                .WithErrorCode("RiskImpactWeightsMaximumLength")
+                .Must((dto, _) => !CaseRiskSettingsResolver.Check(CaseWorkflowRiskOverrides.From(dto))
+                    .Contains(CaseRiskSettingsProblem.ImpactWeightsInvalid))
+                .WithMessage(_ => localiser[CaseWorkflowResources.RiskImpactWeightsInvalid])
+                .WithErrorCode("RiskImpactWeightsInvalid");
+
+            RuleFor(p => p.RiskMoneyBands)
+                .MaximumLength(MaxRiskSettingLength)
+                .WithMessage(_ => localiser[CaseWorkflowResources.RiskMoneyBandsTooLong])
+                .WithErrorCode("RiskMoneyBandsMaximumLength")
+                .Must((dto, _) => !CaseRiskSettingsResolver.Check(CaseWorkflowRiskOverrides.From(dto))
+                    .Contains(CaseRiskSettingsProblem.MoneyBandsInvalid))
+                .WithMessage(_ => localiser[CaseWorkflowResources.RiskMoneyBandsInvalid])
+                .WithErrorCode("RiskMoneyBandsInvalid");
+
+            RuleFor(p => p.RiskQaSampleRate)
+                .Must((dto, _) => !CaseRiskSettingsResolver.Check(CaseWorkflowRiskOverrides.From(dto))
+                    .Contains(CaseRiskSettingsProblem.QaSampleRateOutOfRange))
+                .WithMessage(_ => localiser[CaseWorkflowResources.RiskQaSampleRateOutOfRange])
+                .WithErrorCode("RiskQaSampleRateOutOfRange");
+
+            RuleFor(p => p.DailyGoal)
+                .InclusiveBetween(1, MaxDailyGoal)
+                .When(p => p.DailyGoal.HasValue)
+                .WithMessage(_ => localiser[CaseWorkflowResources.DailyGoalOutOfRange])
+                .WithErrorCode("DailyGoalOutOfRange");
+
             RuleFor(p => p.VisualisationRegistryGuid)
                 .NotEmpty()
                 .When(w => w.EnableVisualisation)
@@ -68,6 +137,17 @@ namespace Jube.Validations.Repository.CaseWorkflow
                 .When(w => w.EnableVisualisation)
                 .WithMessage(_ => localiser[CaseWorkflowResources.VisualisationRegistryNotFound])
                 .WithErrorCode("VisualisationRegistryNotFound");
+
+            RuleFor(p => p.GraphRegistryGuid)
+                .NotEmpty()
+                .When(w => w.EnableGraph)
+                .WithMessage(_ => localiser[CaseWorkflowResources.GraphRegistryGuidRequired])
+                .WithErrorCode("GraphRegistryGuidNotEmpty")
+                .MustAsync(async (graphRegistryGuid, cancellation) =>
+                    await repository.ExistsGraphRegistryAsync(graphRegistryGuid, cancellation))
+                .When(w => w.EnableGraph)
+                .WithMessage(_ => localiser[CaseWorkflowResources.GraphRegistryNotFound])
+                .WithErrorCode("GraphRegistryNotFound");
         }
     }
 }

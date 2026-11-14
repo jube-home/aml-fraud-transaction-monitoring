@@ -30,7 +30,8 @@ mappings detailed later in the loading process:
 select * from "SanctionEntrySource"
 ```
 
-![Image](SanctionsEntrySource.png)
+<!-- TODO(screenshot): file=sanctions-sanctions-entry-source.png route=/administration/sanctions-loader state="replaces the Razor-era SanctionsEntrySource.png; capture from the Vue UI" -->
+![Image](sanctions-sanctions-entry-source.png)
 
 By default there are four file definitions in place, alongside their locations on the internet:
 
@@ -38,6 +39,14 @@ By default there are four file definitions in place, alongside their locations o
 * Bank of England (BOE) Sanctions.
 * European Union (EU) Sanctions.
 * US Office Of Foreign Assets Control (OFAC) Specially Designated National (SDN) alternative names.
+
+The seeded Bank of England (BOE) definition reads the UK Sanctions List: the file starts with a report date line and a
+header line (Skip 2), the name is spread across the Name 6 and Name 1 to Name 5 columns (MultiPartStringIndex 4 to 9)
+and the reference is the Unique ID column (ReferenceIndex 1). The seeded alternative names definition reads the comma
+delimited OFAC alt.csv, taking the alias from column 3 and the SDN entity number from column 0 as the reference. Both
+definitions were corrected by a migration that only rewrites a definition still carrying the original seeded values, so
+a definition changed by hand is left alone. For the corrected BOE definition the migration also soft deletes the
+entries built from the old column mapping, and the next load inserts them again from the correct columns.
 
 New entries to the SanctionEntrySource table can be accepted as following definition:
 
@@ -53,6 +62,10 @@ New entries to the SanctionEntrySource table can be accepted as following defini
 | Enable HTTP Location      | A bit value to instruct polling of a HTTP location for latest file.                                                                                                                                                                      | 1                                               |
 | HTTP Location             | The location to poll for current sanctions files.                                                                                                                                                                                        | https://www.treasury.gov/ofac/downloads/sdn.csv |
 | Skip                      | The first rows to skip on account of having header data.                                                                                                                                                                                 | 0                                               |
+| AliasIndex                | Optional. The zero based column holding other names of the same entity. Each alias is loaded as its own entry with the same reference as the entity, so a match on any name identifies the entity.                                       | 3                                               |
+| AliasSeparator            | Optional. The text that separates the aliases inside the AliasIndex column. A semicolon when AliasIndex is set and this is empty.                                                                                                        | ;                                               |
+| FilterIndex               | Optional. The zero based column to filter rows on, for example the entity type.                                                                                                                                                          | 1                                               |
+| FilterValues              | Optional. Comma separated values of the FilterIndex column that are loaded, compared ignoring case. Any other row is not loaded, and an entry loaded earlier for such a row is removed at the next load. Empty loads every row.          | Person,Organization                             |
 
 To enable the loading process, the following Environment Variables need to be set:
 
@@ -80,7 +93,8 @@ select *
 from "SanctionEntry"
 ```
 
-![Image](PublicSanctionsInTable.png)
+<!-- TODO(screenshot): file=sanctions-public-sanctions-in-table.png route=/administration/sanctions-loader state="replaces the Razor-era PublicSanctionsInTable.png; capture from the Vue UI" -->
+![Image](sanctions-public-sanctions-in-table.png)
 
 The SanctionEntry database table is the initial target for the synchronisation on loading of the instance. On perpetual
 processing of sanctions files the entries will be merged. An entry is validated by creating an MD5 hash - of the source,
@@ -143,4 +157,71 @@ Before matching, common honorific and religious/cultural titles - tokens such as
 "Imam" that are common in some naming conventions - are stripped from both the searched string and every sanction entry,
 so that including or omitting such a title does not itself affect whether names match. The list of stop tokens lives in
 the SanctionStopToken database table, seeded with an illustrative starting set via migration, and is loaded into memory
-at the start of every loader cycle alongside sanction entries and files.
+at the start of every loader cycle alongside sanction entries and files. The memory copy follows the table in both
+directions: a token that is added or whose category changes takes effect, and a token that is deleted from the table
+stops being applied, on the next cycle, without a restart.
+
+## Download policy and safety limits
+
+<!-- TODO(docs): owner to read this whole section; every statement below was written from the code, not from a running system. -->
+
+The automatic loader downloads each HTTP Location through the same outbound host policy used by webhooks and case
+hooks (see [Outbound Host Policy](../../Administration/OutboundHostPolicy/index.html)): only http and https, no user
+info in
+the URL, and every address the host name resolves to is checked at connection time, so a source that resolves to a
+loopback, private, link-local or cloud metadata address is refused unless the operator has allow-listed it with
+`JUBE_HOOK_ALLOWED_HOSTS` or `JUBE_HOOK_ALLOWED_CIDRS`. Redirects are followed by the loader itself, at most five, and
+each
+hop is checked against the same policy, which keeps the real OFAC address (it redirects) working while preventing a
+redirect into the internal network. TLS certificates are validated and the environment proxy is not used.
+<!-- TODO(docs): confirm the proxy statement with the owner; sites that must egress through a proxy cannot use the HTTP Location today. -->
+
+| Limit                | Value                                                                                                          | Behaviour when exceeded                                                                                        |
+|----------------------|----------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
+| Download size        | 128 MiB                                                                                                        | The download is abandoned; the import is recorded as unsuccessful and nothing is delisted.                     |
+| Download time        | 5 minutes in total                                                                                             | As above.                                                                                                      |
+| Rows in one file     | 5,000,000                                                                                                      | Reading stops; the import is recorded as unsuccessful and nothing is delisted.                                 |
+| Manual upload size   | 64 MiB                                                                                                         | The upload is refused with a validation error and no import row is written.                                    |
+| Delisting in one run | A run that would remove more than half of a source's active entries (sources with at least 100 active entries) | Removal is skipped and a warning logged; additions still apply. A truncated or wrong file is the likely cause. |
+
+An import whose file could not be read to the end (a dropped connection, an unreadable file) is recorded with
+Successful 0 and never removes entries, and a manual upload that ends this way is shown as an error rather than as
+loaded. The list files are CSV and are read by a delimited-text parser: no XML or archive is ever opened, so XML
+external
+entities, entity expansion, zip-slip and decompression bombs do not apply.
+<!-- TODO(docs): the SDN, BOE and EU lists are CSV today; if XML or zip formats are ever added, a hardened reader is needed first. -->
+
+Sources are configured only in the database (there is no screen to edit an HTTP Location), so the download address is
+operator controlled and never tenant controlled. Sanction entries and sources carry no tenant: they are landlord-owned
+reference data shared by every tenant, and only a Landlord user can list sources or upload a file. There is no
+tenant-level manual entry of sanctions.
+<!-- TODO(docs): owner to confirm that tenant-specific manual sanction entries are intentionally not offered; nothing in the docs or UI promises them (the root ManualSanctions.png is a Razor-era screenshot of the manual search page). -->
+
+## Loading a list with aliases and a mix of entity types
+
+Many lists put each entity on one row with its other names together in one column. An OpenSanctions export in the simple
+CSV format, for example, has the columns `id, schema, name, aliases, birth_date, countries, addresses, identifiers,
+sanctions, phones, emails, dataset, first_seen, last_seen, last_change`, with the aliases separated by semicolons and
+the
+`schema` column saying whether the row is a Person, an Organization, a Vessel and so on. Such a list is described by one
+row in SanctionEntrySource:
+
+| Value                | Setting               |
+|----------------------|-----------------------|
+| Delimiter            | `,`                   |
+| MultiPartStringIndex | `2` (name)            |
+| ReferenceIndex       | `0` (id)              |
+| Skip                 | `1` (header)          |
+| AliasIndex           | `3` (aliases)         |
+| AliasSeparator       | `;`                   |
+| FilterIndex          | `1` (schema)          |
+| FilterValues         | `Person,Organization` |
+
+Politically exposed persons are carried in such lists as ordinary Person rows, and are screened exactly as any other
+entry is; which list you load, and what you are licensed to load, decides whether PEPs are screened at all.
+
+<!-- TODO(docs): the licence of any list is the deployer's to check. The OpenSanctions data is not free for commercial use, for example; this page does not grant or imply a licence. -->
+<!-- TODO(docs): the source columns above are set in the database; there is no endpoint or Vue page to edit a source yet. Add them to the Sanctions Loader administration page. -->
+<!-- TODO(docs): the importer still writes three information level log lines per row, which at a million rows is heavy; lower them to debug. -->
+<!-- TODO(docs): the download is still held fully in memory with a 128 MiB cap, which a full OpenSanctions export can exceed; stream it to a temporary file. -->
+<!-- TODO(docs): an alias that reduces to a single token because the rest are one letter initials, such as "I. Petrov", matches any name containing that surname at distance zero; consider requiring two tokens for an alias. -->

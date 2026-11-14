@@ -17,6 +17,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Context;
+using Jube.Data.Query;
 using Jube.Dto.Query.EntityAnalysisModelOverrideQuery;
 using Jube.Service.Exceptions.Query.EntityAnalysisModelOverrideQuery;
 using Jube.Service.Query.EntityAnalysisModelOverrideQuery;
@@ -71,6 +72,9 @@ namespace Jube.App.Endpoints.Query
             {
                 var service = await EntityAnalysisModelOverrideQueryService.CreateAsync(dbContext, user, log,
                     stringLocalizerFactory, serviceChangeBus, token);
+
+                service.ApprovalsRequired =
+                    ApprovalsRequiredResolver.Resolve(dynamicEnvironment.AppSettings("ApprovalsRequired"));
 
                 return TypedResults.Ok(await service.GetAsync(overrideKey, overrideKeyValue, token));
             }

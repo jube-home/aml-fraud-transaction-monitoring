@@ -17,6 +17,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Jube.App.Code;
 using Jube.Data.Context;
 using Jube.Data.Query.GetAskJoobyStartupStatsQuery;
 using Jube.Dto.AskJoobyConversation;
@@ -50,6 +51,7 @@ namespace Jube.App.Endpoints
                 .WithName("AskJoobyConversationGetAll");
 
             group.MapPost("", CreateAsync)
+                .ValidateAntiforgeryForCookieSessions()
                 .Produces<AskJoobyConversationDto>()
                 .WithName("AskJoobyConversationCreate");
 
@@ -62,12 +64,16 @@ namespace Jube.App.Endpoints
                 .WithName("AskJoobyConversationGetStartupStats");
 
             group.MapGet("{id:int}/Audit", GetAuditAsync)
+                .Produces(StatusCodes.Status200OK, contentType: "application/zip")
                 .WithName("AskJoobyConversationGetAudit");
 
             group.MapGet("{id:int}/Transcript", GetTranscriptAsync)
+                .Produces(StatusCodes.Status200OK, contentType: "text/markdown")
                 .WithName("AskJoobyConversationGetTranscript");
 
             group.MapDelete("{id:int}", DeleteAsync)
+                .ValidateAntiforgeryForCookieSessions()
+                .Produces(StatusCodes.Status204NoContent)
                 .WithName("AskJoobyConversationDelete");
         }
 

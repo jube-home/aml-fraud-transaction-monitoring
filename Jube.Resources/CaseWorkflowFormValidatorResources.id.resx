@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Anda tidak memiliki izin untuk melakukan tindakan ini.</value>
+  </data>
+    <data name="SqlPermissionDenied" xml:space="preserve">
+    <value>Anda tidak memiliki izin untuk menulis validator SQL.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Anda harus masuk ke tenant untuk melakukan tindakan ini.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>Validator tidak ditemukan.</value>
+  </data>
+    <data name="CaseWorkflowFormGuidRequired" xml:space="preserve">
+    <value>Formulir diperlukan.</value>
+  </data>
+    <data name="CaseWorkflowFormNotFound" xml:space="preserve">
+    <value>Formulir tidak ditemukan.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>Nama diperlukan.</value>
+  </data>
+    <data name="NameTooLong" xml:space="preserve">
+    <value>Nama lebih panjang dari 100 karakter.</value>
+  </data>
+    <data name="FieldNameRequired" xml:space="preserve">
+    <value>Nama bidang diperlukan.</value>
+  </data>
+    <data name="FieldNameInvalid" xml:space="preserve">
+    <value>Nama bidang harus diawali huruf dan hanya memakai huruf, angka, dan garis bawah.</value>
+  </data>
+    <data name="FieldNotInForm" xml:space="preserve">
+    <value>Templat formulir tidak memiliki bidang dengan nama itu.</value>
+  </data>
+    <data name="KindInvalid" xml:space="preserve">
+    <value>Jenis aturan bukan salah satu jenis yang ditawarkan.</value>
+  </data>
+    <data name="ArgumentRequired" xml:space="preserve">
+    <value>Jenis aturan ini memerlukan nilai di {0}.</value>
+  </data>
+    <data name="ArgumentNumber" xml:space="preserve">
+    <value>{0} harus berupa angka.</value>
+  </data>
+    <data name="ArgumentWholeNumber" xml:space="preserve">
+    <value>{0} harus berupa bilangan bulat nol atau lebih.</value>
+  </data>
+    <data name="ArgumentRange" xml:space="preserve">
+    <value>Minimum lebih besar dari maksimum.</value>
+  </data>
+    <data name="ArgumentOneNeeded" xml:space="preserve">
+    <value>Berikan minimum, maksimum, atau keduanya.</value>
+  </data>
+    <data name="ArgumentRelation" xml:space="preserve">
+    <value>Relasi harus salah satu dari eq, ne, lt, le, gt, atau ge.</value>
+  </data>
+    <data name="PatternInvalid" xml:space="preserve">
+    <value>Pola bukan ekspresi reguler yang valid.</value>
+  </data>
+    <data name="ArgumentTooLong" xml:space="preserve">
+    <value>{0} lebih panjang dari batas {1} karakter.</value>
+  </data>
+    <data name="OtherFieldNotInForm" xml:space="preserve">
+    <value>Templat formulir tidak memiliki bidang bernama {0}.</value>
+  </data>
+    <data name="KindNotForField" xml:space="preserve">
+    <value>Jenis aturan itu tidak berlaku untuk tipe bidang tersebut.</value>
+  </data>
+    <data name="ListNotFound" xml:space="preserve">
+    <value>Model tidak memiliki daftar dengan nama itu.</value>
+  </data>
+    <data name="DictionaryNotFound" xml:space="preserve">
+    <value>Model tidak memiliki kamus dengan nama itu.</value>
+  </data>
+    <data name="SqlRequired" xml:space="preserve">
+    <value>SQL diperlukan untuk jenis aturan ini.</value>
+  </data>
+    <data name="SqlTooLong" xml:space="preserve">
+    <value>SQL lebih panjang dari 8.000 karakter.</value>
+  </data>
+    <data name="SqlRejected" xml:space="preserve">
+    <value>SQL ditolak: {0}</value>
+  </data>
+    <data name="SqlParameterUnknown" xml:space="preserve">
+    <value>SQL menggunakan parameter @{0}, yang bukan parameter bawaan maupun bidang formulir.</value>
+  </data>
+    <data name="MessageTooLong" xml:space="preserve">
+    <value>Pesan lebih panjang dari 500 karakter.</value>
+  </data>
+    <data name="TemplateInvalid" xml:space="preserve">
+    <value>Templat formulir tidak dapat dikompilasi: {0}</value>
+  </data>
+</root>

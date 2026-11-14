@@ -73,10 +73,35 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ActivationRul
         private static EntityAnalysisModelOverride Admissible(Context context,
             EntityAnalysisModelOverride binding, string overrideKey)
         {
-            var admissible = new EntityAnalysisModelOverride
+            var admissible = new EntityAnalysisModelOverride();
+
+            if (binding.AllActivationRules.HasValue)
             {
-                AllActivationRules = binding.AllActivationRules
-            };
+                var allKind = binding.AllActivationRules.Value;
+                var modelRules = context.Snapshot.ModelActivationRules;
+
+                bool Admits(EntityAnalysisModelActivationRule rule)
+                {
+                    return rule.EnableOverride
+                           && (string.IsNullOrEmpty(rule.OverrideKey) || rule.OverrideKey == overrideKey)
+                           && (allKind != EntityAnalysisModelOverrideKind.Force || rule.EnableForce);
+                }
+
+                if (modelRules.All(Admits))
+                {
+                    admissible.AllActivationRules = allKind;
+                }
+                else
+                {
+                    foreach (var modelRule in modelRules.Where(Admits))
+                    {
+                        admissible.Promote(modelRule.Name, allKind);
+                    }
+
+                    context.TraceLog(
+                        $"Override key is {overrideKey} carries a model level {allKind} override, which only applies to the activation rules that admit it.");
+                }
+            }
 
             foreach (var (activationRuleName, kind) in binding.ActivationRules)
             {

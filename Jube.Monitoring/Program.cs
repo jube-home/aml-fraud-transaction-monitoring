@@ -90,6 +90,8 @@ var allowedProxyPaths = new[]
     new Regex(@"^/events(\?.*)?$", RegexOptions.Compiled)
 };
 
+Jube.Data.Context.UtcTimestampStorage.Apply();
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.AddSimpleConsole();
 var app = builder.Build();

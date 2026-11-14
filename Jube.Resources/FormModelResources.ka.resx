@@ -1,0 +1,689 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="EntityAnalysisModelTag.name" xml:space="preserve">
+        <value>სახელი</value>
+    </data>
+    <data name="EntityAnalysisModelTag.active" xml:space="preserve">
+        <value>აქტიური</value>
+    </data>
+    <data name="EntityAnalysisModelTag.locked" xml:space="preserve">
+        <value>დაბლოკილი</value>
+    </data>
+    <data name="EntityAnalysisModelTag.id" xml:space="preserve">
+        <value>იდენტიფიკატორი</value>
+    </data>
+    <data name="EntityAnalysisModelTag.createdUser" xml:space="preserve">
+        <value>შექმნა</value>
+    </data>
+    <data name="EntityAnalysisModelTag.createdDate" xml:space="preserve">
+        <value>შექმნის თარიღი</value>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedUser" xml:space="preserve">
+        <value>განაახლა</value>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedDate" xml:space="preserve">
+        <value>განახლების თარიღი</value>
+    </data>
+    <data name="EntityAnalysisModelTag.version" xml:space="preserve">
+        <value>ვერსია</value>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedUser" xml:space="preserve">
+        <value>წაშალა</value>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedDate" xml:space="preserve">
+        <value>წაშლის თარიღი</value>
+    </data>
+    <data name="EntityAnalysisModelTag.group.Identity" xml:space="preserve">
+        <value>იდენტობა</value>
+    </data>
+    <data name="EntityAnalysisModelTag.group.Audit" xml:space="preserve">
+        <value>აუდიტი</value>
+    </data>
+    <data name="EntityAnalysisModelTag.column.name" xml:space="preserve">
+        <value>სახელი</value>
+    </data>
+    <data name="EntityAnalysisModelTag.column.active" xml:space="preserve">
+        <value>აქტიური</value>
+    </data>
+    <data name="option.IntervalUnit.Second" xml:space="preserve">
+        <value>წამები</value>
+    </data>
+    <data name="option.IntervalUnit.Minute" xml:space="preserve">
+        <value>წუთები</value>
+    </data>
+    <data name="option.IntervalUnit.Hour" xml:space="preserve">
+        <value>საათები</value>
+    </data>
+    <data name="option.IntervalUnit.Day" xml:space="preserve">
+        <value>დღეები</value>
+    </data>
+    <data name="option.IntervalUnit.Month" xml:space="preserve">
+        <value>თვეები</value>
+    </data>
+    <data name="option.IntervalUnit.Year" xml:space="preserve">
+        <value>წლები</value>
+    </data>
+    <data name="option.NotificationType.Email" xml:space="preserve">
+        <value>ელფოსტა</value>
+    </data>
+    <data name="option.NotificationType.Sms" xml:space="preserve">
+        <value>SMS</value>
+    </data>
+    <data name="EntityAnalysisModelTag.name.description" xml:space="preserve">
+        <value>ამ ტეგის საჩვენებელი სახელი. უნიკალურია მოდელის ფარგლებში (რეგისტრის გარეშე). ერწყმის არქივის დატვირთვის ტეგების სექციას შესაბამისი EntityAnalysisModelEntityInstanceGuid-ისთვის.</value>
+        <comment>a46002d2</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.active.description" xml:space="preserve">
+        <value>ჭეშმარიტის შემთხვევაში ტეგი შეიძლება მიეთითოს არქივის დატვირთვას.</value>
+        <comment>9ecf021f</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.locked.description" xml:space="preserve">
+        <value>ჭეშმარიტის შემთხვევაში ტეგის რეგისტრაცია დაბლოკილია და მისი რედაქტირება ან წაშლა შეუძლებელია.</value>
+        <comment>c427ac09</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.id.description" xml:space="preserve">
+        <value>სერვერის მიერ მინიჭებული სტრიქონის იდენტიფიკატორი. მხოლოდ წასაკითხი.</value>
+        <comment>254b452e</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.createdUser.description" xml:space="preserve">
+        <value>მომხმარებელი, რომელმაც ეს ტეგი შექმნა. სერვერის მიერ მინიჭებული. მხოლოდ წასაკითხი.</value>
+        <comment>b8b7a648</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.createdDate.description" xml:space="preserve">
+        <value>ტეგის შექმნის დროის ნიშნული (UTC). სერვერის მიერ მინიჭებული. მხოლოდ წასაკითხი.</value>
+        <comment>2a046216</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedUser.description" xml:space="preserve">
+        <value>მომხმარებელი, რომელმაც ეს ტეგი ბოლოს განაახლა. სერვერის მიერ მინიჭებული. მხოლოდ წასაკითხი.</value>
+        <comment>692dc498</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedDate.description" xml:space="preserve">
+        <value>ტეგის ბოლო განახლების დროის ნიშნული (UTC). სერვერის მიერ მინიჭებული. მხოლოდ წასაკითხი.</value>
+        <comment>b845bd79</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.version.description" xml:space="preserve">
+        <value>ვერსიის ნომერი ოპტიმისტური კონკურენტულობის კონტროლისთვის, სერვერის მიერ მინიჭებული და ყოველ განახლებაზე გაზრდილი. მხოლოდ წასაკითხი.</value>
+        <comment>937d398b</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedUser.description" xml:space="preserve">
+        <value>მომხმარებელი, რომელმაც ეს ტეგი წაშალა (ლოგიკური წაშლა). სერვერის მიერ მინიჭებული. მხოლოდ წასაკითხი.</value>
+        <comment>2e8d7efb</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedDate.description" xml:space="preserve">
+        <value>ტეგის ლოგიკური წაშლის დროის ნიშნული (UTC), არსებობის შემთხვევაში. სერვერის მიერ მინიჭებული. მხოლოდ წასაკითხი.</value>
+        <comment>68166826</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.name.placeholder" xml:space="preserve">
+        <value>მაგ. გადამოწმებულია შესაბამისობის სამსახურის მიერ</value>
+        <comment>2ebb83c4</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.name" xml:space="preserve">
+        <value>სახელი</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.name.description" xml:space="preserve">
+        <value>სახელი, რომლითაც წესები კითხულობენ ერთეულს როგორც Graph.{სახელი}, მაგალითად AccountId ან Payee. მხოლოდ ასოები და ციფრები, ასოთი დაწყებული; უნიკალურია მოდელის ფარგლებში.</value>
+        <comment>4a7fc4f0</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.name.placeholder" xml:space="preserve">
+        <value>მაგ. Payee</value>
+        <comment>81ff940b</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.name" xml:space="preserve">
+        <value>სახელი</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.active" xml:space="preserve">
+        <value>აქტიური</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.active.description" xml:space="preserve">
+        <value>ჭეშმარიტის შემთხვევაში ერთეული გრაფიდან იკითხება მოდელის ყოველ გამოძახებაზე.</value>
+        <comment>ba3c6a3d</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.active" xml:space="preserve">
+        <value>აქტიური</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.locked" xml:space="preserve">
+        <value>დაბლოკილი</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.locked.description" xml:space="preserve">
+        <value>ჭეშმარიტის შემთხვევაში ერთეული დაბლოკილია და მისი რედაქტირება ან წაშლა შეუძლებელია.</value>
+        <comment>17318987</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.requestXPathName" xml:space="preserve">
+        <value>ველი</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.requestXPathName.description" xml:space="preserve">
+        <value>ამ მოდელის მოთხოვნის ველი, მონიშნული როგორც არქივის გასაღები, რომლის მნიშვნელობა გრაფში ერთეულს განსაზღვრავს, მაგალითად AccountId ან ToAccountId.</value>
+        <comment>af382e5f</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.requestXPathName" xml:space="preserve">
+        <value>ველი</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.nodeKey" xml:space="preserve">
+        <value>კვანძის გასაღები</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.nodeKey.description" xml:space="preserve">
+        <value>გრაფის კვანძის გასაღები, რომლის ქვეშაც მნიშვნელობა ინახება, როცა ის ველის სახელისგან განსხვავდება, ისევე როგორც წიბოს განმარტების To Node Key: ToAccountId-ის მნიშვნელობა ინახება როგორც AccountId კვანძი. დატოვეთ ცარიელი ველის სახელის გამოსაყენებლად.</value>
+        <comment>49a08603</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.counterpartName" xml:space="preserve">
+        <value>კონტრაგენტი</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.counterpartName.description" xml:space="preserve">
+        <value>ამ მოდელის სხვა ერთეულის სახელი, რომელთანაც ეს ერთეული წყვილდება წიბოს ფაქტებისთვის (რაოდენობა, თანხა, პირველი გამოჩენა) და ხიდების აღმოსაჩენად, მაგალითად Payer ერთეული თავის Payee-სთან. წყვილები აშკარაა და არასოდეს ივარაუდება; დატოვეთ ცარიელი, თუ არ არის.</value>
+        <comment>60120df2</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.counterpartName" xml:space="preserve">
+        <value>კონტრაგენტი</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.graphRegistryGuid" xml:space="preserve">
+        <value>გრაფის რეესტრი</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.graphRegistryGuid.description" xml:space="preserve">
+        <value>გრაფის რეესტრი, რომლის წიბოს განმარტებებიც კონტრაგენტის მიმართ წიბოს ფაქტებს ზღუდავს. დატოვეთ ცარიელი ყველა აქტიური განმარტების გამოსაყენებლად.</value>
+        <comment>d48d9af2</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.responsePayload" xml:space="preserve">
+        <value>პასუხის დატვირთვა</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.responsePayload.description" xml:space="preserve">
+        <value>ჭეშმარიტის შემთხვევაში ერთეულის ობიექტი უბრუნდება პასუხის JSON-ში Graph-ის ქვეშ. გამორიცხავს არქივის გასაღებს: ერთეული ან ბრუნდება, ან ინახება, ორივე ერთად არა.</value>
+        <comment>8648201c</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.reportTable" xml:space="preserve">
+        <value>არქივის გასაღები</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.reportTable.description" xml:space="preserve">
+        <value>ჭეშმარიტის შემთხვევაში ერთეულის ობიექტი ინახება არქივის JSON-ში ანგარიშგებისა და სწავლებისთვის. გამორიცხავს Response Payload-ს.</value>
+        <comment>87f888f3</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdDate" xml:space="preserve">
+        <value>შექმნის თარიღი</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdDate.description" xml:space="preserve">
+        <value>სერვერის მიერ მინიჭებული შექმნის დროის ნიშნული. მხოლოდ წასაკითხი.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdUser" xml:space="preserve">
+        <value>შექმნა</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdUser.description" xml:space="preserve">
+        <value>მომხმარებელი, რომელმაც ეს სტრიქონი შექმნა, სერვერის მიერ მინიჭებული. მხოლოდ წასაკითხი.</value>
+        <comment>c7492dc3</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedUser" xml:space="preserve">
+        <value>განაახლა</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedUser.description" xml:space="preserve">
+        <value>მომხმარებელი, რომელმაც ეს სტრიქონი ბოლოს განაახლა, სერვერის მიერ მინიჭებული. მხოლოდ წასაკითხი.</value>
+        <comment>dfe8daba</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedDate" xml:space="preserve">
+        <value>განახლების თარიღი</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedDate.description" xml:space="preserve">
+        <value>სერვერის მიერ მინიჭებული ბოლო განახლების დროის ნიშნული. მხოლოდ წასაკითხი.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.version" xml:space="preserve">
+        <value>ვერსია</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.version.description" xml:space="preserve">
+        <value>სერვერის მიერ მინიჭებული ვერსიის ნომერი, რომელიც ყოველ განახლებაზე იზრდება. მხოლოდ წასაკითხი.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Identity" xml:space="preserve">
+        <value>იდენტობა</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Entity" xml:space="preserve">
+        <value>ერთეული</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Output" xml:space="preserve">
+        <value>გამოსავალი</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Audit" xml:space="preserve">
+        <value>აუდიტი</value>
+    </data>
+    <data name="EntityAnalysisModel.hub.Network" xml:space="preserve">
+        <value>ქსელი</value>
+    </data>
+    <data name="EntityAnalysisModel.child.EntityAnalysisModelGraphRecall" xml:space="preserve">
+        <value>გრაფის წაკითხვა</value>
+    </data>
+    <data name="CaseWorkflowXPath.sourceGuid" xml:space="preserve">
+        <value>წყარო ველი</value>
+    </data>
+    <data name="CaseWorkflowXPath.sourceGuid.description" xml:space="preserve">
+        <value>მოდელის ველი, რომელსაც ამოღება კითხულობს, არჩეული მოთხოვნის XPath-ებიდან, ჩაშენებული ფუნქციებიდან, აბსტრაქციის წესებიდან, აბსტრაქციის გამოთვლებიდან, TTL მრიცხველებიდან, HTTP ადაპტაციებიდან და სამუშაო პროცესის მოდელის აქტივაციის წესებიდან (თავად მოდელი წარმოადგენს თავის შესასვლელ გასაღებს). JSON გზა, არქივის გასაღები და მონაცემთა ტიპი მისგან გამომდინარეობს, ხოლო ამოღების დეტალიზაცია შესაძლებელია ზუსტად მაშინ, როცა ველი მონიშნულია როგორც არქივის გასაღები.</value>
+        <comment>9af5ba6a</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.name" xml:space="preserve">
+        <value>სახელი</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.name.description" xml:space="preserve">
+        <value>ჩანაწერის სახელი, რომლითაც წესები კითხულობენ IP ინტელექტის ჩანაწერს როგორც Svirfd.{სახელი}.{კომპონენტი}, მაგალითად Svirfd.Customer.Privacy.Vpn. მხოლოდ ასოები და ციფრები, ასოთი დაწყებული; უნიკალურია მოდელის ფარგლებში.</value>
+        <comment>26ee861d</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.name.placeholder" xml:space="preserve">
+        <value>მაგ. Customer</value>
+        <comment>d4f90c87</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.active" xml:space="preserve">
+        <value>აქტიური</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.active.description" xml:space="preserve">
+        <value>ჩართვის შემთხვევაში მისამართი ძიდება მოდელის ყოველ გამოძახებაზე.</value>
+        <comment>a03783be</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.locked" xml:space="preserve">
+        <value>დაბლოკილი</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.locked.description" xml:space="preserve">
+        <value>ჩართვის შემთხვევაში ეს ჩანაწერი დაბლოკილია და მისი რედაქტირება ან წაშლა შეუძლებელია.</value>
+        <comment>d3777afa</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.requestXPathName" xml:space="preserve">
+        <value>ველი</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.requestXPathName.description" xml:space="preserve">
+        <value>ამ მოდელის მოთხოვნის ველი IP მონაცემთა ტიპით, რომლის მნიშვნელობაც საძიებო მისამართია.</value>
+        <comment>bfb592ae</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.responsePayload" xml:space="preserve">
+        <value>პასუხის დატვირთვა</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.responsePayload.description" xml:space="preserve">
+        <value>ჩართვის შემთხვევაში IP ინტელექტის მთელი ჩანაწერი უბრუნდება პასუხის JSON-ში Svirfd-ის ქვეშ.</value>
+        <comment>bd6e75d5</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.reportTable" xml:space="preserve">
+        <value>არქივი</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.reportTable.description" xml:space="preserve">
+        <value>ჩართვის შემთხვევაში ჩანაწერი ინახება არქივის JSON-ში ანგარიშგების, სწავლებისა და საქმის ჟურნალისთვის, რომელიც მას ახალ ძიებას ადარებს დრიფტის საჩვენებლად.</value>
+        <comment>08bbf83a</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.narrative" xml:space="preserve">
+        <value>ნარატივი</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.narrative.description" xml:space="preserve">
+        <value>ჩართვის შემთხვევაში ჩანაწერს მარტივი ენით დაწერილი ნარატივი ემატება, ამიტომ ის პასუხში ბრუნდება და მასთან ერთად არქივდება. გამორთეთ, რომ ჩანაწერი მხოლოდ მონაცემებს შეიცავდეს.</value>
+        <comment>98a1314b</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdDate" xml:space="preserve">
+        <value>შექმნის თარიღი</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdDate.description" xml:space="preserve">
+        <value>სერვერის მიერ მინიჭებული შექმნის დროის ნიშნული. მხოლოდ წასაკითხი.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdUser" xml:space="preserve">
+        <value>შექმნა</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdUser.description" xml:space="preserve">
+        <value>მომხმარებელი, რომელმაც ეს სტრიქონი შექმნა, სერვერის მიერ მინიჭებული. მხოლოდ წასაკითხი.</value>
+        <comment>c7492dc3</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedUser" xml:space="preserve">
+        <value>განაახლა</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedUser.description" xml:space="preserve">
+        <value>მომხმარებელი, რომელმაც ეს სტრიქონი ბოლოს განაახლა, სერვერის მიერ მინიჭებული. მხოლოდ წასაკითხი.</value>
+        <comment>dfe8daba</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedDate" xml:space="preserve">
+        <value>განახლების თარიღი</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedDate.description" xml:space="preserve">
+        <value>სერვერის მიერ მინიჭებული ბოლო განახლების დროის ნიშნული. მხოლოდ წასაკითხი.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.version" xml:space="preserve">
+        <value>ვერსია</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.version.description" xml:space="preserve">
+        <value>სერვერის მიერ მინიჭებული ვერსიის ნომერი, რომელიც ყოველ განახლებაზე იზრდება. მხოლოდ წასაკითხი.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.column.name" xml:space="preserve">
+        <value>სახელი</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.column.active" xml:space="preserve">
+        <value>აქტიური</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.column.requestXPathName" xml:space="preserve">
+        <value>ველი</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Identity" xml:space="preserve">
+        <value>იდენტობა</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Field" xml:space="preserve">
+        <value>ველი</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Output" xml:space="preserve">
+        <value>გამოსავალი</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Audit" xml:space="preserve">
+        <value>აუდიტი</value>
+    </data>
+    <data name="EntityAnalysisModel.child.EntityAnalysisModelSvirfd" xml:space="preserve">
+        <value>Svirfd</value>
+    </data>
+    <data name="option.FieldDataType.Ip" xml:space="preserve">
+        <value>IP</value>
+    </data>
+    <data name="TenantRegistry.svirfdRemoteLookupsEnabled" xml:space="preserve">
+        <value>Svirfd-ის დისტანციური ძიებები</value>
+    </data>
+    <data name="TenantRegistry.svirfdRemoteLookupsEnabled.description" xml:space="preserve">
+        <value>გამორთვისას ამ ტენანტის არცერთი IP მისამართი არ იგზავნება დისტანციურ Svirfd სერვისზე. ლოკალური და დირექტორიის ძიებები არ იცვლება. ამის შეცვლა მხოლოდ landlord-ს შეუძლია.</value>
+        <comment>8c1916e8</comment>
+    </data>
+    <data name="TenantRegistry.group.DataProtection" xml:space="preserve">
+        <value>მონაცემთა დაცვა</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationUrl" xml:space="preserve">
+        <value>HTTP ადაპტაციის URL</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationTimeoutMilliseconds" xml:space="preserve">
+        <value>HTTP ადაპტაციის ვადა (მწმ)</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationValidateSsl" xml:space="preserve">
+        <value>HTTP ადაპტაციის SSL-ის შემოწმება</value>
+    </data>
+    <data name="TenantRegistry.group.HttpAdaptation" xml:space="preserve">
+        <value>HTTP ადაპტაცია</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationUrl.description" xml:space="preserve">
+        <value>მხოლოდ landlord-ისთვის. საბაზო URL, რომელსაც ემატება ამ ტენანტის HTTP ადაპტაციის ბოლო წერტილები. დატოვეთ ცარიელი ინსტალაციის მასშტაბით მოქმედი HttpAdaptationUrl-ის გამოსაყენებლად. უნდა იყოს https URL საჯარო ჰოსტზე, მონაცემების, მოთხოვნის სტრიქონისა და ფრაგმენტის გარეშე.</value>
+        <comment>ee19d732</comment>
+    </data>
+    <data name="TenantRegistry.httpAdaptationTimeoutMilliseconds.description" xml:space="preserve">
+        <value>მხოლოდ landlord-ისთვის. ამ ტენანტის HTTP ადაპტაციის გამოძახებების ვადა მილიწამებში, 100-დან 30000-მდე. ნული იყენებს ინსტალაციის მასშტაბით მოქმედ HttpAdaptationTimeout-ს.</value>
+        <comment>f8d39b15</comment>
+    </data>
+    <data name="TenantRegistry.httpAdaptationValidateSsl.description" xml:space="preserve">
+        <value>მხოლოდ landlord-ისთვის. ჩართვის შემთხვევაში მოწმდება ამ ტენანტის HTTP ადაპტაციის ბოლო წერტილის TLS სერტიფიკატი. მოქმედებს მხოლოდ მაშინ, როცა ტენანტისთვის დაყენებულია HttpAdaptationUrl.</value>
+        <comment>2cf1b2e6</comment>
+    </data>
+    <data name="TenantRegistry.httpAdaptationUrl.placeholder" xml:space="preserve">
+        <value>https://scoring.example.com</value>
+        <comment>9591a0fb</comment>
+    </data>
+    <data name="TenantRegistry.name.description" xml:space="preserve">
+        <value>ტენანტის საჩვენებელი სახელი, ნაჩვენებია ტენანტის გადამრთველში და ადმინისტრირება &gt; უსაფრთხოება &gt; ტენანტები განყოფილებაში. უნიკალურია ინსტალაციის ყველა ტენანტს შორის (ამ ცხრილს საკუთარი მშობელი არეალი არ აქვს, რომლის ფარგლებშიც უნდა იყოს უნიკალური).</value>
+        <comment>9a55131b</comment>
+    </data>
+    <data name="TenantRegistry.name.placeholder" xml:space="preserve">
+        <value>მაგ. Acme Bank</value>
+        <comment>c18a9b46</comment>
+    </data>
+    <data name="TenantRegistry.active.description" xml:space="preserve">
+        <value>როცა მნიშვნელობა ჭეშმარიტია, ტენანტი ხელმისაწვდომია გამოსაყენებლად (მაგ. არჩევადია ტენანტის გადამრთველით).</value>
+        <comment>81029c1e</comment>
+    </data>
+    <data name="TenantRegistry.locked.description" xml:space="preserve">
+        <value>როცა მნიშვნელობა ჭეშმარიტია, ტენანტი დაბლოკილია მხოლოდ წასაკითხად და მისი რედაქტირება ან წაშლა შეუძლებელია.</value>
+        <comment>01ae7e98</comment>
+    </data>
+    <data name="TenantRegistry.createdDate.description" xml:space="preserve">
+        <value>სერვერის მიერ მინიჭებული შექმნის დროის ნიშნული. მხოლოდ წასაკითხი.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="TenantRegistry.createdUser.description" xml:space="preserve">
+        <value>მომხმარებელი, რომელმაც ეს ტენანტი შექმნა, მინიჭებულია სერვერის მიერ. მხოლოდ წასაკითხი.</value>
+        <comment>8352b7ce</comment>
+    </data>
+    <data name="TenantRegistry.updatedUser.description" xml:space="preserve">
+        <value>მომხმარებელი, რომელმაც ეს ტენანტი ბოლოს განაახლა, მინიჭებულია სერვერის მიერ. მხოლოდ წასაკითხი.</value>
+        <comment>6fe961d0</comment>
+    </data>
+    <data name="TenantRegistry.updatedDate.description" xml:space="preserve">
+        <value>სერვერის მიერ მინიჭებული უახლესი განახლების დროის ნიშნული. მხოლოდ წასაკითხი.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="TenantRegistry.version.description" xml:space="preserve">
+        <value>სერვერის მიერ მინიჭებული ვერსიის ნომერი, იზრდება ყოველ განახლებაზე. მხოლოდ წასაკითხი.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="RoleRegistry.name.description" xml:space="preserve">
+        <value>როლის საჩვენებელი სახელი, ნაჩვენებია ადმინისტრატორებისთვის ნებართვების ან მომხმარებლების გამოყოფისას. უნიკალურია ტენანტის ფარგლებში (რეგისტრის გარჩევის გარეშე).</value>
+        <comment>31293430</comment>
+    </data>
+    <data name="RoleRegistry.name.placeholder" xml:space="preserve">
+        <value>მაგ. თაღლითობის ანალიტიკოსი</value>
+        <comment>07225315</comment>
+    </data>
+    <data name="RoleRegistry.active.description" xml:space="preserve">
+        <value>როცა მნიშვნელობა ჭეშმარიტია, როლის გამოყოფა შესაძლებელია მომხმარებლისთვის ან მოდელისთვის.</value>
+        <comment>bd788127</comment>
+    </data>
+    <data name="RoleRegistry.locked.description" xml:space="preserve">
+        <value>როცა მნიშვნელობა ჭეშმარიტია, როლი დაბლოკილია მხოლოდ წასაკითხად და მისი რედაქტირება ან წაშლა შეუძლებელია.</value>
+        <comment>5ae0abde</comment>
+    </data>
+    <data name="RoleRegistry.createdDate.description" xml:space="preserve">
+        <value>სერვერის მიერ მინიჭებული შექმნის დროის ნიშნული. მხოლოდ წასაკითხი.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="RoleRegistry.createdUser.description" xml:space="preserve">
+        <value>მომხმარებელი, რომელმაც ეს როლი შექმნა, მინიჭებულია სერვერის მიერ. მხოლოდ წასაკითხი.</value>
+        <comment>8ec04d32</comment>
+    </data>
+    <data name="RoleRegistry.updatedUser.description" xml:space="preserve">
+        <value>მომხმარებელი, რომელმაც ეს როლი ბოლოს განაახლა, მინიჭებულია სერვერის მიერ. მხოლოდ წასაკითხი.</value>
+        <comment>fb01581b</comment>
+    </data>
+    <data name="RoleRegistry.updatedDate.description" xml:space="preserve">
+        <value>სერვერის მიერ მინიჭებული უახლესი განახლების დროის ნიშნული. მხოლოდ წასაკითხი.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="RoleRegistry.version.description" xml:space="preserve">
+        <value>სერვერის მიერ მინიჭებული ვერსიის ნომერი, იზრდება ყოველ განახლებაზე. მხოლოდ წასაკითხი.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="RoleRegistryPermission.permissionSpecificationId.description" xml:space="preserve">
+        <value>როლისთვის მინიჭებული ნებართვის სპეციფიკაციის იდენტიფიკატორი -- იგივე მთელი რიცხვი, რომლის მიმართაც მყარადაა ჩაწერილი თითოეული სერვისის ნებართვის შემოწმება. უნდა მიუთითებდეს ნებართვის სპეციფიკაციების კატალოგის არსებულ სტრიქონზე.</value>
+        <comment>a04fe2e8</comment>
+    </data>
+    <data name="RoleRegistryPermission.active.description" xml:space="preserve">
+        <value>როცა მნიშვნელობა ჭეშმარიტია, ეს ნებართვის მინიჭება მოქმედებს. როცა მცდარია, იგნორირებულია და როლი ნებართვას არ იღებს.</value>
+        <comment>f16785e0</comment>
+    </data>
+    <data name="RoleRegistryPermission.locked.description" xml:space="preserve">
+        <value>როცა მნიშვნელობა ჭეშმარიტია, ეს მინიჭება დაბლოკილია და მისი რედაქტირება ან წაშლა შეუძლებელია.</value>
+        <comment>51b4242c</comment>
+    </data>
+    <data name="RoleRegistryPermission.createdUser.description" xml:space="preserve">
+        <value>მომხმარებელი, რომელმაც ეს სტრიქონი შექმნა. მინიჭებულია სერვერის მიერ. მხოლოდ წასაკითხი.</value>
+        <comment>3b8cd8cf</comment>
+    </data>
+    <data name="RoleRegistryPermission.createdDate.description" xml:space="preserve">
+        <value>ამ სტრიქონის შექმნის დროის ნიშნული (UTC). მინიჭებულია სერვერის მიერ. მხოლოდ წასაკითხი.</value>
+        <comment>bb91d7cb</comment>
+    </data>
+    <data name="RoleRegistryPermission.updatedUser.description" xml:space="preserve">
+        <value>მომხმარებელი, რომელმაც ეს სტრიქონი ბოლოს განაახლა. მინიჭებულია სერვერის მიერ. მხოლოდ წასაკითხი.</value>
+        <comment>eeb46a72</comment>
+    </data>
+    <data name="RoleRegistryPermission.updatedDate.description" xml:space="preserve">
+        <value>ამ სტრიქონის ბოლო განახლების დროის ნიშნული (UTC). მინიჭებულია სერვერის მიერ. მხოლოდ წასაკითხი.</value>
+        <comment>666366bf</comment>
+    </data>
+    <data name="RoleRegistryPermission.version.description" xml:space="preserve">
+        <value>სერვერის მიერ მინიჭებული ოპტიმისტური კონკურენტულობის ვერსიის ნომერი. მხოლოდ წასაკითხი.</value>
+        <comment>755d4fe7</comment>
+    </data>
+    <data name="PermissionSpecification.id.description" xml:space="preserve">
+        <value>ამ ნებართვის სპეციფიკაციის სერვერის მიერ მინიჭებული მთელრიცხვა იდენტიფიკატორი -- იგივე მთელი რიცხვი, რომლის მიმართაც მყარადაა ჩაწერილი თითოეული სერვისის ნებართვის შემოწმებები. მხოლოდ წასაკითხი: კატალოგი ივსება მონაცემთა ბაზის მიგრაციით და ამ API-ით არ იქმნება და არ რედაქტირდება.</value>
+        <comment>d881018b</comment>
+    </data>
+    <data name="PermissionSpecification.name.description" xml:space="preserve">
+        <value>ნებართვის სპეციფიკაციის საჩვენებელი სახელი, ნაჩვენებია ნებართვების ჩამოსაშლელ სიაში როლის ნებართვების მინიჭებისას. მხოლოდ წასაკითხი: კატალოგი ივსება მონაცემთა ბაზის მიგრაციით და ამ API-ით არ იქმნება და არ რედაქტირდება.</value>
+        <comment>cda60556</comment>
+    </data>
+    <data name="UserRegistry.name.description" xml:space="preserve">
+        <value>მომხმარებლის შესვლის სახელი, ემთხვევა ავთენტიფიკაციისას გაცემული JSON Web Token-ის Name პრეტენზიას. უნიკალურია ტენანტის ფარგლებში.</value>
+        <comment>1114b6a1</comment>
+    </data>
+    <data name="UserRegistry.roleRegistryGuid.description" xml:space="preserve">
+        <value>როლების რეესტრის იდენტიფიკატორი, რომელსაც ეს მომხმარებელი მიეკუთვნება. განსაზღვრავს მომხმარებლის ტენანტს და მის ნებართვებს.</value>
+        <comment>f99c9842</comment>
+    </data>
+    <data name="UserRegistry.email.description" xml:space="preserve">
+        <value>მომხმარებლის ელფოსტის მისამართი, გამოიყენება ანგარიშის მფლობელის იდენტიფიცირებისთვის. არ გამოიყენება დროებითი პაროლის მისაწოდებლად, რომელიც ერთხელ უბრუნდება მის გადამყენებელს.</value>
+        <comment>2767b97d</comment>
+    </data>
+    <data name="UserRegistry.email.placeholder" xml:space="preserve">
+        <value>სახელი@მაგალითი.ge</value>
+        <comment>7b17fb0b</comment>
+    </data>
+    <data name="UserRegistry.wirePasswordHash.description" xml:space="preserve">
+        <value>როცა მნიშვნელობა ჭეშმარიტია, პაროლის გადაყენების ქმედებით გაცემული დროებითი პაროლი დამატებით მარილდება მომხმარებლის Name-ით და SHA-256-ით ჰეშირდება Argon2 ჰეშირებამდე ('wire' პაროლის ფორმატი, რომელსაც ზოგიერთი კლიენტის ინტეგრაცია მოელის). არ ცვლის იმას, თუ როგორ ნაჩვენებია პაროლი გადამყენებელი მხარისთვის.</value>
+        <comment>13612f72</comment>
+    </data>
+    <data name="UserRegistry.passwordLocked.description" xml:space="preserve">
+        <value>როცა მნიშვნელობა ჭეშმარიტია, ანგარიში დაბლოკილია პაროლის განმეორებითი წარუმატებელი მცდელობების შემდეგ და ვერ ავთენტიფიცირდება, სანამ პაროლის გადაყენება ბლოკს არ მოხსნის. აქ მხოლოდ წასაკითხია; ხსნის მხოლოდ პაროლის გადაყენების ქმედება.</value>
+        <comment>6c727df1</comment>
+    </data>
+    <data name="UserRegistry.id.description" xml:space="preserve">
+        <value>სერვერის მიერ მინიჭებული სტრიქონის იდენტიფიკატორი. მხოლოდ წასაკითხი.</value>
+        <comment>254b452e</comment>
+    </data>
+    <data name="UserRegistry.createdUser.description" xml:space="preserve">
+        <value>მომხმარებელი, რომელმაც ეს ანგარიში შექმნა. მინიჭებულია სერვერის მიერ. მხოლოდ წასაკითხი.</value>
+        <comment>7eb019f3</comment>
+    </data>
+    <data name="UserRegistry.createdDate.description" xml:space="preserve">
+        <value>ამ ანგარიშის შექმნის დროის ნიშნული (UTC). მინიჭებულია სერვერის მიერ. მხოლოდ წასაკითხი.</value>
+        <comment>2c31adef</comment>
+    </data>
+    <data name="UserRegistry.version.description" xml:space="preserve">
+        <value>სერვერის მიერ მინიჭებული ოპტიმისტური კონკურენტულობის ვერსიის ნომერი, იზრდება ყოველ განახლებაზე. მხოლოდ წასაკითხი.</value>
+        <comment>937d398b</comment>
+    </data>
+    <data name="UserRegistry.inheritedId.description" xml:space="preserve">
+        <value>წინა ინსტალაციის სტრიქონის შენახვის იმპორტიდან გადმოტანილი იდენტიფიკატორი, თუ ეს ანგარიში იქიდან მოდის. სხვა შემთხვევაში არ ივსება და არ გამოიყენება. მხოლოდ წასაკითხი.</value>
+        <comment>cacf7d8d</comment>
+    </data>
+    <data name="UserRegistry.active.description" xml:space="preserve">
+        <value>როცა მნიშვნელობა ჭეშმარიტია, მომხმარებელს შეუძლია ავთენტიფიკაცია. როცა მცდარია, შესვლა უარყოფილია პაროლის სისწორის მიუხედავად.</value>
+        <comment>13f02082</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.name.description" xml:space="preserve">
+        <value>OpenTelemetry მთვლელის სახელი, რომელიც იზრდება დამთხვევისას, მაგ. "jube.logcounter.postgres_deadlock". უნიკალურია აქტიურ სტრიქონებს შორის, რეგისტრის გარჩევის გარეშე. მხოლოდ ასოები, ციფრები, '.', '_' და '-', OpenTelemetry-ის ინსტრუმენტის სახელდების კონვენციების შესაბამისად.</value>
+        <comment>49fd6ad9</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.name.placeholder" xml:space="preserve">
+        <value>jube.logcounter.postgres_deadlock</value>
+        <comment>415927e2</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.regex.description" xml:space="preserve">
+        <value>.NET რეგულარული გამოსახულება, რომელიც მოწმდება ამ ინსტანციამდე მიღწეულ ყველა არასტრუქტურირებულ ჟურნალის სტრიქონზე/შეტყობინებაზე (ApplicationLogEntry, PostgresLogEntry, ContainerLogEntry, RespSlowOperation, EtcdClusterEvent, PatroniClusterEvent). ყოველი დამთხვევა Name-ს ერთით ზრდის. უნდა კომპილირდებოდეს -- მოწმდება შენახვისას და არა დამთხვევისას. დამთხვევა ხაზოვან დროში სრულდება, სადაც შაბლონი ამის საშუალებას იძლევა; შაბლონები lookaround-ებით, უკუმითითებებით ან ატომური ჯგუფებით გადადის უკუგავლის შემამოწმებელზე, შეზღუდულზე 100 მწმ-ით სტრიქონზე, ხოლო წესი, რომელიც ზედიზედ ხუთ სტრიქონზე გადააჭარბებს ლიმიტს, შეჩერდება მომდევნო ერთწუთიან განახლებამდე.</value>
+        <comment>dfb2a18d</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.regex.placeholder" xml:space="preserve">
+        <value>deadlock detected</value>
+        <comment>5561729c</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.active.description" xml:space="preserve">
+        <value>როცა მნიშვნელობა ჭეშმარიტია, ეს წესი მოწმდება შემომავალ ჟურნალის სტრიქონებზე. როცა მცდარია, იგნორირებულია (და მისი მთვლელი უბრალოდ წყვეტს ზრდას -- სტრიქონი არ იშლება).</value>
+        <comment>d7167dd5</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.locked.description" xml:space="preserve">
+        <value>როცა მნიშვნელობა ჭეშმარიტია, ეს სტრიქონი დაბლოკილია და მისი რედაქტირება ან წაშლა შეუძლებელია.</value>
+        <comment>c9f595ac</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.createdUser.description" xml:space="preserve">
+        <value>მომხმარებელი, რომელმაც ეს სტრიქონი შექმნა. მინიჭებულია სერვერის მიერ. მხოლოდ წასაკითხი.</value>
+        <comment>3b8cd8cf</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.createdDate.description" xml:space="preserve">
+        <value>ამ სტრიქონის შექმნის დროის ნიშნული (UTC). მინიჭებულია სერვერის მიერ. მხოლოდ წასაკითხი.</value>
+        <comment>bb91d7cb</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.updatedUser.description" xml:space="preserve">
+        <value>მომხმარებელი, რომელმაც ეს სტრიქონი ბოლოს განაახლა. მინიჭებულია სერვერის მიერ. მხოლოდ წასაკითხი.</value>
+        <comment>eeb46a72</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.updatedDate.description" xml:space="preserve">
+        <value>ამ სტრიქონის ბოლო განახლების დროის ნიშნული (UTC). მინიჭებულია სერვერის მიერ. მხოლოდ წასაკითხი.</value>
+        <comment>666366bf</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.version.description" xml:space="preserve">
+        <value>სერვერის მიერ მინიჭებული ოპტიმისტური კონკურენტულობის ვერსიის ნომერი. მხოლოდ წასაკითხი.</value>
+        <comment>755d4fe7</comment>
+    </data>
+    <data name="OpenTelemetryExclude.name.description" xml:space="preserve">
+        <value>OpenTelemetry ინსტრუმენტის/მთვლელის ზუსტი სახელი, რომლის ექსპორტიც უნდა შეწყდეს, მაგ. "jube.engine.logs.warn.count". ემთხვევა სრულად, რეგისტრის გარჩევის გარეშე -- ველური ბარათების გარეშე. მხოლოდ ასოები, ციფრები, '.', '_', '/' და '-'. უნიკალურია აქტიურ სტრიქონებს შორის. ვრცელდება ყველა ინსტრუმენტზე, მათ შორის მათზე, რომლებსაც OpenTelemetryLogCounter დინამიკურად ქმნის: გამორიცხული სახელი იქ საერთოდ არ იქმნება და ამიტომ არასოდეს იწყებს ზრდას. ყველა სხვა, უკვე არსებული დასახელებული მთვლელისთვის ეს მოქმედებს მხოლოდ ინსტრუმენტზე, რომელიც ჯერ აქტიურად არ ექსპორტირდება -- უკვე ექსპორტირებადი აგრძელებს პროცესის გადატვირთვამდე.</value>
+        <comment>7e24ca9e</comment>
+    </data>
+    <data name="OpenTelemetryExclude.name.placeholder" xml:space="preserve">
+        <value>jube.engine.logs.warn.count</value>
+        <comment>2ddc8a48</comment>
+    </data>
+    <data name="OpenTelemetryExclude.active.description" xml:space="preserve">
+        <value>როცა მნიშვნელობა ჭეშმარიტია, ეს გამორიცხვა მოქმედებს. როცა მცდარია, იგნორირებულია (ინსტრუმენტი ექსპორტირდება ჩვეულებრივად, სხვა გამორიცხვების გათვალისწინებით).</value>
+        <comment>7d0dc62e</comment>
+    </data>
+    <data name="OpenTelemetryExclude.locked.description" xml:space="preserve">
+        <value>როცა მნიშვნელობა ჭეშმარიტია, ეს სტრიქონი დაბლოკილია და მისი რედაქტირება ან წაშლა შეუძლებელია.</value>
+        <comment>c9f595ac</comment>
+    </data>
+    <data name="OpenTelemetryExclude.createdUser.description" xml:space="preserve">
+        <value>მომხმარებელი, რომელმაც ეს სტრიქონი შექმნა. მინიჭებულია სერვერის მიერ. მხოლოდ წასაკითხი.</value>
+        <comment>3b8cd8cf</comment>
+    </data>
+    <data name="OpenTelemetryExclude.createdDate.description" xml:space="preserve">
+        <value>ამ სტრიქონის შექმნის დროის ნიშნული (UTC). მინიჭებულია სერვერის მიერ. მხოლოდ წასაკითხი.</value>
+        <comment>bb91d7cb</comment>
+    </data>
+    <data name="OpenTelemetryExclude.updatedUser.description" xml:space="preserve">
+        <value>მომხმარებელი, რომელმაც ეს სტრიქონი ბოლოს განაახლა. მინიჭებულია სერვერის მიერ. მხოლოდ წასაკითხი.</value>
+        <comment>eeb46a72</comment>
+    </data>
+    <data name="OpenTelemetryExclude.updatedDate.description" xml:space="preserve">
+        <value>ამ სტრიქონის ბოლო განახლების დროის ნიშნული (UTC). მინიჭებულია სერვერის მიერ. მხოლოდ წასაკითხი.</value>
+        <comment>666366bf</comment>
+    </data>
+    <data name="OpenTelemetryExclude.version.description" xml:space="preserve">
+        <value>სერვერის მიერ მინიჭებული ოპტიმისტური კონკურენტულობის ვერსიის ნომერი. მხოლოდ წასაკითხი.</value>
+        <comment>755d4fe7</comment>
+    </data>
+</root>

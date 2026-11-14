@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns the angle whose sine is the specified number.")]
         public static Double Asin(this Double d)
         {
             return Math.Asin(d);

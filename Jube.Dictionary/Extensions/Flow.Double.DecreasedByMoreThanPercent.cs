@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchDecreasedByMoreThanPercent(double previous, double percent)
+            [Description("True when: the percentage decrease from the previous value exceeds the percentage. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchDecreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage decrease that counts.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleDecreasedByMoreThanPercent(flow.Value, previous, percent));
             }
 
-            public Flow<double> RejectDecreasedByMoreThanPercent(double previous, double percent)
+            [Description("True when: the percentage decrease from the previous value exceeds the percentage. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectDecreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage decrease that counts.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleDecreasedByMoreThanPercent(flow.Value, previous, percent));
             }
 
-            public Flow<double> BreakDecreasedByMoreThanPercent(double previous, double percent)
+            [Description("True when: the percentage decrease from the previous value exceeds the percentage. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakDecreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage decrease that counts.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleDecreasedByMoreThanPercent(flow.Value, previous, percent));
             }
 
-            public Flow<double> RequireDecreasedByMoreThanPercent(double previous, double percent)
+            [Description("True when: the percentage decrease from the previous value exceeds the percentage. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireDecreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage decrease that counts.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleDecreasedByMoreThanPercent(flow.Value, previous, percent));
             }
 
-            public Flow<double> EnsureDecreasedByMoreThanPercent(double previous, double percent)
+            [Description("True when: the percentage decrease from the previous value exceeds the percentage. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureDecreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage decrease that counts.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchDecreasedByMoreThanPercent(double previous, double percent)
+            [Description("Begins a pipeline from the value. True when: the percentage decrease from the previous value exceeds the percentage. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchDecreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage decrease that counts.")] double percent)
             {
                 return value.Start().MatchDecreasedByMoreThanPercent(previous, percent);
             }
 
-            public Flow<double> RejectDecreasedByMoreThanPercent(double previous, double percent)
+            [Description("Begins a pipeline from the value. True when: the percentage decrease from the previous value exceeds the percentage. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectDecreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage decrease that counts.")] double percent)
             {
                 return value.Start().RejectDecreasedByMoreThanPercent(previous, percent);
             }
 
-            public Flow<double> BreakDecreasedByMoreThanPercent(double previous, double percent)
+            [Description("Begins a pipeline from the value. True when: the percentage decrease from the previous value exceeds the percentage. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakDecreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage decrease that counts.")] double percent)
             {
                 return value.Start().BreakDecreasedByMoreThanPercent(previous, percent);
             }
 
-            public Flow<double> RequireDecreasedByMoreThanPercent(double previous, double percent)
+            [Description("Begins a pipeline from the value. True when: the percentage decrease from the previous value exceeds the percentage. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireDecreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage decrease that counts.")] double percent)
             {
                 return value.Start().RequireDecreasedByMoreThanPercent(previous, percent);
             }
 
-            public Flow<double> EnsureDecreasedByMoreThanPercent(double previous, double percent)
+            [Description("Begins a pipeline from the value. True when: the percentage decrease from the previous value exceeds the percentage. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureDecreasedByMoreThanPercent([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The percentage decrease that counts.")] double percent)
             {
                 return value.Start().EnsureDecreasedByMoreThanPercent(previous, percent);
             }

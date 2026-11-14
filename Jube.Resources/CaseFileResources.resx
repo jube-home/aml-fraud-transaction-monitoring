@@ -57,4 +57,25 @@
     <data name="FileTooLarge" xml:space="preserve">
     <value>The file is larger than the maximum permitted size.</value>
   </data>
+    <data name="OneParentOnly" xml:space="preserve">
+    <value>A file belongs to a note or to research, never both.</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>The case is locked by another user.</value>
+  </data>
+    <data name="RemovalRestricted" xml:space="preserve">
+    <value>Only the user who uploaded this file, the user who holds the case or a supervisor can remove it.</value>
+  </data>
+    <data name="FileTypeNotAllowed" xml:space="preserve">
+    <value>Files with this extension are not accepted as case evidence.</value>
+  </data>
+    <data name="FileContentNotAllowed" xml:space="preserve">
+    <value>The content of this file is not of a type accepted as case evidence.</value>
+  </data>
+    <data name="FileRejectedByScanner" xml:space="preserve">
+    <value>The file was rejected by the malware scan.</value>
+  </data>
+    <data name="FileScanUnavailable" xml:space="preserve">
+    <value>The file could not be scanned, so it was not accepted.</value>
+  </data>
 </root>

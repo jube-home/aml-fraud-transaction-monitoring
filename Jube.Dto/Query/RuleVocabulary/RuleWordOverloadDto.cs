@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,18 +22,26 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.RuleVocabulary
 {
     [Description("One way to call a rule function.")]
+    [MessagePackObject]
     public class RuleWordOverloadDto
     {
         [Description("The call as Visual Basic, e.g. <String>.IsMatch(pattern As String) As Boolean, where " +
                      "<String> is the value it is called on.")]
+        [Key(0)]
         public string Signature { get; set; } = string.Empty;
 
         [Description("The type of value it is called on, e.g. String or Double.")]
+        [Key(1)]
         public string ReceiverType { get; set; } = string.Empty;
 
-        [Description("The type it returns.")] public string ReturnType { get; set; } = string.Empty;
+        [Description("The type it returns.")] [Key(2)] public string ReturnType { get; set; } = string.Empty;
 
         [Description("Its parameters after the value it is called on.")]
+        [Key(3)]
         public List<RuleWordParameterDto> Parameters { get; set; } = [];
+
+        [Description("What the call does, in a sentence, when one is recorded; otherwise null.")]
+        [Key(4)]
+        public string? Description { get; set; }
     }
 }

@@ -11,13 +11,16 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using MessagePack;
+
 namespace Jube.Data.Query
 {
     using System;
     using System.Collections.Generic;
     using System.Reflection;
 
-    public record VersionFieldChange(string PropertyName, object FromValue, object ToValue);
+    [MessagePackObject]
+    public record VersionFieldChange([property: Key(0)] string PropertyName, [property: Key(1)] object FromValue, [property: Key(2)] object ToValue);
 
     public static class VersionDiff
     {

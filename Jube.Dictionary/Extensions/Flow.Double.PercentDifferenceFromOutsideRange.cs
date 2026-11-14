@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchPercentDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the gap between the two as a percentage of their average size, the same either way round is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoublePercentDifferenceFromOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectPercentDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the gap between the two as a percentage of their average size, the same either way round is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoublePercentDifferenceFromOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakPercentDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the gap between the two as a percentage of their average size, the same either way round is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoublePercentDifferenceFromOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RequirePercentDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the gap between the two as a percentage of their average size, the same either way round is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoublePercentDifferenceFromOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsurePercentDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the gap between the two as a percentage of their average size, the same either way round is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchPercentDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the gap between the two as a percentage of their average size, the same either way round is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchPercentDifferenceFromOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectPercentDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the gap between the two as a percentage of their average size, the same either way round is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectPercentDifferenceFromOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakPercentDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the gap between the two as a percentage of their average size, the same either way round is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakPercentDifferenceFromOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RequirePercentDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the gap between the two as a percentage of their average size, the same either way round is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequirePercentDifferenceFromOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsurePercentDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the gap between the two as a percentage of their average size, the same either way round is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsurePercentDifferenceFromOutsideRange(other, lowerBound, upperBound);
             }

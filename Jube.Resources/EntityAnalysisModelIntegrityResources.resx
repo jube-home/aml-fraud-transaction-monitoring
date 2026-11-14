@@ -48,4 +48,133 @@
     <data name="EntityNotFound" xml:space="preserve">
     <value>No {0} with id {1} was found in this model.</value>
   </data>
+    <data name="Title_DependencyDangling" xml:space="preserve">
+    <value>Uses a name that does not exist</value>
+  </data>
+    <data name="Title_DependencyOnInactive" xml:space="preserve">
+    <value>Uses an inactive entity</value>
+  </data>
+    <data name="Title_DependencyOnUnapproved" xml:space="preserve">
+    <value>Uses an entity that is not yet approved</value>
+  </data>
+    <data name="Title_EntityPendingApproval" xml:space="preserve">
+    <value>Changed and waiting for approval</value>
+  </data>
+    <data name="Title_EntityUnreferenced" xml:space="preserve">
+    <value>Not used by anything</value>
+  </data>
+    <data name="Title_EngineCompileFailed" xml:space="preserve">
+    <value>Did not compile in the engine</value>
+  </data>
+    <data name="Title_ModelInactive" xml:space="preserve">
+    <value>Model is inactive</value>
+  </data>
+    <data name="Title_NoActiveActivationRules" xml:space="preserve">
+    <value>No active activation rules</value>
+  </data>
+    <data name="Title_TtlCountersDisabled" xml:space="preserve">
+    <value>TTL counters are disabled</value>
+  </data>
+    <data name="Title_SearchKeyTtlShortensWindow" xml:space="preserve">
+    <value>Search key history is shorter than the rule window</value>
+  </data>
+    <data name="Title_SearchKeyTtlCollapsesWindow" xml:space="preserve">
+    <value>Search key keeps no history for the rule window</value>
+  </data>
+    <data name="Title_EngineStateUnavailable" xml:space="preserve">
+    <value>Engine state is unavailable</value>
+  </data>
+    <data name="Title_EngineNoNodes" xml:space="preserve">
+    <value>No engine instance has synchronised</value>
+  </data>
+    <data name="Title_EngineNodeStale" xml:space="preserve">
+    <value>Engine instance has stopped reporting</value>
+  </data>
+    <data name="Title_EngineModelNotLoaded" xml:space="preserve">
+    <value>Model is not loaded by an engine instance</value>
+  </data>
+    <data name="Title_EngineModelNotStarted" xml:space="preserve">
+    <value>Model is loaded but not started</value>
+  </data>
+    <data name="Title_EngineEntityNotLoaded" xml:space="preserve">
+    <value>Not loaded by an engine instance</value>
+  </data>
+    <data name="Title_EngineEntityStale" xml:space="preserve">
+    <value>Engine still runs an entity that is no longer active</value>
+  </data>
+    <data name="Message_DependencyDanglingActiveRuleText" xml:space="preserve">
+    <value>The rule text of {0} {1} names {2}, which does not exist, so it will not work.</value>
+  </data>
+    <data name="Message_DependencyDanglingInactiveRuleText" xml:space="preserve">
+    <value>The rule text of {0} {1} names {2}, which does not exist; it is inactive, so this only matters if it is activated.</value>
+  </data>
+    <data name="Message_DependencyDanglingActiveSetting" xml:space="preserve">
+    <value>The {0} setting of {1} {2} names {3}, which does not exist, so it will not work.</value>
+  </data>
+    <data name="Message_DependencyDanglingInactiveSetting" xml:space="preserve">
+    <value>The {0} setting of {1} {2} names {3}, which does not exist; it is inactive, so this only matters if it is activated.</value>
+  </data>
+    <data name="Message_DependencyOnInactiveRuleText" xml:space="preserve">
+    <value>The rule text of {0} {1} uses {2} {3}, which is inactive, so the engine does not load it and the use will not work.</value>
+  </data>
+    <data name="Message_DependencyOnInactiveSetting" xml:space="preserve">
+    <value>The {0} setting of {1} {2} uses {3} {4}, which is inactive, so the engine does not load it and the use will not work.</value>
+  </data>
+    <data name="Message_DependencyOnUnapprovedRuleText" xml:space="preserve">
+    <value>The rule text of {0} {1} uses {2} {3}, which is not yet approved, so the engine does not run it and the use will not work until it is.</value>
+  </data>
+    <data name="Message_DependencyOnUnapprovedSetting" xml:space="preserve">
+    <value>The {0} setting of {1} {2} uses {3} {4}, which is not yet approved, so the engine does not run it and the use will not work until it is.</value>
+  </data>
+    <data name="Message_EntityUnreferenced" xml:space="preserve">
+    <value>{0} {1} is active but nothing in the model uses it.</value>
+  </data>
+    <data name="Message_EngineCompileFailed" xml:space="preserve">
+    <value>The engine could not compile {0} {1} at its last synchronisation, so it is not running: {2}.</value>
+  </data>
+    <data name="Message_EngineCompileFailedNoError" xml:space="preserve">
+    <value>The engine could not compile {0} {1} at its last synchronisation, so it is not running: no error was recorded.</value>
+  </data>
+    <data name="Message_ModelInactive" xml:space="preserve">
+    <value>The model is inactive, so the engine does not load or invoke it.</value>
+  </data>
+    <data name="Message_NoActiveActivationRules" xml:space="preserve">
+    <value>The model has no active activation rules, so no transaction can activate.</value>
+  </data>
+    <data name="Message_TtlCountersDisabled" xml:space="preserve">
+    <value>TTL counters are disabled for the model, so the engine neither increments nor reads {0}; rules see it as 0.</value>
+  </data>
+    <data name="Message_SearchKeyTtlCollapsesWindow" xml:space="preserve">
+    <value>The search key {0} has no TTL, so the engine limits the abstraction rule's {1} {2} window to the reference date alone and it aggregates almost nothing.</value>
+  </data>
+    <data name="Message_SearchKeyTtlShortensWindow" xml:space="preserve">
+    <value>The search key {0} keeps history for {1} {2}, which is shorter than the rule's {3} {4}, so the engine silently uses the shorter window.</value>
+  </data>
+    <data name="Message_EngineStateUnavailable" xml:space="preserve">
+    <value>No engine runs in this process and no engine has recorded what it loaded for this model, so what the engine is running cannot be checked.</value>
+  </data>
+    <data name="Message_EngineNoNodes" xml:space="preserve">
+    <value>No engine instance has synchronised this tenant's models.</value>
+  </data>
+    <data name="Message_EngineNodeStale" xml:space="preserve">
+    <value>Engine instance {0} last reported at {1} and is not running. It is removed at the next synchronisation, or drops out of this list at {2} if no synchronisation runs.</value>
+  </data>
+    <data name="Message_EngineModelNotStarted" xml:space="preserve">
+    <value>Engine instance {0} has loaded the model but not started it.</value>
+  </data>
+    <data name="Message_EntityPendingApprovalWaiting" xml:space="preserve">
+    <value>{0} {1} is waiting for approval, so engine instance {2} does not run it yet.</value>
+  </data>
+    <data name="Message_EntityPendingApprovalChanged" xml:space="preserve">
+    <value>{0} {1} has a change waiting for approval, so engine instance {2} is still running the last approved version.</value>
+  </data>
+    <data name="Message_EngineEntityNotLoaded" xml:space="preserve">
+    <value>{0} {1} is approved and active but engine instance {2} has not loaded it: synchronise the model, and check that it compiles.</value>
+  </data>
+    <data name="Message_EngineEntityStale" xml:space="preserve">
+    <value>Engine instance {0} is still running {1} {2}, which is no longer active; synchronise the model to unload it.</value>
+  </data>
+    <data name="Message_EngineModelNotLoaded" xml:space="preserve">
+    <value>Engine instance {0} has not loaded the model; synchronise it.</value>
+  </data>
 </root>

@@ -61,8 +61,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(25)] public string CoderRuleScript { get; set; }
         [Column] [Nullable] [Key(26)] public byte? RuleScriptTypeId { get; set; }
 
-        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true)]
         [Key(27)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
 
@@ -72,5 +71,12 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(31)] public int? ImportId { get; set; }
         [Column] [Nullable] [Key(32)] public byte? Compiled { get; set; }
         [Column] [Nullable] [Key(33)] public string CompileError { get; set; }
+        [Column] [Nullable] [Key(34)] public byte? IterationOrderId { get; set; }
+
+        [Column]
+        [DataType(DataType.BinaryJson)]
+        [Nullable]
+        [Key(35)]
+        public string SearchFunctionParameters { get; set; }
     }
 }

@@ -66,4 +66,7 @@
     <data name="HtmlRequired" xml:space="preserve">
     <value>Le modèle HTML d'affichage est requis.</value>
   </data>
+    <data name="FieldMaxLength" xml:space="preserve">
+    <value>Le champ {0} ne doit pas dépasser {1} caractères.</value>
+  </data>
 </root>

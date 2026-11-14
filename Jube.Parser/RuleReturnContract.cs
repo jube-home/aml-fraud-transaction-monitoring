@@ -24,7 +24,21 @@ namespace Jube.Parser
         private const string Header = "Public Class RuleContract\r\nPublic Sub Contract()\r\n";
         private const string Footer = "\r\nEnd Sub\r\nEnd Class\r\n";
         private const int HeaderLines = 2;
+        public const string NeverAnswersCode = "NeverAnswers";
+        public const string ResultDiscardedCode = "ResultDiscarded";
         private const string ResultName = "Matched";
+        private const string CursorName = "Cursor";
+        private const string CursorResultName = "Result";
+
+        private static bool IsCursorResult(ExpressionSyntax left)
+        {
+            return left is MemberAccessExpressionSyntax
+                   {
+                       Expression: IdentifierNameSyntax owner, Name: IdentifierNameSyntax member
+                   } &&
+                   string.Equals(owner.Identifier.ValueText, CursorName, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(member.Identifier.ValueText, CursorResultName, StringComparison.OrdinalIgnoreCase);
+        }
 
         public static ErrorSpan Check(string ruleText)
         {
@@ -39,8 +53,9 @@ namespace Jube.Parser
             var returns = method.DescendantNodes().OfType<ReturnStatementSyntax>().Any();
 
             var assignsResult = method.DescendantNodes().OfType<AssignmentStatementSyntax>()
-                .Any(a => a.Left is IdentifierNameSyntax name &&
-                          string.Equals(name.Identifier.ValueText, ResultName, StringComparison.OrdinalIgnoreCase));
+                .Any(a => (a.Left is IdentifierNameSyntax name &&
+                           string.Equals(name.Identifier.ValueText, ResultName, StringComparison.OrdinalIgnoreCase)) ||
+                          IsCursorResult(a.Left));
 
             if (returns || assignsResult)
             {
@@ -53,18 +68,25 @@ namespace Jube.Parser
             {
                 return new ErrorSpan
                 {
+                    Code = NeverAnswersCode,
                     Message = "The rule never sets Matched and never returns, so the wrapper answers every input " +
                               "with the default. Assign Matched, as in Matched = Payload.Amount > 100, or return " +
                               "early with Return True or Return False."
                 };
             }
 
-            var line = discarded.GetLocation().GetLineSpan().StartLinePosition.Line - HeaderLines;
+            var position = discarded.GetLocation().GetLineSpan();
+            var line = position.StartLinePosition.Line - HeaderLines;
             var expression = discarded.Expression.ToString().Trim();
 
             return new ErrorSpan
             {
+                Code = ResultDiscardedCode,
                 Line = line,
+                Column = position.StartLinePosition.Character,
+                EndColumn = position.EndLinePosition.Line == position.StartLinePosition.Line
+                    ? position.EndLinePosition.Character
+                    : int.MaxValue,
                 Start = discarded.SpanStart - Header.Length,
                 Length = discarded.Span.Length,
                 Message = $"Line {line + 1}: {expression} is evaluated and its result is discarded, and the rule " +

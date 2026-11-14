@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Du har inte behörighet att utföra den här åtgärden.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Du måste vara inloggad för att utföra den här åtgärden.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>Konversationen hittades inte.</value>
+  </data>
+    <data name="TitleMaxLength" xml:space="preserve">
+    <value>Titeln får vara högst {0} tecken.</value>
+  </data>
+    <data name="FileNotFound" xml:space="preserve">
+    <value>Filen hittades inte.</value>
+  </data>
+    <data name="FileTooLarge" xml:space="preserve">
+    <value>Filer får vara högst {0} MB.</value>
+  </data>
+    <data name="FileTypeNotAllowed" xml:space="preserve">
+    <value>Den filtypen är inte tillåten.</value>
+  </data>
+    <data name="EmptyReply" xml:space="preserve">
+    <value>Jooby hittade inget svar. Fråga igen eller formulera om.</value>
+  </data>
+    <data name="NoInferenceBackend" xml:space="preserve">
+    <value>Jag är Jooby. Det finns {0} Bites, {1} Trails, {2} Saltlicks, {3} specialiserade Joobriks och {4} Yokes, men ingen inferensbackend är konfigurerad ännu, så inget av det körs. Ange AskJoobyApiEndpoint, AskJoobyModel och AskJoobyApiKey och sätt EnableAskJooby till True så är jag redo.</value>
+  </data>
+    <data name="StreamFailed" xml:space="preserve">
+    <value>Svaret kunde inte slutföras. Försök igen.</value>
+  </data>
+    <data name="ApprovalSummary" xml:space="preserve">
+    <value>Jooby vill göra en ändring med {0} och behöver först ditt godkännande. Inget har ändrats ännu.</value>
+  </data>
+    <data name="ApprovalNotFound" xml:space="preserve">
+    <value>Den godkännandebegäran hittades inte eller har redan avgjorts.</value>
+  </data>
+    <data name="RateLimited" xml:space="preserve">
+    <value>Du skickar meddelanden för snabbt eller har för många svar igång. Vänta en stund och försök igen.</value>
+  </data>
+</root>

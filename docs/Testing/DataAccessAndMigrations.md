@@ -26,7 +26,47 @@ preservation and volume characteristics.
 | `ABatchUpdatesEveryRecordInOneGoAndReportsTheOnesThatAreGoneAsync`       | Fact | A batch updates every record in one go and reports the ones that are gone.      |
 | `UpdatingAnArchiveRecordThatDoesNotExistThrowsAsync`                     | Fact | Updating an archive record that does not exist throws.                          |
 
+### ArchiveHoldWriteTests
+
+`Jube.Test.ArchiveWrites.ArchiveHoldWriteTests` — 8 tests. Category: Service. Collection: Database.
+
+| Test                                                                               | Kind | Verifies                                                                                    |
+|------------------------------------------------------------------------------------|------|---------------------------------------------------------------------------------------------|
+| `ChangingTheHoldRewritesItInThePayloadBumpsTheVersionAndKeepsTheEarlierStateAsync` | Fact | Changing the hold rewrites it in the payload bumps the version and keeps the earlier state. |
+| `TheTransactionDateIsNotMovedByAHoldChangeAsync`                                   | Fact | The transaction date is not moved by a hold change.                                         |
+| `EveryChangeIsItsOwnVersionAsync`                                                  | Fact | Every change is its own version.                                                            |
+| `AMissingArchiveAndATransactionWithoutAHoldAreReportedNotChangedAsync`             | Fact | A missing archive and a transaction without a hold are reported not changed.                |
+| `ARefusedChangeRollsBackAndLeavesNeitherAVersionNorAChangeAsync`                   | Fact | A refused change rolls back and leaves neither a version nor a change.                      |
+| `TwoDecisionsAtOnceAreSerialisedSoOnlyTheFirstFindsThePaymentHeldAsync`            | Fact | Two decisions at once are serialised so only the first finds the payment held.              |
+| `AReprocessedArchiveKeepsTheHoldItAlreadyHasAsync`                                 | Fact | A reprocessed archive keeps the hold it already has.                                        |
+| `ABatchReprocessKeepsTheHoldAndAddsNoneToATransactionWithoutOneAsync`              | Fact | A batch reprocess keeps the hold and adds none to a transaction without one.                |
+
 ## Migrations
+
+### ArchiveKeyLookupSqlTests
+
+`Jube.Test.ArchiveKeyLookup.ArchiveKeyLookupSqlTests` — 9 tests. Category: Unit.
+
+| Test                                                                | Kind   | Verifies                                                                                                         |
+|---------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------------------------------|
+| `TheTypedColumnFollowsTheFieldDataTypeAsTheEngineWritesIt`          | Theory | The typed column follows the field data type as the engine writes it.                                            |
+| `AnEqualityPredicateBindsTheProcessingTypeTheKeyAndTheValueInOrder` | Fact   | An equality predicate binds the processing type, the key and the value in order after the model and user tokens. |
+| `ARangePredicateUsesTheTypedColumnWithTheOperator`                  | Theory | A range predicate uses the typed column with the operator.                                                       |
+| `ABetweenPredicateBindsBothBounds`                                  | Fact   | A between predicate binds both bounds.                                                                           |
+| `TheEntryKeyPredicatesOnTheArchiveRowItselfWithoutTheKeyTable`      | Fact   | The entry key predicates on the Archive row itself without the key table.                                        |
+| `TheExistsFormCorrelatesOnTheArchiveEntryGuid`                      | Fact   | The exists form correlates on the Archive entry guid.                                                            |
+| `TheValueTextOfATypedColumnRoundTripsThroughTheResolver`            | Theory | The value text of a typed column round-trips through the resolver.                                               |
+| `OnlyNumericAndDateColumnsAllowARange`                              | Theory | Only numeric and date columns allow a range.                                                                     |
+| `AFieldNameThatIsNotAPlainIdentifierSelectsByBracket`               | Fact   | A field name that is not a plain identifier selects by bracket.                                                  |
+
+### MigrateCaseKeyJournalIndexesToArchiveKeyScriptTests
+
+`Jube.Test.Migrations.MigrateCaseKeyJournalIndexesToArchiveKeyScriptTests` — 1 test. Category: Service. Collection:
+Database.
+
+| Test                                                                          | Kind | Verifies                                                                                                                                                                                                                                                                |
+|-------------------------------------------------------------------------------|------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `TheScriptBackfillsValidatesAndRetiresWithoutTouchingWhatTheEngineWroteAsync` | Fact | The standalone script backfills ArchiveKey for every Archive Key field over the history, validates the counts and sample values, dedupes and builds the request key identity, retires the Case Key Journal expression indexes without dropping them, and is idempotent. |
 
 ### AbstractionCalculationCoderOnlyMigrationTests
 
@@ -78,6 +118,17 @@ EvalExpressionRegistry.
 | `DictionaryKvpDuplicatesAreDedupedKeepingNewestWithAuditAndApprovalAsync`   | Fact | Dictionary kvp duplicates are deduped keeping newest with audit and approval.    |
 | `DictionaryKvpKeepsTheNewestNonExpiredDuplicateOverAnExpiredNewerOneAsync`  | Fact | Dictionary kvp keeps the newest non expired duplicate over an expired newer one. |
 
+### RemoveRemoteTileHostsFromContentSecurityPolicyMigrationTests
+
+`Jube.Test.Migrations.RemoveRemoteTileHostsFromContentSecurityPolicyMigrationTests` — 4 tests. Category: Unit.
+
+| Test                                                                   | Kind | Verifies                                                                           |
+|------------------------------------------------------------------------|------|------------------------------------------------------------------------------------|
+| `TheStatementIsValidSqlWhoseLiteralsAreTheHeaderAndBothPoliciesIntact` | Fact | The statement is valid sql whose literals are the header and both policies intact. |
+| `ThePolicyKeepsItsQuotedKeywordsAndNamesNoRemoteHost`                  | Fact | The policy keeps its quoted keywords and names no remote host.                     |
+| `ThePolicyNamesNoRemoteHostSoTheMapStaysLocalUnlessAnOperatorOptsIn`   | Fact | The policy names no remote host so the map stays local unless an operator opts in. |
+| `TheStatementOnlyReplacesTheStockPolicy`                               | Fact | The statement only replaces the stock policy.                                      |
+
 ### PenTestHardeningMigrationTests
 
 `Jube.Test.Migrations.PenTestHardeningMigrationTests` — 17 tests. Category: Service. Collection: Database.
@@ -108,14 +159,14 @@ EvalExpressionRegistry.
 
 `Jube.Test.Preservation.EntityApprovalPreservationTests` — 6 tests. Category: Service. Collection: Database.
 
-| Test                                                                        | Kind | Verifies                                                                            |
-|-----------------------------------------------------------------------------|------|-------------------------------------------------------------------------------------|
-| `ApprovalHistoryRoundTripsVerbatimAgainstPreservedVersionsAsync`            | Fact | Approval history round trips verbatim against preserved versions.                   |
-| `AnExportWithoutAnyApprovalsImportsEverythingStillAwaitingApprovalAsync`    | Fact | An export without any approvals imports everything still awaiting approval.         |
+| Test                                                                                 | Kind | Verifies                                                                                  |
+|--------------------------------------------------------------------------------------|------|-------------------------------------------------------------------------------------------|
+| `ApprovalHistoryRoundTripsVerbatimAgainstPreservedVersionsAsync`                     | Fact | Approval history round trips verbatim against preserved versions.                         |
+| `AnExportWithoutAnyApprovalsImportsEverythingStillAwaitingApprovalAsync`             | Fact | An export without any approvals imports everything still awaiting approval.               |
 | `AFileWithoutTheApprovalCollectionIsBlanketApprovedIncludingAnalyticsInstancesAsync` | Fact | A file without the approval collection is blanket approved including analytics instances. |
-| `ReimportingIntoTheSameTenantReplacesTheApprovalHistoryInsteadOfAppendingAsync` | Fact | Reimporting into the same tenant replaces the approval history instead of appending. |
-| `ASnapshotAlwaysCarriesUnpromotedExhaustiveTrialsForLosslessRollbackAsync`  | Fact | A snapshot always carries unpromoted exhaustive trials for lossless rollback.       |
-| `ApprovalLookupsChunkTheEntityIdListInsteadOfSendingOneGiantInClauseAsync`  | Fact | Approval lookups chunk the entity id list instead of sending one giant in clause.   |
+| `ReimportingIntoTheSameTenantReplacesTheApprovalHistoryInsteadOfAppendingAsync`      | Fact | Reimporting into the same tenant replaces the approval history instead of appending.      |
+| `ASnapshotAlwaysCarriesUnpromotedExhaustiveTrialsForLosslessRollbackAsync`           | Fact | A snapshot always carries unpromoted exhaustive trials for lossless rollback.             |
+| `ApprovalLookupsChunkTheEntityIdListInsteadOfSendingOneGiantInClauseAsync`           | Fact | Approval lookups chunk the entity id list instead of sending one giant in clause.         |
 
 ### AdvancedAnalyticsPreservationTests
 
@@ -143,7 +194,7 @@ EvalExpressionRegistry.
 | `EveryExhaustiveTableRoundTripsWithEveryColumnAndEveryForeignKeyRemappedAsync` | Fact | Every exhaustive table round trips with every column and every foreign key remapped. |
 | `PerParentChildrenAreNotMixedAcrossParentsOrLeakedFromOtherTenantsAsync`       | Fact | Per parent children are not mixed across parents or leaked from other tenants.       |
 | `AnExportMadeBeforeThePrescriptionHistogramWasCarriedStillImportsAsync`        | Fact | An export made before the prescription histogram was carried still imports.          |
-| `PeekCarriesTheExhaustiveAndAnalyticsCollectionsAsync`                         | Fact | Peek carries the exhaustive and analytics collections.                               |
+| `LivePayloadCarriesTheExhaustiveAndAnalyticsCollectionsAsync`                  | Fact | Live payload carries the exhaustive and analytics collections.                       |
 
 ### PocoMessagePackKeysAreUniqueTests
 
@@ -158,11 +209,56 @@ EvalExpressionRegistry.
 
 `Jube.Test.Preservation.PreservationModelTreeCoverageTests` — 3 tests. Category: Unit.
 
-| Test                                                            | Kind | Verifies                                                              |
-|-----------------------------------------------------------------|------|------------------------------------------------------------------------|
-| `EveryModelTreeTableIsCarriedOrExplicitlyExcludedWithAReason`   | Fact | Every model tree table is carried or explicitly excluded with a reason. |
-| `TheExclusionsAreRealUncarriedTablesWithReasons`                | Fact | The exclusions are real uncarried tables with reasons.                |
-| `EveryApprovableKindIsCarriedSoItsHistoryCanReplay`             | Fact | Every approvable kind is carried so its history can replay.           |
+| Test                                                          | Kind | Verifies                                                                |
+|---------------------------------------------------------------|------|-------------------------------------------------------------------------|
+| `EveryModelTreeTableIsCarriedOrExplicitlyExcludedWithAReason` | Fact | Every model tree table is carried or explicitly excluded with a reason. |
+| `TheExclusionsAreRealUncarriedTablesWithReasons`              | Fact | The exclusions are real uncarried tables with reasons.                  |
+| `EveryApprovableKindIsCarriedSoItsHistoryCanReplay`           | Fact | Every approvable kind is carried so its history can replay.             |
+
+### ChecklistItemSwitchPreservationTests
+
+`Jube.Test.Preservation.ChecklistItemSwitchPreservationTests` — 2 tests. Category: Unit.
+
+| Test                                                                    | Kind | Verifies                                                                           |
+|-------------------------------------------------------------------------|------|------------------------------------------------------------------------------------|
+| `TheShowAndValidationSwitchesSurviveAnExportAndImportRoundTrip`         | Fact | The show and validation switches survive an export and import round trip.          |
+| `TheSwitchesTakeKeysAboveEveryExistingMemberSoOlderExportsStayReadable` | Fact | The switches take keys above every existing member so older exports stay readable. |
+
+### PreservationImportTwinsTests
+
+`Jube.Test.Preservation.PreservationImportTwinsTests` — 11 tests. Category: Service. Collection: Database.
+
+| Test                                                                                 | Kind   | Verifies                                                                                      |
+|--------------------------------------------------------------------------------------|--------|-----------------------------------------------------------------------------------------------|
+| `TheSeededTwinsReallyMultiplyAnUnfilteredGuidJoinAsync`                              | Fact   | The seeded twins really multiply an unfiltered guid join.                                     |
+| `TheCasesPageListsEachCaseOnceWhateverTheSortWhenWorkflowAndStatusesCarryTwinsAsync` | Theory | The cases page lists each case once whatever the sort when workflow and statuses carry twins. |
+| `TheCasesPageNamesTheLiveStatusAndNeverTheDeadTwinAsync`                             | Fact   | The cases page names the live status and never the dead twin.                                 |
+| `TheCasesCountsAndTheRiskMatrixAgreeWithThePageWhenTwinsExistAsync`                  | Fact   | The cases counts and the risk matrix agree with the page when twins exist.                    |
+| `TheAnalyticsReportCountsEachCaseOnceWhenWorkflowAndStatusesCarryTwinsAsync`         | Fact   | The analytics report counts each case once when workflow and statuses carry twins.            |
+| `TheWorkflowOutcomeCountsUseTheLiveStatusOutcomeAndCountEachCaseOnceAsync`           | Fact   | The workflow outcome counts use the live status outcome and count each case once.             |
+| `TheKeyOutcomeHistoryUsesTheLiveStatusOutcomeAndCountsEachCaseOnceAsync`             | Fact   | The key outcome history uses the live status outcome and counts each case once.               |
+| `ChecklistItemsAndEventsListOnceForACaseInATwinnedWorkflowAsync`                     | Fact   | Checklist items and events list once for a case in a twinned workflow.                        |
+| `TheChecklistSlaSweepOffersEachBreachedItemOnceInATwinnedWorkflowAsync`              | Fact   | The checklist sla sweep offers each breached item once in a twinned workflow.                 |
+| `TheChecklistItemValidationReadsTheLiveItemAndNeverTheDeadTwinAsync`                 | Fact   | The checklist item validation reads the live item and never the dead twin.                    |
+| `TheCaseChecklistLoadsWhenItsChecklistDefinitionCarriesASoftDeletedTwinAsync`        | Fact   | The case checklist loads when its checklist definition carries a soft deleted twin.           |
+
+### PreservationImportTwinsGraphTests
+
+`Jube.Test.Preservation.PreservationImportTwinsGraphTests` — 2 tests. Category: Service. Collection: Database.
+
+| Test                                                                                   | Kind | Verifies                                                                                         |
+|----------------------------------------------------------------------------------------|------|--------------------------------------------------------------------------------------------------|
+| `TheHubJobRestrictsAndWeighsEdgesFromTheLiveDefinitionAndNeverItsSoftDeletedTwinAsync` | Fact | The hub job restricts and weighs edges from the live definition and never its soft deleted twin. |
+| `ASoftDeletedGraphRegistryIsNeverGrantedOrReturnedAsActiveAsync`                       | Fact | A soft deleted graph registry is never granted or returned as active.                            |
+
+### PreservationImportVisualisationReferenceTests
+
+`Jube.Test.Preservation.PreservationImportVisualisationReferenceTests` — 1 test. Category: Service. Collection:
+Database.
+
+| Test                                                                        | Kind | Verifies                                                                         |
+|-----------------------------------------------------------------------------|------|----------------------------------------------------------------------------------|
+| `ASameTenantImportKeepsEachWorkflowPointingAtItsVisualisationRegistryAsync` | Fact | A same tenant import keeps each workflow pointing at its visualisation registry. |
 
 ### PreservationCoverageTests
 
@@ -180,6 +276,36 @@ EvalExpressionRegistry.
 | `KeysOfTheCoveredTypesNeverRenumberAndNewMembersOnlyAppend`                   | Fact   | Keys of the covered types never renumber and new members only append.                     |
 
 ## Reporting
+
+### ReportConnectionAdviceTests
+
+`Jube.Test.Reporting.ReportConnectionAdviceTests` — 4 tests (the first is a theory of 7 cases). Category: Unit.
+
+| Test                                                                    | Kind   | Verifies                                                                                                     |
+|-------------------------------------------------------------------------|--------|--------------------------------------------------------------------------------------------------------------|
+| `TheReportConnectionIsAssessedAgainstTheApplicationLogin`               | Theory | Unset, same-login and separate report connections are told apart.                                            |
+| `WithNoApplicationConnectionASetReportConnectionIsLeftAlone`            | Fact   | A set report connection is not flagged when there is no application connection to compare.                   |
+| `TheWarningNamesTheRemedyAndNeverCarriesAnyConnectionDetail`            | Fact   | The startup warning names the remedy and carries no connection detail.                                       |
+| `TheDocumentedSelectOnlyRoleGrantsExactlyTheTablesTheAllowListCanReach` | Fact   | The GRANT SELECT list in the Visualisations security policy page equals the tables the allow-list can reach. |
+
+### ReportLimitsTests
+
+`Jube.Test.Reporting.ReportLimitsTests` — 4 tests (the first is a theory of 4 cases). Category: Unit.
+
+| Test                                                       | Kind   | Verifies                                                                      |
+|------------------------------------------------------------|--------|-------------------------------------------------------------------------------|
+| `SettingsFallBackToTheDefaultsWhenMissingOrNotPositive`    | Theory | Report limit settings fall back to the defaults when missing or not positive. |
+| `ApproximateBytesCountsStringsBytesAndNestedArrays`        | Fact   | Cell size is counted for strings, byte arrays, arrays and scalars.            |
+| `ApproximateBytesStopsEarlyOnceTheCeilingIsPassed`         | Fact   | Counting stops once the ceiling is passed.                                    |
+| `ACodedRefusalSurvivesTheErrorDescriberSoItCanBeLocalised` | Fact   | A coded refusal survives the error describer so it can be localised.          |
+
+### PostgresErrorDescriberTests
+
+`Jube.Test.Reporting.PostgresErrorDescriberTests` — 1 test (a theory of 4 cases). Category: Unit.
+
+| Test                                                                  | Kind   | Verifies                                                                                                                                                                      |
+|-----------------------------------------------------------------------|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ADatabaseErrorIsDescribedGenericallyWithNothingOfTheDatabaseMessage` | Theory | A database error is described with the generic coded message and carries none of the database message, SQLSTATE or hint, while the real exception stays attached for logging. |
 
 ### PostgresSqlValidatorTests
 
@@ -204,7 +330,31 @@ EvalExpressionRegistry.
 | `RewriteTableReferencesRejectsANonSelectEvenIfEveryTableIsRegistered`     | Fact | Rewrite table references rejects a non select even if every table is registered.    |
 | `RewriteTableReferencesOutputIsItselfReparseableAsAPureSelect`            | Fact | Rewrite table references output is itself reparseable as a pure select.             |
 
+### PostgresDataTypeClassifierTests
+
+`Jube.Test.Reporting.PostgresDataTypeClassifierTests` — 4 tests. Category: Unit.
+
+| Test                                                     | Kind   | Verifies                                                           |
+|----------------------------------------------------------|--------|--------------------------------------------------------------------|
+| `ClassifiesTheCommonPostgresTypes`                       | Theory | Classifies the common postgres types.                              |
+| `IgnoresTypeModifiersCaseAndSpacing`                     | Theory | Ignores type modifiers case and spacing.                           |
+| `TreatsAnythingUnreadableAsText`                         | Theory | Treats anything unreadable as text.                                |
+| `KeepsTheStoredNumbersTheOldViewerAndExistingRowsRelyOn` | Fact   | Keeps the stored numbers the old viewer and existing rows rely on. |
+
 ## Repository
+
+### PostgresErrorPositionTests
+
+`Jube.Test.Reporting.PostgresErrorPositionTests` — 6 tests. Category: Unit.
+
+| Test                                                                   | Kind   | Verifies                                                                            |
+|------------------------------------------------------------------------|--------|-------------------------------------------------------------------------------------|
+| `APositionInAnUnchangedStatementIsKept`                                | Fact   | A position in an unchanged statement is kept.                                       |
+| `APositionBeforeARewrittenTableIsKept`                                 | Fact   | A position before a rewritten table is kept.                                        |
+| `APositionAfterARewrittenTableIsShiftedBackByTheLengthTheRewriteAdded` | Fact   | A position after a rewritten table is shifted back by the length the rewrite added. |
+| `APositionInsideTheRewrittenTableIsNotGuessed`                         | Fact   | A position inside the rewritten table is not guessed.                               |
+| `NothingUsableGivesNoPosition`                                         | Theory | Nothing usable gives no position.                                                   |
+| `ALineAndColumnAreCountedFromOne`                                      | Theory | A line and column are counted from one.                                             |
 
 ### DeleteAsVersionRepositoryTests
 
@@ -321,6 +471,51 @@ EvalExpressionRegistry.
 |--------------------------------------------------------------------------|------|---------------------------------------------------------------------------------|
 | `ADeletedRowIsReachableByIdSoItCanBeOpenedAndEditedAsync`                | Fact | A deleted row is reachable by id so it can be opened and edited.                |
 | `RevivingADeletedRowMakesItLiveAgainAndArchivesTheDeletedStateOnceAsync` | Fact | Reviving a deleted row makes it live again and archives the deleted state once. |
+
+### CaseRiskAssessmentRepositoryTests
+
+`Jube.Test.Repository.CaseRiskAssessmentRepositoryTests` — 9 tests.
+Category: Service. Collection: Database.
+
+| Test                                                               | Kind | Verifies                                                                |
+|--------------------------------------------------------------------|------|-------------------------------------------------------------------------|
+| `SequencesCountUpFromOnePerCaseAndAreIndependentBetweenCasesAsync` | Fact | Sequences count up from one per case and are independent between cases. |
+| `InsertStampsTheDateAndEveryFieldRoundTripsIncludingTheJsonAsync`  | Fact | Insert stamps the date and every field round trips including the json.  |
+| `LatestIsTheHighestSequenceAndACaseWithNoAssessmentHasNoneAsync`   | Fact | Latest is the highest sequence and a case with no assessment has none.  |
+| `LatestForManyCasesReturnsOneCurrentRowPerAssessedCaseAsync`       | Fact | Latest for many cases returns one current row per assessed case.        |
+| `HistoryIsNewestFirstAndHonoursTheLimitAsync`                      | Fact | History is newest first and honours the limit.                          |
+| `ConcurrentWritersForOneCaseEachGetADistinctSequenceAsync`         | Fact | Concurrent writers for one case each get a distinct sequence.           |
+| `AssessmentsAreRemovedWithTheirCaseAsync`                          | Fact | Assessments are removed with their case.                                |
+| `TheRepositoryOffersNoWayToChangeOrRemoveAnAssessment`             | Fact | The repository offers no way to change or remove an assessment.         |
+| `TheDatabaseRefusesTwoAssessmentsWithTheSameSequenceForACaseAsync` | Fact | The database refuses two assessments with the same sequence for a case. |
+
+### CaseViewRepositoryTests
+
+`Jube.Test.Repository.CaseViewRepositoryTests` — 5 tests.
+Category: Service. Collection: Database.
+
+| Test                                                           | Kind | Verifies                                                              |
+|----------------------------------------------------------------|------|-----------------------------------------------------------------------|
+| `TheFirstViewInsertsAndLaterViewsReplaceTheSameRowAsync`       | Fact | The first view inserts and later views replace the same row.          |
+| `EachUserHasTheirOwnViewOfACaseAndNeverSeesAnothersAsync`      | Fact | Each user has their own view of a case and never sees anothers.       |
+| `ViewsForManyCasesComeBackKeyedByCaseAndOnlyForTheCallerAsync` | Fact | Views for many cases come back keyed by case and only for the caller. |
+| `ConcurrentViewsOfTheSameCaseByTheSameUserLeaveOneRowAsync`    | Fact | Concurrent views of the same case by the same user leave one row.     |
+| `ViewsAreRemovedWithTheirCaseAsync`                            | Fact | Views are removed with their case.                                    |
+
+### CaseStatusTransitionRepositoryTests
+
+`Jube.Test.Repository.CaseStatusTransitionRepositoryTests` — 7 tests.
+Category: Service. Collection: Database.
+
+| Test                                                                         | Kind | Verifies                                                                               |
+|------------------------------------------------------------------------------|------|----------------------------------------------------------------------------------------|
+| `EnteringAStatusOpensAStayAndMovingOnClosesItWithTheTimeSpentAsync`          | Fact | Entering a status opens a stay and moving on closes it with the time spent.            |
+| `EnteringTheStatusTheCaseIsAlreadyInChangesNothingAsync`                     | Fact | Entering the status the case is already in changes nothing.                            |
+| `ClosingEndsTheOpenStayAndClosingACaseWithNoOpenStayIsHarmlessAsync`         | Fact | Closing ends the open stay and closing a case with no open stay is harmless.           |
+| `ConcurrentEntriesIntoTheSameStatusLeaveExactlyOneOpenStayAsync`             | Fact | Concurrent entries into the same status leave exactly one open stay.                   |
+| `TheDatabaseRefusesASecondOpenStayForACaseAsync`                             | Fact | The database refuses a second open stay for a case.                                    |
+| `TheBackfillRebuildsStaysFromTheCaseEventsOfAnExistingClosedCaseAsync`       | Fact | The backfill rebuilds stays from the case events of an existing closed case.           |
+| `TheBackfillOfAnOpenCaseWithNoMovesLeavesOneOpenStayInItsCurrentStatusAsync` | Fact | The backfill of an open case with no moves leaves one open stay in its current status. |
 
 ## Repository sanctions
 
@@ -454,3 +649,198 @@ Database.
 | Test                                                                                  | Kind | Verifies                                                                                   |
 |---------------------------------------------------------------------------------------|------|--------------------------------------------------------------------------------------------|
 | `ReprocessingProcessesEveryArchivedDocumentOnceUpdatesEveryMatchInBoundedMemoryAsync` | Fact | Reprocessing processes every archived document once updates every match in bounded memory. |
+
+### CasePagesQueryPlanTests
+
+`Jube.Test.Volume.CasePagesQueryPlanTests` — 11 tests. Category: Service. Collection: Database.
+
+Seeds one model with 100,000 archived transactions, 300,000 Archive Key rows and 30,000 cases (3,000 open, 300 held by
+the caller, 750 QA samples), runs `EXPLAIN (ANALYZE, BUFFERS)` on the exact statement each Case and Cases page query
+builds, and asserts the plan's shape: which indexes are used, that the hot tables are never scanned sequentially, and
+how many rows each per-row node touches. Execution time and buffers are written to the test output as a witness and are
+never asserted.
+
+| Test                                                                         | Kind   | Verifies                                                                           |
+|------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------|
+| `EveryIndexTheCasePagesMigrationCreatesExistsAndIsValidAsync`                | Fact   | Every index the Case pages migration creates exists and is valid.                  |
+| `TheTriagePageReadsABoundedCandidateSetNotTheWholeQueueAsync`                | Fact   | The triage page reads a bounded candidate set not the whole queue.                 |
+| `EveryOtherSortReadsOnlyThePageItReturnsAsync`                               | Theory | Every other sort reads only the page it returns.                                   |
+| `TheRailCountsRunAsOneStatementAndAgreeWithTheSeedAsync`                     | Fact   | The rail counts run as one statement and agree with the seed.                      |
+| `TheAnalyticsFactsReachTheirEventsThroughTheCaseEventIndexAsync`             | Fact   | The analytics facts reach their events through the case event index.               |
+| `TheNetworkCasesPerNodeUseTheKeyIndexAsync`                                  | Fact   | The network cases per node use the key index.                                      |
+| `TheJournalForAHeavyKeyTouchesOnlyTheTransactionsThatMatchAsync`             | Fact   | The journal for a heavy key touches only the transactions that match.              |
+| `TheJournalForALightKeyReturnsExactlyItsTransactionsAsync`                   | Fact   | The journal for a light key returns exactly its transactions.                      |
+| `TheJournalCappedCountUsesTheArchiveKeyIndexAsync`                           | Fact   | The journal capped count uses the Archive Key index.                               |
+| `SimilarCasesAreFoundThroughTheComponentLookupFromABoundedCandidateSetAsync` | Fact   | Similar cases are found through the component lookup from a bounded candidate set. |
+| `TheSimilaritySweepFindsItsNextCasesThroughTheDueIndexAsync`                 | Fact   | The similarity sweep finds its next cases through the due index.                   |
+
+### PreservationDifferTests
+
+`Jube.Test.Preservation.PreservationDifferTests` — 20 tests. Category: Unit.
+
+| Test                                                               | Kind   | Verifies                                                                      |
+|--------------------------------------------------------------------|--------|-------------------------------------------------------------------------------|
+| `TwoIdenticalPayloadsAreIdentical`                                 | Fact   | Two identical payloads are identical.                                         |
+| `AnEntityOnlyOnTheRightIsAdded`                                    | Fact   | An entity only on the right is added.                                         |
+| `AnEntityOnlyOnTheLeftIsRemoved`                                   | Fact   | An entity only on the left is removed.                                        |
+| `AChangedPropertyIsReportedWithItsBeforeAndAfter`                  | Fact   | A changed property is reported with its before and after.                     |
+| `EntitiesAreMatchedByNameNotByPosition`                            | Fact   | Entities are matched by name not by position.                                 |
+| `IdentifiersAndAuditStampsNeverCountAsChanges`                     | Theory | Identifiers and audit stamps never count as changes.                          |
+| `AReferenceToAnotherEntityIsIgnoredButCounted`                     | Fact   | A reference to another entity is ignored but counted.                         |
+| `AnEnumerationIdThatIsNotAnEntityIsARealChange`                    | Fact   | An enumeration id that is not an entity is a real change.                     |
+| `NestedEntitiesAreComparedAndTheirPathShowsTheirParent`            | Fact   | Nested entities are compared and their path shows their parent.               |
+| `AnAddedEntityCountsEveryEntityNestedBeneathIt`                    | Fact   | An added entity counts every entity nested beneath it.                        |
+| `AnArrayWithoutAKeyIsComparedAsASetOfValues`                       | Fact   | An array without a key is compared as a set of values.                        |
+| `DuplicateNamesFallBackToSetSemanticsInsteadOfPairingTheWrongOnes` | Fact   | Duplicate names fall back to set semantics instead of pairing the wrong ones. |
+| `ALongValueIsShortenedWithItsLength`                               | Fact   | A long value is shortened with its length.                                    |
+| `ANestedObjectThatIsNotACollectionIsComparedPropertyByProperty`    | Fact   | A nested object that is not a collection is compared property by property.    |
+| `TheEntryListIsCappedButTheCountsAreComplete`                      | Fact   | The entry list is capped but the counts are complete.                         |
+| `SectionsAreCountedSeparately`                                     | Fact   | Sections are counted separately.                                              |
+| `APropertyPresentOnOneSideOnlyIsAChange`                           | Fact   | A property present on one side only is a change.                              |
+| `ThePayloadIsTakenFromAWrapperBody`                                | Fact   | The payload is taken from a wrapper body.                                     |
+| `AnEmptyCollectionAndAMissingOneAreTheSame`                        | Fact   | An empty collection and a missing one are the same.                           |
+| `NullAndMissingValuesAreTheSame`                                   | Fact   | Null and missing values are the same.                                         |
+
+### PreservationSummariserTests
+
+`Jube.Test.Preservation.PreservationSummariserTests` — 8 tests. Category: Unit.
+
+| Test                                            | Kind | Verifies                                             |
+|-------------------------------------------------|------|------------------------------------------------------|
+| `EverySectionIsAlwaysPresent`                   | Fact | Every section is always present.                     |
+| `ListsCountTheListsAndTheirValues`              | Fact | Lists count the lists and their values.              |
+| `DictionariesCountTheDictionariesAndTheirPairs` | Fact | Dictionaries count the dictionaries and their pairs. |
+| `ModelsDoNotCountWhatTheOtherSwitchesCarry`     | Fact | Models do not count what the other switches carry.   |
+| `VisualisationsAndRolesCountTheirChildren`      | Fact | Visualisations and roles count their children.       |
+| `ExhaustiveCountsTheInstancesNestedUnderModels` | Fact | Exhaustive counts the instances nested under models. |
+| `EverySectionCarriesItsSizeInBytes`             | Fact | Every section carries its size in bytes.             |
+| `ApprovalsAreCountedButNotNested`               | Fact | Approvals are counted but not nested.                |
+
+### PreservationDiffServiceTests
+
+`Jube.Test.Preservation.PreservationDiffServiceTests` — 19 tests. Category: Service. Collection: Database.
+
+| Test                                                                           | Kind | Verifies                                                                               |
+|--------------------------------------------------------------------------------|------|----------------------------------------------------------------------------------------|
+| `ComparingTwoSnapshotsReportsTheModelAddedBetweenThemAsync`                    | Fact | Comparing two snapshots reports the model added between them.                          |
+| `ComparingASnapshotWithTheLiveTenantIsIdenticalWhenNothingHasChangedAsync`     | Fact | Comparing a snapshot with the live tenant is identical when nothing has changed.       |
+| `ComparingAgainstTheLiveTenantReportsAModelRemovedSinceTheSnapshotAsync`       | Fact | Comparing against the live tenant reports a model removed since the snapshot.          |
+| `ComparingReportsAChangedPropertyWithItsBeforeAndAfterAsync`                   | Fact | Comparing reports a changed property with its before and after.                        |
+| `EveryComparisonIsRecordedForAuditWithItsCountsAsync`                          | Fact | Every comparison is recorded for audit with its counts.                                |
+| `AComparisonNeedsAtLeastOneSnapshotAsync`                                      | Fact | A comparison needs at least one snapshot.                                              |
+| `ASnapshotCannotBeComparedWithItselfAsync`                                     | Fact | A snapshot cannot be compared with itself.                                             |
+| `AnotherTenantsSnapshotCannotBeComparedAsync`                                  | Fact | Another tenants snapshot cannot be compared.                                           |
+| `PreviewingAPackageWorksOutTheImpactWithoutChangingAnythingAsync`              | Fact | Previewing a package works out the impact without changing anything.                   |
+| `APackageWithoutRolesWouldOrphanTheTenantsUsersAndSaysSoAsync`                 | Fact | A package without roles would orphan the tenants users and says so.                    |
+| `APackageWithTheTenantsRolesLeavesNoUserOrphanedAsync`                         | Fact | A package with the tenants roles leaves no user orphaned.                              |
+| `APackageWhoseRolesBelongToAnotherTenantIsFlaggedAsRefusedWhenUsersExistAsync` | Fact | A package whose roles belong to another tenant is flagged as refused when users exist. |
+| `APackageWithoutAnApprovalHistoryIsWarnedAboutAsync`                           | Fact | A package without an approval history is warned about.                                 |
+| `APackageFromAnOlderFormatIsWarnedAboutAsync`                                  | Fact | A package from an older format is warned about.                                        |
+| `APreviewWithTheWrongPasswordIsRefusedAsAnInvalidFileAsync`                    | Fact | A preview with the wrong password is refused as an invalid file.                       |
+| `APreviewWithNoFileIsRefusedAsync`                                             | Fact | A preview with no file is refused.                                                     |
+| `PreviewingASnapshotRestoreShowsWhatItWouldReplaceAsync`                       | Fact | Previewing a snapshot restore shows what it would replace.                             |
+| `ImportingTakesASnapshotFirstSoTheImportCanBeUndoneAsync`                      | Fact | Importing takes a snapshot first so the import can be undone.                          |
+| `TheSummaryCountsWhatAnExportWouldCarryAsync`                                  | Fact | The summary counts what an export would carry.                                         |
+
+### SplitReprocessingPermissionMigrationTests
+
+`Jube.Test.Migrations.SplitReprocessingPermissionMigrationTests` — 8 tests.
+Category: Service. Collection: Database.
+
+| Test                                                                                       | Kind | Verifies                                                                                             |
+|--------------------------------------------------------------------------------------------|------|------------------------------------------------------------------------------------------------------|
+| `ARoleHoldingTheOriginalPermissionGainsBothNewOnesAndNothingElseAndKeepsItsAbilitiesAsync` | Fact | A role holding the original permission gains both new ones and nothing else and keeps its abilities. |
+| `ARoleWithoutTheOriginalPermissionGainsNothingAsync`                                       | Fact | A role without the original permission gains nothing.                                                |
+| `ADeletedGrantOfTheOriginalPermissionIsNotCarriedForwardAsync`                             | Fact | A deleted grant of the original permission is not carried forward.                                   |
+| `AnInactiveGrantStaysInactiveSoNothingIsWidenedAsync`                                      | Fact | An inactive grant stays inactive so nothing is widened.                                              |
+| `RunningTheBackfillTwiceOrOverAnExistingGrantNeverDuplicatesAsync`                         | Fact | Running the backfill twice or over an existing grant never duplicates.                               |
+| `EveryTenantsRolesAreBackfilledAndKeepTheirOwnTenantAsync`                                 | Fact | Every tenants roles are backfilled and keep their own tenant.                                        |
+| `TheAdministratorRoleHoldsAllThreeAfterwardsAsync`                                         | Fact | The administrator role holds all three afterwards.                                                   |
+| `TheCatalogueNamesTheThreePermissionsDistinctlyAsync`                                      | Fact | The catalogue names the three permissions distinctly.                                                |
+
+<!-- TODO(docs): owner to confirm this catalogue entry after the first run of the new tests (they were written, not run). -->
+
+### BackfillEntityApprovalForForceOverridesTests
+
+`Jube.Test.Migrations.BackfillEntityApprovalForForceOverridesTests` — 3 tests (one Theory of 4 cases and 2 Facts).
+Category: Service. Collection: Database.
+
+| Test                                                                                         | Kind   | Verifies                                                                                                                                           |
+|----------------------------------------------------------------------------------------------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `EveryLiveForceOverrideStaysLiveWhateverTheApprovalsRequiredAsync`                           | Theory | With ApprovalsRequired 1, 2, 3 and 5 every live Force override (model and rule level) stays in the approved projection and a removed one does not. |
+| `TheBackfillStampsDistinctSystemApproversOnlyOnLiveForceRowsAndIsRepeatableAsync`            | Fact   | Distinct approvers Administrator, Administrator2, Administrator3; no rows for Suppress or removed Force; running twice adds nothing.               |
+| `ARequirementRaisedAboveTheStampedApproversWithholdsTheOverrideUntilMoreApprovalsExistAsync` | Fact   | The documented limit: a requirement above the stamped approver count withholds the override.                                                       |
+
+<!-- TODO(docs): Counts written by hand; regenerate the catalogue. -->
+
+### BoundedJsonPathTests
+
+`Jube.Test.DataHelpers.BoundedJsonPathTests` — 3 tests. Category: Unit.
+
+| Test                                                                            | Kind | Verifies                                                                                     |
+|---------------------------------------------------------------------------------|------|----------------------------------------------------------------------------------------------|
+| `APlainPathStillSelectsTheValue`                                                | Fact | A plain path still selects the value.                                                        |
+| `ACatastrophicRegexFilterIsCutShortAndSelectsNothingInsteadOfHangingOrThrowing` | Fact | A catastrophic regex filter is cut short and selects nothing instead of hanging or throwing. |
+| `ANullDocumentSelectsNothing`                                                   | Fact | A null document selects nothing.                                                             |
+
+### SqlSchemaCheckerDifferentialTests
+
+`Jube.Test.Reporting.Check.SqlSchemaCheckerDifferentialTests` — 5 tests. Category: Service. Collection: Database.
+
+| Test                                                                         | Kind | Verifies                                                                                   |
+|------------------------------------------------------------------------------|------|--------------------------------------------------------------------------------------------|
+| `TheCorpusHasAtLeastOneHundredAndFiftyStatements`                            | Fact | The corpus has at least one hundred and fifty statements.                                  |
+| `EveryGoodStatementPassesTheCheckerAndTheDatabaseAcceptsItAsync`             | Fact | Every good statement passes the checker and the database accepts it.                       |
+| `EveryBadStatementIsRejectedByTheCheckerBeforeTheDatabaseAsync`              | Fact | Every bad statement is rejected by the checker before the database.                        |
+| `ATableThatExistsButIsNotAllowedIsRefusedAsUnknownWithoutNamingItAsExisting` | Fact | Atable that exists but is not allowed is refused as unknown without naming it as existing. |
+| `ASuggestionOnlyNamesATablePermittedToTheCaller`                             | Fact | Asuggestion only names atable permitted to the caller.                                     |
+
+### SqlSchemaCheckerUnitTests
+
+`Jube.Test.Reporting.Check.SqlSchemaCheckerUnitTests` — 10 tests. Category: Unit.
+
+| Test                                                              | Kind | Verifies                                                                    |
+|-------------------------------------------------------------------|------|-----------------------------------------------------------------------------|
+| `AnUnknownColumnReportsItsLineAndColumn`                          | Fact | An unknown column reports its line and column.                              |
+| `APositionIsCorrectAfterNamedParametersAreSubstituted`            | Fact | Aposition is correct after named parameters are substituted.                |
+| `APositionIsCorrectAfterMultiByteCharacters`                      | Fact | Aposition is correct after multi byte characters.                           |
+| `AnUnsuppliedNamedParameterIsReportedWithItsName`                 | Fact | An unsupplied named parameter is reported with its name.                    |
+| `ASuppliedNamedParameterOfTheWrongTypeIsReportedAgainstTheColumn` | Fact | Asupplied named parameter of the wrong type is reported against the column. |
+| `ASuppliedNamedParameterOfTheRightTypeIsAccepted`                 | Fact | Asupplied named parameter of the right type is accepted.                    |
+| `ASnapshotThatCouldNotBeLoadedLeavesTheStatementToTheLaterGates`  | Fact | Asnapshot that could not be loaded leaves the statement to the later gates. |
+| `ANonSelectStatementIsLeftToTheSelectOnlyGate`                    | Fact | Anon select statement is left to the select only gate.                      |
+| `EveryFindingCodeIsExercisedByTheCorpusOrAnExplicitTest`          | Fact | Every finding code is exercised by the corpus or an explicit test.          |
+| `EveryMessageHasItsOwnPlaceholdersInOrder`                        | Fact | Every message has its own placeholders in order.                            |
+
+### SqlCheckLocalisationTests
+
+`Jube.Test.Reporting.Check.SqlCheckLocalisationTests` — 3 tests. Category: Unit.
+
+| Test                                                    | Kind   | Verifies                                                        |
+|---------------------------------------------------------|--------|-----------------------------------------------------------------|
+| `EveryCodeIsTranslatedWithTheSamePlaceholders`          | Theory | Every code is translated with the same placeholders.            |
+| `TheRendererUsesTheTranslationForTheCurrentCulture`     | Theory | The renderer uses the translation for the current culture.      |
+| `TheRendererFallsBackToEnglishForAnUntranslatedCulture` | Fact   | The renderer falls back to english for an untranslated culture. |
+
+### ExhaustiveFilterSqlSchemaCheckTests
+
+`Jube.Test.Reporting.Check.ExhaustiveFilterSqlSchemaCheckTests` — 3 tests. Category: Unit.
+
+| Test                                                         | Kind | Verifies                                                              |
+|--------------------------------------------------------------|------|-----------------------------------------------------------------------|
+| `AFilterOverAColumnThatDoesNotExistIsRefusedAtSaveTime`      | Fact | Afilter over acolumn that does not exist is refused at save time.     |
+| `AFilterOverTheArchiveColumnsIsAccepted`                     | Fact | Afilter over the archive columns is accepted.                         |
+| `AFilterAlreadyRefusedByTheStructuralRulesIsNotCheckedAgain` | Fact | Afilter already refused by the structural rules is not checked again. |
+
+### UserNotificationRepositoryTests
+
+`Jube.Test.Repository.UserNotificationRepositoryTests` — 6 tests. Category: Service.
+
+| Test                                                                       | Kind | Verifies                                                                                |
+|----------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------|
+| `InsertIfNewIsIdempotentOnTheDedupeKeyForOneRecipientAsync`                | Fact | Insert if new is idempotent on the dedupe key for one recipient.                        |
+| `AResolvedNotificationFreesItsDedupeKeyAsync`                              | Fact | A resolved notification frees its dedupe key.                                           |
+| `ListActiveReturnsOnlyTheCallersRowsInTheirTenantNewestFirstAsync`         | Fact | List active returns only the caller rows in their tenant, newest first.                 |
+| `MarkReadOnlyAffectsTheCallersOwnRowAsync`                                 | Fact | Mark read only affects the caller own row, not another user or tenant.                  |
+| `MarkAllReadMarksOnlyTheCallersUnreadRowsAsync`                            | Fact | Mark all read marks only the caller unread rows.                                        |
+| `VisibleIdsAreLimitedToCasesTheUserHoldsTheWorkflowAndStatusRolesForAsync` | Fact | Visible case ids are limited to cases the user holds the workflow and status roles for. |

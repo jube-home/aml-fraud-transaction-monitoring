@@ -11,8 +11,10 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Jube.Parser.Models;
 
 namespace Jube.Parser
 {
@@ -23,34 +25,35 @@ namespace Jube.Parser
         private static readonly string[] imports =
         [
             "System.IO", "log4net", "System.Net", "System.Collections.Generic", "Jube.Dictionary",
-            "Jube.Dictionary.Extensions", "System"
+            "Jube.Dictionary.Extensions", "System", "System.Linq", "Svirfd", "Jube.Svirfd"
         ];
 
         public static EngineWrappedRule GatewayRule(string ruleText, bool tryCatch = true)
         {
             return Build(imports, "GatewayRule",
-                "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),List As Dictionary(Of String, List(Of String)),KVP As PooledDictionary(Of String, Double),Log as ILog) As Boolean",
+                "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),List As Dictionary(Of String, List(Of String)),KVP As PooledDictionary(Of String, Double),Svirfd As PooledDictionary(Of String, IpResponse),Log as ILog) As Boolean",
                 "Dim Matched as Boolean", ruleText, tryCatch);
         }
 
-        public static EngineWrappedRule AbstractionRule(string ruleText, bool tryCatch = true)
+        public static EngineWrappedRule AbstractionRule(string ruleText, bool tryCatch = true,
+            IReadOnlyList<RuleVariable> variables = null)
         {
             return Build(imports, "AbstractionRule",
-                "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),List as Dictionary(Of String,List(Of String)),KVP as PooledDictionary(of String,Double),Log as ILog) As Boolean",
-                "Dim Matched as Boolean", ruleText, tryCatch);
+                "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),List as Dictionary(Of String,List(Of String)),KVP as PooledDictionary(of String,Double),Svirfd As PooledDictionary(Of String, IpResponse),Cursor As AbstractionCursor,Log as ILog) As Boolean",
+                "Dim Matched as Boolean", ruleText, tryCatch, true, variables);
         }
 
         public static EngineWrappedRule ActivationRule(string ruleText, bool tryCatch = true)
         {
-            return Build([.. imports, "Jube.HttpAdaptationProtocol"], "ActivationRule",
-                "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),TTLCounter As PooledDictionary(Of String, Double),Abstraction As PooledDictionary(Of string,double),HttpAdaptation As PooledDictionary(Of String, Adaptation),ExhaustiveAdaptation As PooledDictionary(Of String, Double),AdvancedAnalyticsAdaptation As PooledDictionary(Of String, Double),List as Dictionary(Of String,List(Of String)),Calculation As PooledDictionary(Of String, Double),Sanctions As PooledDictionary(Of String, Double),KVP As PooledDictionary(Of String, Double),Activation as ICollection(Of String),Log as ILog) As Boolean",
+            return Build([.. imports, "Jube.HttpAdaptationProtocol", "Jube.GraphRecallProtocol"], "ActivationRule",
+                "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),TTLCounter As PooledDictionary(Of String, Double),Abstraction As PooledDictionary(Of string,double),HttpAdaptation As PooledDictionary(Of String, Adaptation),ExhaustiveAdaptation As PooledDictionary(Of String, Double),AdvancedAnalyticsAdaptation As PooledDictionary(Of String, Double),Graph As PooledDictionary(Of String, GraphEntity),List as Dictionary(Of String,List(Of String)),Calculation As PooledDictionary(Of String, Double),Sanctions As PooledDictionary(Of String, Double),KVP As PooledDictionary(Of String, Double),Activation as ICollection(Of String),Svirfd As PooledDictionary(Of String, IpResponse),Log as ILog) As Boolean",
                 "Dim Matched as Boolean", ruleText, tryCatch);
         }
 
         public static EngineWrappedRule InlineFunction(string ruleText, bool tryCatch = true)
         {
             return Build(imports, "InlineFunction",
-                "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),List As Dictionary(Of String, List(Of String)),KVP As PooledDictionary(Of String, Double),Log as ILog) As Object",
+                "Public Shared Function Match(Data As DictionaryNoBoxing(Of String),List As Dictionary(Of String, List(Of String)),KVP As PooledDictionary(Of String, Double),Svirfd As PooledDictionary(Of String, IpResponse),Log as ILog) As Object",
                 "Dim Matched as Object = Nothing", ruleText, tryCatch);
         }
 
@@ -62,7 +65,8 @@ namespace Jube.Parser
         }
 
         private static EngineWrappedRule Build(string[] importNames, string className, string signature,
-            string declaration, string ruleText, bool tryCatch)
+            string declaration, string ruleText, bool tryCatch, bool cursor = false,
+            IReadOnlyList<RuleVariable> variables = null)
         {
             var sb = new StringBuilder();
 
@@ -72,23 +76,71 @@ namespace Jube.Parser
             }
 
             sb.Append("Public Class ").Append(className).Append("\r\n");
-            sb.Append(signature).Append("\r\n");
+
+            foreach (var field in RuleVariableEmitter.Fields(variables))
+            {
+                sb.Append(field).Append("\r\n");
+            }
+
+            if (RuleVariableEmitter.HasScan(variables))
+            {
+                foreach (var line in RuleVariableEmitter.Entry(className, signature))
+                {
+                    sb.Append(line).Append("\r\n");
+                }
+            }
+            else
+            {
+                sb.Append(signature).Append("\r\n");
+            }
+
             sb.Append(declaration).Append("\r\n");
+
+            if (cursor)
+            {
+                sb.Append("Dim CursorPass As Integer\r\n");
+            }
+
+            foreach (var local in RuleVariableEmitter.Locals(variables))
+            {
+                sb.Append(local).Append("\r\n");
+            }
 
             if (tryCatch)
             {
                 sb.Append("Try\r\n");
             }
 
+            if (cursor)
+            {
+                sb.Append("For CursorPass = 0 To 0\r\n");
+            }
+
             var charOffset = sb.Length;
             var lineOffset = sb.ToString().Count(c => c == '\n');
             sb.Append(ruleText).Append("\r\n");
+
+            if (cursor)
+            {
+                sb.Append("Next\r\n");
+            }
 
             if (tryCatch)
             {
                 sb.Append("Catch ex As Exception\r\n");
                 sb.Append("Log.Info(ex.ToString)\r\n");
+
+                if (cursor)
+                {
+                    sb.Append("CursorPass = 1\r\n");
+                }
+
                 sb.Append("End Try\r\n");
+            }
+
+            if (cursor)
+            {
+                sb.Append("If CursorPass = 0 AndAlso Cursor IsNot Nothing Then Cursor.Stop()\r\n");
             }
 
             sb.Append("Return Matched\r\n");

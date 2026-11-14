@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchLevenshteinAtMost(string? other, int distance)
+            [Description("True when: edit distance to the argument is at most the distance. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchLevenshteinAtMost([Description("The text the value is compared with.")] string? other,
+                [Description("The most edits allowed.")] int distance)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringLevenshteinAtMost(flow.Value, other, distance));
             }
 
-            public Flow<string?> RejectLevenshteinAtMost(string? other, int distance)
+            [Description("True when: edit distance to the argument is at most the distance. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectLevenshteinAtMost([Description("The text the value is compared with.")] string? other,
+                [Description("The most edits allowed.")] int distance)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringLevenshteinAtMost(flow.Value, other, distance));
             }
 
-            public Flow<string?> BreakLevenshteinAtMost(string? other, int distance)
+            [Description("True when: edit distance to the argument is at most the distance. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakLevenshteinAtMost([Description("The text the value is compared with.")] string? other,
+                [Description("The most edits allowed.")] int distance)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringLevenshteinAtMost(flow.Value, other, distance));
             }
 
-            public Flow<string?> RequireLevenshteinAtMost(string? other, int distance)
+            [Description("True when: edit distance to the argument is at most the distance. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireLevenshteinAtMost([Description("The text the value is compared with.")] string? other,
+                [Description("The most edits allowed.")] int distance)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringLevenshteinAtMost(flow.Value, other, distance));
             }
 
-            public Flow<string?> EnsureLevenshteinAtMost(string? other, int distance)
+            [Description("True when: edit distance to the argument is at most the distance. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureLevenshteinAtMost([Description("The text the value is compared with.")] string? other,
+                [Description("The most edits allowed.")] int distance)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchLevenshteinAtMost(string? other, int distance)
+            [Description("Begins a pipeline from the value. True when: edit distance to the argument is at most the distance. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchLevenshteinAtMost([Description("The text the value is compared with.")] string? other,
+                [Description("The most edits allowed.")] int distance)
             {
                 return value.Start().MatchLevenshteinAtMost(other, distance);
             }
 
-            public Flow<string?> RejectLevenshteinAtMost(string? other, int distance)
+            [Description("Begins a pipeline from the value. True when: edit distance to the argument is at most the distance. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectLevenshteinAtMost([Description("The text the value is compared with.")] string? other,
+                [Description("The most edits allowed.")] int distance)
             {
                 return value.Start().RejectLevenshteinAtMost(other, distance);
             }
 
-            public Flow<string?> BreakLevenshteinAtMost(string? other, int distance)
+            [Description("Begins a pipeline from the value. True when: edit distance to the argument is at most the distance. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakLevenshteinAtMost([Description("The text the value is compared with.")] string? other,
+                [Description("The most edits allowed.")] int distance)
             {
                 return value.Start().BreakLevenshteinAtMost(other, distance);
             }
 
-            public Flow<string?> RequireLevenshteinAtMost(string? other, int distance)
+            [Description("Begins a pipeline from the value. True when: edit distance to the argument is at most the distance. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireLevenshteinAtMost([Description("The text the value is compared with.")] string? other,
+                [Description("The most edits allowed.")] int distance)
             {
                 return value.Start().RequireLevenshteinAtMost(other, distance);
             }
 
-            public Flow<string?> EnsureLevenshteinAtMost(string? other, int distance)
+            [Description("Begins a pipeline from the value. True when: edit distance to the argument is at most the distance. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureLevenshteinAtMost([Description("The text the value is compared with.")] string? other,
+                [Description("The most edits allowed.")] int distance)
             {
                 return value.Start().EnsureLevenshteinAtMost(other, distance);
             }

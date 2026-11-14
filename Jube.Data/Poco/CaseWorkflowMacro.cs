@@ -51,17 +51,17 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(22)] public string NotificationSubject { get; set; }
         [Column] [Nullable] [Key(23)] public string NotificationBody { get; set; }
 
-        [Association(ThisKey = "CaseWorkflowId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "CaseWorkflowId", OtherKey = "Id", CanBeNull = true)]
         [Key(24)]
         public CaseWorkflow CaseWorkflow { get; set; }
 
         [Column] [Nullable] [Key(25)] public Guid Guid { get; set; }
         [Column] [Nullable] [Key(26)] public int? ImportId { get; set; }
 
-        [Association(ThisKey = "Guid", OtherKey = "CaseWorkflowMacroGuid", CanBeNull = false,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Guid", OtherKey = "CaseWorkflowMacroGuid", CanBeNull = false)]
         [Key(27)]
         public CaseWorkflowMacroRole CaseWorkflowMacroRole { get; set; }
+
+        [Column] [Nullable] [Key(28)] public string Sql { get; set; }
     }
 }

@@ -21,6 +21,7 @@ A common example for case status use is to escalate cases through a hierarchy in
 To begin the addition of Cases Workflow Status, navigate to Administration >> Models >> Cases Workflows >> Cases
 Workflow Status:
 
+<!-- TODO(screenshot): file=case-workflow-config-case-workflow-status-01.png route=/models state="Models page, Case Workflows tab, case-workflow-status screen replacing the Razor-era TopOfTreeForCasesWorkflows.png" -->
 ![Image](TopOfTreeForCasesWorkflows.png)
 
 Cases Workflows Status is a child of Cases Workflows, itself a Child of Models. It follows that the tree to administer
@@ -28,16 +29,20 @@ models and cases workflows is now of three levels deep.
 
 It is incumbent to expand upon the model to reveal the Cases Workflows entry:
 
+<!-- TODO(screenshot): file=case-workflow-config-case-workflow-status-02.png route=/models state="Models page, Case Workflows tab, case-workflow-status screen replacing the Razor-era ExpandEntityModel.png" -->
 ![Image](ExpandEntityModel.png)
 
 Exposing the newly created Cases Workflow, which can be used to create new children of the Cases Workflow:
 
+<!-- TODO(screenshot): file=case-workflow-config-case-workflow-status-03.png route=/models state="Models page, Case Workflows tab, case-workflow-status screen replacing the Razor-era CasesWorkflowsStatusTopOfTree.png" -->
 ![Image](CasesWorkflowsStatusTopOfTree.png)
 
 Click on the Case Workflow entry to begin the process of adding Case Workflow Status:
 
+<!-- TODO(screenshot): file=case-workflow-config-case-workflow-status-04.png route=/models state="Models page, Case Workflows tab, case-workflow-status screen replacing the Razor-era CasesWorkflowsStatusTopOfTree.png" -->
 ![Image](CasesWorkflowsStatusTopOfTree.png)
 
+<!-- TODO(screenshot): file=case-workflow-config-case-workflow-status-05.png route=/models state="Models page, Case Workflows tab, case-workflow-status screen replacing the Razor-era TemplateAddForCasesStatusWorkflow.png" -->
 ![Image](TemplateAddForCasesStatusWorkflow.png)
 
 The parameters are as follows:
@@ -62,10 +67,12 @@ configuration such as:
 
 Complete the page as described above and as below:
 
+<!-- TODO(screenshot): file=case-workflow-config-case-workflow-status-06.png route=/models state="Models page, Case Workflows tab, case-workflow-status screen replacing the Razor-era ExampleValuesForCasesWorkflowStatus.png" -->
 ![Image](ExampleValuesForCasesWorkflowStatus.png)
 
 Scroll down the page and click the Add button to create a version of the Cases Workflow:
 
+<!-- TODO(screenshot): file=case-workflow-config-case-workflow-status-07.png route=/models state="Models page, Case Workflows tab, case-workflow-status screen replacing the Razor-era VersionAddedCasesWorkflowStatus.png" -->
 ![Image](VersionAddedCasesWorkflowStatus.png)
 
 The Cases Workflow Status are available for allocation on case creation or by the end user while navigating the case.
@@ -73,6 +80,7 @@ The Cases Workflow Status are available for allocation on case creation or by th
 For confirmatory purposes, navigate to the Activation Rule definition for Volume1DayUSDForIPOver100 in the main menu,
 expand using the Cases switch, and select the newly created Cases Workflow:
 
+<!-- TODO(screenshot): file=case-workflow-config-case-workflow-status-08.png route=/models state="Models page, Case Workflows tab, case-workflow-status screen replacing the Razor-era CasesWorkflowsStatusNowAvailable.png" -->
 ![Image](CasesWorkflowsStatusNowAvailable.png)
 
 It can be seen that the newly created Cases Workflow Status is now available as a child of the newly created Cases
@@ -80,3 +88,9 @@ Workflows.
 
 At this stage, no case record has been created, but Cases Workflow Status are available for filtering via the Cases
 Workflow filter, described separately.
+
+<!-- TODO(docs): Verify escalation fields (trigger 1 to 5, threshold ranges, target must be an active status of the same workflow with a stronger Priority) against CaseWorkflowStatusDtoValidator. -->
+<!-- TODO(docs): Document that a status cannot be moved to another Case Workflow by an update (CaseWorkflowId pinned). -->
+<!-- TODO(docs): State the SQL field: needs permission 67, single SELECT, parameters @Id and @CaseKeyValue only, 8000 characters, see Datasource Template dialect page. -->
+<!-- TODO(docs): The HTTP endpoint and notification fields: owner to decide how to describe the outbound host policy for status HTTP endpoints (see the SHARED-TODO BUG about unguarded legacy dispatch). -->
+<!-- TODO(docs): Colours must be #RRGGBB; confirm the example colours in the screenshots. -->

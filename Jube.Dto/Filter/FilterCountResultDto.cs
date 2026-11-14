@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Validation;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,22 +24,28 @@ namespace Jube.Dto.Filter
 {
     [Description("How many rows match a query builder JSON filter, optionally broken down by the values of one " +
                  "field.")]
+    [MessagePackObject]
     public class FilterCountResultDto
     {
         [Description("True when the filter and the group-by field are valid.")]
+        [Key(0)]
         public bool Valid { get; set; }
 
         [Description("The number of matching rows.")]
+        [Key(1)]
         public int Count { get; set; }
 
         [Description("When a group-by field was given, the matching rows counted by that field's value, largest " +
                      "first, capped at 200 values.")]
+        [Key(2)]
         public List<FilterCountGroupDto> Groups { get; set; } = [];
 
         [Description("True when there were more than 200 distinct values and the smallest groups were left out.")]
+        [Key(3)]
         public bool GroupsTruncated { get; set; }
 
         [Description("Problems with the filter or the group-by field. Empty when Valid is true.")]
+        [Key(4)]
         public List<ValidationErrorDto> Errors { get; set; } = [];
     }
 }

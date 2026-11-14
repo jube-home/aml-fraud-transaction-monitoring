@@ -35,6 +35,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Infrastructure.Reactivity;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
@@ -511,7 +512,6 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
             var dto = NewDto(modelId, saved.Name);
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
-            dto.Version = 999;
             dto.UpdatedUser = "also-tampered";
 
             var updated = await service.UpdateAsync(dto);
@@ -947,6 +947,51 @@ namespace Jube.Test.Service.EntityAnalysisModelInlineFunction
 
             var oversized = await service.ListAsync(10_000);
             oversized.Items.Count.Should().BeLessThanOrEqualTo(200);
+        }
+
+        [Fact]
+        public async Task SavingAHostileFunctionScriptIsRefusedAndNothingIsStoredAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var name = UniqueName("Hostile");
+            var dto = NewDto(modelId, name);
+            dto.FunctionScript = "Return System.Diagnostics.Process.Start(\"id\").ToString()";
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "RuleScriptInvalid" &&
+                                                   e.PropertyName == "FunctionScript");
+
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelInlineFunction>()
+                .CountAsync(w => w.Name == name)).Should().Be(0);
+        }
+
+        [Fact]
+        public async Task UpdatingAFunctionToAHostileScriptIsRefusedAndTheStoredScriptIsUnchangedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var saved = await service.InsertAsync(NewDto(modelId, UniqueName("HostileUpdate")));
+            createdIds.Add(saved.Id);
+
+            var dto = NewDto(modelId, saved.Name);
+            dto.Id = saved.Id;
+            dto.FunctionScript = "Return System.Diagnostics.Process.Start(\"id\").ToString()";
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.UpdateAsync(dto));
+
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "RuleScriptInvalid" &&
+                                                   e.PropertyName == "FunctionScript");
+
+            var stored = await dbContext.GetTable<Data.Poco.EntityAnalysisModelInlineFunction>()
+                .FirstAsync(w => w.Id == saved.Id);
+
+            stored.Version.Should().Be(1);
+            stored.FunctionScript.Should().Be("Return \"x\"");
         }
     }
 }

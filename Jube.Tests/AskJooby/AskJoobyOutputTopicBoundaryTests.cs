@@ -107,16 +107,16 @@ namespace Jube.Test.AskJooby
 
             extraTopic.Should().Contain("Postgres").And.Contain("Landlord",
                 "the extra topic exists specifically to cover the Landlord-only platform-ops " +
-                "surface (Postgres/Redis/Docker/etcd/Patroni) that caused the real false positive");
+                "surface (Postgres/RESP/Docker/etcd/Patroni) that caused the real false positive");
         }
 
         [Fact]
         public async Task CheckAsync_and_CheckOutputAsync_accept_an_isLandlord_flag_without_throwing_either_wayAsync()
         {
-            await AskJoobyInjectionGuard.CheckAsync("does the infrastructure look ok", isLandlord: false);
-            await AskJoobyInjectionGuard.CheckAsync("does the infrastructure look ok", isLandlord: true);
-            await AskJoobyInjectionGuard.CheckOutputAsync("Postgres cache hit ratio is 99.98%.", isLandlord: false);
-            await AskJoobyInjectionGuard.CheckOutputAsync("Postgres cache hit ratio is 99.98%.", isLandlord: true);
+            await AskJoobyInjectionGuard.CheckAsync("does the infrastructure look ok", false);
+            await AskJoobyInjectionGuard.CheckAsync("does the infrastructure look ok", true);
+            await AskJoobyInjectionGuard.CheckOutputAsync("Postgres cache hit ratio is 99.98%.", false);
+            await AskJoobyInjectionGuard.CheckOutputAsync("Postgres cache hit ratio is 99.98%.", true);
         }
 
         private static string[] GetAllowedTopics()

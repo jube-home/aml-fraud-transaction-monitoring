@@ -22,6 +22,7 @@ namespace Jube.Data.Repository
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
 
     public class EntityAnalysisModelBacktestInstanceRepository(DbContext dbContext, int tenantRegistryId)
@@ -43,6 +44,21 @@ namespace Jube.Data.Repository
         {
             return dbContext.EntityAnalysisModelBacktestInstance.FirstOrDefaultAsync(w =>
                 w.Id == id && w.TenantRegistryId == tenantRegistryId && w.Deleted == 0, token);
+        }
+
+        public Task<int> CountUncompletedAsync(int? entityAnalysisModelId, CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModelBacktestInstance
+                .Where(w => w.TenantRegistryId == tenantRegistryId && w.Deleted == 0
+                                                                   && (entityAnalysisModelId == null ||
+                                                                       w.EntityAnalysisModelId ==
+                                                                       entityAnalysisModelId)
+                                                                   && (w.Status == (short)BacktestInstanceStatus.Pending
+                                                                       || w.Status ==
+                                                                       (short)BacktestInstanceStatus.Running
+                                                                       || w.Status ==
+                                                                       (short)BacktestInstanceStatus.Cancelling))
+                .CountAsync(token);
         }
 
         public Task<List<EntityAnalysisModelBacktestInstance>> GetByRuleAsync(int entityAnalysisModelId,

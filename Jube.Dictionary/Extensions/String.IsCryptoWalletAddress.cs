@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("True when: a well formed cryptocurrency wallet address.")]
         public static bool IsCryptoWalletAddress(this string? @this)
         {
             return WalletAddressSupport.IsValid(@this);

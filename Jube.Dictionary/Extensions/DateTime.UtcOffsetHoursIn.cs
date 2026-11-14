@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double UtcOffsetHoursIn(this DateTime @this, string? zoneId)
+        [Description("The UTC offset in hours of an IANA time zone at a UTC instant; NaN for an unknown zone.")]
+        public static double UtcOffsetHoursIn(this DateTime @this,
+            [Description("The IANA or Windows time zone id, for example Europe/London.")] string? zoneId)
         {
             var zone = TimeZoneSupport.Find(zoneId);
 

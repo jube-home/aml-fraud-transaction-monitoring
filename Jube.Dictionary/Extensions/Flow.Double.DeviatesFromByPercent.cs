@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchDeviatesFromByPercent(double target, double percent)
+            [Description("True when: the value is further than the percentage from the target. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchDeviatesFromByPercent([Description("The value the deviation is measured from.")] double target,
+                [Description("The percentage deviation that counts.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleDeviatesFromByPercent(flow.Value, target, percent));
             }
 
-            public Flow<double> RejectDeviatesFromByPercent(double target, double percent)
+            [Description("True when: the value is further than the percentage from the target. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectDeviatesFromByPercent([Description("The value the deviation is measured from.")] double target,
+                [Description("The percentage deviation that counts.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleDeviatesFromByPercent(flow.Value, target, percent));
             }
 
-            public Flow<double> BreakDeviatesFromByPercent(double target, double percent)
+            [Description("True when: the value is further than the percentage from the target. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakDeviatesFromByPercent([Description("The value the deviation is measured from.")] double target,
+                [Description("The percentage deviation that counts.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleDeviatesFromByPercent(flow.Value, target, percent));
             }
 
-            public Flow<double> RequireDeviatesFromByPercent(double target, double percent)
+            [Description("True when: the value is further than the percentage from the target. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireDeviatesFromByPercent([Description("The value the deviation is measured from.")] double target,
+                [Description("The percentage deviation that counts.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleDeviatesFromByPercent(flow.Value, target, percent));
             }
 
-            public Flow<double> EnsureDeviatesFromByPercent(double target, double percent)
+            [Description("True when: the value is further than the percentage from the target. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureDeviatesFromByPercent([Description("The value the deviation is measured from.")] double target,
+                [Description("The percentage deviation that counts.")] double percent)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchDeviatesFromByPercent(double target, double percent)
+            [Description("Begins a pipeline from the value. True when: the value is further than the percentage from the target. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchDeviatesFromByPercent([Description("The value the deviation is measured from.")] double target,
+                [Description("The percentage deviation that counts.")] double percent)
             {
                 return value.Start().MatchDeviatesFromByPercent(target, percent);
             }
 
-            public Flow<double> RejectDeviatesFromByPercent(double target, double percent)
+            [Description("Begins a pipeline from the value. True when: the value is further than the percentage from the target. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectDeviatesFromByPercent([Description("The value the deviation is measured from.")] double target,
+                [Description("The percentage deviation that counts.")] double percent)
             {
                 return value.Start().RejectDeviatesFromByPercent(target, percent);
             }
 
-            public Flow<double> BreakDeviatesFromByPercent(double target, double percent)
+            [Description("Begins a pipeline from the value. True when: the value is further than the percentage from the target. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakDeviatesFromByPercent([Description("The value the deviation is measured from.")] double target,
+                [Description("The percentage deviation that counts.")] double percent)
             {
                 return value.Start().BreakDeviatesFromByPercent(target, percent);
             }
 
-            public Flow<double> RequireDeviatesFromByPercent(double target, double percent)
+            [Description("Begins a pipeline from the value. True when: the value is further than the percentage from the target. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireDeviatesFromByPercent([Description("The value the deviation is measured from.")] double target,
+                [Description("The percentage deviation that counts.")] double percent)
             {
                 return value.Start().RequireDeviatesFromByPercent(target, percent);
             }
 
-            public Flow<double> EnsureDeviatesFromByPercent(double target, double percent)
+            [Description("Begins a pipeline from the value. True when: the value is further than the percentage from the target. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureDeviatesFromByPercent([Description("The value the deviation is measured from.")] double target,
+                [Description("The percentage deviation that counts.")] double percent)
             {
                 return value.Start().EnsureDeviatesFromByPercent(target, percent);
             }

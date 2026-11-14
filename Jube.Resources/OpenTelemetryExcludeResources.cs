@@ -20,5 +20,6 @@ namespace Jube.Resources
         public const string NameRequired = nameof(NameRequired);
         public const string NameMaxLength = nameof(NameMaxLength);
         public const string NameInvalidCharacters = nameof(NameInvalidCharacters);
+        public const string NameDuplicate = nameof(NameDuplicate);
     }
 }

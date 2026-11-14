@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
-            public Flow<DateTime> MatchDayOfWeekIn(params int[] days)
+            [Description("True when: day of week is one of the numbers, where 0 is Sunday and 6 is Saturday. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchDayOfWeekIn([Description("The days of the week as numbers, where 0 is Sunday and 6 is Saturday.")] params int[] days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeDayOfWeekIn(flow.Value, days));
             }
 
-            public Flow<DateTime> RejectDayOfWeekIn(params int[] days)
+            [Description("True when: day of week is one of the numbers, where 0 is Sunday and 6 is Saturday. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectDayOfWeekIn([Description("The days of the week as numbers, where 0 is Sunday and 6 is Saturday.")] params int[] days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeDayOfWeekIn(flow.Value, days));
             }
 
-            public Flow<DateTime> BreakDayOfWeekIn(params int[] days)
+            [Description("True when: day of week is one of the numbers, where 0 is Sunday and 6 is Saturday. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakDayOfWeekIn([Description("The days of the week as numbers, where 0 is Sunday and 6 is Saturday.")] params int[] days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeDayOfWeekIn(flow.Value, days));
             }
 
-            public Flow<DateTime> RequireDayOfWeekIn(params int[] days)
+            [Description("True when: day of week is one of the numbers, where 0 is Sunday and 6 is Saturday. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireDayOfWeekIn([Description("The days of the week as numbers, where 0 is Sunday and 6 is Saturday.")] params int[] days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeDayOfWeekIn(flow.Value, days));
             }
 
-            public Flow<DateTime> EnsureDayOfWeekIn(params int[] days)
+            [Description("True when: day of week is one of the numbers, where 0 is Sunday and 6 is Saturday. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureDayOfWeekIn([Description("The days of the week as numbers, where 0 is Sunday and 6 is Saturday.")] params int[] days)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
-            public Flow<DateTime> MatchDayOfWeekIn(params int[] days)
+            [Description("Begins a pipeline from the value. True when: day of week is one of the numbers, where 0 is Sunday and 6 is Saturday. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchDayOfWeekIn([Description("The days of the week as numbers, where 0 is Sunday and 6 is Saturday.")] params int[] days)
             {
                 return value.Start().MatchDayOfWeekIn(days);
             }
 
-            public Flow<DateTime> RejectDayOfWeekIn(params int[] days)
+            [Description("Begins a pipeline from the value. True when: day of week is one of the numbers, where 0 is Sunday and 6 is Saturday. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectDayOfWeekIn([Description("The days of the week as numbers, where 0 is Sunday and 6 is Saturday.")] params int[] days)
             {
                 return value.Start().RejectDayOfWeekIn(days);
             }
 
-            public Flow<DateTime> BreakDayOfWeekIn(params int[] days)
+            [Description("Begins a pipeline from the value. True when: day of week is one of the numbers, where 0 is Sunday and 6 is Saturday. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakDayOfWeekIn([Description("The days of the week as numbers, where 0 is Sunday and 6 is Saturday.")] params int[] days)
             {
                 return value.Start().BreakDayOfWeekIn(days);
             }
 
-            public Flow<DateTime> RequireDayOfWeekIn(params int[] days)
+            [Description("Begins a pipeline from the value. True when: day of week is one of the numbers, where 0 is Sunday and 6 is Saturday. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireDayOfWeekIn([Description("The days of the week as numbers, where 0 is Sunday and 6 is Saturday.")] params int[] days)
             {
                 return value.Start().RequireDayOfWeekIn(days);
             }
 
-            public Flow<DateTime> EnsureDayOfWeekIn(params int[] days)
+            [Description("Begins a pipeline from the value. True when: day of week is one of the numbers, where 0 is Sunday and 6 is Saturday. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureDayOfWeekIn([Description("The days of the week as numbers, where 0 is Sunday and 6 is Saturday.")] params int[] days)
             {
                 return value.Start().EnsureDayOfWeekIn(days);
             }

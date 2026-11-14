@@ -73,7 +73,7 @@
     <value>A diary date is required when Diary is set.</value>
   </data>
     <data name="RatingRequired" xml:space="preserve">
-    <value>A rating between 1 and 5 is required.</value>
+    <value>A rating from 0 (not yet rated) to 5 is required.</value>
   </data>
     <data name="PayloadRequired" xml:space="preserve">
     <value>The form payload is required.</value>
@@ -88,9 +88,15 @@
     <value>The case key value is required.</value>
   </data>
     <data name="LockedUserInvalid" xml:space="preserve">
-    <value>The locked user must be a user of the same tenant.</value>
+    <value>The locked user must be a user of the same tenant who can see this case.</value>
   </data>
     <data name="LockedByAnotherUser" xml:space="preserve">
     <value>The case is locked to another user.</value>
+  </data>
+    <data name="ChecklistIncomplete" xml:space="preserve">
+    <value>{0} checklist item(s) must be completed before the case can leave this status or be closed: {1}.</value>
+  </data>
+    <data name="CaseKeyNotArchiveKey" xml:space="preserve">
+    <value>The case key is not a field flagged Archive Key on the workflow's model, so the last transaction of the key cannot be found.</value>
   </data>
 </root>

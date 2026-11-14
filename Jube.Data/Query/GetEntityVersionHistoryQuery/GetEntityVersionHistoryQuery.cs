@@ -21,6 +21,7 @@ namespace Jube.Data.Query.GetEntityVersionHistoryQuery
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
 
     public class GetEntityVersionHistoryQuery<TVersion>(DbContext dbContext, string parentIdPropertyName)
         where TVersion : class

@@ -15,8 +15,11 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double InitialBearingDegrees(this double latitude1, double longitude1, double latitude2,
-            double longitude2)
+        [Description("Initial compass bearing from the first point to the second, in degrees; NaN for out-of-range coordinates.")]
+        public static double InitialBearingDegrees(this double latitude1,
+            [Description("The longitude of the first point in degrees.")] double longitude1,
+            [Description("The latitude of the second point in degrees.")] double latitude2,
+            [Description("The longitude of the second point in degrees.")] double longitude2)
         {
             if (!latitude1.IsValidCoordinate(longitude1) || !latitude2.IsValidCoordinate(longitude2))
             {

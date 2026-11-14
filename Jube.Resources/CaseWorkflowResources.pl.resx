@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Nie masz uprawnień do wykonania tej czynności.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Aby wykonać tę czynność, musisz być zalogowany do najemcy.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>Nie znaleziono przepływu spraw.</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>Wymagany jest prawidłowy model nadrzędny.</value>
+  </data>
+    <data name="EntityAnalysisModelNotFound" xml:space="preserve">
+    <value>Wskazany model nie został znaleziony w Twoim najemcy.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>Nazwa jest wymagana.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Nazwa nie może przekraczać {0} znaków.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Ta nazwa już istnieje.</value>
+  </data>
+    <data name="DescriptionMaxLength" xml:space="preserve">
+    <value>Opis nie może przekraczać {0} znaków.</value>
+  </data>
+    <data name="VisualisationRegistryGuidRequired" xml:space="preserve">
+    <value>Wizualizacja jest wymagana, gdy wizualizacja jest włączona.</value>
+  </data>
+    <data name="VisualisationRegistryNotFound" xml:space="preserve">
+    <value>Nie znaleziono wizualizacji.</value>
+  </data>
+    <data name="RiskKappaOutOfRange" xml:space="preserve">
+    <value>Tłumienie rankingu musi być większe od 0 i nie większe niż 1.</value>
+  </data>
+    <data name="RiskRhoOutOfRange" xml:space="preserve">
+    <value>Waga rankingu dla nakładających się dowodów musi mieścić się w przedziale od 0 do 1.</value>
+  </data>
+    <data name="RiskPriorStrengthOutOfRange" xml:space="preserve">
+    <value>Siła wcześniejszej stawki rankingu musi być większa od 0 i nie większa niż 10000.</value>
+  </data>
+    <data name="RiskBaseRatePriorOutOfRange" xml:space="preserve">
+    <value>Wcześniejsza stawka rankingu musi mieścić się w przedziale od 0,001 do 0,999.</value>
+  </data>
+    <data name="DailyGoalOutOfRange" xml:space="preserve">
+    <value>Dzienny cel musi mieścić się w przedziale od 1 do 1000 spraw.</value>
+  </data>
+    <data name="RiskDeadlineLaneDaysOutOfRange" xml:space="preserve">
+    <value>Okno terminu rankingu musi mieścić się w przedziale od 0 do 365 dni.</value>
+  </data>
+    <data name="RiskKeyHistoryHalfLifeOutOfRange" xml:space="preserve">
+    <value>Okres półtrwania historii klucza w rankingu musi być większy od 0 i nie większy niż 3650 dni.</value>
+  </data>
+    <data name="RiskImpactWeightsInvalid" xml:space="preserve">
+    <value>Wagi wpływu rankingu muszą być pięcioma dodatnimi, rosnącymi liczbami oddzielonymi przecinkami.</value>
+  </data>
+    <data name="RiskMoneyBandsInvalid" xml:space="preserve">
+    <value>Przedziały kwot rankingu muszą być czterema dodatnimi, rosnącymi liczbami oddzielonymi przecinkami.</value>
+  </data>
+    <data name="RiskImpactWeightsTooLong" xml:space="preserve">
+    <value>Wagi wpływu rankingu mogą mieć najwyżej 200 znaków.</value>
+  </data>
+    <data name="RiskMoneyBandsTooLong" xml:space="preserve">
+    <value>Przedziały kwotowe rankingu mogą mieć najwyżej 200 znaków.</value>
+  </data>
+    <data name="RiskQaSampleRateOutOfRange" xml:space="preserve">
+    <value>Wskaźnik próbkowania przeglądu jakości musi mieścić się w przedziale od 0 do 0,5.</value>
+  </data>
+    <data name="GraphRegistryGuidRequired" xml:space="preserve">
+    <value>Rejestr grafów jest wymagany, gdy graf jest włączony.</value>
+  </data>
+    <data name="GraphRegistryNotFound" xml:space="preserve">
+    <value>Nie znaleziono rejestru grafów.</value>
+  </data>
+</root>

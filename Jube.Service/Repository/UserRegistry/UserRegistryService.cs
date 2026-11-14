@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2022-present Jube Holdings Limited.
+﻿﻿﻿/* Copyright (C) 2022-present Jube Holdings Limited.
  *
  * This file is part of Jube™ software.
  *
@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
@@ -31,6 +32,7 @@ using Jube.Validations.Repository.UserRegistry;
 using log4net;
 using Microsoft.Extensions.Localization;
 using PermissionValidation = Jube.Service.Security.PermissionValidation;
+using PrivilegeEscalationGuard = Jube.Service.Security.PrivilegeEscalationGuard;
 using RulePoco = Jube.Data.Poco.UserRegistry;
 
 namespace Jube.Service.Repository.UserRegistry
@@ -43,6 +45,7 @@ namespace Jube.Service.Repository.UserRegistry
         private readonly DbContext dbContext;
         private readonly DynamicEnvironment.DynamicEnvironment dynamicEnvironment;
         private readonly ILog log;
+        private readonly PrivilegeEscalationGuard guard;
         private readonly PermissionValidation permissionValidation;
         private readonly UserRegistryRepository repository;
         private readonly IServiceChangeBus serviceChangeBus;
@@ -65,6 +68,7 @@ namespace Jube.Service.Repository.UserRegistry
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             repository = new UserRegistryRepository(dbContext, userName);
+            guard = new PrivilegeEscalationGuard(dbContext, tenantRegistryId, permissionValidation);
             var roleRegistryRepository = new RoleRegistryRepository(dbContext, userName);
             validator = new UserRegistryDtoValidator(repository, roleRegistryRepository, strings);
         }
@@ -588,6 +592,9 @@ namespace Jube.Service.Repository.UserRegistry
                     throw new DtoValidationException(results);
                 }
 
+                await EnsureMayAssignRoleAsync("UserRegistry.Create", model.RoleRegistryGuid, token)
+                    .ConfigureAwait(false);
+
                 var newPoco = UserRegistryMapper.ToPoco(model);
 
                 newPoco.PasswordLocked = 0;
@@ -705,6 +712,8 @@ namespace Jube.Service.Repository.UserRegistry
                 ArgumentNullException.ThrowIfNull(model);
                 EnsurePermitted("UserRegistry.Update");
 
+                await EnsureMayActAsUserAsync("UserRegistry.Update", model.Id, token).ConfigureAwait(false);
+
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
 
                 if (!results.IsValid)
@@ -722,6 +731,14 @@ namespace Jube.Service.Repository.UserRegistry
 
                 try
                 {
+                    var existing = await repository.GetByIdAsync(model.Id, token).ConfigureAwait(false);
+
+                    if (existing is not null && existing.RoleRegistryGuid != model.RoleRegistryGuid)
+                    {
+                        await EnsureMayAssignRoleAsync("UserRegistry.Update", model.RoleRegistryGuid, token)
+                            .ConfigureAwait(false);
+                    }
+
                     var poco = UserRegistryMapper.ToPoco(model);
 
                     if (model.PasswordLocked is null)
@@ -777,6 +794,12 @@ namespace Jube.Service.Repository.UserRegistry
                 op.Outcome("notfound");
                 throw;
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
@@ -822,6 +845,8 @@ namespace Jube.Service.Repository.UserRegistry
                 {
                     throw new KeyNotFoundException();
                 }
+
+                await EnsureMayActAsUserAsync("UserRegistry.UpdatePassword", model.Id, token).ConfigureAwait(false);
 
                 var generatedPassword = HashPassword.CreateSecurePassword(16);
 
@@ -898,6 +923,7 @@ namespace Jube.Service.Repository.UserRegistry
             try
             {
                 EnsurePermitted("UserRegistry.Delete");
+                await EnsureMayActAsUserAsync("UserRegistry.Delete", id, token).ConfigureAwait(false);
 
                 try
                 {
@@ -951,10 +977,53 @@ namespace Jube.Service.Repository.UserRegistry
             }
         }
 
-        [Description("Ends every browser and bearer-token (JWT) login session of a user in the caller's tenant: " +
-                     "each token issued before now is refused on its next request and the user must log in " +
-                     "again. API keys are not affected (they are revoked separately). Not registered as an " +
-                     "agent tool.")]
+        [Description("Clears a user's TOTP enrolment in the caller's tenant, so the user must enrol an " +
+                     "authenticator again at the next sign-in. Needs the user registry permission and is " +
+                     "audited. Not registered as an agent tool.")]
+        public async Task ResetTotpAsync(int id, CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("UserRegistry", "ResetTotp", userName, tenantRegistryId, auditLog,
+                log, serviceChangeBus);
+
+            try
+            {
+                EnsurePermitted("UserRegistry.ResetTotp");
+                await EnsureMayActAsUserAsync("UserRegistry.ResetTotp", id, token).ConfigureAwait(false);
+
+                var reset = await new UserRegistryTotpRepository(dbContext).ResetByIdAsync(id, token)
+                    .ConfigureAwait(false);
+
+                if (reset == 0)
+                {
+                    throw new NotFoundException("The User was not found.");
+                }
+
+                op.Entity(id);
+                op.Updated();
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                op.Outcome("notfound");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"UserRegistry.ResetTotp: unexpected failure user={userName}", ex);
+                throw;
+            }
+        }
+
         public async Task RevokeTokensAsync(int id, CancellationToken token = default)
         {
             using var op = OperationScope.Start("UserRegistry", "RevokeTokens", userName, tenantRegistryId, auditLog,
@@ -968,6 +1037,7 @@ namespace Jube.Service.Repository.UserRegistry
             try
             {
                 EnsurePermitted("UserRegistry.RevokeTokens");
+                await EnsureMayActAsUserAsync("UserRegistry.RevokeTokens", id, token).ConfigureAwait(false);
 
                 try
                 {
@@ -1019,6 +1089,36 @@ namespace Jube.Service.Repository.UserRegistry
                 log.Error($"UserRegistry.RevokeTokens: unexpected failure id={id} user={userName}", ex);
                 throw;
             }
+        }
+
+        private async Task EnsureMayAssignRoleAsync(string op, Guid roleRegistryGuid, CancellationToken token)
+        {
+            if (await guard.MayAssignRoleAsync(roleRegistryGuid, token).ConfigureAwait(false))
+            {
+                return;
+            }
+
+            ThrowInsufficientPrivilege(op);
+        }
+
+        private async Task EnsureMayActAsUserAsync(string op, int userRegistryId, CancellationToken token)
+        {
+            if (await guard.MayActAsUserAsync(userRegistryId, token).ConfigureAwait(false))
+            {
+                return;
+            }
+
+            ThrowInsufficientPrivilege(op);
+        }
+
+        private void ThrowInsufficientPrivilege(string op)
+        {
+            if (log.IsWarnEnabled)
+            {
+                log.Warn($"{op}: privilege escalation refused user={userName}");
+            }
+
+            throw new ForbiddenException(strings[UserRegistryResources.InsufficientPrivilege], permissions);
         }
 
         private void EnsurePermitted(string op)

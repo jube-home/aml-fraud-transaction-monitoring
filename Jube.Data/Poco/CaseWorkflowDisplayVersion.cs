@@ -43,5 +43,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(14)] public int? Version { get; set; }
         [Column] [Nullable] [Key(15)] public string Html { get; set; }
         [Column] [Nullable] [Key(16)] public Guid Guid { get; set; }
+
+        [Column] [Nullable] [Key(17)] public string Sql { get; set; }
     }
 }

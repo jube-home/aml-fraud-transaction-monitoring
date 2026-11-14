@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string MaskExceptLast(this string? @this, int visibleCount, char mask = '*')
+        [Description("Masks every character except the trailing visibleCount, for displaying account/card numbers safely.")]
+        public static string MaskExceptLast(this string? @this,
+            [Description("Number of trailing characters to leave visible.")] int visibleCount,
+            [Description("The mask character.")] char mask = '*')
         {
             var value = @this ?? "";
             var clampedVisibleCount = Math.Max(0, visibleCount);

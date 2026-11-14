@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" class="jc jc-bands" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet"
-     role="img" aria-labelledby="jc-085b039f-t jc-085b039f-d">
-    <title id="jc-085b039f-t">Daily transaction volume</title>
-    <desc id="jc-085b039f-d">Time series chart with 2 series: Actual, Forecast. Y values range from 873.9 to 1623.
+     role="img" aria-labelledby="jc-b05e3569-t jc-b05e3569-d">
+    <title id="jc-b05e3569-t">Daily transaction volume</title>
+    <desc id="jc-b05e3569-d">Time series chart with 2 series: Actual, Forecast. Y values range from 873.9 to 1623.
         Interval bands are shown. 2 marked events.
     </desc>
     <rect class="bg" x="0" y="0" width="640" height="400" rx="8"/>
@@ -700,14 +700,14 @@
         <circle class="cx s0" cx="462.45" cy="212.17" r="4.5"/>
         <circle class="cx s1" cx="462.45" cy="213.6" r="4.5"/>
         <g class="tt">
-            <rect class="tb" x="274.93" y="165.17" width="175.52" height="95" rx="6"/>
-            <text class="tx b" x="284.93" y="183.17">2026-02-19</text>
-            <rect class="tsw s0" x="284.93" y="191.17" width="9" height="9" rx="2"/>
-            <text class="tx" x="298.93" y="200.17">Actual: 1299</text>
-            <rect class="tsw s1" x="284.93" y="208.17" width="9" height="9" rx="2"/>
-            <text class="tx" x="298.93" y="217.17">Forecast: 1294</text>
-            <text class="tx" x="284.93" y="234.17">95% interval: 1278 to 1310</text>
-            <text class="tx" x="284.93" y="251.17">80% interval: 1284 to 1304</text>
+            <rect class="tb" x="274.93" y="164.67" width="175.52" height="95" rx="6"/>
+            <text class="tx b" x="284.93" y="182.67">2026-02-19</text>
+            <rect class="tsw s0" x="284.93" y="190.67" width="9" height="9" rx="2"/>
+            <text class="tx" x="298.93" y="199.67">Actual: 1299</text>
+            <rect class="tsw s1" x="284.93" y="207.67" width="9" height="9" rx="2"/>
+            <text class="tx" x="298.93" y="216.67">Forecast: 1294</text>
+            <text class="tx" x="284.93" y="233.67">95% interval: 1278 to 1310</text>
+            <text class="tx" x="284.93" y="250.67">80% interval: 1284 to 1304</text>
         </g>
     </g>
     <g class="mk" tabindex="0" role="graphics-symbol"

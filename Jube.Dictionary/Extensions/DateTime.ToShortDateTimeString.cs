@@ -10,17 +10,20 @@ namespace Jube.Dictionary.Extensions
     {
         extension(DateTime @this)
         {
+            [Description("Converts the date to a short date time string.")]
             public string ToShortDateTimeString()
             {
                 return @this.ToString("g", DateTimeFormatInfo.CurrentInfo);
             }
 
-            public string ToShortDateTimeString(string culture)
+            [Description("Converts the date to a short date time string using a culture.")]
+            public string ToShortDateTimeString([Description("The culture.")] string culture)
             {
                 return @this.ToString("g", new CultureInfo(culture));
             }
 
-            public string ToShortDateTimeString(CultureInfo culture)
+            [Description("Converts the date to a short date time string using a culture.")]
+            public string ToShortDateTimeString([Description("The culture.")] CultureInfo culture)
             {
                 return @this.ToString("g", culture);
             }

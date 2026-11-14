@@ -18,7 +18,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsDiceInList(this string? @this, IEnumerable<string>? list, double threshold)
+        [Description("True when: the bigram (Dice) overlap with an entry is at least the threshold.")]
+        public static bool IsDiceInList(this string? @this,
+            [Description("The List token whose entries are compared.")] IEnumerable<string>? list,
+            [Description("The Dice bigram similarity from 0 to 1 that counts.")] double threshold)
         {
             return FuzzyListMatcher.Any(@this, list, FuzzyOptions.For(FuzzyAlgorithm.Dice, threshold));
         }

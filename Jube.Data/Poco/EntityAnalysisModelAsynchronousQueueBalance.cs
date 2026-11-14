@@ -34,8 +34,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(5)] public string Instance { get; set; }
         [Column] [Nullable] [Key(7)] public int? ImplicitAsyncOverdue { get; set; }
 
-        [Association(ThisKey = "EntityAnalysisModelGuid", OtherKey = "Guid", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "EntityAnalysisModelGuid", OtherKey = "Guid", CanBeNull = true)]
         [Key(6)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
     }

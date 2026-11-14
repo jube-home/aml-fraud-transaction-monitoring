@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchEmailDomainEqual(string? domain)
+            [Description("True when: the domain of the email equals the argument, ignoring case. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchEmailDomainEqual([Description("The domain the email's domain is compared with.")] string? domain)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringEmailDomainEqual(flow.Value, domain));
             }
 
-            public Flow<string?> RejectEmailDomainEqual(string? domain)
+            [Description("True when: the domain of the email equals the argument, ignoring case. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectEmailDomainEqual([Description("The domain the email's domain is compared with.")] string? domain)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringEmailDomainEqual(flow.Value, domain));
             }
 
-            public Flow<string?> BreakEmailDomainEqual(string? domain)
+            [Description("True when: the domain of the email equals the argument, ignoring case. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakEmailDomainEqual([Description("The domain the email's domain is compared with.")] string? domain)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringEmailDomainEqual(flow.Value, domain));
             }
 
-            public Flow<string?> RequireEmailDomainEqual(string? domain)
+            [Description("True when: the domain of the email equals the argument, ignoring case. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireEmailDomainEqual([Description("The domain the email's domain is compared with.")] string? domain)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringEmailDomainEqual(flow.Value, domain));
             }
 
-            public Flow<string?> EnsureEmailDomainEqual(string? domain)
+            [Description("True when: the domain of the email equals the argument, ignoring case. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureEmailDomainEqual([Description("The domain the email's domain is compared with.")] string? domain)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchEmailDomainEqual(string? domain)
+            [Description("Begins a pipeline from the value. True when: the domain of the email equals the argument, ignoring case. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchEmailDomainEqual([Description("The domain the email's domain is compared with.")] string? domain)
             {
                 return value.Start().MatchEmailDomainEqual(domain);
             }
 
-            public Flow<string?> RejectEmailDomainEqual(string? domain)
+            [Description("Begins a pipeline from the value. True when: the domain of the email equals the argument, ignoring case. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectEmailDomainEqual([Description("The domain the email's domain is compared with.")] string? domain)
             {
                 return value.Start().RejectEmailDomainEqual(domain);
             }
 
-            public Flow<string?> BreakEmailDomainEqual(string? domain)
+            [Description("Begins a pipeline from the value. True when: the domain of the email equals the argument, ignoring case. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakEmailDomainEqual([Description("The domain the email's domain is compared with.")] string? domain)
             {
                 return value.Start().BreakEmailDomainEqual(domain);
             }
 
-            public Flow<string?> RequireEmailDomainEqual(string? domain)
+            [Description("Begins a pipeline from the value. True when: the domain of the email equals the argument, ignoring case. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireEmailDomainEqual([Description("The domain the email's domain is compared with.")] string? domain)
             {
                 return value.Start().RequireEmailDomainEqual(domain);
             }
 
-            public Flow<string?> EnsureEmailDomainEqual(string? domain)
+            [Description("Begins a pipeline from the value. True when: the domain of the email equals the argument, ignoring case. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureEmailDomainEqual([Description("The domain the email's domain is compared with.")] string? domain)
             {
                 return value.Start().EnsureEmailDomainEqual(domain);
             }

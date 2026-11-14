@@ -21,6 +21,7 @@ using Jube.Data.Poco;
 using Jube.Service.UserLogout;
 using Jube.Test.Infrastructure.DatabaseFixture.Models;
 using LinqToDB;
+using LinqToDB.Async;
 using LinqToDB.Data;
 using Xunit;
 
@@ -362,16 +363,21 @@ namespace Jube.Test.Infrastructure.DatabaseFixture
         }
 
         private const int AllowApprovalSpecificationId = 44;
+        private const int SqlValidatorSpecificationId = 67;
+        private const int ApproveCaseSuppressionSpecificationId = 70;
 
         private static async Task<SeedData> SeedAsync(DbContext dbContext)
         {
             int[] readWriteSpecs =
             [
                 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28,
-                29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 60, 61, 66
+                29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 60, 61, 65, 66, 67, 68,
+                69, 70, 72, 73, 74, 75, 76, 77, 78, 79, 80
             ];
 
-            var readWriteSpecsNoApproval = readWriteSpecs.Where(s => s != AllowApprovalSpecificationId).ToArray();
+            var readWriteSpecsNoApproval = readWriteSpecs
+                .Where(s => s != AllowApprovalSpecificationId && s != SqlValidatorSpecificationId &&
+                            s != ApproveCaseSuppressionSpecificationId && s != 76 && s != 79 && s != 80).ToArray();
 
             var suffix = Guid.NewGuid().ToString("N")[..8];
 

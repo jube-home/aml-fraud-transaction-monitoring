@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Length of the longest run of one repeated character.")]
         public static int LongestCharacterRun(this string? @this)
         {
             var value = @this ?? "";

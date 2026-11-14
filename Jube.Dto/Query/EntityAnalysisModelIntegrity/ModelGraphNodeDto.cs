@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,19 +22,31 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.EntityAnalysisModelIntegrity
 {
     [Description("An entity in the model's dependency graph.")]
+    [MessagePackObject]
     public class ModelGraphNodeDto
     {
         [Description("The node's id, Kind:Id, or Missing:Name for a name that resolves to nothing.")]
+        [Key(0)]
         public string Id { get; set; } = string.Empty;
 
-        [Description("The entity's name.")] public string Label { get; set; } = string.Empty;
+        [Description("The entity's name.")] [Key(1)] public string Label { get; set; } = string.Empty;
 
         [Description("The kind of entity, or Missing.")]
+        [Key(2)]
         public string Kind { get; set; } = string.Empty;
 
         [Description("Whether the entity is active.")]
+        [Key(3)]
         public bool Active { get; set; }
 
-        [Description("More about the node.")] public string? Detail { get; set; }
+        [Description("More about the node.")] [Key(4)] public string? Detail { get; set; }
+
+        [Description("How many integrity findings about this entity are errors.")]
+        [Key(5)]
+        public int Errors { get; set; }
+
+        [Description("How many integrity findings about this entity are warnings.")]
+        [Key(6)]
+        public int Warnings { get; set; }
     }
 }

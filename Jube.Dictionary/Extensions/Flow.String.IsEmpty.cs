@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
+            [Description("True when: present but zero length. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsEmpty()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringIsEmpty(flow.Value));
             }
 
+            [Description("True when: present but zero length. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsEmpty()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringIsEmpty(flow.Value));
             }
 
+            [Description("True when: present but zero length. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsEmpty()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringIsEmpty(flow.Value));
             }
 
+            [Description("True when: present but zero length. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsEmpty()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringIsEmpty(flow.Value));
             }
 
+            [Description("True when: present but zero length. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsEmpty()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
+            [Description("Begins a pipeline from the value. True when: present but zero length. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsEmpty()
             {
                 return value.Start().MatchIsEmpty();
             }
 
+            [Description("Begins a pipeline from the value. True when: present but zero length. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsEmpty()
             {
                 return value.Start().RejectIsEmpty();
             }
 
+            [Description("Begins a pipeline from the value. True when: present but zero length. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsEmpty()
             {
                 return value.Start().BreakIsEmpty();
             }
 
+            [Description("Begins a pipeline from the value. True when: present but zero length. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsEmpty()
             {
                 return value.Start().RequireIsEmpty();
             }
 
+            [Description("Begins a pipeline from the value. True when: present but zero length. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsEmpty()
             {
                 return value.Start().EnsureIsEmpty();

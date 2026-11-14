@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -107,6 +108,60 @@ namespace Jube.Test.AskJooby
             var act = () => tool.Remember("Some fact.", "Team");
 
             return act.Should().ThrowAsync<ArgumentException>();
+        }
+
+        [Fact]
+        public Task RememberRejectsContentOverTheLengthCapAsync()
+        {
+            var tool = new MemoryTool(new FakeMemoryClient([]));
+
+            var act = () => tool.Remember(new string('a', 2001));
+
+            return act.Should().ThrowAsync<ArgumentException>();
+        }
+
+        [Fact]
+        public Task RememberRejectsBlankContentAsync()
+        {
+            var tool = new MemoryTool(new FakeMemoryClient([]));
+
+            var act = () => tool.Remember("   ");
+
+            return act.Should().ThrowAsync<ArgumentException>();
+        }
+
+        [Fact]
+        public async Task ASystemScopeMemoryIsHeldBackUntilTheUserApprovesItAsync()
+        {
+            var ledger = new Jube.AskJooby.Security.ToolApprovalLedger();
+            var gate = new Jube.AskJooby.Security.ToolApprovalGate(ledger, "7", "alice", 1);
+            var client = new FakeMemoryClient([]);
+            var tool = new MemoryTool(client, gate);
+
+            var first = await tool.Remember("Always escalate cases from country X.", "System");
+
+            first.Should().Contain("needs this user's approval");
+            client.LastScope.Should().BeNull("nothing may be stored tenant-wide before the user approves");
+
+            ledger.Decide(ledger.Pending("7", "alice", 1).Single().Id, "7", "alice", 1, true);
+
+            await tool.Remember("Always escalate cases from country X.", "System");
+
+            client.LastScope.Should().Be("System");
+        }
+
+        [Fact]
+        public async Task UserAndConversationScopeMemoriesNeedNoApprovalAsync()
+        {
+            var ledger = new Jube.AskJooby.Security.ToolApprovalLedger();
+            var gate = new Jube.AskJooby.Security.ToolApprovalGate(ledger, "7", "alice", 1);
+            var client = new FakeMemoryClient([]);
+            var tool = new MemoryTool(client, gate);
+
+            await tool.Remember("Prefers short answers.");
+
+            client.LastScope.Should().Be("User");
+            ledger.Pending("7", "alice", 1).Should().BeEmpty();
         }
 
         [Fact]

@@ -63,7 +63,10 @@ namespace Jube.Parser
                 Path.Combine(frameworkPath, "System.Xml.dll"), Path.Combine(binaryPath, "log4net.dll"),
                 Path.Combine(binaryPath, "Jube.Dictionary.dll"),
                 Path.Combine(frameworkPath, "System.Collections.dll"),
-                Path.Combine(binaryPath, "Jube.HttpAdaptationProtocol.dll")
+                Path.Combine(binaryPath, "Jube.HttpAdaptationProtocol.dll"),
+                Path.Combine(binaryPath, "Jube.GraphRecallProtocol.dll"),
+                Path.Combine(binaryPath, "Svirfd.dll"), Path.Combine(binaryPath, "Jube.Svirfd.dll"),
+                Path.Combine(frameworkPath, "System.Linq.dll")
             ];
         }
 
@@ -78,12 +81,14 @@ namespace Jube.Parser
 
             var references = new List<string>
             {
-                Path.Combine(binaryPath, "log4net.dll"), Path.Combine(binaryPath, "Jube.Dictionary.dll")
+                Path.Combine(binaryPath, "log4net.dll"), Path.Combine(binaryPath, "Jube.Dictionary.dll"),
+                Path.Combine(binaryPath, "Svirfd.dll"), Path.Combine(binaryPath, "Jube.Svirfd.dll")
             };
 
             if (ruleParseType == ActivationRule)
             {
                 references.Add(Path.Combine(binaryPath, "Jube.HttpAdaptationProtocol.dll"));
+                references.Add(Path.Combine(binaryPath, "Jube.GraphRecallProtocol.dll"));
             }
 
             return [.. references];
@@ -105,7 +110,8 @@ namespace Jube.Parser
                 GatewayRule when reprocessing =>
                     EngineRuleWrapper.ReprocessingRule(parsedRule.ParsedRuleText, tryCatchWrap),
                 GatewayRule => EngineRuleWrapper.GatewayRule(parsedRule.ParsedRuleText, tryCatchWrap),
-                AbstractionRule => EngineRuleWrapper.AbstractionRule(parsedRule.ParsedRuleText, tryCatchWrap),
+                AbstractionRule => EngineRuleWrapper.AbstractionRule(parsedRule.ParsedRuleText, tryCatchWrap,
+                    parsedRule.Variables),
                 ActivationRule => EngineRuleWrapper.ActivationRule(parsedRule.ParsedRuleText, tryCatchWrap),
                 _ => null
             };
@@ -169,6 +175,8 @@ namespace Jube.Parser
                 EntityAnalysisModelsHttpAdaptations = environment.HttpAdaptations,
                 EntityAnalysisModelsExhaustiveAdaptations = environment.ExhaustiveAdaptations,
                 EntityAnalysisModelsAdvancedAnalyticsAdaptations = environment.AdvancedAnalyticsAdaptations,
+                EntityAnalysisModelsGraph = environment.Graph,
+                EntityAnalysisModelsSvirfd = environment.Svirfd,
                 EntityAnalysisModelsActivationRules = environment.ActivationRules,
                 EntityAnalysisModelsInlineFunctions = environment.InlineFunctions
             };
@@ -184,12 +192,18 @@ namespace Jube.Parser
             parsedRule = parser.TranslateFromDotNotation(parsedRule,
                 showOnlyCacheForPayload ?? ruleParseType == AbstractionRule);
 
-            parsedRule = parser.Parse(parsedRule);
+            parsedRule = parser.Parse(parsedRule, ruleParseType == AbstractionRule);
 
             var contractError = RuleReturnContract.Check(parsedRule.ParsedRuleText);
 
             if (contractError != null)
             {
+                if (contractError.Column.HasValue && contractError.EndColumn.HasValue)
+                {
+                    parsedRule.Locate(contractError.Line, contractError.Column.Value, contractError.EndColumn.Value,
+                        contractError);
+                }
+
                 parsedRule.ErrorSpans.Add(contractError);
             }
 
@@ -234,13 +248,27 @@ namespace Jube.Parser
                         var message = $"Line {line + 1}: {err.GetMessage()}";
                         sb.AppendLine(message);
 
-                        errorSpans.Add(new ErrorSpan
+                        var span = new ErrorSpan
                         {
                             Message = message,
                             Start = err.Location.SourceSpan.Start - parsedRule.CharOffset,
                             Length = err.Location.SourceSpan.Length,
                             Line = line
-                        });
+                        };
+
+                        var position = err.Location.GetLineSpan();
+
+                        if (err.Location.IsInSource && line >= 0 && line < parsedRule.LineMaps.Count)
+                        {
+                            var translatedStart = position.StartLinePosition.Character;
+                            var translatedEnd = position.EndLinePosition.Line == position.StartLinePosition.Line
+                                ? position.EndLinePosition.Character
+                                : int.MaxValue;
+
+                            parsedRule.Locate(line, translatedStart, translatedEnd, span);
+                        }
+
+                        errorSpans.Add(span);
                     }
 
                     return new RuleParseResult
@@ -273,7 +301,8 @@ namespace Jube.Parser
                 ParsedRuleText = parsedRule.ParsedRuleText,
                 ClassName = className,
                 CompiledBinary = compiledBinary,
-                References = Distinct(parsedRule.References)
+                References = Distinct(parsedRule.References),
+                UsesCursor = parsedRule.UsesCursor
             };
         }
 

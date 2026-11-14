@@ -302,21 +302,225 @@ namespace Jube.Test.Engine.Sanctions
         [Theory]
         [InlineData("Robert Mugabe", "robert mugabe")]
         [InlineData("O'Brien", "obrien")]
-        [InlineData("Smith-Jones", "smithjones")]
+        [InlineData("Smith-Jones", "smith jones")]
         [InlineData("St. Petersburg", "st petersburg")]
         [InlineData("A, B", "a b")]
         [InlineData("FRANÇOIS", "francois")]
         [InlineData("MOHAMMED", "mohammed")]
-        public void NormalizeElementValueLowercasesStripsDiacriticsAndRemovesPunctuationWithoutSpacing(
+        public void NormalizeElementValueLowercasesStripsDiacriticsAndSpacesPunctuation(
             string raw, string expected)
         {
             SanctionEntryFileImporter.NormalizeElementValue(raw).Should().Be(expected);
         }
 
         [Fact]
-        public void NormalizeElementValueDropsHyphenWithNoSpaceUnlikeMatchTimeTokenization()
+        public void NormalizeElementValueSplitsHyphenExactlyAsMatchTimeTokenizationDoes()
         {
-            SanctionEntryFileImporter.NormalizeElementValue("Smith-Jones").Should().Be("smithjones");
+            SanctionEntryFileImporter.NormalizeElementValue("Smith-Jones").Should().Be("smith jones");
+
+            SanctionTextFolding.Tokens(SanctionEntryFileImporter.NormalizeElementValue("Smith-Jones"))
+                .Should().Equal(SanctionTextFolding.Tokens("Smith-Jones"));
+        }
+
+        [Theory]
+        [InlineData("AL-QAIDA", "al-Qaida")]
+        [InlineData("AL-QAIDA", "Al Qaida")]
+        [InlineData("J.R. SMITH", "J R Smith")]
+        [InlineData("SMITH, JOHN", "john smith")]
+        [InlineData("O'BRIEN-JONES", "OBrien Jones")]
+        public void ListEntryAndScreenedNameMatchAtDistanceZeroWhateverPunctuationEachSideUses(string listName,
+            string screened)
+        {
+            var entry = new SanctionEntry
+            {
+                SanctionEntryId = 1,
+                SanctionEntrySourceId = 1,
+                SanctionEntryReference = "1",
+                SanctionElementValue =
+                [
+                    .. listName
+                        .Split([" "], StringSplitOptions.RemoveEmptyEntries)
+                        .Select(SanctionEntryFileImporter.NormalizeElementValue)
+                ]
+            };
+
+            var entries = new ConcurrentDictionary<int, SanctionEntry>();
+            entries.TryAdd(entry.SanctionEntryId, entry);
+
+            var matches = new LevenshteinDistance().CheckMultipartString(screened, 0, entries,
+                new ConcurrentDictionary<string, byte>());
+
+            matches.Should().ContainSingle().Which.LevenshteinDistance.Should().Be(0);
+        }
+
+        [Fact]
+        public async Task ImportAsyncParsesTheUkSanctionsListLayoutUsingTheCorrectedSourceMappingAsync()
+        {
+            const string csv = "Report Date: 10-Nov-2026\n" +
+                               "Last Updated,Unique ID,OFSI Group ID,UN Reference Number,Name 6,Name 1,Name 2,Name 3,Name 4,Name 5,Name type\n" +
+                               "01/01/2024,AFG0001,12703,,HAJI KHAIRULLAH MONEY EXCHANGE,,,,,,Primary Name\n" +
+                               "02/02/2024,RUS0042,,,PETROV,Ivan,Ivanovich,,,,Primary Name\n";
+            using var parser = NewParser(csv);
+            var capture = new Capture();
+
+            var result = await SanctionEntryFileImporter.ImportAsync(parser, 1, "4,5,6,7,8,9", 1, 2,
+                capture.OnRecordAsync, capture.OnRejectedAsync, noOpLog);
+
+            capture.Rejections.Should().BeEmpty();
+            result.TotalRows.Should().Be(2);
+            capture.Records.Select(r => r.Reference).Should().Equal("AFG0001", "RUS0042");
+            SanctionTextFolding.Tokens(capture.Records[0].ElementValue).Should()
+                .Equal("haji", "khairullah", "money", "exchange");
+            SanctionTextFolding.Tokens(capture.Records[1].ElementValue).Should()
+                .Equal("petrov", "ivan", "ivanovich");
+        }
+
+        [Fact]
+        public async Task ImportAsyncParsesTheOfacAlternateNamesLayoutUsingTheCorrectedSourceMappingAsync()
+        {
+            const string csv = "36,12,\"aka\",\"AERO-CARIBBEAN\",-0- \n" +
+                               "906,46100,\"aka\",\"HAVANA INTERNATIONAL BANK, LTD\",-0- \n";
+            using var parser = NewParser(csv);
+            var capture = new Capture();
+
+            var result = await SanctionEntryFileImporter.ImportAsync(parser, 1, "3", 0, 0,
+                capture.OnRecordAsync, capture.OnRejectedAsync, noOpLog);
+
+            capture.Rejections.Should().BeEmpty();
+            result.TotalRows.Should().Be(2);
+            capture.Records.Select(r => r.Reference).Should().Equal("36", "906");
+            capture.Records.Select(r => r.ElementValue).Should()
+                .Equal("AERO-CARIBBEAN", "HAVANA INTERNATIONAL BANK, LTD");
+        }
+
+        [Fact]
+        public async Task ImportAsyncRejectsTheOfacAlternateNamesLayoutUnderTheOriginalSemicolonMappingAsync()
+        {
+            using var parser = NewParser("36,12,\"aka\",\"AERO-CARIBBEAN\",-0- \n", ";");
+            var capture = new Capture();
+
+            await SanctionEntryFileImporter.ImportAsync(parser, 1, "3", 8, 0,
+                capture.OnRecordAsync, capture.OnRejectedAsync, noOpLog);
+
+            capture.Records.Should().BeEmpty();
+            capture.Rejections.Should().ContainSingle();
+        }
+
+        private const string OpenSanctionsSample =
+            "id,schema,name,aliases,birth_date,countries,dataset\n" +
+            "Q1,Person,Ivan Petrov,\"Vanya Petrov; I. Petrov;Ivan Petrov\",1970-01-01,ru,pep\n" +
+            "Q2,Organization,Acme Holdings,,,cy,sanctions\n" +
+            "Q3,Vessel,MV Lucky Star,,,pa,sanctions\n" +
+            "Q4,Person,Maria Gomez,,,es,pep\n";
+
+        private static readonly SanctionEntryFileOptions openSanctions =
+            new(3, ";", 1, "Person,Organization");
+
+        [Fact]
+        public async Task ImportAsyncLoadsEachAliasAsItsOwnEntryWithTheSameReferenceAsync()
+        {
+            using var parser = NewParser(OpenSanctionsSample);
+            var capture = new Capture();
+
+            await SanctionEntryFileImporter.ImportAsync(parser, 1, "2", 0, 1, openSanctions,
+                capture.OnRecordAsync, capture.OnRejectedAsync, noOpLog);
+
+            var ivan = capture.Records.Where(r => r.Reference == "Q1").Select(r => r.ElementValue).ToList();
+            ivan.Should().BeEquivalentTo("Ivan Petrov", "Vanya Petrov", "I. Petrov");
+            capture.Rejections.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task ImportAsyncSkipsRowsWhoseFilterColumnIsNotAnAcceptedValueAsync()
+        {
+            using var parser = NewParser(OpenSanctionsSample);
+            var capture = new Capture();
+
+            var result = await SanctionEntryFileImporter.ImportAsync(parser, 1, "2", 0, 1, openSanctions,
+                capture.OnRecordAsync, capture.OnRejectedAsync, noOpLog);
+
+            capture.Records.Select(r => r.Reference).Distinct().Should().Equal("Q1", "Q2", "Q4");
+            capture.Records.Should().NotContain(r => r.ElementValue == "MV Lucky Star");
+            capture.Rejections.Should().BeEmpty("a filtered row is not a rejected row");
+            result.RejectedRows.Should().Be(0);
+            result.TotalRows.Should().Be(4);
+        }
+
+        [Fact]
+        public async Task ImportAsyncComparesTheFilterIgnoringCaseAndSpacesAsync()
+        {
+            using var parser = NewParser("1,PERSON,A One\n2,Vessel,B Two\n");
+            var capture = new Capture();
+
+            await SanctionEntryFileImporter.ImportAsync(parser, 1, "2", 0, 0,
+                new SanctionEntryFileOptions(null, null, 1, " person , company "),
+                capture.OnRecordAsync, capture.OnRejectedAsync, noOpLog);
+
+            capture.Records.Should().ContainSingle().Which.Reference.Should().Be("1");
+        }
+
+        [Fact]
+        public async Task ImportAsyncAliasHashesAreStableAndDifferFromThePrimaryAsync()
+        {
+            using var first = NewParser(OpenSanctionsSample);
+            using var second = NewParser(OpenSanctionsSample);
+            var one = new Capture();
+            var two = new Capture();
+
+            await SanctionEntryFileImporter.ImportAsync(first, 1, "2", 0, 1, openSanctions, one.OnRecordAsync,
+                one.OnRejectedAsync, noOpLog);
+            await SanctionEntryFileImporter.ImportAsync(second, 1, "2", 0, 1, openSanctions, two.OnRecordAsync,
+                two.OnRejectedAsync, noOpLog);
+
+            one.Records.Select(r => r.Hash).Should().Equal(two.Records.Select(r => r.Hash));
+            one.Records.Select(r => r.Hash).Should().OnlyHaveUniqueItems();
+        }
+
+        [Fact]
+        public async Task ImportAsyncWithAnAliasColumnButNoSeparatorSplitsOnSemicolonsAsync()
+        {
+            using var parser = NewParser("Q9,Person,Ana Silva,\"Ana S.;A. Silva\"\n");
+            var capture = new Capture();
+
+            await SanctionEntryFileImporter.ImportAsync(parser, 1, "2", 0, 0, new SanctionEntryFileOptions(3),
+                capture.OnRecordAsync, capture.OnRejectedAsync, noOpLog);
+
+            capture.Records.Select(r => r.ElementValue).Should().BeEquivalentTo("Ana Silva", "Ana S.", "A. Silva");
+        }
+
+        [Fact]
+        public async Task ImportAsyncAliasedEntriesStillMatchAtQueryTimeAsync()
+        {
+            using var parser = NewParser(OpenSanctionsSample);
+            var capture = new Capture();
+            await SanctionEntryFileImporter.ImportAsync(parser, 1, "2", 0, 1, openSanctions, capture.OnRecordAsync,
+                capture.OnRejectedAsync, noOpLog);
+
+            var entries = new ConcurrentDictionary<int, SanctionEntry>();
+            var id = 1;
+
+            foreach (var record in capture.Records)
+            {
+                entries.TryAdd(id, new SanctionEntry
+                {
+                    SanctionEntryId = id++,
+                    SanctionEntrySourceId = 1,
+                    SanctionEntryReference = record.Reference,
+                    SanctionElementValue =
+                    [
+                        .. record.ElementValue.Split([" "], StringSplitOptions.RemoveEmptyEntries)
+                            .Select(SanctionEntryFileImporter.NormalizeElementValue)
+                    ]
+                });
+            }
+
+            var matches = new LevenshteinDistance().CheckMultipartString("Vanya Petrov", 0, entries,
+                new ConcurrentDictionary<string, byte>());
+
+            matches.Should().NotBeEmpty();
+            matches.Should().OnlyContain(m => m.SanctionEntry.SanctionEntryReference == "Q1",
+                "every entry that matches an alias of Ivan Petrov is Ivan Petrov");
+            matches.Should().Contain(m => m.SanctionEntry.SanctionElementValue.SequenceEqual(new[] { "vanya", "petrov" }));
         }
 
         [Fact]

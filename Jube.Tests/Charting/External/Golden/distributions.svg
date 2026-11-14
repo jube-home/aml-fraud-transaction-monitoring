@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" class="jc jc-diagram" viewBox="0 0 694 454" preserveAspectRatio="xMidYMid meet"
-     role="img" aria-labelledby="jc-2ed5604d-t jc-2ed5604d-d">
-    <title id="jc-2ed5604d-t">Naive Bayes feature distributions</title>
-    <desc id="jc-2ed5604d-d">Distribution small multiples: 4 panels comparing legitimate, fraud.</desc>
+     role="img" aria-labelledby="jc-23ee6430-t jc-23ee6430-d">
+    <title id="jc-23ee6430-t">Naive Bayes feature distributions</title>
+    <desc id="jc-23ee6430-d">Distribution small multiples: 4 panels comparing legitimate, fraud.</desc>
     <rect class="bg" x="0" y="0" width="694" height="454" rx="8"/>
     <text class="ttl" x="16" y="32">Naive Bayes feature distributions</text>
     <text class="sub" x="16" y="50">Per-class densities of each numeric feature</text>
@@ -69,12 +69,12 @@
             <circle class="cx s0" cx="28.61" cy="140.8" r="3.5"/>
             <circle class="cx s1" cx="28.61" cy="141.96" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="38.61" y="56" width="137.32" height="61" rx="6"/>
-                <text class="tx b" x="48.61" y="74">amount_z = -2.991</text>
-                <rect class="tsw s0" x="48.61" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="62.61" y="91">legitimate: 0.00463</text>
-                <rect class="tsw s1" x="48.61" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="62.61" y="108">fraud: 0.0001476</text>
+                <rect class="tb" x="38.61" y="55.5" width="137.32" height="61" rx="6"/>
+                <text class="tx b" x="48.61" y="73.5">amount_z = -2.991</text>
+                <rect class="tsw s0" x="48.61" y="81.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="62.61" y="90.5">legitimate: 0.00463</text>
+                <rect class="tsw s1" x="48.61" y="98.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="62.61" y="107.5">fraud: 0.0001476</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -85,12 +85,12 @@
             <circle class="cx s0" cx="35.25" cy="138.31" r="3.5"/>
             <circle class="cx s1" cx="35.25" cy="141.88" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="45.25" y="56" width="130.6" height="61" rx="6"/>
-                <text class="tx b" x="55.25" y="74">amount_z = -2.588</text>
-                <rect class="tsw s0" x="55.25" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="69.25" y="91">legitimate: 0.0142</text>
-                <rect class="tsw s1" x="55.25" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="69.25" y="108">fraud: 0.0004628</text>
+                <rect class="tb" x="45.25" y="55.5" width="130.6" height="61" rx="6"/>
+                <text class="tx b" x="55.25" y="73.5">amount_z = -2.588</text>
+                <rect class="tsw s0" x="55.25" y="81.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="69.25" y="90.5">legitimate: 0.0142</text>
+                <rect class="tsw s1" x="55.25" y="98.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="69.25" y="107.5">fraud: 0.0004628</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -101,12 +101,12 @@
             <circle class="cx s0" cx="41.89" cy="132.37" r="3.5"/>
             <circle class="cx s1" cx="41.89" cy="141.64" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="51.89" y="56" width="137.32" height="61" rx="6"/>
-                <text class="tx b" x="61.89" y="74">amount_z = -2.184</text>
-                <rect class="tsw s0" x="61.89" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="75.89" y="91">legitimate: 0.03703</text>
-                <rect class="tsw s1" x="61.89" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="75.89" y="108">fraud: 0.001371</text>
+                <rect class="tb" x="51.89" y="55.5" width="137.32" height="61" rx="6"/>
+                <text class="tx b" x="61.89" y="73.5">amount_z = -2.184</text>
+                <rect class="tsw s0" x="61.89" y="81.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="75.89" y="90.5">legitimate: 0.03703</text>
+                <rect class="tsw s1" x="61.89" y="98.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="75.89" y="107.5">fraud: 0.001371</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -117,12 +117,12 @@
             <circle class="cx s0" cx="48.54" cy="120.65" r="3.5"/>
             <circle class="cx s1" cx="48.54" cy="141.06" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="58.54" y="56" width="137.32" height="61" rx="6"/>
-                <text class="tx b" x="68.54" y="74">amount_z = -1.78</text>
-                <rect class="tsw s0" x="68.54" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="82.54" y="91">legitimate: 0.08213</text>
-                <rect class="tsw s1" x="68.54" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="82.54" y="108">fraud: 0.003625</text>
+                <rect class="tb" x="58.54" y="55.5" width="137.32" height="61" rx="6"/>
+                <text class="tx b" x="68.54" y="73.5">amount_z = -1.78</text>
+                <rect class="tsw s0" x="68.54" y="81.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="82.54" y="90.5">legitimate: 0.08213</text>
+                <rect class="tsw s1" x="68.54" y="98.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="82.54" y="107.5">fraud: 0.003625</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -133,12 +133,12 @@
             <circle class="cx s0" cx="55.18" cy="101.73" r="3.5"/>
             <circle class="cx s1" cx="55.18" cy="139.76" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="65.18" y="56" width="130.6" height="61" rx="6"/>
-                <text class="tx b" x="75.18" y="74">amount_z = -1.377</text>
-                <rect class="tsw s0" x="75.18" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="89.18" y="91">legitimate: 0.1549</text>
-                <rect class="tsw s1" x="75.18" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="89.18" y="108">fraud: 0.00861</text>
+                <rect class="tb" x="65.18" y="55.5" width="130.6" height="61" rx="6"/>
+                <text class="tx b" x="75.18" y="73.5">amount_z = -1.377</text>
+                <rect class="tsw s0" x="75.18" y="81.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="89.18" y="90.5">legitimate: 0.1549</text>
+                <rect class="tsw s1" x="75.18" y="98.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="89.18" y="107.5">fraud: 0.00861</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -149,12 +149,12 @@
             <circle class="cx s0" cx="61.82" cy="77.42" r="3.5"/>
             <circle class="cx s1" cx="61.82" cy="137.08" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="71.82" y="56" width="134.86" height="61" rx="6"/>
-                <text class="tx b" x="81.82" y="74">amount_z = -0.9732</text>
-                <rect class="tsw s0" x="81.82" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="95.82" y="91">legitimate: 0.2484</text>
-                <rect class="tsw s1" x="81.82" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="95.82" y="108">fraud: 0.01892</text>
+                <rect class="tb" x="71.82" y="55.5" width="134.86" height="61" rx="6"/>
+                <text class="tx b" x="81.82" y="73.5">amount_z = -0.9732</text>
+                <rect class="tsw s0" x="81.82" y="81.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="95.82" y="90.5">legitimate: 0.2484</text>
+                <rect class="tsw s1" x="81.82" y="98.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="95.82" y="107.5">fraud: 0.01892</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -165,12 +165,12 @@
             <circle class="cx s0" cx="68.46" cy="53.93" r="3.5"/>
             <circle class="cx s1" cx="68.46" cy="132.25" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="78.46" y="56" width="134.86" height="61" rx="6"/>
-                <text class="tx b" x="88.46" y="74">amount_z = -0.5696</text>
-                <rect class="tsw s0" x="88.46" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="102.46" y="91">legitimate: 0.3388</text>
-                <rect class="tsw s1" x="88.46" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="102.46" y="108">fraud: 0.03751</text>
+                <rect class="tb" x="78.46" y="55.5" width="134.86" height="61" rx="6"/>
+                <text class="tx b" x="88.46" y="73.5">amount_z = -0.5696</text>
+                <rect class="tsw s0" x="88.46" y="81.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="102.46" y="90.5">legitimate: 0.3388</text>
+                <rect class="tsw s1" x="88.46" y="98.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="102.46" y="107.5">fraud: 0.03751</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -181,12 +181,12 @@
             <circle class="cx s0" cx="75.11" cy="39.88" r="3.5"/>
             <circle class="cx s1" cx="75.11" cy="124.52" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="85.11" y="56" width="134.86" height="61" rx="6"/>
-                <text class="tx b" x="95.11" y="74">amount_z = -0.1661</text>
-                <rect class="tsw s0" x="95.11" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="109.11" y="91">legitimate: 0.3929</text>
-                <rect class="tsw s1" x="95.11" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="109.11" y="108">fraud: 0.06725</text>
+                <rect class="tb" x="85.11" y="55.5" width="134.86" height="61" rx="6"/>
+                <text class="tx b" x="95.11" y="73.5">amount_z = -0.1661</text>
+                <rect class="tsw s0" x="95.11" y="81.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="109.11" y="90.5">legitimate: 0.3929</text>
+                <rect class="tsw s1" x="95.11" y="98.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="109.11" y="107.5">fraud: 0.06725</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -197,12 +197,12 @@
             <circle class="cx s0" cx="81.75" cy="41.33" r="3.5"/>
             <circle class="cx s1" cx="81.75" cy="113.37" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="91.75" y="56" width="130.6" height="61" rx="6"/>
-                <text class="tx b" x="101.75" y="74">amount_z = 0.2375</text>
-                <rect class="tsw s0" x="101.75" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="115.75" y="91">legitimate: 0.3873</text>
-                <rect class="tsw s1" x="101.75" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="115.75" y="108">fraud: 0.1102</text>
+                <rect class="tb" x="91.75" y="55.5" width="130.6" height="61" rx="6"/>
+                <text class="tx b" x="101.75" y="73.5">amount_z = 0.2375</text>
+                <rect class="tsw s0" x="101.75" y="81.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="115.75" y="90.5">legitimate: 0.3873</text>
+                <rect class="tsw s1" x="101.75" y="98.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="115.75" y="107.5">fraud: 0.1102</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -213,12 +213,12 @@
             <circle class="cx s0" cx="88.39" cy="57.63" r="3.5"/>
             <circle class="cx s1" cx="88.39" cy="99.48" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="98.39" y="56" width="130.6" height="61" rx="6"/>
-                <text class="tx b" x="108.39" y="74">amount_z = 0.6411</text>
-                <rect class="tsw s0" x="108.39" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="122.39" y="91">legitimate: 0.3246</text>
-                <rect class="tsw s1" x="108.39" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="122.39" y="108">fraud: 0.1636</text>
+                <rect class="tb" x="98.39" y="55.5" width="130.6" height="61" rx="6"/>
+                <text class="tx b" x="108.39" y="73.5">amount_z = 0.6411</text>
+                <rect class="tsw s0" x="108.39" y="81.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="122.39" y="90.5">legitimate: 0.3246</text>
+                <rect class="tsw s1" x="108.39" y="98.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="122.39" y="107.5">fraud: 0.1636</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -229,12 +229,12 @@
             <circle class="cx s0" cx="95.04" cy="81.9" r="3.5"/>
             <circle class="cx s1" cx="95.04" cy="84.63" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="105.04" y="56" width="130.6" height="61" rx="6"/>
-                <text class="tx b" x="115.04" y="74">amount_z = 1.045</text>
-                <rect class="tsw s0" x="115.04" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="129.04" y="91">legitimate: 0.2312</text>
-                <rect class="tsw s1" x="115.04" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="129.04" y="108">fraud: 0.2207</text>
+                <rect class="tb" x="105.04" y="55.5" width="130.6" height="61" rx="6"/>
+                <text class="tx b" x="115.04" y="73.5">amount_z = 1.045</text>
+                <rect class="tsw s0" x="115.04" y="81.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="129.04" y="90.5">legitimate: 0.2312</text>
+                <rect class="tsw s1" x="115.04" y="98.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="129.04" y="107.5">fraud: 0.2207</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -245,12 +245,12 @@
             <circle class="cx s0" cx="101.68" cy="105.62" r="3.5"/>
             <circle class="cx s1" cx="101.68" cy="71.74" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="111.68" y="56" width="130.6" height="61" rx="6"/>
-                <text class="tx b" x="121.68" y="74">amount_z = 1.448</text>
-                <rect class="tsw s0" x="121.68" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="135.68" y="91">legitimate: 0.1399</text>
-                <rect class="tsw s1" x="121.68" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="135.68" y="108">fraud: 0.2703</text>
+                <rect class="tb" x="111.68" y="55.5" width="130.6" height="61" rx="6"/>
+                <text class="tx b" x="121.68" y="73.5">amount_z = 1.448</text>
+                <rect class="tsw s0" x="121.68" y="81.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="135.68" y="90.5">legitimate: 0.1399</text>
+                <rect class="tsw s1" x="121.68" y="98.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="135.68" y="107.5">fraud: 0.2703</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -261,12 +261,12 @@
             <circle class="cx s0" cx="108.32" cy="123.29" r="3.5"/>
             <circle class="cx s1" cx="108.32" cy="63.83" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="118.32" y="56" width="137.32" height="61" rx="6"/>
-                <text class="tx b" x="128.32" y="74">amount_z = 1.852</text>
-                <rect class="tsw s0" x="128.32" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="142.32" y="91">legitimate: 0.07198</text>
-                <rect class="tsw s1" x="128.32" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="142.32" y="108">fraud: 0.3007</text>
+                <rect class="tb" x="118.32" y="55.5" width="137.32" height="61" rx="6"/>
+                <text class="tx b" x="128.32" y="73.5">amount_z = 1.852</text>
+                <rect class="tsw s0" x="128.32" y="81.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="142.32" y="90.5">legitimate: 0.07198</text>
+                <rect class="tsw s1" x="128.32" y="98.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="142.32" y="107.5">fraud: 0.3007</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -277,12 +277,12 @@
             <circle class="cx s0" cx="114.96" cy="133.82" r="3.5"/>
             <circle class="cx s1" cx="114.96" cy="62.86" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="124.96" y="56" width="137.32" height="61" rx="6"/>
-                <text class="tx b" x="134.96" y="74">amount_z = 2.255</text>
-                <rect class="tsw s0" x="134.96" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="148.96" y="91">legitimate: 0.03145</text>
-                <rect class="tsw s1" x="134.96" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="148.96" y="108">fraud: 0.3044</text>
+                <rect class="tb" x="124.96" y="55.5" width="137.32" height="61" rx="6"/>
+                <text class="tx b" x="134.96" y="73.5">amount_z = 2.255</text>
+                <rect class="tsw s0" x="134.96" y="81.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="148.96" y="90.5">legitimate: 0.03145</text>
+                <rect class="tsw s1" x="134.96" y="98.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="148.96" y="107.5">fraud: 0.3044</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -293,12 +293,12 @@
             <circle class="cx s0" cx="121.61" cy="138.97" r="3.5"/>
             <circle class="cx s1" cx="121.61" cy="69.36" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="131.61" y="56" width="137.32" height="61" rx="6"/>
-                <text class="tx b" x="141.61" y="74">amount_z = 2.659</text>
-                <rect class="tsw s0" x="141.61" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="155.61" y="91">legitimate: 0.01167</text>
-                <rect class="tsw s1" x="141.61" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="155.61" y="108">fraud: 0.2794</text>
+                <rect class="tb" x="131.61" y="55.5" width="137.32" height="61" rx="6"/>
+                <text class="tx b" x="141.61" y="73.5">amount_z = 2.659</text>
+                <rect class="tsw s0" x="141.61" y="81.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="155.61" y="90.5">legitimate: 0.01167</text>
+                <rect class="tsw s1" x="141.61" y="98.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="155.61" y="107.5">fraud: 0.2794</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -309,12 +309,12 @@
             <circle class="cx s0" cx="128.25" cy="141.04" r="3.5"/>
             <circle class="cx s1" cx="128.25" cy="81.41" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="138.25" y="56" width="144.04" height="61" rx="6"/>
-                <text class="tx b" x="148.25" y="74">amount_z = 3.063</text>
-                <rect class="tsw s0" x="148.25" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="162.25" y="91">legitimate: 0.003676</text>
-                <rect class="tsw s1" x="148.25" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="162.25" y="108">fraud: 0.2331</text>
+                <rect class="tb" x="138.25" y="55.5" width="144.04" height="61" rx="6"/>
+                <text class="tx b" x="148.25" y="73.5">amount_z = 3.063</text>
+                <rect class="tsw s0" x="148.25" y="81.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="162.25" y="90.5">legitimate: 0.003676</text>
+                <rect class="tsw s1" x="148.25" y="98.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="162.25" y="107.5">fraud: 0.2331</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -325,12 +325,12 @@
             <circle class="cx s0" cx="134.89" cy="141.74" r="3.5"/>
             <circle class="cx s1" cx="134.89" cy="96.07" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="144.89" y="56" width="150.76" height="61" rx="6"/>
-                <text class="tx b" x="154.89" y="74">amount_z = 3.466</text>
-                <rect class="tsw s0" x="154.89" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="168.89" y="91">legitimate: 0.0009826</text>
-                <rect class="tsw s1" x="154.89" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="168.89" y="108">fraud: 0.1767</text>
+                <rect class="tb" x="144.89" y="55.5" width="150.76" height="61" rx="6"/>
+                <text class="tx b" x="154.89" y="73.5">amount_z = 3.466</text>
+                <rect class="tsw s0" x="154.89" y="81.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="168.89" y="90.5">legitimate: 0.0009826</text>
+                <rect class="tsw s1" x="154.89" y="98.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="168.89" y="107.5">fraud: 0.1767</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -341,12 +341,12 @@
             <circle class="cx s0" cx="141.54" cy="141.94" r="3.5"/>
             <circle class="cx s1" cx="141.54" cy="110.37" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="151.54" y="56" width="144.04" height="61" rx="6"/>
-                <text class="tx b" x="161.54" y="74">amount_z = 3.87</text>
-                <rect class="tsw s0" x="161.54" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="175.54" y="91">legitimate: 0.000224</text>
-                <rect class="tsw s1" x="161.54" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="175.54" y="108">fraud: 0.1217</text>
+                <rect class="tb" x="151.54" y="55.5" width="144.04" height="61" rx="6"/>
+                <text class="tx b" x="161.54" y="73.5">amount_z = 3.87</text>
+                <rect class="tsw s0" x="161.54" y="81.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="175.54" y="90.5">legitimate: 0.000224</text>
+                <rect class="tsw s1" x="161.54" y="98.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="175.54" y="107.5">fraud: 0.1217</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="amount_z = 4.273, fraud: 0.07618">
@@ -445,852 +445,852 @@
                 <text class="tx" x="228.68" y="99">fraud: 0.0001928</text>
             </g>
         </g>
-        <rect class="pf" x="222" y="0" width="210" height="168" rx="6"/>
-        <text class="ph" x="232" y="18">velocity_1h</text>
+        <rect class="pf" x="222" y="60" width="210" height="168" rx="6"/>
+        <text class="ph" x="232" y="78">velocity_1h</text>
         <g class="sr s0">
             <path class="ar"
-                  d="M235.22 142L235.22 141.97L237.18 141.94L239.14 141.9L241.1 141.84L243.06 141.75L245.01 141.6L246.97 141.38L248.93 141.06L250.89 140.6L252.84 139.94L254.8 139.04L256.76 137.81L258.72 136.18L260.68 134.05L262.63 131.35L264.59 127.97L266.55 123.84L268.51 118.91L270.47 113.17L272.42 106.63L274.38 99.37L276.34 91.52L278.3 83.29L280.26 74.91L282.21 66.7L284.17 58.96L286.13 52.04L288.09 46.27L290.04 41.92L292 39.21L293.96 38.3L295.92 39.21L297.88 41.92L299.83 46.27L301.79 52.04L303.75 58.96L305.71 66.7L307.67 74.91L309.62 83.29L311.58 91.52L313.54 99.37L315.5 106.63L317.46 113.17L319.41 118.91L321.37 123.84L323.33 127.97L325.29 131.35L327.24 134.05L329.2 136.18L331.16 137.81L333.12 139.04L335.08 139.94L337.03 140.6L338.99 141.06L340.95 141.38L342.91 141.6L344.87 141.75L346.82 141.84L348.78 141.9L350.74 141.94L352.7 141.97L352.7 142Z"/>
+                  d="M235.22 202L235.22 201.97L237.18 201.94L239.14 201.9L241.1 201.84L243.06 201.75L245.01 201.6L246.97 201.38L248.93 201.06L250.89 200.6L252.84 199.94L254.8 199.04L256.76 197.81L258.72 196.18L260.68 194.05L262.63 191.35L264.59 187.97L266.55 183.84L268.51 178.91L270.47 173.17L272.42 166.63L274.38 159.37L276.34 151.52L278.3 143.29L280.26 134.91L282.21 126.7L284.17 118.96L286.13 112.04L288.09 106.27L290.04 101.92L292 99.21L293.96 98.3L295.92 99.21L297.88 101.92L299.83 106.27L301.79 112.04L303.75 118.96L305.71 126.7L307.67 134.91L309.62 143.29L311.58 151.52L313.54 159.37L315.5 166.63L317.46 173.17L319.41 178.91L321.37 183.84L323.33 187.97L325.29 191.35L327.24 194.05L329.2 196.18L331.16 197.81L333.12 199.04L335.08 199.94L337.03 200.6L338.99 201.06L340.95 201.38L342.91 201.6L344.87 201.75L346.82 201.84L348.78 201.9L350.74 201.94L352.7 201.97L352.7 202Z"/>
             <path class="ln thin"
-                  d="M235.22 141.97L237.18 141.94L239.14 141.9L241.1 141.84L243.06 141.75L245.01 141.6L246.97 141.38L248.93 141.06L250.89 140.6L252.84 139.94L254.8 139.04L256.76 137.81L258.72 136.18L260.68 134.05L262.63 131.35L264.59 127.97L266.55 123.84L268.51 118.91L270.47 113.17L272.42 106.63L274.38 99.37L276.34 91.52L278.3 83.29L280.26 74.91L282.21 66.7L284.17 58.96L286.13 52.04L288.09 46.27L290.04 41.92L292 39.21L293.96 38.3L295.92 39.21L297.88 41.92L299.83 46.27L301.79 52.04L303.75 58.96L305.71 66.7L307.67 74.91L309.62 83.29L311.58 91.52L313.54 99.37L315.5 106.63L317.46 113.17L319.41 118.91L321.37 123.84L323.33 127.97L325.29 131.35L327.24 134.05L329.2 136.18L331.16 137.81L333.12 139.04L335.08 139.94L337.03 140.6L338.99 141.06L340.95 141.38L342.91 141.6L344.87 141.75L346.82 141.84L348.78 141.9L350.74 141.94L352.7 141.97"/>
+                  d="M235.22 201.97L237.18 201.94L239.14 201.9L241.1 201.84L243.06 201.75L245.01 201.6L246.97 201.38L248.93 201.06L250.89 200.6L252.84 199.94L254.8 199.04L256.76 197.81L258.72 196.18L260.68 194.05L262.63 191.35L264.59 187.97L266.55 183.84L268.51 178.91L270.47 173.17L272.42 166.63L274.38 159.37L276.34 151.52L278.3 143.29L280.26 134.91L282.21 126.7L284.17 118.96L286.13 112.04L288.09 106.27L290.04 101.92L292 99.21L293.96 98.3L295.92 99.21L297.88 101.92L299.83 106.27L301.79 112.04L303.75 118.96L305.71 126.7L307.67 134.91L309.62 143.29L311.58 151.52L313.54 159.37L315.5 166.63L317.46 173.17L319.41 178.91L321.37 183.84L323.33 187.97L325.29 191.35L327.24 194.05L329.2 196.18L331.16 197.81L333.12 199.04L335.08 199.94L337.03 200.6L338.99 201.06L340.95 201.38L342.91 201.6L344.87 201.75L346.82 201.84L348.78 201.9L350.74 201.94L352.7 201.97"/>
         </g>
         <g class="sr s1">
             <path class="ar"
-                  d="M234 142L234 141.98L237.1 141.96L240.2 141.94L243.3 141.9L246.4 141.84L249.5 141.75L252.6 141.61L255.7 141.41L258.8 141.11L261.9 140.7L265 140.13L268.1 139.35L271.2 138.32L274.3 136.98L277.4 135.27L280.5 133.14L283.6 130.53L286.7 127.42L289.8 123.79L292.9 119.66L296 115.07L299.1 110.12L302.2 104.92L305.3 99.63L308.4 94.44L311.5 89.55L314.6 85.19L317.7 81.54L320.8 78.79L323.9 77.08L327 76.5L330.1 77.08L333.2 78.79L336.3 81.54L339.4 85.19L342.5 89.55L345.6 94.44L348.7 99.63L351.8 104.92L354.9 110.12L358 115.07L361.1 119.66L364.2 123.79L367.3 127.42L370.4 130.53L373.5 133.14L376.6 135.27L379.7 136.98L382.8 138.32L385.9 139.35L389 140.13L392.1 140.7L395.2 141.11L398.3 141.41L401.4 141.61L404.5 141.75L407.6 141.84L410.7 141.9L413.8 141.94L416.9 141.96L420 141.98L420 142Z"/>
+                  d="M234 202L234 201.98L237.1 201.96L240.2 201.94L243.3 201.9L246.4 201.84L249.5 201.75L252.6 201.61L255.7 201.41L258.8 201.11L261.9 200.7L265 200.13L268.1 199.35L271.2 198.32L274.3 196.98L277.4 195.27L280.5 193.14L283.6 190.53L286.7 187.42L289.8 183.79L292.9 179.66L296 175.07L299.1 170.12L302.2 164.92L305.3 159.63L308.4 154.44L311.5 149.55L314.6 145.19L317.7 141.54L320.8 138.79L323.9 137.08L327 136.5L330.1 137.08L333.2 138.79L336.3 141.54L339.4 145.19L342.5 149.55L345.6 154.44L348.7 159.63L351.8 164.92L354.9 170.12L358 175.07L361.1 179.66L364.2 183.79L367.3 187.42L370.4 190.53L373.5 193.14L376.6 195.27L379.7 196.98L382.8 198.32L385.9 199.35L389 200.13L392.1 200.7L395.2 201.11L398.3 201.41L401.4 201.61L404.5 201.75L407.6 201.84L410.7 201.9L413.8 201.94L416.9 201.96L420 201.98L420 202Z"/>
             <path class="ln thin"
-                  d="M234 141.98L237.1 141.96L240.2 141.94L243.3 141.9L246.4 141.84L249.5 141.75L252.6 141.61L255.7 141.41L258.8 141.11L261.9 140.7L265 140.13L268.1 139.35L271.2 138.32L274.3 136.98L277.4 135.27L280.5 133.14L283.6 130.53L286.7 127.42L289.8 123.79L292.9 119.66L296 115.07L299.1 110.12L302.2 104.92L305.3 99.63L308.4 94.44L311.5 89.55L314.6 85.19L317.7 81.54L320.8 78.79L323.9 77.08L327 76.5L330.1 77.08L333.2 78.79L336.3 81.54L339.4 85.19L342.5 89.55L345.6 94.44L348.7 99.63L351.8 104.92L354.9 110.12L358 115.07L361.1 119.66L364.2 123.79L367.3 127.42L370.4 130.53L373.5 133.14L376.6 135.27L379.7 136.98L382.8 138.32L385.9 139.35L389 140.13L392.1 140.7L395.2 141.11L398.3 141.41L401.4 141.61L404.5 141.75L407.6 141.84L410.7 141.9L413.8 141.94L416.9 141.96L420 141.98"/>
+                  d="M234 201.98L237.1 201.96L240.2 201.94L243.3 201.9L246.4 201.84L249.5 201.75L252.6 201.61L255.7 201.41L258.8 201.11L261.9 200.7L265 200.13L268.1 199.35L271.2 198.32L274.3 196.98L277.4 195.27L280.5 193.14L283.6 190.53L286.7 187.42L289.8 183.79L292.9 179.66L296 175.07L299.1 170.12L302.2 164.92L305.3 159.63L308.4 154.44L311.5 149.55L314.6 145.19L317.7 141.54L320.8 138.79L323.9 137.08L327 136.5L330.1 137.08L333.2 138.79L336.3 141.54L339.4 145.19L342.5 149.55L345.6 154.44L348.7 159.63L351.8 164.92L354.9 170.12L358 175.07L361.1 179.66L364.2 183.79L367.3 187.42L370.4 190.53L373.5 193.14L376.6 195.27L379.7 196.98L382.8 198.32L385.9 199.35L389 200.13L392.1 200.7L395.2 201.11L398.3 201.41L401.4 201.61L404.5 201.75L407.6 201.84L410.7 201.9L413.8 201.94L416.9 201.96L420 201.98"/>
         </g>
-        <line class="ax" x1="234" y1="142" x2="420" y2="142"/>
-        <line class="ax" x1="275.61" y1="142" x2="275.61" y2="145"/>
-        <text class="kn ctr" x="275.61" y="157">0</text>
-        <line class="ax" x1="336.79" y1="142" x2="336.79" y2="145"/>
-        <text class="kn ctr" x="336.79" y="157">5</text>
-        <line class="ax" x1="397.97" y1="142" x2="397.97" y2="145"/>
-        <text class="kn ctr" x="397.97" y="157">10</text>
+        <line class="ax" x1="234" y1="202" x2="420" y2="202"/>
+        <line class="ax" x1="275.61" y1="202" x2="275.61" y2="205"/>
+        <text class="kn ctr" x="275.61" y="217">0</text>
+        <line class="ax" x1="336.79" y1="202" x2="336.79" y2="205"/>
+        <text class="kn ctr" x="336.79" y="217">5</text>
+        <line class="ax" x1="397.97" y1="202" x2="397.97" y2="205"/>
+        <text class="kn ctr" x="397.97" y="217">10</text>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="velocity_1h = -3.129, legitimate: 0.0001973, fraud: 0.0001246">
             <title>velocity_1h = -3.129, legitimate: 0.0001973, fraud: 0.0001246</title>
-            <rect class="hb" x="234" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="237.32" y1="30" x2="237.32" y2="142"/>
-            <circle class="cx s0" cx="237.32" cy="141.94" r="3.5"/>
-            <circle class="cx s1" cx="237.32" cy="141.96" r="3.5"/>
+            <rect class="hb" x="234" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="237.32" y1="90" x2="237.32" y2="202"/>
+            <circle class="cx s0" cx="237.32" cy="201.94" r="3.5"/>
+            <circle class="cx s1" cx="237.32" cy="201.96" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="247.32" y="56" width="150.76" height="61" rx="6"/>
-                <text class="tx b" x="257.32" y="74">velocity_1h = -3.129</text>
-                <rect class="tsw s0" x="257.32" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="271.32" y="91">legitimate: 0.0001973</text>
-                <rect class="tsw s1" x="257.32" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="271.32" y="108">fraud: 0.0001246</text>
+                <rect class="tb" x="247.32" y="115.5" width="150.76" height="61" rx="6"/>
+                <text class="tx b" x="257.32" y="133.5">velocity_1h = -3.129</text>
+                <rect class="tsw s0" x="257.32" y="141.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="271.32" y="150.5">legitimate: 0.0001973</text>
+                <rect class="tsw s1" x="257.32" y="158.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="271.32" y="167.5">fraud: 0.0001246</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="velocity_1h = -2.586, legitimate: 0.001034, fraud: 0.0003636">
             <title>velocity_1h = -2.586, legitimate: 0.001034, fraud: 0.0003636</title>
-            <rect class="hb" x="240.64" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="243.96" y1="30" x2="243.96" y2="142"/>
-            <circle class="cx s0" cx="243.96" cy="141.68" r="3.5"/>
-            <circle class="cx s1" cx="243.96" cy="141.89" r="3.5"/>
+            <rect class="hb" x="240.64" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="243.96" y1="90" x2="243.96" y2="202"/>
+            <circle class="cx s0" cx="243.96" cy="201.68" r="3.5"/>
+            <circle class="cx s1" cx="243.96" cy="201.89" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="253.96" y="56" width="144.04" height="61" rx="6"/>
-                <text class="tx b" x="263.96" y="74">velocity_1h = -2.586</text>
-                <rect class="tsw s0" x="263.96" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="277.96" y="91">legitimate: 0.001034</text>
-                <rect class="tsw s1" x="263.96" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="277.96" y="108">fraud: 0.0003636</text>
+                <rect class="tb" x="253.96" y="115.5" width="144.04" height="61" rx="6"/>
+                <text class="tx b" x="263.96" y="133.5">velocity_1h = -2.586</text>
+                <rect class="tsw s0" x="263.96" y="141.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="277.96" y="150.5">legitimate: 0.001034</text>
+                <rect class="tsw s1" x="263.96" y="158.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="277.96" y="167.5">fraud: 0.0003636</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="velocity_1h = -2.043, legitimate: 0.004289, fraud: 0.00097">
             <title>velocity_1h = -2.043, legitimate: 0.004289, fraud: 0.00097</title>
-            <rect class="hb" x="247.29" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="250.61" y1="30" x2="250.61" y2="142"/>
-            <circle class="cx s0" cx="250.61" cy="140.66" r="3.5"/>
-            <circle class="cx s1" cx="250.61" cy="141.7" r="3.5"/>
+            <rect class="hb" x="247.29" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="250.61" y1="90" x2="250.61" y2="202"/>
+            <circle class="cx s0" cx="250.61" cy="200.66" r="3.5"/>
+            <circle class="cx s1" cx="250.61" cy="201.7" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="260.61" y="56" width="144.04" height="61" rx="6"/>
-                <text class="tx b" x="270.61" y="74">velocity_1h = -2.043</text>
-                <rect class="tsw s0" x="270.61" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="284.61" y="91">legitimate: 0.004289</text>
-                <rect class="tsw s1" x="270.61" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="284.61" y="108">fraud: 0.00097</text>
+                <rect class="tb" x="260.61" y="115.5" width="144.04" height="61" rx="6"/>
+                <text class="tx b" x="270.61" y="133.5">velocity_1h = -2.043</text>
+                <rect class="tsw s0" x="270.61" y="141.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="284.61" y="150.5">legitimate: 0.004289</text>
+                <rect class="tsw s1" x="270.61" y="158.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="284.61" y="167.5">fraud: 0.00097</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="velocity_1h = -1.5, legitimate: 0.01474, fraud: 0.002374">
             <title>velocity_1h = -1.5, legitimate: 0.01474, fraud: 0.002374</title>
-            <rect class="hb" x="253.93" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="257.25" y1="30" x2="257.25" y2="142"/>
-            <circle class="cx s0" cx="257.25" cy="137.4" r="3.5"/>
-            <circle class="cx s1" cx="257.25" cy="141.26" r="3.5"/>
+            <rect class="hb" x="253.93" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="257.25" y1="90" x2="257.25" y2="202"/>
+            <circle class="cx s0" cx="257.25" cy="197.4" r="3.5"/>
+            <circle class="cx s1" cx="257.25" cy="201.26" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="267.25" y="56" width="137.32" height="61" rx="6"/>
-                <text class="tx b" x="277.25" y="74">velocity_1h = -1.5</text>
-                <rect class="tsw s0" x="277.25" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="291.25" y="91">legitimate: 0.01474</text>
-                <rect class="tsw s1" x="277.25" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="291.25" y="108">fraud: 0.002374</text>
+                <rect class="tb" x="267.25" y="115.5" width="137.32" height="61" rx="6"/>
+                <text class="tx b" x="277.25" y="133.5">velocity_1h = -1.5</text>
+                <rect class="tsw s0" x="277.25" y="141.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="291.25" y="150.5">legitimate: 0.01474</text>
+                <rect class="tsw s1" x="277.25" y="158.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="291.25" y="167.5">fraud: 0.002374</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="velocity_1h = -0.9571, legitimate: 0.04112, fraud: 0.005344">
             <title>velocity_1h = -0.9571, legitimate: 0.04112, fraud: 0.005344</title>
-            <rect class="hb" x="260.57" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="263.89" y1="30" x2="263.89" y2="142"/>
-            <circle class="cx s0" cx="263.89" cy="129.17" r="3.5"/>
-            <circle class="cx s1" cx="263.89" cy="140.33" r="3.5"/>
+            <rect class="hb" x="260.57" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="263.89" y1="90" x2="263.89" y2="202"/>
+            <circle class="cx s0" cx="263.89" cy="189.17" r="3.5"/>
+            <circle class="cx s1" cx="263.89" cy="200.33" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="273.89" y="56" width="144.91" height="61" rx="6"/>
-                <text class="tx b" x="283.89" y="74">velocity_1h = -0.9571</text>
-                <rect class="tsw s0" x="283.89" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="297.89" y="91">legitimate: 0.04112</text>
-                <rect class="tsw s1" x="283.89" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="297.89" y="108">fraud: 0.005344</text>
+                <rect class="tb" x="273.89" y="115.5" width="144.91" height="61" rx="6"/>
+                <text class="tx b" x="283.89" y="133.5">velocity_1h = -0.9571</text>
+                <rect class="tsw s0" x="283.89" y="141.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="297.89" y="150.5">legitimate: 0.04112</text>
+                <rect class="tsw s1" x="283.89" y="158.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="297.89" y="167.5">fraud: 0.005344</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="velocity_1h = -0.4143, legitimate: 0.09318, fraud: 0.01108">
             <title>velocity_1h = -0.4143, legitimate: 0.09318, fraud: 0.01108</title>
-            <rect class="hb" x="267.21" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="270.54" y1="30" x2="270.54" y2="142"/>
-            <circle class="cx s0" cx="270.54" cy="112.93" r="3.5"/>
-            <circle class="cx s1" cx="270.54" cy="138.54" r="3.5"/>
+            <rect class="hb" x="267.21" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="270.54" y1="90" x2="270.54" y2="202"/>
+            <circle class="cx s0" cx="270.54" cy="172.93" r="3.5"/>
+            <circle class="cx s1" cx="270.54" cy="198.54" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="280.54" y="56" width="144.91" height="61" rx="6"/>
-                <text class="tx b" x="290.54" y="74">velocity_1h = -0.4143</text>
-                <rect class="tsw s0" x="290.54" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="304.54" y="91">legitimate: 0.09318</text>
-                <rect class="tsw s1" x="290.54" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="304.54" y="108">fraud: 0.01108</text>
+                <rect class="tb" x="280.54" y="115.5" width="144.91" height="61" rx="6"/>
+                <text class="tx b" x="290.54" y="133.5">velocity_1h = -0.4143</text>
+                <rect class="tsw s0" x="290.54" y="141.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="304.54" y="150.5">legitimate: 0.09318</text>
+                <rect class="tsw s1" x="290.54" y="158.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="304.54" y="167.5">fraud: 0.01108</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="velocity_1h = 0.1286, legitimate: 0.1731, fraud: 0.02118">
             <title>velocity_1h = 0.1286, legitimate: 0.1731, fraud: 0.02118</title>
-            <rect class="hb" x="273.86" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="277.18" y1="30" x2="277.18" y2="142"/>
-            <circle class="cx s0" cx="277.18" cy="87.99" r="3.5"/>
-            <circle class="cx s1" cx="277.18" cy="135.39" r="3.5"/>
+            <rect class="hb" x="273.86" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="277.18" y1="90" x2="277.18" y2="202"/>
+            <circle class="cx s0" cx="277.18" cy="147.99" r="3.5"/>
+            <circle class="cx s1" cx="277.18" cy="195.39" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="287.18" y="56" width="140.59" height="61" rx="6"/>
-                <text class="tx b" x="297.18" y="74">velocity_1h = 0.1286</text>
-                <rect class="tsw s0" x="297.18" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="311.18" y="91">legitimate: 0.1731</text>
-                <rect class="tsw s1" x="297.18" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="311.18" y="108">fraud: 0.02118</text>
+                <rect class="tb" x="287.18" y="115.5" width="140.59" height="61" rx="6"/>
+                <text class="tx b" x="297.18" y="133.5">velocity_1h = 0.1286</text>
+                <rect class="tsw s0" x="297.18" y="141.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="311.18" y="150.5">legitimate: 0.1731</text>
+                <rect class="tsw s1" x="297.18" y="158.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="311.18" y="167.5">fraud: 0.02118</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="velocity_1h = 0.6714, legitimate: 0.2618, fraud: 0.03748">
             <title>velocity_1h = 0.6714, legitimate: 0.2618, fraud: 0.03748</title>
-            <rect class="hb" x="280.5" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="283.82" y1="30" x2="283.82" y2="142"/>
-            <circle class="cx s0" cx="283.82" cy="60.34" r="3.5"/>
-            <circle class="cx s1" cx="283.82" cy="130.31" r="3.5"/>
+            <rect class="hb" x="280.5" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="283.82" y1="90" x2="283.82" y2="202"/>
+            <circle class="cx s0" cx="283.82" cy="120.34" r="3.5"/>
+            <circle class="cx s1" cx="283.82" cy="190.31" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="293.82" y="56" width="140.59" height="61" rx="6"/>
-                <text class="tx b" x="303.82" y="74">velocity_1h = 0.6714</text>
-                <rect class="tsw s0" x="303.82" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="317.82" y="91">legitimate: 0.2618</text>
-                <rect class="tsw s1" x="303.82" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="317.82" y="108">fraud: 0.03748</text>
+                <rect class="tb" x="293.82" y="115.5" width="140.59" height="61" rx="6"/>
+                <text class="tx b" x="303.82" y="133.5">velocity_1h = 0.6714</text>
+                <rect class="tsw s0" x="303.82" y="141.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="317.82" y="150.5">legitimate: 0.2618</text>
+                <rect class="tsw s1" x="303.82" y="158.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="317.82" y="167.5">fraud: 0.03748</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="velocity_1h = 1.214, legitimate: 0.3227, fraud: 0.06122">
             <title>velocity_1h = 1.214, legitimate: 0.3227, fraud: 0.06122</title>
-            <rect class="hb" x="287.14" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="290.46" y1="30" x2="290.46" y2="142"/>
-            <circle class="cx s0" cx="290.46" cy="41.34" r="3.5"/>
-            <circle class="cx s1" cx="290.46" cy="122.9" r="3.5"/>
+            <rect class="hb" x="287.14" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="290.46" y1="90" x2="290.46" y2="202"/>
+            <circle class="cx s0" cx="290.46" cy="101.34" r="3.5"/>
+            <circle class="cx s1" cx="290.46" cy="182.9" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="300.46" y="56" width="133.46" height="61" rx="6"/>
-                <text class="tx b" x="310.46" y="74">velocity_1h = 1.214</text>
-                <rect class="tsw s0" x="310.46" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="324.46" y="91">legitimate: 0.3227</text>
-                <rect class="tsw s1" x="310.46" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="324.46" y="108">fraud: 0.06122</text>
+                <rect class="tb" x="300.46" y="115.5" width="133.46" height="61" rx="6"/>
+                <text class="tx b" x="310.46" y="133.5">velocity_1h = 1.214</text>
+                <rect class="tsw s0" x="310.46" y="141.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="324.46" y="150.5">legitimate: 0.3227</text>
+                <rect class="tsw s1" x="310.46" y="158.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="324.46" y="167.5">fraud: 0.06122</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="velocity_1h = 1.757, legitimate: 0.3242, fraud: 0.09199">
             <title>velocity_1h = 1.757, legitimate: 0.3242, fraud: 0.09199</title>
-            <rect class="hb" x="293.79" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="297.11" y1="30" x2="297.11" y2="142"/>
-            <circle class="cx s0" cx="297.11" cy="40.86" r="3.5"/>
-            <circle class="cx s1" cx="297.11" cy="113.3" r="3.5"/>
+            <rect class="hb" x="293.79" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="297.11" y1="90" x2="297.11" y2="202"/>
+            <circle class="cx s0" cx="297.11" cy="100.86" r="3.5"/>
+            <circle class="cx s1" cx="297.11" cy="173.3" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="307.11" y="56" width="133.46" height="61" rx="6"/>
-                <text class="tx b" x="317.11" y="74">velocity_1h = 1.757</text>
-                <rect class="tsw s0" x="317.11" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="331.11" y="91">legitimate: 0.3242</text>
-                <rect class="tsw s1" x="317.11" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="331.11" y="108">fraud: 0.09199</text>
+                <rect class="tb" x="307.11" y="115.5" width="133.46" height="61" rx="6"/>
+                <text class="tx b" x="317.11" y="133.5">velocity_1h = 1.757</text>
+                <rect class="tsw s0" x="317.11" y="141.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="331.11" y="150.5">legitimate: 0.3242</text>
+                <rect class="tsw s1" x="317.11" y="158.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="331.11" y="167.5">fraud: 0.09199</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="velocity_1h = 2.3, legitimate: 0.2662, fraud: 0.1274">
             <title>velocity_1h = 2.3, legitimate: 0.2662, fraud: 0.1274</title>
-            <rect class="hb" x="300.43" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="303.75" y1="30" x2="303.75" y2="142"/>
-            <circle class="cx s0" cx="303.75" cy="58.96" r="3.5"/>
-            <circle class="cx s1" cx="303.75" cy="102.27" r="3.5"/>
+            <rect class="hb" x="300.43" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="303.75" y1="90" x2="303.75" y2="202"/>
+            <circle class="cx s0" cx="303.75" cy="118.96" r="3.5"/>
+            <circle class="cx s1" cx="303.75" cy="162.27" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="313.75" y="56" width="130.6" height="61" rx="6"/>
-                <text class="tx b" x="323.75" y="74">velocity_1h = 2.3</text>
-                <rect class="tsw s0" x="323.75" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="337.75" y="91">legitimate: 0.2662</text>
-                <rect class="tsw s1" x="323.75" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="337.75" y="108">fraud: 0.1274</text>
+                <rect class="tb" x="313.75" y="115.5" width="130.6" height="61" rx="6"/>
+                <text class="tx b" x="323.75" y="133.5">velocity_1h = 2.3</text>
+                <rect class="tsw s0" x="323.75" y="141.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="337.75" y="150.5">legitimate: 0.2662</text>
+                <rect class="tsw s1" x="323.75" y="158.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="337.75" y="167.5">fraud: 0.1274</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="velocity_1h = 2.843, legitimate: 0.1778, fraud: 0.1625">
             <title>velocity_1h = 2.843, legitimate: 0.1778, fraud: 0.1625</title>
-            <rect class="hb" x="307.07" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="310.39" y1="30" x2="310.39" y2="142"/>
-            <circle class="cx s0" cx="310.39" cy="86.52" r="3.5"/>
-            <circle class="cx s1" cx="310.39" cy="91.3" r="3.5"/>
+            <rect class="hb" x="307.07" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="310.39" y1="90" x2="310.39" y2="202"/>
+            <circle class="cx s0" cx="310.39" cy="146.52" r="3.5"/>
+            <circle class="cx s1" cx="310.39" cy="151.3" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="320.39" y="56" width="133.46" height="61" rx="6"/>
-                <text class="tx b" x="330.39" y="74">velocity_1h = 2.843</text>
-                <rect class="tsw s0" x="330.39" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="344.39" y="91">legitimate: 0.1778</text>
-                <rect class="tsw s1" x="330.39" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="344.39" y="108">fraud: 0.1625</text>
+                <rect class="tb" x="320.39" y="115.5" width="133.46" height="61" rx="6"/>
+                <text class="tx b" x="330.39" y="133.5">velocity_1h = 2.843</text>
+                <rect class="tsw s0" x="330.39" y="141.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="344.39" y="150.5">legitimate: 0.1778</text>
+                <rect class="tsw s1" x="330.39" y="158.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="344.39" y="167.5">fraud: 0.1625</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="velocity_1h = 3.386, legitimate: 0.09693, fraud: 0.1913">
             <title>velocity_1h = 3.386, legitimate: 0.09693, fraud: 0.1913</title>
-            <rect class="hb" x="313.71" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="317.04" y1="30" x2="317.04" y2="142"/>
-            <circle class="cx s0" cx="317.04" cy="111.76" r="3.5"/>
-            <circle class="cx s1" cx="317.04" cy="82.32" r="3.5"/>
+            <rect class="hb" x="313.71" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="317.04" y1="90" x2="317.04" y2="202"/>
+            <circle class="cx s0" cx="317.04" cy="171.76" r="3.5"/>
+            <circle class="cx s1" cx="317.04" cy="142.32" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="327.04" y="56" width="137.32" height="61" rx="6"/>
-                <text class="tx b" x="337.04" y="74">velocity_1h = 3.386</text>
-                <rect class="tsw s0" x="337.04" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="351.04" y="91">legitimate: 0.09693</text>
-                <rect class="tsw s1" x="337.04" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="351.04" y="108">fraud: 0.1913</text>
+                <rect class="tb" x="327.04" y="115.5" width="137.32" height="61" rx="6"/>
+                <text class="tx b" x="337.04" y="133.5">velocity_1h = 3.386</text>
+                <rect class="tsw s0" x="337.04" y="141.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="351.04" y="150.5">legitimate: 0.09693</text>
+                <rect class="tsw s1" x="337.04" y="158.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="351.04" y="167.5">fraud: 0.1913</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="velocity_1h = 3.929, legitimate: 0.04306, fraud: 0.2077">
             <title>velocity_1h = 3.929, legitimate: 0.04306, fraud: 0.2077</title>
-            <rect class="hb" x="320.36" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="323.68" y1="30" x2="323.68" y2="142"/>
-            <circle class="cx s0" cx="323.68" cy="128.57" r="3.5"/>
-            <circle class="cx s1" cx="323.68" cy="77.2" r="3.5"/>
+            <rect class="hb" x="320.36" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="323.68" y1="90" x2="323.68" y2="202"/>
+            <circle class="cx s0" cx="323.68" cy="188.57" r="3.5"/>
+            <circle class="cx s1" cx="323.68" cy="137.2" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="333.68" y="56" width="137.32" height="61" rx="6"/>
-                <text class="tx b" x="343.68" y="74">velocity_1h = 3.929</text>
-                <rect class="tsw s0" x="343.68" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="357.68" y="91">legitimate: 0.04306</text>
-                <rect class="tsw s1" x="343.68" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="357.68" y="108">fraud: 0.2077</text>
+                <rect class="tb" x="333.68" y="115.5" width="137.32" height="61" rx="6"/>
+                <text class="tx b" x="343.68" y="133.5">velocity_1h = 3.929</text>
+                <rect class="tsw s0" x="343.68" y="141.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="357.68" y="150.5">legitimate: 0.04306</text>
+                <rect class="tsw s1" x="343.68" y="158.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="357.68" y="167.5">fraud: 0.2077</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="velocity_1h = 4.471, legitimate: 0.01567, fraud: 0.2077">
             <title>velocity_1h = 4.471, legitimate: 0.01567, fraud: 0.2077</title>
-            <rect class="hb" x="327" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="330.32" y1="30" x2="330.32" y2="142"/>
-            <circle class="cx s0" cx="330.32" cy="137.11" r="3.5"/>
-            <circle class="cx s1" cx="330.32" cy="77.2" r="3.5"/>
+            <rect class="hb" x="327" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="330.32" y1="90" x2="330.32" y2="202"/>
+            <circle class="cx s0" cx="330.32" cy="197.11" r="3.5"/>
+            <circle class="cx s1" cx="330.32" cy="137.2" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="340.32" y="56" width="137.32" height="61" rx="6"/>
-                <text class="tx b" x="350.32" y="74">velocity_1h = 4.471</text>
-                <rect class="tsw s0" x="350.32" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="364.32" y="91">legitimate: 0.01567</text>
-                <rect class="tsw s1" x="350.32" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="364.32" y="108">fraud: 0.2077</text>
+                <rect class="tb" x="340.32" y="115.5" width="137.32" height="61" rx="6"/>
+                <text class="tx b" x="350.32" y="133.5">velocity_1h = 4.471</text>
+                <rect class="tsw s0" x="350.32" y="141.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="364.32" y="150.5">legitimate: 0.01567</text>
+                <rect class="tsw s1" x="350.32" y="158.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="364.32" y="167.5">fraud: 0.2077</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="velocity_1h = 5.014, legitimate: 0.004576, fraud: 0.1913">
             <title>velocity_1h = 5.014, legitimate: 0.004576, fraud: 0.1913</title>
-            <rect class="hb" x="333.64" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="336.96" y1="30" x2="336.96" y2="142"/>
-            <circle class="cx s0" cx="336.96" cy="140.57" r="3.5"/>
-            <circle class="cx s1" cx="336.96" cy="82.32" r="3.5"/>
+            <rect class="hb" x="333.64" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="336.96" y1="90" x2="336.96" y2="202"/>
+            <circle class="cx s0" cx="336.96" cy="200.57" r="3.5"/>
+            <circle class="cx s1" cx="336.96" cy="142.32" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="346.96" y="56" width="144.04" height="61" rx="6"/>
-                <text class="tx b" x="356.96" y="74">velocity_1h = 5.014</text>
-                <rect class="tsw s0" x="356.96" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="370.96" y="91">legitimate: 0.004576</text>
-                <rect class="tsw s1" x="356.96" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="370.96" y="108">fraud: 0.1913</text>
+                <rect class="tb" x="346.96" y="115.5" width="144.04" height="61" rx="6"/>
+                <text class="tx b" x="356.96" y="133.5">velocity_1h = 5.014</text>
+                <rect class="tsw s0" x="356.96" y="141.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="370.96" y="150.5">legitimate: 0.004576</text>
+                <rect class="tsw s1" x="356.96" y="158.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="370.96" y="167.5">fraud: 0.1913</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="velocity_1h = 5.557, legitimate: 0.001118, fraud: 0.1625">
             <title>velocity_1h = 5.557, legitimate: 0.001118, fraud: 0.1625</title>
-            <rect class="hb" x="340.29" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="343.61" y1="30" x2="343.61" y2="142"/>
-            <circle class="cx s0" cx="343.61" cy="141.65" r="3.5"/>
-            <circle class="cx s1" cx="343.61" cy="91.3" r="3.5"/>
+            <rect class="hb" x="340.29" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="343.61" y1="90" x2="343.61" y2="202"/>
+            <circle class="cx s0" cx="343.61" cy="201.65" r="3.5"/>
+            <circle class="cx s1" cx="343.61" cy="151.3" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="353.61" y="56" width="144.04" height="61" rx="6"/>
-                <text class="tx b" x="363.61" y="74">velocity_1h = 5.557</text>
-                <rect class="tsw s0" x="363.61" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="377.61" y="91">legitimate: 0.001118</text>
-                <rect class="tsw s1" x="363.61" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="377.61" y="108">fraud: 0.1625</text>
+                <rect class="tb" x="353.61" y="115.5" width="144.04" height="61" rx="6"/>
+                <text class="tx b" x="363.61" y="133.5">velocity_1h = 5.557</text>
+                <rect class="tsw s0" x="363.61" y="141.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="377.61" y="150.5">legitimate: 0.001118</text>
+                <rect class="tsw s1" x="363.61" y="158.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="377.61" y="167.5">fraud: 0.1625</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="velocity_1h = 6.1, legitimate: 0.0002195, fraud: 0.1274">
             <title>velocity_1h = 6.1, legitimate: 0.0002195, fraud: 0.1274</title>
-            <rect class="hb" x="346.93" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="350.25" y1="30" x2="350.25" y2="142"/>
-            <circle class="cx s0" cx="350.25" cy="141.93" r="3.5"/>
-            <circle class="cx s1" cx="350.25" cy="102.27" r="3.5"/>
+            <rect class="hb" x="346.93" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="350.25" y1="90" x2="350.25" y2="202"/>
+            <circle class="cx s0" cx="350.25" cy="201.93" r="3.5"/>
+            <circle class="cx s1" cx="350.25" cy="162.27" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="360.25" y="56" width="150.76" height="61" rx="6"/>
-                <text class="tx b" x="370.25" y="74">velocity_1h = 6.1</text>
-                <rect class="tsw s0" x="370.25" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="384.25" y="91">legitimate: 0.0002195</text>
-                <rect class="tsw s1" x="370.25" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="384.25" y="108">fraud: 0.1274</text>
+                <rect class="tb" x="360.25" y="115.5" width="150.76" height="61" rx="6"/>
+                <text class="tx b" x="370.25" y="133.5">velocity_1h = 6.1</text>
+                <rect class="tsw s0" x="370.25" y="141.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="384.25" y="150.5">legitimate: 0.0002195</text>
+                <rect class="tsw s1" x="370.25" y="158.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="384.25" y="167.5">fraud: 0.1274</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="velocity_1h = 6.643, fraud: 0.09199">
             <title>velocity_1h = 6.643, fraud: 0.09199</title>
-            <rect class="hb" x="353.57" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="356.89" y1="30" x2="356.89" y2="142"/>
-            <circle class="cx s1" cx="356.89" cy="113.3" r="3.5"/>
+            <rect class="hb" x="353.57" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="356.89" y1="90" x2="356.89" y2="202"/>
+            <circle class="cx s1" cx="356.89" cy="173.3" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="366.89" y="64" width="133.46" height="44" rx="6"/>
-                <text class="tx b" x="376.89" y="82">velocity_1h = 6.643</text>
-                <rect class="tsw s1" x="376.89" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="390.89" y="99">fraud: 0.09199</text>
+                <rect class="tb" x="366.89" y="124" width="133.46" height="44" rx="6"/>
+                <text class="tx b" x="376.89" y="142">velocity_1h = 6.643</text>
+                <rect class="tsw s1" x="376.89" y="150" width="9" height="9" rx="2"/>
+                <text class="tx" x="390.89" y="159">fraud: 0.09199</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="velocity_1h = 7.186, fraud: 0.06122">
             <title>velocity_1h = 7.186, fraud: 0.06122</title>
-            <rect class="hb" x="360.21" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="363.54" y1="30" x2="363.54" y2="142"/>
-            <circle class="cx s1" cx="363.54" cy="122.9" r="3.5"/>
+            <rect class="hb" x="360.21" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="363.54" y1="90" x2="363.54" y2="202"/>
+            <circle class="cx s1" cx="363.54" cy="182.9" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="373.54" y="64" width="133.46" height="44" rx="6"/>
-                <text class="tx b" x="383.54" y="82">velocity_1h = 7.186</text>
-                <rect class="tsw s1" x="383.54" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="397.54" y="99">fraud: 0.06122</text>
+                <rect class="tb" x="373.54" y="124" width="133.46" height="44" rx="6"/>
+                <text class="tx b" x="383.54" y="142">velocity_1h = 7.186</text>
+                <rect class="tsw s1" x="383.54" y="150" width="9" height="9" rx="2"/>
+                <text class="tx" x="397.54" y="159">fraud: 0.06122</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="velocity_1h = 7.729, fraud: 0.03748">
             <title>velocity_1h = 7.729, fraud: 0.03748</title>
-            <rect class="hb" x="366.86" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="370.18" y1="30" x2="370.18" y2="142"/>
-            <circle class="cx s1" cx="370.18" cy="130.31" r="3.5"/>
+            <rect class="hb" x="366.86" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="370.18" y1="90" x2="370.18" y2="202"/>
+            <circle class="cx s1" cx="370.18" cy="190.31" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="380.18" y="64" width="133.46" height="44" rx="6"/>
-                <text class="tx b" x="390.18" y="82">velocity_1h = 7.729</text>
-                <rect class="tsw s1" x="390.18" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="404.18" y="99">fraud: 0.03748</text>
+                <rect class="tb" x="380.18" y="124" width="133.46" height="44" rx="6"/>
+                <text class="tx b" x="390.18" y="142">velocity_1h = 7.729</text>
+                <rect class="tsw s1" x="390.18" y="150" width="9" height="9" rx="2"/>
+                <text class="tx" x="404.18" y="159">fraud: 0.03748</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="velocity_1h = 8.271, fraud: 0.02118">
             <title>velocity_1h = 8.271, fraud: 0.02118</title>
-            <rect class="hb" x="373.5" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="376.82" y1="30" x2="376.82" y2="142"/>
-            <circle class="cx s1" cx="376.82" cy="135.39" r="3.5"/>
+            <rect class="hb" x="373.5" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="376.82" y1="90" x2="376.82" y2="202"/>
+            <circle class="cx s1" cx="376.82" cy="195.39" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="386.82" y="64" width="133.46" height="44" rx="6"/>
-                <text class="tx b" x="396.82" y="82">velocity_1h = 8.271</text>
-                <rect class="tsw s1" x="396.82" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="410.82" y="99">fraud: 0.02118</text>
+                <rect class="tb" x="386.82" y="124" width="133.46" height="44" rx="6"/>
+                <text class="tx b" x="396.82" y="142">velocity_1h = 8.271</text>
+                <rect class="tsw s1" x="396.82" y="150" width="9" height="9" rx="2"/>
+                <text class="tx" x="410.82" y="159">fraud: 0.02118</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="velocity_1h = 8.814, fraud: 0.01108">
             <title>velocity_1h = 8.814, fraud: 0.01108</title>
-            <rect class="hb" x="380.14" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="383.46" y1="30" x2="383.46" y2="142"/>
-            <circle class="cx s1" cx="383.46" cy="138.54" r="3.5"/>
+            <rect class="hb" x="380.14" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="383.46" y1="90" x2="383.46" y2="202"/>
+            <circle class="cx s1" cx="383.46" cy="198.54" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="393.46" y="64" width="133.46" height="44" rx="6"/>
-                <text class="tx b" x="403.46" y="82">velocity_1h = 8.814</text>
-                <rect class="tsw s1" x="403.46" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="417.46" y="99">fraud: 0.01108</text>
+                <rect class="tb" x="393.46" y="124" width="133.46" height="44" rx="6"/>
+                <text class="tx b" x="403.46" y="142">velocity_1h = 8.814</text>
+                <rect class="tsw s1" x="403.46" y="150" width="9" height="9" rx="2"/>
+                <text class="tx" x="417.46" y="159">fraud: 0.01108</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="velocity_1h = 9.357, fraud: 0.005344">
             <title>velocity_1h = 9.357, fraud: 0.005344</title>
-            <rect class="hb" x="386.79" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="390.11" y1="30" x2="390.11" y2="142"/>
-            <circle class="cx s1" cx="390.11" cy="140.33" r="3.5"/>
+            <rect class="hb" x="386.79" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="390.11" y1="90" x2="390.11" y2="202"/>
+            <circle class="cx s1" cx="390.11" cy="200.33" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="400.11" y="64" width="133.46" height="44" rx="6"/>
-                <text class="tx b" x="410.11" y="82">velocity_1h = 9.357</text>
-                <rect class="tsw s1" x="410.11" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="424.11" y="99">fraud: 0.005344</text>
+                <rect class="tb" x="400.11" y="124" width="133.46" height="44" rx="6"/>
+                <text class="tx b" x="410.11" y="142">velocity_1h = 9.357</text>
+                <rect class="tsw s1" x="410.11" y="150" width="9" height="9" rx="2"/>
+                <text class="tx" x="424.11" y="159">fraud: 0.005344</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="velocity_1h = 9.9, fraud: 0.002374">
             <title>velocity_1h = 9.9, fraud: 0.002374</title>
-            <rect class="hb" x="393.43" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="396.75" y1="30" x2="396.75" y2="142"/>
-            <circle class="cx s1" cx="396.75" cy="141.26" r="3.5"/>
+            <rect class="hb" x="393.43" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="396.75" y1="90" x2="396.75" y2="202"/>
+            <circle class="cx s1" cx="396.75" cy="201.26" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="406.75" y="64" width="119.22" height="44" rx="6"/>
-                <text class="tx b" x="416.75" y="82">velocity_1h = 9.9</text>
-                <rect class="tsw s1" x="416.75" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="430.75" y="99">fraud: 0.002374</text>
+                <rect class="tb" x="406.75" y="124" width="119.22" height="44" rx="6"/>
+                <text class="tx b" x="416.75" y="142">velocity_1h = 9.9</text>
+                <rect class="tsw s1" x="416.75" y="150" width="9" height="9" rx="2"/>
+                <text class="tx" x="430.75" y="159">fraud: 0.002374</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="velocity_1h = 10.44, fraud: 0.00097">
             <title>velocity_1h = 10.44, fraud: 0.00097</title>
-            <rect class="hb" x="400.07" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="403.39" y1="30" x2="403.39" y2="142"/>
-            <circle class="cx s1" cx="403.39" cy="141.7" r="3.5"/>
+            <rect class="hb" x="400.07" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="403.39" y1="90" x2="403.39" y2="202"/>
+            <circle class="cx s1" cx="403.39" cy="201.7" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="413.39" y="64" width="133.46" height="44" rx="6"/>
-                <text class="tx b" x="423.39" y="82">velocity_1h = 10.44</text>
-                <rect class="tsw s1" x="423.39" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="437.39" y="99">fraud: 0.00097</text>
+                <rect class="tb" x="413.39" y="124" width="133.46" height="44" rx="6"/>
+                <text class="tx b" x="423.39" y="142">velocity_1h = 10.44</text>
+                <rect class="tsw s1" x="423.39" y="150" width="9" height="9" rx="2"/>
+                <text class="tx" x="437.39" y="159">fraud: 0.00097</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="velocity_1h = 10.99, fraud: 0.0003636">
             <title>velocity_1h = 10.99, fraud: 0.0003636</title>
-            <rect class="hb" x="406.71" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="410.04" y1="30" x2="410.04" y2="142"/>
-            <circle class="cx s1" cx="410.04" cy="141.89" r="3.5"/>
+            <rect class="hb" x="406.71" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="410.04" y1="90" x2="410.04" y2="202"/>
+            <circle class="cx s1" cx="410.04" cy="201.89" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="420.04" y="64" width="133.46" height="44" rx="6"/>
-                <text class="tx b" x="430.04" y="82">velocity_1h = 10.99</text>
-                <rect class="tsw s1" x="430.04" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="444.04" y="99">fraud: 0.0003636</text>
+                <rect class="tb" x="420.04" y="124" width="133.46" height="44" rx="6"/>
+                <text class="tx b" x="430.04" y="142">velocity_1h = 10.99</text>
+                <rect class="tsw s1" x="430.04" y="150" width="9" height="9" rx="2"/>
+                <text class="tx" x="444.04" y="159">fraud: 0.0003636</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="velocity_1h = 11.53, fraud: 0.0001246">
             <title>velocity_1h = 11.53, fraud: 0.0001246</title>
-            <rect class="hb" x="413.36" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="416.68" y1="30" x2="416.68" y2="142"/>
-            <circle class="cx s1" cx="416.68" cy="141.96" r="3.5"/>
+            <rect class="hb" x="413.36" y="90" width="6.64" height="112"/>
+            <line class="vl" x1="416.68" y1="90" x2="416.68" y2="202"/>
+            <circle class="cx s1" cx="416.68" cy="201.96" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="426.68" y="64" width="133.46" height="44" rx="6"/>
-                <text class="tx b" x="436.68" y="82">velocity_1h = 11.53</text>
-                <rect class="tsw s1" x="436.68" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="450.68" y="99">fraud: 0.0001246</text>
+                <rect class="tb" x="426.68" y="124" width="133.46" height="44" rx="6"/>
+                <text class="tx b" x="436.68" y="142">velocity_1h = 11.53</text>
+                <rect class="tsw s1" x="436.68" y="150" width="9" height="9" rx="2"/>
+                <text class="tx" x="450.68" y="159">fraud: 0.0001246</text>
             </g>
         </g>
-        <rect class="pf" x="444" y="0" width="210" height="168" rx="6"/>
-        <text class="ph" x="454" y="18">account_age_days</text>
+        <rect class="pf" x="444" y="120" width="210" height="168" rx="6"/>
+        <text class="ph" x="454" y="138">account_age_days</text>
         <g class="sr s0">
             <path class="ar"
-                  d="M530.73 142L530.73 141.97L532.5 141.94L534.28 141.9L536.05 141.84L537.82 141.75L539.59 141.6L541.36 141.38L543.13 141.06L544.9 140.6L546.67 139.94L548.45 139.04L550.22 137.81L551.99 136.18L553.76 134.05L555.53 131.35L557.3 127.97L559.08 123.84L560.85 118.91L562.62 113.17L564.39 106.63L566.16 99.37L567.93 91.52L569.7 83.29L571.48 74.91L573.25 66.7L575.02 58.96L576.79 52.04L578.56 46.27L580.33 41.92L582.1 39.21L583.88 38.3L585.65 39.21L587.42 41.92L589.19 46.27L590.96 52.04L592.73 58.96L594.5 66.7L596.28 74.91L598.05 83.29L599.82 91.52L601.59 99.37L603.36 106.63L605.13 113.17L606.9 118.91L608.67 123.84L610.45 127.97L612.22 131.35L613.99 134.05L615.76 136.18L617.53 137.81L619.3 139.04L621.08 139.94L622.85 140.6L624.62 141.06L626.39 141.38L628.16 141.6L629.93 141.75L631.7 141.84L633.48 141.9L635.25 141.94L637.02 141.97L637.02 142Z"/>
+                  d="M530.73 262L530.73 261.97L532.5 261.94L534.28 261.9L536.05 261.84L537.82 261.75L539.59 261.6L541.36 261.38L543.13 261.06L544.9 260.6L546.67 259.94L548.45 259.04L550.22 257.81L551.99 256.18L553.76 254.05L555.53 251.35L557.3 247.97L559.08 243.84L560.85 238.91L562.62 233.17L564.39 226.63L566.16 219.37L567.93 211.52L569.7 203.29L571.48 194.91L573.25 186.7L575.02 178.96L576.79 172.04L578.56 166.27L580.33 161.92L582.1 159.21L583.88 158.3L585.65 159.21L587.42 161.92L589.19 166.27L590.96 172.04L592.73 178.96L594.5 186.7L596.28 194.91L598.05 203.29L599.82 211.52L601.59 219.37L603.36 226.63L605.13 233.17L606.9 238.91L608.67 243.84L610.45 247.97L612.22 251.35L613.99 254.05L615.76 256.18L617.53 257.81L619.3 259.04L621.08 259.94L622.85 260.6L624.62 261.06L626.39 261.38L628.16 261.6L629.93 261.75L631.7 261.84L633.48 261.9L635.25 261.94L637.02 261.97L637.02 262Z"/>
             <path class="ln thin"
-                  d="M530.73 141.97L532.5 141.94L534.28 141.9L536.05 141.84L537.82 141.75L539.59 141.6L541.36 141.38L543.13 141.06L544.9 140.6L546.67 139.94L548.45 139.04L550.22 137.81L551.99 136.18L553.76 134.05L555.53 131.35L557.3 127.97L559.08 123.84L560.85 118.91L562.62 113.17L564.39 106.63L566.16 99.37L567.93 91.52L569.7 83.29L571.48 74.91L573.25 66.7L575.02 58.96L576.79 52.04L578.56 46.27L580.33 41.92L582.1 39.21L583.88 38.3L585.65 39.21L587.42 41.92L589.19 46.27L590.96 52.04L592.73 58.96L594.5 66.7L596.28 74.91L598.05 83.29L599.82 91.52L601.59 99.37L603.36 106.63L605.13 113.17L606.9 118.91L608.67 123.84L610.45 127.97L612.22 131.35L613.99 134.05L615.76 136.18L617.53 137.81L619.3 139.04L621.08 139.94L622.85 140.6L624.62 141.06L626.39 141.38L628.16 141.6L629.93 141.75L631.7 141.84L633.48 141.9L635.25 141.94L637.02 141.97"/>
+                  d="M530.73 261.97L532.5 261.94L534.28 261.9L536.05 261.84L537.82 261.75L539.59 261.6L541.36 261.38L543.13 261.06L544.9 260.6L546.67 259.94L548.45 259.04L550.22 257.81L551.99 256.18L553.76 254.05L555.53 251.35L557.3 247.97L559.08 243.84L560.85 238.91L562.62 233.17L564.39 226.63L566.16 219.37L567.93 211.52L569.7 203.29L571.48 194.91L573.25 186.7L575.02 178.96L576.79 172.04L578.56 166.27L580.33 161.92L582.1 159.21L583.88 158.3L585.65 159.21L587.42 161.92L589.19 166.27L590.96 172.04L592.73 178.96L594.5 186.7L596.28 194.91L598.05 203.29L599.82 211.52L601.59 219.37L603.36 226.63L605.13 233.17L606.9 238.91L608.67 243.84L610.45 247.97L612.22 251.35L613.99 254.05L615.76 256.18L617.53 257.81L619.3 259.04L621.08 259.94L622.85 260.6L624.62 261.06L626.39 261.38L628.16 261.6L629.93 261.75L631.7 261.84L633.48 261.9L635.25 261.94L637.02 261.97"/>
         </g>
         <g class="sr s1">
             <path class="ar"
-                  d="M456 142L456 141.98L459.1 141.97L462.2 141.94L465.3 141.91L468.4 141.85L471.5 141.77L474.6 141.65L477.7 141.46L480.8 141.2L483.9 140.82L487 140.31L490.1 139.61L493.2 138.67L496.3 137.46L499.4 135.91L502.5 133.98L505.6 131.62L508.7 128.81L511.8 125.52L514.9 121.79L518 117.64L521.1 113.16L524.2 108.45L527.3 103.66L530.4 98.97L533.5 94.55L536.6 90.6L539.7 87.3L542.8 84.81L545.9 83.27L549 82.74L552.1 83.27L555.2 84.81L558.3 87.3L561.4 90.6L564.5 94.55L567.6 98.97L570.7 103.66L573.8 108.45L576.9 113.16L580 117.64L583.1 121.79L586.2 125.52L589.3 128.81L592.4 131.62L595.5 133.98L598.6 135.91L601.7 137.46L604.8 138.67L607.9 139.61L611 140.31L614.1 140.82L617.2 141.2L620.3 141.46L623.4 141.65L626.5 141.77L629.6 141.85L632.7 141.91L635.8 141.94L638.9 141.97L642 141.98L642 142Z"/>
+                  d="M456 262L456 261.98L459.1 261.97L462.2 261.94L465.3 261.91L468.4 261.85L471.5 261.77L474.6 261.65L477.7 261.46L480.8 261.2L483.9 260.82L487 260.31L490.1 259.61L493.2 258.67L496.3 257.46L499.4 255.91L502.5 253.98L505.6 251.62L508.7 248.81L511.8 245.52L514.9 241.79L518 237.64L521.1 233.16L524.2 228.45L527.3 223.66L530.4 218.97L533.5 214.55L536.6 210.6L539.7 207.3L542.8 204.81L545.9 203.27L549 202.74L552.1 203.27L555.2 204.81L558.3 207.3L561.4 210.6L564.5 214.55L567.6 218.97L570.7 223.66L573.8 228.45L576.9 233.16L580 237.64L583.1 241.79L586.2 245.52L589.3 248.81L592.4 251.62L595.5 253.98L598.6 255.91L601.7 257.46L604.8 258.67L607.9 259.61L611 260.31L614.1 260.82L617.2 261.2L620.3 261.46L623.4 261.65L626.5 261.77L629.6 261.85L632.7 261.91L635.8 261.94L638.9 261.97L642 261.98L642 262Z"/>
             <path class="ln thin"
-                  d="M456 141.98L459.1 141.97L462.2 141.94L465.3 141.91L468.4 141.85L471.5 141.77L474.6 141.65L477.7 141.46L480.8 141.2L483.9 140.82L487 140.31L490.1 139.61L493.2 138.67L496.3 137.46L499.4 135.91L502.5 133.98L505.6 131.62L508.7 128.81L511.8 125.52L514.9 121.79L518 117.64L521.1 113.16L524.2 108.45L527.3 103.66L530.4 98.97L533.5 94.55L536.6 90.6L539.7 87.3L542.8 84.81L545.9 83.27L549 82.74L552.1 83.27L555.2 84.81L558.3 87.3L561.4 90.6L564.5 94.55L567.6 98.97L570.7 103.66L573.8 108.45L576.9 113.16L580 117.64L583.1 121.79L586.2 125.52L589.3 128.81L592.4 131.62L595.5 133.98L598.6 135.91L601.7 137.46L604.8 138.67L607.9 139.61L611 140.31L614.1 140.82L617.2 141.2L620.3 141.46L623.4 141.65L626.5 141.77L629.6 141.85L632.7 141.91L635.8 141.94L638.9 141.97L642 141.98"/>
+                  d="M456 261.98L459.1 261.97L462.2 261.94L465.3 261.91L468.4 261.85L471.5 261.77L474.6 261.65L477.7 261.46L480.8 261.2L483.9 260.82L487 260.31L490.1 259.61L493.2 258.67L496.3 257.46L499.4 255.91L502.5 253.98L505.6 251.62L508.7 248.81L511.8 245.52L514.9 241.79L518 237.64L521.1 233.16L524.2 228.45L527.3 223.66L530.4 218.97L533.5 214.55L536.6 210.6L539.7 207.3L542.8 204.81L545.9 203.27L549 202.74L552.1 203.27L555.2 204.81L558.3 207.3L561.4 210.6L564.5 214.55L567.6 218.97L570.7 223.66L573.8 228.45L576.9 233.16L580 237.64L583.1 241.79L586.2 245.52L589.3 248.81L592.4 251.62L595.5 253.98L598.6 255.91L601.7 257.46L604.8 258.67L607.9 259.61L611 260.31L614.1 260.82L617.2 261.2L620.3 261.46L623.4 261.65L626.5 261.77L629.6 261.85L632.7 261.91L635.8 261.94L638.9 261.97L642 261.98"/>
         </g>
-        <line class="ax" x1="456" y1="142" x2="642" y2="142"/>
-        <line class="ax" x1="534.05" y1="142" x2="534.05" y2="145"/>
-        <text class="kn ctr" x="534.05" y="157">0</text>
-        <line class="ax" x1="617.09" y1="142" x2="617.09" y2="145"/>
-        <text class="kn ctr" x="617.09" y="157">50</text>
+        <line class="ax" x1="456" y1="262" x2="642" y2="262"/>
+        <line class="ax" x1="534.05" y1="262" x2="534.05" y2="265"/>
+        <text class="kn ctr" x="534.05" y="277">0</text>
+        <line class="ax" x1="617.09" y1="262" x2="617.09" y2="265"/>
+        <text class="kn ctr" x="617.09" y="277">50</text>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="account_age_days = -45, fraud: 0.00001691">
             <title>account_age_days = -45, fraud: 0.00001691</title>
-            <rect class="hb" x="456" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="459.32" y1="30" x2="459.32" y2="142"/>
-            <circle class="cx s1" cx="459.32" cy="141.96" r="3.5"/>
+            <rect class="hb" x="456" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="459.32" y1="150" x2="459.32" y2="262"/>
+            <circle class="cx s1" cx="459.32" cy="261.96" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="469.32" y="64" width="162.21" height="44" rx="6"/>
-                <text class="tx b" x="479.32" y="82">account_age_days = -45</text>
-                <rect class="tsw s1" x="479.32" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="493.32" y="99">fraud: 0.00001691</text>
+                <rect class="tb" x="469.32" y="184" width="162.21" height="44" rx="6"/>
+                <text class="tx b" x="479.32" y="202">account_age_days = -45</text>
+                <rect class="tsw s1" x="479.32" y="210" width="9" height="9" rx="2"/>
+                <text class="tx" x="493.32" y="219">fraud: 0.00001691</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="account_age_days = -41, fraud: 0.00004934">
             <title>account_age_days = -41, fraud: 0.00004934</title>
-            <rect class="hb" x="462.64" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="465.96" y1="30" x2="465.96" y2="142"/>
-            <circle class="cx s1" cx="465.96" cy="141.9" r="3.5"/>
+            <rect class="hb" x="462.64" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="465.96" y1="150" x2="465.96" y2="262"/>
+            <circle class="cx s1" cx="465.96" cy="261.9" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="475.96" y="64" width="162.21" height="44" rx="6"/>
-                <text class="tx b" x="485.96" y="82">account_age_days = -41</text>
-                <rect class="tsw s1" x="485.96" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="499.96" y="99">fraud: 0.00004934</text>
+                <rect class="tb" x="475.96" y="184" width="162.21" height="44" rx="6"/>
+                <text class="tx b" x="485.96" y="202">account_age_days = -41</text>
+                <rect class="tsw s1" x="485.96" y="210" width="9" height="9" rx="2"/>
+                <text class="tx" x="499.96" y="219">fraud: 0.00004934</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="account_age_days = -37, fraud: 0.0001316">
             <title>account_age_days = -37, fraud: 0.0001316</title>
-            <rect class="hb" x="469.29" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="472.61" y1="30" x2="472.61" y2="142"/>
-            <circle class="cx s1" cx="472.61" cy="141.73" r="3.5"/>
+            <rect class="hb" x="469.29" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="472.61" y1="150" x2="472.61" y2="262"/>
+            <circle class="cx s1" cx="472.61" cy="261.73" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="482.61" y="64" width="162.21" height="44" rx="6"/>
-                <text class="tx b" x="492.61" y="82">account_age_days = -37</text>
-                <rect class="tsw s1" x="492.61" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="506.61" y="99">fraud: 0.0001316</text>
+                <rect class="tb" x="482.61" y="184" width="162.21" height="44" rx="6"/>
+                <text class="tx b" x="492.61" y="202">account_age_days = -37</text>
+                <rect class="tsw s1" x="492.61" y="210" width="9" height="9" rx="2"/>
+                <text class="tx" x="506.61" y="219">fraud: 0.0001316</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="account_age_days = -33, fraud: 0.0003222">
             <title>account_age_days = -33, fraud: 0.0003222</title>
-            <rect class="hb" x="475.93" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="479.25" y1="30" x2="479.25" y2="142"/>
-            <circle class="cx s1" cx="479.25" cy="141.33" r="3.5"/>
+            <rect class="hb" x="475.93" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="479.25" y1="150" x2="479.25" y2="262"/>
+            <circle class="cx s1" cx="479.25" cy="261.33" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="489.25" y="64" width="162.21" height="44" rx="6"/>
-                <text class="tx b" x="499.25" y="82">account_age_days = -33</text>
-                <rect class="tsw s1" x="499.25" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="513.25" y="99">fraud: 0.0003222</text>
+                <rect class="tb" x="489.25" y="184" width="162.21" height="44" rx="6"/>
+                <text class="tx b" x="499.25" y="202">account_age_days = -33</text>
+                <rect class="tsw s1" x="499.25" y="210" width="9" height="9" rx="2"/>
+                <text class="tx" x="513.25" y="219">fraud: 0.0003222</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="account_age_days = -29, fraud: 0.0007252">
             <title>account_age_days = -29, fraud: 0.0007252</title>
-            <rect class="hb" x="482.57" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="485.89" y1="30" x2="485.89" y2="142"/>
-            <circle class="cx s1" cx="485.89" cy="140.49" r="3.5"/>
+            <rect class="hb" x="482.57" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="485.89" y1="150" x2="485.89" y2="262"/>
+            <circle class="cx s1" cx="485.89" cy="260.49" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="313.68" y="64" width="162.21" height="44" rx="6"/>
-                <text class="tx b" x="323.68" y="82">account_age_days = -29</text>
-                <rect class="tsw s1" x="323.68" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="337.68" y="99">fraud: 0.0007252</text>
+                <rect class="tb" x="313.68" y="184" width="162.21" height="44" rx="6"/>
+                <text class="tx b" x="323.68" y="202">account_age_days = -29</text>
+                <rect class="tsw s1" x="323.68" y="210" width="9" height="9" rx="2"/>
+                <text class="tx" x="337.68" y="219">fraud: 0.0007252</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="account_age_days = -25, fraud: 0.001504">
             <title>account_age_days = -25, fraud: 0.001504</title>
-            <rect class="hb" x="489.21" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="492.54" y1="30" x2="492.54" y2="142"/>
-            <circle class="cx s1" cx="492.54" cy="138.87" r="3.5"/>
+            <rect class="hb" x="489.21" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="492.54" y1="150" x2="492.54" y2="262"/>
+            <circle class="cx s1" cx="492.54" cy="258.87" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="320.33" y="64" width="162.21" height="44" rx="6"/>
-                <text class="tx b" x="330.33" y="82">account_age_days = -25</text>
-                <rect class="tsw s1" x="330.33" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="344.33" y="99">fraud: 0.001504</text>
+                <rect class="tb" x="320.33" y="184" width="162.21" height="44" rx="6"/>
+                <text class="tx b" x="330.33" y="202">account_age_days = -25</text>
+                <rect class="tsw s1" x="330.33" y="210" width="9" height="9" rx="2"/>
+                <text class="tx" x="344.33" y="219">fraud: 0.001504</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="account_age_days = -21, fraud: 0.002874">
             <title>account_age_days = -21, fraud: 0.002874</title>
-            <rect class="hb" x="495.86" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="499.18" y1="30" x2="499.18" y2="142"/>
-            <circle class="cx s1" cx="499.18" cy="136.02" r="3.5"/>
+            <rect class="hb" x="495.86" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="499.18" y1="150" x2="499.18" y2="262"/>
+            <circle class="cx s1" cx="499.18" cy="256.02" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="326.97" y="64" width="162.21" height="44" rx="6"/>
-                <text class="tx b" x="336.97" y="82">account_age_days = -21</text>
-                <rect class="tsw s1" x="336.97" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="350.97" y="99">fraud: 0.002874</text>
+                <rect class="tb" x="326.97" y="184" width="162.21" height="44" rx="6"/>
+                <text class="tx b" x="336.97" y="202">account_age_days = -21</text>
+                <rect class="tsw s1" x="336.97" y="210" width="9" height="9" rx="2"/>
+                <text class="tx" x="350.97" y="219">fraud: 0.002874</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="account_age_days = -17, fraud: 0.005087">
             <title>account_age_days = -17, fraud: 0.005087</title>
-            <rect class="hb" x="502.5" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="505.82" y1="30" x2="505.82" y2="142"/>
-            <circle class="cx s1" cx="505.82" cy="131.42" r="3.5"/>
+            <rect class="hb" x="502.5" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="505.82" y1="150" x2="505.82" y2="262"/>
+            <circle class="cx s1" cx="505.82" cy="251.42" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="333.61" y="64" width="162.21" height="44" rx="6"/>
-                <text class="tx b" x="343.61" y="82">account_age_days = -17</text>
-                <rect class="tsw s1" x="343.61" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="357.61" y="99">fraud: 0.005087</text>
+                <rect class="tb" x="333.61" y="184" width="162.21" height="44" rx="6"/>
+                <text class="tx b" x="343.61" y="202">account_age_days = -17</text>
+                <rect class="tsw s1" x="343.61" y="210" width="9" height="9" rx="2"/>
+                <text class="tx" x="357.61" y="219">fraud: 0.005087</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="account_age_days = -13, fraud: 0.008308">
             <title>account_age_days = -13, fraud: 0.008308</title>
-            <rect class="hb" x="509.14" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="512.46" y1="30" x2="512.46" y2="142"/>
-            <circle class="cx s1" cx="512.46" cy="124.72" r="3.5"/>
+            <rect class="hb" x="509.14" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="512.46" y1="150" x2="512.46" y2="262"/>
+            <circle class="cx s1" cx="512.46" cy="244.72" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="340.25" y="64" width="162.21" height="44" rx="6"/>
-                <text class="tx b" x="350.25" y="82">account_age_days = -13</text>
-                <rect class="tsw s1" x="350.25" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="364.25" y="99">fraud: 0.008308</text>
+                <rect class="tb" x="340.25" y="184" width="162.21" height="44" rx="6"/>
+                <text class="tx b" x="350.25" y="202">account_age_days = -13</text>
+                <rect class="tsw s1" x="350.25" y="210" width="9" height="9" rx="2"/>
+                <text class="tx" x="364.25" y="219">fraud: 0.008308</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="account_age_days = -9, fraud: 0.01248">
             <title>account_age_days = -9, fraud: 0.01248</title>
-            <rect class="hb" x="515.79" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="519.11" y1="30" x2="519.11" y2="142"/>
-            <circle class="cx s1" cx="519.11" cy="116.04" r="3.5"/>
+            <rect class="hb" x="515.79" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="519.11" y1="150" x2="519.11" y2="262"/>
+            <circle class="cx s1" cx="519.11" cy="236.04" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="354.02" y="64" width="155.09" height="44" rx="6"/>
-                <text class="tx b" x="364.02" y="82">account_age_days = -9</text>
-                <rect class="tsw s1" x="364.02" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="378.02" y="99">fraud: 0.01248</text>
+                <rect class="tb" x="354.02" y="184" width="155.09" height="44" rx="6"/>
+                <text class="tx b" x="364.02" y="202">account_age_days = -9</text>
+                <rect class="tsw s1" x="364.02" y="210" width="9" height="9" rx="2"/>
+                <text class="tx" x="378.02" y="219">fraud: 0.01248</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="account_age_days = -5, fraud: 0.01728">
             <title>account_age_days = -5, fraud: 0.01728</title>
-            <rect class="hb" x="522.43" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="525.75" y1="30" x2="525.75" y2="142"/>
-            <circle class="cx s1" cx="525.75" cy="106.06" r="3.5"/>
+            <rect class="hb" x="522.43" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="525.75" y1="150" x2="525.75" y2="262"/>
+            <circle class="cx s1" cx="525.75" cy="226.06" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="360.66" y="64" width="155.09" height="44" rx="6"/>
-                <text class="tx b" x="370.66" y="82">account_age_days = -5</text>
-                <rect class="tsw s1" x="370.66" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="384.66" y="99">fraud: 0.01728</text>
+                <rect class="tb" x="360.66" y="184" width="155.09" height="44" rx="6"/>
+                <text class="tx b" x="370.66" y="202">account_age_days = -5</text>
+                <rect class="tsw s1" x="370.66" y="210" width="9" height="9" rx="2"/>
+                <text class="tx" x="384.66" y="219">fraud: 0.01728</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="account_age_days = -1, legitimate: 0.00002754, fraud: 0.02206">
             <title>account_age_days = -1, legitimate: 0.00002754, fraud: 0.02206</title>
-            <rect class="hb" x="529.07" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="532.39" y1="30" x2="532.39" y2="142"/>
-            <circle class="cx s0" cx="532.39" cy="141.94" r="3.5"/>
-            <circle class="cx s1" cx="532.39" cy="96.13" r="3.5"/>
+            <rect class="hb" x="529.07" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="532.39" y1="150" x2="532.39" y2="262"/>
+            <circle class="cx s0" cx="532.39" cy="261.94" r="3.5"/>
+            <circle class="cx s1" cx="532.39" cy="216.13" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="364.91" y="56" width="157.48" height="61" rx="6"/>
-                <text class="tx b" x="374.91" y="74">account_age_days = -1</text>
-                <rect class="tsw s0" x="374.91" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="388.91" y="91">legitimate: 0.00002754</text>
-                <rect class="tsw s1" x="374.91" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="388.91" y="108">fraud: 0.02206</text>
+                <rect class="tb" x="364.91" y="175.5" width="157.48" height="61" rx="6"/>
+                <text class="tx b" x="374.91" y="193.5">account_age_days = -1</text>
+                <rect class="tsw s0" x="374.91" y="201.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="388.91" y="210.5">legitimate: 0.00002754</text>
+                <rect class="tsw s1" x="374.91" y="218.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="388.91" y="227.5">fraud: 0.02206</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="account_age_days = 3, legitimate: 0.0001708, fraud: 0.02596">
             <title>account_age_days = 3, legitimate: 0.0001708, fraud: 0.02596</title>
-            <rect class="hb" x="535.71" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="539.04" y1="30" x2="539.04" y2="142"/>
-            <circle class="cx s0" cx="539.04" cy="141.64" r="3.5"/>
-            <circle class="cx s1" cx="539.04" cy="88" r="3.5"/>
+            <rect class="hb" x="535.71" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="539.04" y1="150" x2="539.04" y2="262"/>
+            <circle class="cx s0" cx="539.04" cy="261.64" r="3.5"/>
+            <circle class="cx s1" cx="539.04" cy="208" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="378.27" y="56" width="150.76" height="61" rx="6"/>
-                <text class="tx b" x="388.27" y="74">account_age_days = 3</text>
-                <rect class="tsw s0" x="388.27" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="402.27" y="91">legitimate: 0.0001708</text>
-                <rect class="tsw s1" x="388.27" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="402.27" y="108">fraud: 0.02596</text>
+                <rect class="tb" x="378.27" y="175.5" width="150.76" height="61" rx="6"/>
+                <text class="tx b" x="388.27" y="193.5">account_age_days = 3</text>
+                <rect class="tsw s0" x="388.27" y="201.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="402.27" y="210.5">legitimate: 0.0001708</text>
+                <rect class="tsw s1" x="388.27" y="218.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="402.27" y="227.5">fraud: 0.02596</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="account_age_days = 7, legitimate: 0.0008126, fraud: 0.02819">
             <title>account_age_days = 7, legitimate: 0.0008126, fraud: 0.02819</title>
-            <rect class="hb" x="542.36" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="545.68" y1="30" x2="545.68" y2="142"/>
-            <circle class="cx s0" cx="545.68" cy="140.31" r="3.5"/>
-            <circle class="cx s1" cx="545.68" cy="83.38" r="3.5"/>
+            <rect class="hb" x="542.36" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="545.68" y1="150" x2="545.68" y2="262"/>
+            <circle class="cx s0" cx="545.68" cy="260.31" r="3.5"/>
+            <circle class="cx s1" cx="545.68" cy="203.38" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="384.92" y="56" width="150.76" height="61" rx="6"/>
-                <text class="tx b" x="394.92" y="74">account_age_days = 7</text>
-                <rect class="tsw s0" x="394.92" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="408.92" y="91">legitimate: 0.0008126</text>
-                <rect class="tsw s1" x="394.92" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="408.92" y="108">fraud: 0.02819</text>
+                <rect class="tb" x="384.92" y="175.5" width="150.76" height="61" rx="6"/>
+                <text class="tx b" x="394.92" y="193.5">account_age_days = 7</text>
+                <rect class="tsw s0" x="394.92" y="201.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="408.92" y="210.5">legitimate: 0.0008126</text>
+                <rect class="tsw s1" x="394.92" y="218.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="408.92" y="227.5">fraud: 0.02819</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="account_age_days = 11, legitimate: 0.002991, fraud: 0.02819">
             <title>account_age_days = 11, legitimate: 0.002991, fraud: 0.02819</title>
-            <rect class="hb" x="549" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="552.32" y1="30" x2="552.32" y2="142"/>
-            <circle class="cx s0" cx="552.32" cy="135.78" r="3.5"/>
-            <circle class="cx s1" cx="552.32" cy="83.38" r="3.5"/>
+            <rect class="hb" x="549" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="552.32" y1="150" x2="552.32" y2="262"/>
+            <circle class="cx s0" cx="552.32" cy="255.78" r="3.5"/>
+            <circle class="cx s1" cx="552.32" cy="203.38" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="384.44" y="56" width="157.88" height="61" rx="6"/>
-                <text class="tx b" x="394.44" y="74">account_age_days = 11</text>
-                <rect class="tsw s0" x="394.44" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="408.44" y="91">legitimate: 0.002991</text>
-                <rect class="tsw s1" x="394.44" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="408.44" y="108">fraud: 0.02819</text>
+                <rect class="tb" x="384.44" y="175.5" width="157.88" height="61" rx="6"/>
+                <text class="tx b" x="394.44" y="193.5">account_age_days = 11</text>
+                <rect class="tsw s0" x="394.44" y="201.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="408.44" y="210.5">legitimate: 0.002991</text>
+                <rect class="tsw s1" x="394.44" y="218.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="408.44" y="227.5">fraud: 0.02819</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="account_age_days = 15, legitimate: 0.008609, fraud: 0.02596">
             <title>account_age_days = 15, legitimate: 0.008609, fraud: 0.02596</title>
-            <rect class="hb" x="555.64" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="558.96" y1="30" x2="558.96" y2="142"/>
-            <circle class="cx s0" cx="558.96" cy="124.1" r="3.5"/>
-            <circle class="cx s1" cx="558.96" cy="88" r="3.5"/>
+            <rect class="hb" x="555.64" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="558.96" y1="150" x2="558.96" y2="262"/>
+            <circle class="cx s0" cx="558.96" cy="244.1" r="3.5"/>
+            <circle class="cx s1" cx="558.96" cy="208" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="391.08" y="56" width="157.88" height="61" rx="6"/>
-                <text class="tx b" x="401.08" y="74">account_age_days = 15</text>
-                <rect class="tsw s0" x="401.08" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="415.08" y="91">legitimate: 0.008609</text>
-                <rect class="tsw s1" x="401.08" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="415.08" y="108">fraud: 0.02596</text>
+                <rect class="tb" x="391.08" y="175.5" width="157.88" height="61" rx="6"/>
+                <text class="tx b" x="401.08" y="193.5">account_age_days = 15</text>
+                <rect class="tsw s0" x="401.08" y="201.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="415.08" y="210.5">legitimate: 0.008609</text>
+                <rect class="tsw s1" x="401.08" y="218.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="415.08" y="227.5">fraud: 0.02596</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="account_age_days = 19, legitimate: 0.01941, fraud: 0.02206">
             <title>account_age_days = 19, legitimate: 0.01941, fraud: 0.02206</title>
-            <rect class="hb" x="562.29" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="565.61" y1="30" x2="565.61" y2="142"/>
-            <circle class="cx s0" cx="565.61" cy="101.63" r="3.5"/>
-            <circle class="cx s1" cx="565.61" cy="96.13" r="3.5"/>
+            <rect class="hb" x="562.29" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="565.61" y1="150" x2="565.61" y2="262"/>
+            <circle class="cx s0" cx="565.61" cy="221.63" r="3.5"/>
+            <circle class="cx s1" cx="565.61" cy="216.13" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="397.72" y="56" width="157.88" height="61" rx="6"/>
-                <text class="tx b" x="407.72" y="74">account_age_days = 19</text>
-                <rect class="tsw s0" x="407.72" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="421.72" y="91">legitimate: 0.01941</text>
-                <rect class="tsw s1" x="407.72" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="421.72" y="108">fraud: 0.02206</text>
+                <rect class="tb" x="397.72" y="175.5" width="157.88" height="61" rx="6"/>
+                <text class="tx b" x="407.72" y="193.5">account_age_days = 19</text>
+                <rect class="tsw s0" x="407.72" y="201.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="421.72" y="210.5">legitimate: 0.01941</text>
+                <rect class="tsw s1" x="407.72" y="218.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="421.72" y="227.5">fraud: 0.02206</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="account_age_days = 23, legitimate: 0.03399, fraud: 0.01728">
             <title>account_age_days = 23, legitimate: 0.03399, fraud: 0.01728</title>
-            <rect class="hb" x="568.93" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="572.25" y1="30" x2="572.25" y2="142"/>
-            <circle class="cx s0" cx="572.25" cy="71.32" r="3.5"/>
-            <circle class="cx s1" cx="572.25" cy="106.06" r="3.5"/>
+            <rect class="hb" x="568.93" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="572.25" y1="150" x2="572.25" y2="262"/>
+            <circle class="cx s0" cx="572.25" cy="191.32" r="3.5"/>
+            <circle class="cx s1" cx="572.25" cy="226.06" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="404.37" y="56" width="157.88" height="61" rx="6"/>
-                <text class="tx b" x="414.37" y="74">account_age_days = 23</text>
-                <rect class="tsw s0" x="414.37" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="428.37" y="91">legitimate: 0.03399</text>
-                <rect class="tsw s1" x="414.37" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="428.37" y="108">fraud: 0.01728</text>
+                <rect class="tb" x="404.37" y="175.5" width="157.88" height="61" rx="6"/>
+                <text class="tx b" x="414.37" y="193.5">account_age_days = 23</text>
+                <rect class="tsw s0" x="414.37" y="201.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="428.37" y="210.5">legitimate: 0.03399</text>
+                <rect class="tsw s1" x="414.37" y="218.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="428.37" y="227.5">fraud: 0.01728</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="account_age_days = 27, legitimate: 0.04643, fraud: 0.01248">
             <title>account_age_days = 27, legitimate: 0.04643, fraud: 0.01248</title>
-            <rect class="hb" x="575.57" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="578.89" y1="30" x2="578.89" y2="142"/>
-            <circle class="cx s0" cx="578.89" cy="45.45" r="3.5"/>
-            <circle class="cx s1" cx="578.89" cy="116.04" r="3.5"/>
+            <rect class="hb" x="575.57" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="578.89" y1="150" x2="578.89" y2="262"/>
+            <circle class="cx s0" cx="578.89" cy="165.45" r="3.5"/>
+            <circle class="cx s1" cx="578.89" cy="236.04" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="411.01" y="56" width="157.88" height="61" rx="6"/>
-                <text class="tx b" x="421.01" y="74">account_age_days = 27</text>
-                <rect class="tsw s0" x="421.01" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="435.01" y="91">legitimate: 0.04643</text>
-                <rect class="tsw s1" x="421.01" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="435.01" y="108">fraud: 0.01248</text>
+                <rect class="tb" x="411.01" y="175.5" width="157.88" height="61" rx="6"/>
+                <text class="tx b" x="421.01" y="193.5">account_age_days = 27</text>
+                <rect class="tsw s0" x="421.01" y="201.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="435.01" y="210.5">legitimate: 0.04643</text>
+                <rect class="tsw s1" x="421.01" y="218.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="435.01" y="227.5">fraud: 0.01248</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="account_age_days = 31, legitimate: 0.04945, fraud: 0.008308">
             <title>account_age_days = 31, legitimate: 0.04945, fraud: 0.008308</title>
-            <rect class="hb" x="582.21" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="585.54" y1="30" x2="585.54" y2="142"/>
-            <circle class="cx s0" cx="585.54" cy="39.16" r="3.5"/>
-            <circle class="cx s1" cx="585.54" cy="124.72" r="3.5"/>
+            <rect class="hb" x="582.21" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="585.54" y1="150" x2="585.54" y2="262"/>
+            <circle class="cx s0" cx="585.54" cy="159.16" r="3.5"/>
+            <circle class="cx s1" cx="585.54" cy="244.72" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="417.65" y="56" width="157.88" height="61" rx="6"/>
-                <text class="tx b" x="427.65" y="74">account_age_days = 31</text>
-                <rect class="tsw s0" x="427.65" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="441.65" y="91">legitimate: 0.04945</text>
-                <rect class="tsw s1" x="427.65" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="441.65" y="108">fraud: 0.008308</text>
+                <rect class="tb" x="417.65" y="175.5" width="157.88" height="61" rx="6"/>
+                <text class="tx b" x="427.65" y="193.5">account_age_days = 31</text>
+                <rect class="tsw s0" x="427.65" y="201.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="441.65" y="210.5">legitimate: 0.04945</text>
+                <rect class="tsw s1" x="427.65" y="218.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="441.65" y="227.5">fraud: 0.008308</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="account_age_days = 35, legitimate: 0.04097, fraud: 0.005087">
             <title>account_age_days = 35, legitimate: 0.04097, fraud: 0.005087</title>
-            <rect class="hb" x="588.86" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="592.18" y1="30" x2="592.18" y2="142"/>
-            <circle class="cx s0" cx="592.18" cy="56.8" r="3.5"/>
-            <circle class="cx s1" cx="592.18" cy="131.42" r="3.5"/>
+            <rect class="hb" x="588.86" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="592.18" y1="150" x2="592.18" y2="262"/>
+            <circle class="cx s0" cx="592.18" cy="176.8" r="3.5"/>
+            <circle class="cx s1" cx="592.18" cy="251.42" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="424.29" y="56" width="157.88" height="61" rx="6"/>
-                <text class="tx b" x="434.29" y="74">account_age_days = 35</text>
-                <rect class="tsw s0" x="434.29" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="448.29" y="91">legitimate: 0.04097</text>
-                <rect class="tsw s1" x="434.29" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="448.29" y="108">fraud: 0.005087</text>
+                <rect class="tb" x="424.29" y="175.5" width="157.88" height="61" rx="6"/>
+                <text class="tx b" x="434.29" y="193.5">account_age_days = 35</text>
+                <rect class="tsw s0" x="434.29" y="201.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="448.29" y="210.5">legitimate: 0.04097</text>
+                <rect class="tsw s1" x="434.29" y="218.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="448.29" y="227.5">fraud: 0.005087</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="account_age_days = 39, legitimate: 0.0265, fraud: 0.002874">
             <title>account_age_days = 39, legitimate: 0.0265, fraud: 0.002874</title>
-            <rect class="hb" x="595.5" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="598.82" y1="30" x2="598.82" y2="142"/>
-            <circle class="cx s0" cx="598.82" cy="86.89" r="3.5"/>
-            <circle class="cx s1" cx="598.82" cy="136.02" r="3.5"/>
+            <rect class="hb" x="595.5" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="598.82" y1="150" x2="598.82" y2="262"/>
+            <circle class="cx s0" cx="598.82" cy="206.89" r="3.5"/>
+            <circle class="cx s1" cx="598.82" cy="256.02" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="430.94" y="56" width="157.88" height="61" rx="6"/>
-                <text class="tx b" x="440.94" y="74">account_age_days = 39</text>
-                <rect class="tsw s0" x="440.94" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="454.94" y="91">legitimate: 0.0265</text>
-                <rect class="tsw s1" x="440.94" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="454.94" y="108">fraud: 0.002874</text>
+                <rect class="tb" x="430.94" y="175.5" width="157.88" height="61" rx="6"/>
+                <text class="tx b" x="440.94" y="193.5">account_age_days = 39</text>
+                <rect class="tsw s0" x="440.94" y="201.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="454.94" y="210.5">legitimate: 0.0265</text>
+                <rect class="tsw s1" x="440.94" y="218.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="454.94" y="227.5">fraud: 0.002874</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="account_age_days = 43, legitimate: 0.01335, fraud: 0.001504">
             <title>account_age_days = 43, legitimate: 0.01335, fraud: 0.001504</title>
-            <rect class="hb" x="602.14" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="605.46" y1="30" x2="605.46" y2="142"/>
-            <circle class="cx s0" cx="605.46" cy="114.24" r="3.5"/>
-            <circle class="cx s1" cx="605.46" cy="138.87" r="3.5"/>
+            <rect class="hb" x="602.14" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="605.46" y1="150" x2="605.46" y2="262"/>
+            <circle class="cx s0" cx="605.46" cy="234.24" r="3.5"/>
+            <circle class="cx s1" cx="605.46" cy="258.87" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="437.58" y="56" width="157.88" height="61" rx="6"/>
-                <text class="tx b" x="447.58" y="74">account_age_days = 43</text>
-                <rect class="tsw s0" x="447.58" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="461.58" y="91">legitimate: 0.01335</text>
-                <rect class="tsw s1" x="447.58" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="461.58" y="108">fraud: 0.001504</text>
+                <rect class="tb" x="437.58" y="175.5" width="157.88" height="61" rx="6"/>
+                <text class="tx b" x="447.58" y="193.5">account_age_days = 43</text>
+                <rect class="tsw s0" x="447.58" y="201.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="461.58" y="210.5">legitimate: 0.01335</text>
+                <rect class="tsw s1" x="447.58" y="218.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="461.58" y="227.5">fraud: 0.001504</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="account_age_days = 47, legitimate: 0.005225, fraud: 0.0007252">
             <title>account_age_days = 47, legitimate: 0.005225, fraud: 0.0007252</title>
-            <rect class="hb" x="608.79" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="612.11" y1="30" x2="612.11" y2="142"/>
-            <circle class="cx s0" cx="612.11" cy="131.13" r="3.5"/>
-            <circle class="cx s1" cx="612.11" cy="140.49" r="3.5"/>
+            <rect class="hb" x="608.79" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="612.11" y1="150" x2="612.11" y2="262"/>
+            <circle class="cx s0" cx="612.11" cy="251.13" r="3.5"/>
+            <circle class="cx s1" cx="612.11" cy="260.49" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="444.22" y="56" width="157.88" height="61" rx="6"/>
-                <text class="tx b" x="454.22" y="74">account_age_days = 47</text>
-                <rect class="tsw s0" x="454.22" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="468.22" y="91">legitimate: 0.005225</text>
-                <rect class="tsw s1" x="454.22" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="468.22" y="108">fraud: 0.0007252</text>
+                <rect class="tb" x="444.22" y="175.5" width="157.88" height="61" rx="6"/>
+                <text class="tx b" x="454.22" y="193.5">account_age_days = 47</text>
+                <rect class="tsw s0" x="454.22" y="201.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="468.22" y="210.5">legitimate: 0.005225</text>
+                <rect class="tsw s1" x="454.22" y="218.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="468.22" y="227.5">fraud: 0.0007252</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="account_age_days = 51, legitimate: 0.001609, fraud: 0.0003222">
             <title>account_age_days = 51, legitimate: 0.001609, fraud: 0.0003222</title>
-            <rect class="hb" x="615.43" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="618.75" y1="30" x2="618.75" y2="142"/>
-            <circle class="cx s0" cx="618.75" cy="138.65" r="3.5"/>
-            <circle class="cx s1" cx="618.75" cy="141.33" r="3.5"/>
+            <rect class="hb" x="615.43" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="618.75" y1="150" x2="618.75" y2="262"/>
+            <circle class="cx s0" cx="618.75" cy="258.65" r="3.5"/>
+            <circle class="cx s1" cx="618.75" cy="261.33" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="450.87" y="56" width="157.88" height="61" rx="6"/>
-                <text class="tx b" x="460.87" y="74">account_age_days = 51</text>
-                <rect class="tsw s0" x="460.87" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="474.87" y="91">legitimate: 0.001609</text>
-                <rect class="tsw s1" x="460.87" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="474.87" y="108">fraud: 0.0003222</text>
+                <rect class="tb" x="450.87" y="175.5" width="157.88" height="61" rx="6"/>
+                <text class="tx b" x="460.87" y="193.5">account_age_days = 51</text>
+                <rect class="tsw s0" x="460.87" y="201.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="474.87" y="210.5">legitimate: 0.001609</text>
+                <rect class="tsw s1" x="460.87" y="218.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="474.87" y="227.5">fraud: 0.0003222</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="account_age_days = 55, legitimate: 0.0003849, fraud: 0.0001316">
             <title>account_age_days = 55, legitimate: 0.0003849, fraud: 0.0001316</title>
-            <rect class="hb" x="622.07" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="625.39" y1="30" x2="625.39" y2="142"/>
-            <circle class="cx s0" cx="625.39" cy="141.2" r="3.5"/>
-            <circle class="cx s1" cx="625.39" cy="141.73" r="3.5"/>
+            <rect class="hb" x="622.07" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="625.39" y1="150" x2="625.39" y2="262"/>
+            <circle class="cx s0" cx="625.39" cy="261.2" r="3.5"/>
+            <circle class="cx s1" cx="625.39" cy="261.73" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="457.51" y="56" width="157.88" height="61" rx="6"/>
-                <text class="tx b" x="467.51" y="74">account_age_days = 55</text>
-                <rect class="tsw s0" x="467.51" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="481.51" y="91">legitimate: 0.0003849</text>
-                <rect class="tsw s1" x="467.51" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="481.51" y="108">fraud: 0.0001316</text>
+                <rect class="tb" x="457.51" y="175.5" width="157.88" height="61" rx="6"/>
+                <text class="tx b" x="467.51" y="193.5">account_age_days = 55</text>
+                <rect class="tsw s0" x="467.51" y="201.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="481.51" y="210.5">legitimate: 0.0003849</text>
+                <rect class="tsw s1" x="467.51" y="218.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="481.51" y="227.5">fraud: 0.0001316</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
            aria-label="account_age_days = 59, legitimate: 0.00007094, fraud: 0.00004934">
             <title>account_age_days = 59, legitimate: 0.00007094, fraud: 0.00004934</title>
-            <rect class="hb" x="628.71" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="632.04" y1="30" x2="632.04" y2="142"/>
-            <circle class="cx s0" cx="632.04" cy="141.85" r="3.5"/>
-            <circle class="cx s1" cx="632.04" cy="141.9" r="3.5"/>
+            <rect class="hb" x="628.71" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="632.04" y1="150" x2="632.04" y2="262"/>
+            <circle class="cx s0" cx="632.04" cy="261.85" r="3.5"/>
+            <circle class="cx s1" cx="632.04" cy="261.9" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="464.15" y="56" width="157.88" height="61" rx="6"/>
-                <text class="tx b" x="474.15" y="74">account_age_days = 59</text>
-                <rect class="tsw s0" x="474.15" y="82" width="9" height="9" rx="2"/>
-                <text class="tx" x="488.15" y="91">legitimate: 0.00007094</text>
-                <rect class="tsw s1" x="474.15" y="99" width="9" height="9" rx="2"/>
-                <text class="tx" x="488.15" y="108">fraud: 0.00004934</text>
+                <rect class="tb" x="464.15" y="175.5" width="157.88" height="61" rx="6"/>
+                <text class="tx b" x="474.15" y="193.5">account_age_days = 59</text>
+                <rect class="tsw s0" x="474.15" y="201.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="488.15" y="210.5">legitimate: 0.00007094</text>
+                <rect class="tsw s1" x="474.15" y="218.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="488.15" y="227.5">fraud: 0.00004934</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="account_age_days = 63, fraud: 0.00001691">
             <title>account_age_days = 63, fraud: 0.00001691</title>
-            <rect class="hb" x="635.36" y="30" width="6.64" height="112"/>
-            <line class="vl" x1="638.68" y1="30" x2="638.68" y2="142"/>
-            <circle class="cx s1" cx="638.68" cy="141.96" r="3.5"/>
+            <rect class="hb" x="635.36" y="150" width="6.64" height="112"/>
+            <line class="vl" x1="638.68" y1="150" x2="638.68" y2="262"/>
+            <circle class="cx s1" cx="638.68" cy="261.96" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="470.79" y="64" width="157.88" height="44" rx="6"/>
-                <text class="tx b" x="480.79" y="82">account_age_days = 63</text>
-                <rect class="tsw s1" x="480.79" y="90" width="9" height="9" rx="2"/>
-                <text class="tx" x="494.79" y="99">fraud: 0.00001691</text>
+                <rect class="tb" x="470.79" y="184" width="157.88" height="44" rx="6"/>
+                <text class="tx b" x="480.79" y="202">account_age_days = 63</text>
+                <rect class="tsw s1" x="480.79" y="210" width="9" height="9" rx="2"/>
+                <text class="tx" x="494.79" y="219">fraud: 0.00001691</text>
             </g>
         </g>
         <rect class="pf" x="0" y="180" width="210" height="168" rx="6"/>
@@ -1408,12 +1408,12 @@
             <circle class="cx s0" cx="61.82" cy="321.24" r="3.5"/>
             <circle class="cx s1" cx="61.82" cy="316.95" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="71.82" y="236" width="157.48" height="61" rx="6"/>
-                <text class="tx b" x="81.82" y="254">balance = -68.57</text>
-                <rect class="tsw s0" x="81.82" y="262" width="9" height="9" rx="2"/>
-                <text class="tx" x="95.82" y="271">legitimate: 0.00004857</text>
-                <rect class="tsw s1" x="81.82" y="279" width="9" height="9" rx="2"/>
-                <text class="tx" x="95.82" y="288">fraud: 0.0003237</text>
+                <rect class="tb" x="71.82" y="235.5" width="157.48" height="61" rx="6"/>
+                <text class="tx b" x="81.82" y="253.5">balance = -68.57</text>
+                <rect class="tsw s0" x="81.82" y="261.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="95.82" y="270.5">legitimate: 0.00004857</text>
+                <rect class="tsw s1" x="81.82" y="278.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="95.82" y="287.5">fraud: 0.0003237</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1424,12 +1424,12 @@
             <circle class="cx s0" cx="68.46" cy="310.38" r="3.5"/>
             <circle class="cx s1" cx="68.46" cy="313.75" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="78.46" y="236" width="144.04" height="61" rx="6"/>
-                <text class="tx b" x="88.46" y="254">balance = -5.714</text>
-                <rect class="tsw s0" x="88.46" y="262" width="9" height="9" rx="2"/>
-                <text class="tx" x="102.46" y="271">legitimate: 0.000745</text>
-                <rect class="tsw s1" x="88.46" y="279" width="9" height="9" rx="2"/>
-                <text class="tx" x="102.46" y="288">fraud: 0.0005287</text>
+                <rect class="tb" x="78.46" y="235.5" width="144.04" height="61" rx="6"/>
+                <text class="tx b" x="88.46" y="253.5">balance = -5.714</text>
+                <rect class="tsw s0" x="88.46" y="261.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="102.46" y="270.5">legitimate: 0.000745</text>
+                <rect class="tsw s1" x="88.46" y="278.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="102.46" y="287.5">fraud: 0.0005287</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1440,12 +1440,12 @@
             <circle class="cx s0" cx="75.11" cy="262.09" r="3.5"/>
             <circle class="cx s1" cx="75.11" cy="309.61" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="85.11" y="236" width="144.04" height="61" rx="6"/>
-                <text class="tx b" x="95.11" y="254">balance = 57.14</text>
-                <rect class="tsw s0" x="95.11" y="262" width="9" height="9" rx="2"/>
-                <text class="tx" x="109.11" y="271">legitimate: 0.003841</text>
-                <rect class="tsw s1" x="95.11" y="279" width="9" height="9" rx="2"/>
-                <text class="tx" x="109.11" y="288">fraud: 0.0007945</text>
+                <rect class="tb" x="85.11" y="235.5" width="144.04" height="61" rx="6"/>
+                <text class="tx b" x="95.11" y="253.5">balance = 57.14</text>
+                <rect class="tsw s0" x="95.11" y="261.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="109.11" y="270.5">legitimate: 0.003841</text>
+                <rect class="tsw s1" x="95.11" y="278.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="109.11" y="287.5">fraud: 0.0007945</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1456,12 +1456,12 @@
             <circle class="cx s0" cx="81.75" cy="218.3" r="3.5"/>
             <circle class="cx s1" cx="81.75" cy="304.85" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="91.75" y="236" width="144.04" height="61" rx="6"/>
-                <text class="tx b" x="101.75" y="254">balance = 120</text>
-                <rect class="tsw s0" x="101.75" y="262" width="9" height="9" rx="2"/>
-                <text class="tx" x="115.75" y="271">legitimate: 0.006649</text>
-                <rect class="tsw s1" x="101.75" y="279" width="9" height="9" rx="2"/>
-                <text class="tx" x="115.75" y="288">fraud: 0.0011</text>
+                <rect class="tb" x="91.75" y="235.5" width="144.04" height="61" rx="6"/>
+                <text class="tx b" x="101.75" y="253.5">balance = 120</text>
+                <rect class="tsw s0" x="101.75" y="261.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="115.75" y="270.5">legitimate: 0.006649</text>
+                <rect class="tsw s1" x="101.75" y="278.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="115.75" y="287.5">fraud: 0.0011</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1472,12 +1472,12 @@
             <circle class="cx s0" cx="88.39" cy="262.09" r="3.5"/>
             <circle class="cx s1" cx="88.39" cy="300.11" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="98.39" y="236" width="144.04" height="61" rx="6"/>
-                <text class="tx b" x="108.39" y="254">balance = 182.9</text>
-                <rect class="tsw s0" x="108.39" y="262" width="9" height="9" rx="2"/>
-                <text class="tx" x="122.39" y="271">legitimate: 0.003841</text>
-                <rect class="tsw s1" x="108.39" y="279" width="9" height="9" rx="2"/>
-                <text class="tx" x="122.39" y="288">fraud: 0.001404</text>
+                <rect class="tb" x="98.39" y="235.5" width="144.04" height="61" rx="6"/>
+                <text class="tx b" x="108.39" y="253.5">balance = 182.9</text>
+                <rect class="tsw s0" x="108.39" y="261.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="122.39" y="270.5">legitimate: 0.003841</text>
+                <rect class="tsw s1" x="108.39" y="278.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="122.39" y="287.5">fraud: 0.001404</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1488,12 +1488,12 @@
             <circle class="cx s0" cx="95.04" cy="310.38" r="3.5"/>
             <circle class="cx s1" cx="95.04" cy="296.23" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="105.04" y="236" width="144.04" height="61" rx="6"/>
-                <text class="tx b" x="115.04" y="254">balance = 245.7</text>
-                <rect class="tsw s0" x="115.04" y="262" width="9" height="9" rx="2"/>
-                <text class="tx" x="129.04" y="271">legitimate: 0.000745</text>
-                <rect class="tsw s1" x="115.04" y="279" width="9" height="9" rx="2"/>
-                <text class="tx" x="129.04" y="288">fraud: 0.001652</text>
+                <rect class="tb" x="105.04" y="235.5" width="144.04" height="61" rx="6"/>
+                <text class="tx b" x="115.04" y="253.5">balance = 245.7</text>
+                <rect class="tsw s0" x="115.04" y="261.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="129.04" y="270.5">legitimate: 0.000745</text>
+                <rect class="tsw s1" x="115.04" y="278.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="129.04" y="287.5">fraud: 0.001652</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol"
@@ -1504,12 +1504,12 @@
             <circle class="cx s0" cx="101.68" cy="321.24" r="3.5"/>
             <circle class="cx s1" cx="101.68" cy="294.02" r="3.5"/>
             <g class="tt">
-                <rect class="tb" x="111.68" y="236" width="157.48" height="61" rx="6"/>
-                <text class="tx b" x="121.68" y="254">balance = 308.6</text>
-                <rect class="tsw s0" x="121.68" y="262" width="9" height="9" rx="2"/>
-                <text class="tx" x="135.68" y="271">legitimate: 0.00004857</text>
-                <rect class="tsw s1" x="121.68" y="279" width="9" height="9" rx="2"/>
-                <text class="tx" x="135.68" y="288">fraud: 0.001794</text>
+                <rect class="tb" x="111.68" y="235.5" width="157.48" height="61" rx="6"/>
+                <text class="tx b" x="121.68" y="253.5">balance = 308.6</text>
+                <rect class="tsw s0" x="121.68" y="261.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="135.68" y="270.5">legitimate: 0.00004857</text>
+                <rect class="tsw s1" x="121.68" y="278.5" width="9" height="9" rx="2"/>
+                <text class="tx" x="135.68" y="287.5">fraud: 0.001794</text>
             </g>
         </g>
         <g class="mk" tabindex="0" role="graphics-symbol" aria-label="balance = 371.4, fraud: 0.001794">

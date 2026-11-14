@@ -22,6 +22,7 @@ using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Security.PenTest;
 using Jube.Test.Service.Authentication;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace Jube.Test.Security.Surface;
 

@@ -73,6 +73,24 @@ namespace Jube.Charting.Svg
             return this;
         }
 
+        public PathBuilder Quadratic(double cX, double cY, double x, double y)
+        {
+            if (!Finite(cX, cY) || !Finite(x, y))
+            {
+                return Line(x, y);
+            }
+
+            if (!penDown)
+            {
+                return Move(x, y);
+            }
+
+            builder.Append('Q').Append(Num.F(cX)).Append(' ').Append(Num.F(cY)).Append(' ').Append(Num.F(x)).Append(' ')
+                .Append(Num.F(y));
+
+            return this;
+        }
+
         public PathBuilder Gap()
         {
             penDown = false;

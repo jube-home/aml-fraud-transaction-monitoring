@@ -22,6 +22,8 @@
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="15.1.3"/>
         <ProjectReference Include="..\Jube.Data\Jube.Data.csproj"/>
+        <ProjectReference Include="..\Jube.GraphRecallProtocol\Jube.GraphRecallProtocol.csproj"/>
+        <ProjectReference Include="..\Jube.Svirfd\Jube.Svirfd.csproj"/>
     </ItemGroup>
 
 </Project>

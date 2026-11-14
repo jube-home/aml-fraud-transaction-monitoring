@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchLengthEqual(int length)
+            [Description("True when: has exactly the length. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchLengthEqual([Description("The length in characters.")] int length)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringLengthEqual(flow.Value, length));
             }
 
-            public Flow<string?> RejectLengthEqual(int length)
+            [Description("True when: has exactly the length. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectLengthEqual([Description("The length in characters.")] int length)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringLengthEqual(flow.Value, length));
             }
 
-            public Flow<string?> BreakLengthEqual(int length)
+            [Description("True when: has exactly the length. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakLengthEqual([Description("The length in characters.")] int length)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringLengthEqual(flow.Value, length));
             }
 
-            public Flow<string?> RequireLengthEqual(int length)
+            [Description("True when: has exactly the length. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireLengthEqual([Description("The length in characters.")] int length)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringLengthEqual(flow.Value, length));
             }
 
-            public Flow<string?> EnsureLengthEqual(int length)
+            [Description("True when: has exactly the length. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureLengthEqual([Description("The length in characters.")] int length)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchLengthEqual(int length)
+            [Description("Begins a pipeline from the value. True when: has exactly the length. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchLengthEqual([Description("The length in characters.")] int length)
             {
                 return value.Start().MatchLengthEqual(length);
             }
 
-            public Flow<string?> RejectLengthEqual(int length)
+            [Description("Begins a pipeline from the value. True when: has exactly the length. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectLengthEqual([Description("The length in characters.")] int length)
             {
                 return value.Start().RejectLengthEqual(length);
             }
 
-            public Flow<string?> BreakLengthEqual(int length)
+            [Description("Begins a pipeline from the value. True when: has exactly the length. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakLengthEqual([Description("The length in characters.")] int length)
             {
                 return value.Start().BreakLengthEqual(length);
             }
 
-            public Flow<string?> RequireLengthEqual(int length)
+            [Description("Begins a pipeline from the value. True when: has exactly the length. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireLengthEqual([Description("The length in characters.")] int length)
             {
                 return value.Start().RequireLengthEqual(length);
             }
 
-            public Flow<string?> EnsureLengthEqual(int length)
+            [Description("Begins a pipeline from the value. True when: has exactly the length. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureLengthEqual([Description("The length in characters.")] int length)
             {
                 return value.Start().EnsureLengthEqual(length);
             }

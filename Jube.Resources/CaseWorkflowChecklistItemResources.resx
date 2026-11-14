@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>You do not have permission to perform this action.</value>
+  </data>
+    <data name="SqlPermissionDenied" xml:space="preserve">
+    <value>You do not have permission to author checklist item SQL.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>You must be signed in to a tenant to perform this action.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>The checklist item was not found.</value>
+  </data>
+    <data name="CaseWorkflowChecklistGuidRequired" xml:space="preserve">
+    <value>The checklist is required.</value>
+  </data>
+    <data name="CaseWorkflowChecklistNotFound" xml:space="preserve">
+    <value>The checklist was not found.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>A name is required.</value>
+  </data>
+    <data name="NameTooLong" xml:space="preserve">
+    <value>The name must be 100 characters or fewer.</value>
+  </data>
+    <data name="PriorityInvalid" xml:space="preserve">
+    <value>The priority must be zero or more.</value>
+  </data>
+    <data name="SlaMinutesInvalid" xml:space="preserve">
+    <value>The SLA must be a whole number of minutes greater than zero, or blank.</value>
+  </data>
+    <data name="ValidateMessageTooLong" xml:space="preserve">
+    <value>The validation message must be 500 characters or fewer.</value>
+  </data>
+    <data name="SqlTooLong" xml:space="preserve">
+    <value>The SQL must be 8000 characters or fewer.</value>
+  </data>
+    <data name="ShowSqlRequired" xml:space="preserve">
+    <value>Enter the show SQL, or switch the show condition off.</value>
+  </data>
+    <data name="ValidateSqlRequired" xml:space="preserve">
+    <value>Enter the validation SQL, or switch the validation condition off.</value>
+  </data>
+    <data name="SqlEnableNeedsPermission" xml:space="preserve">
+    <value>Switching a show or validation condition on needs the SQL authoring permission.</value>
+  </data>
+    <data name="SqlRejected" xml:space="preserve">
+    <value>The SQL was rejected: {0}</value>
+  </data>
+    <data name="SqlParameterUnknown" xml:space="preserve">
+    <value>The SQL uses the parameter @{0}, which is not available. Use @Id or @CaseKeyValue.</value>
+  </data>
+    <data name="ConditionInvalid" xml:space="preserve">
+    <value>The condition must be 1 (show) or 2 (validate).</value>
+  </data>
+    <data name="SqlNotPassed" xml:space="preserve">
+    <value>The SQL did not return true.</value>
+  </data>
+    <data name="SqlFailed" xml:space="preserve">
+    <value>The SQL could not be run.</value>
+  </data>
+</root>

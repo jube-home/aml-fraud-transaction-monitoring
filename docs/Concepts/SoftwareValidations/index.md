@@ -286,7 +286,7 @@ an outbound HTTP call, are both of this kind.
 `Unit` needs nothing beyond `dotnet test`. `Service` and `PenTest` need a real Postgres instance and read its connection
 string from `JubeTestConnectionString`, an ordinary Npgsql connection string
 (`Host=...;Port=...;Database=...;Username=...;Password=...;`) pointed at the database that docker-compose creates
-locally. Tests exercising Redis-backed behaviour directly read `JubeTestRedisConnectionString`, which defaults to
+locally. Tests exercising Redis-backed behaviour directly read `JubeTestRespConnectionString`, which defaults to
 `localhost`. Neither variable has anything to do with a deployed instance's own `ConnectionString`; they exist so that
 the test host can open its own connection without touching production configuration.
 
@@ -480,8 +480,9 @@ The exception does not cross the wire in the background either. The detail is av
 
 ![ErrorInLogs.png](ErrorInLogs.png)
 
-Certain administrative pages do bubble up more detailed errors. Their purpose is to author reports on the basis of
-SQL, where the text of the database's own error is the feedback the author needs.
+Pages that author reports on the basis of SQL give the author a generic, localised message and the line and column of
+the problem. The text of the database's own error, its SQLSTATE code and the statement are never returned; the full
+exception is written to the log only.
 
 # Direct Object Reference and Role Based Access (RBAC) Validation
 

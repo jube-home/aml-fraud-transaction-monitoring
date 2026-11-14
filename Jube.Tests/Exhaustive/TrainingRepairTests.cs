@@ -20,6 +20,7 @@ using FluentAssertions;
 using Jube.Data.Repository.Interfaces;
 using Jube.Engine.Exhaustive;
 using Jube.Engine.Exhaustive.Algorithms.Models;
+using Jube.Test.Infrastructure;
 using log4net;
 using Xunit;
 
@@ -27,9 +28,9 @@ namespace Jube.Test.Exhaustive
 {
     public class TrainingRepairTests
     {
-        private static Training NewTraining(int seed = 1)
+        private static Training NewTraining(int seed = 1, Jube.DynamicEnvironment.DynamicEnvironment environment = null)
         {
-            return new Training(LogManager.GetLogger(typeof(TrainingRepairTests)), null!, null!)
+            return new Training(LogManager.GetLogger(typeof(TrainingRepairTests)), environment, null!)
             {
                 seeded = new Random(seed)
             };
@@ -65,6 +66,104 @@ namespace Jube.Test.Exhaustive
             var result = NewTraining().NormaliseData(variables, data);
 
             result.Select(r => r[0]).Should().Equal(0, 0, 0);
+        }
+
+        [Fact]
+        public void NormaliseData_ExtremeOutlier_IsClampedToTheConfiguredBoundInBothDirections()
+        {
+            var variables = new Dictionary<int, Variable>
+            {
+                [0] = new() { Mean = 10, Sd = 2, NormalisationType = 2 }
+            };
+            double[][] data = [[10 + 2 * 50], [10 - 2 * 50]];
+
+            var result = NewTraining().NormaliseData(variables, data);
+
+            result.Select(r => r[0]).Should().Equal(5, -5);
+        }
+
+        [Fact]
+        public void NormaliseData_ValueExactlyAtTheBoundIsUnaffected()
+        {
+            var variables = new Dictionary<int, Variable>
+            {
+                [0] = new() { Mean = 10, Sd = 2, NormalisationType = 2 }
+            };
+            double[][] data = [[10 + 2 * 5], [10 - 2 * 5]];
+
+            var result = NewTraining().NormaliseData(variables, data);
+
+            result.Select(r => r[0]).Should().Equal(5, -5);
+        }
+
+        [Fact]
+        public void NormaliseData_ValueWithinTheBoundIsByteIdenticalToTheUnclampedZScore()
+        {
+            var variables = new Dictionary<int, Variable>
+            {
+                [0] = new() { Mean = 10, Sd = 2, NormalisationType = 2 }
+            };
+            double[][] data = [[10 + 2 * 4.9]];
+
+            var result = NewTraining().NormaliseData(variables, data);
+
+            result[0][0].Should().Be(4.9);
+        }
+
+        [Fact]
+        public void NormaliseData_NonStandardisedVariable_IsNeverClampedEvenWhenLarge()
+        {
+            var variables = new Dictionary<int, Variable>
+            {
+                [0] = new() { Mean = 0, Sd = 1, NormalisationType = 1 }
+            };
+            double[][] data = [[999]];
+
+            var result = NewTraining().NormaliseData(variables, data);
+
+            result[0][0].Should().Be(999);
+        }
+
+        [Fact]
+        public void NormaliseData_UsesTheConfiguredClipBoundNotAHardcodedFive()
+        {
+            var environment = TestDynamicEnvironment.Create(
+                new Dictionary<string, string> { ["ExhaustiveZScoreClipBound"] = "3" });
+            var variables = new Dictionary<int, Variable>
+            {
+                [0] = new() { Mean = 10, Sd = 2, NormalisationType = 2 }
+            };
+            double[][] data = [[10 + 2 * 50], [10 - 2 * 50]];
+
+            var result = NewTraining(environment: environment).NormaliseData(variables, data);
+
+            result.Select(r => r[0]).Should().Equal(3, -3);
+        }
+
+        [Fact]
+        public void NormaliseData_AndThePromotedRecallVariable_ClampToTheSameConfiguredBound()
+        {
+            var environment = TestDynamicEnvironment.Create(
+                new Dictionary<string, string> { ["ExhaustiveZScoreClipBound"] = "3" });
+            var variables = new Dictionary<int, Variable>
+            {
+                [0] = new() { Mean = 10, Sd = 2, NormalisationType = 2 }
+            };
+            double[][] data = [[10 + 2 * 50]];
+
+            var trainingResult = NewTraining(environment: environment).NormaliseData(variables, data)[0][0];
+
+            var recallVariable = new Jube.Engine.Exhaustive.Models.ExhaustiveSearchInstancePromotedTrialInstanceVariable
+            {
+                Mean = 10,
+                Sd = 2,
+                NormalisationTypeId = 2,
+                ZScoreClipBound = ExhaustiveZScoreClipBoundResolver.Resolve(environment)
+            };
+            var recallResult = recallVariable.ZScore(10 + 2 * 50);
+
+            trainingResult.Should().Be(recallResult);
+            trainingResult.Should().Be(3);
         }
 
         [Fact]

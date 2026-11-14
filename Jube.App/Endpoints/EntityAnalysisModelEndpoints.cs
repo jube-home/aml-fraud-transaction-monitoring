@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using Jube.Service.Reactivity.Interfaces;
 
 namespace Jube.App.Endpoints
@@ -68,6 +69,11 @@ namespace Jube.App.Endpoints
                 .Produces((int)HttpStatusCode.OK)
                 .Produces((int)HttpStatusCode.NoContent)
                 .WithName("EntityAnalysisModelDelete");
+
+            group.MapPost("{id:int}/Unlock", UnlockAsync)
+                .Produces((int)HttpStatusCode.OK)
+                .Produces((int)HttpStatusCode.NoContent)
+                .WithName("EntityAnalysisModelUnlock");
 
             group.MapPost("{id:int}/Resubmit", ResubmitAsync)
                 .Produces((int)HttpStatusCode.OK)
@@ -328,6 +334,22 @@ namespace Jube.App.Endpoints
 
                 return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
             }
+            catch (VersionConflictException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}: 409 user={user} supplied={ex.SuppliedVersion} current={ex.CurrentVersion}");
+                }
+
+                return TypedResults.Conflict(new
+                {
+                    code = "VersionConflict",
+                    message = ex.Message,
+                    suppliedVersion = ex.SuppliedVersion,
+                    currentVersion = ex.CurrentVersion
+                });
+            }
+
             catch (OperationCanceledException)
             {
                 if (log.IsDebugEnabled)
@@ -408,6 +430,73 @@ namespace Jube.App.Endpoints
             catch (Exception e)
             {
                 log.Error($"DELETE {Base}/{id}: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        private static async Task<IResult> UnlockAsync(
+            int id, HttpContext httpContext, ILog log, DynamicEnvironment dynamicEnvironment,
+            IStringLocalizerFactory stringLocalizerFactory,
+            IServiceChangeBus serviceChangeBus, CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"POST {Base}/{id}/Unlock: entry user={user}");
+            }
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var service = await EntityAnalysisModelService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
+                    serviceChangeBus, token);
+                var result = await service.UnlockAsync(id, token);
+
+                return TypedResults.Ok(result);
+            }
+            catch (NotAuthenticatedException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/{id}/Unlock: 403 (not authenticated) user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/{id}/Unlock: 403 user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (NotFoundException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/{id}/Unlock: 204 (not found) user={user}");
+                }
+
+                return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
+            }
+            catch (OperationCanceledException)
+            {
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"POST {Base}/{id}/Unlock: client cancelled user={user}");
+                }
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {Base}/{id}/Unlock: 500 user={user}", e);
 
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }

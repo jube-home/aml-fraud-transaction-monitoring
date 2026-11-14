@@ -366,3 +366,7 @@ MigrationBackup/
 
 # Idea / Rider
 .idea/
+# Jube.App/wwwroot is the Vite build output of Jube.App/Vue (npm run build-only, run by the MSBuild BuildVue target); only the chart stylesheet is source
+Jube.App/wwwroot/*
+!Jube.App/wwwroot/css/
+!Jube.App/wwwroot/icons/

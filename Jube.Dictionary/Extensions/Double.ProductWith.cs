@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double ProductWith(this double @this, params double[]? others)
+        [Description("Multiplies the value by every other value.")]
+        public static double ProductWith(this double @this, [Description("The other numbers.")] params double[]? others)
         {
             var product = @this;
 

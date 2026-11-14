@@ -19,6 +19,7 @@ namespace Jube.Data.Query.GetCaseNoteByCaseKeyValueQuery
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
 
     public class GetCaseNoteByCaseKeyValueQuery(DbContext dbContext, string userName)
     {
@@ -26,8 +27,8 @@ namespace Jube.Data.Query.GetCaseNoteByCaseKeyValueQuery
             CancellationToken token = default)
         {
             var query = from c in dbContext.Case
-                from n in dbContext.CaseNote.InnerJoin(w => w.CaseId == c.Id)
-                from a in dbContext.CaseWorkflowAction.InnerJoin(w => w.Id == n.ActionId)
+                from n in dbContext.CaseNote.InnerJoin(w => w.CaseId == c.Id && w.CaseKey == key && w.CaseKeyValue == value)
+                from a in dbContext.CaseWorkflowAction.LeftJoin(w => w.Id == n.ActionId)
                 from i in dbContext.CaseWorkflow.InnerJoin(w =>
                     w.Guid == c.CaseWorkflowGuid && (w.Deleted == 0 || w.Deleted == null))
                 from s in dbContext.CaseWorkflowStatus.InnerJoin(w =>
@@ -39,13 +40,15 @@ namespace Jube.Data.Query.GetCaseNoteByCaseKeyValueQuery
                       && c.CaseKeyValue == value
                       && dbContext.UserInTenant
                           .Any(u => u.TenantRegistryId == t.Id && u.User == userName)
-                      && dbContext.CaseWorkflowActionRole
-                          .Where(r => r.CaseWorkflowActionGuid == a.Guid
-                                      && (r.Deleted == 0 || r.Deleted == null))
-                          .Any(r => dbContext.RoleRegistry
-                              .Where(rr => rr.Guid == r.RoleRegistryGuid && (rr.Deleted == 0 || rr.Deleted == null))
-                              .Any(rr => dbContext.UserRegistry
-                                  .Any(u => u.RoleRegistryGuid == rr.Guid && u.Name == userName)))
+                      && (n.ActionId == null
+                          || dbContext.CaseWorkflowActionRole
+                              .Where(r => r.CaseWorkflowActionGuid == a.Guid
+                                          && (r.Deleted == 0 || r.Deleted == null))
+                              .Any(r => dbContext.RoleRegistry
+                                  .Where(rr => rr.Guid == r.RoleRegistryGuid
+                                               && (rr.Deleted == 0 || rr.Deleted == null))
+                                  .Any(rr => dbContext.UserRegistry
+                                      .Any(u => u.RoleRegistryGuid == rr.Guid && u.Name == userName))))
                       && dbContext.CaseWorkflowRole
                           .Where(r => r.CaseWorkflowGuid == i.Guid
                                       && (r.Deleted == 0 || r.Deleted == null))
@@ -71,7 +74,13 @@ namespace Jube.Data.Query.GetCaseNoteByCaseKeyValueQuery
                     ActionId = n.ActionId.GetValueOrDefault(),
                     Action = a.Name,
                     PriorityId = n.PriorityId.GetValueOrDefault(),
-                    Priority = ConvertPriorityIdToString(n.PriorityId.GetValueOrDefault())
+                    Priority = ConvertPriorityIdToString(n.PriorityId.GetValueOrDefault()),
+                    SourceId = n.SourceId,
+                    KindId = n.KindId,
+                    IsFinding = n.IsFinding,
+                    Version = n.Version,
+                    SupersedesNoteId = n.SupersedesNoteId,
+                    AskJoobyConversationId = n.AskJoobyConversationId
                 };
 
             return await query.ToListAsync(token);

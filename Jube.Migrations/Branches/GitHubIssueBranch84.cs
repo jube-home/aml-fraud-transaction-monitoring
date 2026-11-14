@@ -18,9 +18,9 @@ namespace Jube.Migrations.Branches
     using System.IO;
     using System.Linq;
     using Cache;
-    using Cache.Redis.Serialization;
-    using Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack;
-    using Cache.Redis.Serialization.DictionaryNoBoxing.MessagePack.Models;
+    using Cache.Resp.Serialization;
+    using Cache.Resp.Serialization.DictionaryNoBoxing.MessagePack;
+    using Cache.Resp.Serialization.DictionaryNoBoxing.MessagePack.Models;
     using Dictionary;
     using DynamicEnvironment;
     using FluentMigrator;
@@ -175,7 +175,7 @@ namespace Jube.Migrations.Branches
             var messagePackSerializerOptionsNew = MessagePackSerializerOptions.Standard
                 .WithResolver(
                     CompositeResolver.Create(new EnvelopeDictionaryNoBoxingStringMessagePackFormatter())
-                ).WithCompression(dynamicEnvironment.AppSettings("RedisMessagePackCompression")
+                ).WithCompression(dynamicEnvironment.AppSettings("RespMessagePackCompression")
                     .Equals("True", StringComparison.OrdinalIgnoreCase)
                     ? MessagePackCompression.Lz4BlockArray
                     : MessagePackCompression.None);
@@ -195,7 +195,7 @@ namespace Jube.Migrations.Branches
                             continue;
                         }
 
-                        cacheService.ResilientRedisResilientRedisDatabase?.KeyRename(key, String.Join(":", splits));
+                        cacheService.ResilientRespResilientRespDatabase?.KeyRename(key, String.Join(":", splits));
                     }
 
                     if (splits[0] != "PayloadCount")
@@ -216,7 +216,7 @@ namespace Jube.Migrations.Branches
         {
             var redisKeyPayloadCount = String.Join(":", splits);
 
-            foreach (var hashEntry in cacheService.ResilientRedisResilientRedisDatabase.HashScan(redisKeyPayloadCount))
+            foreach (var hashEntry in cacheService.ResilientRespResilientRespDatabase.HashScan(redisKeyPayloadCount))
             {
                 try
                 {
@@ -233,10 +233,10 @@ namespace Jube.Migrations.Branches
         {
             var guid = Guid.Parse(hashEntry.Name.ToString());
 
-            cacheService.ResilientRedisResilientRedisDatabase?.HashSet(redisKeyPayloadCount, guid.ToString("N"),
+            cacheService.ResilientRespResilientRespDatabase?.HashSet(redisKeyPayloadCount, guid.ToString("N"),
                 hashEntry.Value);
 
-            cacheService.ResilientRedisResilientRedisDatabase?.HashDelete(redisKeyPayloadCount, hashEntry.Name);
+            cacheService.ResilientRespResilientRespDatabase?.HashDelete(redisKeyPayloadCount, hashEntry.Name);
         }
 
         private bool CheckAndChangeKeyNameGivenNumberOfSplits(
@@ -266,7 +266,7 @@ namespace Jube.Migrations.Branches
             MessagePackSerializerOptions messagePackSerializerOptionsOld,
             MessagePackSerializerOptions messagePackSerializerOptionsNew, RedisKey key)
         {
-            foreach (var hashEntry in cacheService.ResilientRedisResilientRedisDatabase.HashScan(key))
+            foreach (var hashEntry in cacheService.ResilientRespResilientRespDatabase.HashScan(key))
             {
                 try
                 {
@@ -295,7 +295,7 @@ namespace Jube.Migrations.Branches
             var bytes = SerializeToMessagePackFormatForEnvelopeDictionaryNoBoxing(messagePackSerializerOptionsNew,
                 oldKeyValuePairs);
 
-            cacheService.ResilientRedisResilientRedisDatabase.HashSet(key, hashEntry.Name, bytes);
+            cacheService.ResilientRespResilientRespDatabase.HashSet(key, hashEntry.Name, bytes);
         }
 
         private byte[] SerializeToMessagePackFormatForEnvelopeDictionaryNoBoxing(

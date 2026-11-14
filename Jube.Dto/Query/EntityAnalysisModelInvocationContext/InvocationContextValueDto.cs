@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,24 +22,31 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.EntityAnalysisModelInvocationContext
 {
     [Description("One name a rule can use, with its value in this context.")]
+    [MessagePackObject]
     public class InvocationContextValueDto
     {
         [Description("Completion name as used in rule text, e.g. Payload.Amount, TTLCounter.PerAccount.")]
+        [Key(0)]
         public string Name { get; set; } = string.Empty;
 
         [Description("Completion group, e.g. Payload, TTLCounter, Abstraction, Reference, Adaptation, Activation.")]
+        [Key(1)]
         public string Group { get; set; } = string.Empty;
 
         [Description("Data type: string, integer, double, datetime or boolean.")]
+        [Key(2)]
         public string DataType { get; set; } = string.Empty;
 
         [Description("The value as invariant text (dates in ISO 8601 UTC, booleans true/false); null when unset.")]
+        [Key(3)]
         public string? Value { get; set; }
 
         [Description("Where the value came from: Unset, Default, Extracted, Archive or Overlay.")]
+        [Key(4)]
         public string Origin { get; set; } = string.Empty;
 
         [Description("Why the value is as it is, when that is not obvious; otherwise null.")]
+        [Key(5)]
         public string? Note { get; set; }
     }
 }

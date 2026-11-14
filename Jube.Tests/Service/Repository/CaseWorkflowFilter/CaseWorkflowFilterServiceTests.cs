@@ -30,6 +30,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -341,6 +342,25 @@ namespace Jube.Test.Service.Repository.CaseWorkflowFilter
             updated.CreatedDate.Should().BeCloseTo(originalCreatedDate.Required(), TimeSpan.FromSeconds(1));
             updated.UpdatedUser.Should().Be(fx.Seed.UserWithPermission);
             updated.UpdatedDate.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task UpdateCannotMoveAFilterToAnotherWorkflowOfTheSameTenantAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var workflowId = await CreateWorkflowAsync(dbContext, modelId, fx.Seed.UserWithPermission);
+            var otherWorkflowId = await CreateWorkflowAsync(dbContext, modelId, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var created = await service.InsertAsync(ValidDto(workflowId));
+            createdFilterIds.Add(created.Id);
+
+            created.CaseWorkflowId = otherWorkflowId;
+            var updated = await service.UpdateAsync(created);
+
+            updated.CaseWorkflowId.Should().Be(workflowId);
+            (await dbContext.CaseWorkflowFilter.Where(w => w.Id == created.Id)
+                .Select(w => w.CaseWorkflowId).FirstAsync()).Should().Be(workflowId);
         }
 
         [Fact]

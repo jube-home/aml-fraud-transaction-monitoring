@@ -103,7 +103,7 @@ namespace Jube.Service.ContainerLogEntry
         }
 
         [Description("Lists every container's own stdout/stderr on the Docker host (no name filtering -- " +
-                     "covers etcd/Patroni/Redis/Sentinel and every other container, since none of them expose " +
+                     "covers etcd/Patroni/RESP/Sentinel and every other container, since none of them expose " +
                      "their own logs over any API of their own), tailed via Jube.Monitoring's ContainerLogSampler. " +
                      "Most recent first when no sort is given, capped at 'take' rows (max 100000, default " +
                      "100000). Each of from/to defaults independently to the last hour when omitted. Not " +

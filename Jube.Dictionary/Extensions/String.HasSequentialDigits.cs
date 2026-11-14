@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool HasSequentialDigits(this string? @this, int minRunLength)
+        [Description("Checks if the string contains an ascending or descending run of digits at least this long (e.g. \"123456\"), a synthetic/weak-data indicator.")]
+        public static bool HasSequentialDigits(this string? @this,
+            [Description("The minimum run length to flag (clamped to at least 2).")] int minRunLength)
         {
             var value = @this ?? "";
             var threshold = Math.Max(minRunLength, 2);

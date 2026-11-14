@@ -29,11 +29,13 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
             var (activationRuleCount, createCase, prevailingActivationRuleId, items)
                 = await context.IterateAndProcessAsync(context.EntityAnalysisModel.Services.CacheService,
-                        context.AvailableEntityAnalysisModels, context.EntityAnalysisModel.Services.RabbitMqChannel)
+                        context.AvailableEntityAnalysisModels)
                     .ConfigureAwait(false);
 
             context.ActivationRuleFinishResponseElevation(context.EntityAnalysisModelInstanceEntryPayload
                 .ResponseElevation.Value);
+
+            await context.ApplyResponseElevationRangeAsync().ConfigureAwait(false);
 
             context.ActivationRuleResponseElevationAddToCounters();
 

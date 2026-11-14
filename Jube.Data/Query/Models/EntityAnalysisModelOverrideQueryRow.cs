@@ -27,6 +27,8 @@ namespace Jube.Data.Query.Models
         public Guid EntityAnalysisModelGuid { get; set; }
         public bool HasOverride { get; set; }
         public byte OverrideKind { get; set; }
+        public int OverrideId { get; set; }
+        public bool PendingRemoval { get; set; }
         public DateTimeOffset? DeleteExpiryDate { get; set; }
     }
 }

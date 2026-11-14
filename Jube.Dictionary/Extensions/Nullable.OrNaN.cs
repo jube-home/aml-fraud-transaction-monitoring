@@ -17,11 +17,13 @@ namespace Jube.Dictionary.Extensions
     {
         extension(double? @this)
         {
+            [Description("Reads a nullable number, NaN when it is null or not finite. For an HTTP Adaptation, HttpAdaptation.Name.Value.OrNaN().")]
             public double OrNaN()
             {
                 return @this.HasValue ? CalculationSupport.Finite(@this.Value) : double.NaN;
             }
 
+            [Description("Reads a nullable number, zero when it is null or not finite. Use it only where a missing value should read as zero.")]
             public double OrZero()
             {
                 return @this.HasValue && double.IsFinite(@this.Value) ? @this.Value : 0;

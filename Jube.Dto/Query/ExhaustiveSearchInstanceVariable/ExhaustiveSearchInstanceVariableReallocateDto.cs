@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,16 +24,19 @@ namespace Jube.Dto.Query.ExhaustiveSearchInstanceVariable
     [Description("Reallocates a trained variable's live name and processing type, without retraining. Recall " +
                  "resolves variables by name and processing type only, so this changes what live field the " +
                  "network's fixed weight position reads at the next recall.")]
+    [MessagePackObject]
     public sealed class ExhaustiveSearchInstanceVariableReallocateDto
     {
         [Description(
             "New bare variable name, starting with a letter and containing only letters, digits and underscores, " +
             "up to 64 characters. The processing type's prefix (e.g. Payload.) is added automatically and must " +
             "not be included here.")]
+        [Key(0)]
         public string? Name { get; set; }
 
         [Description("New processing type: Payload (1), Dictionary (2), TtlCounter (3), Sanction (4), " +
                      "Abstraction (5) or AbstractionCalculation (6).")]
+        [Key(1)]
         public int ProcessingTypeId { get; set; }
     }
 }

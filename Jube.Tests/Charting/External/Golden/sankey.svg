@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" class="jc jc-sankey" viewBox="0 0 720 420" preserveAspectRatio="xMidYMid meet"
-     role="img" aria-labelledby="jc-2a54befd-t jc-2a54befd-d">
-    <title id="jc-2a54befd-t">Alert disposition</title>
-    <desc id="jc-2a54befd-d">Sankey chart with 11 nodes and 13 links, total flow 1280.</desc>
+     role="img" aria-labelledby="jc-1b61b5c7-t jc-1b61b5c7-d">
+    <title id="jc-1b61b5c7-t">Alert disposition</title>
+    <desc id="jc-1b61b5c7-d">Sankey chart with 11 nodes and 13 links, total flow 1280.</desc>
     <rect class="bg" x="0" y="0" width="720" height="420" rx="8"/>
     <text class="ttl" x="16" y="32">Alert disposition</text>
     <text class="sub" x="16" y="50">Alerts flowing from source to outcome</text>
@@ -202,11 +202,11 @@
         <title>Card, Inflow: 0, Outflow: 680</title>
         <rect class="bar" x="20" y="76" width="14" height="163.63" rx="2"/>
         <g class="tt">
-            <rect class="tb" x="40" y="127.81" width="89" height="61" rx="6"/>
-            <rect class="tsw s0" x="50" y="136.81" width="9" height="9" rx="2"/>
-            <text class="tx b" x="64" y="145.81">Card</text>
-            <text class="tx" x="50" y="162.81">Inflow: 0</text>
-            <text class="tx" x="50" y="179.81">Outflow: 680</text>
+            <rect class="tb" x="40" y="127.31" width="89" height="61" rx="6"/>
+            <rect class="tsw s0" x="50" y="136.31" width="9" height="9" rx="2"/>
+            <text class="tx b" x="64" y="145.31">Card</text>
+            <text class="tx" x="50" y="162.31">Inflow: 0</text>
+            <text class="tx" x="50" y="179.31">Outflow: 680</text>
         </g>
     </g>
     <g class="mk s1 nd n1 a0 a1 a2 a3 a5 a6 a7 a8 a9 a10" tabindex="0" role="graphics-symbol"
@@ -214,11 +214,11 @@
         <title>Rules, Inflow: 840, Outflow: 840</title>
         <rect class="bar" x="187.5" y="86" width="14" height="202.12" rx="2"/>
         <g class="tt">
-            <rect class="tb" x="207.5" y="157.06" width="89" height="61" rx="6"/>
-            <rect class="tsw s1" x="217.5" y="166.06" width="9" height="9" rx="2"/>
-            <text class="tx b" x="231.5" y="175.06">Rules</text>
-            <text class="tx" x="217.5" y="192.06">Inflow: 840</text>
-            <text class="tx" x="217.5" y="209.06">Outflow: 840</text>
+            <rect class="tb" x="207.5" y="156.56" width="89" height="61" rx="6"/>
+            <rect class="tsw s1" x="217.5" y="165.56" width="9" height="9" rx="2"/>
+            <text class="tx b" x="231.5" y="174.56">Rules</text>
+            <text class="tx" x="217.5" y="191.56">Inflow: 840</text>
+            <text class="tx" x="217.5" y="208.56">Outflow: 840</text>
         </g>
     </g>
     <g class="mk s2 nd n2 a1 a2 a4 a5 a6 a7 a8 a9 a10" tabindex="0" role="graphics-symbol"
@@ -226,11 +226,11 @@
         <title>Transfer, Inflow: 0, Outflow: 480</title>
         <rect class="bar" x="20" y="288.5" width="14" height="115.5" rx="2"/>
         <g class="tt">
-            <rect class="tb" x="40" y="316.25" width="89" height="61" rx="6"/>
-            <rect class="tsw s2" x="50" y="325.25" width="9" height="9" rx="2"/>
-            <text class="tx b" x="64" y="334.25">Transfer</text>
-            <text class="tx" x="50" y="351.25">Inflow: 0</text>
-            <text class="tx" x="50" y="368.25">Outflow: 480</text>
+            <rect class="tb" x="40" y="315.75" width="89" height="61" rx="6"/>
+            <rect class="tsw s2" x="50" y="324.75" width="9" height="9" rx="2"/>
+            <text class="tx b" x="64" y="333.75">Transfer</text>
+            <text class="tx" x="50" y="350.75">Inflow: 0</text>
+            <text class="tx" x="50" y="367.75">Outflow: 480</text>
         </g>
     </g>
     <g class="mk s3 nd n3 a1 a3 a5 a6 a7 a8 a9 a10" tabindex="0" role="graphics-symbol"
@@ -238,11 +238,11 @@
         <title>Cash, Inflow: 0, Outflow: 120</title>
         <rect class="bar" x="20" y="249.63" width="14" height="28.88" rx="2"/>
         <g class="tt">
-            <rect class="tb" x="40" y="234.06" width="89" height="61" rx="6"/>
-            <rect class="tsw s3" x="50" y="243.06" width="9" height="9" rx="2"/>
-            <text class="tx b" x="64" y="252.06">Cash</text>
-            <text class="tx" x="50" y="269.06">Inflow: 0</text>
-            <text class="tx" x="50" y="286.06">Outflow: 120</text>
+            <rect class="tb" x="40" y="233.56" width="89" height="61" rx="6"/>
+            <rect class="tsw s3" x="50" y="242.56" width="9" height="9" rx="2"/>
+            <text class="tx b" x="64" y="251.56">Cash</text>
+            <text class="tx" x="50" y="268.56">Inflow: 0</text>
+            <text class="tx" x="50" y="285.56">Outflow: 120</text>
         </g>
     </g>
     <g class="mk s4 nd n4 a0 a2 a4 a5 a6 a7 a8 a9 a10" tabindex="0" role="graphics-symbol"
@@ -250,11 +250,11 @@
         <title>Model, Inflow: 440, Outflow: 440</title>
         <rect class="bar" x="187.5" y="298.13" width="14" height="105.87" rx="2"/>
         <g class="tt">
-            <rect class="tb" x="207.5" y="321.06" width="89" height="61" rx="6"/>
-            <rect class="tsw s4" x="217.5" y="330.06" width="9" height="9" rx="2"/>
-            <text class="tx b" x="231.5" y="339.06">Model</text>
-            <text class="tx" x="217.5" y="356.06">Inflow: 440</text>
-            <text class="tx" x="217.5" y="373.06">Outflow: 440</text>
+            <rect class="tb" x="207.5" y="320.56" width="89" height="61" rx="6"/>
+            <rect class="tsw s4" x="217.5" y="329.56" width="9" height="9" rx="2"/>
+            <text class="tx b" x="231.5" y="338.56">Model</text>
+            <text class="tx" x="217.5" y="355.56">Inflow: 440</text>
+            <text class="tx" x="217.5" y="372.56">Outflow: 440</text>
         </g>
     </g>
     <g class="mk s5 nd n5 a0 a1 a2 a3 a4 a5 a7 a8 a9 a10" tabindex="0" role="graphics-symbol"
@@ -262,11 +262,11 @@
         <title>Reviewed, Inflow: 900, Outflow: 900</title>
         <rect class="bar" x="355" y="93" width="14" height="216.56" rx="2"/>
         <g class="tt">
-            <rect class="tb" x="375" y="171.28" width="90.86" height="61" rx="6"/>
-            <rect class="tsw s5" x="385" y="180.28" width="9" height="9" rx="2"/>
-            <text class="tx b" x="399" y="189.28">Reviewed</text>
-            <text class="tx" x="385" y="206.28">Inflow: 900</text>
-            <text class="tx" x="385" y="223.28">Outflow: 900</text>
+            <rect class="tb" x="375" y="170.78" width="90.86" height="61" rx="6"/>
+            <rect class="tsw s5" x="385" y="179.78" width="9" height="9" rx="2"/>
+            <text class="tx b" x="399" y="188.78">Reviewed</text>
+            <text class="tx" x="385" y="205.78">Inflow: 900</text>
+            <text class="tx" x="385" y="222.78">Outflow: 900</text>
         </g>
     </g>
     <g class="mk s6 nd n6 a0 a1 a2 a3 a4 a6" tabindex="0" role="graphics-symbol"
@@ -286,11 +286,11 @@
         <title>Escalated, Inflow: 210, Outflow: 210</title>
         <rect class="bar" x="522.5" y="347.75" width="14" height="50.53" rx="2"/>
         <g class="tt">
-            <rect class="tb" x="542.5" y="343" width="91.49" height="61" rx="6"/>
-            <rect class="tsw s7" x="552.5" y="352" width="9" height="9" rx="2"/>
-            <text class="tx b" x="566.5" y="361">Escalated</text>
-            <text class="tx" x="552.5" y="378">Inflow: 210</text>
-            <text class="tx" x="552.5" y="395">Outflow: 210</text>
+            <rect class="tb" x="542.5" y="342.52" width="91.49" height="61" rx="6"/>
+            <rect class="tsw s7" x="552.5" y="351.52" width="9" height="9" rx="2"/>
+            <text class="tx b" x="566.5" y="360.52">Escalated</text>
+            <text class="tx" x="552.5" y="377.52">Inflow: 210</text>
+            <text class="tx" x="552.5" y="394.52">Outflow: 210</text>
         </g>
     </g>
     <g class="mk s8 nd n8 a0 a1 a2 a3 a4 a5 a8" tabindex="0" role="graphics-symbol"

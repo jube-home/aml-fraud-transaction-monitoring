@@ -17,35 +17,55 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchMinMaxNormaliseOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (1) is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMinMaxNormaliseOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleMinMaxNormaliseOutsideRange(flow.Value, minimum, maximum, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectMinMaxNormaliseOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (1) is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMinMaxNormaliseOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleMinMaxNormaliseOutsideRange(flow.Value, minimum, maximum, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakMinMaxNormaliseOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (1) is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMinMaxNormaliseOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleMinMaxNormaliseOutsideRange(flow.Value, minimum, maximum, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireMinMaxNormaliseOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (1) is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMinMaxNormaliseOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleMinMaxNormaliseOutsideRange(flow.Value, minimum, maximum, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureMinMaxNormaliseOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (1) is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMinMaxNormaliseOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +75,47 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchMinMaxNormaliseOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (1) is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMinMaxNormaliseOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchMinMaxNormaliseOutsideRange(minimum, maximum, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectMinMaxNormaliseOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (1) is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMinMaxNormaliseOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectMinMaxNormaliseOutsideRange(minimum, maximum, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakMinMaxNormaliseOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (1) is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMinMaxNormaliseOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakMinMaxNormaliseOutsideRange(minimum, maximum, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireMinMaxNormaliseOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (1) is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMinMaxNormaliseOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireMinMaxNormaliseOutsideRange(minimum, maximum, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureMinMaxNormaliseOutsideRange(double minimum, double maximum, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (1) is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMinMaxNormaliseOutsideRange([Description("The lower bound.")] double minimum,
+                [Description("The upper bound.")] double maximum,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureMinMaxNormaliseOutsideRange(minimum, maximum, lowerBound, upperBound);
             }

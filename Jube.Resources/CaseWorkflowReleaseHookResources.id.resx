@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Anda tidak memiliki izin untuk melakukan tindakan ini.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Anda harus masuk ke tenant untuk melakukan tindakan ini.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>Hook rilis tidak ditemukan.</value>
+  </data>
+    <data name="CaseWorkflowNotFound" xml:space="preserve">
+    <value>Alur kerja kasus tidak ditemukan.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>Nama diperlukan.</value>
+  </data>
+    <data name="NameTooLong" xml:space="preserve">
+    <value>Nama harus 256 karakter atau kurang.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Hook rilis dengan nama ini sudah ada di alur kerja kasus.</value>
+  </data>
+    <data name="SourceFieldInvalid" xml:space="preserve">
+    <value>Bidang sumber harus berupa nama bidang payload biasa.</value>
+  </data>
+    <data name="SourceValueRequired" xml:space="preserve">
+    <value>Nilai sumber diperlukan saat bidang sumber diberikan.</value>
+  </data>
+    <data name="SourceValueWithoutField" xml:space="preserve">
+    <value>Nilai sumber memerlukan bidang sumber.</value>
+  </data>
+    <data name="SourceValueTooLong" xml:space="preserve">
+    <value>Nilai sumber harus 200 karakter atau kurang.</value>
+  </data>
+    <data name="ReleaseUrlRequired" xml:space="preserve">
+    <value>URL rilis diperlukan.</value>
+  </data>
+    <data name="ReleaseUrlInvalid" xml:space="preserve">
+    <value>URL rilis harus berupa URL http atau https absolut yang skema, host, dan portnya ditulis secara harfiah, dengan token hanya di jalur dan kueri.</value>
+  </data>
+    <data name="ReleaseUrlHostBlocked" xml:space="preserve">
+    <value>URL rilis diblokir oleh kebijakan host keluar: URL itu menyebut alamat loopback, link-local, metadata, privat, bersama, unique-local, atau tercadang, localhost, atau skema selain http atau https. Daftarkan penerima internal tepercaya di JUBE_HOOK_ALLOWED_HOSTS atau JUBE_HOOK_ALLOWED_CIDRS.</value>
+  </data>
+    <data name="RefuseUrlHostBlocked" xml:space="preserve">
+    <value>URL penolakan diblokir oleh kebijakan host keluar: URL itu menyebut alamat loopback, link-local, metadata, privat, bersama, unique-local, atau tercadang, localhost, atau skema selain http atau https. Daftarkan penerima internal tepercaya di JUBE_HOOK_ALLOWED_HOSTS atau JUBE_HOOK_ALLOWED_CIDRS.</value>
+  </data>
+    <data name="RefuseUrlInvalid" xml:space="preserve">
+    <value>URL penolakan harus berupa URL http atau https absolut yang skema, host, dan portnya ditulis secara harfiah, dengan token hanya di jalur dan kueri.</value>
+  </data>
+    <data name="HttpEndpointTypeIdInvalid" xml:space="preserve">
+    <value>Metode harus POST atau GET.</value>
+  </data>
+    <data name="HeaderRequired" xml:space="preserve">
+    <value>Nama header kredensial diperlukan saat variabel kredensial diberikan.</value>
+  </data>
+    <data name="HeaderInvalid" xml:space="preserve">
+    <value>Nama header kredensial harus berupa nama header biasa dan bukan yang dicadangkan.</value>
+  </data>
+    <data name="CredentialRequired" xml:space="preserve">
+    <value>Variabel kredensial diperlukan saat nama header kredensial diberikan.</value>
+  </data>
+    <data name="CredentialInvalid" xml:space="preserve">
+    <value>Variabel kredensial harus berupa nama variabel lingkungan yang diawali JUBE_HOOK_ diikuti huruf kapital, angka, atau garis bawah.</value>
+  </data>
+    <data name="BodyTooLong" xml:space="preserve">
+    <value>Isi harus 8000 karakter atau kurang.</value>
+  </data>
+    <data name="BodyOnlyForPost" xml:space="preserve">
+    <value>Isi hanya dapat dikirim dengan POST.</value>
+  </data>
+    <data name="TokenUnknown" xml:space="preserve">
+    <value>Token {0} bukan token yang dapat digunakan hook rilis ini.</value>
+  </data>
+</root>

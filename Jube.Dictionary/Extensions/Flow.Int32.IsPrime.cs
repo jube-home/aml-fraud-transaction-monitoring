@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<int> flow)
         {
+            [Description("True when: a prime number. Decides matched if so; otherwise continues.")]
             public Flow<int> MatchIsPrime()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.Int32IsPrime(flow.Value));
             }
 
+            [Description("True when: a prime number. Decides rejected if so; otherwise continues.")]
             public Flow<int> RejectIsPrime()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.Int32IsPrime(flow.Value));
             }
 
+            [Description("True when: a prime number. Decides broken if so; otherwise continues.")]
             public Flow<int> BreakIsPrime()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.Int32IsPrime(flow.Value));
             }
 
+            [Description("True when: a prime number. Continues if so; otherwise decides rejected.")]
             public Flow<int> RequireIsPrime()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.Int32IsPrime(flow.Value));
             }
 
+            [Description("True when: a prime number. Continues if so; otherwise decides broken.")]
             public Flow<int> EnsureIsPrime()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(int value)
         {
+            [Description("Begins a pipeline from the value. True when: a prime number. Decides matched if so; otherwise continues.")]
             public Flow<int> MatchIsPrime()
             {
                 return value.Start().MatchIsPrime();
             }
 
+            [Description("Begins a pipeline from the value. True when: a prime number. Decides rejected if so; otherwise continues.")]
             public Flow<int> RejectIsPrime()
             {
                 return value.Start().RejectIsPrime();
             }
 
+            [Description("Begins a pipeline from the value. True when: a prime number. Decides broken if so; otherwise continues.")]
             public Flow<int> BreakIsPrime()
             {
                 return value.Start().BreakIsPrime();
             }
 
+            [Description("Begins a pipeline from the value. True when: a prime number. Continues if so; otherwise decides rejected.")]
             public Flow<int> RequireIsPrime()
             {
                 return value.Start().RequireIsPrime();
             }
 
+            [Description("Begins a pipeline from the value. True when: a prime number. Continues if so; otherwise decides broken.")]
             public Flow<int> EnsureIsPrime()
             {
                 return value.Start().EnsureIsPrime();

@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,13 +21,16 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Repository.SanctionEntrySource
 {
+    [MessagePackObject]
     public sealed class SanctionEntrySourceDto
     {
         [Description("Server-assigned row identifier of the Sanction Entry Source (e.g. SDN, BOE, EU). Read-only.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("Display name of the Sanction Entry Source, shown in the Sanctions Loader source dropdown " +
                      "used to select which source a manually uploaded file belongs to.")]
+        [Key(1)]
         public string? Name { get; set; }
     }
 }

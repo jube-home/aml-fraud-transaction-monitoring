@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns the largest integer less than or equal to the number.")]
         public static Double Floor(this Double d)
         {
             return Math.Floor(d);

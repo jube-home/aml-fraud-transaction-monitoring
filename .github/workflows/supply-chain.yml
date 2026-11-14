@@ -1,0 +1,104 @@
+name: Supply chain
+
+on:
+  push:
+    branches: [ "master" ]
+    tags: [ "v*" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sbom:
+    name: Software bill of materials
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: Jube.App/Vue/package-lock.json
+
+      - name: Generate the .NET SBOM (CycloneDX)
+        run: |
+          dotnet tool install --global CycloneDX
+          mkdir -p sbom
+          dotnet CycloneDX Jube.sln --output sbom --filename jube-dotnet.cdx.json --json --exclude-dev
+
+      - name: Generate the web front end SBOM (CycloneDX)
+        working-directory: Jube.App/Vue
+        run: |
+          npm ci --ignore-scripts
+          npx --yes @cyclonedx/cyclonedx-npm --omit dev --output-format JSON --output-file ../sbom/jube-vue.cdx.json
+
+      - name: Upload the SBOMs
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom/
+          if-no-files-found: error
+
+  release-images:
+    name: Build, attest and sign the images
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: sbom
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: sigstore/cosign-installer@v3
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: sbom
+          path: sbom
+
+      - name: Build the images and save them as tarballs
+        run: |
+          mkdir -p release
+          docker build -f Jube.App/Dockerfile -t "jube.app:${GITHUB_REF_NAME}" .
+          docker build -f Jube.Monitoring/Dockerfile -t "jube.monitoring:${GITHUB_REF_NAME}" .
+          docker build -f Jube.OpenTelemetryListener/Dockerfile -t "jube.opentelemetrylistener:${GITHUB_REF_NAME}" .
+          docker build -f Jube.R/Dockerfile -t "jube.r:${GITHUB_REF_NAME}" Jube.R
+          for image in jube.app jube.monitoring jube.opentelemetrylistener jube.r; do
+            docker save "${image}:${GITHUB_REF_NAME}" | gzip > "release/${image}-${GITHUB_REF_NAME}.tar.gz"
+          done
+          cp sbom/*.json release/
+          (cd release && sha256sum * > SHA256SUMS)
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: 'release/*'
+
+      - name: Sign each artefact with cosign (keyless)
+        run: |
+          for file in release/*; do
+            cosign sign-blob --yes --bundle "${file}.sigstore.json" "${file}"
+          done
+
+      - name: Upload the signed release artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release
+          path: release/
+          if-no-files-found: error
+
+      - name: Create a draft release holding the signed artefacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" release/* --draft --generate-notes --title "${GITHUB_REF_NAME}"

@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsAfter(this DateTime @this, DateTime other)
+        [Description("Whether the date-time is later than another.")]
+        public static bool IsAfter(this DateTime @this, [Description("The other date.")] DateTime other)
         {
             return @this > other;
         }

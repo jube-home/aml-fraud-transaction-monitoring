@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns the hyperbolic sine of the specified angle.")]
         public static Double Sinh(this Double value)
         {
             return Math.Sinh(value);

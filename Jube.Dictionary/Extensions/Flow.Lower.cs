@@ -15,11 +15,13 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Replaces the value being tested with the text in lower case, invariant; null stays null.")]
         public static Flow<string?> Lower(this Flow<string?> flow)
         {
             return flow.Carry(flow.Value?.ToLowerInvariant());
         }
 
+        [Description("Begins a pipeline from the value. Replaces the value being tested with the text in lower case, invariant; null stays null.")]
         public static Flow<string?> Lower(this string? value)
         {
             return value.Start().Lower();

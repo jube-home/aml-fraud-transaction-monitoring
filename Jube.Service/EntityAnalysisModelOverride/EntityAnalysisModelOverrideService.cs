@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
@@ -21,6 +22,7 @@ using Jube.Dto.Validation;
 using Jube.Resources;
 using Jube.Service.Agent;
 using Jube.Service.Agent.Models;
+using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Exceptions.EntityAnalysisModelOverride;
 using Jube.Service.Observability;
 using Jube.Service.Reactivity.Interfaces;
@@ -712,6 +714,12 @@ namespace Jube.Service.EntityAnalysisModelOverride
                 op.Outcome("notfound");
                 throw;
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
@@ -774,6 +782,13 @@ namespace Jube.Service.EntityAnalysisModelOverride
                     }
 
                     throw new DtoValidationException(results);
+                }
+
+                if (await repository.IsActiveForceAsync(model.EntityAnalysisModelGuid, model.OverrideKey,
+                        model.OverrideKeyValue, token).ConfigureAwait(false))
+                {
+                    EnsureForceOverridePermitted("EntityAnalysisModelOverride.UpdateDeleteExpiryDate",
+                        EntityAnalysisModelOverrideKind.Force);
                 }
 
                 OverridePoco saved;
@@ -919,6 +934,157 @@ namespace Jube.Service.EntityAnalysisModelOverride
                 log.Error($"EntityAnalysisModelOverride.Delete: unexpected failure id={id} user={userName}", ex);
                 throw;
             }
+        }
+
+        [Description("Resubmits a rejected Force Override for approval again, unchanged, opening a fresh approval " +
+                     "cycle without requiring an edit. Requires the Force Override permission. Use after a rejection " +
+                     "was explained and the maker still wants the same change (including a removal) approved.")]
+        public async Task<EntityAnalysisModelOverrideDto> ResubmitAsync(
+            [Description("Server-assigned identifier of the Force Override to resubmit.")]
+            int id,
+            [Description("Optional note explaining why this is being resubmitted.")]
+            string? note = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelOverride", "Resubmit", userName, tenantRegistryId,
+                auditLog, log, serviceChangeBus);
+
+            try
+            {
+                EnsurePermitted("EntityAnalysisModelOverride.Resubmit");
+                EnsureForceOverridePermitted("EntityAnalysisModelOverride.Resubmit",
+                    EntityAnalysisModelOverrideKind.Force);
+
+                OverridePoco saved;
+
+                try
+                {
+                    saved = await repository.ResubmitAsync(id, note, token).ConfigureAwait(false);
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    throw new NotFoundException("The Override was not found.", ex);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw Refused(ex.Message);
+                }
+
+                op.Entity(saved.Id);
+                op.Version(saved.Version.GetValueOrDefault());
+                op.Updated();
+
+                if (log.IsInfoEnabled)
+                {
+                    log.Info(
+                        $"EntityAnalysisModelOverride.Resubmit: Id={saved.Id} version={saved.Version} user={userName}");
+                }
+
+                return EntityAnalysisModelOverrideMapper.ToDto(saved);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                op.Outcome("notfound");
+                throw;
+            }
+            catch (ApprovalRefusedException)
+            {
+                op.Outcome("refused");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelOverride.Resubmit: unexpected failure id={id} user={userName}", ex);
+                throw;
+            }
+        }
+
+        [Description("Retracts a rejected Force Override, restoring it to its last approved version (including " +
+                     "bringing it back, if the rejected change was a removal) without opening a new approval cycle. " +
+                     "Use when the maker agrees with the rejection and wants to abandon the change.")]
+        public async Task<EntityAnalysisModelOverrideDto> RetractAsync(
+            [Description("Server-assigned identifier of the Force Override to retract.")]
+            int id,
+            [Description("Optional note explaining why this is being retracted.")]
+            string? note = null,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModelOverride", "Retract", userName, tenantRegistryId,
+                auditLog, log, serviceChangeBus);
+
+            try
+            {
+                EnsurePermitted("EntityAnalysisModelOverride.Retract");
+
+                OverridePoco saved;
+
+                try
+                {
+                    saved = await repository.RetractAsync(id, note, token: token).ConfigureAwait(false);
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    throw new NotFoundException("The Override was not found.", ex);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw Refused(ex.Message);
+                }
+
+                op.Entity(saved.Id);
+                op.Version(saved.Version.GetValueOrDefault());
+                op.Updated();
+
+                if (log.IsInfoEnabled)
+                {
+                    log.Info(
+                        $"EntityAnalysisModelOverride.Retract: Id={saved.Id} version={saved.Version} user={userName}");
+                }
+
+                return EntityAnalysisModelOverrideMapper.ToDto(saved);
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                op.Outcome("notfound");
+                throw;
+            }
+            catch (ApprovalRefusedException)
+            {
+                op.Outcome("refused");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModelOverride.Retract: unexpected failure id={id} user={userName}", ex);
+                throw;
+            }
+        }
+
+        private static ApprovalRefusedException Refused(string message)
+        {
+            return new ApprovalRefusedException(message, [message]);
         }
 
         private void EnsureForceOverridePermitted(string op, EntityAnalysisModelOverrideKind overrideKind)

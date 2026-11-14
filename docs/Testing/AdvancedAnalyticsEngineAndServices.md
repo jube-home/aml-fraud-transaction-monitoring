@@ -269,30 +269,31 @@ Unit.
 | Test                                                                                                    | Kind   | Verifies                                                                                                                 |
 |---------------------------------------------------------------------------------------------------------|--------|--------------------------------------------------------------------------------------------------------------------------|
 | `ThePageLoadsItsScriptAndStylesheetAndCarriesTheGridsAndTabs`                                           | Fact   | The page loads its script and stylesheet and carries the grids and tabs.                                                 |
-| `ThePageModelIsGatedOnTheFourAdvancedAnalyticsPermissionsAndDeletingAnAllocatedInstanceNeedsFortySeven` | Fact   | The page model is gated on the four advanced analytics permissions and deleting an allocated instance needs forty seven. |
-| `TheScriptUsesOnlyTheReadRoutesTheChartRoutesTheDeleteRouteTheActiveSwitchRouteAndTheApprovalRoutes` | Fact | The script uses only the read routes the chart routes the delete route the active switch route and the approval routes. |
+| `TheScriptUsesOnlyTheReadRoutesTheChartRoutesTheDeleteRouteTheActiveSwitchRouteAndTheApprovalRoutes`    | Fact   | The script uses only the read routes the chart routes the delete route the active switch route and the approval routes.  |
 | `TheScriptEscapesServerTextBeforeItBuildsMarkup`                                                        | Fact   | The script escapes server text before it builds markup.                                                                  |
 | `TheScriptCarriesNoComments`                                                                            | Theory | The script carries no comments.                                                                                          |
 | `NothingWrittenForThePageMentionsTheLibraryName`                                                        | Fact   | Nothing written for the page mentions the library name.                                                                  |
 | `TheModelsMenuGroupLinksTheAnalyticsPageUnderTheFourPermissions`                                        | Fact   | The models menu group links the analytics page under the four permissions.                                               |
 | `TheModelsGroupIsVisibleToAUserWhoHoldsOnlyAnAdvancedAnalyticsPermission`                               | Fact   | The models group is visible to a user who holds only an advanced analytics permission.                                   |
 | `TheEndpointsAreRegisteredAndEveryGroupRequiresAuthorisation`                                           | Fact   | The endpoints are registered and every group requires authorisation.                                                     |
-| `TheHttpSurfaceIsReadRoutesChartRoutesOneDeleteTheApprovalRoutesAndNothingThatMutatesElse` | Fact | The http surface is read routes chart routes one delete the approval routes and nothing that mutates else. |
+| `TheHttpSurfaceIsReadRoutesChartRoutesOneDeleteTheApprovalRoutesAndNothingThatMutatesElse`              | Fact   | The http surface is read routes chart routes one delete the approval routes and nothing that mutates else.               |
 | `TheChartEndpointsCarryTheSvgHeadersAndTheRunnerMapsTheServiceCodes`                                    | Fact   | The chart endpoints carry the svg headers and the runner maps the service codes.                                         |
 | `ThePermissionDropdownOfTheRoleScreenReadsTheSpecificationTableSoTheNewPermissionsAppear`               | Fact   | The permission dropdown of the role screen reads the specification table so the new permissions appear.                  |
+| `ThePageModelIsGatedOnTheFourAdvancedAnalyticsPermissionsAndDeletingAnAllocatedInstanceNeedsFortySeven` | Fact   | The page model is gated on the four advanced analytics permissions and deleting an allocated instance needs forty seven. |
 
 ## R script
 
 ### AskJoobyScriptExecutionClientTests
 
-`Jube.Test.AdvancedAnalytics.RScript.AskJoobyScriptExecutionClientTests` — 4 tests. Category: AdvancedAnalytics.
+`Jube.Test.AdvancedAnalytics.RScript.AskJoobyScriptExecutionClientTests` — 5 tests. Category: AdvancedAnalytics.
 
-| Test                                                 | Kind | Verifies                                              |
-|------------------------------------------------------|------|-------------------------------------------------------|
-| `CheckHealthMapsEveryFieldIncludingScriptRulesAsync` | Fact | Check health maps every field including script rules. |
-| `ListPackagesMapsEveryPackageAsync`                  | Fact | List packages maps every package.                     |
-| `ValidateMapsErrorsAsync`                            | Fact | Validate maps errors.                                 |
-| `RunScriptMapsTheFakeGatewaysResultAsync`            | Fact | Run script maps the fake gateways result.             |
+| Test                                                                     | Kind | Verifies                                                                      |
+|--------------------------------------------------------------------------|------|-------------------------------------------------------------------------------|
+| `CheckHealthMapsEveryFieldIncludingScriptRulesAsync`                     | Fact | Check health maps every field including script rules.                         |
+| `ListPackagesMapsEveryPackageAsync`                                      | Fact | List packages maps every package.                                             |
+| `ValidateMapsErrorsAsync`                                                | Fact | Validate maps errors.                                                         |
+| `RunScriptMapsTheFakeGatewaysResultAsync`                                | Fact | Run script maps the fake gateways result.                                     |
+| `RunScriptValidatesFirstAndRefusesAScriptThatFailsWithoutRunningItAsync` | Fact | Run script validates first and refuses ascript that fails without running it. |
 
 ### RScriptInteroperabilityTests
 
@@ -381,9 +382,9 @@ Collection: Database.
 | `StageTimeBudgetDefaultsToOneSecondAndAcceptsZeroToDisable`            | Fact | Stage time budget defaults to one second and accepts zero to disable.           |
 | `SettingsKeysAreRegisteredInTheDynamicEnvironmentWithMatchingDefaults` | Fact | Settings keys are registered in the dynamic environment with matching defaults. |
 
-### AdvancedAnalyticsInstanceRepositoryTests
+### AskJoobyAnalyticsInstanceRepositoryTests
 
-`Jube.Test.AdvancedAnalytics.Repository.AdvancedAnalyticsInstanceRepositoryTests` — 11 tests. Category: Service.
+`Jube.Test.AdvancedAnalytics.Repository.AskJoobyAnalyticsInstanceRepositoryTests` — 11 tests. Category: Service.
 Collection: Database.
 
 | Test                                                        | Kind | Verifies                                                         |
@@ -420,9 +421,9 @@ Database.
 | `TheFourPermissionsExistWithTheAgreedIdsAndNamesAsync` | Fact | The four permissions exist with the agreed ids and names. |
 | `TheAdministratorRoleIsGrantedAllFourAsync`            | Fact | The administrator role is granted all four.               |
 
-### AdvancedAnalyticsTrainedModelRepositoryTests
+### AskJoobyAnalyticsTrainedModelRepositoryTests
 
-`Jube.Test.AdvancedAnalytics.Repository.AdvancedAnalyticsTrainedModelRepositoryTests` — 16 tests. Category: Service.
+`Jube.Test.AdvancedAnalytics.Repository.AskJoobyAnalyticsTrainedModelRepositoryTests` — 16 tests. Category: Service.
 Collection: Database.
 
 | Test                                                                  | Kind | Verifies                                                                   |
@@ -488,7 +489,7 @@ Collection: Database.
 
 ### ModelSelectionToolsCachePointerIntegrationTests
 
-`Jube.Test.AdvancedAnalytics.Repository.ModelSelectionToolsCachePointerIntegrationTests` — 2 tests. Category: Service.
+`Jube.Test.AdvancedAnalytics.Repository.ModelSelectionToolsCachePointerIntegrationTests` — 1 test. Category: Service.
 Collection: Database.
 
 | Test                                                                                            | Kind | Verifies                                                                                                    |
@@ -659,9 +660,9 @@ Category: Service. Collection: Database.
 | `SubmitRunsExecutesDirectlyAndPersistsAVersionWhoseRecallMatchesADirectInProcessTrainAsync` | Fact | Submit runs executes directly and persists a version whose recall matches a direct in process train. |
 | `SubmitRejectsAnInvalidLearningRateBeforeQueuingARunAsync`                                  | Fact | Submit rejects an invalid learning rate before queuing a run.                                        |
 
-### AdvancedAnalyticsInstanceActiveSwitchTests
+### AskJoobyAnalyticsInstanceActiveSwitchTests
 
-`Jube.Test.AdvancedAnalytics.Service.AdvancedAnalyticsInstanceActiveSwitchTests` — 15 tests. Category: Service.
+`Jube.Test.AdvancedAnalytics.Service.AskJoobyAnalyticsInstanceActiveSwitchTests` — 15 tests. Category: Service.
 Collection: Database.
 
 | Test                                                                                 | Kind   | Verifies                                                                                     |
@@ -682,9 +683,9 @@ Collection: Database.
 | `ThePipelineStageWritesNothingForASwitchedOffInstanceAndScoresOnceItIsOnAsync`       | Fact   | The pipeline stage writes nothing for a switched off instance and scores once it is on.      |
 | `ARecallHeldAcrossASwitchOffAndSyncStillCompletesAndNewLookupsFailClearlyAsync`      | Fact   | A recall held across a switch off and sync still completes and new lookups fail clearly.     |
 
-### AdvancedAnalyticsInstanceServiceTests
+### AskJoobyAnalyticsInstanceServiceTests
 
-`Jube.Test.AdvancedAnalytics.Service.AdvancedAnalyticsInstanceServiceTests` — 23 tests. Category: Service. Collection:
+`Jube.Test.AdvancedAnalytics.Service.AskJoobyAnalyticsInstanceServiceTests` — 23 tests. Category: Service. Collection:
 Database.
 
 | Test                                                                              | Kind | Verifies                                                                              |
@@ -807,9 +808,9 @@ Service. Collection: Database.
 |------------------------------------------------|------|-------------------------------------------------|
 | `SubmitTrainsExecutesAndRecallsBitForBitAsync` | Fact | Submit trains executes and recalls bit for bit. |
 
-### AdvancedAnalyticsModelMapperTests
+### AskJoobyAnalyticsModelMapperTests
 
-`Jube.Test.AdvancedAnalytics.Service.AdvancedAnalyticsModelMapperTests` — 8 tests. Category: Unit.
+`Jube.Test.AdvancedAnalytics.Service.AskJoobyAnalyticsModelMapperTests` — 8 tests. Category: Unit.
 
 | Test                                                                           | Kind   | Verifies                                                                                 |
 |--------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------|
@@ -822,9 +823,9 @@ Service. Collection: Database.
 | `TransformedVariableCountLabel_TreatsAnAbsentTransformationIdPropertyAsNone`   | Fact   | Transformed variable count label treats an absent transformation id property as none.    |
 | `TransformedVariableCountLabel_AllVariablesTransformedIsReportedInFull`        | Fact   | Transformed variable count label all variables transformed is reported in full.          |
 
-### AdvancedAnalyticsModelServiceTests
+### AskJoobyAnalyticsModelServiceTests
 
-`Jube.Test.AdvancedAnalytics.Service.AdvancedAnalyticsModelServiceTests` — 21 tests. Category: Service. Collection:
+`Jube.Test.AdvancedAnalytics.Service.AskJoobyAnalyticsModelServiceTests` — 22 tests. Category: Service. Collection:
 Database.
 
 | Test                                                                                | Kind | Verifies                                                                                    |
@@ -850,6 +851,7 @@ Database.
 | `RollbackNeedsALiveVersionAnEarlierOneAndAnAllocationAsync`                         | Fact | Rollback needs a live version an earlier one and an allocation.                             |
 | `TwoRacingPromotionsLeaveExactlyOneLiveVersionAsync`                                | Fact | Two racing promotions leave exactly one live version.                                       |
 | `RacingPromotionAndRollbackNeverLeaveAModelWithoutAConsistentLiveVersionAsync`      | Fact | Racing promotion and rollback never leave a model without a consistent live version.        |
+| `PromotionAndRollbackAreRefusedWhileTheInstanceIsLiveAsync`                         | Fact | Promotion and rollback are refused while the instance is live.                              |
 
 ### AdvancedAnalyticsNaiveBayesClassifierTrainingServiceTests
 
@@ -1058,9 +1060,9 @@ Database.
 |--------------------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------------------------|
 | `SettingsDefaultToTheDocumentedValuesAndFallBackOnBadValues`                                     | Fact | Settings default to the documented values and fall back on bad values.                                    |
 | `TheResolverSupportsInlineAndCachePointerButNotDatasetUntilASourceIsRegistered`                  | Fact | The resolver supports inline and cache pointer but not dataset until a source is registered.              |
-| `ADatasetSourceRegisteredWithTheResolverResolvesRowsAndAnUnregisteredOneThrowsNotSupportedAsync` | Fact | A dataset source registered with the resolver resolves rows and an unregistered one throws not supported. |
 | `InlineInputWithoutRowsFailsClearlyAsync`                                                        | Fact | Inline input without rows fails clearly.                                                                  |
 | `ArgumentsRoundTripThroughJsonWithMissingValuesAndStripInputData`                                | Fact | Arguments round trip through json with missing values and strip input data.                               |
+| `ADatasetSourceRegisteredWithTheResolverResolvesRowsAndAnUnregisteredOneThrowsNotSupportedAsync` | Fact | A dataset source registered with the resolver resolves rows and an unregistered one throws not supported. |
 
 ### AdvancedAnalyticsTrainingSubmitTests
 

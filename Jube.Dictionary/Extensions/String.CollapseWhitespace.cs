@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Trimmed, with each run of whitespace replaced by one space.")]
         public static string CollapseWhitespace(this string? @this)
         {
             return string.Join(' ', (@this ?? "").Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));

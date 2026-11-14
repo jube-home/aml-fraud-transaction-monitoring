@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double CircularDistanceFrom(this double @this, double other, double period)
+        [Description("The shortest distance between the value and the other around a circle of the period, for hours of the day or bearings; NaN when the period is not positive.")]
+        public static double CircularDistanceFrom(this double @this,
+            [Description("The other point on the circle.")] double other,
+            [Description("The length of the circle, for example 24 for hours or 360 for degrees.")] double period)
         {
             if (double.IsNaN(@this) || double.IsNaN(other) || !(period > 0))
             {

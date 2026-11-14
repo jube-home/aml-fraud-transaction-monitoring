@@ -27,11 +27,17 @@ namespace Jube.Data.Reporting
     {
         private const int MaximumSqlLength = 65536;
         private const int MaximumNestingDepth = 64;
+        private const int MaximumOperators = 4000;
+        private const int MaximumSetOperations = 200;
 
         private static readonly (Regex Pattern, string Replacement)[] normalisationRules =
         [
             (new Regex(@"@\w+", RegexOptions.Compiled), "1")
         ];
+
+        private static readonly Regex setOperationPattern =
+            new(@"\b(?:union|intersect|except)\b", RegexOptions.Compiled | RegexOptions.IgnoreCase,
+                TimeSpan.FromSeconds(1));
 
         private static readonly Regex namedParameterPattern = new(@"@\w+", RegexOptions.Compiled);
 
@@ -50,7 +56,10 @@ namespace Jube.Data.Reporting
             "repeat", "lpad", "rpad", "array_fill", "version", "current_database", "current_catalog",
             "current_schema", "current_schemas", "inet_server_addr", "inet_server_port", "inet_client_addr",
             "inet_client_port", "to_regclass", "to_regtype", "to_regproc", "to_regprocedure", "to_regoper",
-            "to_regoperator", "to_regnamespace", "to_regrole", "to_regcollation"
+            "to_regoperator", "to_regnamespace", "to_regrole", "to_regcollation", "format", "crypt", "gen_salt",
+            "current_query",
+            "row_security_active", "obj_description", "col_description", "shobj_description", "acldefault",
+            "aclexplode"
         };
 
         private static readonly
@@ -78,13 +87,34 @@ namespace Jube.Data.Reporting
             "ExhaustiveInstanceJsonRow",
             "ApplicationLogEntry", "AskJoobyAgentGuardRejection", "AskJoobyAgentGuardRule",
             "CacheAbstraction", "CachePayload", "CachePayloadLatest",
-            "CachePayloadLatestRemovalBatch", "CachePayloadLatestRemovalBatchEntry", "CachePayloadLatestRemovalBatchResponseTime",
+            "CachePayloadLatestRemovalBatch", "CachePayloadLatestRemovalBatchEntry",
+            "CachePayloadLatestRemovalBatchResponseTime",
             "CachePayloadRemovalBatch", "CachePayloadRemovalBatchEntry", "CachePayloadRemovalBatchResponseTime",
             "CacheReferenceDate", "CacheSanction", "CacheSetHash",
             "CacheSetHash_0", "CacheSetHash_1", "CacheSetHash_2",
             "CacheSetHash_3", "CacheTtlCounter", "CacheTtlCounterEntry",
-            "CacheTtlCounterEntryRemovalBatch", "CacheTtlCounterEntryRemovalBatchEntry", "CacheTtlCounterEntryRemovalBatchResponseTime",
+            "CacheTtlCounterEntryRemovalBatch", "CacheTtlCounterEntryRemovalBatchEntry",
+            "CacheTtlCounterEntryRemovalBatchResponseTime",
             "CaptureQueueHealth", "CaseCreationStagePerformanceCounter", "CaseExecutionLog",
+            "CaseSearchFilter", "CaseRiskAssessment", "CaseView", "CaseStatusTransition", "UserNotification",
+            "CaseServiceLevelBreach", "SanctionExemption", "SanctionRescreenRun", "SanctionRescreenHit", "CaseLink",
+            "CaseSimilarityComponent", "CaseSimilarityComponentFrequency",
+            "ModelDriftObservation", "CaseAgentRun", "CaseQaReview", "CaseAnalystAssessment", "GraphEntityMatch", "TransactionInboundQueue",
+            "CaseReportProfile", "CaseReport", "CaseReportVersion", "CaseReportApproval", "CaseReportFeedback",
+            "ErasureRequest", "EntityRiskRatingRequest", "ModelGovernanceRecord", "CaseAgentReplay",
+            "CaseAgentReplayResult", "EntityRiskRating",
+            "CaseKeyJournalPin", "CaseKeyJournalReplay", "CaseKeyJournalPeer", "CaseKeyJournalKeyIndex",
+            "CaseKeyJournalTagJob",
+            "CaseKeyJournalTagJobRow", "CaseWorkflowFormValidator", "CaseWorkflowFormValidatorVersion",
+            "CaseWorkflowDispatch",
+            "CaseWorkflowReleaseHook", "CaseWorkflowReleaseHookVersion",
+            "GraphEdgeEvent", "GraphEdgeEventDefault", "GraphBuildState", "GraphExploration", "GraphRegistryVersion",
+            "GraphRegistryEdgeVersion", "GraphRegistryRole", "GraphPatternNode", "CaseTag",
+            "EntityAnalysisModelGraphRecall", "EntityAnalysisModelGraphRecallVersion",
+            "CaseWorkflowChecklist", "CaseWorkflowChecklistVersion", "CaseWorkflowChecklistItem",
+            "CaseWorkflowChecklistItemVersion", "CaseChecklistEvent", "CaseChecklistOverride", "CaseChecklistItem",
+            "ArchiveKeyBackfillRun", "ArchiveKeyBackfillKey", "EntityAnalysisModelSvirfd",
+            "EntityAnalysisModelSvirfdVersion",
             "ContainerLogEntry", "DockerContainerMetric", "DockerEvent",
             "DockerHostMetric", "DotNetRuntimeMetric", "EntityAnalysisAsynchronousQueueBalance",
             "EntityAnalysisInstance", "EntityAnalysisModelEngineSnapshot", "EntityAnalysisModelSynchronisationError",
@@ -95,9 +125,9 @@ namespace Jube.Data.Reporting
             "ModelInvokeWarning", "OpenTelemetryExclude", "OpenTelemetryLogCounter",
             "OpenTelemetryMetric", "OtlpDispatchCounter", "OverlayNetworkTaskDrift",
             "PatroniClusterEvent", "PatroniMemberStatus", "PostgresLogEntry",
-            "PostgresMetric", "PostgresReplicationStatus", "RedisCallCounter",
-            "RedisConnectionEvent", "RedisConnectionMultiplexerMetric", "RedisMetric",
-            "RedisSentinelEvent", "RedisSentinelStatus", "RedisSlowOperation",
+            "PostgresMetric", "PostgresReplicationStatus", "RespCallCounter",
+            "RespConnectionEvent", "RespConnectionMultiplexerMetric", "RespMetric",
+            "RespSentinelEvent", "RespSentinelStatus", "RespSlowOperation",
             "SessionCaseSearchCompiledSql", "SessionCaseSearchCompiledSqlExecution", "WafAttack",
             "WafException", "WafSignature"
         };
@@ -144,7 +174,7 @@ namespace Jube.Data.Reporting
 
             foreach (var rawStmt in parsed.Stmts)
             {
-                WalkAndSubstituteTables(rawStmt.Stmt, allowedTables);
+                WalkAndSubstituteTables(rawStmt.Stmt, allowedTables, new HashSet<string>(StringComparer.Ordinal));
             }
 
             var deparsed = Parser.Deparse(parsed);
@@ -203,7 +233,7 @@ namespace Jube.Data.Reporting
 
             foreach (var rawStmt in result.Value.Stmts)
             {
-                WalkAndCollectTables(rawStmt.Stmt, names, new HashSet<string>(StringComparer.OrdinalIgnoreCase));
+                WalkAndCollectTables(rawStmt.Stmt, names, new HashSet<string>(StringComparer.Ordinal));
             }
 
             return names;
@@ -273,7 +303,13 @@ namespace Jube.Data.Reporting
                 return false;
             }
 
+            if (setOperationPattern.Matches(sql).Count > MaximumSetOperations)
+            {
+                return true;
+            }
+
             var parenDepth = 0;
+            var operators = 0;
             var i = 0;
 
             while (i < sql.Length)
@@ -387,6 +423,11 @@ namespace Jube.Data.Reporting
                     }
                 }
 
+                if ("+-*/%^<>=|&~!".Contains(c) && ++operators > MaximumOperators)
+                {
+                    return true;
+                }
+
                 i++;
             }
 
@@ -484,6 +525,7 @@ namespace Jube.Data.Reporting
             var op = function.Descriptor.FindFieldByName("op")?.Accessor.GetValue(function)?.ToString() ?? string.Empty;
 
             if (op.Contains("User", StringComparison.OrdinalIgnoreCase) ||
+                op.Contains("Role", StringComparison.OrdinalIgnoreCase) ||
                 op.Contains("Catalog", StringComparison.OrdinalIgnoreCase) ||
                 op.Contains("Schema", StringComparison.OrdinalIgnoreCase))
             {
@@ -533,7 +575,9 @@ namespace Jube.Data.Reporting
             }
 
             if ((!allowCatalogueRelations && relation.StartsWith("pg_", StringComparison.OrdinalIgnoreCase)) ||
-                (blockProtectedRelations && deniedRelations.Contains(relation)))
+                (blockProtectedRelations && (deniedRelations.Contains(relation) ||
+                                             relation.StartsWith("GraphEdgeEvent_",
+                                                 StringComparison.OrdinalIgnoreCase))))
             {
                 throw new InvalidOperationException(
                     "Only SELECT statements are permitted. A protected table was detected in the query.");
@@ -578,7 +622,7 @@ namespace Jube.Data.Reporting
         {
             if (message is SelectStmt { WithClause: not null } withSelect)
             {
-                var scoped = new HashSet<string>(cteNames, StringComparer.OrdinalIgnoreCase);
+                var scoped = new HashSet<string>(cteNames, StringComparer.Ordinal);
 
                 foreach (var cteNode in withSelect.WithClause.Ctes)
                 {
@@ -605,7 +649,8 @@ namespace Jube.Data.Reporting
             {
                 var relname = node.RangeVar.Relname;
 
-                if (!string.IsNullOrEmpty(relname) && !cteNames.Contains(relname) && !names.Contains(relname))
+                if (!string.IsNullOrEmpty(relname) && (IsQualified(node.RangeVar) || !cteNames.Contains(relname)) &&
+                    !names.Contains(relname))
                 {
                     names.Add(relname);
                 }
@@ -614,6 +659,11 @@ namespace Jube.Data.Reporting
             }
 
             WalkChildrenAndCollect(message, names, cteNames, null);
+        }
+
+        private static bool IsQualified(RangeVar rangeVar)
+        {
+            return !string.IsNullOrEmpty(rangeVar.Schemaname) || !string.IsNullOrEmpty(rangeVar.Catalogname);
         }
 
         private static void WalkChildrenAndCollect(IMessage message, ICollection<string> names,
@@ -648,11 +698,12 @@ namespace Jube.Data.Reporting
             }
         }
 
-        private static void WalkAndSubstituteTables(IMessage message, IReadOnlyDictionary<string, string> allowedTables)
+        private static void WalkAndSubstituteTables(IMessage message,
+            IReadOnlyDictionary<string, string> allowedTables, ISet<string> cteNames)
         {
             if (message is SelectStmt { WithClause: not null } withSelect)
             {
-                var scoped = new Dictionary<string, string>(allowedTables, StringComparer.OrdinalIgnoreCase);
+                var scoped = new HashSet<string>(cteNames, StringComparer.Ordinal);
 
                 foreach (var cteNode in withSelect.WithClause.Ctes)
                 {
@@ -670,14 +721,14 @@ namespace Jube.Data.Reporting
 
                     if (withSelect.WithClause.Recursive)
                     {
-                        scoped[cte.Ctename] = null;
+                        scoped.Add(cte.Ctename);
                     }
 
-                    WalkAndSubstituteTables(cte.Ctequery, scoped);
-                    scoped[cte.Ctename] = null;
+                    WalkAndSubstituteTables(cte.Ctequery, allowedTables, scoped);
+                    scoped.Add(cte.Ctename);
                 }
 
-                WalkChildrenAndSubstitute(withSelect, scoped, withSelect.WithClause);
+                WalkChildrenAndSubstitute(withSelect, allowedTables, scoped, withSelect.WithClause);
 
                 return;
             }
@@ -685,6 +736,12 @@ namespace Jube.Data.Reporting
             if (message is Node { RangeVar: not null } node)
             {
                 var relname = node.RangeVar.Relname;
+                var qualified = IsQualified(node.RangeVar);
+
+                if (!qualified && cteNames.Contains(relname))
+                {
+                    return;
+                }
 
                 if (!allowedTables.TryGetValue(relname, out var template))
                 {
@@ -693,6 +750,14 @@ namespace Jube.Data.Reporting
 
                 if (template is null)
                 {
+                    if (qualified && (!string.IsNullOrEmpty(node.RangeVar.Catalogname) ||
+                                      !string.Equals(node.RangeVar.Schemaname, "public",
+                                          StringComparison.OrdinalIgnoreCase)))
+                    {
+                        throw new InvalidOperationException(
+                            $"Table \"{relname}\" may only be referenced unqualified or in the public schema.");
+                    }
+
                     return;
                 }
 
@@ -709,20 +774,88 @@ namespace Jube.Data.Reporting
                         $"{templateResult.Error.Message}");
                 }
 
+                QualifyTemplateRelations(templateResult.Value.Stmts[0].Stmt);
+
                 node.RangeSubselect = new RangeSubselect
                 {
                     Subquery = templateResult.Value.Stmts[0].Stmt,
-                    Alias = new Alias { Aliasname = aliasName }
+                    Alias = node.RangeVar.Alias is { } userAlias
+                        ? userAlias.Clone()
+                        : new Alias { Aliasname = aliasName }
                 };
 
                 return;
             }
 
-            WalkChildrenAndSubstitute(message, allowedTables, null);
+            WalkChildrenAndSubstitute(message, allowedTables, cteNames, null);
+        }
+
+        private static void QualifyTemplateRelations(IMessage template)
+        {
+            var own = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var visited = new List<RangeVar>();
+
+            var pending = new Stack<IMessage>();
+            pending.Push(template);
+
+            while (pending.Count > 0)
+            {
+                var message = pending.Pop();
+
+                switch (message)
+                {
+                    case CommonTableExpr { Ctename.Length: > 0 } cte:
+                        own.Add(cte.Ctename);
+                        break;
+                    case RangeVar rangeVar:
+                        visited.Add(rangeVar);
+                        break;
+                }
+
+                foreach (var field in message.Descriptor.Fields.InFieldNumberOrder())
+                {
+                    if (field.FieldType != FieldType.Message)
+                    {
+                        continue;
+                    }
+
+                    var value = field.Accessor.GetValue(message);
+
+                    switch (value)
+                    {
+                        case IMessage child:
+                            pending.Push(child);
+                            break;
+                        case IEnumerable children when !field.IsMap:
+                            foreach (var item in children)
+                            {
+                                if (item is IMessage childMessage)
+                                {
+                                    pending.Push(childMessage);
+                                }
+                            }
+
+                            break;
+                    }
+                }
+            }
+
+            foreach (var rangeVar in visited.Where(candidate => IsUnqualifiedApplicationRelation(candidate, own)))
+            {
+                rangeVar.Schemaname = "public";
+            }
+        }
+
+        private static bool IsUnqualifiedApplicationRelation(RangeVar rangeVar, ISet<string> own)
+        {
+            return !IsQualified(rangeVar) &&
+                   !string.IsNullOrEmpty(rangeVar.Relname) &&
+                   !rangeVar.Relname.StartsWith("pg_", StringComparison.OrdinalIgnoreCase) &&
+                   !own.Contains(rangeVar.Relname);
         }
 
         private static void WalkChildrenAndSubstitute(IMessage message,
-            IReadOnlyDictionary<string, string> allowedTables, IMessage skip)
+            IReadOnlyDictionary<string, string> allowedTables, ISet<string> cteNames, IMessage skip)
         {
             foreach (var field in message.Descriptor.Fields.InFieldNumberOrder())
             {
@@ -739,7 +872,7 @@ namespace Jube.Data.Reporting
                     {
                         if (item is IMessage childMessage && !ReferenceEquals(childMessage, skip))
                         {
-                            WalkAndSubstituteTables(childMessage, allowedTables);
+                            WalkAndSubstituteTables(childMessage, allowedTables, cteNames);
                         }
                     }
 
@@ -748,7 +881,7 @@ namespace Jube.Data.Reporting
 
                 if (field.Accessor.GetValue(message) is IMessage child && !ReferenceEquals(child, skip))
                 {
-                    WalkAndSubstituteTables(child, allowedTables);
+                    WalkAndSubstituteTables(child, allowedTables, cteNames);
                 }
             }
         }

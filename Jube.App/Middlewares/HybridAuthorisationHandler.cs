@@ -62,7 +62,7 @@ namespace Jube.App.Middlewares
             }
 
             if (Request.Cookies.TryGetValue("authentication-jwt", out var cookieToken)
-                && !String.IsNullOrEmpty(cookieToken))
+                && !string.IsNullOrEmpty(cookieToken))
             {
                 return await ValidateJwtAsync(cookieToken);
             }
@@ -70,7 +70,7 @@ namespace Jube.App.Middlewares
             return AuthenticateResult.NoResult();
         }
 
-        private Task<AuthenticateResult> ValidateApiKeyAsync(string apiKey)
+        private async Task<AuthenticateResult> ValidateApiKeyAsync(string apiKey)
         {
             try
             {
@@ -82,18 +82,29 @@ namespace Jube.App.Middlewares
                 }
                 catch (KeyNotFoundException)
                 {
-                    return Task.FromResult(Fail("API Key Not Found."));
+                    return Fail("API Key Not Found.");
                 }
 
-                return Task.FromResult(Success([
+                await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                    dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+                var (_, blocked) = await TokenValidity.GetSessionStateAsync(dbContext, userName)
+                    .ConfigureAwait(false);
+
+                if (blocked)
+                {
+                    return Fail("API Key Not Found.");
+                }
+
+                return Success([
                     new Claim(ClaimTypes.Name, userName), new Claim(ClaimTypes.AuthenticationMethod, "ApiHmacKey")
-                ]));
+                ]);
             }
             catch (Exception ex)
             {
                 log.Error($"ValidateApiKeyAsync Authentication service unavailable given exception: {ex}");
 
-                return Task.FromResult(Fail("ValidateApiKeyAsync Authentication service unavailable."));
+                return Fail("ValidateApiKeyAsync Authentication service unavailable.");
             }
         }
 
@@ -142,7 +153,7 @@ namespace Jube.App.Middlewares
 
             var username = principal.FindFirstValue(ClaimTypes.Name);
 
-            if (String.IsNullOrEmpty(username))
+            if (string.IsNullOrEmpty(username))
             {
                 return Fail("Malformed token claims.");
             }
@@ -197,9 +208,9 @@ namespace Jube.App.Middlewares
                 return Task.CompletedTask;
             }
 
-            var loginUrl = "/Account/Login";
+            var loginUrl = "/login";
             var returnUrl = Request.Path + Request.QueryString;
-            var redirectUrl = $"{loginUrl}?RedirectUrl={WebUtility.UrlEncode(returnUrl)}";
+            var redirectUrl = $"{loginUrl}?redirect={WebUtility.UrlEncode(returnUrl)}";
 
             Response.Redirect(redirectUrl);
 

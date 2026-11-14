@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,14 +21,17 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Repository.UserRegistry
 {
+    [MessagePackObject]
     public class UserRegistryPasswordResponseDto
     {
         [Description("Newly-issued temporary password, returned in clear text exactly once so the caller " +
                      "can communicate it to the user. Never stored or retrievable again; only its Argon2 " +
                      "hash is persisted.")]
+        [Key(0)]
         public string? Password { get; set; }
 
         [Description("Timestamp (UTC) after which the temporary password expires and must be changed.")]
+        [Key(1)]
         public DateTimeOffset? PasswordExpiryDate { get; set; }
     }
 }

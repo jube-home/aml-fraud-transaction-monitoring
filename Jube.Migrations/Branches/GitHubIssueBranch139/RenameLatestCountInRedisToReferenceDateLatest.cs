@@ -28,7 +28,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch139
     {
         public override void Up()
         {
-            var dbContext =
+            using var dbContext =
                 DataConnectionDbContext.GetResilientDbContextDataConnection(
                     dynamicEnvironment.AppSettings("ConnectionString"), log);
 
@@ -43,9 +43,9 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch139
                 var before = $"LatestCount:{entityAnalysisModel.TenantRegistryId}:{entityAnalysisModel.Guid:N}";
                 var after = $"ReferenceDateLatest:{entityAnalysisModel.TenantRegistryId}:{entityAnalysisModel.Guid:N}";
 
-                if (cacheService.ResilientRedisResilientRedisDatabase.KeyExists(before))
+                if (cacheService.ResilientRespResilientRespDatabase.KeyExists(before))
                 {
-                    cacheService.ResilientRedisResilientRedisDatabase.KeyRename(before, after);
+                    cacheService.ResilientRespResilientRespDatabase.KeyRename(before, after);
                 }
             }
         }

@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -45,7 +46,7 @@ namespace Jube.App.Endpoints.Repository
                 .Produces<List<UserRegistryDto>>()
                 .WithName("UserRegistryGetAll");
 
-            group.MapGet("ByEntityAnalysisModelGuid/{roleRegistryGuid:guid}", GetByRoleRegistryGuidAsync)
+            group.MapGet("ByRoleRegistryGuid/{roleRegistryGuid:guid}", GetByRoleRegistryGuidAsync)
                 .Produces<List<UserRegistryDto>>()
                 .WithName("UserRegistryGetByRoleRegistryGuid");
 
@@ -65,6 +66,11 @@ namespace Jube.App.Endpoints.Repository
             group.MapPost("RevokeTokens/{id:int}", RevokeTokensAsync)
                 .Produces((int)HttpStatusCode.NoContent)
                 .WithName("UserRegistryRevokeTokens");
+
+            group.MapPost("ResetTotp/{id:int}", ResetTotpAsync)
+                .Produces((int)HttpStatusCode.NoContent)
+                .Produces((int)HttpStatusCode.NotFound)
+                .WithName("UserRegistryResetTotp");
 
             group.MapPut("", UpdateAsync)
                 .Produces((int)HttpStatusCode.OK)
@@ -146,7 +152,7 @@ namespace Jube.App.Endpoints.Repository
 
             if (log.IsDebugEnabled)
             {
-                log.Debug($"GET {Base}/ByEntityAnalysisModelGuid/{roleRegistryGuid}: entry user={user}");
+                log.Debug($"GET {Base}/ByRoleRegistryGuid/{roleRegistryGuid}: entry user={user}");
             }
 
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
@@ -166,7 +172,7 @@ namespace Jube.App.Endpoints.Repository
                 if (log.IsWarnEnabled)
                 {
                     log.Warn(
-                        $"GET {Base}/ByEntityAnalysisModelGuid/{roleRegistryGuid}: 403 (not authenticated) user={user}");
+                        $"GET {Base}/ByRoleRegistryGuid/{roleRegistryGuid}: 403 (not authenticated) user={user}");
                 }
 
                 return TypedResults.Forbid();
@@ -175,7 +181,7 @@ namespace Jube.App.Endpoints.Repository
             {
                 if (log.IsWarnEnabled)
                 {
-                    log.Warn($"GET {Base}/ByEntityAnalysisModelGuid/{roleRegistryGuid}: 403 user={user}");
+                    log.Warn($"GET {Base}/ByRoleRegistryGuid/{roleRegistryGuid}: 403 user={user}");
                 }
 
                 return TypedResults.Forbid();
@@ -184,14 +190,14 @@ namespace Jube.App.Endpoints.Repository
             {
                 if (log.IsDebugEnabled)
                 {
-                    log.Debug($"GET {Base}/ByEntityAnalysisModelGuid/{roleRegistryGuid}: client cancelled user={user}");
+                    log.Debug($"GET {Base}/ByRoleRegistryGuid/{roleRegistryGuid}: client cancelled user={user}");
                 }
 
                 throw;
             }
             catch (Exception e)
             {
-                log.Error($"GET {Base}/ByEntityAnalysisModelGuid/{roleRegistryGuid}: 500 user={user}", e);
+                log.Error($"GET {Base}/ByRoleRegistryGuid/{roleRegistryGuid}: 500 user={user}", e);
 
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }
@@ -454,6 +460,22 @@ namespace Jube.App.Endpoints.Repository
 
                 return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
             }
+            catch (VersionConflictException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}: 409 user={user} supplied={ex.SuppliedVersion} current={ex.CurrentVersion}");
+                }
+
+                return TypedResults.Conflict(new
+                {
+                    code = "VersionConflict",
+                    message = ex.Message,
+                    suppliedVersion = ex.SuppliedVersion,
+                    currentVersion = ex.CurrentVersion
+                });
+            }
+
             catch (OperationCanceledException)
             {
                 if (log.IsDebugEnabled)
@@ -466,6 +488,54 @@ namespace Jube.App.Endpoints.Repository
             catch (Exception e)
             {
                 log.Error($"PUT {Base}: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        private static async Task<IResult> ResetTotpAsync(
+            int id, HttpContext httpContext, ILog log, DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var service = await UserRegistryService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
+                    serviceChangeBus, dynamicEnvironment, token);
+
+                await service.ResetTotpAsync(id, token);
+
+                return TypedResults.NoContent();
+            }
+            catch (NotAuthenticatedException)
+            {
+                return TypedResults.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/ResetTotp/{id}: 403 user={user}");
+                }
+
+                return TypedResults.Forbid();
+            }
+            catch (NotFoundException)
+            {
+                return TypedResults.NotFound();
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {Base}/ResetTotp/{id}: 500 user={user}", e);
 
                 return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
             }

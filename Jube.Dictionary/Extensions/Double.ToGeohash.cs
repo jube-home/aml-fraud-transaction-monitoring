@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string ToGeohash(this double latitude, double longitude, int precision)
+        [Description("A geohash of 1 to 12 characters for the latitude and longitude, otherwise empty.")]
+        public static string ToGeohash(this double latitude,
+            [Description("The longitude in degrees; the value is the latitude.")] double longitude,
+            [Description("The number of geohash characters.")] int precision)
         {
             if (!latitude.IsValidCoordinate(longitude) || precision is < 1 or > 12)
             {

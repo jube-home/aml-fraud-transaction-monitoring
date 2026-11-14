@@ -18,7 +18,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsSoundexInList(this string? @this, IEnumerable<string>? list)
+        [Description("True when: every word sounds like the same word of an entry, in order.")]
+        public static bool IsSoundexInList(this string? @this,
+            [Description("The List token whose entries are compared.")] IEnumerable<string>? list)
         {
             return FuzzyListMatcher.Any(@this, list, FuzzyOptions.For(FuzzyAlgorithm.Soundex, 1));
         }

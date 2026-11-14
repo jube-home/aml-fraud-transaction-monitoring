@@ -16,12 +16,18 @@
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable RedundantAttributeUsageProperty
 
+using MessagePack;
+
 namespace Jube.Dto.Invoke
 {
+    [MessagePackObject]
     public class AdvancedAnalyticsRecallDto
     {
+        [Key(0)]
         public double Score { get; set; }
+        [Key(1)]
         public double? BaseValue { get; set; }
+        [Key(2)]
         public List<AdvancedAnalyticsRecallContributionDto> Contribution { get; set; } = [];
     }
 }

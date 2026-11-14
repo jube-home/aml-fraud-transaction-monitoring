@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Converts the string to an XmlDocument.")]
         public static XmlDocument ToXmlDocument(this string @this)
         {
             var doc = new XmlDocument();

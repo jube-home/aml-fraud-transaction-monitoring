@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,9 +21,11 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Query.CaseBySessionCaseSearchCompile
 {
+    [MessagePackObject]
     public class CaseBySessionCaseSearchCompileActivationDto
     {
         [Description("Name of the activation rule.")]
+        [Key(0)]
         public string? Name { get; set; }
     }
 }

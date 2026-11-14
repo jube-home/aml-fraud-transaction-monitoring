@@ -31,11 +31,13 @@ supports the remote updating of sanctions from a variety of sources on the inter
 
 Manual Sanction invocation is available from the top level of the menu:
 
-![Image](LocationOfSanctionsSearch.png)
+<!-- TODO(screenshot): file=sanctions-location-of-sanctions-search.png route=/sanctions state="replaces the Razor-era LocationOfSanctionsSearch.png; capture from the Vue UI" -->
+![Image](sanctions-location-of-sanctions-search.png)
 
 Navigate to the sanctions page by clicking the top menu item as above:
 
-![Image](EmptySanctionsPage.png)
+<!-- TODO(screenshot): file=sanctions-empty-sanctions-page.png route=/sanctions state="replaces the Razor-era EmptySanctionsPage.png; capture from the Vue UI" -->
+![Image](sanctions-empty-sanctions-page.png)
 
 Sanctions matching in Jube uses a concept of a multipart string, which means to say that a string (most likely a name)
 be comprised of several elements (e.g first name and last name), separated by a space character (and only a space
@@ -74,11 +76,13 @@ result is not scoped to a tenant.
 
 Complete the Sanctions page as the above parameters:
 
-![Image](QuerySanctionsPage.png)
+<!-- TODO(screenshot): file=sanctions-query-sanctions-page.png route=/sanctions state="replaces the Razor-era QuerySanctionsPage.png; capture from the Vue UI" -->
+![Image](sanctions-query-sanctions-page.png)
 
 Click the Check button:
 
-![Image](CheckButtonWithValueToCheck.png)
+<!-- TODO(screenshot): file=sanctions-check-button-with-value-to-check.png route=/sanctions state="replaces the Razor-era CheckButtonWithValueToCheck.png; capture from the Vue UI" -->
+![Image](sanctions-check-button-with-value-to-check.png)
 
 The Sanction functionality is also exposed in the Invoke API, and Check button simply compiles and sends the following
 GET statement to the Jube Engine server side:
@@ -126,12 +130,14 @@ one means - rather than a single mode having to be pre-selected.
 Of course presented in a manner friendly to the end user in three grids: the raw matches, a single-row grand total
 across every source, and a by-source breakdown, as follows:
 
-![Image](ReturnedSanctionCheckToGrid.png)
+<!-- TODO(screenshot): file=sanctions-returned-sanction-check-to-grid.png route=/sanctions state="replaces the Razor-era ReturnedSanctionCheckToGrid.png; capture from the Vue UI" -->
+![Image](sanctions-returned-sanction-check-to-grid.png)
 
 In this example, across all Sanctions lists, it can be seen that there are one record having been returned at matching,
 and in all instances the distance to an absolute match of 0 characters requiring change:
 
-![Image](ZeroDistanceMatch.png)
+<!-- TODO(screenshot): file=sanctions-zero-distance-match.png route=/sanctions state="replaces the Razor-era ZeroDistanceMatch.png; capture from the Vue UI" -->
+![Image](sanctions-zero-distance-match.png)
 
 To broaden the allowable distance, simply move the distance slider control to the new threshold, although keep in mind
 that this will greatly increase false positive.
@@ -139,16 +145,19 @@ that this will greatly increase false positive.
 To demonstrate distance, change the multipart string to "Robert Mugaby" (a deliberate misspelling by one character in
 the surname Mugabe):
 
-![Image](BadSpellingOfSanctioned.png)
+<!-- TODO(screenshot): file=sanctions-bad-spelling-of-sanctioned.png route=/sanctions state="replaces the Razor-era BadSpellingOfSanctioned.png; capture from the Vue UI" -->
+![Image](sanctions-bad-spelling-of-sanctioned.png)
 
 Click Check to match with the revised distance:
 
-![Image](MatchesWithBiggerDistance.png)
+<!-- TODO(screenshot): file=sanctions-matches-with-bigger-distance.png route=/sanctions state="replaces the Razor-era MatchesWithBiggerDistance.png; capture from the Vue UI" -->
+![Image](sanctions-matches-with-bigger-distance.png)
 
 It can be seen that matches have still been achieved, this time specifying the distance of 1, which indicates that one
 character needs to be changed in order to achieve an exact match.
 
-![Image](DistanceOneMatch.png)
+<!-- TODO(screenshot): file=sanctions-distance-one-match.png route=/sanctions state="replaces the Razor-era DistanceOneMatch.png; capture from the Vue UI" -->
+![Image](sanctions-distance-one-match.png)
 
 There are some additional processing beyond just the use of the Levenshtein Distance distance algorithm that are worth
 noting. The Sanctions functionality is an implementation of the Levenshtein Distance algorithm that compares strings
@@ -210,3 +219,46 @@ characters that need to be changed in order for the comparison to be a perfect m
 value specified in the querystring parameter from the user, the multipart string element is recorded as having matched
 in a buffer. The process is repeated until each multipart string element passed by the user is tested against each
 multipart string element from the sanctions loader (and this in the engine memory).
+
+## Access, limits and Unicode handling
+
+<!-- TODO(docs): owner to read this whole section; written from the code. -->
+
+Searching requires the View Sanction permission (29) in addition to being signed in; a caller without it receives 403
+from
+the Invoke API as well as a refusal on the page. Searches are limited per user (default 300 per 60 seconds,
+`SanctionSearchMaxPerUserPerWindow` and `SanctionSearchWindowSeconds`, counted per server process) and answer 429 when
+the limit is
+exceeded. At most `SanctionSearchMaxEntries` (default 1000) matching entries are returned, closest first; the
+aggregations
+are always computed over every match, so the count can exceed the number of rows listed.
+
+Before comparison both the searched string and every entry are folded the same way: compatibility forms are
+normalised (full-width Latin letters, ligatures, Arabic presentation forms), combining marks are removed (accents,
+Arabic short vowels), zero-width and bidirectional control characters are removed, other white space becomes a space,
+and
+the text is lower-cased. Latin, Cyrillic, Greek, Arabic, Georgian and Devanagari are compared letter for letter in their
+own script. No transliteration between scripts is performed, so a Cyrillic or Arabic spelling will not match a Latin
+list
+entry.
+
+Lookalike letters are folded identically when the list is loaded and when a search or model lookup is made: within a
+word, if every letter is either Latin or a Cyrillic or Greek letter that looks like a Latin one (for example Cyrillic
+a, e, o, p, c, x, y or Greek alpha, omicron, nu), the lookalikes are replaced by their Latin letters, so a Cyrillic or
+Greek lookalike spelling of a listed Latin name is found at the same distance as the Latin spelling. A word containing
+any letter that has no Latin lookalike (for example Cyrillic g, d, l or Greek final sigma), and every Arabic, Urdu,
+Georgian and Devanagari word, is left exactly as written. Digits that resemble letters (0 and O, 1 and l) are not
+folded.
+Transliteration between scripts (Arabic or Cyrillic to Latin) is a separate feature and is not performed.
+<!-- TODO(docs): owner to confirm the lookalike table (embedded in Jube.Engine/Sanctions/SanctionTextFolding.cs) and the transliteration position. -->
+
+The list is tokenised and folded once when an entry is loaded or replaced and kept with the entry in memory, so a search
+only folds the searched string. Since the page is now permission checked on the server, the role permission list in the
+Administration documentation should show View Sanction (29) as the permission that the Sanctions menu item and the
+search API both require.
+<!-- TODO(docs): add View Sanction (29) to the roles documentation if it is not listed there. -->
+
+Names are displayed with the page direction; entries in right-to-left scripts inside a left-to-right page are not yet
+isolated from the surrounding text.
+<!-- TODO(docs): remove this sentence once the grid isolates cell text with dir="auto". -->
+

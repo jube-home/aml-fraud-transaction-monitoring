@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchPercentOfInRange(double total, double lowerBound, double upperBound)
+            [Description("True when: the value as a percentage of the total is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentOfInRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoublePercentOfInRange(flow.Value, total, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectPercentOfInRange(double total, double lowerBound, double upperBound)
+            [Description("True when: the value as a percentage of the total is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentOfInRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoublePercentOfInRange(flow.Value, total, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakPercentOfInRange(double total, double lowerBound, double upperBound)
+            [Description("True when: the value as a percentage of the total is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentOfInRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoublePercentOfInRange(flow.Value, total, lowerBound, upperBound));
             }
 
-            public Flow<double> RequirePercentOfInRange(double total, double lowerBound, double upperBound)
+            [Description("True when: the value as a percentage of the total is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentOfInRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoublePercentOfInRange(flow.Value, total, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsurePercentOfInRange(double total, double lowerBound, double upperBound)
+            [Description("True when: the value as a percentage of the total is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentOfInRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchPercentOfInRange(double total, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value as a percentage of the total is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentOfInRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchPercentOfInRange(total, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectPercentOfInRange(double total, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value as a percentage of the total is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentOfInRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectPercentOfInRange(total, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakPercentOfInRange(double total, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value as a percentage of the total is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentOfInRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakPercentOfInRange(total, lowerBound, upperBound);
             }
 
-            public Flow<double> RequirePercentOfInRange(double total, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value as a percentage of the total is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentOfInRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequirePercentOfInRange(total, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsurePercentOfInRange(double total, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value as a percentage of the total is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentOfInRange([Description("The total the value is a part of.")] double total,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsurePercentOfInRange(total, lowerBound, upperBound);
             }

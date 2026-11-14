@@ -15,7 +15,11 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double RatioOfRatios(this double @this, double denominator, double otherNumerator, double otherDenominator)
+        [Description("The value over its denominator, divided by another numerator over its own denominator.")]
+        public static double RatioOfRatios(this double @this,
+            [Description("The number the value is divided by.")] double denominator,
+            [Description("The numerator of the other ratio.")] double otherNumerator,
+            [Description("The denominator of the other ratio.")] double otherDenominator)
         {
             return otherDenominator == 0 ? double.NaN : CalculationSupport.Finite(@this / denominator / (otherNumerator / otherDenominator));
         }

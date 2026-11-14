@@ -56,8 +56,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(27)] public string DefaultValue { get; set; }
         [Column] [Nullable] [Key(28)] public int? SearchKeyFetchLimit { get; set; }
 
-        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true)]
         [Key(29)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
 

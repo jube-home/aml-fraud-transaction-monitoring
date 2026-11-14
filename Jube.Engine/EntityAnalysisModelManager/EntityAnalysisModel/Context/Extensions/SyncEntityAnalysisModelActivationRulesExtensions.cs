@@ -16,9 +16,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using System.Web;
     using Data.Repository;
     using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
     using Jube.Engine.EntityAnalysisModelManager.Helpers;
@@ -33,7 +33,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
         {
             try
             {
-                foreach (var (key, value) in context.EntityAnalysisModels.ActiveEntityAnalysisModels)
+                foreach (var (key, value) in context.ModelsInScope())
                 {
                     context.Services.CancellationToken.ThrowIfCancellationRequested();
 
@@ -219,6 +219,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
                             modelActivationRule.EnableOverride = record.EnableOverride == 1;
                             modelActivationRule.EnableForce = record.EnableForce == 1;
+                            modelActivationRule.Shadow = record.Shadow == 1;
                             modelActivationRule.OverrideKey = record.OverrideKey;
 
                             if (context.Services.Log.IsDebugEnabled)
@@ -353,48 +354,6 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 }
                             }
 
-                            if (record.EnableNotification.HasValue)
-                            {
-                                modelActivationRule.EnableNotification = record.EnableNotification == 1;
-
-                                if (context.Services.Log.IsDebugEnabled)
-                                {
-                                    context.Services.Log.Debug(
-                                        $"Entity Start: Entity Model {key} and Activation Rule {modelActivationRule.Id} set Enable Notification value set as {modelActivationRule.EnableNotification}.");
-                                }
-                            }
-                            else
-                            {
-                                modelActivationRule.EnableNotification = false;
-
-                                if (context.Services.Log.IsDebugEnabled)
-                                {
-                                    context.Services.Log.Debug(
-                                        $"Entity Start: Entity Model {key} and Activation Rule {modelActivationRule.Id} set DEFAULT Enable Notification value set as {modelActivationRule.EnableNotification}.");
-                                }
-                            }
-
-                            if (record.NotificationTypeId.HasValue)
-                            {
-                                modelActivationRule.NotificationTypeId = record.NotificationTypeId.Value;
-
-                                if (context.Services.Log.IsDebugEnabled)
-                                {
-                                    context.Services.Log.Debug(
-                                        $"Entity Start: Entity Model {key} and Activation Rule {modelActivationRule.Id} set Notification Type value set as {modelActivationRule.NotificationTypeId}.");
-                                }
-                            }
-                            else
-                            {
-                                modelActivationRule.NotificationTypeId = 1;
-
-                                if (context.Services.Log.IsDebugEnabled)
-                                {
-                                    context.Services.Log.Debug(
-                                        $"Entity Start: Entity Model {key} and Activation Rule {modelActivationRule.Id} set DEFAULT Notification Type value set as {modelActivationRule.NotificationTypeId}.");
-                                }
-                            }
-
                             if (record.CaseKey != null)
                             {
                                 modelActivationRule.CaseKey = record.CaseKey;
@@ -432,70 +391,6 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 {
                                     context.Services.Log.Debug(
                                         $"Entity Start: Entity Model {key} and Activation Rule {modelActivationRule.Id} set DEFAULT Response Elevation Key set as {modelActivationRule.ResponseElevationKey}.");
-                                }
-                            }
-
-                            if (record.NotificationDestination != null)
-                            {
-                                modelActivationRule.NotificationDestination = record.NotificationDestination;
-
-                                if (context.Services.Log.IsDebugEnabled)
-                                {
-                                    context.Services.Log.Debug(
-                                        $"Entity Start: Entity Model {key} and Activation Rule {modelActivationRule.Id} set Notification Destination value set as {modelActivationRule.NotificationDestination}.");
-                                }
-                            }
-                            else
-                            {
-                                modelActivationRule.NotificationDestination = "";
-
-                                if (context.Services.Log.IsDebugEnabled)
-                                {
-                                    context.Services.Log.Debug(
-                                        $"Entity Start: Entity Model {key} and Activation Rule {modelActivationRule.Id} set DEFAULT Notification Destination value set as {modelActivationRule.NotificationDestination}.");
-                                }
-                            }
-
-                            if (record.NotificationSubject != null)
-                            {
-                                modelActivationRule.NotificationSubject = record.NotificationSubject;
-
-                                if (context.Services.Log.IsDebugEnabled)
-                                {
-                                    context.Services.Log.Debug(
-                                        $"Entity Start: Entity Model {key} and Activation Rule {modelActivationRule.Id} set Notification Subject value set as {modelActivationRule.NotificationSubject}.");
-                                }
-                            }
-                            else
-                            {
-                                modelActivationRule.NotificationSubject = "";
-
-                                if (context.Services.Log.IsDebugEnabled)
-                                {
-                                    context.Services.Log.Debug(
-                                        $"Entity Start: Entity Model {key} and Activation Rule {modelActivationRule.Id} set DEFAULT Notification Subject value set as {modelActivationRule.NotificationSubject}.");
-                                }
-                            }
-
-                            if (record.NotificationBody != null)
-                            {
-                                modelActivationRule.NotificationBody =
-                                    HttpUtility.HtmlDecode(record.NotificationBody);
-
-                                if (context.Services.Log.IsDebugEnabled)
-                                {
-                                    context.Services.Log.Debug(
-                                        $"Entity Start: Entity Model {key} and Activation Rule {modelActivationRule.Id} set Notification Body value set as {modelActivationRule.NotificationBody}.");
-                                }
-                            }
-                            else
-                            {
-                                modelActivationRule.NotificationBody = "";
-
-                                if (context.Services.Log.IsDebugEnabled)
-                                {
-                                    context.Services.Log.Debug(
-                                        $"Entity Start: Entity Model {key} and Activation Rule {modelActivationRule.Id} set DEFAULT Notification Body value set as {modelActivationRule.NotificationBody}.");
                                 }
                             }
 
@@ -730,6 +625,16 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                 }
                             }
 
+                            if (modelActivationRule.EnableResponseElevation
+                                && !context.Snapshots.Builder(key, value).EntityAnalysisModelResponseElevationRanges
+                                    .Any(a => a.Contains(modelActivationRule.ResponseElevation)))
+                            {
+                                modelActivationRule.EnableResponseElevation = false;
+
+                                context.Services.Log.Warn(
+                                    $"Entity Start: Entity Model {key} and Activation Rule {modelActivationRule.Id} has a Response Elevation of {modelActivationRule.ResponseElevation} which is not inside an active Response Elevation Range so it will not be sent out.");
+                            }
+
                             if (record.CaseWorkflowGuid != Guid.Empty)
                             {
                                 modelActivationRule.CaseWorkflowGuid = record.CaseWorkflowGuid;
@@ -906,7 +811,10 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     Path.Combine(context.Paths.BinaryPath ?? throw new InvalidOperationException(),
                                         "log4net.dll"),
                                     Path.Combine(context.Paths.BinaryPath, "Jube.Dictionary.dll"),
-                                    Path.Combine(context.Paths.BinaryPath, "Jube.HttpAdaptationProtocol.dll")
+                                    Path.Combine(context.Paths.BinaryPath, "Svirfd.dll"),
+                                    Path.Combine(context.Paths.BinaryPath, "Jube.Svirfd.dll"),
+                                    Path.Combine(context.Paths.BinaryPath, "Jube.HttpAdaptationProtocol.dll"),
+                                    Path.Combine(context.Paths.BinaryPath, "Jube.GraphRecallProtocol.dll")
                                 ], Compile.Language.Vb);
 
                                 if (context.Services.Log.IsDebugEnabled)

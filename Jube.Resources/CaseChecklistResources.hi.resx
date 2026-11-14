@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>आपको यह कार्रवाई करने की अनुमति नहीं है।</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>यह कार्रवाई करने के लिए आपको किसी टेनेंट में साइन इन होना चाहिए।</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>केस नहीं मिला या आपके पास उस तक पहुँच नहीं है।</value>
+  </data>
+    <data name="CaseClosed" xml:space="preserve">
+    <value>केस बंद है, इसलिए उसकी चेकलिस्ट अब बदली नहीं जा सकती।</value>
+  </data>
+    <data name="NotLockHolder" xml:space="preserve">
+    <value>केवल वही उपयोगकर्ता जिसके पास केस है, उसकी चेकलिस्ट मदों पर निशान लगा या हटा सकता है।</value>
+  </data>
+    <data name="ItemNotFound" xml:space="preserve">
+    <value>चेकलिस्ट मद इस केस पर नहीं मिली।</value>
+  </data>
+    <data name="ItemNotShown" xml:space="preserve">
+    <value>यह मद वर्तमान में केस पर दिखाई नहीं दे रही है, इसलिए उस पर निशान नहीं लगाया जा सकता।</value>
+  </data>
+    <data name="ItemAlreadyDone" xml:space="preserve">
+    <value>इस मद पर पहले ही निशान लगाया जा चुका है।</value>
+  </data>
+    <data name="ItemNotDone" xml:space="preserve">
+    <value>इस मद पर निशान नहीं लगा है, इसलिए हटाने के लिए कुछ नहीं है।</value>
+  </data>
+    <data name="ValidationFailedDefault" xml:space="preserve">
+    <value>इस मद पर निशान लगाने की शर्त पूरी नहीं हुई है।</value>
+  </data>
+    <data name="OverrideForbidden" xml:space="preserve">
+    <value>आपको चेकलिस्ट गेट को ओवरराइड करने की अनुमति नहीं है।</value>
+  </data>
+    <data name="OverrideReasonRequired" xml:space="preserve">
+    <value>चेकलिस्ट गेट को ओवरराइड करने के लिए कारण आवश्यक है।</value>
+  </data>
+    <data name="OverrideReasonTooLong" xml:space="preserve">
+    <value>कारण 1000 अक्षरों से अधिक नहीं होना चाहिए।</value>
+  </data>
+    <data name="OverrideHolderCannotOverride" xml:space="preserve">
+    <value>केस रखने वाला उपयोगकर्ता उसके चेकलिस्ट गेट को ओवरराइड नहीं कर सकता; यह पर्यवेक्षक को करना होगा।</value>
+  </data>
+    <data name="OverrideNothingOpen" xml:space="preserve">
+    <value>कोई खुली चेकलिस्ट मद नहीं है, इसलिए ओवरराइड करने के लिए कुछ नहीं है।</value>
+  </data>
+    <data name="OverrideAlreadyGranted" xml:space="preserve">
+    <value>केस जिस स्थिति में है, उसके लिए ओवरराइड पहले ही दिया जा चुका है।</value>
+  </data>
+</root>

@@ -76,7 +76,7 @@
     <value>A search key is required when Search is enabled.</value>
   </data>
     <data name="SearchValueRange" xml:space="preserve">
-    <value>The search value cannot be negative.</value>
+    <value>The search value must be zero or more and within the limit for the chosen interval.</value>
   </data>
     <data name="SearchIntervalInvalid" xml:space="preserve">
     <value>The search interval must be Seconds, Minutes, Hours or Days.</value>
@@ -91,9 +91,15 @@
     <value>The offset type must be First, Last, Skip First or Take Last.</value>
   </data>
     <data name="OffsetValueRange" xml:space="preserve">
-    <value>The offset value cannot be negative.</value>
+    <value>The offset value must be between 0 and 1,000,000.</value>
   </data>
     <data name="JsonInvalid" xml:space="preserve">
     <value>The rule builder definition must be valid JSON of no more than 1 MB.</value>
+  </data>
+    <data name="IterationOrderIdInvalid" xml:space="preserve">
+    <value>The iteration order must be Ascending or Descending.</value>
+  </data>
+    <data name="SearchFunctionParametersInvalid" xml:space="preserve">
+    <value>The function parameters are not valid for the selected function. {0}</value>
   </data>
 </root>

@@ -20,6 +20,7 @@ namespace Jube.Data.Repository
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
 
     public class CaseWorkflowFormEntryRepository
@@ -51,16 +52,16 @@ namespace Jube.Data.Repository
         public async Task<IEnumerable<CaseWorkflowFormEntry>> GetAsync(CancellationToken token = default)
         {
             return await dbContext.CaseWorkflowFormEntry.Where(w =>
-                w.Case.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
-                !tenantRegistryId.HasValue).ToListAsync(token);
+                w.Case.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId &&
+                tenantRegistryId.HasValue).ToListAsync(token);
         }
 
         public async Task<IEnumerable<CaseWorkflowFormEntry>> GetByCaseKeyValueActiveOnlyAsync(string key, string value,
             CancellationToken token = default)
         {
             return await dbContext.CaseWorkflowFormEntry.Where(w
-                => (w.Case.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
-                    !tenantRegistryId.HasValue)
+                => tenantRegistryId.HasValue
+                   && w.Case.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
                    && (w.Case.CaseWorkflow.EntityAnalysisModel.Deleted == 0 ||
                        w.Case.CaseWorkflow.EntityAnalysisModel.Deleted == null)
                    && (w.Case.CaseWorkflow.Deleted == 0 || w.Case.CaseWorkflow.Deleted == null)
@@ -75,6 +76,14 @@ namespace Jube.Data.Repository
                                .Any(u => u.RoleRegistryGuid == rr.Guid && u.Name == userName)))
                    && dbContext.CaseWorkflowStatusRole
                        .Where(r => r.CaseWorkflowStatusGuid == w.Case.CaseWorkflowStatus.Guid
+                                   && (r.Deleted == 0 || r.Deleted == null))
+                       .Any(r => dbContext.RoleRegistry
+                           .Where(rr => rr.Guid == r.RoleRegistryGuid && (rr.Deleted == 0 || rr.Deleted == null))
+                           .Any(rr => dbContext.UserRegistry
+                               .Any(u => u.RoleRegistryGuid == rr.Guid && u.Name == userName)))
+                   && dbContext.CaseWorkflowFormRole
+                       .Where(r => dbContext.CaseWorkflowForm
+                                       .Any(f => f.Id == w.CaseWorkflowFormId && f.Guid == r.CaseWorkflowFormGuid)
                                    && (r.Deleted == 0 || r.Deleted == null))
                        .Any(r => dbContext.RoleRegistry
                            .Where(rr => rr.Guid == r.RoleRegistryGuid && (rr.Deleted == 0 || rr.Deleted == null))

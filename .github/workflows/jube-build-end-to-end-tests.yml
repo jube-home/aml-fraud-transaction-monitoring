@@ -93,7 +93,7 @@ jobs:
       # The stack's own jube container runs the cache prune server against database 0 of the same Redis, and it
       # deletes payloads, journals and ledgers past a threshold reference date. A test that asserts the cache is
       # exactly as it left it cannot share a keyspace with it, so the suite is given a logical database of its own.
-      JubeTestRedisConnectionString: "localhost,defaultDatabase=1"
+      JubeTestRespConnectionString: "localhost,defaultDatabase=1"
 
     steps:
       - uses: actions/checkout@v5
@@ -182,7 +182,7 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --no-restore -c Release
+        run: dotnet build --no-restore -c Release -p:SkipClientBuild=true
 
       - name: Run the ${{ matrix.slice }} slice
         id: first_run

@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchJaroWinklerAtLeast(string? other, double threshold)
+            [Description("True when: Jaro-Winkler similarity to the argument is at least the threshold. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchJaroWinklerAtLeast([Description("The text the value is compared with.")] string? other,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringJaroWinklerAtLeast(flow.Value, other, threshold));
             }
 
-            public Flow<string?> RejectJaroWinklerAtLeast(string? other, double threshold)
+            [Description("True when: Jaro-Winkler similarity to the argument is at least the threshold. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectJaroWinklerAtLeast([Description("The text the value is compared with.")] string? other,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringJaroWinklerAtLeast(flow.Value, other, threshold));
             }
 
-            public Flow<string?> BreakJaroWinklerAtLeast(string? other, double threshold)
+            [Description("True when: Jaro-Winkler similarity to the argument is at least the threshold. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakJaroWinklerAtLeast([Description("The text the value is compared with.")] string? other,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringJaroWinklerAtLeast(flow.Value, other, threshold));
             }
 
-            public Flow<string?> RequireJaroWinklerAtLeast(string? other, double threshold)
+            [Description("True when: Jaro-Winkler similarity to the argument is at least the threshold. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireJaroWinklerAtLeast([Description("The text the value is compared with.")] string? other,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringJaroWinklerAtLeast(flow.Value, other, threshold));
             }
 
-            public Flow<string?> EnsureJaroWinklerAtLeast(string? other, double threshold)
+            [Description("True when: Jaro-Winkler similarity to the argument is at least the threshold. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureJaroWinklerAtLeast([Description("The text the value is compared with.")] string? other,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchJaroWinklerAtLeast(string? other, double threshold)
+            [Description("Begins a pipeline from the value. True when: Jaro-Winkler similarity to the argument is at least the threshold. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchJaroWinklerAtLeast([Description("The text the value is compared with.")] string? other,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().MatchJaroWinklerAtLeast(other, threshold);
             }
 
-            public Flow<string?> RejectJaroWinklerAtLeast(string? other, double threshold)
+            [Description("Begins a pipeline from the value. True when: Jaro-Winkler similarity to the argument is at least the threshold. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectJaroWinklerAtLeast([Description("The text the value is compared with.")] string? other,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().RejectJaroWinklerAtLeast(other, threshold);
             }
 
-            public Flow<string?> BreakJaroWinklerAtLeast(string? other, double threshold)
+            [Description("Begins a pipeline from the value. True when: Jaro-Winkler similarity to the argument is at least the threshold. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakJaroWinklerAtLeast([Description("The text the value is compared with.")] string? other,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().BreakJaroWinklerAtLeast(other, threshold);
             }
 
-            public Flow<string?> RequireJaroWinklerAtLeast(string? other, double threshold)
+            [Description("Begins a pipeline from the value. True when: Jaro-Winkler similarity to the argument is at least the threshold. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireJaroWinklerAtLeast([Description("The text the value is compared with.")] string? other,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().RequireJaroWinklerAtLeast(other, threshold);
             }
 
-            public Flow<string?> EnsureJaroWinklerAtLeast(string? other, double threshold)
+            [Description("Begins a pipeline from the value. True when: Jaro-Winkler similarity to the argument is at least the threshold. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureJaroWinklerAtLeast([Description("The text the value is compared with.")] string? other,
+                [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().EnsureJaroWinklerAtLeast(other, threshold);
             }

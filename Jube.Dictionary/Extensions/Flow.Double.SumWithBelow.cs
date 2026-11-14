@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchSumWithBelow(double bound, params double[] others)
+            [Description("True when: the value plus the others is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchSumWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleSumWithBelow(flow.Value, bound, others));
             }
 
-            public Flow<double> RejectSumWithBelow(double bound, params double[] others)
+            [Description("True when: the value plus the others is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectSumWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleSumWithBelow(flow.Value, bound, others));
             }
 
-            public Flow<double> BreakSumWithBelow(double bound, params double[] others)
+            [Description("True when: the value plus the others is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakSumWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleSumWithBelow(flow.Value, bound, others));
             }
 
-            public Flow<double> RequireSumWithBelow(double bound, params double[] others)
+            [Description("True when: the value plus the others is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireSumWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleSumWithBelow(flow.Value, bound, others));
             }
 
-            public Flow<double> EnsureSumWithBelow(double bound, params double[] others)
+            [Description("True when: the value plus the others is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureSumWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchSumWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value plus the others is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchSumWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().MatchSumWithBelow(bound, others);
             }
 
-            public Flow<double> RejectSumWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value plus the others is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectSumWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RejectSumWithBelow(bound, others);
             }
 
-            public Flow<double> BreakSumWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value plus the others is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakSumWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().BreakSumWithBelow(bound, others);
             }
 
-            public Flow<double> RequireSumWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value plus the others is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireSumWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RequireSumWithBelow(bound, others);
             }
 
-            public Flow<double> EnsureSumWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the value plus the others is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureSumWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().EnsureSumWithBelow(bound, others);
             }

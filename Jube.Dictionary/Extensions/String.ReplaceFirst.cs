@@ -6,7 +6,9 @@ namespace Jube.Dictionary.Extensions
     {
         extension(string @this)
         {
-            public string ReplaceFirst(string oldValue, string newValue)
+            [Description("Replaces the first occurrence of a substring.")]
+            public string ReplaceFirst([Description("The value to replace.")] string oldValue,
+                [Description("The replacement value.")] string newValue)
             {
                 var startindex = @this.IndexOf(oldValue, StringComparison.Ordinal);
 
@@ -18,7 +20,10 @@ namespace Jube.Dictionary.Extensions
                 return @this.Remove(startindex, oldValue.Length).Insert(startindex, newValue);
             }
 
-            public string ReplaceFirst(int number, string oldValue, string newValue)
+            [Description("Replaces the first N occurrences of a substring.")]
+            public string ReplaceFirst([Description("The number of occurrences to replace.")] int number,
+                [Description("The value to replace.")] string oldValue,
+                [Description("The replacement value.")] string newValue)
             {
                 var list = @this.Split(oldValue).ToList();
                 var old = number + 1;

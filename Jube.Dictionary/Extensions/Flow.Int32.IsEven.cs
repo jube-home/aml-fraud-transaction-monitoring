@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<int> flow)
         {
+            [Description("True when: an even number. Decides matched if so; otherwise continues.")]
             public Flow<int> MatchIsEven()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.Int32IsEven(flow.Value));
             }
 
+            [Description("True when: an even number. Decides rejected if so; otherwise continues.")]
             public Flow<int> RejectIsEven()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.Int32IsEven(flow.Value));
             }
 
+            [Description("True when: an even number. Decides broken if so; otherwise continues.")]
             public Flow<int> BreakIsEven()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.Int32IsEven(flow.Value));
             }
 
+            [Description("True when: an even number. Continues if so; otherwise decides rejected.")]
             public Flow<int> RequireIsEven()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.Int32IsEven(flow.Value));
             }
 
+            [Description("True when: an even number. Continues if so; otherwise decides broken.")]
             public Flow<int> EnsureIsEven()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(int value)
         {
+            [Description("Begins a pipeline from the value. True when: an even number. Decides matched if so; otherwise continues.")]
             public Flow<int> MatchIsEven()
             {
                 return value.Start().MatchIsEven();
             }
 
+            [Description("Begins a pipeline from the value. True when: an even number. Decides rejected if so; otherwise continues.")]
             public Flow<int> RejectIsEven()
             {
                 return value.Start().RejectIsEven();
             }
 
+            [Description("Begins a pipeline from the value. True when: an even number. Decides broken if so; otherwise continues.")]
             public Flow<int> BreakIsEven()
             {
                 return value.Start().BreakIsEven();
             }
 
+            [Description("Begins a pipeline from the value. True when: an even number. Continues if so; otherwise decides rejected.")]
             public Flow<int> RequireIsEven()
             {
                 return value.Start().RequireIsEven();
             }
 
+            [Description("Begins a pipeline from the value. True when: an even number. Continues if so; otherwise decides broken.")]
             public Flow<int> EnsureIsEven()
             {
                 return value.Start().EnsureIsEven();

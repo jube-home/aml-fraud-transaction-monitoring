@@ -16,14 +16,16 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Fastenshtein;
+using Jube.Dictionary.Extensions;
+using Jube.Dictionary.Fuzzy;
 using Jube.Engine.Sanctions.Models;
 
 namespace Jube.Engine.Sanctions
 {
-    public sealed class LevenshteinDistance(double? maxDistanceRatio = null, double? maxCoverageRatio = null)
+    public sealed class LevenshteinDistance(double? maxDistanceRatio = null, double? maxCoverageRatio = null,
+        SanctionMatchOptions options = null)
     {
         public const double DefaultMaxDistanceRatio = 0.3;
         public const double DefaultMaxCoverageRatio = 2.0;
@@ -41,7 +43,8 @@ namespace Jube.Engine.Sanctions
                 return [];
             }
 
-            var inputTokens = Tokenize(multiPartString, stopTokens);
+            var inputTokens = Tokenize(effectiveOptions.Transliterate ? multiPartString.TransliterateToLatin() : multiPartString,
+                stopTokens);
 
             if (inputTokens.Length == 0)
             {
@@ -50,10 +53,11 @@ namespace Jube.Engine.Sanctions
 
             Parallel.ForEach(sanctionsEntries.Values, entry =>
             {
-                var entryTokens = entry.SanctionElementValue
-                    .SelectMany(value => Tokenize(value, stopTokens))
-                    .Distinct()
-                    .ToArray();
+                var sourceTokens = effectiveOptions.Transliterate ? entry.LatinTokens : entry.Tokens;
+
+                var entryTokens = stopTokens.IsEmpty
+                    ? sourceTokens
+                    : sourceTokens.Where(t => !stopTokens.ContainsKey(t)).ToArray();
 
                 if (entryTokens.Length == 0)
                 {
@@ -73,7 +77,7 @@ namespace Jube.Engine.Sanctions
                 }
             });
 
-            return [.. sanctionsEntriesReturn.Values];
+            return [.. sanctionsEntriesReturn.Values.OrderBy(r => r.SanctionEntry.SanctionEntryId)];
         }
 
         public static double? ParseNullableDistanceRatio(string rawValue)
@@ -92,10 +96,38 @@ namespace Jube.Engine.Sanctions
                 : null;
         }
 
+        private readonly SanctionMatchOptions effectiveOptions = options ?? new SanctionMatchOptions();
         private readonly double effectiveMaxCoverageRatio = maxCoverageRatio ?? DefaultMaxCoverageRatio;
         private readonly double effectiveMaxDistanceRatio = maxDistanceRatio ?? DefaultMaxDistanceRatio;
 
         private int? ScoreMatch(
+            string[] inputTokens,
+            string[] entryTokens,
+            int maxDistance)
+        {
+            return effectiveOptions.AlgorithmId == SanctionMatchOptions.TokenSet
+                ? ScoreWholeName(inputTokens, entryTokens, maxDistance)
+                : ScorePairs(inputTokens, entryTokens, maxDistance);
+        }
+
+        private int? ScoreWholeName(string[] inputTokens, string[] entryTokens, int maxDistance)
+        {
+            var input = string.Join(' ', inputTokens);
+            var entry = string.Join(' ', entryTokens);
+
+            if (FuzzyScorers.TokenSet(input, entry) < effectiveOptions.MinimumSimilarity)
+            {
+                return null;
+            }
+
+            var sortedInput = string.Join(' ', inputTokens.OrderBy(t => t, StringComparer.Ordinal));
+            var sortedEntry = string.Join(' ', entryTokens.OrderBy(t => t, StringComparer.Ordinal));
+            var distance = new Levenshtein(sortedEntry).DistanceFrom(sortedInput);
+
+            return distance <= maxDistance * Math.Max(inputTokens.Length, entryTokens.Length) ? distance : null;
+        }
+
+        private int? ScorePairs(
             string[] inputTokens,
             string[] entryTokens,
             int maxDistance)
@@ -120,6 +152,7 @@ namespace Jube.Engine.Sanctions
             foreach (var inputToken in inputTokens.OrderByDescending(t => t.Length).Take(pairsToMatch))
             {
                 var bestDistance = int.MaxValue;
+                var bestSimilarity = -1d;
                 var bestIndex = -1;
 
                 for (var i = 0; i < entryTokens.Length; i++)
@@ -130,6 +163,20 @@ namespace Jube.Engine.Sanctions
                     }
 
                     var distance = new Levenshtein(entryTokens[i]).DistanceFrom(inputToken);
+
+                    if (effectiveOptions.AlgorithmId == SanctionMatchOptions.JaroWinkler)
+                    {
+                        var similarity = FuzzyScorers.JaroWinkler(inputToken, entryTokens[i]);
+
+                        if (similarity > bestSimilarity || (similarity == bestSimilarity && distance < bestDistance))
+                        {
+                            bestSimilarity = similarity;
+                            bestDistance = distance;
+                            bestIndex = i;
+                        }
+
+                        continue;
+                    }
 
                     if (distance < bestDistance)
                     {
@@ -143,12 +190,22 @@ namespace Jube.Engine.Sanctions
                     return null;
                 }
 
-                var tokenThreshold = EffectiveTokenThreshold(
-                    inputToken.Length, entryTokens[bestIndex].Length, maxDistance);
-
-                if (bestDistance > tokenThreshold)
+                if (effectiveOptions.AlgorithmId == SanctionMatchOptions.JaroWinkler)
                 {
-                    return null;
+                    if (bestSimilarity < effectiveOptions.MinimumSimilarity || bestDistance > maxDistance)
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    var tokenThreshold = EffectiveTokenThreshold(
+                        inputToken.Length, entryTokens[bestIndex].Length, maxDistance);
+
+                    if (bestDistance > tokenThreshold)
+                    {
+                        return null;
+                    }
                 }
 
                 usedEntryIndices.Add(bestIndex);
@@ -171,21 +228,8 @@ namespace Jube.Engine.Sanctions
         {
             return
             [
-                .. raw
-                    .Normalize(NormalizationForm.FormD)
-                    .Where(c => CharUnicodeInfo.GetUnicodeCategory(c)
-                                != UnicodeCategory.NonSpacingMark)
-                    .Aggregate(new StringBuilder(), (sb, c) => sb.Append(c))
-                    .ToString()
-                    .ToLowerInvariant()
-                    .Replace("-", " ")
-                    .Replace(",", " ")
-                    .Replace(".", " ")
-                    .Replace("'", "")
-                    .Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(t => t.Trim())
-                    .Where(t => t.Length > 1 && !stopTokens.ContainsKey(t))
-                    .Distinct()
+                .. SanctionTextFolding.Tokens(raw)
+                    .Where(t => !stopTokens.ContainsKey(t))
             ];
         }
     }

@@ -4,7 +4,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string RemoveWhere(this string @this, Func<char, bool> predicate)
+        [Description("Returns the text without the characters for which the predicate is true.")]
+        public static string RemoveWhere(this string @this,
+            [Description("The test a character must pass to be removed.")] Func<char, bool> predicate)
         {
             return new string(@this.ToCharArray().Where(x => !predicate(x)).ToArray());
         }

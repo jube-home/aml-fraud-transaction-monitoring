@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double RoundToNearest(this double @this, double increment)
+        [Description("Rounds to the nearest multiple of an increment, halves away from zero; NaN for a non-positive increment.")]
+        public static double RoundToNearest(this double @this,
+            [Description("The multiple to round to.")] double increment)
         {
             if (!double.IsFinite(@this) || !double.IsFinite(increment) || increment <= 0)
             {

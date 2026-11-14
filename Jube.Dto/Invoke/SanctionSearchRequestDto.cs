@@ -16,13 +16,20 @@
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable RedundantAttributeUsageProperty
 
+using MessagePack;
+
 namespace Jube.Dto.Invoke
 {
+    [MessagePackObject]
     public class SanctionSearchRequestDto
     {
+        [Key(0)]
         public string? MultiPartString { get; set; }
+        [Key(1)]
         public string? Distance { get; set; }
+        [Key(2)]
         public string? MaxDistanceRatio { get; set; }
+        [Key(3)]
         public string? MaxCoverageRatio { get; set; }
     }
 }

@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Converts a Unicode code point to a UTF-16 string.")]
         public static String ConvertFromUtf32(this Int32 utf32)
         {
             return char.ConvertFromUtf32(utf32);

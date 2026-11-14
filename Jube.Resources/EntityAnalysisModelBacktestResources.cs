@@ -21,5 +21,14 @@ namespace Jube.Resources
         public const string RuleTypeInvalid = nameof(RuleTypeInvalid);
         public const string RangeInvalid = nameof(RangeInvalid);
         public const string InstanceNotFound = nameof(InstanceNotFound);
+        public const string RuleTextRequired = nameof(RuleTextRequired);
+        public const string ArchiveNotFound = nameof(ArchiveNotFound);
+        public const string LimitTooLarge = nameof(LimitTooLarge);
+        public const string ResultUnavailable = nameof(ResultUnavailable);
+        public const string OnlineTimeLimit = nameof(OnlineTimeLimit);
+        public const string PendingLimitModel = nameof(PendingLimitModel);
+        public const string PendingLimitTenant = nameof(PendingLimitTenant);
+        public const string PlaceholderNotInRule = nameof(PlaceholderNotInRule);
+        public const string CandidatesInvalid = nameof(CandidatesInvalid);
     }
 }

@@ -39,6 +39,7 @@ using Jube.Service.Repository.ExhaustiveSearchInstance;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using LinqToDB.Data;
 using log4net;
 using Microsoft.Extensions.Localization;

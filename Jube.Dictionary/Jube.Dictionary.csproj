@@ -8,12 +8,16 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Using Include="System.ComponentModel"/>
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="AsyncFixer" Version="1.6.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="DynamicExpresso.Core" Version="2.19.5"/>
-        <PackageReference Include="MessagePack" Version="3.1.7"/>
+        <PackageReference Include="MessagePack" Version="3.1.12"/>
         <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchLessOrEqual(double other)
+            [Description("True when: the value is less than or equal to the argument. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchLessOrEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleLessOrEqual(flow.Value, other));
             }
 
-            public Flow<double> RejectLessOrEqual(double other)
+            [Description("True when: the value is less than or equal to the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectLessOrEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleLessOrEqual(flow.Value, other));
             }
 
-            public Flow<double> BreakLessOrEqual(double other)
+            [Description("True when: the value is less than or equal to the argument. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakLessOrEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleLessOrEqual(flow.Value, other));
             }
 
-            public Flow<double> RequireLessOrEqual(double other)
+            [Description("True when: the value is less than or equal to the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireLessOrEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleLessOrEqual(flow.Value, other));
             }
 
-            public Flow<double> EnsureLessOrEqual(double other)
+            [Description("True when: the value is less than or equal to the argument. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureLessOrEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchLessOrEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value is less than or equal to the argument. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchLessOrEqual([Description("The other number.")] double other)
             {
                 return value.Start().MatchLessOrEqual(other);
             }
 
-            public Flow<double> RejectLessOrEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value is less than or equal to the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectLessOrEqual([Description("The other number.")] double other)
             {
                 return value.Start().RejectLessOrEqual(other);
             }
 
-            public Flow<double> BreakLessOrEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value is less than or equal to the argument. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakLessOrEqual([Description("The other number.")] double other)
             {
                 return value.Start().BreakLessOrEqual(other);
             }
 
-            public Flow<double> RequireLessOrEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value is less than or equal to the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireLessOrEqual([Description("The other number.")] double other)
             {
                 return value.Start().RequireLessOrEqual(other);
             }
 
-            public Flow<double> EnsureLessOrEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value is less than or equal to the argument. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureLessOrEqual([Description("The other number.")] double other)
             {
                 return value.Start().EnsureLessOrEqual(other);
             }

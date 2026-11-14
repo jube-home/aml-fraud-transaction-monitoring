@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using Jube.Data.Query.GetApprovedEntityQuery;
 using Jube.Data.Repository.Models;
 using System;
@@ -24,6 +25,7 @@ using Jube.Data.Context;
 using Jube.Data.Extensions;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Async;
 using Microsoft.Extensions.Logging.Abstractions;
 using Jube.Data.Helpers;
 
@@ -73,6 +75,17 @@ namespace Jube.Data.Repository
                 token);
         }
 
+        public Task<bool> TtlCounterVisibleAsync(Guid entityAnalysisModelGuid, Guid entityAnalysisModelTtlCounterGuid,
+            CancellationToken token = default)
+        {
+            return dbContext.EntityAnalysisModelTtlCounter.AnyAsync(w =>
+                w.Guid == entityAnalysisModelTtlCounterGuid
+                && (w.Deleted == 0 || w.Deleted == null)
+                && w.EntityAnalysisModel.Guid == entityAnalysisModelGuid
+                && (w.EntityAnalysisModel.Deleted == 0 || w.EntityAnalysisModel.Deleted == null)
+                && (!tenantRegistryId.HasValue || w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId), token);
+        }
+
         public Task<EntityAnalysisModelActivationRule> GetByNameEntityAnalysisModelIdAsync(string name,
             int entityAnalysisModelId, CancellationToken token = default)
         {
@@ -91,6 +104,21 @@ namespace Jube.Data.Repository
                     (w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
                     && (w.Deleted == 0 || w.Deleted == null))
                 .ToListAsync(token);
+        }
+
+        public Task<bool> CaseWorkflowStatusVisibleAsync(int entityAnalysisModelId, Guid caseWorkflowGuid,
+            Guid caseWorkflowStatusGuid, CancellationToken token = default)
+        {
+            return dbContext.CaseWorkflowStatus.AnyAsync(w =>
+                w.Guid == caseWorkflowStatusGuid
+                && (w.Deleted == 0 || w.Deleted == null)
+                && w.CaseWorkflow.Guid == caseWorkflowGuid
+                && (w.CaseWorkflow.Deleted == 0 || w.CaseWorkflow.Deleted == null)
+                && w.CaseWorkflow.EntityAnalysisModelId == entityAnalysisModelId
+                && (w.CaseWorkflow.EntityAnalysisModel.Deleted == 0
+                    || w.CaseWorkflow.EntityAnalysisModel.Deleted == null)
+                && (!tenantRegistryId.HasValue
+                    || w.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId), token);
         }
 
         public async Task<IEnumerable<EntityAnalysisModelActivationRule>> GetByEntityAnalysisModelIdOrderByIdDescAsync(
@@ -142,7 +170,6 @@ namespace Jube.Data.Repository
                 .ThenByDescending(o => o.ResponseElevation)
                 .ThenByDescending(o => o.EnableCaseWorkflow)
                 .ThenBy(o => o.CaseWorkflowStatus.Priority)
-                .ThenByDescending(o => o.EnableNotification)
                 .ThenBy(o => o.Name).ToListAsync(token).ConfigureAwait(false);
         }
 
@@ -263,13 +290,25 @@ namespace Jube.Data.Repository
                 throw new KeyNotFoundException();
             }
 
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
+
             model.Version = existing.Version + 1;
             model.Deleted = 0;
             model.DeletedDate = null;
             model.DeletedUser = null;
             model.Guid = existing.Guid;
+            model.EntityAnalysisModelId = existing.EntityAnalysisModelId;
+            model.EvaluationCounter = existing.EvaluationCounter;
+            model.ActivationCounter = existing.ActivationCounter;
+            model.ForcedActivationCounter = existing.ForcedActivationCounter;
+            model.ActivationCounterDate = existing.ActivationCounterDate;
             model.CreatedUser = userName;
             model.CreatedDate = DateTime.UtcNow;
+            model.EnableNotification = existing.EnableNotification;
+            model.NotificationTypeId = existing.NotificationTypeId;
+            model.NotificationDestination = existing.NotificationDestination;
+            model.NotificationSubject = existing.NotificationSubject;
+            model.NotificationBody = existing.NotificationBody;
 
             await dbContext.UpdateAsync(model, token: token);
 

@@ -150,13 +150,13 @@ in [Event Sequencing](RuleTaxonomyTypes/EventSequencing.html). See
 
 ### Choosing Between Reference Data Constructs
 
-| Requirement                                     | Use                                                                                       |
-|-------------------------------------------------|-------------------------------------------------------------------------------------------|
-| Is this value on a set that analysts maintain?  | List                                                                                      |
-| Enrich the event with a score or number per key | Dictionary                                                                                |
+| Requirement                                     | Use                                                                                        |
+|-------------------------------------------------|--------------------------------------------------------------------------------------------|
+| Is this value on a set that analysts maintain?  | List                                                                                       |
+| Enrich the event with a score or number per key | Dictionary                                                                                 |
 | Regulatory list with fuzzy name matching        | Sanction, see [Static and Match Screening](RuleTaxonomyTypes/StaticAndMatchScreening.html) |
-| A handful of stable values that never change    | Inline literals in `In` or `ContainsAny` are acceptable                                   |
-| State written by the events themselves          | TTL Counter                                                                               |
+| A handful of stable values that never change    | Inline literals in `In` or `ContainsAny` are acceptable                                    |
+| State written by the events themselves          | TTL Counter                                                                                |
 
 ## Derived Values: Use an Abstraction Calculation
 
@@ -168,14 +168,14 @@ supported, because the fluent methods make it a single line and there are places
 standard is to endeavour to use an Abstraction Calculation, because the value can be reused, and because it organises
 concerns: the calculation says what the number is, and the rule says what to do about it.
 
-| Reason             | Why an Abstraction Calculation is better                                                                                                                                                                                                                 |
-|--------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Reuse              | The value is defined once and named. Every Activation Rule reads `AbstractionCalculation.<Name>`, so the definition is changed in one place, and no two rules drift apart.                                                                               |
-| Coverage           | The value exists for the whole invocation, and not only inside one rule. It can be a model input, appear in the response payload, be archived for SQL reporting with Report Table, and be seen in the case, which an expression buried in a rule cannot. |
-| Observability      | The number that a rule compared is visible, so an analyst can see that a ratio was 0.34 against a threshold of 0.3, and tune the threshold from the recorded distribution.                                                                               |
-| One evaluation     | The value is computed once per invocation, and not again in each rule that needs it.                                                                                                                                                                     |
-| Organised concerns | The calculation defines the number, and the rule makes the decision, so each can be read, tested and changed on its own.                                                                                                                                 |
-| Simpler rules      | The rule is a comparison, which is what the [taxonomy](index.html) and the pipeline steps are for.                                                                                                                                                |
+| Reason             | Why an Abstraction Calculation is better                                                                                                                                                                                                                |
+|--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Reuse              | The value is defined once and named. Every Activation Rule reads `AbstractionCalculation.<Name>`, so the definition is changed in one place, and no two rules drift apart.                                                                              |
+| Coverage           | The value exists for the whole invocation, and not only inside one rule. It can be a model input, appear in the response payload, be archived for SQL reporting with Archive Key, and be seen in the case, which an expression buried in a rule cannot. |
+| Observability      | The number that a rule compared is visible, so an analyst can see that a ratio was 0.34 against a threshold of 0.3, and tune the threshold from the recorded distribution.                                                                              |
+| One evaluation     | The value is computed once per invocation, and not again in each rule that needs it.                                                                                                                                                                    |
+| Organised concerns | The calculation defines the number, and the rule makes the decision, so each can be read, tested and changed on its own.                                                                                                                                |
+| Simpler rules      | The rule is a comparison, which is what the [taxonomy](index.html) and the pipeline steps are for.                                                                                                                                                      |
 
 Written inline, a rule mixes calculation and decision:
 

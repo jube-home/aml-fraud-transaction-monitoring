@@ -40,5 +40,6 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
         public Guid? EntityAnalysisModelInstanceEntryGuid { get; init; }
         public SortedDictionary<string, InvocationValue> Values { get; } = new(StringComparer.Ordinal);
         public List<InvocationStage> Stages { get; } = [];
+        public Dictionary<string, string> SvirfdRecords { get; } = new(StringComparer.Ordinal);
     }
 }

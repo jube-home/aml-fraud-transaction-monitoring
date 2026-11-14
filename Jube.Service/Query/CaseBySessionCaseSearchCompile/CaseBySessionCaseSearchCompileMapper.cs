@@ -49,6 +49,8 @@ namespace Jube.Service.Query.CaseBySessionCaseSearchCompile
             }).ToList(),
             EnableVisualisation = source.EnableVisualisation,
             VisualisationRegistryGuid = source.VisualisationRegistryGuid,
+            EnableGraph = source.EnableGraph,
+            GraphRegistryGuid = source.GraphRegistryGuid,
             EntityAnalysisModelId = source.EntityAnalysisModelId
         };
 

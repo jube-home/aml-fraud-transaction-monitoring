@@ -29,7 +29,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Xunit;
 using Jube.Service.Repository.AdvancedAnalyticsTrainingRun.Models;
-using Jube.Service.Repository.AdvancedAnalyticsModel.Models;
+using Jube.Service.Repository.AskJoobyAnalyticsModel.Models;
 using Jube.Engine.AdvancedAnalytics.Recall.Models;
 
 namespace Jube.Test.AdvancedAnalytics.Service
@@ -87,7 +87,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
 
             var submission = await service.SubmitTrainingAsync(new AdvancedAnalyticsDecisionTreeRegressorTrainingDto
             {
-                AdvancedAnalyticsInstanceId = instance.Id,
+                AskJoobyAnalyticsInstanceId = instance.Id,
                 ModelName = modelName,
                 VariableNames = data.Names,
                 ProcessingTypeIds = processingTypeIds,
@@ -129,7 +129,7 @@ namespace Jube.Test.AdvancedAnalytics.Service
             var trainedModelId = executed.Model!.Id;
             var versionId = executed.Version.Id;
 
-            var trainedModelRepository = new AdvancedAnalyticsTrainedModelRepository(Db, TenantA, Permitted);
+            var trainedModelRepository = new AskJoobyAnalyticsTrainedModelRepository(Db, TenantA, Permitted);
             await trainedModelRepository.SetActiveVersionAsync(trainedModelId, versionId);
             await trainedModelRepository.SetActiveAsync(trainedModelId, true);
 
@@ -137,11 +137,11 @@ namespace Jube.Test.AdvancedAnalytics.Service
             trainedModel!.ActiveVersionId.Should().Be(versionId);
             trainedModel.Active.Should().Be(1);
 
-            var version = await new AdvancedAnalyticsTrainedModelVersionRepository(Db, TenantA, Permitted)
+            var version = await new AskJoobyAnalyticsTrainedModelVersionRepository(Db, TenantA, Permitted)
                 .GetActiveByModelIdAsync(trainedModelId);
             version.Should().NotBeNull();
 
-            var syncedModel = SyncAdvancedAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(instance,
+            var syncedModel = SyncAskJoobyAnalyticsInstancesExtensions.BuildAdvancedAnalyticsModel(instance,
                 trainedModel, version!);
 
             syncedModel.Should().NotBeNull();

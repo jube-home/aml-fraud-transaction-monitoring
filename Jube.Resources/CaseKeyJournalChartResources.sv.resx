@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="WeekdayMon" xml:space="preserve">
+        <value>mån</value>
+    </data>
+    <data name="WeekdayTue" xml:space="preserve">
+        <value>tis</value>
+    </data>
+    <data name="WeekdayWed" xml:space="preserve">
+        <value>ons</value>
+    </data>
+    <data name="WeekdayThu" xml:space="preserve">
+        <value>tors</value>
+    </data>
+    <data name="WeekdayFri" xml:space="preserve">
+        <value>fre</value>
+    </data>
+    <data name="WeekdaySat" xml:space="preserve">
+        <value>lör</value>
+    </data>
+    <data name="WeekdaySun" xml:space="preserve">
+        <value>sön</value>
+    </data>
+    <data name="BucketHour" xml:space="preserve">
+        <value>timme</value>
+    </data>
+    <data name="BucketDay" xml:space="preserve">
+        <value>dag</value>
+    </data>
+    <data name="BucketWeek" xml:space="preserve">
+        <value>vecka</value>
+    </data>
+    <data name="BucketMonth" xml:space="preserve">
+        <value>månad</value>
+    </data>
+    <data name="ProgressionTitle" xml:space="preserve">
+        <value>{0} över tid</value>
+    </data>
+    <data name="ProgressionSubtitle" xml:space="preserve">
+        <value>Median per {0}, senaste {1}</value>
+    </data>
+    <data name="DistributionTitle" xml:space="preserve">
+        <value>Fördelning av {0}</value>
+    </data>
+    <data name="DistributionSubtitle" xml:space="preserve">
+        <value>Det senaste värdet, {0}, ligger vid percentil {1} av {2} transaktioner</value>
+    </data>
+    <data name="Transactions" xml:space="preserve">
+        <value>Transaktioner</value>
+    </data>
+    <data name="VelocityTitle" xml:space="preserve">
+        <value>När transaktioner sker</value>
+    </data>
+    <data name="VelocitySubtitle" xml:space="preserve">
+        <value>Per veckodag och timme (UTC)</value>
+    </data>
+    <data name="Hour" xml:space="preserve">
+        <value>Timme</value>
+    </data>
+    <data name="Weekday" xml:space="preserve">
+        <value>Veckodag</value>
+    </data>
+    <data name="GapsTitle" xml:space="preserve">
+        <value>Tid mellan transaktioner</value>
+    </data>
+    <data name="GapsSubtitle" xml:space="preserve">
+        <value>Hur länge nyckeln var inaktiv före varje transaktion</value>
+    </data>
+    <data name="CounterpartiesTitle" xml:space="preserve">
+        <value>Motparter för {0}</value>
+    </data>
+    <data name="CounterpartiesSubtitle" xml:space="preserve">
+        <value>{0} unika, {1} nya de senaste 30 dagarna</value>
+    </data>
+    <data name="CorrelationTitle" xml:space="preserve">
+        <value>Hur måtten rör sig tillsammans</value>
+    </data>
+    <data name="CorrelationSubtitle" xml:space="preserve">
+        <value>Pearson-korrelation, från -1 till 1</value>
+    </data>
+    <data name="DriftTitle" xml:space="preserve">
+        <value>Drift mellan tidigare och senare historik</value>
+    </data>
+    <data name="DriftSubtitle" xml:space="preserve">
+        <value>Avstånd mellan de två halvorna; över det kritiska värdet har driftat</value>
+    </data>
+    <data name="Distance" xml:space="preserve">
+        <value>Avstånd</value>
+    </data>
+    <data name="Critical" xml:space="preserve">
+        <value>Kritiskt</value>
+    </data>
+    <data name="ContributionMoved" xml:space="preserve">
+        <value>{0}: vad som flyttade poängen</value>
+    </data>
+    <data name="ContributionPushed" xml:space="preserve">
+        <value>{0}: vad som drev upp poängen</value>
+    </data>
+    <data name="BaseSubtitle" xml:space="preserve">
+        <value>Från basvärdet {0}</value>
+    </data>
+    <data name="InSpace" xml:space="preserve">
+        <value> i {0}</value>
+    </data>
+    <data name="HiddenInputs" xml:space="preserve">
+        <value>; {0} indata dolda</value>
+    </data>
+    <data name="BaseValue" xml:space="preserve">
+        <value>Basvärde</value>
+    </data>
+    <data name="VisibleInputs" xml:space="preserve">
+        <value>Synliga indata</value>
+    </data>
+    <data name="Score" xml:space="preserve">
+        <value>Poäng</value>
+    </data>
+    <data name="RelativeContributions" xml:space="preserve">
+        <value>Relativa bidrag</value>
+    </data>
+    <data name="ByMethod" xml:space="preserve">
+        <value> enligt {0}</value>
+    </data>
+    <data name="NotAdditive" xml:space="preserve">
+        <value>, inte additiva</value>
+    </data>
+    <data name="Contribution" xml:space="preserve">
+        <value>Bidrag</value>
+    </data>
+    <data name="GaugeThreshold" xml:space="preserve">
+        <value>tröskel {0}</value>
+    </data>
+    <data name="GaugeNoThreshold" xml:space="preserve">
+        <value>ingen tröskel angiven</value>
+    </data>
+    <data name="GaugeCalibrated" xml:space="preserve">
+        <value>Kalibrerad sannolikhet {0} · {1} · {2}</value>
+    </data>
+    <data name="GaugeScore" xml:space="preserve">
+        <value>Poäng {0} (inte en sannolikhet) · {1}</value>
+    </data>
+    <data name="DriversMoved" xml:space="preserve">
+        <value>Vad som flyttade {0}</value>
+    </data>
+    <data name="DriversPushed" xml:space="preserve">
+        <value>Vad som drev upp {0}</value>
+    </data>
+    <data name="RelativeNotAdditive" xml:space="preserve">
+        <value>Relativa bidrag, inte additiva</value>
+    </data>
+    <data name="OtherInputs" xml:space="preserve">
+        <value>{0} andra indata</value>
+    </data>
+    <data name="CalibrationTitle" xml:space="preserve">
+        <value>{0}: betydde poängen det den sa</value>
+    </data>
+    <data name="CalibrationValidated" xml:space="preserve">
+        <value>Validerad på {0} ärenden</value>
+    </data>
+    <data name="CalibrationExpected" xml:space="preserve">
+        <value>Förväntat jämfört med observerat</value>
+    </data>
+</root>

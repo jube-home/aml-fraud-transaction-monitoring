@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns the number of whole days since the date (negative if it is in the future).")]
         public static int AgeInDays(this DateTime @this)
         {
             return (DateTime.Today - @this.Date).Days;

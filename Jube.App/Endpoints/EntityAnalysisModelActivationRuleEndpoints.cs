@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -58,6 +59,12 @@ namespace Jube.App.Endpoints
                 .Produces((int)HttpStatusCode.OK)
                 .Produces((int)HttpStatusCode.BadRequest)
                 .WithName("EntityAnalysisModelActivationRuleCreate");
+
+            group.MapPost("SaveShadowVariant", SaveShadowVariantAsync)
+                .Produces<ShadowVariantResultDto>()
+                .Produces<object>((int)HttpStatusCode.BadRequest)
+                .Produces((int)HttpStatusCode.NotFound)
+                .WithName("EntityAnalysisModelActivationRuleSaveShadowVariant");
 
             group.MapPut("", UpdateAsync)
                 .Produces((int)HttpStatusCode.OK)
@@ -336,6 +343,51 @@ namespace Jube.App.Endpoints
             }
         }
 
+        private static async Task<IResult> SaveShadowVariantAsync(
+            [FromBody] ShadowVariantRequestDto model, HttpContext httpContext, ILog log,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
+            IServiceChangeBus serviceChangeBus, CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var service = await EntityAnalysisModelActivationRuleService.CreateAsync(dbContext, user, log,
+                    stringLocalizerFactory, serviceChangeBus, token);
+
+                return TypedResults.Ok(await service.SaveShadowVariantAsync(model, token));
+            }
+            catch (Exception ex) when (ex is NotAuthenticatedException or ForbiddenException)
+            {
+                return TypedResults.Forbid();
+            }
+            catch (DtoValidationException ex)
+            {
+                return TypedResults.BadRequest(ex.Result);
+            }
+            catch (ArgumentException ex)
+            {
+                return TypedResults.BadRequest(ex.Message);
+            }
+            catch (NotFoundException)
+            {
+                return TypedResults.NotFound();
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error($"POST {Base}/SaveShadowVariant: 500 user={user}", e);
+
+                return TypedResults.StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
         private static async Task<IResult> UpdateAsync(
             [FromBody] EntityAnalysisModelActivationRuleDto model, HttpContext httpContext, ILog log,
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
@@ -396,6 +448,22 @@ namespace Jube.App.Endpoints
 
                 return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
             }
+            catch (VersionConflictException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}: 409 user={user} supplied={ex.SuppliedVersion} current={ex.CurrentVersion}");
+                }
+
+                return TypedResults.Conflict(new
+                {
+                    code = "VersionConflict",
+                    message = ex.Message,
+                    suppliedVersion = ex.SuppliedVersion,
+                    currentVersion = ex.CurrentVersion
+                });
+            }
+
             catch (OperationCanceledException)
             {
                 if (log.IsDebugEnabled)

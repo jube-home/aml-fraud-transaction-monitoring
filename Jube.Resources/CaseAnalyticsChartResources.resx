@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="WeekdayMon" xml:space="preserve">
+        <value>Mon</value>
+    </data>
+    <data name="WeekdayTue" xml:space="preserve">
+        <value>Tue</value>
+    </data>
+    <data name="WeekdayWed" xml:space="preserve">
+        <value>Wed</value>
+    </data>
+    <data name="WeekdayThu" xml:space="preserve">
+        <value>Thu</value>
+    </data>
+    <data name="WeekdayFri" xml:space="preserve">
+        <value>Fri</value>
+    </data>
+    <data name="WeekdaySat" xml:space="preserve">
+        <value>Sat</value>
+    </data>
+    <data name="WeekdaySun" xml:space="preserve">
+        <value>Sun</value>
+    </data>
+    <data name="ImpactMinimal" xml:space="preserve">
+        <value>Minimal</value>
+    </data>
+    <data name="ImpactLow" xml:space="preserve">
+        <value>Low</value>
+    </data>
+    <data name="ImpactModerate" xml:space="preserve">
+        <value>Moderate</value>
+    </data>
+    <data name="ImpactHigh" xml:space="preserve">
+        <value>High</value>
+    </data>
+    <data name="ImpactSevere" xml:space="preserve">
+        <value>Severe</value>
+    </data>
+    <data name="LikelihoodVeryLikely" xml:space="preserve">
+        <value>Very likely</value>
+    </data>
+    <data name="LikelihoodLikely" xml:space="preserve">
+        <value>Likely</value>
+    </data>
+    <data name="LikelihoodPossible" xml:space="preserve">
+        <value>Possible</value>
+    </data>
+    <data name="LikelihoodUnlikely" xml:space="preserve">
+        <value>Unlikely</value>
+    </data>
+    <data name="RiskMatrixTitle" xml:space="preserve">
+        <value>Risk matrix</value>
+    </data>
+    <data name="RiskMatrixAssessed" xml:space="preserve">
+        <value>{0} assessed cases; {1} not yet assessed</value>
+    </data>
+    <data name="RiskMatrixCases" xml:space="preserve">
+        <value>{0} cases</value>
+    </data>
+    <data name="Impact" xml:space="preserve">
+        <value>Impact</value>
+    </data>
+    <data name="Likelihood" xml:space="preserve">
+        <value>Likelihood</value>
+    </data>
+    <data name="Cases" xml:space="preserve">
+        <value>Cases</value>
+    </data>
+    <data name="FlowTitle" xml:space="preserve">
+        <value>Opened, closed and backlog</value>
+    </data>
+    <data name="FlowSubtitle" xml:space="preserve">
+        <value>Cases opened and closed each day, and the cases still open at the end of it</value>
+    </data>
+    <data name="Opened" xml:space="preserve">
+        <value>Opened</value>
+    </data>
+    <data name="Closed" xml:space="preserve">
+        <value>Closed</value>
+    </data>
+    <data name="Backlog" xml:space="preserve">
+        <value>Backlog</value>
+    </data>
+    <data name="FirstViewTitle" xml:space="preserve">
+        <value>Time to first look</value>
+    </data>
+    <data name="FirstViewSubtitle" xml:space="preserve">
+        <value>Cases by how long they waited</value>
+    </data>
+    <data name="ResolutionTitle" xml:space="preserve">
+        <value>Time to resolution</value>
+    </data>
+    <data name="ResolutionSubtitle" xml:space="preserve">
+        <value>Closed cases by how long they took</value>
+    </data>
+    <data name="AgingTitle" xml:space="preserve">
+        <value>Open cases by age</value>
+    </data>
+    <data name="AgingSubtitle" xml:space="preserve">
+        <value>How long the open cases have waited, by urgency lane</value>
+    </data>
+    <data name="LaneLiveMoney" xml:space="preserve">
+        <value>Live money</value>
+    </data>
+    <data name="LaneMandatory" xml:space="preserve">
+        <value>Mandatory</value>
+    </data>
+    <data name="LaneDeadlineNear" xml:space="preserve">
+        <value>Deadline near</value>
+    </data>
+    <data name="LaneStandard" xml:space="preserve">
+        <value>Standard</value>
+    </data>
+    <data name="StatusDwellTitle" xml:space="preserve">
+        <value>Time in each status</value>
+    </data>
+    <data name="StatusDwellSubtitle" xml:space="preserve">
+        <value>Median and slowest tenth of completed stays, in hours</value>
+    </data>
+    <data name="Unknown" xml:space="preserve">
+        <value>Unknown</value>
+    </data>
+    <data name="Hours" xml:space="preserve">
+        <value>Hours</value>
+    </data>
+    <data name="Median" xml:space="preserve">
+        <value>Median</value>
+    </data>
+    <data name="SlowestTenth" xml:space="preserve">
+        <value>Slowest tenth</value>
+    </data>
+    <data name="RuleEffortTitle" xml:space="preserve">
+        <value>Analyst time lost to false positives</value>
+    </data>
+    <data name="RuleEffortSubtitle" xml:space="preserve">
+        <value>Hours spent on cases the rule raised that turned out not to be real</value>
+    </data>
+    <data name="RulePrecisionTitle" xml:space="preserve">
+        <value>Rule precision</value>
+    </data>
+    <data name="RulePrecisionSubtitle" xml:space="preserve">
+        <value>Share of decided cases the rule raised that were confirmed</value>
+    </data>
+    <data name="Percent" xml:space="preserve">
+        <value>Percent</value>
+    </data>
+    <data name="Precision" xml:space="preserve">
+        <value>Precision</value>
+    </data>
+    <data name="GainsTitle" xml:space="preserve">
+        <value>Confirmed cases found as cases are worked</value>
+    </data>
+    <data name="DecidedCases" xml:space="preserve">
+        <value>{0} decided cases</value>
+    </data>
+    <data name="FewDecidedCases" xml:space="preserve">
+        <value>Only {0} decided cases, too few to rely on</value>
+    </data>
+    <data name="CasesWorkedPercent" xml:space="preserve">
+        <value>Cases worked (%)</value>
+    </data>
+    <data name="ConfirmedFoundPercent" xml:space="preserve">
+        <value>Confirmed found (%)</value>
+    </data>
+    <data name="PriorityOrder" xml:space="preserve">
+        <value>Priority order</value>
+    </data>
+    <data name="LikelihoodOrder" xml:space="preserve">
+        <value>Likelihood order</value>
+    </data>
+    <data name="OldestFirst" xml:space="preserve">
+        <value>Oldest first</value>
+    </data>
+    <data name="Random" xml:space="preserve">
+        <value>Random</value>
+    </data>
+    <data name="CalibrationTitle" xml:space="preserve">
+        <value>Predicted likelihood against what happened</value>
+    </data>
+    <data name="ArrivalsTitle" xml:space="preserve">
+        <value>When cases arrive</value>
+    </data>
+    <data name="ArrivalsSubtitle" xml:space="preserve">
+        <value>Cases created by weekday and hour (UTC)</value>
+    </data>
+    <data name="Hour" xml:space="preserve">
+        <value>Hour</value>
+    </data>
+    <data name="Weekday" xml:space="preserve">
+        <value>Weekday</value>
+    </data>
+    <data name="FirstViewByHourTitle" xml:space="preserve">
+        <value>Median time to first look by hour of arrival</value>
+    </data>
+    <data name="FirstViewByHourSubtitle" xml:space="preserve">
+        <value>Minutes a case waited before anyone looked at it, by the hour it arrived (UTC)</value>
+    </data>
+    <data name="Minutes" xml:space="preserve">
+        <value>Minutes</value>
+    </data>
+    <data name="MedianMinutes" xml:space="preserve">
+        <value>Median minutes</value>
+    </data>
+    <data name="ServiceLevelTitle" xml:space="preserve">
+        <value>Service level attainment by week</value>
+    </data>
+    <data name="ServiceLevelSubtitle" xml:space="preserve">
+        <value>Share of cases created that week which met each target</value>
+    </data>
+    <data name="MetPercent" xml:space="preserve">
+        <value>Met (%)</value>
+    </data>
+    <data name="ServiceLevelFirstView" xml:space="preserve">
+        <value>First look</value>
+    </data>
+    <data name="ServiceLevelOwnership" xml:space="preserve">
+        <value>Ownership</value>
+    </data>
+    <data name="ServiceLevelResolution" xml:space="preserve">
+        <value>Resolution</value>
+    </data>
+    <data name="ServiceLevelTimeInStatus" xml:space="preserve">
+        <value>Time in status</value>
+    </data>
+    <data name="HandoffsTitle" xml:space="preserve">
+        <value>How often cases change hands</value>
+    </data>
+    <data name="HandoffsSubtitle" xml:space="preserve">
+        <value>{0} cases were reopened after closing</value>
+    </data>
+    <data name="ChangesOfOwner" xml:space="preserve">
+        <value>Changes of owner</value>
+    </data>
+</root>

@@ -43,6 +43,7 @@ namespace Jube.Service.Repository.RoleRegistry
 
         public static RulePoco ToPoco(RoleRegistryDto dto) => new()
         {
+            Version = dto.Version,
             Id = dto.Id,
             Name = dto.Name,
             Active = (byte)(dto.Active ? 1 : 0),

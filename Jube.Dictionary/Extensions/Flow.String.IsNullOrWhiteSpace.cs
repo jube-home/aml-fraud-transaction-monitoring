@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
+            [Description("True when: null, empty or only white space. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsNullOrWhiteSpace()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringIsNullOrWhiteSpace(flow.Value));
             }
 
+            [Description("True when: null, empty or only white space. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsNullOrWhiteSpace()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringIsNullOrWhiteSpace(flow.Value));
             }
 
+            [Description("True when: null, empty or only white space. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsNullOrWhiteSpace()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringIsNullOrWhiteSpace(flow.Value));
             }
 
+            [Description("True when: null, empty or only white space. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsNullOrWhiteSpace()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringIsNullOrWhiteSpace(flow.Value));
             }
 
+            [Description("True when: null, empty or only white space. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsNullOrWhiteSpace()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
+            [Description("Begins a pipeline from the value. True when: null, empty or only white space. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsNullOrWhiteSpace()
             {
                 return value.Start().MatchIsNullOrWhiteSpace();
             }
 
+            [Description("Begins a pipeline from the value. True when: null, empty or only white space. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsNullOrWhiteSpace()
             {
                 return value.Start().RejectIsNullOrWhiteSpace();
             }
 
+            [Description("Begins a pipeline from the value. True when: null, empty or only white space. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsNullOrWhiteSpace()
             {
                 return value.Start().BreakIsNullOrWhiteSpace();
             }
 
+            [Description("Begins a pipeline from the value. True when: null, empty or only white space. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsNullOrWhiteSpace()
             {
                 return value.Start().RequireIsNullOrWhiteSpace();
             }
 
+            [Description("Begins a pipeline from the value. True when: null, empty or only white space. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsNullOrWhiteSpace()
             {
                 return value.Start().EnsureIsNullOrWhiteSpace();

@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchContainsFuzzyAnyInList(IEnumerable<string> list, double threshold)
+            [Description("True when: as ContainsFuzzy, for any entry of the List token. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsFuzzyAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringContainsFuzzyAnyInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> RejectContainsFuzzyAnyInList(IEnumerable<string> list, double threshold)
+            [Description("True when: as ContainsFuzzy, for any entry of the List token. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsFuzzyAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringContainsFuzzyAnyInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> BreakContainsFuzzyAnyInList(IEnumerable<string> list, double threshold)
+            [Description("True when: as ContainsFuzzy, for any entry of the List token. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsFuzzyAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringContainsFuzzyAnyInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> RequireContainsFuzzyAnyInList(IEnumerable<string> list, double threshold)
+            [Description("True when: as ContainsFuzzy, for any entry of the List token. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsFuzzyAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringContainsFuzzyAnyInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> EnsureContainsFuzzyAnyInList(IEnumerable<string> list, double threshold)
+            [Description("True when: as ContainsFuzzy, for any entry of the List token. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsFuzzyAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchContainsFuzzyAnyInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: as ContainsFuzzy, for any entry of the List token. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsFuzzyAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold)
             {
                 return value.Start().MatchContainsFuzzyAnyInList(list, threshold);
             }
 
-            public Flow<string?> RejectContainsFuzzyAnyInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: as ContainsFuzzy, for any entry of the List token. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsFuzzyAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold)
             {
                 return value.Start().RejectContainsFuzzyAnyInList(list, threshold);
             }
 
-            public Flow<string?> BreakContainsFuzzyAnyInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: as ContainsFuzzy, for any entry of the List token. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsFuzzyAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold)
             {
                 return value.Start().BreakContainsFuzzyAnyInList(list, threshold);
             }
 
-            public Flow<string?> RequireContainsFuzzyAnyInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: as ContainsFuzzy, for any entry of the List token. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsFuzzyAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold)
             {
                 return value.Start().RequireContainsFuzzyAnyInList(list, threshold);
             }
 
-            public Flow<string?> EnsureContainsFuzzyAnyInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: as ContainsFuzzy, for any entry of the List token. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsFuzzyAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold)
             {
                 return value.Start().EnsureContainsFuzzyAnyInList(list, threshold);
             }

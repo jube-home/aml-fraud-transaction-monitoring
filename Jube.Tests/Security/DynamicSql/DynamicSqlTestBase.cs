@@ -20,6 +20,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Security.PenTest;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit.Abstractions;
 
 namespace Jube.Test.Security.DynamicSql;
@@ -63,9 +64,7 @@ public abstract class DynamicSqlTestBase(DatabaseFixture fx, ITestOutputHelper o
             ["priority"] = 1,
             ["rowSpan"] = 1,
             ["columnSpan"] = 1,
-            ["includeGrid"] = true,
-            ["includeDisplay"] = false,
-            ["visualisationTypeId"] = 1
+            ["includeGrid"] = true
         };
     }
 

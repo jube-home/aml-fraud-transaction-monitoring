@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>You do not have permission to perform this action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>You must be signed in to a tenant to perform this action.</value>
+  </data>
+    <data name="InstanceNotFound" xml:space="preserve">
+    <value>The AskJooby Analytics instance was not found.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>A name is required.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>The name must be {0} characters or fewer.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>An AskJooby Analytics instance with this name already exists.</value>
+  </data>
+    <data name="ModelInvalid" xml:space="preserve">
+    <value>A valid Model is required.</value>
+  </data>
+    <data name="ModelNotFound" xml:space="preserve">
+    <value>The Model was not found in your tenant, or it has been deleted.</value>
+  </data>
+    <data name="AlreadyAllocated" xml:space="preserve">
+    <value>This instance is already allocated to another Model. Deallocate it first.</value>
+  </data>
+    <data name="ActiveRequiresAllocation" xml:space="preserve">
+    <value>An instance can only be live once it is allocated to a Model.</value>
+  </data>
+    <data name="PromotePermissionRequired" xml:space="preserve">
+    <value>Changing whether an instance is live, or removing an allocated instance, needs the Promote Model permission.</value>
+  </data>
+    <data name="InstanceIdInvalid" xml:space="preserve">
+    <value>A valid instance is required.</value>
+  </data>
+</root>

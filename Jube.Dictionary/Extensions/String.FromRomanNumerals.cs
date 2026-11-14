@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Canonical Roman numerals as a number, otherwise 0.")]
         public static int FromRomanNumerals(this string? @this)
         {
             var text = (@this ?? "").Trim().ToUpperInvariant();

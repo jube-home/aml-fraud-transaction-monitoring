@@ -24,6 +24,7 @@ namespace Jube.Resources
         public const string DataTypeIdInvalid = nameof(DataTypeIdInvalid);
         public const string XPathRequired = nameof(XPathRequired);
         public const string XPathMaxLength = nameof(XPathMaxLength);
+        public const string XPathRegexNotPermitted = nameof(XPathRegexNotPermitted);
         public const string DefaultValueRequired = nameof(DefaultValueRequired);
         public const string DefaultValueMaxLength = nameof(DefaultValueMaxLength);
         public const string DefaultValueDateOffsetInvalid = nameof(DefaultValueDateOffsetInvalid);

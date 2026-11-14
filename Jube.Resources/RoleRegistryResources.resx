@@ -54,4 +54,7 @@
     <data name="NameAlreadyExists" xml:space="preserve">
     <value>This name already exists.</value>
   </data>
+    <data name="InsufficientPrivilege" xml:space="preserve">
+    <value>You do not have sufficient privilege to perform this action.</value>
+  </data>
 </root>

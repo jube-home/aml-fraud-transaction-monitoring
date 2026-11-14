@@ -19,27 +19,44 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace Jube.Data.Repository
 {
-    public class AskJoobyFileRepository(DbContext dbContext, int tenantRegistryId, string userName = null)
+    public class AskJoobyFileRepository(
+        DbContext dbContext,
+        int tenantRegistryId,
+        string userName = null,
+        bool restrictToOwner = false)
     {
+        private IQueryable<AskJoobyFile> Visible()
+        {
+            var query = dbContext.AskJoobyFile
+                .Where(w => w.AskJoobyConversation.TenantRegistryId == tenantRegistryId
+                            && (w.Deleted == 0 || w.Deleted == null));
+
+            if (!restrictToOwner)
+            {
+                return query;
+            }
+
+            var owner = (userName ?? string.Empty).ToLower();
+
+            return query.Where(w => w.CreatedUser != null && w.CreatedUser.ToLower() == owner);
+        }
+
         public Task<List<AskJoobyFile>> ListByConversationAsync(int askJoobyConversationId,
             CancellationToken token = default)
         {
-            return dbContext.AskJoobyFile
-                .Where(w => w.AskJoobyConversationId == askJoobyConversationId
-                            && w.AskJoobyConversation.TenantRegistryId == tenantRegistryId
-                            && (w.Deleted == 0 || w.Deleted == null))
+            return Visible()
+                .Where(w => w.AskJoobyConversationId == askJoobyConversationId)
                 .OrderBy(o => o.Id)
                 .ToListAsync(token);
         }
 
         public Task<AskJoobyFile> GetByIdAsync(int id, CancellationToken token = default)
         {
-            return dbContext.AskJoobyFile.FirstOrDefaultAsync(w =>
-                w.Id == id && w.AskJoobyConversation.TenantRegistryId == tenantRegistryId
-                           && (w.Deleted == 0 || w.Deleted == null), token);
+            return Visible().FirstOrDefaultAsync(w => w.Id == id, token);
         }
 
         public Task<List<AskJoobyFile>> ListByMessageIdsAsync(IReadOnlyCollection<int> messageIds,
@@ -57,10 +74,12 @@ namespace Jube.Data.Repository
         }
 
         public Task AttachToMessageAsync(IReadOnlyCollection<int> fileIds, int askJoobyMessageId,
-            CancellationToken token = default)
+            CancellationToken token = default, int? askJoobyConversationId = null)
         {
-            return dbContext.AskJoobyFile
-                .Where(w => fileIds.Contains(w.Id) && w.AskJoobyConversation.TenantRegistryId == tenantRegistryId)
+            return Visible()
+                .Where(w => fileIds.Contains(w.Id)
+                            && (askJoobyConversationId == null
+                                || w.AskJoobyConversationId == askJoobyConversationId))
                 .Set(s => s.AskJoobyMessageId, askJoobyMessageId)
                 .UpdateAsync(token);
         }
@@ -76,9 +95,8 @@ namespace Jube.Data.Repository
 
         public async Task DeleteAsync(int id, CancellationToken token = default)
         {
-            var records = await dbContext.AskJoobyFile
-                .Where(w => w.Id == id && w.AskJoobyConversation.TenantRegistryId == tenantRegistryId
-                                       && (w.Deleted == 0 || w.Deleted == null))
+            var records = await Visible()
+                .Where(w => w.Id == id)
                 .Set(s => s.Deleted, Convert.ToByte(1))
                 .Set(s => s.DeletedDate, DateTime.UtcNow)
                 .Set(s => s.DeletedUser, userName)

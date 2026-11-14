@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("ISO 4217 decimal places of a currency code (USD 2, JPY 0, KWD 3), or -1 when unknown.")]
         public static int CurrencyMinorUnitExponent(this string? @this)
         {
             return IsoReferenceData.currencyExponents.TryGetValue((@this ?? "").Trim(), out var exponent)

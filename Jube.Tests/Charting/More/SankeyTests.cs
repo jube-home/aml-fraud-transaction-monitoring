@@ -46,19 +46,19 @@ namespace Jube.Test.Charting.More
         [Fact]
         public void NodeHoverHighlightsTheWholeFlowThroughItAndNoOtherLinks()
         {
-            var svg = MoreSamples.Sankey().Render();
+            var svg = MoreSamples.Sankey(true).Render();
             var cashToRules = ClassOf(svg, "Cash to Rules");
             cashToRules.Split(' ').Should().Contain("m3").And.Contain("m1").And.Contain("m5");
             cashToRules.Split(' ').Should().NotContain("m4");
             var cardToModel = ClassOf(svg, "Card to Model");
             cardToModel.Split(' ').Should().Contain("m0").And.Contain("m4").And.Contain("m5").And.NotContain("m2");
-            svg.Should().Contain(":has(.nd.n4:hover) .lk:not(.m4) .lkp");
+            svg.Should().Contain(":has(.nd.n4:hover,.nd.n4:focus-visible) .lk:not(.m4) .lkp");
         }
 
         [Fact]
         public void LinkHoverHighlightsItsUpstreamAndDownstreamLinks()
         {
-            var svg = MoreSamples.Sankey().Render();
+            var svg = MoreSamples.Sankey(true).Render();
             var reviewedToEscalated = ClassOf(svg, "Reviewed to Escalated");
             var tokens = reviewedToEscalated.Split(' ');
 
@@ -66,13 +66,13 @@ namespace Jube.Test.Charting.More
                 .Contain("k7").And.Contain("k0");
 
             tokens.Should().NotContain("k6").And.NotContain("k8").And.NotContain("k10");
-            svg.Should().Contain(":has(.lk.l9:hover) .lk:not(.k9) .lkp");
+            svg.Should().Contain(":has(.lk.l9:hover,.lk.l9:focus-visible) .lk:not(.k9) .lkp");
         }
 
         [Fact]
         public void LargeGraphsFallBackToDirectLinkHighlighting()
         {
-            var builder = Chart.Sankey();
+            var builder = Chart.Sankey().StyleMode(Jube.Charting.Core.Models.ChartStyleMode.Inline);
 
             for (var i = 0; i < 60; i++)
             {
@@ -80,8 +80,8 @@ namespace Jube.Test.Charting.More
             }
 
             var svg = builder.Render();
-            svg.Should().Contain(":has(.nd.n0:hover)");
-            svg.Should().NotContain(":has(.lk.l0:hover) .lk:not(.k0)");
+            svg.Should().Contain(":has(.nd.n0:hover,.nd.n0:focus-visible)");
+            svg.Should().NotContain(":has(.lk.l0:hover,.lk.l0:focus-visible) .lk:not(.k0)");
             MoreAssert.IsSafe(svg);
         }
 

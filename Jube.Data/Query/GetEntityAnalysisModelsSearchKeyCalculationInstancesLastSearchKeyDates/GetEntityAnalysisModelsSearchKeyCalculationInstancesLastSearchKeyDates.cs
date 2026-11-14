@@ -20,6 +20,7 @@ namespace Jube.Data.Query.GetEntityAnalysisModelsSearchKeyCalculationInstancesLa
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
 
     public class GetEntityAnalysisModelsSearchKeyCalculationInstancesLastSearchKeyDates(DbContext dbContext)
     {

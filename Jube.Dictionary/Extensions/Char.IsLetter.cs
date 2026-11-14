@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Checks if the character is a Unicode letter.")]
         public static Boolean IsLetter(this Char c)
         {
             return char.IsLetter(c);

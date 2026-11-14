@@ -40,15 +40,14 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(10)] public byte? Deleted { get; set; }
         [Column] [Nullable] [Key(11)] public bool? Positive { get; set; }
 
-        [Association(ThisKey = "ExhaustiveSearchInstanceTrialInstanceVariableId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "ExhaustiveSearchInstanceTrialInstanceVariableId", OtherKey = "Id", CanBeNull = true)]
         [Key(19)]
         public ExhaustiveSearchInstanceTrialInstanceVariable ExhaustiveSearchInstanceTrialInstanceVariable { get; set; }
 
         [Column] [Nullable] [Key(20)] public int? ImportId { get; set; }
 
         [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstancePromotedTrialInstanceVariableId",
-            CanBeNull = true, Relationship = Relationship.OneToMany)]
+            CanBeNull = true)]
         [Key(21)]
         public IEnumerable<ExhaustiveSearchInstancePrescriptionHistogram>
             ExhaustiveSearchInstancePrescriptionHistogram { get; set; }

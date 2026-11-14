@@ -1,0 +1,392 @@
+{
+  "ka": {
+    "models": {
+      "title": "მოდელები",
+      "search": "მოდელების ძიება",
+      "searchPlaceholder": "ძიება სახელით",
+      "count": "მოდელები არ არის | {count} მოდელი | {count} მოდელი",
+      "new": "ახალი მოდელი",
+      "newTitle": "ახალი მოდელი",
+      "open": "გახსნა",
+      "empty": "არცერთი მოდელი არ ემთხვევა.",
+      "list": "მოდელები",
+      "failed": "მოდელების ჩატვირთვა ვერ მოხერხდა.",
+      "refused": "მოდელების ნახვის უფლება არ გაქვთ.",
+      "unknown": "მიუწვდომელია",
+      "noneAwaiting": "მოლოდინში არაფერია",
+      "awaitingFact": "{count} ელოდება დამტკიცებას",
+      "active": "აქტიური",
+      "inactive": "არააქტიური",
+      "locked": "დაბლოკილი",
+      "editable": "რედაქტირებადი",
+      "version": "v{version}",
+      "col": {
+        "name": "სახელი",
+        "version": "ვერსია",
+        "status": "სტატუსი",
+        "locked": "ბლოკი",
+        "awaiting": "მოლოდინში მყოფი ცვლილებები",
+        "updated": "ბოლო ცვლილება",
+        "by": "შეცვალა",
+        "approval": "დამტკიცება"
+      },
+      "sample": {
+        "title": "ნიმუში",
+        "hint": "ჩამოტვირთეთ დაარქივებული ტრანზაქციების შემთხვევითი ნიმუში ამ მოდელისთვის."
+      },
+      "integrity": {
+        "title": "მთლიანობა",
+        "hint": "დასკვნები, ძრავის მდგომარეობა, დამოკიდებულებები და სინქრონიზაცია."
+      },
+      "syncAll": "ყველა მოდელის სინქრონიზაცია",
+      "analytics": {
+        "title": "AskJooby ანალიტიკა",
+        "hint": "სტატისტიკური და მანქანური სწავლების მოდელები, რომლებიც AskJooby-მ ამ მოდელისთვის გაწვრთნა."
+      },
+      "unlock": "განბლოკვა",
+      "unlockHint": "ამ მოდელის განბლოკვა",
+      "unlockFailed": "მოდელის განბლოკვა ვერ მოხერხდა."
+    },
+    "story": {
+      "trail": "სად ხართ ისტორიაში",
+      "list": "ისტორია აქამდე",
+      "reopen": "დაბრუნება: {where}",
+      "showing": "ნაჩვენებია: {where}",
+      "changed": "შეცვლილია",
+      "unsaved": "შეუნახავი",
+      "bench": {
+        "models": "მოდელები",
+        "areas": "სფეროები",
+        "records": "ჩანაწერები",
+        "record": "ჩანაწერი",
+        "pick": "გახსნა: {name}",
+        "simulateChanged": "პირველი ბიტის მონიშვნა როგორც სხვის მიერ შეცვლილის",
+        "simulateUnsaved": "ჩანაწერის მონიშვნა შეუნახავი ცვლილებებით",
+        "name": "სახელი",
+        "hint": "საჩვენებელი ჩანაწერი სამუშაო ბიტის ფორმის საჩვენებლად."
+      },
+      "goBack": "დაბრუნება:",
+      "discard": {
+        "title": "გაუქმდეს შეუნახავი ცვლილებები?",
+        "body": "{where} შეიცავს შეუნახავ ცვლილებებს. გაგრძელებისას ისინი გაუქმდება.",
+        "confirm": "ცვლილებების გაუქმება",
+        "cancel": "რედაქტირების გაგრძელება"
+      },
+      "backTo": "უკან: {label}",
+      "newName": "ახალი",
+      "newHint": "შეავსეთ ქვემოთ მოცემული ველები, შემდეგ შეინახეთ შესაქმნელად."
+    }
+  },
+  "id": {
+    "models": {
+      "title": "Model",
+      "search": "Cari model",
+      "searchPlaceholder": "Cari berdasarkan nama",
+      "count": "tidak ada model | {count} model | {count} model",
+      "new": "Model baru",
+      "newTitle": "Model baru",
+      "open": "Buka",
+      "empty": "Tidak ada model yang cocok.",
+      "list": "Model",
+      "failed": "Model tidak dapat dimuat.",
+      "refused": "Anda tidak memiliki izin untuk melihat model.",
+      "unknown": "Tidak tersedia",
+      "noneAwaiting": "Tidak ada yang menunggu",
+      "awaitingFact": "{count} menunggu persetujuan",
+      "active": "Aktif",
+      "inactive": "Tidak aktif",
+      "locked": "Terkunci",
+      "editable": "Dapat diedit",
+      "version": "v{version}",
+      "col": {
+        "name": "Nama",
+        "version": "Versi",
+        "status": "Status",
+        "locked": "Kunci",
+        "awaiting": "Perubahan menunggu",
+        "updated": "Terakhir diubah",
+        "by": "Diubah oleh",
+        "approval": "Persetujuan"
+      },
+      "sample": {
+        "title": "Sampel",
+        "hint": "Unduh sampel acak transaksi terarsip untuk model ini."
+      },
+      "integrity": {
+        "title": "Integritas",
+        "hint": "Temuan, status mesin, dependensi, dan sinkronisasi."
+      },
+      "syncAll": "Sinkronkan semua model",
+      "analytics": {
+        "title": "AskJooby Analytics",
+        "hint": "Model statistik dan pembelajaran mesin yang dilatih AskJooby untuk model ini."
+      },
+      "unlock": "Buka kunci",
+      "unlockHint": "Buka kunci model ini",
+      "unlockFailed": "Model tidak dapat dibuka kuncinya."
+    },
+    "story": {
+      "trail": "Posisi Anda dalam alur",
+      "list": "Alur sejauh ini",
+      "reopen": "Kembali ke {where}",
+      "showing": "Menampilkan {where}",
+      "changed": "Diubah",
+      "unsaved": "Belum disimpan",
+      "bench": {
+        "models": "Model",
+        "areas": "Area",
+        "records": "Rekaman",
+        "record": "Rekaman",
+        "pick": "Buka {name}",
+        "simulateChanged": "Tandai langkah pertama sebagai diubah orang lain",
+        "simulateUnsaved": "Tandai rekaman sebagai memiliki suntingan yang belum disimpan",
+        "name": "Nama",
+        "hint": "Rekaman contoh untuk menunjukkan bentuk langkah kerja."
+      },
+      "goBack": "Kembali ke",
+      "discard": {
+        "title": "Buang perubahan yang belum disimpan?",
+        "body": "{where} memiliki perubahan yang belum disimpan. Melanjutkan akan membuangnya.",
+        "confirm": "Buang perubahan",
+        "cancel": "Lanjutkan mengedit"
+      },
+      "backTo": "Kembali ke {label}",
+      "newName": "Baru",
+      "newHint": "Isi kolom di bawah, lalu simpan untuk membuatnya."
+    }
+  },
+  "sv": {
+    "models": {
+      "title": "Modeller",
+      "search": "Sök modeller",
+      "searchPlaceholder": "Sök efter namn",
+      "count": "inga modeller | {count} modell | {count} modeller",
+      "new": "Ny modell",
+      "newTitle": "Ny modell",
+      "open": "Öppna",
+      "empty": "Inga modeller matchar.",
+      "list": "Modeller",
+      "failed": "Modellerna kunde inte läsas in.",
+      "refused": "Du har inte behörighet att se modeller.",
+      "unknown": "Otillgänglig",
+      "noneAwaiting": "Inget väntar",
+      "awaitingFact": "{count} väntar på godkännande",
+      "active": "Aktiv",
+      "inactive": "Inaktiv",
+      "locked": "Låst",
+      "editable": "Redigerbar",
+      "version": "v{version}",
+      "col": {
+        "name": "Namn",
+        "version": "Version",
+        "status": "Status",
+        "locked": "Lås",
+        "awaiting": "Väntande ändringar",
+        "updated": "Senast ändrad",
+        "by": "Ändrad av",
+        "approval": "Godkännande"
+      },
+      "sample": {
+        "title": "Urval",
+        "hint": "Ladda ner ett slumpmässigt urval av arkiverade transaktioner för den här modellen."
+      },
+      "integrity": {
+        "title": "Integritet",
+        "hint": "Resultat, motorstatus, beroenden och synkronisering."
+      },
+      "syncAll": "Synkronisera alla modeller",
+      "analytics": {
+        "title": "AskJooby Analytics",
+        "hint": "Statistiska modeller och modeller för maskininlärning som AskJooby tränat för den här modellen."
+      },
+      "unlock": "Lås upp",
+      "unlockHint": "Lås upp den här modellen",
+      "unlockFailed": "Modellen kunde inte låsas upp."
+    },
+    "story": {
+      "trail": "Var du är i berättelsen",
+      "list": "Berättelsen hittills",
+      "reopen": "Gå tillbaka till {where}",
+      "showing": "Visar {where}",
+      "changed": "Ändrad",
+      "unsaved": "Osparad",
+      "bench": {
+        "models": "Modeller",
+        "areas": "Områden",
+        "records": "Poster",
+        "record": "Post",
+        "pick": "Öppna {name}",
+        "simulateChanged": "Markera det första steget som ändrat av någon annan",
+        "simulateUnsaved": "Markera posten som att den har osparade ändringar",
+        "name": "Namn",
+        "hint": "En platshållarpost som visar formen på ett arbetssteg."
+      },
+      "goBack": "Gå tillbaka till",
+      "discard": {
+        "title": "Kassera osparade ändringar?",
+        "body": "{where} har ändringar som inte är sparade. Om du fortsätter kasseras de.",
+        "confirm": "Kassera ändringar",
+        "cancel": "Fortsätt redigera"
+      },
+      "backTo": "Tillbaka till {label}",
+      "newName": "Ny",
+      "newHint": "Fyll i fälten nedan och spara sedan för att skapa den."
+    }
+  },
+  "hi": {
+    "models": {
+      "title": "मॉडल",
+      "search": "मॉडल खोजें",
+      "searchPlaceholder": "नाम से खोजें",
+      "count": "कोई मॉडल नहीं | {count} मॉडल | {count} मॉडल",
+      "new": "नया मॉडल",
+      "newTitle": "नया मॉडल",
+      "open": "खोलें",
+      "empty": "कोई मॉडल मेल नहीं खाता।",
+      "list": "मॉडल",
+      "failed": "मॉडल लोड नहीं किए जा सके।",
+      "refused": "आपको मॉडल देखने की अनुमति नहीं है।",
+      "unknown": "अनुपलब्ध",
+      "noneAwaiting": "कुछ भी प्रतीक्षित नहीं",
+      "awaitingFact": "{count} अनुमोदन की प्रतीक्षा में",
+      "active": "सक्रिय",
+      "inactive": "निष्क्रिय",
+      "locked": "लॉक",
+      "editable": "संपादन योग्य",
+      "version": "v{version}",
+      "col": {
+        "name": "नाम",
+        "version": "संस्करण",
+        "status": "स्थिति",
+        "locked": "लॉक",
+        "awaiting": "प्रतीक्षित परिवर्तन",
+        "updated": "अंतिम बार बदला",
+        "by": "किसने बदला",
+        "approval": "अनुमोदन"
+      },
+      "sample": {
+        "title": "नमूना",
+        "hint": "इस मॉडल के लिए संग्रहीत लेन-देन का एक यादृच्छिक नमूना डाउनलोड करें।"
+      },
+      "integrity": {
+        "title": "अखंडता",
+        "hint": "निष्कर्ष, इंजन की स्थिति, निर्भरताएँ और सिंक्रनाइज़ेशन।"
+      },
+      "syncAll": "सभी मॉडल सिंक्रनाइज़ करें",
+      "analytics": {
+        "title": "AskJooby एनालिटिक्स",
+        "hint": "सांख्यिकीय और मशीन लर्निंग मॉडल जिन्हें AskJooby ने इस मॉडल के लिए प्रशिक्षित किया।"
+      },
+      "unlock": "अनलॉक करें",
+      "unlockHint": "इस मॉडल को अनलॉक करें",
+      "unlockFailed": "मॉडल अनलॉक नहीं किया जा सका।"
+    },
+    "story": {
+      "trail": "कहानी में आप कहाँ हैं",
+      "list": "अब तक की कहानी",
+      "reopen": "{where} पर वापस जाएँ",
+      "showing": "{where} दिखाया जा रहा है",
+      "changed": "बदला गया",
+      "unsaved": "सहेजा नहीं गया",
+      "bench": {
+        "models": "मॉडल",
+        "areas": "क्षेत्र",
+        "records": "रिकॉर्ड",
+        "record": "रिकॉर्ड",
+        "pick": "{name} खोलें",
+        "simulateChanged": "पहले चरण को किसी और द्वारा बदला हुआ चिह्नित करें",
+        "simulateUnsaved": "रिकॉर्ड को असहेजे संपादनों वाला चिह्नित करें",
+        "name": "नाम",
+        "hint": "कार्य चरण का स्वरूप दिखाने के लिए एक स्थानापन्न रिकॉर्ड।"
+      },
+      "goBack": "वापस जाएँ",
+      "discard": {
+        "title": "असहेजे परिवर्तन छोड़ें?",
+        "body": "{where} में ऐसे परिवर्तन हैं जो सहेजे नहीं गए हैं। आगे बढ़ने पर वे छोड़ दिए जाएँगे।",
+        "confirm": "परिवर्तन छोड़ें",
+        "cancel": "संपादन जारी रखें"
+      },
+      "backTo": "{label} पर वापस",
+      "newName": "नया",
+      "newHint": "नीचे के फ़ील्ड भरें, फिर बनाने के लिए सहेजें।"
+    }
+  },
+  "ur": {
+    "models": {
+      "title": "ماڈلز",
+      "search": "ماڈلز تلاش کریں",
+      "searchPlaceholder": "نام سے تلاش کریں",
+      "count": "کوئی ماڈل نہیں | {count} ماڈل | {count} ماڈلز",
+      "new": "نیا ماڈل",
+      "newTitle": "نیا ماڈل",
+      "open": "کھولیں",
+      "empty": "کوئی ماڈل مطابقت نہیں رکھتا۔",
+      "list": "ماڈلز",
+      "failed": "ماڈلز لوڈ نہیں ہو سکے۔",
+      "refused": "آپ کو ماڈلز دیکھنے کی اجازت نہیں ہے۔",
+      "unknown": "دستیاب نہیں",
+      "noneAwaiting": "کچھ بھی زیر انتظار نہیں",
+      "awaitingFact": "{count} منظوری کے منتظر",
+      "active": "فعال",
+      "inactive": "غیر فعال",
+      "locked": "مقفل",
+      "editable": "قابل ترمیم",
+      "version": "v{version}",
+      "col": {
+        "name": "نام",
+        "version": "ورژن",
+        "status": "حیثیت",
+        "locked": "قفل",
+        "awaiting": "زیر التوا تبدیلیاں",
+        "updated": "آخری تبدیلی",
+        "by": "تبدیل کرنے والا",
+        "approval": "منظوری"
+      },
+      "sample": {
+        "title": "نمونہ",
+        "hint": "اس ماڈل کے لیے محفوظ شدہ لین دین کا ایک بے ترتیب نمونہ ڈاؤن لوڈ کریں۔"
+      },
+      "integrity": {
+        "title": "سالمیت",
+        "hint": "نتائج، انجن کی حالت، انحصارات اور ہم وقت سازی۔"
+      },
+      "syncAll": "تمام ماڈلز کی ہم وقت سازی کریں",
+      "analytics": {
+        "title": "AskJooby اینالیٹکس",
+        "hint": "شماریاتی اور مشین لرننگ ماڈلز جنہیں AskJooby نے اس ماڈل کے لیے تربیت دی۔"
+      },
+      "unlock": "قفل کھولیں",
+      "unlockHint": "اس ماڈل کا قفل کھولیں",
+      "unlockFailed": "ماڈل کا قفل نہیں کھولا جا سکا۔"
+    },
+    "story": {
+      "trail": "کہانی میں آپ کہاں ہیں",
+      "list": "اب تک کی کہانی",
+      "reopen": "{where} پر واپس جائیں",
+      "showing": "{where} دکھایا جا رہا ہے",
+      "changed": "تبدیل شدہ",
+      "unsaved": "غیر محفوظ شدہ",
+      "bench": {
+        "models": "ماڈلز",
+        "areas": "شعبے",
+        "records": "ریکارڈز",
+        "record": "ریکارڈ",
+        "pick": "{name} کھولیں",
+        "simulateChanged": "پہلے مرحلے کو کسی اور کی طرف سے تبدیل شدہ نشان زد کریں",
+        "simulateUnsaved": "ریکارڈ کو غیر محفوظ شدہ ترامیم والا نشان زد کریں",
+        "name": "نام",
+        "hint": "کام کے مرحلے کی شکل دکھانے کے لیے ایک نمونہ ریکارڈ۔"
+      },
+      "goBack": "واپس جائیں",
+      "discard": {
+        "title": "غیر محفوظ شدہ تبدیلیاں رد کریں؟",
+        "body": "{where} میں ایسی تبدیلیاں ہیں جو محفوظ نہیں ہوئیں۔ آگے بڑھنے پر وہ رد ہو جائیں گی۔",
+        "confirm": "تبدیلیاں رد کریں",
+        "cancel": "ترمیم جاری رکھیں"
+      },
+      "backTo": "{label} پر واپس",
+      "newName": "نیا",
+      "newHint": "نیچے کے خانے پُر کریں، پھر بنانے کے لیے محفوظ کریں۔"
+    }
+  }
+}

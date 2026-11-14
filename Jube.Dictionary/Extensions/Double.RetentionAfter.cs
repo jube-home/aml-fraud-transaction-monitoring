@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double RetentionAfter(this double @this, double outflow)
+        [Description("The share of the value kept after the outflow, negative when more went out than came in.")]
+        public static double RetentionAfter(this double @this,
+            [Description("The amount that went out.")] double outflow)
         {
             return CalculationSupport.Finite((@this - outflow) / @this);
         }

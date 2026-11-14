@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The alpha-3 code for an alpha-2 or alpha-3 code, otherwise empty.")]
         public static string CountryAlpha3(this string? @this)
         {
             var key = (@this ?? "").Trim();

@@ -57,6 +57,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         {
             return new InlineFunctionPoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelId = dto.EntityAnalysisModelId,
                 Name = dto.Name,

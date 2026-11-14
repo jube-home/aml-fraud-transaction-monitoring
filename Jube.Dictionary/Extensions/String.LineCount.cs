@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Number of lines, counting CR, LF and CRLF breaks; 0 for empty text.")]
         public static int LineCount(this string? @this)
         {
             var value = @this ?? "";

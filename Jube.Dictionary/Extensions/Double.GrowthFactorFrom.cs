@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double GrowthFactorFrom(this double @this, double previous)
+        [Description("The value as a multiple of the previous value.")]
+        public static double GrowthFactorFrom(this double @this,
+            [Description("The earlier value the change is measured from.")] double previous)
         {
             return CalculationSupport.Finite(@this / previous);
         }

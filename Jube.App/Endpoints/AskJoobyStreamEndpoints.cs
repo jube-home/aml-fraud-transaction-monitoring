@@ -16,9 +16,11 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Jube.App.Code;
 using Jube.App.Code.AskJooby;
 using Jube.Data.Context;
 using Jube.Dto.AskJoobyConversation;
+using Jube.Resources;
 using Jube.Service.AskJoobyConversation;
 using Jube.Service.Exceptions.AskJoobyConversation;
 using Jube.Service.Reactivity.Interfaces;
@@ -36,6 +38,8 @@ namespace Jube.App.Endpoints
     public static class AskJoobyStreamEndpoints
     {
         private const string Base = "/api/AskJoobyConversation";
+        private const int MaxMessageCharacters = 20000;
+        private const int MaxPageContextCharacters = 8000;
 
         public static void MapAskJoobyStreamEndpoints(this IEndpointRouteBuilder endpoints)
         {
@@ -44,16 +48,81 @@ namespace Jube.App.Endpoints
                 .WithTags("AskJoobyConversation");
 
             group.MapPost("{id:int}/Start", StartAsync)
+                .ValidateAntiforgeryForCookieSessions()
+                .Produces(StatusCodes.Status200OK, contentType: "text/event-stream")
                 .WithName("AskJoobyConversationStart");
 
             group.MapPost("{id:int}/SendMessage", SendMessageAsync)
+                .ValidateAntiforgeryForCookieSessions()
+                .Produces(StatusCodes.Status200OK, contentType: "text/event-stream")
                 .WithName("AskJoobyConversationSendMessage");
 
             group.MapPost("{id:int}/Messages/{messageId:int}/Feedback", SubmitFeedbackAsync)
+                .ValidateAntiforgeryForCookieSessions()
+                .Produces<string>()
                 .WithName("AskJoobyConversationSubmitFeedback");
 
+            group.MapPost("{id:int}/Approvals/{approvalId}", DecideApprovalAsync)
+                .ValidateAntiforgeryForCookieSessions()
+                .Produces(StatusCodes.Status204NoContent)
+                .WithName("AskJoobyConversationDecideApproval");
+
             group.MapPost("{id:int}/Guidance", SendGuidanceAsync)
+                .ValidateAntiforgeryForCookieSessions()
+                .Produces(StatusCodes.Status202Accepted)
                 .WithName("AskJoobyConversationSendGuidance");
+        }
+
+        private static async Task<IResult> DecideApprovalAsync(HttpContext httpContext, int id, string approvalId,
+            AskJoobyApprovalDecisionRequestDto request, ILog log,
+            DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
+            IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
+            [FromServices] IChatClient chatClient, [FromKeyedServices("validation")] IChatClient validationChatClient,
+            [FromServices] IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator,
+            [FromServices] IServiceProvider serviceProvider, CancellationToken token)
+        {
+            var user = httpContext.User.Identity?.Name;
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"POST {Base}/{id}/Approvals: entry user={user}");
+            }
+
+            if (request is null || string.IsNullOrWhiteSpace(approvalId) || approvalId.Length > 64)
+            {
+                return Results.BadRequest();
+            }
+
+            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                dynamicEnvironment.AppSettings("ConnectionString"), log);
+
+            try
+            {
+                var service = await AskJoobyConversationServiceFactory.CreateAsync(dbContext, user,
+                    dynamicEnvironment, log, stringLocalizerFactory, serviceChangeBus, chatClient,
+                    validationChatClient, embeddingGenerator, serviceProvider, token);
+
+                await service.DecideApprovalAsync(id, approvalId, request.Approve, token).ConfigureAwait(false);
+
+                return Results.NoContent();
+            }
+            catch (NotAuthenticatedException)
+            {
+                return Results.Forbid();
+            }
+            catch (ForbiddenException)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}/{id}/Approvals: 403 user={user}");
+                }
+
+                return Results.Forbid();
+            }
+            catch (NotFoundException)
+            {
+                return Results.NotFound();
+            }
         }
 
         private static async Task<IResult> SendGuidanceAsync(HttpContext httpContext, int id,
@@ -143,6 +212,7 @@ namespace Jube.App.Endpoints
             var hasInferenceBackend = AskJoobyConversationServiceFactory.Flag(dynamicEnvironment, "EnableAskJooby");
 
             await WriteStreamAsync(httpContext, log, user,
+                stringLocalizerFactory.Create(typeof(AskJoobyConversationResources))[AskJoobyConversationResources.StreamFailed].Value,
                 service.StartConversationAsync(id, request.PageContext, hasInferenceBackend, token), token);
         }
 
@@ -161,6 +231,14 @@ namespace Jube.App.Endpoints
                 log.Debug($"POST {Base}/{id}/SendMessage: entry user={user}");
             }
 
+            if ((request?.Text?.Length ?? 0) > MaxMessageCharacters
+                || (request?.PageContext?.Length ?? 0) > MaxPageContextCharacters)
+            {
+                httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+
+                return;
+            }
+
             await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                 dynamicEnvironment.AppSettings("ConnectionString"), log);
 
@@ -174,8 +252,9 @@ namespace Jube.App.Endpoints
             }
 
             await WriteStreamAsync(httpContext, log, user,
-                service.SendMessageAsync(id, request.Text, request.PageContext,
-                    [.. request.AttachmentFileIds], token), token);
+                stringLocalizerFactory.Create(typeof(AskJoobyConversationResources))[AskJoobyConversationResources.StreamFailed].Value,
+                service.SendMessageAsync(id, request.Text ?? string.Empty, request.PageContext,
+                    [.. request.AttachmentFileIds ?? []], token), token);
         }
 
         private static async Task<IResult> SubmitFeedbackAsync(HttpContext httpContext, int id, int messageId,
@@ -264,7 +343,7 @@ namespace Jube.App.Endpoints
             }
         }
 
-        private static async Task WriteStreamAsync(HttpContext httpContext, ILog log, string user,
+        private static async Task WriteStreamAsync(HttpContext httpContext, ILog log, string user, string failureMessage,
             IAsyncEnumerable<AskJoobyStreamItemDto> items, CancellationToken token)
         {
             await using var enumerator = items.GetAsyncEnumerator(token);
@@ -297,6 +376,23 @@ namespace Jube.App.Endpoints
 
                 return;
             }
+            catch (RateLimitedException rateLimited)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}: 429 (rate limited) user={user}");
+                }
+
+                httpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+                httpContext.Response.Headers.RetryAfter = "10";
+                httpContext.Response.ContentType = "application/json";
+
+                await httpContext.Response.WriteAsync(
+                    JsonSerializer.Serialize(new { errors = new[] { new { errorMessage = rateLimited.Message } } },
+                        JsonSerializerOptions.Web), CancellationToken.None);
+
+                return;
+            }
             catch (OperationCanceledException)
             {
                 return;
@@ -313,7 +409,7 @@ namespace Jube.App.Endpoints
 
                 await httpContext.Response.StartAsync(CancellationToken.None);
 
-                var failure = JsonSerializer.Serialize(new { message = e.Message }, JsonSerializerOptions.Web);
+                var failure = JsonSerializer.Serialize(new { message = failureMessage }, JsonSerializerOptions.Web);
                 await httpContext.Response.WriteAsync($"event: error\ndata: {failure}\n\n", CancellationToken.None);
                 await httpContext.Response.Body.FlushAsync(CancellationToken.None);
 
@@ -351,7 +447,7 @@ namespace Jube.App.Endpoints
             {
                 log.Error($"POST {Base}: stream failed user={user}", e);
 
-                var payload = JsonSerializer.Serialize(new { message = e.Message }, JsonSerializerOptions.Web);
+                var payload = JsonSerializer.Serialize(new { message = failureMessage }, JsonSerializerOptions.Web);
                 await httpContext.Response.WriteAsync($"event: error\ndata: {payload}\n\n", CancellationToken.None);
                 await httpContext.Response.Body.FlushAsync(CancellationToken.None);
             }

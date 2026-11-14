@@ -18,6 +18,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Context;
+using Jube.Data.Helpers;
 using Jube.Data.Poco;
 using Jube.Data.Repository;
 using log4net;
@@ -29,6 +30,8 @@ namespace Jube.App.Code.Waf
         DynamicEnvironment.DynamicEnvironment dynamicEnvironment,
         ILog log) : BackgroundService
     {
+        private const int MaxStoredTextLength = 512;
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             if (!"True".Equals(dynamicEnvironment.AppSettings("WafEnabled"), StringComparison.OrdinalIgnoreCase))
@@ -63,6 +66,13 @@ namespace Jube.App.Code.Waf
             await FlushAsync(CancellationToken.None).ConfigureAwait(false);
         }
 
+        private static string Clean(string value)
+        {
+            var redacted = SensitiveTextRedactor.Redact(value);
+
+            return redacted is { Length: > MaxStoredTextLength } ? redacted[..MaxStoredTextLength] : redacted;
+        }
+
         private static TimeSpan ComputeWindow(string interval, int intervalValue)
         {
             return interval switch
@@ -89,15 +99,15 @@ namespace Jube.App.Code.Waf
             {
                 CreatedDate = record.CreatedDate,
                 Transport = record.Transport,
-                Route = record.Route,
+                Route = Clean(record.Route),
                 Method = record.Method,
                 RemoteIp = record.RemoteIp,
                 UserName = record.UserName,
                 WafSignatureId = record.SignatureId,
                 SignatureName = record.SignatureName,
                 Category = record.Category,
-                MatchedField = record.MatchedField,
-                MatchedValue = record.MatchedValue,
+                MatchedField = Clean(record.MatchedField),
+                MatchedValue = Clean(record.MatchedValue),
                 Action = record.Action,
                 CorrelationId = record.CorrelationId,
                 Instance = instance

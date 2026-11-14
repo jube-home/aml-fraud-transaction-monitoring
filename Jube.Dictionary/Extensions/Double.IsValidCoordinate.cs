@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsValidCoordinate(this double latitude, double longitude)
+        [Description("Whether the latitude and longitude are in range.")]
+        public static bool IsValidCoordinate(this double latitude,
+            [Description("The longitude in degrees; the value is the latitude.")] double longitude)
         {
             return latitude is >= -90d and <= 90d && longitude is >= -180d and <= 180d;
         }

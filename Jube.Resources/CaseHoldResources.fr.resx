@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>Le dossier ou son paiement retenu est introuvable.</value>
+  </data>
+    <data name="ReasonRequired" xml:space="preserve">
+    <value>Un motif est requis.</value>
+  </data>
+    <data name="CaseIdInvalid" xml:space="preserve">
+    <value>Un dossier est requis.</value>
+  </data>
+    <data name="EntryRequired" xml:space="preserve">
+    <value>La transaction bloquée est requise.</value>
+  </data>
+    <data name="ReasonTooLong" xml:space="preserve">
+    <value>Le motif ne doit pas dépasser 1000 caractères.</value>
+  </data>
+    <data name="NotHeld" xml:space="preserve">
+    <value>Le paiement n'est pas bloqué ; il ne peut donc être ni libéré ni refusé.</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>Le dossier est verrouillé par un autre utilisateur.</value>
+  </data>
+    <data name="NoReleaseHook" xml:space="preserve">
+    <value>Aucun crochet de libération actif du flux de travail de dossiers ne traite ce paiement ; il ne peut donc pas être libéré.</value>
+  </data>
+    <data name="HookRefused" xml:space="preserve">
+    <value>Le crochet de libération n'a pas été appelé car son adresse a été refusée : {0}.</value>
+  </data>
+    <data name="CredentialMissing" xml:space="preserve">
+    <value>Le crochet de libération n'a pas été appelé car la variable d'environnement qui contient son identifiant n'est pas définie.</value>
+  </data>
+    <data name="HookBlockedByPolicy" xml:space="preserve">
+    <value>Le crochet de libération n'a pas été appelé car son adresse est refusée par la politique des hôtes sortants ({0}). Les récepteurs internes doivent figurer dans JUBE_HOOK_ALLOWED_HOSTS ou JUBE_HOOK_ALLOWED_CIDRS.</value>
+  </data>
+    <data name="HookFailed" xml:space="preserve">
+    <value>Le crochet de libération n'a pas libéré le paiement : {0}</value>
+  </data>
+    <data name="HookStatusNotOk" xml:space="preserve">
+    <value>Le crochet de libération a répondu avec le statut {0} au lieu de 200.</value>
+  </data>
+</root>

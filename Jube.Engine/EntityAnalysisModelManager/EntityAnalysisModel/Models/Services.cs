@@ -31,6 +31,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
         public DynamicEnvironment.DynamicEnvironment JubeEnvironment { get; set; }
         public IModel RabbitMqChannel { get; set; }
         public AesEncryption AesEncryption { get; set; }
+        public Jube.Svirfd.Interfaces.ISvirfdLookup Svirfd { get; set; }
         public IImplicitAsyncInvocationTracker ImplicitAsyncInvocationTracker { get; set; }
     }
 }

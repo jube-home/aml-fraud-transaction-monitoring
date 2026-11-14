@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Validation;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,19 +24,23 @@ namespace Jube.Dto.RuleExecution
 {
     [Description("The outcome of turning query builder JSON into rule text: the rule text the browser's rule " +
                  "builder would produce, and whether it parses and compiles against the model.")]
+    [MessagePackObject]
     public class BuilderRuleResultDto
     {
         [Description("True when the JSON is valid builder JSON and the rule text it produces parses and compiles; " +
                      "the rule can then be saved with RuleScriptTypeId 1, BuilderRuleScript = RuleText and Json = " +
                      "the JSON sent.")]
+        [Key(0)]
         public bool Valid { get; set; }
 
         [Description("The rule text the builder JSON produces; null when the JSON itself is invalid.")]
+        [Key(1)]
         public string? RuleText { get; set; }
 
         [Description("Problems with the JSON (PropertyName is a JSON path such as $.rules[0].operator) or with the " +
                      "rule text it produces (PropertyName is BuilderRuleScript, with the line and position). Empty " +
                      "when Valid is true.")]
+        [Key(2)]
         public List<ValidationErrorDto> Errors { get; set; } = [];
     }
 }

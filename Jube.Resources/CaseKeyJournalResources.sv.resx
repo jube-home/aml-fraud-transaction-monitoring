@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Du har inte behörighet att utföra den här åtgärden.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Du måste vara inloggad i en tenant för att utföra den här åtgärden.</value>
+  </data>
+    <data name="WorkflowNotFound" xml:space="preserve">
+    <value>Ärendearbetsflödet hittades inte eller så saknar du åtkomst till det.</value>
+  </data>
+    <data name="KeyRequired" xml:space="preserve">
+    <value>Journalen behöver ett payload-fältnamn att matcha.</value>
+  </data>
+    <data name="ValueRequired" xml:space="preserve">
+    <value>Journalen behöver ett värde att matcha.</value>
+  </data>
+    <data name="KeyInvalid" xml:space="preserve">
+    <value>Payload-fältnamnet får vara högst 256 tecken och får inte innehålla styrtecken.</value>
+  </data>
+    <data name="LensInvalid" xml:space="preserve">
+    <value>Linsen måste vara payload, rules, features, models eller sanctions.</value>
+  </data>
+    <data name="LimitInvalid" xml:space="preserve">
+    <value>Gränsen måste vara mellan 1 och 5000.</value>
+  </data>
+    <data name="PeriodInvalid" xml:space="preserve">
+    <value>”Från” måste vara före ”Till”, och fönstret får vara högst 3660 dagar.</value>
+  </data>
+    <data name="SectionInvalid" xml:space="preserve">
+    <value>Ett avsnitt måste vara ett av summary, notable, progression, distributions, velocity, gaps, novelty, counterparties, correlation, drift eller peers.</value>
+  </data>
+    <data name="TransactionNotFound" xml:space="preserve">
+    <value>Transaktionen hittades inte för det här ärendearbetsflödet.</value>
+  </data>
+    <data name="TransactionIdInvalid" xml:space="preserve">
+    <value>Transaktions-id måste vara större än noll.</value>
+  </data>
+    <data name="TagTransactionsInvalid" xml:space="preserve">
+    <value>Mellan en och 500 transaktioner krävs och ingen transaktion får upprepas.</value>
+  </data>
+    <data name="TagChangeRequired" xml:space="preserve">
+    <value>Minst en Tag att lägga till eller ta bort krävs.</value>
+  </data>
+    <data name="TagNameInvalid" xml:space="preserve">
+    <value>Ett Tag-namn måste ha text och vara högst 256 tecken.</value>
+  </data>
+    <data name="TagUnknown" xml:space="preserve">
+    <value>Varje Tag som läggs till måste vara en aktiv Tag i arbetsflödets modell.</value>
+  </data>
+    <data name="TagLimitInvalid" xml:space="preserve">
+    <value>Högst 20 Tags får läggas till, tas bort eller behållas samtidigt.</value>
+  </data>
+    <data name="PinTransactionsInvalid" xml:space="preserve">
+    <value>Mellan en och 50 transaktioner krävs och ingen transaktion får upprepas.</value>
+  </data>
+    <data name="TravelLimitInvalid" xml:space="preserve">
+    <value>Hastighetsgränsen måste vara mellan 1 och 10 000 kilometer i timmen och den kortaste sträckan mellan 0 och 20 000 kilometer.</value>
+  </data>
+    <data name="ReplayNotFound" xml:space="preserve">
+    <value>Den sparade uppspelningen hittades inte i det här ärendet.</value>
+  </data>
+    <data name="ReplayNameInvalid" xml:space="preserve">
+    <value>En uppspelning behöver ett namn på mellan 1 och 100 tecken.</value>
+  </data>
+    <data name="ReplayWindowInvalid" xml:space="preserve">
+    <value>En uppspelning tittar tillbaka 7, 30, 90 eller 365 dagar.</value>
+  </data>
+    <data name="ReplayLimitInvalid" xml:space="preserve">
+    <value>Ett ärende kan ha högst 10 sparade uppspelningar.</value>
+  </data>
+    <data name="PinLimitInvalid" xml:space="preserve">
+    <value>Ett ärende kan ha högst 50 fästa transaktioner.</value>
+  </data>
+    <data name="CaseNotFound" xml:space="preserve">
+    <value>Ärendet hittades inte.</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>Ärendet är låst till en annan användare.</value>
+  </data>
+    <data name="FilterInvalid" xml:space="preserve">
+    <value>Filtret är ogiltigt. Det behöver en grupp regler, var och en med ett fält i modellen, en operator som passar fältet och ett värde av fältets typ.</value>
+  </data>
+    <data name="FilterUnreadable" xml:space="preserve">
+    <value>Filtret kunde inte tillämpas eftersom ett lagrat värde inte kunde läsas som typen för fältet det jämfördes med.</value>
+  </data>
+    <data name="MergeInvalid" xml:space="preserve">
+    <value>Sammanslagning kräver en JSON-array med högst tre objekt, vart och ett med en nyckel och ett värde, utöver ärendenyckeln.</value>
+  </data>
+    <data name="TagJobTooManyMatches" xml:space="preserve">
+    <value>För många transaktioner matchar för att taggas i ett jobb. Begränsa vyn och försök igen.</value>
+  </data>
+    <data name="TagJobNoMatches" xml:space="preserve">
+    <value>Ingen transaktion matchar vyn.</value>
+  </data>
+    <data name="TagJobNotFound" xml:space="preserve">
+    <value>Taggningsjobbet hittades inte.</value>
+  </data>
+    <data name="TagJobNotUndoable" xml:space="preserve">
+    <value>Endast en avslutad taggning som ändrade något och inte redan har ångrats kan ångras.</value>
+  </data>
+    <data name="TagJobActiveLimit" xml:space="preserve">
+    <value>För många massmärkningsjobb är redan köade eller pågår. Vänta tills ett är klart, eller avbryt ett, och försök igen.</value>
+  </data>
+    <data name="KeyNotArchiveKey" xml:space="preserve">
+    <value>Nyckeln är inte ett fält som är flaggat som Archive Key i arbetsflödets modell, så dess transaktioner kan inte slås upp. Flagga fältet som Archive Key i modellens request XPath eller välj en annan nyckel.</value>
+  </data>
+    <data name="KeyValueInvalid" xml:space="preserve">
+    <value>Värdet kan inte läsas som datatypen för nyckelns fält.</value>
+  </data>
+    <data name="KeyNotLookupable" xml:space="preserve">
+    <value>Nyckelns fält är krypterat med en slumpmässig vektor, så dess värden kan inte slås upp.</value>
+  </data>
+    <data name="LaneOperatorNotAllowed" xml:space="preserve">
+    <value>En intervalloperator tillåts bara på en numerisk nyckel eller datumnyckel; en text- eller boolesk nyckel matchar bara med likhet.</value>
+  </data>
+    <data name="CaseKeyNotArchiveKey" xml:space="preserve">
+    <value>Ärendenyckeln är inte ett fält som är flaggat som Archive Key i arbetsflödets modell, så det här ärendets journal kan inte läsas. Flagga fältet som Archive Key i modellens request XPath och kör migreringsskriptet för archive key för historiken.</value>
+  </data>
+</root>

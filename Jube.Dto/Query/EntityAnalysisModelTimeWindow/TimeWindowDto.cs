@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Validation;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,43 +23,56 @@ using Jube.Dto.Validation;
 namespace Jube.Dto.Query.EntityAnalysisModelTimeWindow
 {
     [Description("A time window worked out exactly as the engine works it out. Both ends are included.")]
+    [MessagePackObject]
     public class TimeWindowDto
     {
         [Description("True when the window could be worked out.")]
+        [Key(0)]
         public bool Valid { get; set; }
 
         [Description("The window's kind: AbstractionRule, SearchKey, TtlCounter or Calendar.")]
+        [Key(1)]
         public string? Kind { get; set; }
 
         [Description("The interval code: s, n, h, d, w, m or y.")]
+        [Key(2)]
         public string? Interval { get; set; }
 
         [Description("The interval in words, e.g. minutes for n.")]
+        [Key(3)]
         public string? IntervalName { get; set; }
 
         [Description("How many intervals the window spans.")]
+        [Key(4)]
         public int Value { get; set; }
 
         [Description("The start of the window, included.")]
+        [Key(5)]
         public DateTime? From { get; set; }
 
         [Description("The end of the window (the reference date), included.")]
+        [Key(6)]
         public DateTime? To { get; set; }
 
         [Description("The window's length in seconds.")]
+        [Key(7)]
         public double? LengthSeconds { get; set; }
 
         [Description("For an abstraction rule, true when the search key's TTL is shorter than the rule's interval, " +
                      "so the engine uses the shorter window.")]
+        [Key(8)]
         public bool SearchKeyShortensTheWindow { get; set; }
 
         [Description("For a TTL counter set to live forever: its entries never expire, so it has no window.")]
+        [Key(9)]
         public bool LiveForever { get; set; }
 
         [Description("How the engine uses this window.")]
+        [Key(10)]
         public string? Note { get; set; }
 
         [Description("Why the window could not be worked out.")]
+        [Key(11)]
         public List<ValidationErrorDto> Errors { get; set; } = [];
     }
 }

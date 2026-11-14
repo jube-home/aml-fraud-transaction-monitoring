@@ -20,6 +20,7 @@ namespace Jube.Data.Repository
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
 
     public class CaseRepository
@@ -48,11 +49,11 @@ namespace Jube.Data.Repository
             this.dbContext = dbContext;
         }
 
-        public Task UpdateExpiredCaseDiaryAsync(int id, byte closedStatus, byte lastClosedStatus,
+        public Task<int> UpdateExpiredCaseDiaryAsync(int id, byte closedStatus, byte lastClosedStatus,
             CancellationToken token = default)
         {
             return dbContext.Case
-                .Where(d => d.Id == id)
+                .Where(d => d.Id == id && d.ClosedStatusId == lastClosedStatus)
                 .Set(s => s.ClosedStatusId, closedStatus)
                 .Set(s => s.LastClosedStatus, lastClosedStatus)
                 .UpdateAsync(token);
@@ -80,8 +81,9 @@ namespace Jube.Data.Repository
         public async Task<IEnumerable<Case>> GetAsyncActiveOnlyAsync(CancellationToken token = default)
         {
             var query = dbContext.Case.Where(w =>
-                w.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
-                !tenantRegistryId.HasValue);
+                (tenantRegistryId.HasValue
+                 && w.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId) ||
+                (userName == null && !tenantRegistryId.HasValue));
 
             if (userName == null)
             {
@@ -113,8 +115,8 @@ namespace Jube.Data.Repository
         {
             return dbContext.Case
                 .Where(w =>
-                    (w.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
-                     !tenantRegistryId.HasValue)
+                    tenantRegistryId.HasValue
+                    && w.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
                     && (w.CaseWorkflow.EntityAnalysisModel.Deleted == 0 ||
                         w.CaseWorkflow.EntityAnalysisModel.Deleted == null)
                     && (w.CaseWorkflow.Deleted == 0 || w.CaseWorkflow.Deleted == null)
@@ -138,17 +140,54 @@ namespace Jube.Data.Repository
                 .FirstOrDefaultAsync(token);
         }
 
+        public Task<List<int>> GetVisibleIdsActiveOnlyAsync(IReadOnlyCollection<int> ids,
+            CancellationToken token = default)
+        {
+            if (ids.Count == 0)
+            {
+                return Task.FromResult(new List<int>());
+            }
+
+            return dbContext.Case
+                .Where(w =>
+                    tenantRegistryId.HasValue
+                    && w.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                    && (w.CaseWorkflow.EntityAnalysisModel.Deleted == 0 ||
+                        w.CaseWorkflow.EntityAnalysisModel.Deleted == null)
+                    && (w.CaseWorkflow.Deleted == 0 || w.CaseWorkflow.Deleted == null)
+                    && (w.CaseWorkflowStatus.Deleted == 0 || w.CaseWorkflowStatus.Deleted == null)
+                    && ids.Contains(w.Id)
+                    && dbContext.CaseWorkflowStatusRole
+                        .Where(r => r.CaseWorkflowStatusGuid == w.CaseWorkflowStatus.Guid
+                                    && (r.Deleted == 0 || r.Deleted == null))
+                        .Any(r => dbContext.RoleRegistry
+                            .Where(rr => rr.Guid == r.RoleRegistryGuid && (rr.Deleted == 0 || rr.Deleted == null))
+                            .Any(rr => dbContext.UserRegistry
+                                .Any(u => u.RoleRegistryGuid == rr.Guid && u.Name == userName)))
+                    && dbContext.CaseWorkflowRole
+                        .Where(r => r.CaseWorkflowGuid == w.CaseWorkflow.Guid
+                                    && (r.Deleted == 0 || r.Deleted == null))
+                        .Any(r => dbContext.RoleRegistry
+                            .Where(rr => rr.Guid == r.RoleRegistryGuid && (rr.Deleted == 0 || rr.Deleted == null))
+                            .Any(rr => dbContext.UserRegistry
+                                .Any(u => u.RoleRegistryGuid == rr.Guid && u.Name == userName)))
+                )
+                .Select(s => s.Id)
+                .ToListAsync(token);
+        }
+
         public async Task<IEnumerable<Case>> GetByExpiredAsync(CancellationToken token = default)
         {
             return await dbContext.Case.Where(w
-                => (w.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
-                    !tenantRegistryId.HasValue)
-                   && (w.ClosedStatusId == 0 ||
-                       w.ClosedStatusId == 1 ||
+                => ((tenantRegistryId.HasValue
+                     && w.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId) ||
+                    (userName == null && !tenantRegistryId.HasValue))
+                   && (w.ClosedStatusId == 1 ||
                        w.ClosedStatusId == 2 ||
                        w.ClosedStatusId == 4)
                    && DateTime.UtcNow >= w.DiaryDate
-                   && w.Diary == 1).ToListAsync(token).ConfigureAwait(false);
+                   && w.Diary == 1)
+                .OrderBy(w => w.DiaryDate).Take(5000).ToListAsync(token).ConfigureAwait(false);
         }
 
         public async Task<Case> InsertAsync(Case model, CancellationToken token = default)

@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The BBAN (everything after the first four characters) of a valid IBAN, otherwise empty.")]
         public static string IbanBasicBankAccountNumber(this string? @this)
         {
             return @this.IsValidIban() ? @this!.Replace(" ", "").Substring(4).ToUpperInvariant() : "";

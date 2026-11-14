@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchGeometricMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the geometric mean of the value and another, for growth factors and multiples is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchGeometricMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleGeometricMeanWithOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectGeometricMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the geometric mean of the value and another, for growth factors and multiples is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectGeometricMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleGeometricMeanWithOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakGeometricMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the geometric mean of the value and another, for growth factors and multiples is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakGeometricMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleGeometricMeanWithOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireGeometricMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the geometric mean of the value and another, for growth factors and multiples is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireGeometricMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleGeometricMeanWithOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureGeometricMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the geometric mean of the value and another, for growth factors and multiples is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureGeometricMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchGeometricMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the geometric mean of the value and another, for growth factors and multiples is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchGeometricMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchGeometricMeanWithOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectGeometricMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the geometric mean of the value and another, for growth factors and multiples is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectGeometricMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectGeometricMeanWithOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakGeometricMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the geometric mean of the value and another, for growth factors and multiples is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakGeometricMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakGeometricMeanWithOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireGeometricMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the geometric mean of the value and another, for growth factors and multiples is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireGeometricMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireGeometricMeanWithOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureGeometricMeanWithOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the geometric mean of the value and another, for growth factors and multiples is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureGeometricMeanWithOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureGeometricMeanWithOutsideRange(other, lowerBound, upperBound);
             }

@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double EntropyOfSharesWith(this double @this, params double[] others)
+        [Description("The Shannon entropy in bits of how the total is shared across the value and the others.")]
+        public static double EntropyOfSharesWith(this double @this,
+            [Description("The other numbers.")] params double[] others)
         {
             return CalculationSupport.EntropyBits(@this, others);
         }

@@ -30,13 +30,16 @@ namespace Jube.Service.Repository.CaseFile
                 CreatedUser = caseFile.CreatedUser,
                 CaseKeyValue = caseFile.CaseKeyValue,
                 CaseId = caseFile.CaseId.GetValueOrDefault(),
+                CaseNoteId = caseFile.CaseNoteId,
+                CaseResearchId = caseFile.CaseResearchId,
                 DeletedDate = ToOffset(caseFile.DeletedDate),
                 DeletedUser = caseFile.DeletedUser,
                 Deleted = caseFile.Deleted == 1,
                 Name = caseFile.Name,
                 Extension = caseFile.Extension,
                 ContentType = caseFile.ContentType,
-                Size = (int)caseFile.Size
+                Size = (int)caseFile.Size,
+                Hash = caseFile.Hash
             };
 
         public static List<CaseFileDto> ToDto(IEnumerable<RulePoco> source) =>

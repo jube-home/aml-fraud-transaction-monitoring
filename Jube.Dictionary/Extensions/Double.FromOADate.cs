@@ -8,6 +8,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Converts an OLE Automation date to a DateTime.")]
         public static DateTime FromOADate(this Double d)
         {
             return DateTime.FromOADate(d);

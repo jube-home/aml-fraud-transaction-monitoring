@@ -10,11 +10,13 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Char c)
         {
-            public Char ToLower(CultureInfo culture)
+            [Description("Converts the character to lowercase using specified culture rules.")]
+            public Char ToLower([Description("An object that supplies culture-specific casing rules.")] CultureInfo culture)
             {
                 return char.ToLower(c, culture);
             }
 
+            [Description("Converts the character to lowercase.")]
             public Char ToLower()
             {
                 return char.ToLower(c);

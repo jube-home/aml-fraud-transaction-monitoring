@@ -24,7 +24,10 @@ namespace Jube.Service.Query.Parser
                 Start = s.Start,
                 Length = s.Length,
                 Message = s.Message,
-                Line = s.Line
+                Line = s.Line,
+                Column = s.Column,
+                EndColumn = s.EndColumn,
+                Code = s.Code
             }).ToList();
         }
     }

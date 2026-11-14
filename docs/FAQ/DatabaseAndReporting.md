@@ -17,7 +17,7 @@ reprocessing go to ArchiveVersion.
 
 **Q: How do I query values inside the archive JSON?**
 
-A: Use PostgreSQL JSONB operators. For efficiency, promote the key via Archive Key (the Report Table switch) or create
+A: Use PostgreSQL JSONB operators. For efficiency, promote the key via Archive Key (the Archive Key switch) or create
 an expression index. Every search key used in cache or drill needs an expression index, for example on
 `("Json" -> 'payload' ->> 'FieldName')`. Check explain plans and use `pg_stat_activity` to spot missing indexes, and
 remember that more indexes slow ingestion.

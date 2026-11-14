@@ -17,7 +17,8 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Int32 LeastCommonMultiple(this Int32 @this, Int32 other)
+        [Description("Returns the least common multiple of the two values.")]
+        public static Int32 LeastCommonMultiple(this Int32 @this, [Description("The other value.")] Int32 other)
         {
             if (@this == 0 || other == 0)
             {

@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,15 +21,18 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Repository.Archive
 {
+    [MessagePackObject]
     public class ArchiveTagDto
     {
         [Description("Identifier of the archived transaction instance being tagged, matching " +
                      "EntityAnalysisModelInstanceEntryGuid on the Archive payload and the Case grid row.")]
+        [Key(0)]
         public Guid EntityAnalysisModelInstanceEntryGuid { get; set; }
 
         [Description("The full set of Tag names now applied to this archived transaction -- replaces whatever " +
                      "tag set was previously stored, not a delta. An empty array clears all tags. Each name must " +
                      "match a Tag registered against the transaction's Model (see EntityAnalysisModelTag).")]
+        [Key(1)]
         public string[]? Tag { get; set; }
     }
 }

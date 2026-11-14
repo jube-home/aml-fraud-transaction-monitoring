@@ -41,15 +41,20 @@ namespace Jube.Service.Agent.ServiceToolCatalogue
                 new ServiceToolDescriptor(
                     "CaseWorkflowXPathListByWorkflowIdActiveDrillOnly", OperationKind.Read, true,
                     false,
-                    "Lists active, Drill-enabled Case Workflow XPath extractions for a parent Case Workflow that " +
-                    "the caller holds a role grant on.",
+                    "Lists active Case Workflow XPath extractions whose source field is flagged Archive Key for a parent " +
+                    "Case Workflow that the caller holds a role grant on.",
                     CaseWorkflowXPathService.ActiveOnlyPermissions),
                 new ServiceToolDescriptor(
                     "CaseWorkflowXPathListByWorkflowGuidActiveDrillOnly", OperationKind.Read, true,
                     false,
-                    "Lists active, Drill-enabled Case Workflow XPath extractions for a parent Case Workflow (by " +
-                    "Guid) that the caller holds a role grant on.",
+                    "Lists active Case Workflow XPath extractions whose source field is flagged Archive Key for a parent " +
+                    "Case Workflow (by Guid) that the caller holds a role grant on.",
                     CaseWorkflowXPathService.ActiveOnlyPermissions),
+                new ServiceToolDescriptor(
+                    "CaseWorkflowXPathFields", OperationKind.Read, true, false,
+                    "Lists the fields of the workflow's model a Case Workflow XPath extraction may read, with " +
+                    "whether each is flagged Archive Key.",
+                    CaseWorkflowXPathService.RequiredPermissions),
                 new ServiceToolDescriptor(
                     "CaseWorkflowXPathGet", OperationKind.Read, true, false,
                     "Returns a single Case Workflow XPath extraction by Id.",

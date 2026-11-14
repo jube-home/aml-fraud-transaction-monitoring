@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchContainsFuzzyAny(double threshold, params string[] terms)
+            [Description("True when: as ContainsFuzzy, for any of the listed terms. The threshold comes first. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsFuzzyAny([Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold,
+                [Description("The words or phrases looked for inside the text.")] params string[] terms)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringContainsFuzzyAny(flow.Value, threshold, terms));
             }
 
-            public Flow<string?> RejectContainsFuzzyAny(double threshold, params string[] terms)
+            [Description("True when: as ContainsFuzzy, for any of the listed terms. The threshold comes first. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsFuzzyAny([Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold,
+                [Description("The words or phrases looked for inside the text.")] params string[] terms)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringContainsFuzzyAny(flow.Value, threshold, terms));
             }
 
-            public Flow<string?> BreakContainsFuzzyAny(double threshold, params string[] terms)
+            [Description("True when: as ContainsFuzzy, for any of the listed terms. The threshold comes first. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsFuzzyAny([Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold,
+                [Description("The words or phrases looked for inside the text.")] params string[] terms)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringContainsFuzzyAny(flow.Value, threshold, terms));
             }
 
-            public Flow<string?> RequireContainsFuzzyAny(double threshold, params string[] terms)
+            [Description("True when: as ContainsFuzzy, for any of the listed terms. The threshold comes first. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsFuzzyAny([Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold,
+                [Description("The words or phrases looked for inside the text.")] params string[] terms)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringContainsFuzzyAny(flow.Value, threshold, terms));
             }
 
-            public Flow<string?> EnsureContainsFuzzyAny(double threshold, params string[] terms)
+            [Description("True when: as ContainsFuzzy, for any of the listed terms. The threshold comes first. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsFuzzyAny([Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold,
+                [Description("The words or phrases looked for inside the text.")] params string[] terms)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchContainsFuzzyAny(double threshold, params string[] terms)
+            [Description("Begins a pipeline from the value. True when: as ContainsFuzzy, for any of the listed terms. The threshold comes first. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsFuzzyAny([Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold,
+                [Description("The words or phrases looked for inside the text.")] params string[] terms)
             {
                 return value.Start().MatchContainsFuzzyAny(threshold, terms);
             }
 
-            public Flow<string?> RejectContainsFuzzyAny(double threshold, params string[] terms)
+            [Description("Begins a pipeline from the value. True when: as ContainsFuzzy, for any of the listed terms. The threshold comes first. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsFuzzyAny([Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold,
+                [Description("The words or phrases looked for inside the text.")] params string[] terms)
             {
                 return value.Start().RejectContainsFuzzyAny(threshold, terms);
             }
 
-            public Flow<string?> BreakContainsFuzzyAny(double threshold, params string[] terms)
+            [Description("Begins a pipeline from the value. True when: as ContainsFuzzy, for any of the listed terms. The threshold comes first. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsFuzzyAny([Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold,
+                [Description("The words or phrases looked for inside the text.")] params string[] terms)
             {
                 return value.Start().BreakContainsFuzzyAny(threshold, terms);
             }
 
-            public Flow<string?> RequireContainsFuzzyAny(double threshold, params string[] terms)
+            [Description("Begins a pipeline from the value. True when: as ContainsFuzzy, for any of the listed terms. The threshold comes first. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsFuzzyAny([Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold,
+                [Description("The words or phrases looked for inside the text.")] params string[] terms)
             {
                 return value.Start().RequireContainsFuzzyAny(threshold, terms);
             }
 
-            public Flow<string?> EnsureContainsFuzzyAny(double threshold, params string[] terms)
+            [Description("Begins a pipeline from the value. True when: as ContainsFuzzy, for any of the listed terms. The threshold comes first. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsFuzzyAny([Description("The Jaro-Winkler similarity from 0 to 1 a run of words must reach.")] double threshold,
+                [Description("The words or phrases looked for inside the text.")] params string[] terms)
             {
                 return value.Start().EnsureContainsFuzzyAny(threshold, terms);
             }

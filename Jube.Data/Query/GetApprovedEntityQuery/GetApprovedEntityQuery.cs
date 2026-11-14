@@ -25,6 +25,7 @@ namespace Jube.Data.Query.GetApprovedEntityQuery
     using AutoMapper;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Microsoft.Extensions.Logging.Abstractions;
     using Repository;
 

@@ -45,4 +45,7 @@
     <data name="NotFound" xml:space="preserve">
     <value>Le dossier, l'affichage ou le statut est introuvable, ou vous n'y avez pas accès.</value>
   </data>
+    <data name="SqlFailed" xml:space="preserve">
+    <value>Les données dont ceci est tiré n'ont pas pu être chargées : {0}</value>
+  </data>
 </root>

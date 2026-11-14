@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,27 +23,35 @@ namespace Jube.Dto.AskJoobyConversation
 {
     [Description("Metadata for one file attached to an AskJooby conversation. Never carries the file's " +
                  "own bytes -- those are only ever returned by the dedicated download endpoint.")]
+    [MessagePackObject]
     public class AskJoobyFileDto
     {
         [Description("Server-assigned row identifier. Read-only.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("The conversation this file is attached to.")]
+        [Key(1)]
         public int AskJoobyConversationId { get; set; }
 
         [Description("The original file name.")]
+        [Key(2)]
         public string? Name { get; set; }
 
         [Description("The uploaded file's content type.")]
+        [Key(3)]
         public string? ContentType { get; set; }
 
         [Description("The file size in bytes.")]
+        [Key(4)]
         public long? Size { get; set; }
 
         [Description("User who uploaded this file. Server-assigned. Read-only.")]
+        [Key(5)]
         public string? CreatedUser { get; set; }
 
         [Description("Timestamp (UTC) this file was uploaded. Server-assigned. Read-only.")]
+        [Key(6)]
         public DateTimeOffset? CreatedDate { get; set; }
     }
 }

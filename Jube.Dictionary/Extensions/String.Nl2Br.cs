@@ -4,6 +4,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Converts newlines to line breaks.")]
         public static string Nl2Br(this string @this)
         {
             return @this.Replace("\r\n", "<br />").Replace("\n", "<br />");

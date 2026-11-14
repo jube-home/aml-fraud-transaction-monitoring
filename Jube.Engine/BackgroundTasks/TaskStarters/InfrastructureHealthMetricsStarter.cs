@@ -36,8 +36,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
         private const int GroupTimeoutMilliseconds = 45000;
         private readonly DotNetRuntimeMetricSampler dotNetRuntimeMetricSampler = new();
         private readonly EtcdPatroniDiscovery etcdPatroniDiscovery = new();
-        private readonly RedisConnectionMultiplexerMetricSampler redisConnectionMultiplexerMetricSampler = new();
-        private readonly RedisSentinelStatusSampler redisSentinelStatusSampler = new();
+        private readonly RespConnectionMultiplexerMetricSampler respConnectionMultiplexerMetricSampler = new();
+        private readonly RespSentinelStatusSampler respSentinelStatusSampler = new();
         private EtcdMetricSampler etcdMetricSampler;
         private DockerContainerMetricSampler dockerContainerMetricSampler;
         private DockerEventSampler dockerEventSampler;
@@ -47,7 +47,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
         private PatroniMetricSampler patroniMetricSampler;
         private PostgresLogSampler postgresLogSampler;
         private PostgresMetricSampler postgresMetricSampler;
-        private RedisMetricSampler redisMetricSampler;
+        private RespMetricSampler respMetricSampler;
 
         public async Task StartAsync()
         {
@@ -59,8 +59,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 postgresLogSampler =
                     new PostgresLogSampler(context.Services.DynamicEnvironment.AppSettings("ConnectionString"));
 
-                redisMetricSampler =
-                    new RedisMetricSampler(context.Services.DynamicEnvironment.AppSettings("RedisConnectionString"));
+                respMetricSampler =
+                    new RespMetricSampler(context.Services.DynamicEnvironment.AppSettings("RespConnectionString"));
 
                 var etcdUsername = context.Services.DynamicEnvironment.AppSettings("EtcdClientUsername");
                 var etcdPassword = context.Services.DynamicEnvironment.AppSettings("EtcdClientPassword");
@@ -106,6 +106,41 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             {
                 context.Services.Log.Error($"InfrastructureHealthMetricsStarter: has produced an error {ex}");
             }
+            finally
+            {
+                await DisposeSamplersAsync().ConfigureAwait(false);
+            }
+        }
+
+        private async Task DisposeSamplersAsync()
+        {
+            await TryDisposeAsync(postgresMetricSampler).ConfigureAwait(false);
+            await TryDisposeAsync(postgresLogSampler).ConfigureAwait(false);
+            await TryDisposeAsync(respMetricSampler).ConfigureAwait(false);
+            await TryDisposeAsync(etcdMetricSampler).ConfigureAwait(false);
+            await TryDisposeAsync(patroniMetricSampler).ConfigureAwait(false);
+            await TryDisposeAsync(dockerProxyClient).ConfigureAwait(false);
+        }
+
+        private async Task TryDisposeAsync(object disposable)
+        {
+            try
+            {
+                switch (disposable)
+                {
+                    case IAsyncDisposable asyncDisposable:
+                        await asyncDisposable.DisposeAsync().ConfigureAwait(false);
+                        break;
+                    case IDisposable syncDisposable:
+                        syncDisposable.Dispose();
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                context.Services.Log.Warn(
+                    $"InfrastructureHealthMetricsStarter: A sampler could not be disposed cleanly as {ex}.");
+            }
         }
 
         private async Task SampleAndFlushAsync(CancellationToken token)
@@ -137,18 +172,18 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 }, token),
                 RunGroupAsync(async (dbContext, groupToken) =>
                 {
-                    await FlushRedisMetricAsync(dbContext, instance, createdDate, groupToken).ConfigureAwait(false);
-                    await FlushRedisSlowOperationsAsync(dbContext, instance, createdDate, groupToken)
+                    await FlushRespMetricAsync(dbContext, instance, createdDate, groupToken).ConfigureAwait(false);
+                    await FlushRespSlowOperationsAsync(dbContext, instance, createdDate, groupToken)
                         .ConfigureAwait(false);
-                    await FlushRedisSentinelStatusAsync(dbContext, instance, createdDate, groupToken)
+                    await FlushRespSentinelStatusAsync(dbContext, instance, createdDate, groupToken)
                         .ConfigureAwait(false);
                 }, token),
                 RunGroupAsync((dbContext, groupToken) =>
-                    FlushRedisConnectionMultiplexerMetricAsync(dbContext, instance, createdDate, groupToken), token),
+                    FlushRespConnectionMultiplexerMetricAsync(dbContext, instance, createdDate, groupToken), token),
                 RunGroupAsync((dbContext, groupToken) =>
-                    FlushRedisConnectionEventsAsync(dbContext, instance, createdDate, groupToken), token),
+                    FlushRespConnectionEventsAsync(dbContext, instance, createdDate, groupToken), token),
                 RunGroupAsync((dbContext, groupToken) =>
-                    FlushRedisSentinelEventsAsync(dbContext, instance, createdDate, groupToken), token),
+                    FlushRespSentinelEventsAsync(dbContext, instance, createdDate, groupToken), token),
                 RunGroupAsync((dbContext, groupToken) =>
                     FlushModelInvokeWarningsAsync(dbContext, instance, createdDate, groupToken), token),
                 RunGroupAsync((dbContext, groupToken) =>
@@ -161,7 +196,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 RunGroupAsync((dbContext, groupToken) =>
                     FlushCaptureQueueHealthAsync(dbContext, instance, createdDate, groupToken), token),
                 RunGroupAsync((dbContext, groupToken) =>
-                    FlushRedisCallCountersAsync(dbContext, instance, createdDate, groupToken), token),
+                    FlushRespCallCountersAsync(dbContext, instance, createdDate, groupToken), token),
 #pragma warning disable VSTHRD003 // etcdEndpointsTask is deliberately started once above and shared by both groups
                 // ReSharper disable once VSTHRD003
                 RunGroupAsync((dbContext, groupToken) =>
@@ -202,7 +237,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 context.Services.Log.Error(
                     $"InfrastructureHealthMetricsStarter: A sampler group did not complete within " +
                     $"{GroupTimeoutMilliseconds}ms and was abandoned so the sampling cycle could proceed. " +
-                    "This usually means a dependency (Postgres, Redis, etcd or Patroni) is slow or unreachable.");
+                    "This usually means a dependency (Postgres, RESP, etcd or Patroni) is slow or unreachable.");
             }
             finally
             {
@@ -278,6 +313,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     CaseCreation = context.ConcurrentQueues.PendingCases.Count,
                     Tagging = context.ConcurrentQueues.PendingTagging.Count,
                     Notification = context.ConcurrentQueues.PendingNotifications.Count,
+                    Webhook = context.ConcurrentQueues.PendingWebhooks.Count,
                     CreatedDate = createdDate,
                     Instance = instance,
                     AsynchronousImplicitAsyncOverdue = context.Services.ImplicitAsyncInvocationTracker.PendingCount
@@ -442,14 +478,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             }
         }
 
-        private async Task FlushRedisMetricAsync(DbContext dbContext, string instance, DateTime createdDate,
+        private async Task FlushRespMetricAsync(DbContext dbContext, string instance, DateTime createdDate,
             CancellationToken token)
         {
-            using var scope = SamplerScope.Start("RedisMetric", instance);
+            using var scope = SamplerScope.Start("RespMetric", instance);
 
             try
             {
-                var metric = await redisMetricSampler.SampleAsync().ConfigureAwait(false);
+                var metric = await respMetricSampler.SampleAsync().ConfigureAwait(false);
 
                 if (metric == null)
                 {
@@ -461,7 +497,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 metric.Instance = instance;
                 metric.CreatedDate = createdDate;
 
-                var repository = new RedisMetricRepository(dbContext);
+                var repository = new RespMetricRepository(dbContext);
                 await repository.InsertAsync(metric, token).ConfigureAwait(false);
                 scope.Rows(1);
             }
@@ -470,18 +506,18 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 scope.Error(ex);
 
                 context.Services.Log.Error(
-                    $"InfrastructureHealthMetricsStarter: An error sampling Redis metrics has been observed as {ex}.");
+                    $"InfrastructureHealthMetricsStarter: An error sampling RESP metrics has been observed as {ex}.");
             }
         }
 
-        private async Task FlushRedisSlowOperationsAsync(DbContext dbContext, string instance, DateTime createdDate,
+        private async Task FlushRespSlowOperationsAsync(DbContext dbContext, string instance, DateTime createdDate,
             CancellationToken token)
         {
-            using var scope = SamplerScope.Start("RedisSlowOperation", instance);
+            using var scope = SamplerScope.Start("RespSlowOperation", instance);
 
             try
             {
-                var slowOperations = await redisMetricSampler.SampleSlowOperationsAsync().ConfigureAwait(false);
+                var slowOperations = await respMetricSampler.SampleSlowOperationsAsync().ConfigureAwait(false);
 
                 if (slowOperations.Count == 0)
                 {
@@ -490,7 +526,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     return;
                 }
 
-                var repository = new RedisSlowOperationRepository(dbContext);
+                var repository = new RespSlowOperationRepository(dbContext);
 
                 foreach (var slowOperation in slowOperations)
                 {
@@ -507,14 +543,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 scope.Error(ex);
 
                 context.Services.Log.Error(
-                    $"InfrastructureHealthMetricsStarter: An error sampling Redis slow operations has been observed as {ex}.");
+                    $"InfrastructureHealthMetricsStarter: An error sampling RESP slow operations has been observed as {ex}.");
             }
         }
 
-        private async Task FlushRedisConnectionMultiplexerMetricAsync(DbContext dbContext, string instance,
+        private async Task FlushRespConnectionMultiplexerMetricAsync(DbContext dbContext, string instance,
             DateTime createdDate, CancellationToken token)
         {
-            using var scope = SamplerScope.Start("RedisConnectionMultiplexerMetric", instance);
+            using var scope = SamplerScope.Start("RespConnectionMultiplexerMetric", instance);
 
             try
             {
@@ -527,13 +563,13 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     return;
                 }
 
-                var metric = redisConnectionMultiplexerMetricSampler.Sample(multiplexer,
+                var metric = respConnectionMultiplexerMetricSampler.Sample(multiplexer,
                     context.Services.CacheService.ConnectionDiagnostics);
 
                 metric.Instance = instance;
                 metric.CreatedDate = createdDate;
 
-                var repository = new RedisConnectionMultiplexerMetricRepository(dbContext);
+                var repository = new RespConnectionMultiplexerMetricRepository(dbContext);
                 await repository.InsertAsync(metric, token).ConfigureAwait(false);
                 scope.Rows(1);
             }
@@ -542,14 +578,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 scope.Error(ex);
 
                 context.Services.Log.Error(
-                    $"InfrastructureHealthMetricsStarter: An error sampling the Redis connection multiplexer has been observed as {ex}.");
+                    $"InfrastructureHealthMetricsStarter: An error sampling the RESP connection multiplexer has been observed as {ex}.");
             }
         }
 
-        private async Task FlushRedisSentinelStatusAsync(DbContext dbContext, string instance, DateTime createdDate,
+        private async Task FlushRespSentinelStatusAsync(DbContext dbContext, string instance, DateTime createdDate,
             CancellationToken token)
         {
-            using var scope = SamplerScope.Start("RedisSentinelStatus", instance);
+            using var scope = SamplerScope.Start("RespSentinelStatus", instance);
 
             try
             {
@@ -562,10 +598,10 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     return;
                 }
 
-                var replicationLagByEndpoint = await redisMetricSampler.SampleReplicationLagAsync()
+                var replicationLagByEndpoint = await respMetricSampler.SampleReplicationLagAsync()
                     .ConfigureAwait(false);
 
-                var entries = await redisSentinelStatusSampler
+                var entries = await respSentinelStatusSampler
                     .SampleAsync(cacheService.SentinelMultiplexer, cacheService.SentinelServiceName,
                         replicationLagByEndpoint)
                     .ConfigureAwait(false);
@@ -577,7 +613,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     return;
                 }
 
-                var repository = new RedisSentinelStatusRepository(dbContext);
+                var repository = new RespSentinelStatusRepository(dbContext);
 
                 foreach (var entry in entries)
                 {
@@ -594,18 +630,18 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 scope.Error(ex);
 
                 context.Services.Log.Error(
-                    $"InfrastructureHealthMetricsStarter: An error sampling Redis Sentinel status has been observed as {ex}.");
+                    $"InfrastructureHealthMetricsStarter: An error sampling RESP Sentinel status has been observed as {ex}.");
             }
         }
 
-        private async Task FlushRedisSentinelEventsAsync(DbContext dbContext, string instance, DateTime createdDate,
+        private async Task FlushRespSentinelEventsAsync(DbContext dbContext, string instance, DateTime createdDate,
             CancellationToken token)
         {
-            using var scope = SamplerScope.Start("RedisSentinelEvent", instance);
+            using var scope = SamplerScope.Start("RespSentinelEvent", instance);
 
             try
             {
-                var drained = RedisSentinelEventCapture.DrainAll();
+                var drained = RespSentinelEventCapture.DrainAll();
 
                 if (drained.Count == 0)
                 {
@@ -614,7 +650,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     return;
                 }
 
-                var models = drained.Select(record => new RedisSentinelEvent
+                var models = drained.Select(record => new RespSentinelEvent
                 {
                     OccurredDate = record.OccurredDate,
                     Channel = record.Channel,
@@ -623,7 +659,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     Instance = instance
                 }).ToList();
 
-                var repository = new RedisSentinelEventRepository(dbContext);
+                var repository = new RespSentinelEventRepository(dbContext);
                 await repository.BulkCopyAsync(models, token).ConfigureAwait(false);
                 scope.Rows(models.Count);
             }
@@ -632,7 +668,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 scope.Error(ex);
 
                 context.Services.Log.Error(
-                    $"InfrastructureHealthMetricsStarter: An error flushing captured Redis Sentinel events has been observed as {ex}.");
+                    $"InfrastructureHealthMetricsStarter: An error flushing captured RESP Sentinel events has been observed as {ex}.");
             }
         }
 
@@ -840,8 +876,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             var modelInvokeWarningDropped = ModelInvokeWarningCapture.TakeDroppedCount();
             var caseCreationWarningDropped = CaseCreationWarningCapture.TakeDroppedCount();
             var archiverWarningDropped = ArchiverWarningCapture.TakeDroppedCount();
-            var redisSentinelEventDropped = RedisSentinelEventCapture.TakeDroppedCount();
-            var redisConnectionEventDropped = RedisConnectionEventCapture.TakeDroppedCount();
+            var respSentinelEventDropped = RespSentinelEventCapture.TakeDroppedCount();
+            var respConnectionEventDropped = RespConnectionEventCapture.TakeDroppedCount();
             var openTelemetryMetricDropped = OpenTelemetryMetricCapture.TakeDroppedNewSeriesCount();
 
             try
@@ -874,17 +910,17 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     },
                     new()
                     {
-                        QueueId = (int)CaptureQueueType.RedisSentinelEvent,
-                        QueueDepth = RedisSentinelEventCapture.QueueDepth,
-                        DroppedCount = redisSentinelEventDropped,
+                        QueueId = (int)CaptureQueueType.RespSentinelEvent,
+                        QueueDepth = RespSentinelEventCapture.QueueDepth,
+                        DroppedCount = respSentinelEventDropped,
                         CreatedDate = createdDate,
                         Instance = instance
                     },
                     new()
                     {
-                        QueueId = (int)CaptureQueueType.RedisConnectionEvent,
-                        QueueDepth = RedisConnectionEventCapture.QueueDepth,
-                        DroppedCount = redisConnectionEventDropped,
+                        QueueId = (int)CaptureQueueType.RespConnectionEvent,
+                        QueueDepth = RespConnectionEventCapture.QueueDepth,
+                        DroppedCount = respConnectionEventDropped,
                         CreatedDate = createdDate,
                         Instance = instance
                     },
@@ -907,8 +943,8 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 ModelInvokeWarningCapture.AddDroppedCount(modelInvokeWarningDropped);
                 CaseCreationWarningCapture.AddDroppedCount(caseCreationWarningDropped);
                 ArchiverWarningCapture.AddDroppedCount(archiverWarningDropped);
-                RedisSentinelEventCapture.AddDroppedCount(redisSentinelEventDropped);
-                RedisConnectionEventCapture.AddDroppedCount(redisConnectionEventDropped);
+                RespSentinelEventCapture.AddDroppedCount(respSentinelEventDropped);
+                RespConnectionEventCapture.AddDroppedCount(respConnectionEventDropped);
                 OpenTelemetryMetricCapture.AddDroppedNewSeriesCount(openTelemetryMetricDropped);
 
                 scope.Error(ex);
@@ -918,14 +954,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
             }
         }
 
-        private async Task FlushRedisConnectionEventsAsync(DbContext dbContext, string instance,
+        private async Task FlushRespConnectionEventsAsync(DbContext dbContext, string instance,
             DateTime createdDate, CancellationToken token)
         {
-            using var scope = SamplerScope.Start("RedisConnectionEvent", instance);
+            using var scope = SamplerScope.Start("RespConnectionEvent", instance);
 
             try
             {
-                var drained = RedisConnectionEventCapture.DrainAll();
+                var drained = RespConnectionEventCapture.DrainAll();
 
                 if (drained.Count == 0)
                 {
@@ -934,7 +970,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     return;
                 }
 
-                var models = drained.Select(record => new RedisConnectionEvent
+                var models = drained.Select(record => new RespConnectionEvent
                 {
                     OccurredDate = record.OccurredDate,
                     EventTypeId = (int)record.EventType,
@@ -951,7 +987,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     TransactionsImpacted = record.TransactionsImpacted
                 }).ToList();
 
-                var repository = new RedisConnectionEventRepository(dbContext);
+                var repository = new RespConnectionEventRepository(dbContext);
                 await repository.BulkCopyAsync(models, token).ConfigureAwait(false);
                 scope.Rows(models.Count);
             }
@@ -960,14 +996,14 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 scope.Error(ex);
 
                 context.Services.Log.Error(
-                    $"InfrastructureHealthMetricsStarter: An error flushing captured Redis connection events has been observed as {ex}.");
+                    $"InfrastructureHealthMetricsStarter: An error flushing captured RESP connection events has been observed as {ex}.");
             }
         }
 
-        private async Task FlushRedisCallCountersAsync(DbContext dbContext, string instance, DateTime createdDate,
+        private async Task FlushRespCallCountersAsync(DbContext dbContext, string instance, DateTime createdDate,
             CancellationToken token)
         {
-            using var scope = SamplerScope.Start("RedisCallCounter", instance);
+            using var scope = SamplerScope.Start("RespCallCounter", instance);
 
             try
             {
@@ -980,7 +1016,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     return;
                 }
 
-                var models = snapshot.Select(entry => new RedisCallCounter
+                var models = snapshot.Select(entry => new RespCallCounter
                 {
                     Call = entry.Call,
                     Count = entry.Count,
@@ -991,7 +1027,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     Instance = instance
                 }).ToList();
 
-                var repository = new RedisCallCounterRepository(dbContext);
+                var repository = new RespCallCounterRepository(dbContext);
                 await repository.BulkCopyAsync(models, token).ConfigureAwait(false);
                 scope.Rows(models.Count);
             }
@@ -1000,7 +1036,7 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                 scope.Error(ex);
 
                 context.Services.Log.Error(
-                    $"InfrastructureHealthMetricsStarter: An error flushing Redis call counters has been observed as {ex}.");
+                    $"InfrastructureHealthMetricsStarter: An error flushing RESP call counters has been observed as {ex}.");
             }
         }
 

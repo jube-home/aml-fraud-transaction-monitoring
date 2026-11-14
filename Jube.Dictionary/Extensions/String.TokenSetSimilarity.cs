@@ -18,7 +18,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double TokenSetSimilarity(this string? @this, string? other)
+        [Description("Share of words that best-match between the two texts, from 0 to 1.")]
+        public static double TokenSetSimilarity(this string? @this,
+            [Description("The text the value is compared with.")] string? other)
         {
             return FuzzyScorers.TokenSet(FuzzyNormaliser.Normalise(@this, FuzzyNormalisation.Default),
                 FuzzyNormaliser.Normalise(other, FuzzyNormalisation.Default));

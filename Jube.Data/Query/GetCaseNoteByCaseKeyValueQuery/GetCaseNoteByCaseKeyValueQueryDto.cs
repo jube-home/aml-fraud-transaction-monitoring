@@ -31,5 +31,11 @@ namespace Jube.Data.Query.GetCaseNoteByCaseKeyValueQuery
         public string Action { get; set; }
         public int PriorityId { get; set; }
         public string Priority { get; set; }
+        public int SourceId { get; set; }
+        public int KindId { get; set; }
+        public bool IsFinding { get; set; }
+        public int Version { get; set; }
+        public int? SupersedesNoteId { get; set; }
+        public int? AskJoobyConversationId { get; set; }
     }
 }

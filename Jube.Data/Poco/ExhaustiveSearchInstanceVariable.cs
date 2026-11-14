@@ -47,13 +47,11 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(17)] public int? Bins { get; set; }
         [Column] [Nullable] [Key(18)] public int? VariableSequence { get; set; }
 
-        [Association(ThisKey = "ExhaustiveSearchInstanceId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "ExhaustiveSearchInstanceId", OtherKey = "Id", CanBeNull = true)]
         [Key(19)]
         public ExhaustiveSearchInstance ExhaustiveSearchInstance { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceVariableId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceVariableId", CanBeNull = true)]
         [Key(20)]
         public IEnumerable<ExhaustiveSearchInstanceVariableAnomaly> ExhaustiveSearchInstanceVariableAnomaly
         {
@@ -61,14 +59,12 @@ namespace Jube.Data.Poco
             set;
         }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceVariableId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceVariableId", CanBeNull = true)]
         [Key(21)]
         public IEnumerable<ExhaustiveSearchInstanceVariableClassification>
             ExhaustiveSearchInstanceVariableClassification { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceVariableId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceVariableId", CanBeNull = true)]
         [Key(22)]
         public IEnumerable<ExhaustiveSearchInstanceVariableHistogram> ExhaustiveSearchInstanceVariableHistogram
         {
@@ -76,20 +72,17 @@ namespace Jube.Data.Poco
             set;
         }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceVariableId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceVariableId", CanBeNull = true)]
         [Key(23)]
         public IEnumerable<ExhaustiveSearchInstanceVariableHistogramClassification>
             ExhaustiveSearchInstanceVariableHistogramClassification { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceVariableId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceVariableId", CanBeNull = true)]
         [Key(24)]
         public IEnumerable<ExhaustiveSearchInstanceVariableHistogramAnomaly>
             ExhaustiveSearchInstanceVariableHistogramAnomaly { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceVariableId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceVariableId", CanBeNull = true)]
         [Key(25)]
         public IEnumerable<ExhaustiveSearchInstanceVariableMultiCollinearity>
             ExhaustiveSearchInstanceVariableMultiCollinearity { get; set; }
@@ -102,8 +95,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(31)] public string CategoricalLevel { get; set; }
         [Column] [Nullable] [Key(32)] public int? CategoricalIndicatorIndex { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceVariableId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceVariableId", CanBeNull = true)]
         [Key(33)]
         public IEnumerable<ExhaustiveSearchInstanceVariableHistogramClass>
             ExhaustiveSearchInstanceVariableHistogramClass { get; set; }

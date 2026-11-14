@@ -54,14 +54,34 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(18)] public byte? LastClosedStatus { get; set; }
         [Column] [Nullable] [Key(19)] public DateTime? ClosedStatusMigrationDate { get; set; }
 
-        [Association(ThisKey = "CaseWorkflowGuid", OtherKey = "Guid", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "CaseWorkflowGuid", OtherKey = "Guid", CanBeNull = true)]
         [Key(20)]
         public CaseWorkflow CaseWorkflow { get; set; }
 
-        [Association(ThisKey = "CaseWorkflowStatusGuid", OtherKey = "Guid", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "CaseWorkflowStatusGuid", OtherKey = "Guid", CanBeNull = true)]
         [Key(21)]
         public CaseWorkflowStatus CaseWorkflowStatus { get; set; }
+
+        [Column] [Nullable] [Key(22)] public Guid? EntityAnalysisModelActivationRuleGuid { get; set; }
+        [Column] [Nullable] [Key(23)] public DateTime? RiskCheckedDate { get; set; }
+        [Column] [Key(24)] public byte DiaryTypeId { get; set; } = 1;
+        [Column] [Nullable] [Key(25)] public byte? RiskRecheckTriggerId { get; set; }
+        [Column] [Key(26)] public byte QaSampleStatusId { get; set; }
+        [Column] [Nullable] [Key(27)] public DateTime? QaSampleDate { get; set; }
+        [Column(SkipOnUpdate = true)] [Nullable] [Key(28)] public DateTime? ChecklistReconciledDate { get; set; }
+        [Column(SkipOnUpdate = true)] [Nullable] [Key(29)] public DateTime? ChecklistStaleDate { get; set; }
+        [Column(SkipOnUpdate = true)] [Nullable] [Key(30)] public byte? RiskLaneId { get; set; }
+        [Column(SkipOnUpdate = true)] [Nullable] [Key(31)] public int? RiskPriority { get; set; }
+        [Column(SkipOnUpdate = true)] [Nullable] [Key(32)] public double? RiskLikelihoodProbability { get; set; }
+        [Column(SkipOnUpdate = true)] [Nullable] [Key(33)] public DateTime? RiskNextDeadlineDate { get; set; }
+        [Column(SkipOnUpdate = true)] [Nullable] [Key(34)] public double? RiskValue { get; set; }
+        [Column(SkipOnUpdate = true)] [Nullable] [Key(35)] public int? RiskSequence { get; set; }
+        [Column] [Nullable] [Key(36)] public byte? ClosedReasonId { get; set; }
+        [Column] [Nullable] [Key(37)] public string ClosedReasonNote { get; set; }
+        [Column] [Nullable] [Key(38)] public byte? LegalHold { get; set; }
+        [Column] [Nullable] [Key(39)] public string LegalHoldReason { get; set; }
+        [Column] [Nullable] [Key(40)] public string LegalHoldUser { get; set; }
+        [Column] [Nullable] [Key(41)] public DateTime? LegalHoldDate { get; set; }
+        [Column(SkipOnUpdate = true)] [Nullable] [Key(42)] public DateTime? SimilarityCheckedDate { get; set; }
     }
 }

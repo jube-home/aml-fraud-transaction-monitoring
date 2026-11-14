@@ -70,7 +70,8 @@ namespace Jube.Test.Charting
                 ["sparkline-winloss"] = Spark(SparklineKind.WinLoss),
                 ["treemap-flat"] = TreemapFlat(),
                 ["treemap-grouped"] = TreemapGrouped(),
-                ["gantt"] = Gantt()
+                ["gantt"] = Gantt(),
+                ["timestrip"] = TimeStrip()
             };
 
             return samples;
@@ -182,6 +183,15 @@ namespace Jube.Test.Charting
                 .XAxisTitle("Score").YAxisTitle("Share of series").Normalized()
                 .Values("Genuine", Gaussian(11, 4000, 0.25, 0.12))
                 .Values("Fraud", Gaussian(12, 300, 0.7, 0.15));
+        }
+
+        public static ISvgChart TimeStrip()
+        {
+            var start = new DateTimeOffset(2026, 3, 2, 0, 0, 0, TimeSpan.Zero);
+            var counts = new[] { 2, 0, 1, 4, 9, 14, 7, 3, 1, 0, 0, 2, 5, 11, 6, 2, 1, 0, 1, 3, 8, 4, 2, 1 };
+
+            return Chart.TimeStrip().Title("Movements per hour").Name("Movements")
+                .Bins(counts.Select((c, i) => (start.AddHours(i), c)), TimeSpan.FromHours(1));
         }
 
         public static ISvgChart Pie()

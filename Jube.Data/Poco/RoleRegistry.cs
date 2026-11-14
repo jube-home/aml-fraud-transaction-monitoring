@@ -42,8 +42,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(12)] public int? TenantRegistryId { get; set; }
         [Column] [Nullable] [Key(13)] public int? Version { get; set; }
 
-        [Association(ThisKey = "Guid", OtherKey = "RoleRegistryGuid", CanBeNull = false,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Guid", OtherKey = "RoleRegistryGuid", CanBeNull = false)]
         [Key(14)]
         public UserRegistry UserRegistry { get; set; }
 

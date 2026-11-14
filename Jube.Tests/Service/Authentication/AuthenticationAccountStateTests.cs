@@ -177,23 +177,12 @@ public sealed class AuthenticationAccountStateTests(DatabaseFixture fx) : Authen
         (await LoginAsync(user.Name, user.Password)).Kind.Should().Be(AuthenticationOutcomeKind.Ok);
     }
 
-    [Theory]
-    [InlineData("inactive")]
-    [InlineData("locked")]
-    [InlineData("deleted")]
-    public async Task UserOfADisabledTenant_CanStillAuthenticateAsync(string state)
+    [Fact]
+    public async Task UserOfALockedTenant_CanStillAuthenticateAsync()
     {
-        var user = await AddUserAsync("DisabledTenant");
+        var user = await AddUserAsync("LockedTenant");
 
-        await SetTenantAsync(t =>
-        {
-            switch (state)
-            {
-                case "inactive": t.Active = 0; break;
-                case "locked": t.Locked = 1; break;
-                default: t.Deleted = 1; break;
-            }
-        });
+        await SetTenantAsync(t => t.Locked = 1);
 
         (await LoginAsync(user.Name, user.Password)).Kind.Should().Be(AuthenticationOutcomeKind.Ok);
     }

@@ -6,6 +6,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns the previous day at the same time.")]
         public static DateTime Yesterday(this DateTime @this)
         {
             return @this.AddDays(-1);

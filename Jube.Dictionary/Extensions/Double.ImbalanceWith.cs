@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double ImbalanceWith(this double @this, double other)
+        [Description("How one sided the value and the other are, from -1 (all the other) through 0 to 1 (all this value).")]
+        public static double ImbalanceWith(this double @this, [Description("The other number.")] double other)
         {
             return CalculationSupport.Finite((@this - other) / (@this + other));
         }

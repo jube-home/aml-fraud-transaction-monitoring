@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
-            public Flow<DateTime> MatchSameDayAs(DateTime other)
+            [Description("True when: on the same calendar date as the argument. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchSameDayAs([Description("The other date.")] DateTime other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeSameDayAs(flow.Value, other));
             }
 
-            public Flow<DateTime> RejectSameDayAs(DateTime other)
+            [Description("True when: on the same calendar date as the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectSameDayAs([Description("The other date.")] DateTime other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeSameDayAs(flow.Value, other));
             }
 
-            public Flow<DateTime> BreakSameDayAs(DateTime other)
+            [Description("True when: on the same calendar date as the argument. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakSameDayAs([Description("The other date.")] DateTime other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeSameDayAs(flow.Value, other));
             }
 
-            public Flow<DateTime> RequireSameDayAs(DateTime other)
+            [Description("True when: on the same calendar date as the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireSameDayAs([Description("The other date.")] DateTime other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeSameDayAs(flow.Value, other));
             }
 
-            public Flow<DateTime> EnsureSameDayAs(DateTime other)
+            [Description("True when: on the same calendar date as the argument. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureSameDayAs([Description("The other date.")] DateTime other)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
-            public Flow<DateTime> MatchSameDayAs(DateTime other)
+            [Description("Begins a pipeline from the value. True when: on the same calendar date as the argument. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchSameDayAs([Description("The other date.")] DateTime other)
             {
                 return value.Start().MatchSameDayAs(other);
             }
 
-            public Flow<DateTime> RejectSameDayAs(DateTime other)
+            [Description("Begins a pipeline from the value. True when: on the same calendar date as the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectSameDayAs([Description("The other date.")] DateTime other)
             {
                 return value.Start().RejectSameDayAs(other);
             }
 
-            public Flow<DateTime> BreakSameDayAs(DateTime other)
+            [Description("Begins a pipeline from the value. True when: on the same calendar date as the argument. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakSameDayAs([Description("The other date.")] DateTime other)
             {
                 return value.Start().BreakSameDayAs(other);
             }
 
-            public Flow<DateTime> RequireSameDayAs(DateTime other)
+            [Description("Begins a pipeline from the value. True when: on the same calendar date as the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireSameDayAs([Description("The other date.")] DateTime other)
             {
                 return value.Start().RequireSameDayAs(other);
             }
 
-            public Flow<DateTime> EnsureSameDayAs(DateTime other)
+            [Description("Begins a pipeline from the value. True when: on the same calendar date as the argument. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureSameDayAs([Description("The other date.")] DateTime other)
             {
                 return value.Start().EnsureSameDayAs(other);
             }

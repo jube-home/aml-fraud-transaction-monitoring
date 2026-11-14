@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,32 +21,37 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Repository.PreservationSnapshot
 {
+    [MessagePackObject]
     public class PreservationSnapshotRequestDto
     {
         [Description("Optional label for the snapshot, for example the reason for the change that follows it.")]
+        [Key(0)]
         public string? Name { get; set; }
 
         [Description("What is taking the snapshot. Defaults to the Preservation page.")]
+        [Key(1)]
         public PreservationSnapshotSource SnapshotSourceId { get; set; } = PreservationSnapshotSource.PreservationPage;
 
-        [Description("Include Exhaustive Search Instances, which may be very large.")]
-        public bool Exhaustive { get; set; }
-
         [Description("Include Lists and List Values.")]
+        [Key(2)]
         public bool Lists { get; set; } = true;
 
         [Description("Include Dictionaries and Dictionary Key Value Pairs.")]
+        [Key(3)]
         public bool Dictionaries { get; set; } = true;
 
         [Description("Include Visualisation Registry configuration.")]
+        [Key(4)]
         public bool Visualisations { get; set; } = true;
 
         [Description("Include roles and their permissions. On by default: a rollback removes what the " +
                      "snapshot body does not hold, so omitting roles loses the permission model.")]
+        [Key(5)]
         public bool Roles { get; set; } = true;
 
-        [Description("Include Advanced Analytics instances, trained models and training history. On by " +
+        [Description("Include AskJooby Analytics instances, trained models and training history. On by " +
                      "default, for the same reason as Roles.")]
+        [Key(6)]
         public bool AdvancedAnalytics { get; set; } = true;
     }
 }

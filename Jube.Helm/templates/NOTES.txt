@@ -1,0 +1,15 @@
+Jube is installed as three roles of one image: {{ include "jube.fullname" . }}-ui, -api and -jobs.
+
+The jobs role runs the database migration when it starts. The ui and api roles wait for it (the wait-for-jobs init
+container polls /api/ready on the jobs service), so a first install settles by itself, but give it a few minutes.
+
+Before the first install, make sure of these:
+  - a Secret named {{ include "jube.secretName" . }} holds the keys listed under secrets.values in values.yaml, mounted as files
+    (set secrets.existingSecret to use one you made, or secrets.create=true to have the chart create it from values, which
+    puts the secrets in your values file and in the release history: prefer an existing Secret);
+  - postgres.host and resp.connectionString point at your Postgres (with pgvector and pg_stat_statements preloaded) and your
+    Redis-protocol cache;
+  - publicUrl is the address users reach the site at, and passwordAsymmetricEncryptionPublicKey is the public key printed
+    when the password key pair was made.
+
+Check it: kubectl get pods -l app.kubernetes.io/instance={{ .Release.Name }}

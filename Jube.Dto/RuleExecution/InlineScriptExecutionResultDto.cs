@@ -14,6 +14,7 @@
 using System.ComponentModel;
 using Jube.Dto.Query.EntityAnalysisModelInvocationContext;
 using Jube.Dto.Validation;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -24,31 +25,40 @@ namespace Jube.Dto.RuleExecution
 {
     [Description("The outcome of running an inline script against an invocation context outside the engine: the " +
                  "public properties it would add to the payload, or why it did not run.")]
+    [MessagePackObject]
     public class InlineScriptExecutionResultDto
     {
         [Description("True when the script compiled and exposes a class implementing IInlineScript.")]
+        [Key(0)]
         public bool Compiled { get; set; }
 
         [Description("Why the script did not run: disabled by configuration, not found, or compile errors.")]
+        [Key(1)]
         public List<ValidationErrorDto> Errors { get; set; } = [];
 
         [Description("True when the script's ExecuteAsync returned true, so the engine would use its properties.")]
+        [Key(2)]
         public bool Succeeded { get; set; }
 
         [Description("The public properties the engine would add to the payload, by completion name (Payload.X), " +
                      "ready to set in a context with the Overlay operation.")]
+        [Key(3)]
         public List<InvocationContextValueDto> Properties { get; set; } = [];
 
         [Description("The error the script raised while running, when it did; otherwise null.")]
+        [Key(4)]
         public string? RuntimeError { get; set; }
 
         [Description("True when the script did not finish within the time limit and was abandoned.")]
+        [Key(5)]
         public bool TimedOut { get; set; }
 
         [Description("How long the script took to run, in microseconds.")]
+        [Key(6)]
         public long DurationMicroseconds { get; set; }
 
         [Description("How the engine itself behaves for this outcome.")]
+        [Key(7)]
         public string? EngineBehaviour { get; set; }
     }
 }

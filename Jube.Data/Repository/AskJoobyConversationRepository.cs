@@ -19,16 +19,35 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace Jube.Data.Repository
 {
-    public class AskJoobyConversationRepository(DbContext dbContext, int tenantRegistryId, string userName = null)
+    public class AskJoobyConversationRepository(
+        DbContext dbContext,
+        int tenantRegistryId,
+        string userName = null,
+        bool restrictToOwner = false)
     {
-        public Task<List<AskJoobyConversation>> ListAsync(string search, int take, int afterId,
-            CancellationToken token = default)
+        private IQueryable<AskJoobyConversation> Visible()
         {
             var query = dbContext.AskJoobyConversation
                 .Where(w => w.TenantRegistryId == tenantRegistryId && (w.Deleted == 0 || w.Deleted == null));
+
+            if (!restrictToOwner)
+            {
+                return query;
+            }
+
+            var owner = (userName ?? string.Empty).ToLower();
+
+            return query.Where(w => w.CreatedUser != null && w.CreatedUser.ToLower() == owner);
+        }
+
+        public Task<List<AskJoobyConversation>> ListAsync(string search, int take, int afterId,
+            CancellationToken token = default)
+        {
+            var query = Visible();
 
             if (afterId > 0)
             {
@@ -49,9 +68,7 @@ namespace Jube.Data.Repository
 
         public Task<AskJoobyConversation> GetByIdAsync(int id, CancellationToken token = default)
         {
-            return dbContext.AskJoobyConversation.FirstOrDefaultAsync(w =>
-                    w.Id == id && w.TenantRegistryId == tenantRegistryId && (w.Deleted == 0 || w.Deleted == null),
-                token);
+            return Visible().FirstOrDefaultAsync(w => w.Id == id, token);
         }
 
         public async Task<AskJoobyConversation> InsertAsync(AskJoobyConversation model,
@@ -98,9 +115,8 @@ namespace Jube.Data.Repository
 
         public async Task DeleteAsync(int id, CancellationToken token = default)
         {
-            var records = await dbContext.AskJoobyConversation
-                .Where(w => w.Id == id && w.TenantRegistryId == tenantRegistryId
-                                       && (w.Deleted == 0 || w.Deleted == null))
+            var records = await Visible()
+                .Where(w => w.Id == id)
                 .Set(s => s.Deleted, Convert.ToByte(1))
                 .Set(s => s.DeletedDate, DateTime.UtcNow)
                 .Set(s => s.DeletedUser, userName)

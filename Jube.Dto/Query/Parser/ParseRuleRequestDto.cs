@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,18 +23,22 @@ namespace Jube.Dto.Query.Parser
 {
     [Description("A request to parse and compile a user-authored rule against the fields, lists, dictionaries and " +
                  "other named entities of an Entity Analysis Model.")]
+    [MessagePackObject]
     public class ParseRuleRequestDto
     {
         [Description(
             "Kind of rule: 1 inline function, 2 gateway rule, 3 abstraction rule, 4 abstraction calculation, " +
             "5 activation rule.")]
+        [Key(0)]
         public int RuleParseType { get; set; }
 
         [Description("The rule source text to parse and compile.")]
+        [Key(1)]
         public string? RuleText { get; set; }
 
         [Description(
             "Id of the Entity Analysis Model the rule is authored against; must belong to the caller's tenant.")]
+        [Key(2)]
         public int EntityAnalysisModelId { get; set; }
     }
 }

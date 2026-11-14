@@ -18,7 +18,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsJaroWinklerInList(this string? @this, IEnumerable<string>? list, double threshold)
+        [Description("True when: the Jaro-Winkler similarity to an entry is at least the threshold.")]
+        public static bool IsJaroWinklerInList(this string? @this,
+            [Description("The List token whose entries are compared.")] IEnumerable<string>? list,
+            [Description("The Jaro-Winkler similarity from 0 to 1 that counts.")] double threshold)
         {
             return FuzzyListMatcher.Any(@this, list, FuzzyOptions.For(FuzzyAlgorithm.JaroWinkler, threshold));
         }

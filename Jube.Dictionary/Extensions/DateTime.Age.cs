@@ -6,6 +6,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Calculates the age from the given date.")]
         public static int Age(this DateTime @this)
         {
             if (DateTime.Today.Month < @this.Month ||

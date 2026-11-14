@@ -15,32 +15,44 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static Flow<double> Against<T>(this Flow<T> flow, double value)
+        [Description("Switches the pipeline to testing another value, keeping the outcome, score and label.")]
+        public static Flow<double> Against<T>(this Flow<T> flow,
+            [Description("The value the pipeline tests from here on.")] double value)
         {
             return flow.Carry(value);
         }
 
-        public static Flow<int> Against<T>(this Flow<T> flow, int value)
+        [Description("Switches the pipeline to testing another value, keeping the outcome, score and label.")]
+        public static Flow<int> Against<T>(this Flow<T> flow,
+            [Description("The value the pipeline tests from here on.")] int value)
         {
             return flow.Carry(value);
         }
 
-        public static Flow<string?> Against<T>(this Flow<T> flow, string? value)
+        [Description("Switches the pipeline to testing another value, keeping the outcome, score and label.")]
+        public static Flow<string?> Against<T>(this Flow<T> flow,
+            [Description("The value the pipeline tests from here on.")] string? value)
         {
             return flow.Carry(value);
         }
 
-        public static Flow<DateTime> Against<T>(this Flow<T> flow, DateTime value)
+        [Description("Switches the pipeline to testing another value, keeping the outcome, score and label.")]
+        public static Flow<DateTime> Against<T>(this Flow<T> flow,
+            [Description("The value the pipeline tests from here on.")] DateTime value)
         {
             return flow.Carry(value);
         }
 
-        public static Flow<bool> Against<T>(this Flow<T> flow, bool value)
+        [Description("Switches the pipeline to testing another value, keeping the outcome, score and label.")]
+        public static Flow<bool> Against<T>(this Flow<T> flow,
+            [Description("The value the pipeline tests from here on.")] bool value)
         {
             return flow.Carry(value);
         }
 
-        public static Flow<TNext> Against<T, TNext>(this Flow<T> flow, TNext value)
+        [Description("Switches the pipeline to testing another value, keeping the outcome, score and label.")]
+        public static Flow<TNext> Against<T, TNext>(this Flow<T> flow,
+            [Description("The value the pipeline tests from here on.")] TNext value)
         {
             return flow.Carry(value);
         }

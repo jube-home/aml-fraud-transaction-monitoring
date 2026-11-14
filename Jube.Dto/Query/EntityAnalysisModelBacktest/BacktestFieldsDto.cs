@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Filter;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,13 +23,16 @@ using Jube.Dto.Filter;
 namespace Jube.Dto.Query.EntityAnalysisModelBacktest
 {
     [Description("The fields a backtest's filter and class may use.")]
+    [MessagePackObject]
     public class BacktestFieldsDto
     {
         [Description("Fields for FilterJson: those of a reprocessing rule.")]
+        [Key(0)]
         public List<FilterFieldDto> FilterFields { get; set; } = [];
 
         [Description("Fields for ClassJson: everything an activation rule can see, plus Tag.<Name> for each of the " +
                      "model's tags.")]
+        [Key(1)]
         public List<FilterFieldDto> ClassFields { get; set; } = [];
     }
 }

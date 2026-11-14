@@ -42,4 +42,25 @@
     <data name="DictionaryNotFound" xml:space="preserve">
     <value>Le dictionnaire est introuvable.</value>
   </data>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="KvpKeyMaxLength" xml:space="preserve">
+    <value>La clé ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="KvpKeyDuplicate" xml:space="preserve">
+    <value>Cette clé existe déjà dans le dictionnaire.</value>
+  </data>
+    <data name="KvpValueRequired" xml:space="preserve">
+    <value>Veuillez saisir une valeur pour ce dictionnaire.</value>
+  </data>
+    <data name="EntityAnalysisModelDictionaryIdInvalid" xml:space="preserve">
+    <value>Un dictionnaire valide est requis.</value>
+  </data>
+    <data name="DeleteExpiryDateMustBeFuture" xml:space="preserve">
+    <value>La date d'expiration de suppression doit être postérieure à la date et à l'heure actuelles.</value>
+  </data>
 </root>

@@ -142,16 +142,6 @@ namespace Jube.Test.Charting.External
         }
 
         [Fact]
-        public void TheLayoutIncludesTheStylesheetOnceWithTheVersion()
-        {
-            var layout =
-                File.ReadAllText(Path.Combine(RepositoryRoot(), "Jube.App", "Pages", "Shared", "_Layout.cshtml"));
-
-            Regex.Matches(layout, "jube-charting\\.css").Count.Should().Be(1);
-            layout.Should().Contain("/css/jube-charting.css?v=@Jube.Charting.ChartStylesheet.Version");
-        }
-
-        [Fact]
         public void EveryClassUsedByEveryExternalSampleIsASelectorInTheStylesheet()
         {
             var known = SelectorClasses(ChartStylesheet.Css(true));
@@ -248,6 +238,18 @@ namespace Jube.Test.Charting.External
             css.Should().Contain(".jc:has(.mk:hover) .mk:not(:hover)");
             css.Should().Contain("--jc-surface:");
             css.Should().Contain("--jc-c0:");
+        }
+
+        [Fact]
+        public void ChartsAreLeftToRightSoTextAnchorsDoNotFlipInARightToLeftPage()
+        {
+            var css = ChartStylesheet.Css(true);
+
+            css.Should().Contain(".jc{display:block;direction:ltr;");
+            css.Should().Contain("'Noto Sans Arabic'");
+            css.Should().Contain("'Noto Nastaliq Urdu'");
+            css.Should().Contain("'Noto Sans Devanagari'");
+            css.Should().Contain("'Noto Sans Georgian'");
         }
 
         [Fact]

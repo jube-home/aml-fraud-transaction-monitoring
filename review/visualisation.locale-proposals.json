@@ -1,0 +1,737 @@
+{
+  "ka": {
+    "chart": {
+      "loading": "დიაგრამა იხატება",
+      "failed": "დიაგრამის დახატვა ვერ მოხერხდა.",
+      "retry": "სცადეთ თავიდან",
+      "empty": "დიაგრამაზე ჯერ არაფერია საჩვენებელი."
+    },
+    "datasource": {
+      "sql": {
+        "title": "SQL ბრძანება",
+        "label": "SQL ბრძანება მონაცემთა წყაროსთვის"
+      },
+      "status": {
+        "incomplete": "დასაწყებად დაწერეთ SELECT",
+        "checking": "ბრძანება მოწმდება",
+        "valid": "ბრძანება ვალიდურია",
+        "errors": "ბრძანებაში შეცდომებია",
+        "disconnected": "სერვერთან დაკავშირება ვერ მოხერხდა",
+        "position": "(სტრიქონი {line}, სვეტი {column})"
+      },
+      "columns": {
+        "title": "შედეგის სვეტები",
+        "empty": "სვეტები აქ გამოჩნდება, როგორც კი ბრძანება ვალიდური გახდება.",
+        "unused": "არ იხატება"
+      },
+      "show": {
+        "title": "ჩვენება როგორც",
+        "chart": "დიაგრამის ჩვენება",
+        "grid": "ბადის ჩვენება",
+        "kind": "დიაგრამის ტიპი",
+        "fits": "იხატება ამ სვეტებიდან",
+        "needs": "საჭიროა სვეტების მინიჭება",
+        "byPosition": "პოზიციით: {columns}",
+        "nothing": "ჯერ არაფერი",
+        "optional": "არასავალდებულო სვეტები",
+        "needsDisplay": "ჩართეთ დიაგრამა, ბადე ან ორივე."
+      },
+      "preview": {
+        "title": "გადახედვა",
+        "waiting": "გადახედვა გამოჩნდება, როცა ბრძანება ვალიდურია და დიაგრამა ან ბადე ჩართულია."
+      },
+      "card": {
+        "ready": "მზადაა",
+        "empty": "სტრიქონები არ არის",
+        "error": "შეცდომა",
+        "rows": "{count} სტრიქონი",
+        "milliseconds": "{count} მწმ",
+        "truncated": "შეკვეცილია",
+        "yes": "დიახ",
+        "no": "არა",
+        "noRows": "საჩვენებელი სტრიქონები არ არის",
+        "chartLabel": "დიაგრამა: {name}",
+        "gridLabel": "ბადე: {name}",
+        "templateLabel": "შაბლონი: {name}"
+      },
+      "bench": {
+        "registry": "ვიზუალიზაცია",
+        "datasource": "მონაცემთა წყარო",
+        "pickRegistry": "აირჩიეთ ვიზუალიზაცია",
+        "new": "ახალი მონაცემთა წყარო",
+        "pick": "აირჩიეთ ვიზუალიზაცია, რომ მისთვის მონაცემთა წყარო შექმნათ.",
+        "value": "გამოსული მნიშვნელობა"
+      },
+      "template": {
+        "label": "შაბლონი",
+        "hint": "განალაგეთ სტრიქონები თქვენივე მარკაპით. მნიშვნელობა დაბეჭდეთ ტოკენით, მაგალითად [{'@'} rows[0].column {'@'}], ელემენტი გაიმეორეთ v-for=\"row in rows\"-ით, აირჩიეთ v-if და v-else-ით, ტოკენი ჩადეთ ატრიბუტში, მაგალითად class=\"badge [{'@'} row.status {'@'}]\", და მნიშვნელობები დააფორმატეთ number, percent, currency, date, dateTime, round, truncate, upper, lower, default და join ფილტრებით, რომლებიც იწერება ვერტიკალური ხაზის შემდეგ. სახელები რეგისტრზე არ არის დამოკიდებული. დაშვებულია მხოლოდ უსაფრთხო ტეგები და ყოველი მნიშვნელობა ეკრანირდება. ინტერვალის მქონე სახელებისთვის გამოიყენეთ row['სვეტის სახელი']."
+      },
+      "test": {
+        "run": "SQL-ის გაშვება",
+        "missing": "ჯერ შეავსეთ ქვემოთ მოცემული სავალდებულო პარამეტრები.",
+        "failed": "SQL-ის გაშვება ვერ მოხერხდა."
+      }
+    },
+    "visualisation": {
+      "required": "სავალდებულო",
+      "requiredMessage": "შეიყვანეთ მნიშვნელობა.",
+      "run": "გაშვება",
+      "forbidden": "ამ ვიზუალიზაციის ნახვის უფლება არ გაქვთ.",
+      "notFound": "ეს ვიზუალიზაცია ვერ მოიძებნა ან აქტიური არ არის.",
+      "loadFailed": "ვიზუალიზაციის ჩატვირთვა ვერ მოხერხდა. სცადეთ თავიდან.",
+      "empty": "ამ ვიზუალიზაციას აქტიური მონაცემთა წყაროები არ აქვს.",
+      "waiting": "დააყენეთ პარამეტრები და გაუშვით ვიზუალიზაციის დასახატად.",
+      "tileFailed": "ამ ფილის დახატვა ვერ მოხერხდა.",
+      "tileMissing": "ეს მონაცემთა წყარო აღარ არის ხელმისაწვდომი.",
+      "bench": {
+        "directory": "ვიზუალიზაცია",
+        "pick": "აირჩიეთ ვიზუალიზაცია დირექტორიიდან.",
+        "hideParameters": "პარამეტრების ფორმის დამალვა"
+      },
+      "directory": {
+        "title": "ვიზუალიზაციები",
+        "empty": "დირექტორიაში ვიზუალიზაციები არ არის.",
+        "back": "ყველა ვიზუალიზაცია",
+        "col": {
+          "name": "სახელი",
+          "tiles": "ფილები",
+          "parameters": "პარამეტრები",
+          "lastRun": "ბოლო გაშვება",
+          "runBy": "გაუშვა",
+          "runs": "გაშვებები, {days} დღე",
+          "failed": "წარუმატებელი, {days} დღე",
+          "average": "საშუალო"
+        },
+        "open": "გახსნა",
+        "search": "ვიზუალიზაციების ძიება",
+        "searchPlaceholder": "ძიება სახელით",
+        "count": "ვიზუალიზაციები არ არის | {count} ვიზუალიზაცია | {count} ვიზუალიზაცია",
+        "list": "ვიზუალიზაციების დირექტორია",
+        "noMatch": "არცერთი ვიზუალიზაცია არ ემთხვევა.",
+        "neverRun": "არასოდეს გაშვებულა",
+        "unavailable": "არ არის",
+        "ms": "{count} მწმ",
+        "showDetail": "ფილებისა და პარამეტრების ჩვენება",
+        "hideDetail": "ფილებისა და პარამეტრების დამალვა",
+        "windowNote": "გაშვებები, წარუმატებლობები და საშუალო ბოლო {days} დღეს მოიცავს და ფილების შესრულებებს ითვლის: დაფის ერთი გაშვება ყველა ფილას ასრულებს. ბოლო გაშვება მთელ დროს მოიცავს.",
+        "detail": {
+          "tiles": "ფილები",
+          "parameters": "პარამეტრები",
+          "noTiles": "ამ დაფას აქტიური ფილები არ აქვს.",
+          "noParameters": "ეს დაფა პარამეტრებს არ ითხოვს.",
+          "failed": "ამის ჩატვირთვა ვერ მოხერხდა.",
+          "unknownKind": "ფილა",
+          "type": {
+            "text": "ტექსტი",
+            "integer": "მთელი რიცხვი",
+            "decimal": "ათწილადი",
+            "dateTime": "თარიღი და დრო",
+            "flag": "დროშა"
+          }
+        }
+      },
+      "retry": "თავიდან ცდა",
+      "story": {
+        "dashboard": "დაფა",
+        "tiles": "ფილები არ არის | {count} ფილა | {count} ფილა",
+        "parameters": "პარამეტრები არ არის | {count} პარამეტრი | {count} პარამეტრი"
+      },
+      "refresh": "განახლება"
+    },
+    "adminVisualisations": {
+      "title": "ვიზუალიზაციები",
+      "singular": "ვიზუალიზაცია",
+      "hint": "განსაზღვრეთ დაფები, მათი მონაცემთა წყაროები და პარამეტრები.",
+      "loading": "ვიზუალიზაციები იტვირთება",
+      "denied": "ვიზუალიზაციების დასაყენებლად უფლება არ გაქვთ."
+    }
+  },
+  "id": {
+    "chart": {
+      "loading": "Menggambar diagram",
+      "failed": "Diagram tidak dapat digambar.",
+      "retry": "Coba lagi",
+      "empty": "Belum ada yang dapat ditampilkan dalam diagram."
+    },
+    "datasource": {
+      "sql": {
+        "title": "Perintah SQL",
+        "label": "Perintah SQL untuk sumber data"
+      },
+      "status": {
+        "incomplete": "Tulis SELECT untuk memulai",
+        "checking": "Memeriksa perintah",
+        "valid": "Perintah valid",
+        "errors": "Perintah memiliki kesalahan",
+        "disconnected": "Tidak dapat menjangkau server",
+        "position": "(baris {line}, kolom {column})"
+      },
+      "columns": {
+        "title": "Kolom hasil",
+        "empty": "Kolom muncul di sini setelah perintah valid.",
+        "unused": "Tidak digambar"
+      },
+      "show": {
+        "title": "Tampilkan sebagai",
+        "chart": "Tampilkan diagram",
+        "grid": "Tampilkan kisi",
+        "kind": "Jenis diagram",
+        "fits": "Digambar dari kolom-kolom ini",
+        "needs": "Membutuhkan kolom yang ditetapkan",
+        "byPosition": "Berdasarkan posisi: {columns}",
+        "nothing": "belum ada",
+        "optional": "Kolom opsional",
+        "needsDisplay": "Aktifkan diagram, kisi, atau keduanya."
+      },
+      "preview": {
+        "title": "Pratinjau",
+        "waiting": "Pratinjau muncul setelah perintah valid dan diagram atau kisi diaktifkan."
+      },
+      "card": {
+        "ready": "Siap",
+        "empty": "Tidak ada baris",
+        "error": "Kesalahan",
+        "rows": "{count} baris",
+        "milliseconds": "{count} md",
+        "truncated": "Terpotong",
+        "yes": "Ya",
+        "no": "Tidak",
+        "noRows": "Tidak ada baris untuk ditampilkan",
+        "chartLabel": "Diagram untuk {name}",
+        "gridLabel": "Kisi untuk {name}",
+        "templateLabel": "Templat untuk {name}"
+      },
+      "bench": {
+        "registry": "Visualisasi",
+        "datasource": "Sumber data",
+        "pickRegistry": "Pilih visualisasi",
+        "new": "Sumber data baru",
+        "pick": "Pilih visualisasi untuk membuat sumber data baginya.",
+        "value": "Nilai yang dihasilkan"
+      },
+      "template": {
+        "label": "Templat",
+        "hint": "Tata baris dalam markup Anda sendiri. Cetak nilai dengan token seperti [{'@'} rows[0].column {'@'}], ulangi elemen dengan v-for=\"row in rows\", pilih dengan v-if dan v-else, taruh token di dalam atribut seperti class=\"badge [{'@'} row.status {'@'}]\", dan format nilai dengan filter number, percent, currency, date, dateTime, round, truncate, upper, lower, default, dan join, ditulis setelah simbol pipa. Nama tidak peka huruf besar-kecil. Hanya tag aman yang diizinkan dan setiap nilai di-escape. Gunakan row['nama kolom'] untuk nama dengan spasi."
+      },
+      "test": {
+        "run": "Jalankan SQL",
+        "missing": "Isi dulu parameter wajib di bawah.",
+        "failed": "SQL tidak dapat dijalankan."
+      }
+    },
+    "visualisation": {
+      "required": "Wajib",
+      "requiredMessage": "Masukkan nilai.",
+      "run": "Jalankan",
+      "forbidden": "Anda tidak diizinkan melihat visualisasi ini.",
+      "notFound": "Visualisasi itu tidak ditemukan, atau tidak aktif.",
+      "loadFailed": "Visualisasi tidak dapat dimuat. Coba lagi.",
+      "empty": "Visualisasi ini tidak memiliki sumber data aktif.",
+      "waiting": "Atur parameter lalu jalankan untuk menggambar visualisasi.",
+      "tileFailed": "Ubin ini tidak dapat digambar.",
+      "tileMissing": "Sumber data ini tidak lagi tersedia.",
+      "bench": {
+        "directory": "Visualisasi",
+        "pick": "Pilih visualisasi dari direktori.",
+        "hideParameters": "Sembunyikan formulir parameter"
+      },
+      "directory": {
+        "title": "Visualisasi",
+        "empty": "Tidak ada visualisasi yang terdaftar di direktori.",
+        "back": "Semua visualisasi",
+        "col": {
+          "name": "Nama",
+          "tiles": "Ubin",
+          "parameters": "Parameter",
+          "lastRun": "Terakhir dijalankan",
+          "runBy": "Dijalankan oleh",
+          "runs": "Eksekusi, {days} hari",
+          "failed": "Gagal, {days} hari",
+          "average": "Rata-rata"
+        },
+        "open": "Buka",
+        "search": "Cari visualisasi",
+        "searchPlaceholder": "Cari berdasarkan nama",
+        "count": "tidak ada visualisasi | {count} visualisasi | {count} visualisasi",
+        "list": "Direktori visualisasi",
+        "noMatch": "Tidak ada visualisasi yang cocok.",
+        "neverRun": "Belum pernah dijalankan",
+        "unavailable": "t/a",
+        "ms": "{count} md",
+        "showDetail": "Tampilkan ubin dan parameter",
+        "hideDetail": "Sembunyikan ubin dan parameter",
+        "windowNote": "Eksekusi, kegagalan, dan rata-rata mencakup {days} hari terakhir dan menghitung eksekusi ubin: satu kali menjalankan dasbor mengeksekusi setiap ubin. Terakhir dijalankan mencakup seluruh waktu.",
+        "detail": {
+          "tiles": "Ubin",
+          "parameters": "Parameter",
+          "noTiles": "Dasbor ini tidak memiliki ubin aktif.",
+          "noParameters": "Dasbor ini tidak meminta parameter.",
+          "failed": "Tidak dapat memuat ini.",
+          "unknownKind": "Ubin",
+          "type": {
+            "text": "Teks",
+            "integer": "Bilangan bulat",
+            "decimal": "Desimal",
+            "dateTime": "Tanggal dan waktu",
+            "flag": "Penanda"
+          }
+        }
+      },
+      "retry": "Coba lagi",
+      "story": {
+        "dashboard": "Dasbor",
+        "tiles": "tidak ada ubin | {count} ubin | {count} ubin",
+        "parameters": "tidak ada parameter | {count} parameter | {count} parameter"
+      },
+      "refresh": "Segarkan"
+    },
+    "adminVisualisations": {
+      "title": "Visualisasi",
+      "singular": "Visualisasi",
+      "hint": "Tentukan dasbor, sumber data, dan parameternya.",
+      "loading": "Memuat visualisasi",
+      "denied": "Anda tidak memiliki izin untuk menyiapkan visualisasi."
+    }
+  },
+  "sv": {
+    "chart": {
+      "loading": "Ritar diagrammet",
+      "failed": "Diagrammet kunde inte ritas.",
+      "retry": "Försök igen",
+      "empty": "Det finns inget att visa i diagram ännu."
+    },
+    "datasource": {
+      "sql": {
+        "title": "SQL-kommando",
+        "label": "SQL-kommando för datakällan"
+      },
+      "status": {
+        "incomplete": "Skriv en SELECT för att börja",
+        "checking": "Kontrollerar kommandot",
+        "valid": "Kommandot är giltigt",
+        "errors": "Kommandot har fel",
+        "disconnected": "Kunde inte nå servern",
+        "position": "(rad {line}, kolumn {column})"
+      },
+      "columns": {
+        "title": "Resultatkolumner",
+        "empty": "Kolumnerna visas här när kommandot är giltigt.",
+        "unused": "Ritas inte"
+      },
+      "show": {
+        "title": "Visa som",
+        "chart": "Visa ett diagram",
+        "grid": "Visa ett rutnät",
+        "kind": "Diagramtyp",
+        "fits": "Ritas från dessa kolumner",
+        "needs": "Behöver tilldelade kolumner",
+        "byPosition": "Efter position: {columns}",
+        "nothing": "inget ännu",
+        "optional": "Valfria kolumner",
+        "needsDisplay": "Slå på ett diagram, ett rutnät eller båda."
+      },
+      "preview": {
+        "title": "Förhandsvisning",
+        "waiting": "Förhandsvisningen visas när kommandot är giltigt och ett diagram eller rutnät är påslaget."
+      },
+      "card": {
+        "ready": "Klart",
+        "empty": "Inga rader",
+        "error": "Fel",
+        "rows": "{count} rader",
+        "milliseconds": "{count} ms",
+        "truncated": "Trunkerad",
+        "yes": "Ja",
+        "no": "Nej",
+        "noRows": "Inga rader att visa",
+        "chartLabel": "Diagram för {name}",
+        "gridLabel": "Rutnät för {name}",
+        "templateLabel": "Mall för {name}"
+      },
+      "bench": {
+        "registry": "Visualisering",
+        "datasource": "Datakälla",
+        "pickRegistry": "Välj en visualisering",
+        "new": "Ny datakälla",
+        "pick": "Välj en visualisering för att bygga en datakälla åt den.",
+        "value": "Utsänt värde"
+      },
+      "template": {
+        "label": "Mall",
+        "hint": "Lägg ut raderna i din egen markup. Skriv ut ett värde med ett token som [{'@'} rows[0].column {'@'}], upprepa ett element med v-for=\"row in rows\", välj med v-if och v-else, lägg ett token i ett attribut som class=\"badge [{'@'} row.status {'@'}]\" och formatera värden med filtren number, percent, currency, date, dateTime, round, truncate, upper, lower, default och join, skrivna efter ett lodstreck. Namn skiljer inte på versaler och gemener. Endast säkra taggar tillåts och varje värde skyddas. Använd row['kolumnnamn'] för namn med mellanslag."
+      },
+      "test": {
+        "run": "Kör SQL",
+        "missing": "Fyll först i de obligatoriska parametrarna nedan.",
+        "failed": "SQL kunde inte köras."
+      }
+    },
+    "visualisation": {
+      "required": "Obligatorisk",
+      "requiredMessage": "Ange ett värde.",
+      "run": "Kör",
+      "forbidden": "Du har inte behörighet att se den här visualiseringen.",
+      "notFound": "Visualiseringen hittades inte, eller så är den inte aktiv.",
+      "loadFailed": "Visualiseringen kunde inte läsas in. Försök igen.",
+      "empty": "Den här visualiseringen har inga aktiva datakällor.",
+      "waiting": "Ställ in parametrarna och kör för att rita visualiseringen.",
+      "tileFailed": "Den här rutan kunde inte ritas.",
+      "tileMissing": "Den här datakällan finns inte längre.",
+      "bench": {
+        "directory": "Visualisering",
+        "pick": "Välj en visualisering från katalogen.",
+        "hideParameters": "Dölj parameterformuläret"
+      },
+      "directory": {
+        "title": "Visualiseringar",
+        "empty": "Inga visualiseringar finns i katalogen.",
+        "back": "Alla visualiseringar",
+        "col": {
+          "name": "Namn",
+          "tiles": "Rutor",
+          "parameters": "Parametrar",
+          "lastRun": "Senaste körning",
+          "runBy": "Kördes av",
+          "runs": "Körningar, {days} dagar",
+          "failed": "Misslyckade, {days} dagar",
+          "average": "Genomsnitt"
+        },
+        "open": "Öppna",
+        "search": "Sök visualiseringar",
+        "searchPlaceholder": "Sök på namn",
+        "count": "inga visualiseringar | {count} visualisering | {count} visualiseringar",
+        "list": "Visualiseringskatalog",
+        "noMatch": "Inga visualiseringar matchar.",
+        "neverRun": "Aldrig körd",
+        "unavailable": "saknas",
+        "ms": "{count} ms",
+        "showDetail": "Visa rutor och parametrar",
+        "hideDetail": "Dölj rutor och parametrar",
+        "windowNote": "Körningar, misslyckanden och genomsnittet gäller de senaste {days} dagarna och räknar rutkörningar: en körning av panelen kör varje ruta. Senaste körning gäller all tid.",
+        "detail": {
+          "tiles": "Rutor",
+          "parameters": "Parametrar",
+          "noTiles": "Den här panelen har inga aktiva rutor.",
+          "noParameters": "Den här panelen efterfrågar inga parametrar.",
+          "failed": "Kunde inte läsa in detta.",
+          "unknownKind": "Ruta",
+          "type": {
+            "text": "Text",
+            "integer": "Heltal",
+            "decimal": "Decimaltal",
+            "dateTime": "Datum och tid",
+            "flag": "Flagga"
+          }
+        }
+      },
+      "retry": "Försök igen",
+      "story": {
+        "dashboard": "Panel",
+        "tiles": "inga rutor | {count} ruta | {count} rutor",
+        "parameters": "inga parametrar | {count} parameter | {count} parametrar"
+      },
+      "refresh": "Uppdatera"
+    },
+    "adminVisualisations": {
+      "title": "Visualiseringar",
+      "singular": "Visualisering",
+      "hint": "Definiera paneler, deras datakällor och deras parametrar.",
+      "loading": "Läser in visualiseringar",
+      "denied": "Du har inte behörighet att ställa in visualiseringar."
+    }
+  },
+  "ur": {
+    "chart": {
+      "loading": "چارٹ بنایا جا رہا ہے",
+      "failed": "چارٹ نہیں بنایا جا سکا۔",
+      "retry": "دوبارہ کوشش کریں",
+      "empty": "ابھی چارٹ کرنے کے لیے کچھ نہیں ہے۔"
+    },
+    "datasource": {
+      "sql": {
+        "title": "SQL کمانڈ",
+        "label": "ڈیٹا سورس کے لیے SQL کمانڈ"
+      },
+      "status": {
+        "incomplete": "شروع کرنے کے لیے SELECT لکھیں",
+        "checking": "کمانڈ کی جانچ ہو رہی ہے",
+        "valid": "کمانڈ درست ہے",
+        "errors": "کمانڈ میں غلطیاں ہیں",
+        "disconnected": "سرور تک رسائی نہیں ہو سکی",
+        "position": "(قطار {line}، کالم {column})"
+      },
+      "columns": {
+        "title": "نتیجے کے کالم",
+        "empty": "کمانڈ درست ہوتے ہی کالم یہاں نظر آئیں گے۔",
+        "unused": "نہیں بنایا گیا"
+      },
+      "show": {
+        "title": "بطور دکھائیں",
+        "chart": "چارٹ دکھائیں",
+        "grid": "گرڈ دکھائیں",
+        "kind": "چارٹ کی قسم",
+        "fits": "ان کالموں سے بنتا ہے",
+        "needs": "کالم تفویض کرنے کی ضرورت ہے",
+        "byPosition": "مقام کے لحاظ سے: {columns}",
+        "nothing": "ابھی کچھ نہیں",
+        "optional": "اختیاری کالم",
+        "needsDisplay": "چارٹ، گرڈ یا دونوں آن کریں۔"
+      },
+      "preview": {
+        "title": "پیش منظر",
+        "waiting": "پیش منظر تب نظر آتا ہے جب کمانڈ درست ہو اور چارٹ یا گرڈ آن ہو۔"
+      },
+      "card": {
+        "ready": "تیار",
+        "empty": "کوئی قطار نہیں",
+        "error": "خرابی",
+        "rows": "{count} قطاریں",
+        "milliseconds": "{count} ملی سیکنڈ",
+        "truncated": "مختصر کیا گیا",
+        "yes": "جی ہاں",
+        "no": "نہیں",
+        "noRows": "دکھانے کے لیے کوئی قطار نہیں",
+        "chartLabel": "{name} کے لیے چارٹ",
+        "gridLabel": "{name} کے لیے گرڈ",
+        "templateLabel": "{name} کے لیے ٹیمپلیٹ"
+      },
+      "bench": {
+        "registry": "ویژولائزیشن",
+        "datasource": "ڈیٹا سورس",
+        "pickRegistry": "ویژولائزیشن منتخب کریں",
+        "new": "نیا ڈیٹا سورس",
+        "pick": "اس کے لیے ڈیٹا سورس بنانے کو ویژولائزیشن منتخب کریں۔",
+        "value": "خارج شدہ قدر"
+      },
+      "template": {
+        "label": "ٹیمپلیٹ",
+        "hint": "قطاروں کو اپنے مارک اپ میں ترتیب دیں۔ قدر کو ٹوکن سے چھاپیں جیسے [{'@'} rows[0].column {'@'}]، عنصر کو v-for=\"row in rows\" سے دہرائیں، v-if اور v-else سے انتخاب کریں، ٹوکن کو وصف کے اندر رکھیں جیسے class=\"badge [{'@'} row.status {'@'}]\"، اور اقدار کو number, percent, currency, date, dateTime, round, truncate, upper, lower, default اور join فلٹرز سے فارمیٹ کریں جو پائپ علامت کے بعد لکھے جاتے ہیں۔ ناموں میں حروف کی بڑائی چھوٹائی کا فرق نہیں۔ صرف محفوظ ٹیگز کی اجازت ہے اور ہر قدر ایسکیپ ہوتی ہے۔ خالی جگہ والے ناموں کے لیے row['کالم کا نام'] استعمال کریں۔"
+      },
+      "test": {
+        "run": "SQL چلائیں",
+        "missing": "پہلے نیچے دیے گئے لازمی پیرامیٹر بھریں۔",
+        "failed": "SQL نہیں چلائی جا سکی۔"
+      }
+    },
+    "visualisation": {
+      "required": "لازمی",
+      "requiredMessage": "قدر درج کریں۔",
+      "run": "چلائیں",
+      "forbidden": "آپ کو یہ ویژولائزیشن دیکھنے کی اجازت نہیں ہے۔",
+      "notFound": "وہ ویژولائزیشن نہیں ملی، یا فعال نہیں ہے۔",
+      "loadFailed": "ویژولائزیشن لوڈ نہیں ہو سکی۔ دوبارہ کوشش کریں۔",
+      "empty": "اس ویژولائزیشن میں کوئی فعال ڈیٹا سورس نہیں ہے۔",
+      "waiting": "ویژولائزیشن بنانے کے لیے پیرامیٹر مقرر کریں اور چلائیں۔",
+      "tileFailed": "یہ ٹائل نہیں بنائی جا سکی۔",
+      "tileMissing": "یہ ڈیٹا سورس اب دستیاب نہیں ہے۔",
+      "bench": {
+        "directory": "ویژولائزیشن",
+        "pick": "ڈائریکٹری سے ویژولائزیشن منتخب کریں۔",
+        "hideParameters": "پیرامیٹر فارم چھپائیں"
+      },
+      "directory": {
+        "title": "ویژولائزیشنز",
+        "empty": "ڈائریکٹری میں کوئی ویژولائزیشن درج نہیں۔",
+        "back": "تمام ویژولائزیشنز",
+        "col": {
+          "name": "نام",
+          "tiles": "ٹائلیں",
+          "parameters": "پیرامیٹر",
+          "lastRun": "آخری بار چلایا گیا",
+          "runBy": "چلانے والا",
+          "runs": "اجراء، {days} دن",
+          "failed": "ناکام، {days} دن",
+          "average": "اوسط"
+        },
+        "open": "کھولیں",
+        "search": "ویژولائزیشنز تلاش کریں",
+        "searchPlaceholder": "نام سے تلاش کریں",
+        "count": "کوئی ویژولائزیشن نہیں | {count} ویژولائزیشن | {count} ویژولائزیشنز",
+        "list": "ویژولائزیشن ڈائریکٹری",
+        "noMatch": "کوئی ویژولائزیشن مطابقت نہیں رکھتی۔",
+        "neverRun": "کبھی نہیں چلایا گیا",
+        "unavailable": "دستیاب نہیں",
+        "ms": "{count} ملی سیکنڈ",
+        "showDetail": "ٹائلیں اور پیرامیٹر دکھائیں",
+        "hideDetail": "ٹائلیں اور پیرامیٹر چھپائیں",
+        "windowNote": "اجراء، ناکامیاں اور اوسط پچھلے {days} دن کا احاطہ کرتے ہیں اور ٹائل کے اجراء گنتے ہیں: ڈیش بورڈ کا ایک اجراء ہر ٹائل چلاتا ہے۔ آخری بار چلایا گیا تمام وقت کا احاطہ کرتا ہے۔",
+        "detail": {
+          "tiles": "ٹائلیں",
+          "parameters": "پیرامیٹر",
+          "noTiles": "اس ڈیش بورڈ میں کوئی فعال ٹائل نہیں۔",
+          "noParameters": "یہ ڈیش بورڈ کوئی پیرامیٹر نہیں مانگتا۔",
+          "failed": "یہ لوڈ نہیں ہو سکا۔",
+          "unknownKind": "ٹائل",
+          "type": {
+            "text": "متن",
+            "integer": "صحیح عدد",
+            "decimal": "اعشاری",
+            "dateTime": "تاریخ اور وقت",
+            "flag": "جھنڈا"
+          }
+        }
+      },
+      "retry": "دوبارہ کوشش کریں",
+      "story": {
+        "dashboard": "ڈیش بورڈ",
+        "tiles": "کوئی ٹائل نہیں | {count} ٹائل | {count} ٹائلیں",
+        "parameters": "کوئی پیرامیٹر نہیں | {count} پیرامیٹر | {count} پیرامیٹر"
+      },
+      "refresh": "تازہ کریں"
+    },
+    "adminVisualisations": {
+      "title": "ویژولائزیشنز",
+      "singular": "ویژولائزیشن",
+      "hint": "ڈیش بورڈ، ان کے ڈیٹا سورس اور ان کے پیرامیٹر متعین کریں۔",
+      "loading": "ویژولائزیشنز لوڈ ہو رہی ہیں",
+      "denied": "آپ کو ویژولائزیشنز ترتیب دینے کی اجازت نہیں ہے۔"
+    }
+  },
+  "hi": {
+    "chart": {
+      "loading": "चार्ट बनाया जा रहा है",
+      "failed": "चार्ट नहीं बनाया जा सका।",
+      "retry": "फिर प्रयास करें",
+      "empty": "अभी चार्ट करने के लिए कुछ नहीं है।"
+    },
+    "datasource": {
+      "sql": {
+        "title": "SQL कमांड",
+        "label": "डेटा स्रोत के लिए SQL कमांड"
+      },
+      "status": {
+        "incomplete": "शुरू करने के लिए SELECT लिखें",
+        "checking": "कमांड की जाँच हो रही है",
+        "valid": "कमांड मान्य है",
+        "errors": "कमांड में त्रुटियाँ हैं",
+        "disconnected": "सर्वर तक नहीं पहुँचा जा सका",
+        "position": "(पंक्ति {line}, कॉलम {column})"
+      },
+      "columns": {
+        "title": "परिणाम के कॉलम",
+        "empty": "कमांड मान्य होते ही कॉलम यहाँ दिखेंगे।",
+        "unused": "नहीं बनाया गया"
+      },
+      "show": {
+        "title": "इस रूप में दिखाएँ",
+        "chart": "चार्ट दिखाएँ",
+        "grid": "ग्रिड दिखाएँ",
+        "kind": "चार्ट का प्रकार",
+        "fits": "इन कॉलमों से बनता है",
+        "needs": "कॉलम सौंपने की आवश्यकता है",
+        "byPosition": "स्थिति के अनुसार: {columns}",
+        "nothing": "अभी कुछ नहीं",
+        "optional": "वैकल्पिक कॉलम",
+        "needsDisplay": "चार्ट, ग्रिड या दोनों चालू करें।"
+      },
+      "preview": {
+        "title": "पूर्वावलोकन",
+        "waiting": "पूर्वावलोकन तब दिखता है जब कमांड मान्य हो और चार्ट या ग्रिड चालू हो।"
+      },
+      "card": {
+        "ready": "तैयार",
+        "empty": "कोई पंक्ति नहीं",
+        "error": "त्रुटि",
+        "rows": "{count} पंक्तियाँ",
+        "milliseconds": "{count} मि.से.",
+        "truncated": "छोटा किया गया",
+        "yes": "हाँ",
+        "no": "नहीं",
+        "noRows": "दिखाने के लिए कोई पंक्ति नहीं",
+        "chartLabel": "{name} के लिए चार्ट",
+        "gridLabel": "{name} के लिए ग्रिड",
+        "templateLabel": "{name} के लिए टेम्पलेट"
+      },
+      "bench": {
+        "registry": "विज़ुअलाइज़ेशन",
+        "datasource": "डेटा स्रोत",
+        "pickRegistry": "विज़ुअलाइज़ेशन चुनें",
+        "new": "नया डेटा स्रोत",
+        "pick": "इसके लिए डेटा स्रोत बनाने हेतु विज़ुअलाइज़ेशन चुनें।",
+        "value": "उत्सर्जित मान"
+      },
+      "template": {
+        "label": "टेम्पलेट",
+        "hint": "पंक्तियों को अपने मार्कअप में सजाएँ। किसी मान को टोकन से छापें जैसे [{'@'} rows[0].column {'@'}], तत्व को v-for=\"row in rows\" से दोहराएँ, v-if और v-else से चुनें, टोकन को विशेषता के अंदर रखें जैसे class=\"badge [{'@'} row.status {'@'}]\", और मानों को number, percent, currency, date, dateTime, round, truncate, upper, lower, default और join फ़िल्टरों से स्वरूपित करें जो पाइप चिह्न के बाद लिखे जाते हैं। नाम अक्षर-भेदी नहीं हैं। केवल सुरक्षित टैग की अनुमति है और हर मान एस्केप होता है। रिक्त स्थान वाले नामों के लिए row['कॉलम का नाम'] का उपयोग करें।"
+      },
+      "test": {
+        "run": "SQL चलाएँ",
+        "missing": "पहले नीचे के अनिवार्य पैरामीटर भरें।",
+        "failed": "SQL नहीं चलाई जा सकी।"
+      }
+    },
+    "visualisation": {
+      "required": "अनिवार्य",
+      "requiredMessage": "कोई मान दर्ज करें।",
+      "run": "चलाएँ",
+      "forbidden": "आपको यह विज़ुअलाइज़ेशन देखने की अनुमति नहीं है।",
+      "notFound": "वह विज़ुअलाइज़ेशन नहीं मिली, या सक्रिय नहीं है।",
+      "loadFailed": "विज़ुअलाइज़ेशन लोड नहीं हो सकी। फिर प्रयास करें।",
+      "empty": "इस विज़ुअलाइज़ेशन में कोई सक्रिय डेटा स्रोत नहीं है।",
+      "waiting": "विज़ुअलाइज़ेशन बनाने के लिए पैरामीटर सेट करें और चलाएँ।",
+      "tileFailed": "यह टाइल नहीं बनाई जा सकी।",
+      "tileMissing": "यह डेटा स्रोत अब उपलब्ध नहीं है।",
+      "bench": {
+        "directory": "विज़ुअलाइज़ेशन",
+        "pick": "निर्देशिका से विज़ुअलाइज़ेशन चुनें।",
+        "hideParameters": "पैरामीटर फ़ॉर्म छिपाएँ"
+      },
+      "directory": {
+        "title": "विज़ुअलाइज़ेशन",
+        "empty": "निर्देशिका में कोई विज़ुअलाइज़ेशन सूचीबद्ध नहीं है।",
+        "back": "सभी विज़ुअलाइज़ेशन",
+        "col": {
+          "name": "नाम",
+          "tiles": "टाइलें",
+          "parameters": "पैरामीटर",
+          "lastRun": "अंतिम बार चलाया गया",
+          "runBy": "चलाने वाला",
+          "runs": "निष्पादन, {days} दिन",
+          "failed": "विफल, {days} दिन",
+          "average": "औसत"
+        },
+        "open": "खोलें",
+        "search": "विज़ुअलाइज़ेशन खोजें",
+        "searchPlaceholder": "नाम से खोजें",
+        "count": "कोई विज़ुअलाइज़ेशन नहीं | {count} विज़ुअलाइज़ेशन | {count} विज़ुअलाइज़ेशन",
+        "list": "विज़ुअलाइज़ेशन निर्देशिका",
+        "noMatch": "कोई विज़ुअलाइज़ेशन मेल नहीं खाती।",
+        "neverRun": "कभी नहीं चलाया गया",
+        "unavailable": "उपलब्ध नहीं",
+        "ms": "{count} मि.से.",
+        "showDetail": "टाइलें और पैरामीटर दिखाएँ",
+        "hideDetail": "टाइलें और पैरामीटर छिपाएँ",
+        "windowNote": "निष्पादन, विफलताएँ और औसत पिछले {days} दिनों को कवर करते हैं और टाइल निष्पादन गिनते हैं: डैशबोर्ड का एक रन हर टाइल को चलाता है। अंतिम बार चलाया गया सारे समय को कवर करता है।",
+        "detail": {
+          "tiles": "टाइलें",
+          "parameters": "पैरामीटर",
+          "noTiles": "इस डैशबोर्ड में कोई सक्रिय टाइल नहीं है।",
+          "noParameters": "यह डैशबोर्ड कोई पैरामीटर नहीं माँगता।",
+          "failed": "यह लोड नहीं हो सका।",
+          "unknownKind": "टाइल",
+          "type": {
+            "text": "पाठ",
+            "integer": "पूर्णांक",
+            "decimal": "दशमलव",
+            "dateTime": "दिनांक और समय",
+            "flag": "फ़्लैग"
+          }
+        }
+      },
+      "retry": "फिर प्रयास करें",
+      "story": {
+        "dashboard": "डैशबोर्ड",
+        "tiles": "कोई टाइल नहीं | {count} टाइल | {count} टाइलें",
+        "parameters": "कोई पैरामीटर नहीं | {count} पैरामीटर | {count} पैरामीटर"
+      },
+      "refresh": "ताज़ा करें"
+    },
+    "adminVisualisations": {
+      "title": "विज़ुअलाइज़ेशन",
+      "singular": "विज़ुअलाइज़ेशन",
+      "hint": "डैशबोर्ड, उनके डेटा स्रोत और उनके पैरामीटर परिभाषित करें।",
+      "loading": "विज़ुअलाइज़ेशन लोड हो रही हैं",
+      "denied": "आपको विज़ुअलाइज़ेशन सेट अप करने की अनुमति नहीं है।"
+    }
+  }
+}

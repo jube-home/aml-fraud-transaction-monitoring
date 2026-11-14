@@ -49,8 +49,6 @@ namespace Jube.Data.Repository
 
         public async Task<Export> UpdateAsync(Export model, CancellationToken token = default)
         {
-            model.CreatedUser = userName;
-            model.CreatedDate = DateTime.UtcNow;
             model.TenantRegistryId = tenantRegistryId;
 
             await dbContext.UpdateAsync(model, token: token);

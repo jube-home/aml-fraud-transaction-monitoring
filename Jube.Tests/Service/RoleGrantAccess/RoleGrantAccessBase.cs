@@ -27,6 +27,7 @@ using Jube.Service.Repository.RoleRegistry;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using LinqToDB.Data;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -103,6 +104,7 @@ namespace Jube.Test.Service.RoleGrantAccess
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => modelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
 
+            await ArchiveKeySeed.CleanupAsync(dbContext, modelIds);
             await dbContext.EntityAnalysisModel.Where(w => modelIds.Contains(w.Id)).DeleteAsync();
 
             var registryIds = createdRegistryIds.ToList();
@@ -282,7 +284,7 @@ namespace Jube.Test.Service.RoleGrantAccess
                 Active = 1,
                 Locked = 0,
                 Deleted = 0,
-                ShowInDirectory = 1,
+                ContextKindId = 1,
                 Version = 1,
                 CreatedUser = fx.Seed.UserWithPermission,
                 CreatedDate = DateTime.UtcNow

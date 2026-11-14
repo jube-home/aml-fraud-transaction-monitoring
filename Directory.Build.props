@@ -1,5 +1,5 @@
 <Project>
-    <ItemGroup Condition="$(MSBuildProjectName.StartsWith('Jube.'))">
+    <ItemGroup Condition="$(MSBuildProjectName.StartsWith('Jube.')) And '$(MSBuildProjectName)' != 'Jube.RegulatoryReport'">
         <!-- Transitive version pin, not a code dependency: log4net and
              FluentMigrator.Runner.SqlServerCe drag in System.Drawing.Common 4.7.0
              (NU1904, critical). This forces the resolved version to a patched one. -->

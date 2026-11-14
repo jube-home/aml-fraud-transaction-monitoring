@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchDiceInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the bigram (Dice) overlap with an entry is at least the threshold. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchDiceInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Dice bigram similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringDiceInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> RejectDiceInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the bigram (Dice) overlap with an entry is at least the threshold. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectDiceInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Dice bigram similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringDiceInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> BreakDiceInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the bigram (Dice) overlap with an entry is at least the threshold. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakDiceInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Dice bigram similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringDiceInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> RequireDiceInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the bigram (Dice) overlap with an entry is at least the threshold. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireDiceInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Dice bigram similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringDiceInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> EnsureDiceInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the bigram (Dice) overlap with an entry is at least the threshold. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureDiceInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Dice bigram similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchDiceInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the bigram (Dice) overlap with an entry is at least the threshold. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchDiceInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Dice bigram similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().MatchDiceInList(list, threshold);
             }
 
-            public Flow<string?> RejectDiceInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the bigram (Dice) overlap with an entry is at least the threshold. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectDiceInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Dice bigram similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().RejectDiceInList(list, threshold);
             }
 
-            public Flow<string?> BreakDiceInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the bigram (Dice) overlap with an entry is at least the threshold. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakDiceInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Dice bigram similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().BreakDiceInList(list, threshold);
             }
 
-            public Flow<string?> RequireDiceInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the bigram (Dice) overlap with an entry is at least the threshold. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireDiceInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Dice bigram similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().RequireDiceInList(list, threshold);
             }
 
-            public Flow<string?> EnsureDiceInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the bigram (Dice) overlap with an entry is at least the threshold. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureDiceInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The Dice bigram similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().EnsureDiceInList(list, threshold);
             }

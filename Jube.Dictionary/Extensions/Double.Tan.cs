@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns the tangent of the specified angle.")]
         public static Double Tan(this Double a)
         {
             return Math.Tan(a);

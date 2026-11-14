@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>ليس لديك إذن لتنفيذ هذا الإجراء.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>يجب أن تكون مسجلاً الدخول إلى مستأجر لتنفيذ هذا الإجراء.</value>
+  </data>
+    <data name="ModelNotFound" xml:space="preserve">
+    <value>لم يتم العثور على نموذج تحليل الكيانات.</value>
+  </data>
+    <data name="RuleTypeInvalid" xml:space="preserve">
+    <value>لا يمكن إجراء اختبار رجعي لنوع القاعدة ⁦{0}⁩؛ استخدم ⁦GatewayRule⁩ أو ⁦ActivationRule⁩ أو ⁦ReprocessingRule⁩.</value>
+  </data>
+    <data name="RangeInvalid" xml:space="preserve">
+    <value>يجب أن يكون تاريخ البداية أسبق من تاريخ النهاية.</value>
+  </data>
+    <data name="InstanceNotFound" xml:space="preserve">
+    <value>لم يتم العثور على الاختبار الرجعي.</value>
+  </data>
+    <data name="RuleTextRequired" xml:space="preserve">
+    <value>مطلوب قاعدة لإجراء الاختبار الرجعي.</value>
+  </data>
+    <data name="ArchiveNotFound" xml:space="preserve">
+    <value>المعاملة غير موجودة في أرشيف هذا النموذج.</value>
+  </data>
+    <data name="LimitTooLarge" xml:space="preserve">
+    <value>يقرأ الاختبار الرجعي الفوري ⁦{0}⁩ معاملة على الأكثر؛ أرسله كاختبار رجعي في الخلفية لقراءة المزيد.</value>
+  </data>
+    <data name="ResultUnavailable" xml:space="preserve">
+    <value>حالة الاختبار الرجعي ⁦{0}⁩ وليس له نتيجة.</value>
+  </data>
+    <data name="OnlineTimeLimit" xml:space="preserve">
+    <value>يتوقف الاختبار الرجعي الفوري بعد ⁦{0}⁩ ثانية؛ قلّص النطاق أو خفّض الحد، أو أرسله كاختبار رجعي في الخلفية.</value>
+  </data>
+    <data name="PendingLimitModel" xml:space="preserve">
+    <value>لدى هذا النموذج بالفعل ⁦{0}⁩ اختبارات رجعية قيد الانتظار أو التشغيل؛ انتظر انتهاء أحدها أو أوقف أحدها قبل إرسال آخر.</value>
+  </data>
+    <data name="PendingLimitTenant" xml:space="preserve">
+    <value>لدى مؤسستك بالفعل ⁦{0}⁩ اختبارات رجعية قيد الانتظار أو التشغيل؛ انتظر انتهاء أحدها أو أوقف أحدها قبل إرسال آخر.</value>
+  </data>
+    <data name="PlaceholderNotInRule" xml:space="preserve">
+    <value>يجب أن يحتوي نص القاعدة على العنصر النائب.</value>
+  </data>
+    <data name="CandidatesInvalid" xml:space="preserve">
+    <value>قدّم من 1 إلى {0} قيمة مرشحة، كل منها رقم بسيط.</value>
+  </data>
+</root>

@@ -62,5 +62,12 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(26)] public string CoderRuleScript { get; set; }
         [Column] [Nullable] [Key(27)] public byte? RuleScriptTypeId { get; set; }
         [Column] [Nullable] [Key(28)] public Guid Guid { get; set; }
+        [Column] [Nullable] [Key(29)] public byte? IterationOrderId { get; set; }
+
+        [Column]
+        [DataType(DataType.BinaryJson)]
+        [Nullable]
+        [Key(30)]
+        public string SearchFunctionParameters { get; set; }
     }
 }

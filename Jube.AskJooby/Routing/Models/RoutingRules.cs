@@ -88,9 +88,18 @@ namespace Jube.AskJooby.Routing.Models
                     "Which alerts fired overnight",
                     "Did this name hit the sanctions list",
                     "Attach this document to the case",
+                    "Who is holding the most cases",
+                    "Break the stale lock on this case",
+                    "Reassign this case to another analyst",
                     "Give me a narrative for this case",
                     "Summarise this case for me",
-                    "Write up what happened on this case"
+                    "Write up what happened on this case",
+                    "Who else used this device",
+                    "Show me the network around this account",
+                    "Which money-flow patterns did the detectors find this week",
+                    "Follow the money out of this account",
+                    "Is there a path between these two accounts",
+                    "Add a graph recall entity to this model so rules can read Graph.AccountId"
                 ],
                 "Working live alert and case material as an investigator would: individual cases, their " +
                 "notes, files, events and transaction journal, the activation watcher, and sanctions " +
@@ -102,6 +111,8 @@ namespace Jube.AskJooby.Routing.Models
                 [
                     "Add a new case status",
                     "Change which role can see this case filter",
+                    "Set up a graph registry with a shares device edge",
+                    "Which report keys can a graph edge use",
                     "Set up a form on the case workflow",
                     "Define a macro for investigators",
                     "How is case routing configured"
@@ -142,13 +153,13 @@ namespace Jube.AskJooby.Routing.Models
                 [
                     "Is the database healthy",
                     "Why is the engine slow",
-                    "Check Redis",
+                    "Check RESP",
                     "Show me the Postgres connection count",
                     "Is Patroni failing over",
                     "What do the logs say about errors in the last hour",
                     "How many transactions is the engine processing"
                 ],
-                "The operational health of the platform itself: Postgres, Redis, etcd and Patroni, Docker and " +
+                "The operational health of the platform itself: Postgres, RESP, etcd and Patroni, Docker and " +
                 "the overlay network, OpenTelemetry, logs, and engine throughput counters. Infrastructure, " +
                 "not configuration."),
 

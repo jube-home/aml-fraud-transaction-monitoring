@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,23 +23,29 @@ namespace Jube.Dto.Query.ExhaustiveSearchInstanceTrialInstanceListQuery
 {
     [Description("Detail of one Exhaustive trial attempt: enough to render its model diagram and, for a " +
                  "challenger family, its evidence.")]
+    [MessagePackObject]
     public class ExhaustiveSearchInstanceTrialInstanceDetailDto
     {
         [Description("Server-assigned integer identifier of the trial instance.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("The model kind this trial attempted: ExhaustiveTopologyNetwork for a Neural Network " +
                      "topology evolution step, or the challenger family name otherwise.")]
+        [Key(1)]
         public string? Kind { get; set; }
 
         [Description("Score achieved by this trial on the testing split.")]
+        [Key(2)]
         public double? Score { get; set; }
 
         [Description("True when a model diagram can be drawn for this trial (its serialised model was stored).")]
+        [Key(3)]
         public bool HasDiagram { get; set; }
 
         [Description("Parsed evidence object for a challenger family trial (the same shape Advanced Analytics " +
                      "evidence uses); null for a Neural Network topology trial, which has no stored evidence.")]
+        [Key(4)]
         public object? Evidence { get; set; }
     }
 }

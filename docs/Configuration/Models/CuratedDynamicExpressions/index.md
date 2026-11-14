@@ -112,3 +112,7 @@ in Jube:
 - An expression is a single statement-free body over one bound value — there is no equivalent of Inline Functions'
   multi-statement scripts here, by design: this feature is for small, easily reviewed pieces of logic, not general
   scripting.
+
+<!-- TODO(docs): no administrative UI exists for DictionaryEvalExpression in the Vue app. Confirm this page is still accurate. -->
+<!-- TODO(docs): confirm the Enabling the Feature section against the current environment variable names. -->
+<!-- TODO(docs): the examples in this page have not been re-run against the current compiler. -->

@@ -9,11 +9,13 @@ grand_parent: Configuration
 Exhaustive model training can take a very long time, and it is computationally expensive. To stop an Exhaustive training
 instance identify the Stop button:
 
-![LocationOfStopButton.png](LocationOfStopButton.png)
+<!-- TODO(screenshot): file=model-exhaustive-location-of-stop-button.png route=/models state="Stopping: replace the Razor-era image LocationOfStopButton.png with the Vue Exhaustive page" -->
+![LocationOfStopButton.png](model-exhaustive-location-of-stop-button.png)
 
 On clicking the Stop button the training status is set to Stopping:
 
-![Stopping.png](Stopping.png)
+<!-- TODO(screenshot): file=model-exhaustive-stopping.png route=/models state="Stopping: replace the Razor-era image Stopping.png with the Vue Exhaustive page" -->
+![Stopping.png](model-exhaustive-stopping.png)
 
 The Exhaustive training thread updates the status to signal progress. Before each update of a status by the Exhaustive
 training thread,
@@ -26,7 +28,8 @@ training instance.
 
 Once the stopping point has been reached, the status is finalised to Stopped:
 
-![Stopped.png](Stopped.png)
+<!-- TODO(screenshot): file=model-exhaustive-stopped.png route=/models state="Stopping: replace the Razor-era image Stopped.png with the Vue Exhaustive page" -->
+![Stopped.png](model-exhaustive-stopped.png)
 
 
 

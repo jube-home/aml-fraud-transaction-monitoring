@@ -34,6 +34,8 @@ namespace Jube.Service.EntityApproval
                 EntityApprovalKind.EntityAnalysisModelList => ModelEntityKind.List,
                 EntityApprovalKind.EntityAnalysisModelDictionary => ModelEntityKind.Dictionary,
                 EntityApprovalKind.EntityAnalysisModelHttpAdaptation => ModelEntityKind.HttpAdaptation,
+                EntityApprovalKind.EntityAnalysisModelGraphRecall => ModelEntityKind.GraphRecall,
+                EntityApprovalKind.EntityAnalysisModelSvirfd => ModelEntityKind.Svirfd,
                 EntityApprovalKind.ExhaustiveSearchInstance => ModelEntityKind.ExhaustiveAdaptation,
                 _ => null
             };

@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace Jube.Data.Repository
 {
@@ -178,6 +180,33 @@ namespace Jube.Data.Repository
                 && w.Id == id && (w.Deleted == 0 || w.Deleted == null), token);
         }
 
+        public Task<CaseWorkflowMacro> GetByIdActiveForCaseWorkflowGuidAsync(int id, Guid caseWorkflowGuid,
+            CancellationToken token = default)
+        {
+            return dbContext.CaseWorkflowMacro.FirstOrDefaultAsync(w =>
+                w.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId
+                && w.CaseWorkflow.Guid == caseWorkflowGuid
+                && (w.CaseWorkflow.EntityAnalysisModel.Deleted == 0 ||
+                    w.CaseWorkflow.EntityAnalysisModel.Deleted == null)
+                && (w.CaseWorkflow.Deleted == 0 || w.CaseWorkflow.Deleted == null)
+                && w.Active == 1
+                && dbContext.CaseWorkflowMacroRole
+                    .Where(r => r.CaseWorkflowMacroGuid == w.Guid
+                                && (r.Deleted == 0 || r.Deleted == null))
+                    .Any(r => dbContext.RoleRegistry
+                        .Where(rr => rr.Guid == r.RoleRegistryGuid && (rr.Deleted == 0 || rr.Deleted == null))
+                        .Any(rr => dbContext.UserRegistry
+                            .Any(u => u.RoleRegistryGuid == rr.Guid && u.Name == userName)))
+                && dbContext.CaseWorkflowRole
+                    .Where(r => r.CaseWorkflowGuid == w.CaseWorkflow.Guid
+                                && (r.Deleted == 0 || r.Deleted == null))
+                    .Any(r => dbContext.RoleRegistry
+                        .Where(rr => rr.Guid == r.RoleRegistryGuid && (rr.Deleted == 0 || rr.Deleted == null))
+                        .Any(rr => dbContext.UserRegistry
+                            .Any(u => u.RoleRegistryGuid == rr.Guid && u.Name == userName)))
+                && w.Id == id && (w.Deleted == 0 || w.Deleted == null), token);
+        }
+
         public async Task<CaseWorkflowMacro> InsertAsync(CaseWorkflowMacro model, CancellationToken token = default)
         {
             model.CreatedUser = userName;
@@ -204,6 +233,8 @@ namespace Jube.Data.Repository
                 throw new KeyNotFoundException();
             }
 
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
+
             model.Version = existing.Version + 1;
             model.Guid = existing.Guid;
             model.CreatedUser = existing.CreatedUser;
@@ -211,6 +242,8 @@ namespace Jube.Data.Repository
             model.UpdatedUser = userName;
             model.UpdatedDate = DateTime.UtcNow;
             model.ImportId = existing.ImportId;
+            model.CaseWorkflowId = existing.CaseWorkflowId;
+            model.InheritedId = existing.InheritedId;
 
             await dbContext.UpdateAsync(model, token: token);
 
@@ -230,6 +263,7 @@ namespace Jube.Data.Repository
                 DeletedDate = existing.DeletedDate,
                 InheritedId = existing.InheritedId,
                 Version = existing.Version,
+                Sql = existing.Sql,
                 Javascript = existing.Javascript,
                 ImageLocation = existing.ImageLocation,
                 EnableHttpEndpoint = existing.EnableHttpEndpoint,

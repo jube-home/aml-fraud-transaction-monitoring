@@ -17,7 +17,12 @@
         <ProjectReference Include="..\Jube.Data\Jube.Data.csproj"/>
         <ProjectReference Include="..\Jube.DynamicEnvironment\Jube.DynamicEnvironment.csproj"/>
         <ProjectReference Include="..\Jube.Dto\Jube.Dto.csproj"/>
+        <ProjectReference Include="..\Jube.Graph\Jube.Graph.csproj"/>
+        <ProjectReference Include="..\Jube.Mfa\Jube.Mfa.csproj"/>
+        <ProjectReference Include="..\Jube.GraphRecallProtocol\Jube.GraphRecallProtocol.csproj"/>
+        <ProjectReference Include="..\Jube.Svirfd\Jube.Svirfd.csproj"/>
         <ProjectReference Include="..\Jube.Engine\Jube.Engine.csproj"/>
+        <ProjectReference Include="..\Jube.RegulatoryReport\Jube.RegulatoryReport.csproj"/>
         <ProjectReference Include="..\Jube.Preservation\Jube.Preservation.csproj"/>
         <ProjectReference Include="..\Jube.Resources\Jube.Resources.csproj"/>
         <ProjectReference Include="..\Jube.Validations\Jube.Validations.csproj"/>

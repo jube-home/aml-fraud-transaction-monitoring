@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
-            public Flow<DateTime> MatchWithinBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("True when: the value, read as UTC, falls in the hours in that time zone (for example America/New_York). An unknown zone is false. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchWithinBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeWithinBusinessHoursInZone(flow.Value, zoneId, startHour, endHour));
             }
 
-            public Flow<DateTime> RejectWithinBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("True when: the value, read as UTC, falls in the hours in that time zone (for example America/New_York). An unknown zone is false. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectWithinBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeWithinBusinessHoursInZone(flow.Value, zoneId, startHour, endHour));
             }
 
-            public Flow<DateTime> BreakWithinBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("True when: the value, read as UTC, falls in the hours in that time zone (for example America/New_York). An unknown zone is false. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakWithinBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeWithinBusinessHoursInZone(flow.Value, zoneId, startHour, endHour));
             }
 
-            public Flow<DateTime> RequireWithinBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("True when: the value, read as UTC, falls in the hours in that time zone (for example America/New_York). An unknown zone is false. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireWithinBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeWithinBusinessHoursInZone(flow.Value, zoneId, startHour, endHour));
             }
 
-            public Flow<DateTime> EnsureWithinBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("True when: the value, read as UTC, falls in the hours in that time zone (for example America/New_York). An unknown zone is false. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureWithinBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
-            public Flow<DateTime> MatchWithinBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: the value, read as UTC, falls in the hours in that time zone (for example America/New_York). An unknown zone is false. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchWithinBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return value.Start().MatchWithinBusinessHoursInZone(zoneId, startHour, endHour);
             }
 
-            public Flow<DateTime> RejectWithinBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: the value, read as UTC, falls in the hours in that time zone (for example America/New_York). An unknown zone is false. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectWithinBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return value.Start().RejectWithinBusinessHoursInZone(zoneId, startHour, endHour);
             }
 
-            public Flow<DateTime> BreakWithinBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: the value, read as UTC, falls in the hours in that time zone (for example America/New_York). An unknown zone is false. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakWithinBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return value.Start().BreakWithinBusinessHoursInZone(zoneId, startHour, endHour);
             }
 
-            public Flow<DateTime> RequireWithinBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: the value, read as UTC, falls in the hours in that time zone (for example America/New_York). An unknown zone is false. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireWithinBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return value.Start().RequireWithinBusinessHoursInZone(zoneId, startHour, endHour);
             }
 
-            public Flow<DateTime> EnsureWithinBusinessHoursInZone(string zoneId, int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: the value, read as UTC, falls in the hours in that time zone (for example America/New_York). An unknown zone is false. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureWithinBusinessHoursInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId,
+                [Description("The first hour of the working day, 0 to 23.")] int startHour,
+                [Description("The hour the working day ends, 1 to 24, excluded.")] int endHour)
             {
                 return value.Start().EnsureWithinBusinessHoursInZone(zoneId, startHour, endHour);
             }

@@ -119,7 +119,7 @@ management and analytics.
 
 **Q: Can PostgreSQL back the cache to reduce Redis memory?**
 
-A: Yes. Setting `RedisHsetOffloadToPostgres` to True moves every hash operation (the payload hash structures) to the
+A: Yes. Setting `RespHsetOffloadToPostgres` to True moves every hash operation (the payload hash structures) to the
 PostgreSQL table CacheSetHash, which is hash-partitioned on key into four partitions. The rest (pub/sub, journals)
 stays in Redis. This substantially reduces memory sizing, at the cost of needing good disk or NAS volumes; benchmark
 before committing. See [Cache Schema](../Concepts/Cache/CacheSchema/index.html).

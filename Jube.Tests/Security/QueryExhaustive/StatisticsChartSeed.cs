@@ -19,6 +19,7 @@ using Jube.Data.Poco;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Security.QueryExhaustive.Models;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace Jube.Test.Security.QueryExhaustive
 {

@@ -43,9 +43,9 @@ namespace Jube.Test.Exhaustive
         [InlineData(5, true)]
         [InlineData(6, false)]
         [InlineData(7, true)]
-        [InlineData(8, false)]
+        [InlineData(8, true)]
         [InlineData(255, false)]
-        public void BuildVariablesFromFields_KeepsOnlyProcessingTypesThreeFiveAndSeven(int processingTypeId,
+        public void BuildVariablesFromFields_KeepsOnlyProcessingTypesThreeFiveSevenAndEight(int processingTypeId,
             bool kept)
         {
             var variables = Extraction.BuildVariablesFromFields([Field("F", (byte)processingTypeId)]);

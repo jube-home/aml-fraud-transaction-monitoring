@@ -18,7 +18,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double JsonNumberAt(this string? @this, string? path)
+        [Description("The number at a path, otherwise NaN.")]
+        public static double JsonNumberAt(this string? @this,
+            [Description("The path, for example $.a.b.")] string? path)
         {
             var node = StructuredDataSupport.Navigate(StructuredDataSupport.Parse(@this), path);
 

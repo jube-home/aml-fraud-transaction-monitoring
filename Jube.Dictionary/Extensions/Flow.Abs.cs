@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Replaces the value being tested with the absolute value.")]
         public static Flow<double> Abs(this Flow<double> flow)
         {
             return flow.Carry(Math.Abs(flow.Value));

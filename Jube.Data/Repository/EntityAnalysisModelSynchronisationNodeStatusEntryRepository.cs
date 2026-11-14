@@ -20,13 +20,17 @@ namespace Jube.Data.Repository
     using System.Linq;
     using Jube.Data.Query;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
 
     public class EntityAnalysisModelSynchronisationNodeStatusEntryRepository(DbContext dbContext)
     {
         public async Task UpsertSynchronisationAsync(
-            EntityAnalysisModelSynchronisationNodeStatusEntry model, CancellationToken token = default)
+            EntityAnalysisModelSynchronisationNodeStatusEntry model, DateTime? synchronisedDate = null,
+            CancellationToken token = default)
         {
+            var stamp = synchronisedDate ?? DateTime.UtcNow;
+
             var existing = await
                 dbContext.EntityAnalysisModelSynchronisationNodeStatusEntry
                     .FirstOrDefaultAsync(w
@@ -35,13 +39,13 @@ namespace Jube.Data.Repository
 
             if (existing == null)
             {
-                model.SynchronisedDate = DateTime.UtcNow;
+                model.SynchronisedDate = stamp;
                 model.HeartbeatDate = DateTime.UtcNow;
                 model.Id = await dbContext.InsertWithInt32IdentityAsync(model, token: token).ConfigureAwait(false);
             }
             else
             {
-                existing.SynchronisedDate = DateTime.UtcNow;
+                existing.SynchronisedDate = stamp;
                 existing.HeartbeatDate = DateTime.UtcNow;
                 await dbContext.UpdateAsync(existing, token: token).ConfigureAwait(false);
             }

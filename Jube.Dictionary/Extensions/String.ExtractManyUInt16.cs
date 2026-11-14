@@ -6,6 +6,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Extracts all UInt16 from the string.")]
         public static ushort[] ExtractManyUInt16(this string @this)
         {
             return Regex.Matches(@this, @"\d+")

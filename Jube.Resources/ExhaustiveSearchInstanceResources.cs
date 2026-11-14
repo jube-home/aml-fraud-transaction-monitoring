@@ -23,6 +23,8 @@ namespace Jube.Resources
         public const string NameAlreadyExists = nameof(NameAlreadyExists);
         public const string AnomalyProbabilityRange = nameof(AnomalyProbabilityRange);
         public const string BaseRateRange = nameof(BaseRateRange);
+        public const string BootstrapWeightFactorRange = nameof(BootstrapWeightFactorRange);
+        public const string ChallengerModelBaseProbabilityRange = nameof(ChallengerModelBaseProbabilityRange);
         public const string AnomalyContaminationRange = nameof(AnomalyContaminationRange);
         public const string AnomalyAlgorithmInvalid = nameof(AnomalyAlgorithmInvalid);
         public const string AnomalyParametersInvalid = nameof(AnomalyParametersInvalid);

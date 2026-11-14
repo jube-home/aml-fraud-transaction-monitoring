@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns the value as a byte array.")]
         public static byte[] GetBytes(this Int32 value)
         {
             return BitConverter.GetBytes(value);

@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns e raised to the specified power.")]
         public static Double Exp(this Double d)
         {
             return Math.Exp(d);

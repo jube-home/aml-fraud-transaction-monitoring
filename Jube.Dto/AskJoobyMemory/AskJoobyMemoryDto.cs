@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,15 +22,21 @@ using System.ComponentModel;
 namespace Jube.Dto.AskJoobyMemory
 {
     [Description("A single remembered fact, returned from a Recall search.")]
+    [MessagePackObject]
     public class AskJoobyMemoryDto
     {
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("\"User\" -- private to whoever remembered it. \"System\" -- shared tenant-wide.")]
+        [Key(1)]
         public string? Scope { get; set; }
 
+        [Key(2)]
         public string? CreatedUser { get; set; }
+        [Key(3)]
         public string? Content { get; set; }
+        [Key(4)]
         public double Score { get; set; }
     }
 }

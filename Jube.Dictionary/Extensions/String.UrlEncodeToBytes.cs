@@ -12,12 +12,14 @@ namespace Jube.Dictionary.Extensions
     {
         extension(String str)
         {
+            [Description("URL encodes to a byte array.")]
             public byte[] UrlEncodeToBytes()
             {
                 return HttpUtility.UrlEncodeToBytes(str);
             }
 
-            public byte[] UrlEncodeToBytes(Encoding e)
+            [Description("URL encodes to a byte array with encoding.")]
+            public byte[] UrlEncodeToBytes([Description("The encoding that specifies the encoding scheme.")] Encoding e)
             {
                 return HttpUtility.UrlEncodeToBytes(str, e);
             }

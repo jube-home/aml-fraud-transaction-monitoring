@@ -4,6 +4,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Checks if the string is not null or empty.")]
         public static bool IsNotNullOrEmpty(this string @this)
         {
             return !string.IsNullOrEmpty(@this);

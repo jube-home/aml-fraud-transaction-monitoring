@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchFuzzyMatchCountAtLeast(IEnumerable<string> list, int count, string? options)
+            [Description("True when: at least the count of entries in the List token match. Options string may be null. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchFuzzyMatchCountAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("How many entries must match.")] int count,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringFuzzyMatchCountAtLeast(flow.Value, list, count, options));
             }
 
-            public Flow<string?> RejectFuzzyMatchCountAtLeast(IEnumerable<string> list, int count, string? options)
+            [Description("True when: at least the count of entries in the List token match. Options string may be null. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectFuzzyMatchCountAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("How many entries must match.")] int count,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringFuzzyMatchCountAtLeast(flow.Value, list, count, options));
             }
 
-            public Flow<string?> BreakFuzzyMatchCountAtLeast(IEnumerable<string> list, int count, string? options)
+            [Description("True when: at least the count of entries in the List token match. Options string may be null. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakFuzzyMatchCountAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("How many entries must match.")] int count,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringFuzzyMatchCountAtLeast(flow.Value, list, count, options));
             }
 
-            public Flow<string?> RequireFuzzyMatchCountAtLeast(IEnumerable<string> list, int count, string? options)
+            [Description("True when: at least the count of entries in the List token match. Options string may be null. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireFuzzyMatchCountAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("How many entries must match.")] int count,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringFuzzyMatchCountAtLeast(flow.Value, list, count, options));
             }
 
-            public Flow<string?> EnsureFuzzyMatchCountAtLeast(IEnumerable<string> list, int count, string? options)
+            [Description("True when: at least the count of entries in the List token match. Options string may be null. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureFuzzyMatchCountAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("How many entries must match.")] int count,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchFuzzyMatchCountAtLeast(IEnumerable<string> list, int count, string? options)
+            [Description("Begins a pipeline from the value. True when: at least the count of entries in the List token match. Options string may be null. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchFuzzyMatchCountAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("How many entries must match.")] int count,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return value.Start().MatchFuzzyMatchCountAtLeast(list, count, options);
             }
 
-            public Flow<string?> RejectFuzzyMatchCountAtLeast(IEnumerable<string> list, int count, string? options)
+            [Description("Begins a pipeline from the value. True when: at least the count of entries in the List token match. Options string may be null. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectFuzzyMatchCountAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("How many entries must match.")] int count,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return value.Start().RejectFuzzyMatchCountAtLeast(list, count, options);
             }
 
-            public Flow<string?> BreakFuzzyMatchCountAtLeast(IEnumerable<string> list, int count, string? options)
+            [Description("Begins a pipeline from the value. True when: at least the count of entries in the List token match. Options string may be null. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakFuzzyMatchCountAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("How many entries must match.")] int count,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return value.Start().BreakFuzzyMatchCountAtLeast(list, count, options);
             }
 
-            public Flow<string?> RequireFuzzyMatchCountAtLeast(IEnumerable<string> list, int count, string? options)
+            [Description("Begins a pipeline from the value. True when: at least the count of entries in the List token match. Options string may be null. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireFuzzyMatchCountAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("How many entries must match.")] int count,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return value.Start().RequireFuzzyMatchCountAtLeast(list, count, options);
             }
 
-            public Flow<string?> EnsureFuzzyMatchCountAtLeast(IEnumerable<string> list, int count, string? options)
+            [Description("Begins a pipeline from the value. True when: at least the count of entries in the List token match. Options string may be null. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureFuzzyMatchCountAtLeast([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("How many entries must match.")] int count,
+                [Description("The fuzzy options string, for example jw 0.9 nocase; null for the default profile.")] string? options)
             {
                 return value.Start().EnsureFuzzyMatchCountAtLeast(list, count, options);
             }

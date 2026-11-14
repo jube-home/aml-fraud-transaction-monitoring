@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchLogRatioOfAbove(double denominator, double bound)
+            [Description("True when: the natural log of the value over the denominator, symmetric for increases and decreases is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchLogRatioOfAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleLogRatioOfAbove(flow.Value, denominator, bound));
             }
 
-            public Flow<double> RejectLogRatioOfAbove(double denominator, double bound)
+            [Description("True when: the natural log of the value over the denominator, symmetric for increases and decreases is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectLogRatioOfAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleLogRatioOfAbove(flow.Value, denominator, bound));
             }
 
-            public Flow<double> BreakLogRatioOfAbove(double denominator, double bound)
+            [Description("True when: the natural log of the value over the denominator, symmetric for increases and decreases is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakLogRatioOfAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleLogRatioOfAbove(flow.Value, denominator, bound));
             }
 
-            public Flow<double> RequireLogRatioOfAbove(double denominator, double bound)
+            [Description("True when: the natural log of the value over the denominator, symmetric for increases and decreases is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireLogRatioOfAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleLogRatioOfAbove(flow.Value, denominator, bound));
             }
 
-            public Flow<double> EnsureLogRatioOfAbove(double denominator, double bound)
+            [Description("True when: the natural log of the value over the denominator, symmetric for increases and decreases is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureLogRatioOfAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchLogRatioOfAbove(double denominator, double bound)
+            [Description("Begins a pipeline from the value. True when: the natural log of the value over the denominator, symmetric for increases and decreases is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchLogRatioOfAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchLogRatioOfAbove(denominator, bound);
             }
 
-            public Flow<double> RejectLogRatioOfAbove(double denominator, double bound)
+            [Description("Begins a pipeline from the value. True when: the natural log of the value over the denominator, symmetric for increases and decreases is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectLogRatioOfAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectLogRatioOfAbove(denominator, bound);
             }
 
-            public Flow<double> BreakLogRatioOfAbove(double denominator, double bound)
+            [Description("Begins a pipeline from the value. True when: the natural log of the value over the denominator, symmetric for increases and decreases is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakLogRatioOfAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakLogRatioOfAbove(denominator, bound);
             }
 
-            public Flow<double> RequireLogRatioOfAbove(double denominator, double bound)
+            [Description("Begins a pipeline from the value. True when: the natural log of the value over the denominator, symmetric for increases and decreases is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireLogRatioOfAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireLogRatioOfAbove(denominator, bound);
             }
 
-            public Flow<double> EnsureLogRatioOfAbove(double denominator, double bound)
+            [Description("Begins a pipeline from the value. True when: the natural log of the value over the denominator, symmetric for increases and decreases is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureLogRatioOfAbove([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureLogRatioOfAbove(denominator, bound);
             }

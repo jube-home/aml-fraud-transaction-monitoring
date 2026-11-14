@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double InverseRatioOf(this double @this, double other)
+        [Description("The other value over this value.")]
+        public static double InverseRatioOf(this double @this, [Description("The other number.")] double other)
         {
             return CalculationSupport.Finite(other / @this);
         }

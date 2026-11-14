@@ -4,7 +4,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static IEnumerable<char> To(this char @this, char toCharacter)
+        [Description("Enumerates from the current character to the specified character.")]
+        public static IEnumerable<char> To(this char @this, [Description("The target character.")] char toCharacter)
         {
             var reverseRequired = @this > toCharacter;
 

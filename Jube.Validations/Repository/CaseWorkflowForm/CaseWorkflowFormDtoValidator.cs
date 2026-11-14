@@ -12,6 +12,7 @@
  */
 
 using FluentValidation;
+using Jube.Case.Outbound;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.CaseWorkflowForm;
 using Jube.Resources;
@@ -78,6 +79,13 @@ namespace Jube.Validations.Repository.CaseWorkflowForm
                 .When(w => w.EnableHttpEndpoint)
                 .WithMessage(_ => localiser[CaseWorkflowFormResources.HttpEndpointTypeIdInvalid])
                 .WithErrorCode("HttpEndpointTypeIdInvalid");
+
+            RuleFor(p => p.HttpEndpoint)
+                .Must(m => PayloadEndpointCall.IsWellFormedTemplate(m))
+                .WithMessage(_ => localiser[CaseWorkflowFormResources.HttpEndpointInvalid])
+                .WithErrorCode("HttpEndpointInvalid")
+                .When(w => w.EnableHttpEndpoint && !string.IsNullOrWhiteSpace(w.HttpEndpoint)
+                           && w.HttpEndpoint.Length <= 2048);
 
             RuleFor(p => p.HttpEndpoint)
                 .NotEmpty()

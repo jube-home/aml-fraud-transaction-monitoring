@@ -82,6 +82,7 @@ namespace Jube.AskJooby.Tools.ScriptExecution
         }
 
         [Description(
+            "CALL THIS BEFORE RunScript, always: RunScript validates the script itself and refuses one that fails, so a script you have not already fixed here only costs a round trip. Findings are authoritative: fix exactly what each names and validate again until it is clean. " +
             "Checks an R script's shape, syntax and use of disallowed functions without running it, plus non-blocking style feedback. " +
             "This is cheap and meant to be called repeatedly in a validate-then-fix loop, the same way a compiler error would be read and corrected, before ever running the script.")]
         public async Task<string> ValidateRScript(
@@ -116,7 +117,7 @@ namespace Jube.AskJooby.Tools.ScriptExecution
             "Runs an R script in the sandbox and blocks until the real result is back: nothing is queued and nothing is taken as done until this call returns. " +
             "Never use this to train, fit or search for a classifier, regressor, clusterer or anomaly model -- that is what Advanced Analytics and Exhaustive are for, and fitting one here instead skips the instance, the promotion evidence and the Exhaustive comparison those platforms give you for free. This tool is for exploring, shaping and summarising data the platform does not already have a tool for -- a dirty, quick, one-off or exploratory look, or a small cross-cutting program no purpose-built tool covers -- not for building a model that has to end up in production. " +
             "Confirm with the caller before running, unless they have already asked for exactly this kind of ad-hoc or exploratory work, or have already said as much as a standing preference. It is valuable precisely because it is unrestricted, so never reach for it as a quiet workaround -- not because a model-risk or model-admin specialist declined a production request, and not to skip the extra steps Advanced Analytics or Exhaustive would otherwise ask for. " +
-            "Validate the script first with ValidateRScript, because a script that fails validation is never worth running. " +
+            "Validate the script first with ValidateRScript and loop on its findings until it is clean; this tool validates again itself and refuses a script that fails. " +
             "To work on real data, pass pointers (never raw rows) in dataframes -- each one is hydrated into a same-named data.frame in the script's own environment before it runs, scoped to your own tenant automatically; you cannot choose whose data it reads. " +
             "Plain values that are not worth caching a pointer for (a threshold, a label, a short list) can be passed in variables instead, bound as ordinary R variables. " +
             "If any dataframe pointer cannot be resolved, nothing runs and you get a single generic error -- it does not say whether the pointer was wrong, expired, or never yours. " +

@@ -16,20 +16,32 @@ namespace Jube.Validations.Authentication
     using DynamicEnvironment;
     using FluentValidation;
     using Jube.Dto.Authentication;
+    using Jube.Resources;
+    using Microsoft.Extensions.Localization;
 
     public class AuthenticationRequestDtoValidator : AbstractValidator<AuthenticationRequestDto>
     {
-        public AuthenticationRequestDtoValidator(DynamicEnvironment dynamicEnvironment)
+        public AuthenticationRequestDtoValidator(DynamicEnvironment dynamicEnvironment,
+            IStringLocalizer? localiser = null)
         {
-            RuleFor(p => p.UserName).NotEmpty();
-            RuleFor(p => p.Password).NotEmpty().When(w => !w.PasswordChangeState);
+            RuleFor(p => p.UserName).NotEmpty().WithMessage(Message(localiser,
+                AuthenticationResources.UserNameRequired, "'User Name' must not be empty."));
+            RuleFor(p => p.Password).NotEmpty().When(w => !w.PasswordChangeState).WithMessage(Message(localiser,
+                AuthenticationResources.PasswordRequired, "'Password' must not be empty."));
 
-            RuleFor(p => p.Mfa).NotEmpty()
+            RuleFor(p => p.Mfa).NotEmpty().WithMessage(Message(localiser,
+                    AuthenticationResources.MfaRequired, "'Mfa' must not be empty."))
                 .When(_ => dynamicEnvironment.AppSettings("EnableMultifactorAuthentication")
                     .Equals("True", StringComparison.OrdinalIgnoreCase));
 
             RuleFor(p => p.NewPassword)
-                .NotEmpty().When(w => w.PasswordChangeState);
+                .NotEmpty().WithMessage(Message(localiser, AuthenticationResources.NewPasswordRequired,
+                    "'New Password' must not be empty.")).When(w => w.PasswordChangeState);
+        }
+
+        private static string Message(IStringLocalizer? localiser, string key, string fallback)
+        {
+            return localiser == null ? fallback : localiser[key].Value;
         }
     }
 }

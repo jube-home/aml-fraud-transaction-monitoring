@@ -15,8 +15,11 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Jube.Dictionary;
+using Jube.GraphRecallProtocol;
 using Jube.HttpAdaptationProtocol;
 using log4net;
+
+using Svirfd;
 
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models
 {
@@ -27,12 +30,13 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
             PooledDictionary<string, Adaptation> httpAdaptation,
             PooledDictionary<string, double> exhaustiveAdaptation,
             PooledDictionary<string, double> advancedAnalyticsAdaptation,
+            PooledDictionary<string, GraphEntity> graph,
             Dictionary<string, List<string>> list,
             PooledDictionary<string, double> calculation,
             PooledDictionary<string, double> sanctions,
             PooledDictionary<string, double> kvp,
             ICollection<string> activation,
-            ILog log);
+            PooledDictionary<string, IpResponse> svirfd, ILog log);
 
         public RuleCounters Counters { get; set; } = new();
         public long ActivationCounter => Counters.ActivationCounter;
@@ -52,12 +56,13 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
         public bool EnableTtlCounter { get; set; }
         public Guid EntityAnalysisModelTtlCounterGuid { get; set; }
         public Guid EntityAnalysisModelGuidTtlCounter { get; set; }
-        public double ResponseElevation { get; set; }
+        public int ResponseElevation { get; set; }
         public string ResponseElevationContent { get; set; }
         public string ResponseElevationRedirect { get; set; }
         public bool EnableReprocessing { get; set; }
         public bool EnableOverride { get; set; }
         public bool EnableForce { get; set; }
+        public bool Shadow { get; set; }
         public string OverrideKey { get; set; }
         public bool SendToActivationWatcher { get; set; }
         public string ResponseElevationForeColor { get; set; }
@@ -68,11 +73,6 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
         public double ActivationSample { get; set; }
         public double Priority { get; set; }
         public bool ReportTable { get; set; }
-        public bool EnableNotification { get; set; }
-        public int NotificationTypeId { get; set; }
-        public string NotificationDestination { get; set; }
-        public string NotificationSubject { get; set; }
-        public string NotificationBody { get; set; }
         public string CaseKey { get; set; }
         public bool EnableResponseElevation { get; set; }
         public string ResponseElevationKey { get; set; }

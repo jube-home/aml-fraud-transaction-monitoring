@@ -15,8 +15,12 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsWithinRadiusKm(this double latitude1, double longitude1, double latitude2,
-            double longitude2, double radiusKm)
+        [Description("Checks if two coordinates are within a given distance of each other, in kilometers, a geofence check.")]
+        public static bool IsWithinRadiusKm(this double latitude1,
+            [Description("Longitude of the first point.")] double longitude1,
+            [Description("Latitude of the second point.")] double latitude2,
+            [Description("Longitude of the second point.")] double longitude2,
+            [Description("The radius to test against.")] double radiusKm)
         {
             return latitude1.HaversineDistanceKilometers(longitude1, latitude2, longitude2) <= radiusKm;
         }

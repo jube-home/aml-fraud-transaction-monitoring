@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,30 +21,39 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Query.CaseBySessionCaseSearchCompile
 {
+    [MessagePackObject]
     public class CaseBySessionCaseSearchCompileFieldEntryDto
     {
         [Description("Configured name of the case workflow XPath.")]
+        [Key(0)]
         public string? Name { get; set; }
 
         [Description("Value selected from the payload by the XPath.")]
+        [Key(1)]
         public string? Value { get; set; }
 
         [Description("Conditional formatting foreground colour.")]
+        [Key(2)]
         public string? CellFormatForeColor { get; set; }
 
         [Description("Whether the foreground colour applies to the whole row.")]
+        [Key(3)]
         public bool CellFormatForeRow { get; set; }
 
         [Description("Conditional formatting background colour.")]
+        [Key(4)]
         public string? CellFormatBackColor { get; set; }
 
         [Description("Whether the background colour applies to the whole row.")]
+        [Key(5)]
         public bool CellFormatBackRow { get; set; }
 
         [Description("Whether the value matched the configured regular expression.")]
+        [Key(6)]
         public bool ExistsMatch { get; set; }
 
         [Description("Whether conditional regular expression formatting is enabled.")]
+        [Key(7)]
         public bool ConditionalRegularExpressionFormatting { get; set; }
     }
 }

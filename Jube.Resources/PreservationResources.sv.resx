@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+        <value>Du har inte behörighet att utföra den här åtgärden.</value>
+    </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+        <value>Du måste vara inloggad i en tenant för att utföra den här åtgärden.</value>
+    </data>
+    <data name="NoFileSupplied" xml:space="preserve">
+        <value>Ingen bevarandefil angavs.</value>
+    </data>
+    <data name="InvalidPreservationFile" xml:space="preserve">
+        <value>Bevarandefilen kunde inte dekrypteras. Kontrollera lösenordet och att filen är en Jube-export. En fil som exporterats av en tidigare version av Jube kan inte importeras.</value>
+    </data>
+    <data name="PasswordTooShort" xml:space="preserve">
+        <value>Lösenordet måste vara minst 12 tecken.</value>
+    </data>
+    <data name="WarningNoApprovalHistory" xml:space="preserve">
+        <value>Paketet innehåller ingen godkännandehistorik, så varje importerad entitet stämplas som godkänd i sin nuvarande version i ditt namn.</value>
+    </data>
+    <data name="WarningNoRoles" xml:space="preserve">
+        <value>Paketet innehåller inga roller, så alla {0} av tenantens roller tas bort.</value>
+    </data>
+    <data name="WarningProductionData" xml:space="preserve">
+        <value>Paketet innehåller data som kan vara stora eller känsliga: {0} listvärden, {1} ordlistepar och {2} Exhaustive-rader.</value>
+    </data>
+    <data name="WarningOlderFormat" xml:space="preserve">
+        <value>Paketet har formatversion {0}, som är äldre än den nuvarande versionen {1}.</value>
+    </data>
+    <data name="BlockerRoleRekey" xml:space="preserve">
+        <value>Roller i paketet finns redan i en annan tenant och den här tenanten har användare, så importen skulle avvisas.</value>
+    </data>
+    <data name="BlockerPrivilege" xml:space="preserve">
+        <value>Paketet eller tenantens nuvarande roller innehåller behörigheter som du inte har, så importen skulle avvisas. Endast en användare som har alla dessa behörigheter, eller en landlord, kan importera.</value>
+    </data>
+    <data name="DiffNeedsSnapshot" xml:space="preserve">
+        <value>Minst en sida i en jämförelse måste vara en ögonblicksbild.</value>
+    </data>
+    <data name="DiffSameSnapshot" xml:space="preserve">
+        <value>En ögonblicksbild kan inte jämföras med sig själv.</value>
+    </data>
+    <data name="PackageTooLarge" xml:space="preserve">
+    <value>Paketet är större än vad den här servern accepterar.</value>
+  </data>
+</root>

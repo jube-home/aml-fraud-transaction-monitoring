@@ -39,4 +39,34 @@
     <data name="NameAlreadyExists" xml:space="preserve">
     <value>Ce nom existe déjà.</value>
   </data>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>Un nom est requis.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Le nom doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="EmailRequired" xml:space="preserve">
+    <value>Une adresse e-mail est requise.</value>
+  </data>
+    <data name="EmailInvalid" xml:space="preserve">
+    <value>Une adresse e-mail valide est requise.</value>
+  </data>
+    <data name="EmailMaxLength" xml:space="preserve">
+    <value>L'adresse e-mail doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="RoleRegistryGuidRequired" xml:space="preserve">
+    <value>Un rôle est requis.</value>
+  </data>
+    <data name="RoleRegistryGuidNotFound" xml:space="preserve">
+    <value>Le rôle est introuvable dans votre locataire.</value>
+  </data>
+    <data name="InsufficientPrivilege" xml:space="preserve">
+    <value>Vous ne disposez pas des privilèges suffisants pour effectuer cette action.</value>
+  </data>
 </root>

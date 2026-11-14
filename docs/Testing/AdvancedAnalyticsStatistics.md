@@ -136,7 +136,6 @@ diagnostics and the numerical building blocks behind the semantic statistics too
 | `AnalyseCategoricalAssociationFromLabels_CrossTabulatesThenAnalyses`                                  | Fact   | Analyse categorical association from labels cross tabulates then analyses.                                         |
 | `AnalyseCategoricalAssociationFromLabels_ConstantVariableIsRejected`                                  | Fact   | Analyse categorical association from labels constant variable is rejected.                                         |
 | `RankCategoricalColumnsByAssociationWithOutcome_RanksInformativeColumnAboveNoise`                     | Fact   | Rank categorical columns by association with outcome ranks informative column above noise.                         |
-| `RankCategoricalColumnsByAssociationWithOutcome_RejectsRaggedRowsDuplicateNamesAndSingleClassOutcome` | Fact   | Rank categorical columns by association with outcome rejects ragged rows duplicate names and single class outcome. |
 | `CalculateGoodmanKruskalLambda_MatchesHandComputation`                                                | Fact   | Calculate goodman kruskal lambda matches hand computation.                                                         |
 | `CalculateGoodmanKruskalLambda_IndependenceIsZeroAndDegenerateIsNaN`                                  | Fact   | Calculate goodman kruskal lambda independence is zero and degenerate is na n.                                      |
 | `CalculateOrdinalAssociationMeasures_MatchesAgrestiJobSatisfactionGamma`                              | Fact   | Calculate ordinal association measures matches agresti job satisfaction gamma.                                     |
@@ -185,6 +184,7 @@ diagnostics and the numerical building blocks behind the semantic statistics too
 | `ComparePoissonRates_ZeroEventGroupsAreHandled`                                                       | Fact   | Compare poisson rates zero event groups are handled.                                                               |
 | `TestPoissonDispersion_MatchesChiSquareClosedFormForTwoDegreesOfFreedom`                              | Fact   | Test poisson dispersion matches chi square closed form for two degrees of freedom.                                 |
 | `TestPoissonDispersion_BurstyCountsAreOverdispersedAndZerosAreUntestable`                             | Fact   | Test poisson dispersion bursty counts are overdispersed and zeros are untestable.                                  |
+| `RankCategoricalColumnsByAssociationWithOutcome_RejectsRaggedRowsDuplicateNamesAndSingleClassOutcome` | Fact   | Rank categorical columns by association with outcome rejects ragged rows duplicate names and single class outcome. |
 
 ### DataPreparationAndResamplingToolsTests
 

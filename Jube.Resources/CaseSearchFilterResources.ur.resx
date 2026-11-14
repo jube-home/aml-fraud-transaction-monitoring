@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>آپ کو یہ کارروائی انجام دینے کی اجازت نہیں ہے۔</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>یہ کارروائی انجام دینے کے لیے آپ کا کسی ٹیننٹ میں سائن اِن ہونا ضروری ہے۔</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>محفوظ شدہ تلاش نہیں ملی۔</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>'⁨Name⁩' خالی نہیں ہونا چاہیے۔</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>'⁨Name⁩' زیادہ سے زیادہ ⁨{0}⁩ حروف کا ہو سکتا ہے۔</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>اس کیس ورک فلو کے لیے اس نام سے آپ کی محفوظ شدہ تلاش پہلے سے موجود ہے۔</value>
+  </data>
+    <data name="CaseWorkflowGuidRequired" xml:space="preserve">
+    <value>'⁨Case Workflow Guid⁩' خالی نہیں ہونا چاہیے۔</value>
+  </data>
+    <data name="CaseWorkflowNotFound" xml:space="preserve">
+    <value>کیس ورک فلو نہیں ملا یا آپ کو اس تک رسائی حاصل نہیں ہے۔</value>
+  </data>
+    <data name="CaseWorkflowCannotChange" xml:space="preserve">
+    <value>محفوظ شدہ تلاش کو کسی دوسرے کیس ورک فلو میں منتقل نہیں کیا جا سکتا۔</value>
+  </data>
+    <data name="SelectJsonRequired" xml:space="preserve">
+    <value>'⁨Select Json⁩' خالی نہیں ہونا چاہیے۔</value>
+  </data>
+    <data name="FilterJsonRequired" xml:space="preserve">
+    <value>'⁨Filter Json⁩' خالی نہیں ہونا چاہیے۔</value>
+  </data>
+    <data name="JsonInvalid" xml:space="preserve">
+    <value>'⁨{0}⁩' درست ⁨JSON⁩ ہونا چاہیے۔</value>
+  </data>
+    <data name="JsonTooLarge" xml:space="preserve">
+    <value>'⁨{0}⁩' بہت بڑا ہے۔</value>
+  </data>
+    <data name="SharedRoleNotFound" xml:space="preserve">
+    <value>وہ رول نہیں ملا جس کے ساتھ تلاش شیئر کرنی ہے۔</value>
+  </data>
+</root>

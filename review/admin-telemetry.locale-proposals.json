@@ -1,0 +1,35 @@
+{
+  "_note": "Machine-translated proof-of-concept proposals for admin-telemetry. en, pl and ar keys are new too (the page references them, locale JSON untouched).",
+  "en": {
+    "adminTelemetry.loading": "Loading telemetry settings",
+    "adminTelemetry.denied": "Only the landlord can manage telemetry settings."
+  },
+  "pl": {
+    "adminTelemetry.loading": "Wczytywanie ustawień telemetrii",
+    "adminTelemetry.denied": "Tylko właściciel instalacji może zarządzać ustawieniami telemetrii."
+  },
+  "ar": {
+    "adminTelemetry.loading": "جارٍ تحميل إعدادات القياس عن بُعد",
+    "adminTelemetry.denied": "يمكن لمالك التثبيت فقط إدارة إعدادات القياس عن بُعد."
+  },
+  "ka": {
+    "adminTelemetry.loading": "ტელემეტრიის პარამეტრები იტვირთება",
+    "adminTelemetry.denied": "ტელემეტრიის პარამეტრების მართვა მხოლოდ ინსტალაციის მფლობელს შეუძლია."
+  },
+  "id": {
+    "adminTelemetry.loading": "Memuat pengaturan telemetri",
+    "adminTelemetry.denied": "Hanya landlord yang dapat mengelola pengaturan telemetri."
+  },
+  "sv": {
+    "adminTelemetry.loading": "Läser in telemetriinställningar",
+    "adminTelemetry.denied": "Endast landlord kan hantera telemetriinställningar."
+  },
+  "ur": {
+    "adminTelemetry.loading": "ٹیلی میٹری کی ترتیبات لوڈ ہو رہی ہیں",
+    "adminTelemetry.denied": "ٹیلی میٹری کی ترتیبات صرف لینڈلارڈ ہی منظم کر سکتا ہے۔"
+  },
+  "hi": {
+    "adminTelemetry.loading": "टेलीमेट्री सेटिंग लोड हो रही हैं",
+    "adminTelemetry.denied": "टेलीमेट्री सेटिंग केवल लैंडलॉर्ड ही प्रबंधित कर सकता है।"
+  }
+}

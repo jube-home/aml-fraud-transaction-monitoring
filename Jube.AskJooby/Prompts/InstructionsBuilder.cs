@@ -27,7 +27,7 @@ namespace Jube.AskJooby.Prompts
                 : string.Empty;
 
             return
-                $"{JoobyPersona.Instructions}\n\n{ScopeGuard.Instructions}\n\n{WriteSafety.Instructions}\n\n{ComputationOrder.Instructions}\n\n{DataPointerPreference.Instructions}\n\n" +
+                $"{JoobyPersona.Instructions}\n\n{ScopeGuard.Instructions}\n\n{WriteSafety.Instructions}\n\n{ComputationOrder.Instructions}\n\n{ValidateFirst.Instructions}\n\n{DataPointerPreference.Instructions}\n\n" +
                 $"{BuildErrata(errata)}" +
                 $"{BuildPageContextNote(pageContext)}" +
                 $"{agentSpecificInstructions}{specialistList}\n\n" +

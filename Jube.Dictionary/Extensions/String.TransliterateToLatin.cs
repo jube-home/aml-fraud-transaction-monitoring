@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The text transliterated to Latin letters.")]
         public static string TransliterateToLatin(this string? @this)
         {
             return TransliterationSupport.Transliterate(@this ?? string.Empty);

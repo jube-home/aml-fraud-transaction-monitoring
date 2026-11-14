@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
-            public Flow<DateTime> MatchWithinBusinessHours(int startHour, int endHour)
+            [Description("True when: the hour is from the start hour up to, but not including, the end hour. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchWithinBusinessHours([Description("The first hour (0-23) considered within business hours.")] int startHour,
+                [Description("The first hour (0-23) no longer considered within business hours.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeWithinBusinessHours(flow.Value, startHour, endHour));
             }
 
-            public Flow<DateTime> RejectWithinBusinessHours(int startHour, int endHour)
+            [Description("True when: the hour is from the start hour up to, but not including, the end hour. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectWithinBusinessHours([Description("The first hour (0-23) considered within business hours.")] int startHour,
+                [Description("The first hour (0-23) no longer considered within business hours.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeWithinBusinessHours(flow.Value, startHour, endHour));
             }
 
-            public Flow<DateTime> BreakWithinBusinessHours(int startHour, int endHour)
+            [Description("True when: the hour is from the start hour up to, but not including, the end hour. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakWithinBusinessHours([Description("The first hour (0-23) considered within business hours.")] int startHour,
+                [Description("The first hour (0-23) no longer considered within business hours.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeWithinBusinessHours(flow.Value, startHour, endHour));
             }
 
-            public Flow<DateTime> RequireWithinBusinessHours(int startHour, int endHour)
+            [Description("True when: the hour is from the start hour up to, but not including, the end hour. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireWithinBusinessHours([Description("The first hour (0-23) considered within business hours.")] int startHour,
+                [Description("The first hour (0-23) no longer considered within business hours.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeWithinBusinessHours(flow.Value, startHour, endHour));
             }
 
-            public Flow<DateTime> EnsureWithinBusinessHours(int startHour, int endHour)
+            [Description("True when: the hour is from the start hour up to, but not including, the end hour. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureWithinBusinessHours([Description("The first hour (0-23) considered within business hours.")] int startHour,
+                [Description("The first hour (0-23) no longer considered within business hours.")] int endHour)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
-            public Flow<DateTime> MatchWithinBusinessHours(int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: the hour is from the start hour up to, but not including, the end hour. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchWithinBusinessHours([Description("The first hour (0-23) considered within business hours.")] int startHour,
+                [Description("The first hour (0-23) no longer considered within business hours.")] int endHour)
             {
                 return value.Start().MatchWithinBusinessHours(startHour, endHour);
             }
 
-            public Flow<DateTime> RejectWithinBusinessHours(int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: the hour is from the start hour up to, but not including, the end hour. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectWithinBusinessHours([Description("The first hour (0-23) considered within business hours.")] int startHour,
+                [Description("The first hour (0-23) no longer considered within business hours.")] int endHour)
             {
                 return value.Start().RejectWithinBusinessHours(startHour, endHour);
             }
 
-            public Flow<DateTime> BreakWithinBusinessHours(int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: the hour is from the start hour up to, but not including, the end hour. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakWithinBusinessHours([Description("The first hour (0-23) considered within business hours.")] int startHour,
+                [Description("The first hour (0-23) no longer considered within business hours.")] int endHour)
             {
                 return value.Start().BreakWithinBusinessHours(startHour, endHour);
             }
 
-            public Flow<DateTime> RequireWithinBusinessHours(int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: the hour is from the start hour up to, but not including, the end hour. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireWithinBusinessHours([Description("The first hour (0-23) considered within business hours.")] int startHour,
+                [Description("The first hour (0-23) no longer considered within business hours.")] int endHour)
             {
                 return value.Start().RequireWithinBusinessHours(startHour, endHour);
             }
 
-            public Flow<DateTime> EnsureWithinBusinessHours(int startHour, int endHour)
+            [Description("Begins a pipeline from the value. True when: the hour is from the start hour up to, but not including, the end hour. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureWithinBusinessHours([Description("The first hour (0-23) considered within business hours.")] int startHour,
+                [Description("The first hour (0-23) no longer considered within business hours.")] int endHour)
             {
                 return value.Start().EnsureWithinBusinessHours(startHour, endHour);
             }

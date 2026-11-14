@@ -21,7 +21,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
     public static class ConfirmSyncExtensions
     {
-        public static async Task<Context> ConfirmSyncAsync(this Context context, int tenantRegistryId)
+        public static async Task<Context> ConfirmSyncAsync(this Context context, int tenantRegistryId,
+            DateTime? observedDate = null)
         {
             try
             {
@@ -34,7 +35,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     TenantRegistryId = tenantRegistryId
                 };
 
-                await repository.UpsertSynchronisationAsync(upsert, context.Services.CancellationToken)
+                await repository.UpsertSynchronisationAsync(upsert, observedDate,
+                        context.Services.CancellationToken)
                     .ConfigureAwait(false);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)

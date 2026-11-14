@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The text as a number, NaN if it is not one, so it fits a rule that returns a number.")]
         public static double ToDoubleOrNaN(this string? @this)
         {
             return double.TryParse(@this, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed) ? CalculationSupport.Finite(parsed) : double.NaN;

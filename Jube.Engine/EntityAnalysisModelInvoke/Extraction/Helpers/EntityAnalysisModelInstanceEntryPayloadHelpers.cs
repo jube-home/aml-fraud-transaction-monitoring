@@ -16,7 +16,10 @@ using Jube.Dictionary;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel;
+using Jube.GraphRecallProtocol;
 using Jube.HttpAdaptationProtocol;
+
+using Svirfd;
 
 namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction.Helpers
 {
@@ -58,6 +61,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction.Helpers
                     new PooledDictionary<string, double>(snapshot.AdvancedAnalyticsModels.Count),
                 AdvancedAnalyticsAdaptationDetail =
                     new PooledDictionary<string, Adaptation>(snapshot.AdvancedAnalyticsModels.Count),
+                Graph = new PooledDictionary<string, GraphEntity>(snapshot.GraphRecall.Entities.Count),
+                Svirfd = new PooledDictionary<string, IpResponse>(snapshot.Svirfd.Entities.Count),
+                SvirfdArchiveNames = [],
                 InvokeTaskPerformance = new InvokeTaskPerformance(),
                 CreatedDate = DateTime.UtcNow,
                 ArchiveKeys = []

@@ -21,6 +21,7 @@ namespace Jube.Data.Query.GetEntityAnalysisModelStagePerformanceCounterListQuery
     using Context;
     using Helpers;
     using LinqToDB;
+    using LinqToDB.Async;
     using Models;
     using Poco;
 

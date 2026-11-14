@@ -18,7 +18,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsInitialsInList(this string? @this, IEnumerable<string>? list)
+        [Description("True when: matches an entry where a first name may be an initial (J Smith for John Smith).")]
+        public static bool IsInitialsInList(this string? @this,
+            [Description("The List token whose entries are compared.")] IEnumerable<string>? list)
         {
             return FuzzyListMatcher.Any(@this, list, FuzzyOptions.For(FuzzyAlgorithm.Initials, 1));
         }

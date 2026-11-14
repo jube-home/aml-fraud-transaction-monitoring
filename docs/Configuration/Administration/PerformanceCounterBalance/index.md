@@ -111,8 +111,8 @@ paramount. These areas include:
 | CaseCreationStagePerformanceCounter            | The equivalent stage rollup for case creation's own stages (ExistingCasePriorityLookup, WorkflowStatusLookupAndPersist, Notification, HttpEndpoint) -- a single global queue shared by every Model, not scoped to one. See [Background Processing Performance](../../../Concepts/API/BackgroundProcessingPerformance/index.html#casecreationstageperformancecounter).                                                                                                                                                                                            |
 | CaseCreationWarning                            | One row per case creation stage invocation that took longer than its warn threshold, carrying the case workflow/key and, for a slow Notification or HttpEndpoint stage, the actual destination or URL involved. See [Background Processing Performance](../../../Concepts/API/BackgroundProcessingPerformance/index.html#casecreationwarning).                                                                                                                                                                                                                   |
 | ModelInvokeWarning                             | The database-backed counterpart of the invoke pipeline's trace-log warn threshold -- one row per trace point whose gap since the previous one breached that Model's Logs: Warn Threshold Milliseconds. See [Background Processing Performance](../../../Concepts/API/BackgroundProcessingPerformance/index.html#modelinvokewarning).                                                                                                                                                                                                                             |
-| CaptureQueueHealth                             | Per-minute QueueDepth/DroppedCount health check across the six bounded in-memory capture queues platform-wide (ModelInvokeWarning, CaseCreationWarning, ArchiverWarning, RedisSentinelEvent, RedisConnectionEvent, OpenTelemetryMetric) -- a QueueDepth that never falls, or any non-zero DroppedCount, means real data is being delayed or silently discarded. See [Background Processing Performance](../../../Concepts/API/BackgroundProcessingPerformance/index.html#capturequeuehealth).                                                                    |
-| RedisCallCounter                               | Per-minute rollup of every `Jube.Cache` repository method's Redis calls (e.g. CachePayloadRepository.InsertAsync), by Call label -- answers exactly where Redis load is coming from by area of the system. See [Infrastructure Health Metrics](../../../Concepts/API/InfrastructureHealthMetrics/index.html#redis).                                                                                                                                                                                                                                              |
+| CaptureQueueHealth                             | Per-minute QueueDepth/DroppedCount health check across the six bounded in-memory capture queues platform-wide (ModelInvokeWarning, CaseCreationWarning, ArchiverWarning, RespSentinelEvent, RespConnectionEvent, OpenTelemetryMetric) -- a QueueDepth that never falls, or any non-zero DroppedCount, means real data is being delayed or silently discarded. See [Background Processing Performance](../../../Concepts/API/BackgroundProcessingPerformance/index.html#capturequeuehealth).                                                                      |
+| RespCallCounter                                | Per-minute rollup of every `Jube.Cache` repository method's Redis calls (e.g. CachePayloadRepository.InsertAsync), by Call label -- answers exactly where Redis load is coming from by area of the system. See [Infrastructure Health Metrics](../../../Concepts/API/InfrastructureHealthMetrics/index.html#redis).                                                                                                                                                                                                                                              |
 | OtlpDispatchCounter                            | Per-minute rollup of this instance's own OTLP export attempts to its configured OpenTelemetry backend, by Signal (Traces/Metrics/Logs) -- Count/SuccessCount/FailureCount/DroppedCount, so a dead or overwhelmed backend is observable rather than silent. See [OTLP Dispatch Counter](../../../Concepts/API/OtlpDispatchCounter/index.html).                                                                                                                                                                                                                    |
 | PostgresStatementStatistics                    | Not a per-minute rollup like the rows above -- a live, on-demand view over Postgres' own `pg_stat_statements` extension: per-*query-shape* aggregate calls/time/rows/cache-hit/temp-spill/WAL statistics accumulated since the extension was created or last reset. Requires `shared_preload_libraries = 'pg_stat_statements'` server-side (see `Jube.Cluster/PgStatStatementsRollout.md`). See [Infrastructure Health Metrics](../../../Concepts/API/InfrastructureHealthMetrics/index.html#per-query-aggregate-statistics-get-apipostgresstatementstatistics). |
 | HttpProcessingCounter                          | Tracks overall HTTP counters for API requests.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
@@ -177,7 +177,7 @@ is actually for:
   creation), plus a database-backed record of every warn-threshold breach across all three pipelines and a health check
   on the bounded in-memory queues that capture them. Full detail:
   [Background Processing Performance](../../../Concepts/API/BackgroundProcessingPerformance/index.html).
-- **Redis and OTLP export** (`RedisCallCounter`, `OtlpDispatchCounter`) -- the same per-minute rollup shape applied to
+- **Redis and OTLP export** (`RespCallCounter`, `OtlpDispatchCounter`) -- the same per-minute rollup shape applied to
   outbound Redis calls and to this instance's own OTLP export attempts, so a Redis slowdown or a dead OpenTelemetry
   backend is observable from a table rather than only from logs. Full detail:
   [Infrastructure Health Metrics](../../../Concepts/API/InfrastructureHealthMetrics/index.html#redis) and
@@ -189,5 +189,54 @@ is actually for:
 - **OpenTelemetry Log Counter** -- not an observability table itself, but the configuration behind a related feature:
   the `OpenTelemetryLogCounter` administration page defines Name/Regex rules that are checked against every unstructured
   log line reaching this instance (`ApplicationLogEntry`, `PostgresLogEntry`, `ContainerLogEntry`,
-  `RedisSlowOperation`, `EtcdClusterEvent`, `PatroniClusterEvent`), incrementing a named OpenTelemetry counter on a
+  `RespSlowOperation`, `EtcdClusterEvent`, `PatroniClusterEvent`), incrementing a named OpenTelemetry counter on a
   match. Full detail: [OpenTelemetry Log Counter](../../../Concepts/API/OpenTelemetryLogCounter/index.html).
+
+# The Performance page
+
+<!-- TODO(docs): this whole section is drafted from the Vue code (AdminPerformancePage.vue, performance/families.ts, GridModelAccess.cs); the owner must read it against the running UI -->
+
+Administration >> Performance is available to the landlord only. The menu entry is hidden from every other user, a
+tenant administrator who opens the address directly sees a message saying the counters are only available to the
+landlord, and every data endpoint behind the page answers 403 to anyone who is not a landlord, whatever permissions that
+user holds. The rows cover every tenant, because these counters describe the whole instance rather than one tenant.
+
+<!-- TODO(screenshot): file=admin-performance-families.png route=/administration/performance state="landlord signed in, six family cards with counter counts" -->
+![admin-performance-families.png](admin-performance-families.png)
+
+The page is a three step story. The first step shows six families, the second the counters in the chosen family, and the
+third the counter itself as a grid. The address follows each step (`?path=family:Engine,area:HttpProcessingCounter`),
+so a counter can be bookmarked or shared, and the browser Back button and the receipts above the grid return one step at
+a time. An address naming a family or counter that does not exist falls back to the first step.
+
+| Family         | Counters                                                                                                                                                                                                                                                                                     |
+|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Engine         | HTTP processing counters, asynchronous queue balances, capture queue health, model asynchronous queue balances, model asynchronous processing counter, model stage, response time pipeline and task counters, archiver and case creation stage counters, archiver and case creation warnings |
+| Logs           | Application log, WAF attack log, Postgres log, container log, model invoke warnings                                                                                                                                                                                                          |
+| Postgres       | Metrics, activity, statement statistics, table statistics, index statistics, replication status                                                                                                                                                                                              |
+| RESP           | Metrics, slow operations, connection multiplexer metrics, sentinel status and events, connection events, call counter                                                                                                                                                                        |
+| Telemetry      | OpenTelemetry metrics, OTLP dispatch counter, .NET runtime metrics                                                                                                                                                                                                                           |
+| Infrastructure | Etcd and Patroni member status and cluster events, Docker container and host metrics and events, HAProxy server status and reachability probes, overlay network task drift                                                                                                                   |
+
+<!-- TODO(screenshot): file=admin-performance-areas.png route=/administration/performance?path=family:Engine state="Engine family open, twelve counter cards" -->
+![admin-performance-areas.png](admin-performance-areas.png)
+
+<!-- TODO(screenshot): file=admin-performance-grid.png route=/administration/performance?path=family:Engine,area:HttpProcessingCounter state="HTTP processing counters grid with the last hour, statistics panel collapsed" -->
+![admin-performance-grid.png](admin-performance-grid.png)
+
+Each counter grid is generated from the server description of its table, so the columns, the time window (last hour by
+default), the exact-match filters and the search box differ by counter. Apply re-queries with the chosen filters,
+Clear restores the defaults, the refresh button re-queries on demand (nothing refreshes automatically), and CSV and
+Excel
+export the rows currently loaded. Free text in exports is neutralised so a cell beginning with `=`, `+`, `-` or `@` is
+not run as a formula. Rows are capped at 100000 per request; when the true total is larger the grid says how many rows
+are shown and asks for a narrower window or filter.
+
+Free text from logs, Postgres statements and similar sources has secrets such as passwords, bearer tokens, private keys
+and connection string credentials replaced with a mask before it leaves the server, and the search box matches the
+masked text, not the original.
+
+<!-- TODO(docs): confirm the statement that PostgresActivity, PostgresStatementStatistics and the log counters redact on the server for every column shown; the WAF attack log MatchedValue column is shown unmasked and is the attack fragment itself, truncated to 512 characters -->
+<!-- TODO(docs): the older text above says Administration >> Performance >> Queue Asynchronous Balances; the counter is now titled Asynchronous queue balances, and the page is a family then counter drill-down, so every navigation path in this page needs checking -->
+<!-- TODO(docs): the Login and Logout audit grids (UserLogin, UserLogout) use the same grid mechanism but are not on this page; they need permission 35 and are documented under Login Audit -->
+<!-- TODO(docs): the Arabic and Urdu layouts mirror the page; numbers are shown in Western digits and timestamps, GUIDs and IP addresses stay left to right inside right to left text; confirm with screenshots -->

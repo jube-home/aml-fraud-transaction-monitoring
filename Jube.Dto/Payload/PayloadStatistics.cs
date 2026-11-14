@@ -13,7 +13,10 @@
 
 // ReSharper disable NotAccessedPositionalProperty.Global
 
+using MessagePack;
+
 namespace Jube.Dto.Payload
 {
-    public sealed record PayloadStatistics(Dictionary<string, ColumnStatistics> Columns);
+    [MessagePackObject]
+    public sealed record PayloadStatistics([property: Key(0)] Dictionary<string, ColumnStatistics> Columns);
 }

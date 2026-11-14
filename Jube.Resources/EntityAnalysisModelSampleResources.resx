@@ -60,4 +60,7 @@
     <data name="SampleRange" xml:space="preserve">
     <value>Sample rate must be between 0 and 1.</value>
   </data>
+    <data name="SampleTooLarge" xml:space="preserve">
+    <value>The sample is larger than {0} MiB. Narrow the date range or lower the sample rate.</value>
+  </data>
 </root>

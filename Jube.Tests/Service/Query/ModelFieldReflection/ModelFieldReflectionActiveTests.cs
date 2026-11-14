@@ -20,6 +20,7 @@ using Jube.Data.Context;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Infrastructure.ModelScaffolding;
 using LinqToDB;
+using LinqToDB.Async;
 using LinqToDB.Data;
 using Xunit;
 using Xunit.Abstractions;

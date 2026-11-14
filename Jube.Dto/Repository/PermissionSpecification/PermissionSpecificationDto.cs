@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,9 +22,10 @@ using Jube.Dto.Forms;
 
 namespace Jube.Dto.Repository.PermissionSpecification
 {
-    [FormEndpoint("PermissionSpecification")]
+    [FormEndpoint("PermissionSpecification", Operations = FormOperations.List)]
     [FormKeys(Id = nameof(Id), NaturalKey = nameof(Name))]
     [FormGroup("Identity", Order = 10)]
+    [MessagePackObject]
     public class PermissionSpecificationDto
     {
         [Description("Server-assigned integer identifier of this permission specification -- the same integer " +
@@ -31,6 +33,7 @@ namespace Jube.Dto.Repository.PermissionSpecification
                      "catalogue is seeded by database migration, not created or edited through this API.")]
         [FormField(Group = "Identity", Order = 10, ReadOnly = true)]
         [ListColumn(Order = 10, Title = "Id")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("Display name of the permission specification, shown in the Permission dropdown when " +
@@ -38,6 +41,7 @@ namespace Jube.Dto.Repository.PermissionSpecification
                      "not created or edited through this API.")]
         [FormField(Group = "Identity", Order = 20, ReadOnly = true)]
         [ListColumn(Order = 20, Title = "Name")]
+        [Key(1)]
         public string? Name { get; set; }
     }
 }

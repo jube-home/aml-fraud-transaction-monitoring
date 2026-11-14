@@ -21,6 +21,7 @@ namespace Jube.Data.Query.GetExhaustiveSearchInstancePromotedTrialInstanceErrorH
     using Accord.Statistics.Visualizations;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
 
     public class GetExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramQuery
     {

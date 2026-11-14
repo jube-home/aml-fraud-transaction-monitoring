@@ -100,7 +100,7 @@ public sealed class AuthenticationMfaTests(DatabaseFixture fx) : AuthenticationT
         (await ReloadAsync(user)).FailedPasswordCount.Should().Be(1);
         var history = (await HistoryAsync()).Should().ContainSingle().Subject;
         history.Failed.Should().Be(1);
-        history.FailureTypeId.Should().Be(7);
+        history.FailureTypeId.Should().Be(11);
         history.AuthenticationTypeId.Should().Be(1);
     }
 
@@ -204,7 +204,7 @@ public sealed class AuthenticationMfaTests(DatabaseFixture fx) : AuthenticationT
             AuthenticationOutcomeKind.Unauthorized);
 
         Mfa.Calls.Count.Should().Be(providerCalls);
-        (await HistoryAsync()).Count(h => h.FailureTypeId == 7).Should().Be(3);
+        (await HistoryAsync()).Count(h => h.FailureTypeId == 11).Should().Be(3);
     }
 
     [Fact]

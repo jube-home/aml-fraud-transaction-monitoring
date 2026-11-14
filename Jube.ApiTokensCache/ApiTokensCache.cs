@@ -15,7 +15,7 @@ namespace Jube.ApiTokensCache
 {
     using System.Collections.Concurrent;
     using Cache;
-    using Cache.Redis.CacheUserRegistryApiKey.Events;
+    using Cache.Resp.CacheUserRegistryApiKey.Events;
     using Data.Context;
     using Data.Repository;
     using DynamicEnvironment;
@@ -24,7 +24,7 @@ namespace Jube.ApiTokensCache
 
     public class ApiTokensCache
     {
-        private readonly ConcurrentDictionary<string, byte> apiKeys = new ConcurrentDictionary<string, byte>();
+        private readonly ConcurrentDictionary<string, byte> apiKeys = new();
         private readonly DynamicEnvironment dynamicEnvironment;
         private readonly ILog log;
 

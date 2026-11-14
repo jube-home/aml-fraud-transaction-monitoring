@@ -34,6 +34,7 @@ namespace Jube.Service.Query.CaseById
         private static readonly int[] permissions = [1];
         private readonly ILog auditLog;
         private readonly CaseEventRepository caseEventRepository;
+        private readonly DbContext dbContext;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly GetCaseByIdQuery query;
@@ -46,6 +47,7 @@ namespace Jube.Service.Query.CaseById
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
             IStringLocalizer strings)
         {
+            this.dbContext = dbContext;
             this.log = log;
             this.auditLog = auditLog;
             this.serviceChangeBus = serviceChangeBus;
@@ -144,6 +146,9 @@ namespace Jube.Service.Query.CaseById
                     CaseKey = queryResults.CaseKey,
                     CaseKeyValue = queryResults.CaseKeyValue
                 }, token).ConfigureAwait(false);
+
+                await CaseSearch.CaseViewRecorder.RecordAsync(dbContext, userName, queryResults.Id, token)
+                    .ConfigureAwait(false);
 
                 var dto = CaseByIdMapper.ToDto(queryResults);
                 op.Rows(1);

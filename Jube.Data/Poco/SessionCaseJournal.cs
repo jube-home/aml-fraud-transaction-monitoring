@@ -38,8 +38,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(3)] public DateTime? CreatedDate { get; set; }
         [Column] [Nullable] [Key(4)] public Guid? CaseWorkflowGuid { get; set; }
 
-        [Association(ThisKey = "CaseWorkflowGuid", OtherKey = "Guid", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "CaseWorkflowGuid", OtherKey = "Guid", CanBeNull = true)]
         [Key(5)]
         public CaseWorkflow CaseWorkflow { get; set; }
     }

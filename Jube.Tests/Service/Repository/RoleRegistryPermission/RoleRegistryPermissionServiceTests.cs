@@ -28,6 +28,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -296,11 +297,54 @@ namespace Jube.Test.Service.Repository.RoleRegistryPermission
             createdGrantIds.Add(created.Id);
 
             created.CreatedUser = "tampered";
-            created.Version = 999;
             var updated = await service.UpdateAsync(created);
 
             updated.CreatedUser.Should().NotBe("tampered");
             updated.Version.Should().Be(2);
+        }
+
+        [Fact]
+        public async Task UpdateWithAStaleVersionThrowsVersionConflictAndChangesNothingAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            await EnsureActorCanManageRoleRegistryPermissionAsync(dbContext, fx.Seed.UserWithPermission);
+            var tenantRegistryId = await ResolveTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+            var targetRoleRegistryId = await CreateTargetRoleRegistryAsync(dbContext, tenantRegistryId);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var created = await service.InsertAsync(ValidDto(targetRoleRegistryId));
+            createdGrantIds.Add(created.Id);
+
+            created.Version = 999;
+            created.Active = false;
+
+            await Assert.ThrowsAsync<Jube.Data.Concurrency.VersionConflictException>(() =>
+                service.UpdateAsync(created));
+
+            (await dbContext.RoleRegistryPermission.FirstAsync(w => w.Id == created.Id)).Active.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task GrantsOfALockedRoleCannotBeAddedChangedOrRemovedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            await EnsureActorCanManageRoleRegistryPermissionAsync(dbContext, fx.Seed.UserWithPermission);
+            var tenantRegistryId = await ResolveTenantRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+            var targetRoleRegistryId = await CreateTargetRoleRegistryAsync(dbContext, tenantRegistryId);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var created = await service.InsertAsync(ValidDto(targetRoleRegistryId));
+            createdGrantIds.Add(created.Id);
+
+            await dbContext.RoleRegistry.Where(w => w.Id == targetRoleRegistryId)
+                .Set(w => w.Locked, (byte)1).UpdateAsync();
+
+            await Assert.ThrowsAsync<DtoValidationException>(() =>
+                service.InsertAsync(ValidDto(targetRoleRegistryId, 2)));
+
+            created.Active = false;
+            await Assert.ThrowsAsync<DtoValidationException>(() => service.UpdateAsync(created));
+            await Assert.ThrowsAsync<NotFoundException>(() => service.DeleteAsync(created.Id));
+
+            (await dbContext.RoleRegistryPermission.FirstAsync(w => w.Id == created.Id)).Active.Should().Be(1);
         }
 
         [Fact]

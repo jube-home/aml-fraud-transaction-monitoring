@@ -103,6 +103,15 @@ namespace Jube.App.Endpoints.Repository
 
                 return TypedResults.BadRequest(ex.Result);
             }
+            catch (CaseLockedException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}: 409 (case locked) user={user}");
+                }
+
+                return TypedResults.Conflict(new { code = ex.Code, message = ex.Message });
+            }
             catch (NotFoundException ex)
             {
                 if (log.IsWarnEnabled)

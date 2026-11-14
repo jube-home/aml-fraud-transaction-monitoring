@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Whether the text is a dotted-quad IPv4 address.")]
         public static bool IsIPv4Address(this string? @this)
         {
             return NetworkAddressSupport.TryParseAddress(@this, out var address) &&

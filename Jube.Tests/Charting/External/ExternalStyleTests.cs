@@ -31,14 +31,17 @@ namespace Jube.Test.Charting.External
     {
         private static readonly HashSet<string> allowedElements =
         [
-            "svg", "title", "desc", "rect", "text", "line", "path", "circle", "g"
+            "svg", "title", "desc", "rect", "text", "line", "path", "circle", "g", "defs", "marker"
         ];
 
         private static readonly HashSet<string> allowedAttributes =
         [
-            "xmlns", "class", "viewBox", "preserveAspectRatio", "width", "height", "data-theme", "role",
+            "xmlns", "class", "viewBox", "preserveAspectRatio", "width", "height", "data-theme", "data-node",
+            "data-from",
+            "data-to", "role",
             "aria-labelledby", "aria-label", "id", "x", "y", "x1", "y1", "x2", "y2", "d", "transform", "rx", "r", "cx",
-            "cy", "style", "tabindex", "stroke-width"
+            "cy", "style", "tabindex", "stroke-width", "data-edge", "data-first", "data-last", "data-kind", "data-bin",
+            "marker-end", "markerWidth", "markerHeight", "markerUnits", "refX", "refY", "orient"
         ];
 
         private readonly ITestOutputHelper output;
@@ -69,7 +72,7 @@ namespace Jube.Test.Charting.External
                 svg.Should().NotContain("javascript:");
                 svg.Should().NotContain("NaN");
                 svg.Should().NotContain("Infinity");
-                svg.Should().NotContain("url(");
+                SvgAssert.WithoutFragmentReferences(svg).Should().NotContain("url(");
                 svg.Replace("http://www.w3.org/2000/svg", string.Empty).Should().NotContain("http");
             }
 

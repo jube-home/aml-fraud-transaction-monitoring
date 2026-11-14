@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("A number from 0 to 4294967295 as an IPv4 address, otherwise empty.")]
         public static string NumberToIPv4Address(this long @this)
         {
             return @this is < 0 or > uint.MaxValue

@@ -12,6 +12,8 @@
  */
 
 using FluentValidation;
+using FluentValidation.Results;
+using Jube.Analytics.Aggregation;
 using Jube.Data.Repository;
 using Jube.Dto.EntityAnalysisModelAbstractionRule;
 using Jube.Parser;
@@ -30,8 +32,14 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionRule
         private static readonly string[] allowedSearchIntervals = ["s", "n", "h", "d"];
         private static readonly int[] allowedOffsetTypeIds = [1, 2, 3, 4];
 
+        private const int MaxSearchFunctionParameters = 16;
+        private const int MaxSearchFunctionParameterNameLength = 64;
+        private static readonly int[] allowedIterationOrderIds = [1, 2];
+
         private static readonly int[] allowedSearchFunctionTypeIds =
-            [1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16];
+            [1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 46, .. AggregationCatalogue.Entries.Select(e => e.Id)];
+
+        private static readonly int[] functionTypeIdsWithoutAKey = [1, 46];
 
         public EntityAnalysisModelAbstractionRuleDtoValidator(EntityAnalysisModelAbstractionRuleRepository repository,
             IStringLocalizer localiser,
@@ -128,7 +136,7 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionRule
                 .When(w => w.Search);
 
             RuleFor(p => p.SearchValue)
-                .GreaterThanOrEqualTo(0)
+                .Must((dto, value) => value >= 0 && value <= IntervalLimits.Max(dto.SearchInterval))
                 .WithMessage(_ => localiser[EntityAnalysisModelAbstractionRuleResources.SearchValueRange])
                 .WithErrorCode("SearchValueRange")
                 .When(w => w.Search);
@@ -149,7 +157,37 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionRule
                 .NotEmpty()
                 .WithMessage(_ => localiser[EntityAnalysisModelAbstractionRuleResources.SearchFunctionKeyRequired])
                 .WithErrorCode("SearchFunctionKeyNotEmpty")
-                .When(w => w.Search && w.SearchFunctionTypeId != 1);
+                .When(w => w.Search && !functionTypeIdsWithoutAKey.Contains(w.SearchFunctionTypeId));
+
+            RuleFor(p => p.IterationOrderId)
+                .Must(m => allowedIterationOrderIds.Contains(m))
+                .WithMessage(_ => localiser[EntityAnalysisModelAbstractionRuleResources.IterationOrderIdInvalid])
+                .WithErrorCode("IterationOrderIdInvalid")
+                .When(w => w.Search);
+
+            RuleFor(p => p.SearchFunctionParameters)
+                .Custom((value, context) =>
+                {
+                    var errors = value is { Count: > MaxSearchFunctionParameters } ||
+                                 value?.Keys.Any(name => name.Length > MaxSearchFunctionParameterNameLength) == true
+                        ? ["There are too many function parameters, or a parameter name is too long."]
+                        : AggregationParameters.Validate(context.InstanceToValidate.SearchFunctionTypeId, value);
+
+                    if (errors.Count == 0)
+                    {
+                        return;
+                    }
+
+                    context.AddFailure(new ValidationFailure(
+                        nameof(EntityAnalysisModelAbstractionRuleDto.SearchFunctionParameters),
+                        string.Format(
+                            localiser[EntityAnalysisModelAbstractionRuleResources.SearchFunctionParametersInvalid],
+                            string.Join(" ", errors)))
+                    {
+                        ErrorCode = "SearchFunctionParametersInvalid"
+                    });
+                })
+                .When(w => w.Search);
 
             RuleFor(p => p.OffsetTypeId)
                 .Must(m => allowedOffsetTypeIds.Contains(m))
@@ -158,7 +196,7 @@ namespace Jube.Validations.EntityAnalysisModelAbstractionRule
                 .When(w => w.Search && w.Offset);
 
             RuleFor(p => p.OffsetValue)
-                .GreaterThanOrEqualTo(0)
+                .InclusiveBetween(0, IntervalLimits.MaxFetchLimit)
                 .WithMessage(_ => localiser[EntityAnalysisModelAbstractionRuleResources.OffsetValueRange])
                 .WithErrorCode("OffsetValueRange")
                 .When(w => w.Search && w.Offset);

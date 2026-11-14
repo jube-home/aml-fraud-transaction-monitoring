@@ -16,9 +16,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Jube.Data.Concurrency;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace Jube.Data.Repository
 {
@@ -48,6 +50,7 @@ namespace Jube.Data.Repository
             return dbContext.RoleRegistry.AnyAsync(w =>
                 w.Id == roleRegistryId
                 && w.TenantRegistryId == tenantRegistryId
+                && (w.Locked == 0 || w.Locked == null)
                 && (w.Deleted == 0 || w.Deleted == null), token);
         }
 
@@ -101,12 +104,15 @@ namespace Jube.Data.Repository
                 .FirstOrDefaultAsync(u => u.RoleRegistry.TenantRegistryId == tenantRegistryId
                                           && u.Id == model.Id
                                           && (u.Deleted == 0 || u.Deleted == null)
-                                          && (u.Locked == 0 || u.Locked == null), token);
+                                          && (u.Locked == 0 || u.Locked == null)
+                                          && (u.RoleRegistry.Locked == 0 || u.RoleRegistry.Locked == null), token);
 
             if (existing == null)
             {
                 throw new KeyNotFoundException();
             }
+
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
 
             var version = (existing.Version ?? 0) + 1;
             var updatedDate = DateTime.UtcNow;
@@ -154,6 +160,7 @@ namespace Jube.Data.Repository
                 .Where(d =>
                     d.RoleRegistry.TenantRegistryId == tenantRegistryId
                     && d.Id == id
+                    && (d.RoleRegistry.Locked == 0 || d.RoleRegistry.Locked == null)
                     && (d.Locked == 0 || d.Locked == null)
                     && (d.Deleted == 0 || d.Deleted == null))
                 .Set(s => s.Deleted, Convert.ToByte(1))

@@ -12,12 +12,14 @@ namespace Jube.Dictionary.Extensions
     {
         extension(String value)
         {
+            [Description("JavaScript encodes a string.")]
             public String JavaScriptStringEncode()
             {
                 return HttpUtility.JavaScriptStringEncode(value);
             }
 
-            public String JavaScriptStringEncode(Boolean addDoubleQuotes)
+            [Description("JavaScript encodes with optional double quotes.")]
+            public String JavaScriptStringEncode([Description("A value that indicates whether double quotation marks will be included around the encoded string.")] Boolean addDoubleQuotes)
             {
                 return HttpUtility.JavaScriptStringEncode(value, addDoubleQuotes);
             }

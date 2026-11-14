@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double Lerp(this double @this, double end, double amount)
+        [Description("Linearly interpolates between this value and end.")]
+        public static double Lerp(this double @this,
+            [Description("The end value.")] double end,
+            [Description("The interpolation amount, typically 0 to 1.")] double amount)
         {
             return @this + (end - @this) * amount;
         }

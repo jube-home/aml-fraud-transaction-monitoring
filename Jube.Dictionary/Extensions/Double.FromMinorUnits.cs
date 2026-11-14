@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double FromMinorUnits(this double @this, int exponent)
+        [Description("Exact major units from minor units for a currency exponent.")]
+        public static double FromMinorUnits(this double @this,
+            [Description("The number of decimal places of the currency, for example 2 for cents.")] int exponent)
         {
             if (exponent is < 0 or > 6 || !double.IsFinite(@this) || Math.Abs(@this) >= 1e20)
             {

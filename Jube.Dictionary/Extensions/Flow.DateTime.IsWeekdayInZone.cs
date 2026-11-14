@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
-            public Flow<DateTime> MatchIsWeekdayInZone(string zoneId)
+            [Description("True when: a weekday in that time zone. An unknown zone is false. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchIsWeekdayInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeIsWeekdayInZone(flow.Value, zoneId));
             }
 
-            public Flow<DateTime> RejectIsWeekdayInZone(string zoneId)
+            [Description("True when: a weekday in that time zone. An unknown zone is false. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectIsWeekdayInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeIsWeekdayInZone(flow.Value, zoneId));
             }
 
-            public Flow<DateTime> BreakIsWeekdayInZone(string zoneId)
+            [Description("True when: a weekday in that time zone. An unknown zone is false. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakIsWeekdayInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeIsWeekdayInZone(flow.Value, zoneId));
             }
 
-            public Flow<DateTime> RequireIsWeekdayInZone(string zoneId)
+            [Description("True when: a weekday in that time zone. An unknown zone is false. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireIsWeekdayInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeIsWeekdayInZone(flow.Value, zoneId));
             }
 
-            public Flow<DateTime> EnsureIsWeekdayInZone(string zoneId)
+            [Description("True when: a weekday in that time zone. An unknown zone is false. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureIsWeekdayInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
-            public Flow<DateTime> MatchIsWeekdayInZone(string zoneId)
+            [Description("Begins a pipeline from the value. True when: a weekday in that time zone. An unknown zone is false. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchIsWeekdayInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId)
             {
                 return value.Start().MatchIsWeekdayInZone(zoneId);
             }
 
-            public Flow<DateTime> RejectIsWeekdayInZone(string zoneId)
+            [Description("Begins a pipeline from the value. True when: a weekday in that time zone. An unknown zone is false. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectIsWeekdayInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId)
             {
                 return value.Start().RejectIsWeekdayInZone(zoneId);
             }
 
-            public Flow<DateTime> BreakIsWeekdayInZone(string zoneId)
+            [Description("Begins a pipeline from the value. True when: a weekday in that time zone. An unknown zone is false. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakIsWeekdayInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId)
             {
                 return value.Start().BreakIsWeekdayInZone(zoneId);
             }
 
-            public Flow<DateTime> RequireIsWeekdayInZone(string zoneId)
+            [Description("Begins a pipeline from the value. True when: a weekday in that time zone. An unknown zone is false. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireIsWeekdayInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId)
             {
                 return value.Start().RequireIsWeekdayInZone(zoneId);
             }
 
-            public Flow<DateTime> EnsureIsWeekdayInZone(string zoneId)
+            [Description("Begins a pipeline from the value. True when: a weekday in that time zone. An unknown zone is false. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureIsWeekdayInZone([Description("The IANA or Windows time zone id, for example Europe/London.")] string zoneId)
             {
                 return value.Start().EnsureIsWeekdayInZone(zoneId);
             }

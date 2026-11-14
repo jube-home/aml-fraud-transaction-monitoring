@@ -162,9 +162,9 @@ namespace Jube.Service.WafAttack
                     sortField, sortDirection, token).ConfigureAwait(false);
 
                 var dtos = rows.Select(r => new WafAttackDto(
-                    r.Id, r.CreatedDate.GetValueOrDefault(), r.Transport, r.Route, r.Method, r.RemoteIp, r.UserName,
-                    r.SignatureName, r.Category, r.MatchedField, r.MatchedValue, r.Action, r.CorrelationId,
-                    r.Instance)).ToList();
+                    r.Id, r.CreatedDate.GetValueOrDefault(), r.Transport, LogTextRedactor.Redact(r.Route), r.Method,
+                    r.RemoteIp, r.UserName, r.SignatureName, r.Category, LogTextRedactor.Redact(r.MatchedField),
+                    LogTextRedactor.Redact(r.MatchedValue), r.Action, r.CorrelationId, r.Instance)).ToList();
 
                 var total = await repository.CountAsync(from, to, search, clampedSamplePercentage, token)
                     .ConfigureAwait(false);

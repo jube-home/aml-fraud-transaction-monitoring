@@ -16,6 +16,7 @@ namespace Jube.Resources
     public sealed class UserRegistryResources
     {
         public const string PermissionDenied = nameof(PermissionDenied);
+        public const string InsufficientPrivilege = nameof(InsufficientPrivilege);
         public const string NotAuthenticated = nameof(NotAuthenticated);
         public const string NameRequired = nameof(NameRequired);
         public const string NameMaxLength = nameof(NameMaxLength);

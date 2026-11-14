@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>आपको यह कार्रवाई करने की अनुमति नहीं है।</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>यह कार्रवाई करने के लिए आपको साइन इन होना चाहिए।</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>बातचीत नहीं मिली।</value>
+  </data>
+    <data name="TitleMaxLength" xml:space="preserve">
+    <value>शीर्षक अधिकतम {0} अक्षरों का होना चाहिए।</value>
+  </data>
+    <data name="FileNotFound" xml:space="preserve">
+    <value>फ़ाइल नहीं मिली।</value>
+  </data>
+    <data name="FileTooLarge" xml:space="preserve">
+    <value>फ़ाइलें अधिकतम {0} MB की होनी चाहिए।</value>
+  </data>
+    <data name="FileTypeNotAllowed" xml:space="preserve">
+    <value>इस प्रकार की फ़ाइल की अनुमति नहीं है।</value>
+  </data>
+    <data name="EmptyReply" xml:space="preserve">
+    <value>Jooby को उत्तर नहीं मिला। दोबारा पूछें या प्रश्न बदलकर पूछें।</value>
+  </data>
+    <data name="NoInferenceBackend" xml:space="preserve">
+    <value>मैं Jooby हूँ। {0} Bites, {1} Trails, {2} Saltlicks, {3} विशेषज्ञ Joobriks और {4} Yokes उपलब्ध हैं, लेकिन अभी कोई इन्फरेंस बैकएंड कॉन्फ़िगर नहीं है, इसलिए इनमें से कुछ भी नहीं चल रहा। AskJoobyApiEndpoint, AskJoobyModel और AskJoobyApiKey सेट करें और EnableAskJooby को True करें, तब मैं तैयार हूँ।</value>
+  </data>
+    <data name="StreamFailed" xml:space="preserve">
+    <value>उत्तर पूरा नहीं हो सका। कृपया पुनः प्रयास करें।</value>
+  </data>
+    <data name="ApprovalSummary" xml:space="preserve">
+    <value>Jooby {0} के ज़रिए बदलाव करना चाहता है और पहले आपकी मंज़ूरी चाहिए। अभी कुछ नहीं बदला गया है।</value>
+  </data>
+    <data name="ApprovalNotFound" xml:space="preserve">
+    <value>यह मंज़ूरी अनुरोध नहीं मिला या इस पर पहले ही निर्णय हो चुका है।</value>
+  </data>
+    <data name="RateLimited" xml:space="preserve">
+    <value>आप संदेश बहुत तेज़ी से भेज रहे हैं या बहुत से उत्तर चल रहे हैं। कृपया थोड़ा रुकें और फिर प्रयास करें।</value>
+  </data>
+</root>

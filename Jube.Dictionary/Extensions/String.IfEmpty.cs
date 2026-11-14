@@ -4,7 +4,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string IfEmpty(this string value, string defaultValue)
+        [Description("Returns a default value if the string is empty.")]
+        public static string IfEmpty(this string value,
+            [Description("The default value to return if empty.")] string defaultValue)
         {
             return value.IsNotEmpty() ? value : defaultValue;
         }

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>آپ کو کیسز پر کام کرنے کی اجازت نہیں ہے۔</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>تصدیق ضروری ہے۔</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>کیس نہیں مل سکا۔</value>
+  </data>
+    <data name="CaseIdInvalid" xml:space="preserve">
+    <value>ایک کیس درکار ہے۔</value>
+  </data>
+    <data name="DiaryTypeInvalid" xml:space="preserve">
+    <value>ڈائری کی قسم جائزہ، کسٹمر کا جواب، ریگولیٹری ڈیڈ لائن یا ادائیگی روکنے میں سے ایک ہونی چاہیے۔</value>
+  </data>
+    <data name="DueDateRequired" xml:space="preserve">
+    <value>ڈائری کی واجب الادا تاریخ درکار ہے۔</value>
+  </data>
+    <data name="DueDateOutOfRange" xml:space="preserve">
+    <value>ڈائری کی تاریخ پچھلے ایک سال یا اگلے دس سال کے اندر ہونی چاہیے۔</value>
+  </data>
+    <data name="CaseNotOpen" xml:space="preserve">
+    <value>صرف کھلا کیس قسم والی ڈائری رکھ سکتا ہے۔ معطل کیس اپنی ڈائری سے طے کرتا ہے کہ وہ دوبارہ کب کھلے گا۔</value>
+  </data>
+    <data name="LockedByAnotherUser" xml:space="preserve">
+    <value>کیس کسی دوسرے صارف کے نام مقفل ہے۔</value>
+  </data>
+    <data name="DiaryNotSet" xml:space="preserve">
+    <value>کیس میں صاف کرنے کے لیے کوئی ڈائری نہیں ہے۔</value>
+  </data>
+    <data name="CaseChanged" xml:space="preserve">
+    <value>درخواست کے دوران کیس تبدیل ہو گیا۔ اسے دیکھیں اور دوبارہ کوشش کریں۔</value>
+  </data>
+</root>

@@ -25,6 +25,12 @@ namespace Jube.Data.Security
 
     public class PermissionValidation
     {
+        private const string TenantEnabledJoin =
+            "inner join \"TenantRegistry\" trt on rr.\"TenantRegistryId\" = trt.\"Id\" ";
+
+        private const string TenantEnabledPredicate =
+            "and (trt.\"Landlord\" = 1 or (trt.\"Active\" = 1 and (trt.\"Deleted\" = 0 or trt.\"Deleted\" IS NULL))) ";
+
         public async Task<PermissionValidationDto> GetPermissionsAsync(
             string connectionString, string userName, ILog log)
         {
@@ -50,7 +56,9 @@ namespace Jube.Data.Security
         {
             var dto = new PermissionValidationDto
             {
-                Landlord = await IsLandlordAsync(connection, userName).ConfigureAwait(false)
+                Landlord = await IsLandlordAsync(connection, userName).ConfigureAwait(false),
+                ActiveUser = await IsActiveUserAsync(connection, userName).ConfigureAwait(false),
+                TenantRegistryId = await GetTenantRegistryIdAsync(connection, userName).ConfigureAwait(false)
             };
 
             await using var command = connection.CreateCommand();
@@ -68,7 +76,9 @@ namespace Jube.Data.Security
                     "from \"RoleRegistryPermission\" rrp " +
                     "inner join \"RoleRegistry\" rr on rrp.\"RoleRegistryId\" = rr.\"Id\" " +
                     "inner join \"UserRegistry\" ur on ur.\"RoleRegistryGuid\" = rr.\"Guid\" " +
+                    TenantEnabledJoin +
                     "where ur.\"Active\" = 1 " +
+                    TenantEnabledPredicate +
                     "and rr.\"Active\" = 1 " +
                     "and rrp.\"Active\" = 1 " +
                     "and (rr.\"Deleted\" = 0 or rr.\"Deleted\" IS NULL) " +
@@ -95,6 +105,65 @@ namespace Jube.Data.Security
             return dto;
         }
 
+        private async Task<int> GetTenantRegistryIdAsync(DbConnection connection, string userName)
+        {
+            const string sql =
+                "select \"TenantRegistryId\" " +
+                "from \"UserInTenant\" " +
+                "where \"User\" = @userName " +
+                "order by \"Id\" " +
+                "limit 1";
+
+            await using var command = connection.CreateCommand();
+            command.CommandText = sql;
+
+            var p = command.CreateParameter();
+            p.ParameterName = "userName";
+            p.Value = userName;
+            command.Parameters.Add(p);
+
+            await command.PrepareAsync().ConfigureAwait(false);
+
+            await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+
+            if (await reader.ReadAsync().ConfigureAwait(false) && !await reader.IsDBNullAsync(0).ConfigureAwait(false))
+            {
+                return reader.GetValue(0).AsInt();
+            }
+
+            return 0;
+        }
+
+        private async Task<bool> IsActiveUserAsync(DbConnection connection, string userName)
+        {
+            const string sql =
+                "select 1 " +
+                "from \"UserRegistry\" ur " +
+                "inner join \"RoleRegistry\" rr on ur.\"RoleRegistryGuid\" = rr.\"Guid\" " +
+                TenantEnabledJoin +
+                "where ur.\"Name\" = @userName " +
+                TenantEnabledPredicate +
+                "and ur.\"Active\" = 1 " +
+                "and rr.\"Active\" = 1 " +
+                "and (ur.\"PasswordLocked\" = 0 or ur.\"PasswordLocked\" IS NULL) " +
+                "and (ur.\"Deleted\" = 0 or ur.\"Deleted\" IS NULL) " +
+                "and (rr.\"Deleted\" = 0 or rr.\"Deleted\" IS NULL)";
+
+            await using var command = connection.CreateCommand();
+            command.CommandText = sql;
+
+            var p = command.CreateParameter();
+            p.ParameterName = "userName";
+            p.Value = userName;
+            command.Parameters.Add(p);
+
+            await command.PrepareAsync().ConfigureAwait(false);
+
+            await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+
+            return await reader.ReadAsync().ConfigureAwait(false);
+        }
+
         private async Task<bool> IsLandlordAsync(DbConnection connection, string userName)
         {
             const string sql =
@@ -106,6 +175,7 @@ namespace Jube.Data.Security
                 "and ur.\"Active\" = 1 " +
                 "and (ur.\"PasswordLocked\" = 0 or ur.\"PasswordLocked\" IS NULL) " +
                 "and (ur.\"Deleted\" = 0 or ur.\"Deleted\" IS NULL) " +
+                "and rr.\"Active\" = 1 " +
                 "and (rr.\"Deleted\" = 0 or rr.\"Deleted\" IS NULL) " +
                 "and tr.\"Active\" = 1 " +
                 "order by tr.\"Id\"";

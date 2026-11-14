@@ -18,7 +18,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsDamerauInList(this string? @this, IEnumerable<string>? list, int maxDistance)
+        [Description("True when: within the edit distance of an entry, counting a swap of adjacent letters as one edit.")]
+        public static bool IsDamerauInList(this string? @this,
+            [Description("The List token whose entries are compared.")] IEnumerable<string>? list,
+            [Description("The most edits allowed, counting a swap of adjacent letters as one.")] int maxDistance)
         {
             return FuzzyListMatcher.Any(@this, list, FuzzyOptions.For(FuzzyAlgorithm.Damerau, maxDistance));
         }

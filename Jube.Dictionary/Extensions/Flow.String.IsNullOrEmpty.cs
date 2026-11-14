@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
+            [Description("True when: null or zero length. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsNullOrEmpty()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringIsNullOrEmpty(flow.Value));
             }
 
+            [Description("True when: null or zero length. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsNullOrEmpty()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringIsNullOrEmpty(flow.Value));
             }
 
+            [Description("True when: null or zero length. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsNullOrEmpty()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringIsNullOrEmpty(flow.Value));
             }
 
+            [Description("True when: null or zero length. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsNullOrEmpty()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringIsNullOrEmpty(flow.Value));
             }
 
+            [Description("True when: null or zero length. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsNullOrEmpty()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
+            [Description("Begins a pipeline from the value. True when: null or zero length. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsNullOrEmpty()
             {
                 return value.Start().MatchIsNullOrEmpty();
             }
 
+            [Description("Begins a pipeline from the value. True when: null or zero length. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsNullOrEmpty()
             {
                 return value.Start().RejectIsNullOrEmpty();
             }
 
+            [Description("Begins a pipeline from the value. True when: null or zero length. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsNullOrEmpty()
             {
                 return value.Start().BreakIsNullOrEmpty();
             }
 
+            [Description("Begins a pipeline from the value. True when: null or zero length. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsNullOrEmpty()
             {
                 return value.Start().RequireIsNullOrEmpty();
             }
 
+            [Description("Begins a pipeline from the value. True when: null or zero length. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsNullOrEmpty()
             {
                 return value.Start().EnsureIsNullOrEmpty();

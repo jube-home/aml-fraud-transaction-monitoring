@@ -43,7 +43,8 @@ namespace Jube.Data.Repository
             Override = 17,
             ActivationRuleOverride = 18,
             ApiUsers = 19,
-            AdvancedAnalyticsInstances = 20
+            AskJoobyAnalyticsInstances = 20,
+            ResponseElevationRanges = 21
         }
 
         public Task InsertAsync(EntityAnalysisModelSynchronisationErrorStepEnum synchronisationStepId,

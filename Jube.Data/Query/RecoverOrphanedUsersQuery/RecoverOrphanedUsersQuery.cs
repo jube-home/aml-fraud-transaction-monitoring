@@ -19,12 +19,14 @@ namespace Jube.Data.Query.RecoverOrphanedUsersQuery
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
     using Repository;
 
     public class RecoverOrphanedUsersQuery(DbContext dbContext, int? tenantRegistryId, string userName)
     {
-        public async Task ExecuteAsync(CancellationToken token = default)
+        public async Task ExecuteAsync(ICollection<int> allowedPermissionSpecificationIds,
+            CancellationToken token = default)
         {
             if (!tenantRegistryId.HasValue)
             {
@@ -61,7 +63,9 @@ namespace Jube.Data.Query.RecoverOrphanedUsersQuery
 
             var roleRegistryPermissionRepository = new RoleRegistryPermissionRepository(dbContext, userName);
 
-            foreach (var permissionSpecification in permissionSpecifications)
+            foreach (var permissionSpecification in permissionSpecifications.Where(w =>
+                         allowedPermissionSpecificationIds == null
+                         || allowedPermissionSpecificationIds.Contains(w.Id)))
             {
                 await roleRegistryPermissionRepository.InsertAsync(new RoleRegistryPermission
                 {

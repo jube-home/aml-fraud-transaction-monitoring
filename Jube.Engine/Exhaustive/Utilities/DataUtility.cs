@@ -272,7 +272,7 @@ namespace Jube.Engine.Exhaustive.Utilities
             var headerSequence = 0;
 
             foreach (var variable in from field in fields
-                     where field.ProcessingTypeId is 3 or 5 or 7
+                     where field.ProcessingTypeId is 3 or 5 or 7 or 8 or 9
                      select new Variable
                      {
                          Name = field.Name,
@@ -524,7 +524,7 @@ namespace Jube.Engine.Exhaustive.Utilities
 
             try
             {
-                var jToken = jObject.SelectToken(valueJsonPath);
+                var jToken = Jube.Data.Helpers.BoundedJsonPath.Select(jObject, valueJsonPath);
 
                 if (jToken != null)
                 {

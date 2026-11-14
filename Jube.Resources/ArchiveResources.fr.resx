@@ -39,4 +39,25 @@
     <data name="TagNameRequired" xml:space="preserve">
     <value>Le nom d'une étiquette ne peut pas être vide.</value>
   </data>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>La transaction archivée est introuvable.</value>
+  </data>
+    <data name="EntityAnalysisModelInstanceEntryGuidRequired" xml:space="preserve">
+    <value>L'identifiant de la transaction archivée est requis.</value>
+  </data>
+    <data name="TagRequired" xml:space="preserve">
+    <value>La liste des étiquettes est requise (envoyez une liste vide pour supprimer toutes les étiquettes).</value>
+  </data>
+    <data name="TagNameMaxLength" xml:space="preserve">
+    <value>Un nom d'étiquette ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="TagCountMax" xml:space="preserve">
+    <value>Pas plus de {0} étiquettes ne peuvent être appliquées à une même transaction.</value>
+  </data>
 </root>

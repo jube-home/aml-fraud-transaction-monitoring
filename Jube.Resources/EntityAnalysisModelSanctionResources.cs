@@ -29,5 +29,7 @@ namespace Jube.Resources
         public const string AggregationTypeIdInvalid = nameof(AggregationTypeIdInvalid);
         public const string MaxDistanceRatioRange = nameof(MaxDistanceRatioRange);
         public const string MaxCoverageRatioRange = nameof(MaxCoverageRatioRange);
+        public const string MatchAlgorithmInvalid = nameof(MatchAlgorithmInvalid);
+        public const string MinimumSimilarityRange = nameof(MinimumSimilarityRange);
     }
 }

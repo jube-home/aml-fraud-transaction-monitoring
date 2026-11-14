@@ -7,7 +7,9 @@ grand_parent: Configuration
 ---
 
 # Working Case Status
-Several cases workflow statuses may be created and allocated at case creation or via upward reclassification.  It is more common to set a case status manually,  in performing an escalation.
+
+Several cases workflow statuses may be created and allocated at case creation or via upward reclassification. It is more
+common to set a case status manually, in performing an escalation.
 
 Navigate to a case record via either Fetch or Skim:
 
@@ -27,6 +29,13 @@ Select a status other than, in this case, Reported, changing to Restricted:
 
 The case will be reloaded and the status bar will be coloured to reflect the new status having been allocated.
 
-The change of a case status by itself will not cause any specific action, except given Notification and HTTP Endpoint having been configured.
+The change of a case status by itself will not cause any specific action, except given Notification and HTTP Endpoint
+having been configured.
 
-The allocation of a given cases workflow status is often for the purpose of facilitating allocation via cases workflows filters.
+The allocation of a given cases workflow status is often for the purpose of facilitating allocation via cases workflows
+filters.
+
+## Vue case page (case-record review)
+
+<!-- TODO(docs): the screenshots and tab names above are from the Razor UI and are stale; the case page is now one scrolling story with sections 1 Dashboard, 2 Summary, 3 Journal, 4 Network, 5 Notes and research, 6 Events, 7 Forms, 8 Messages and a Decide column on the right -->
+<!-- TODO(screenshot): file=case-record-status.png route=/cases/:caseId state="Case page showing the status area as described on this page" -->

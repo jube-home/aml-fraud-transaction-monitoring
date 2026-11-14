@@ -20,6 +20,7 @@ namespace Jube.Data.Query.GetModelEntityGuidsQuery
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
 
     public class GetModelEntityGuidsQuery(DbContext dbContext, int tenantRegistryId)
     {
@@ -71,6 +72,16 @@ namespace Jube.Data.Query.GetModelEntityGuidsQuery
                 .Select(s => new { s.Id, s.Guid }).ToListAsync(token).ConfigureAwait(false), x => (x.Id, x.Guid));
 
             Add("HttpAdaptation", await dbContext.EntityAnalysisModelHttpAdaptation
+                .Where(w => w.EntityAnalysisModelId == entityAnalysisModelId
+                            && w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId)
+                .Select(s => new { s.Id, s.Guid }).ToListAsync(token).ConfigureAwait(false), x => (x.Id, x.Guid));
+
+            Add("GraphRecall", await dbContext.EntityAnalysisModelGraphRecall
+                .Where(w => w.EntityAnalysisModelId == entityAnalysisModelId
+                            && w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId)
+                .Select(s => new { s.Id, s.Guid }).ToListAsync(token).ConfigureAwait(false), x => (x.Id, x.Guid));
+
+            Add("Svirfd", await dbContext.EntityAnalysisModelSvirfd
                 .Where(w => w.EntityAnalysisModelId == entityAnalysisModelId
                             && w.EntityAnalysisModel.TenantRegistryId == tenantRegistryId)
                 .Select(s => new { s.Id, s.Guid }).ToListAsync(token).ConfigureAwait(false), x => (x.Id, x.Guid));

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>You do not have permission to perform this action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>You must be signed in to a tenant to perform this action.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>The case or its held payment was not found.</value>
+  </data>
+    <data name="CaseIdInvalid" xml:space="preserve">
+    <value>A case is required.</value>
+  </data>
+    <data name="EntryRequired" xml:space="preserve">
+    <value>The held transaction is required.</value>
+  </data>
+    <data name="ReasonRequired" xml:space="preserve">
+    <value>A reason is required.</value>
+  </data>
+    <data name="ReasonTooLong" xml:space="preserve">
+    <value>The reason must be 1000 characters or fewer.</value>
+  </data>
+    <data name="NotHeld" xml:space="preserve">
+    <value>The payment is not held, so it cannot be released or refused.</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>The case is locked by another user.</value>
+  </data>
+    <data name="NoReleaseHook" xml:space="preserve">
+    <value>No active release hook of the case workflow handles this payment, so it cannot be released.</value>
+  </data>
+    <data name="HookRefused" xml:space="preserve">
+    <value>The release hook was not called because its address was refused: {0}.</value>
+  </data>
+    <data name="CredentialMissing" xml:space="preserve">
+    <value>The release hook was not called because the environment variable that holds its credential is not set.</value>
+  </data>
+    <data name="HookBlockedByPolicy" xml:space="preserve">
+    <value>The release hook was not called because its address is refused by the outbound host policy ({0}). Internal receivers must be listed in JUBE_HOOK_ALLOWED_HOSTS or JUBE_HOOK_ALLOWED_CIDRS.</value>
+  </data>
+    <data name="HookFailed" xml:space="preserve">
+    <value>The release hook did not release the payment: {0}</value>
+  </data>
+    <data name="HookStatusNotOk" xml:space="preserve">
+    <value>The release hook answered with status {0} rather than 200.</value>
+  </data>
+</root>

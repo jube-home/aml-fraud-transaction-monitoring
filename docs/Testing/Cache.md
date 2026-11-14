@@ -32,9 +32,9 @@ Tests of the cache layer: Redis serialisation, callbacks, observability and cach
 | `HandleConfigurationChangedIncrementsCounterCapturesEventAndLogsWarning`          | Fact | Handle configuration changed increments counter captures event and logs warning.           |
 | `HandleConfigurationChangedBroadcastIncrementsCounterCapturesEventAndLogsWarning` | Fact | Handle configuration changed broadcast increments counter captures event and logs warning. |
 
-### RedisConnectionDiagnosticsCountersTests
+### RespConnectionDiagnosticsCountersTests
 
-`Jube.Test.Cache.RedisConnectionDiagnosticsCountersTests` — 3 tests. Category: Unit. Collection: JubeCache.
+`Jube.Test.Cache.RespConnectionDiagnosticsCountersTests` — 3 tests. Category: Unit. Collection: JubeCache.
 
 | Test                                           | Kind | Verifies                                           |
 |------------------------------------------------|------|----------------------------------------------------|
@@ -42,9 +42,9 @@ Tests of the cache layer: Redis serialisation, callbacks, observability and cach
 | `TakeSnapshotResetsAllCountersToZero`          | Fact | Take snapshot resets all counters to zero.         |
 | `FreshInstanceStartsAtZero`                    | Fact | Fresh instance starts at zero.                     |
 
-### RedisConnectionEventCaptureTests
+### RespConnectionEventCaptureTests
 
-`Jube.Test.Cache.RedisConnectionEventCaptureTests` — 3 tests. Category: Unit. Collection: JubeCache.
+`Jube.Test.Cache.RespConnectionEventCaptureTests` — 3 tests. Category: Unit. Collection: JubeCache.
 
 | Test                                                         | Kind | Verifies                                                               |
 |--------------------------------------------------------------|------|------------------------------------------------------------------------|
@@ -52,9 +52,9 @@ Tests of the cache layer: Redis serialisation, callbacks, observability and cach
 | `TakeDroppedCountResetsToZeroAfterReading`                   | Fact | Take dropped count resets to zero after reading.                       |
 | `EnqueueBeyondTheCapDropsInsteadOfGrowingTheQueueUnbounded`  | Fact | Enqueue beyond the cap drops instead of growing the queue unbounded.   |
 
-### RedisReconnectRetryPolicyTests
+### RespReconnectRetryPolicyTests
 
-`Jube.Test.Cache.RedisReconnectRetryPolicyTests` — 4 tests. Category: Unit. Collection: JubeCache.
+`Jube.Test.Cache.RespReconnectRetryPolicyTests` — 4 tests. Category: Unit. Collection: JubeCache.
 
 | Test                                                                      | Kind | Verifies                                                                           |
 |---------------------------------------------------------------------------|------|------------------------------------------------------------------------------------|
@@ -63,9 +63,9 @@ Tests of the cache layer: Redis serialisation, callbacks, observability and cach
 | `ShouldRetryEnqueuesAReconnectRetryEventWhenInnerPolicyAgrees`            | Fact | Should retry enqueues a reconnect retry event when inner policy agrees.            |
 | `ShouldRetryReportsTransactionsImpactedFromCacheDiagnosticsInFlightCount` | Fact | Should retry reports transactions impacted from cache diagnostics in flight count. |
 
-### RedisSentinelEventCaptureTests
+### RespSentinelEventCaptureTests
 
-`Jube.Test.Cache.RedisSentinelEventCaptureTests` — 3 tests. Category: Unit. Collection: JubeCache.
+`Jube.Test.Cache.RespSentinelEventCaptureTests` — 3 tests. Category: Unit. Collection: JubeCache.
 
 | Test                                                         | Kind | Verifies                                                               |
 |--------------------------------------------------------------|------|------------------------------------------------------------------------|
@@ -103,7 +103,7 @@ Tests of the cache layer: Redis serialisation, callbacks, observability and cach
 
 ### CacheAbstractionRepositoryTests
 
-`Jube.Test.Cache.Redis.CacheAbstractionRepositoryTests` — 6 tests. Category: Unit. Collection: JubeCache.
+`Jube.Test.Cache.Resp.CacheAbstractionRepositoryTests` — 6 tests. Category: Unit. Collection: JubeCache.
 
 | Test                                                                       | Kind | Verifies                                                                           |
 |----------------------------------------------------------------------------|------|------------------------------------------------------------------------------------|
@@ -116,7 +116,7 @@ Tests of the cache layer: Redis serialisation, callbacks, observability and cach
 
 ### CacheCallbackPublishSubscribeTests
 
-`Jube.Test.Cache.Redis.CacheCallbackPublishSubscribeTests` — 18 tests. Category: Unit. Collection: JubeCache.
+`Jube.Test.Cache.Resp.CacheCallbackPublishSubscribeTests` — 18 tests. Category: Unit. Collection: JubeCache.
 
 | Test                                                                                       | Kind | Verifies                                                                                                  |
 |--------------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------------------------|
@@ -141,16 +141,19 @@ Tests of the cache layer: Redis serialisation, callbacks, observability and cach
 
 ### CachePayloadLatestRepositoryDeleteByReferenceDateAsyncPostgresBackedTests
 
-`Jube.Test.Cache.Redis.CachePayloadLatestRepositoryDeleteByReferenceDateAsyncPostgresBackedTests` — 1 test. Category:
+`Jube.Test.Cache.Resp.CachePayloadLatestRepositoryDeleteByReferenceDateAsyncPostgresBackedTests` — 1 test. Category:
+|
+`DeleteByReferenceDateAsyncAppliesAPerSearchKeyOverrideAndFallsBackToTheGlobalThresholdAndPersistsTheRealReferenceDateAsync` |
+Fact | Delete by reference date async applies a per search key override and falls back to the global threshold and
+persists the real reference date. |
 Service. Collection: Database.
 
-| Test                                                                                                                         | Kind | Verifies                                                                                                                                      |
-|------------------------------------------------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------------------------------------------------------------|
-| `DeleteByReferenceDateAsyncAppliesAPerSearchKeyOverrideAndFallsBackToTheGlobalThresholdAndPersistsTheRealReferenceDateAsync` | Fact | Delete by reference date async applies a per search key override and falls back to the global threshold and persists the real reference date. |
+| Test | Kind | Verifies |
+|------|------|----------|
 
 ### CachePayloadLatestRepositoryIntervalTests
 
-`Jube.Test.Cache.Redis.CachePayloadLatestRepositoryIntervalTests` — 5 tests. Category: Unit. Collection: JubeCache.
+`Jube.Test.Cache.Resp.CachePayloadLatestRepositoryIntervalTests` — 5 tests. Category: Unit. Collection: JubeCache.
 
 | Test                                                          | Kind   | Verifies                                                              |
 |---------------------------------------------------------------|--------|-----------------------------------------------------------------------|
@@ -162,7 +165,7 @@ Service. Collection: Database.
 
 ### CachePayloadLatestRepositoryTests
 
-`Jube.Test.Cache.Redis.CachePayloadLatestRepositoryTests` — 9 tests. Category: Unit. Collection: JubeCache.
+`Jube.Test.Cache.Resp.CachePayloadLatestRepositoryTests` — 9 tests. Category: Unit. Collection: JubeCache.
 
 | Test                                                                                       | Kind | Verifies                                                                                           |
 |--------------------------------------------------------------------------------------------|------|----------------------------------------------------------------------------------------------------|
@@ -178,7 +181,7 @@ Service. Collection: Database.
 
 ### CachePayloadRepositoryLocalCacheTests
 
-`Jube.Test.Cache.Redis.CachePayloadRepositoryLocalCacheTests` — 12 tests. Category: Unit. Collection: JubeCache.
+`Jube.Test.Cache.Resp.CachePayloadRepositoryLocalCacheTests` — 12 tests. Category: Unit. Collection: JubeCache.
 
 | Test                                                                              | Kind | Verifies                                                                                          |
 |-----------------------------------------------------------------------------------|------|---------------------------------------------------------------------------------------------------|
@@ -192,12 +195,12 @@ Service. Collection: Database.
 | `DeleteFromLocalCacheNonSubscriptionBranchDoesNotIncrementHashRemoveMissOnAHit`   | Fact | Delete from local cache non subscription branch does not increment hash remove miss on a hit.     |
 | `DeleteFromLocalCacheNonSubscriptionBranchIncrementsHashRemoveMissOnAGenuineMiss` | Fact | Delete from local cache non subscription branch increments hash remove miss on a genuine miss.    |
 | `DeleteFromLocalCacheDoesNothingWhenLocalCacheIsDisabled`                         | Fact | Delete from local cache does nothing when local cache is disabled.                                |
-| `GetPayloadBatchAsyncPrefersLocalCacheAndFallsBackToRedisOnMissAsync`             | Fact | Get payload batch async prefers local cache and falls back to redis on miss.                      |
-| `GetPayloadBatchAsyncAlwaysGoesToRedisWhenLocalCacheDisabledAsync`                | Fact | Get payload batch async always goes to redis when local cache disabled.                           |
+| `GetPayloadBatchAsyncPrefersLocalCacheAndFallsBackToRespOnMissAsync`              | Fact | Get payload batch async prefers local cache and falls back to redis on miss.                      |
+| `GetPayloadBatchAsyncAlwaysGoesToRespWhenLocalCacheDisabledAsync`                 | Fact | Get payload batch async always goes to redis when local cache disabled.                           |
 
 ### CachePayloadRepositoryTests
 
-`Jube.Test.Cache.Redis.CachePayloadRepositoryTests` — 11 tests. Category: Unit. Collection: JubeCache.
+`Jube.Test.Cache.Resp.CachePayloadRepositoryTests` — 11 tests. Category: Unit. Collection: JubeCache.
 
 | Test                                                                            | Kind | Verifies                                                                             |
 |---------------------------------------------------------------------------------|------|--------------------------------------------------------------------------------------|
@@ -215,7 +218,7 @@ Service. Collection: Database.
 
 ### CacheRateLimitRepositoryTests
 
-`Jube.Test.Cache.Redis.CacheRateLimitRepositoryTests` — 5 tests. Category: Unit. Collection: JubeCache.
+`Jube.Test.Cache.Resp.CacheRateLimitRepositoryTests` — 5 tests. Category: Unit. Collection: JubeCache.
 
 | Test                                                                     | Kind | Verifies                                                                      |
 |--------------------------------------------------------------------------|------|-------------------------------------------------------------------------------|
@@ -223,11 +226,11 @@ Service. Collection: Database.
 | `DifferentSourceKeysAreCountedIndependentlyAsync`                        | Fact | Different source keys are counted independently.                              |
 | `DifferentRateLimitNamesAreCountedIndependentlyForTheSameSourceKeyAsync` | Fact | Different rate limit names are counted independently for the same source key. |
 | `TheKeyIsExpiredOnceOnTheFirstIncrementOnlyAsync`                        | Fact | The key is expired once on the first increment only.                          |
-| `AnExceptionFromRedisIsSwallowedAndTreatedAsNotExceededAsync`            | Fact | An exception from redis is swallowed and treated as not exceeded.             |
+| `AnExceptionFromRespIsSwallowedAndTreatedAsNotExceededAsync`             | Fact | An exception from redis is swallowed and treated as not exceeded.             |
 
 ### CacheReferenceDateRepositoryTests
 
-`Jube.Test.Cache.Redis.CacheReferenceDateRepositoryTests` — 5 tests. Category: Unit. Collection: JubeCache.
+`Jube.Test.Cache.Resp.CacheReferenceDateRepositoryTests` — 5 tests. Category: Unit. Collection: JubeCache.
 
 | Test                                                              | Kind | Verifies                                                              |
 |-------------------------------------------------------------------|------|-----------------------------------------------------------------------|
@@ -237,21 +240,36 @@ Service. Collection: Database.
 | `GetReferenceDatePreferReplicaOnGenuineCacheMissReturnsNullAsync` | Fact | Get reference date prefer replica on genuine cache miss returns null. |
 | `UpsertOverwritesPreviousReferenceDateForSameModelAsync`          | Fact | Upsert overwrites previous reference date for same model.             |
 
+### CacheActivationWatcherLastLocationRepositoryTests
+
+`Jube.Test.Cache.Resp.CacheActivationWatcherLastLocationRepositoryTests` — 5 tests. Category: Unit. Collection:
+JubeCache.
+
+| Test                                                           | Kind | Verifies                                                            |
+|----------------------------------------------------------------|------|---------------------------------------------------------------------|
+| `TheFirstSightingHasNoPreviousAndTheSecondFindsTheFirstAsync`  | Fact | The first sighting has no previous and the second finds the first.  |
+| `EntitiesTenantsAndKeysDoNotShareALocationAsync`               | Fact | Entities tenants and keys do not share a location.                  |
+| `TheLocationIsKeptUnderTheDocumentedKeyWithARetentionAsync`    | Fact | The location is kept under the documented key with a retention.     |
+| `AMalformedStoredValueIsTreatedAsNoPreviousAndIsReplacedAsync` | Fact | A malformed stored value is treated as no previous and is replaced. |
+| `AVeryLongKeyValueIsCappedSoTheKeyStaysBoundedAsync`           | Fact | A very long key value is capped so the key stays bounded.           |
+
 ### CacheSanctionRepositoryTests
 
-`Jube.Test.Cache.Redis.CacheSanctionRepositoryTests` — 5 tests. Category: Unit. Collection: JubeCache.
+`Jube.Test.Cache.Resp.CacheSanctionRepositoryTests` — 7 tests. Category: Unit. Collection: JubeCache.
 
-| Test                                                                                  | Kind | Verifies                                                                                    |
-|---------------------------------------------------------------------------------------|------|---------------------------------------------------------------------------------------------|
-| `InsertThenGetRoundTripsValueAndCreatedDateAsync`                                     | Fact | Insert then get round trips value and created date.                                         |
-| `GetOnMissingKeyReturnsNullAsync`                                                     | Fact | Get on missing key returns null.                                                            |
-| `InsertUsesDocumentedSanctionKeyFormatWithSearchStringAndDistanceCompositeFieldAsync` | Fact | Insert uses documented sanction key format with search string and distance composite field. |
-| `InsertWithNullValueRoundTripsAsNullAsync`                                            | Fact | Insert with null value round trips as null.                                                 |
-| `DifferentDistanceThresholdsForSameStringAreStoredIndependentlyAsync`                 | Fact | Different distance thresholds for same string are stored independently.                     |
+| Test                                                                                  | Kind | Verifies                                                                                                        |
+|---------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------------------------------|
+| `InsertThenGetRoundTripsValueAndCreatedDateAsync`                                     | Fact | Insert then get round trips value and created date.                                                             |
+| `GetOnMissingKeyReturnsNullAsync`                                                     | Fact | Get on missing key returns null.                                                                                |
+| `InsertUsesDocumentedSanctionKeyFormatWithSearchStringAndDistanceCompositeFieldAsync` | Fact | Insert uses documented sanction key format with search string and distance composite field.                     |
+| `InsertWithNullValueRoundTripsAsNullAsync`                                            | Fact | Insert with null value round trips as null.                                                                     |
+| `DifferentDistanceThresholdsForSameStringAreStoredIndependentlyAsync`                 | Fact | Different distance thresholds for same string are stored independently.                                         |
+| `DifferentVariantsForSameStringAndDistanceAreStoredIndependentlyAsync`                | Fact | Different check variants (name, aggregation, ratios) for the same string and distance are stored independently. |
+| `TheMatchDetailJsonRoundTripsWithTheValueAsync`                                       | Fact | The match detail JSON round-trips with the value and is null when none was stored.                              |
 
 ### CacheTtlCounterEntryRepositoryTests
 
-`Jube.Test.Cache.Redis.CacheTtlCounterEntryRepositoryTests` — 7 tests. Category: Unit. Collection: JubeCache.
+`Jube.Test.Cache.Resp.CacheTtlCounterEntryRepositoryTests` — 7 tests. Category: Unit. Collection: JubeCache.
 
 | Test                                                                               | Kind | Verifies                                                                                  |
 |------------------------------------------------------------------------------------|------|-------------------------------------------------------------------------------------------|
@@ -265,7 +283,7 @@ Service. Collection: Database.
 
 ### CacheTtlCounterRepositoryTests
 
-`Jube.Test.Cache.Redis.CacheTtlCounterRepositoryTests` — 6 tests. Category: Unit. Collection: JubeCache.
+`Jube.Test.Cache.Resp.CacheTtlCounterRepositoryTests` — 6 tests. Category: Unit. Collection: JubeCache.
 
 | Test                                                                         | Kind | Verifies                                                                           |
 |------------------------------------------------------------------------------|------|------------------------------------------------------------------------------------|
@@ -278,7 +296,7 @@ Service. Collection: Database.
 
 ### CacheWalRepositoryTests
 
-`Jube.Test.Cache.Redis.CacheWalRepositoryTests` — 6 tests. Category: Unit. Collection: JubeCache.
+`Jube.Test.Cache.Resp.CacheWalRepositoryTests` — 6 tests. Category: Unit. Collection: JubeCache.
 
 | Test                                                             | Kind | Verifies                                                             |
 |------------------------------------------------------------------|------|----------------------------------------------------------------------|
@@ -291,7 +309,7 @@ Service. Collection: Database.
 
 ### IdempotencyRepositoriesTests
 
-`Jube.Test.Cache.Redis.IdempotencyRepositoriesTests` — 5 tests. Category: Unit. Collection: JubeCache.
+`Jube.Test.Cache.Resp.IdempotencyRepositoriesTests` — 5 tests. Category: Unit. Collection: JubeCache.
 
 | Test                                                                              | Kind   | Verifies                                                                                  |
 |-----------------------------------------------------------------------------------|--------|-------------------------------------------------------------------------------------------|
@@ -299,22 +317,22 @@ Service. Collection: Database.
 | `DifferentTransactionEntryGuidsDoNotCollideAsync`                                 | Theory | Different transaction entry guids do not collide.                                         |
 | `ClaimRecordsTheKeyInTheSharedIdempotencyJournalForCleanupAsync`                  | Theory | Claim records the key in the shared idempotency journal for cleanup.                      |
 | `OnUnderlyingFailureMidClaimReturnsFalseSinceTheClaimMayNotHaveBeenRecordedAsync` | Theory | On underlying failure mid claim returns false since the claim may not have been recorded. |
-| `OnUnderlyingFailureDuringTheInitialDuplicateCheckAlsoReturnsFalseAsync`          | Theory | On underlying failure during the initial duplicate check also returns false.              |
+| `ConcurrentClaimsForTheSameTransactionAdmitExactlyOneAsync`                       | Theory | Concurrent claims for the same transaction admit exactly one (single atomic set add).     |
 
 ### PayloadPruneAndAbstractionRuleFetchTests
 
-`Jube.Test.Cache.Redis.PayloadPruneAndAbstractionRuleFetchTests` — 2 tests. Category: Service. Collection: Database.
+`Jube.Test.Cache.Resp.PayloadPruneAndAbstractionRuleFetchTests` — 1 test. Category: Service. Collection: Database.
 
 | Test                                                                                             | Kind | Verifies                                                                                                   |
 |--------------------------------------------------------------------------------------------------|------|------------------------------------------------------------------------------------------------------------|
-| `PayloadPrunedByTheRealPruneJobDisappearsFromTheAbstractionRuleFetchPathButSurvivorsRemainAsync` | Fact | Payload pruned by the real prune job disappears from the abstraction rule fetch path but survivors remain. |
 | `PayloadLatestWrittenThroughTheRealUpsertIsPrunedAndAuditedByTheRealPruneJobAsync`               | Fact | Payload latest written through the real upsert is pruned and audited by the real prune job.                |
+| `PayloadPrunedByTheRealPruneJobDisappearsFromTheAbstractionRuleFetchPathButSurvivorsRemainAsync` | Fact | Payload pruned by the real prune job disappears from the abstraction rule fetch path but survivors remain. |
 
 ## Redis cache user registry api key
 
 ### CacheUserRegistryApiKeyRepositoryTests
 
-`Jube.Test.Cache.Redis.CacheUserRegistryApiKey.CacheUserRegistryApiKeyRepositoryTests` — 7 tests. Category: Unit.
+`Jube.Test.Cache.Resp.CacheUserRegistryApiKey.CacheUserRegistryApiKeyRepositoryTests` — 7 tests. Category: Unit.
 Collection: JubeCache.
 
 | Test                                                                            | Kind | Verifies                                                                                   |
@@ -331,7 +349,7 @@ Collection: JubeCache.
 
 ### CallbackTests
 
-`Jube.Test.Cache.Redis.Callback.CallbackTests` — 1 test. Category: Unit. Collection: JubeCache.
+`Jube.Test.Cache.Resp.Callback.CallbackTests` — 1 test. Category: Unit. Collection: JubeCache.
 
 | Test                                 | Kind | Verifies                                 |
 |--------------------------------------|------|------------------------------------------|
@@ -341,7 +359,7 @@ Collection: JubeCache.
 
 ### ModelsTests
 
-`Jube.Test.Cache.Redis.Models.ModelsTests` — 8 tests. Category: Unit. Collection: JubeCache.
+`Jube.Test.Cache.Resp.Models.ModelsTests` — 8 tests. Category: Unit. Collection: JubeCache.
 
 | Test                                                                              | Kind | Verifies                                                                                      |
 |-----------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------------|
@@ -358,7 +376,7 @@ Collection: JubeCache.
 
 ### MessagePackSerializerOptionsHelperTests
 
-`Jube.Test.Cache.Redis.Serialization.MessagePackSerializerOptionsHelperTests` — 5 tests. Category: Unit. Collection:
+`Jube.Test.Cache.Resp.Serialization.MessagePackSerializerOptionsHelperTests` — 5 tests. Category: Unit. Collection:
 JubeCache.
 
 | Test                                                           | Kind   | Verifies                                                               |
@@ -373,7 +391,7 @@ JubeCache.
 
 ### EnvelopeDictionaryNoBoxingMessagePackTests
 
-`Jube.Test.Cache.Redis.Serialization.DictionaryNoBoxing.EnvelopeDictionaryNoBoxingMessagePackTests` — 18 tests.
+`Jube.Test.Cache.Resp.Serialization.DictionaryNoBoxing.EnvelopeDictionaryNoBoxingMessagePackTests` — 18 tests.
 Category: Unit. Collection: JubeCache.
 
 | Test                                                                         | Kind   | Verifies                                                                                   |

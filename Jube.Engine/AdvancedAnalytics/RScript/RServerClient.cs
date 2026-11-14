@@ -12,6 +12,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
@@ -32,7 +33,9 @@ namespace Jube.Engine.AdvancedAnalytics.RScript
         private readonly Uri baseUri;
         private readonly bool ownsHttpClient;
         private readonly HttpClient httpClient;
+        private static readonly ConcurrentDictionary<(string Url, int MaxConnections, bool ValidateSsl, int Timeout), RServerClient> Shared = new();
         private bool disposed;
+        private bool isShared;
 
         public RServerClient(HttpClient httpClient, string baseUrl)
         {
@@ -64,7 +67,7 @@ namespace Jube.Engine.AdvancedAnalytics.RScript
 
         public void Dispose()
         {
-            if (disposed)
+            if (disposed || isShared)
             {
                 return;
             }
@@ -92,7 +95,9 @@ namespace Jube.Engine.AdvancedAnalytics.RScript
                 ? parsedTimeout
                 : 330000;
 
-            return new RServerClient(url, maxConnections, validateSsl, timeout);
+            return Shared.GetOrAdd((url, maxConnections, validateSsl, timeout),
+                key => new RServerClient(key.Url, key.MaxConnections, key.ValidateSsl, key.Timeout)
+                    { isShared = true });
         }
 
         public Task<RServerHealthResult> HealthAsync(ILog log = null, CancellationToken token = default)

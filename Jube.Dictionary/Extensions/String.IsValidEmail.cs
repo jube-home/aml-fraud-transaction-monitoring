@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Checks if the string is a valid email address, including plus-addressed local parts such as ann+tag@example.com.")]
         public static bool IsValidEmail(this string obj)
         {
             return Regex.IsMatch(obj,

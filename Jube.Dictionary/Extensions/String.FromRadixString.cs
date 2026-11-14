@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static long FromRadixString(this string? @this, int radix)
+        [Description("Reads digits written in a base from 2 to 36; throws on an invalid digit or overflow.")]
+        public static long FromRadixString(this string? @this, [Description("The base, 2 to 36.")] int radix)
         {
             var text = (@this ?? "").Trim().ToLowerInvariant();
 

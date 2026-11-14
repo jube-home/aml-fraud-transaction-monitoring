@@ -17,11 +17,14 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Dictionary;
+using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRulesWithSearchKeys;
 using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.Reprocessing;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using Jube.Engine.EntityAnalysisModelInvoke.Simulation.Models;
+using Jube.GraphRecallProtocol;
 using Jube.HttpAdaptationProtocol;
 using Jube.Parser;
+using Jube.Svirfd;
 using Jube.Parser.Compiler;
 using Jube.Parser.Models;
 using log4net;
@@ -40,6 +43,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
             ArgumentNullException.ThrowIfNull(context);
 
             var inputs = new RuleRunInputs { Lists = lists ?? new Dictionary<string, List<string>>() };
+
+            foreach (var (name, json) in context.SvirfdRecords)
+            {
+                inputs.Svirfd[name] = SvirfdJson.Deserialize(json);
+            }
 
             foreach (var value in context.Values.Values)
             {
@@ -76,6 +84,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
                     case "AdvancedAnalyticsAdaptation":
                         inputs.AdvancedAnalyticsAdaptation[key] = Convert.ToDouble(value.Value);
                         break;
+                    case "Graph":
+                        GraphEntityMembers.TryWrite(inputs.Graph, key, value.Value);
+                        break;
+                    case "Svirfd":
+                        break;
                     case "HTTPAdaptation":
                         inputs.HttpAdaptation[key] = new Adaptation { Value = Convert.ToDouble(value.Value) };
                         break;
@@ -108,28 +121,30 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation
 
                 RuleParse.GatewayRule =>
                     Bind(await Sandbox.GetDelegateAsync<EntityModelGatewayRule.Match>(parsed, token)
-                        .ConfigureAwait(false), m => m(inputs.Data, inputs.Lists, inputs.Kvp, log)),
+                        .ConfigureAwait(false), m => m(inputs.Data, inputs.Lists, inputs.Kvp, inputs.Svirfd, log)),
 
                 RuleParse.AbstractionRule =>
                     Bind(await Sandbox.GetDelegateAsync<EntityAnalysisModelAbstractionRule.Match>(parsed, token)
-                        .ConfigureAwait(false), m => m(inputs.Data, inputs.Lists, inputs.Kvp, log)),
+                            .ConfigureAwait(false),
+                        m => AbstractionCursorRunner.Single(m, new AbstractionCursor(), inputs.Data, inputs.Lists,
+                            inputs.Kvp, inputs.Svirfd, log)),
 
                 RuleParse.AbstractionCalculation =>
                     Bind(await Sandbox.GetDelegateAsync<EntityAnalysisModelAbstractionCalculation.Match>(parsed, token)
                             .ConfigureAwait(false),
                         m => m(inputs.Data, inputs.TtlCounter, inputs.Abstraction, inputs.Lists,
-                            inputs.AbstractionCalculation, inputs.Sanction, inputs.Kvp, log)),
+                            inputs.AbstractionCalculation, inputs.Sanction, inputs.Kvp, inputs.Svirfd, log)),
 
                 RuleParse.ActivationRule =>
                     Bind(await Sandbox.GetDelegateAsync<EntityAnalysisModelActivationRule.Match>(parsed, token)
                             .ConfigureAwait(false),
                         m => m(inputs.Data, inputs.TtlCounter, inputs.Abstraction, inputs.HttpAdaptation,
-                            inputs.ExhaustiveAdaptation, inputs.AdvancedAnalyticsAdaptation, inputs.Lists,
-                            inputs.AbstractionCalculation, inputs.Sanction, inputs.Kvp, inputs.Activation, log)),
+                            inputs.ExhaustiveAdaptation, inputs.AdvancedAnalyticsAdaptation, inputs.Graph, inputs.Lists,
+                            inputs.AbstractionCalculation, inputs.Sanction, inputs.Kvp, inputs.Activation, inputs.Svirfd, log)),
 
                 RuleParse.InlineFunction =>
                     Bind(await Sandbox.GetDelegateAsync<EntityAnalysisModelInlineFunction.Match>(parsed, token)
-                        .ConfigureAwait(false), m => m(inputs.Data, inputs.Lists, inputs.Kvp, log)),
+                        .ConfigureAwait(false), m => m(inputs.Data, inputs.Lists, inputs.Kvp, inputs.Svirfd, log)),
                 _ => throw new ArgumentOutOfRangeException(nameof(ruleParseType))
             };
 

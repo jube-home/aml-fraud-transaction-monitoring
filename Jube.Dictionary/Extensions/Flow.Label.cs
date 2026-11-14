@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static Flow<T> Label<T>(this Flow<T> flow, string? label)
+        [Description("Attaches a reason that is carried to the decision.")]
+        public static Flow<T> Label<T>(this Flow<T> flow,
+            [Description("The reason carried to the decision.")] string? label)
         {
             return flow.WithLabel(label);
         }

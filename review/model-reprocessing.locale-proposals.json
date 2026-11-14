@@ -1,0 +1,8 @@
+{
+  "_note": "model-reprocessing owns no SPA keys: the Models story page (model-core) hosts the reprocessing forms and the DTO-led form model; no vue files or t() keys are claimed by this slice.",
+  "ka": {},
+  "id": {},
+  "sv": {},
+  "ur": {},
+  "hi": {}
+}

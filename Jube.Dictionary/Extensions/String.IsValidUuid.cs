@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Whether the text parses as a UUID.")]
         public static bool IsValidUuid(this string? @this)
         {
             return Guid.TryParse((@this ?? "").Trim(), out _);

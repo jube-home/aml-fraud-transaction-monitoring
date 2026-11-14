@@ -24,6 +24,7 @@ namespace Jube.Data.Query.GetCaseEventByCaseKeyValueQuery
     {
         public int Id { get; set; }
         public int CaseId { get; set; }
+        public int CaseEventTypeId { get; set; }
         public string CaseEventType { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public string CreatedUser { get; set; }

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="SqlSyntaxError" xml:space="preserve">
+        <value>Nie można odczytać SQL w pobliżu "{0}".</value>
+    </data>
+    <data name="SqlUnknownTable" xml:space="preserve">
+        <value>Tabela "{0}" nie istnieje lub nie masz prawa jej odpytywać.</value>
+    </data>
+    <data name="SqlUnknownTableSuggest" xml:space="preserve">
+        <value>Tabela "{0}" nie istnieje lub nie masz prawa jej odpytywać. Czy chodziło o "{1}"?</value>
+    </data>
+    <data name="SqlUnknownColumn" xml:space="preserve">
+        <value>Kolumna "{0}" nie istnieje.</value>
+    </data>
+    <data name="SqlUnknownColumnSuggest" xml:space="preserve">
+        <value>Kolumna "{0}" nie istnieje. Czy chodziło o "{1}"? Nazwy z wielkimi literami muszą być w cudzysłowie.</value>
+    </data>
+    <data name="SqlUnknownAlias" xml:space="preserve">
+        <value>W tym zapytaniu nie ma tabeli ani aliasu o nazwie "{0}".</value>
+    </data>
+    <data name="SqlUnknownAliasSuggest" xml:space="preserve">
+        <value>W tym zapytaniu nie ma tabeli ani aliasu o nazwie "{0}". Czy chodziło o "{1}"?</value>
+    </data>
+    <data name="SqlAmbiguousColumn" xml:space="preserve">
+        <value>Kolumna "{0}" jest niejednoznaczna. Poprzedź ją nazwą tabeli lub aliasem.</value>
+    </data>
+    <data name="SqlUnknownFunction" xml:space="preserve">
+        <value>Funkcja "{0}" nie istnieje.</value>
+    </data>
+    <data name="SqlUnknownFunctionSuggest" xml:space="preserve">
+        <value>Funkcja "{0}" nie istnieje. Czy chodziło o "{1}"?</value>
+    </data>
+    <data name="SqlFunctionArity" xml:space="preserve">
+        <value>Funkcja "{0}" nie przyjmuje {1} argumentów. Przyjmuje: {2}.</value>
+    </data>
+    <data name="SqlOverNotWindow" xml:space="preserve">
+        <value>Klauzuli OVER nie można użyć z "{0}", ponieważ nie jest to funkcja agregująca ani okna.</value>
+    </data>
+    <data name="SqlWindowNeedsOver" xml:space="preserve">
+        <value>Funkcja okna "{0}" wymaga klauzuli OVER.</value>
+    </data>
+    <data name="SqlWindowNotAllowed" xml:space="preserve">
+        <value>Funkcja okna "{0}" nie jest dozwolona w tej części zapytania.</value>
+    </data>
+    <data name="SqlAggregateInWhere" xml:space="preserve">
+        <value>Funkcja agregująca "{0}" nie jest dozwolona w WHERE. Filtruj po agregatach w HAVING.</value>
+    </data>
+    <data name="SqlAggregateInJoin" xml:space="preserve">
+        <value>Funkcja agregująca "{0}" nie jest dozwolona w warunku JOIN.</value>
+    </data>
+    <data name="SqlAggregateInGroupBy" xml:space="preserve">
+        <value>Funkcja agregująca "{0}" nie jest dozwolona w GROUP BY.</value>
+    </data>
+    <data name="SqlAggregateNested" xml:space="preserve">
+        <value>Funkcji agregujących nie można zagnieżdżać. "{0}" jest użyta wewnątrz innego agregatu.</value>
+    </data>
+    <data name="SqlColumnNotGrouped" xml:space="preserve">
+        <value>Kolumna "{0}" musi występować w GROUP BY lub być użyta wewnątrz funkcji agregującej.</value>
+    </data>
+    <data name="SqlTypeMismatch" xml:space="preserve">
+        <value>Wartości typu {0} nie można porównać ani połączyć z wartością typu {1}.</value>
+    </data>
+    <data name="SqlLiteralInvalid" xml:space="preserve">
+        <value>Wartość '{0}' jest nieprawidłowa dla typu {1}.</value>
+    </data>
+    <data name="SqlFunctionArgumentType" xml:space="preserve">
+        <value>Funkcja "{0}" nie przyjmuje wartości typu {1}.</value>
+    </data>
+    <data name="SqlAggregateArgumentType" xml:space="preserve">
+        <value>Funkcja agregująca "{0}" nie przyjmuje wartości typu {1}.</value>
+    </data>
+    <data name="SqlOperatorType" xml:space="preserve">
+        <value>Operatora {0} nie można użyć z wartością typu {1}.</value>
+    </data>
+    <data name="SqlConditionType" xml:space="preserve">
+        <value>Warunek musi być prawdziwy lub fałszywy, a nie wartością typu {0}.</value>
+    </data>
+    <data name="SqlTypesUnmatched" xml:space="preserve">
+        <value>Wartości typu {0} i {1} nie mogą zostać połączone w jeden wynik.</value>
+    </data>
+    <data name="SqlLimitNegative" xml:space="preserve">
+        <value>{0} nie może być ujemne.</value>
+    </data>
+    <data name="SqlLimitType" xml:space="preserve">
+        <value>{0} wymaga liczby całkowitej, a nie wartości typu {1}.</value>
+    </data>
+    <data name="SqlLimitVariables" xml:space="preserve">
+        <value>{0} nie może odwoływać się do kolumn.</value>
+    </data>
+    <data name="SqlOrdinalOutOfRange" xml:space="preserve">
+        <value>Pozycja {1} w {0} nie występuje na liście wyboru.</value>
+    </data>
+    <data name="SqlSetOperationColumns" xml:space="preserve">
+        <value>Każde zapytanie w UNION, INTERSECT lub EXCEPT musi zwracać tyle samo kolumn, a te zwracają {0} i {1}.</value>
+    </data>
+    <data name="SqlSubqueryColumns" xml:space="preserve">
+        <value>Podzapytanie użyte jako wartość musi zwracać dokładnie jedną kolumnę.</value>
+    </data>
+    <data name="SqlUnknownType" xml:space="preserve">
+        <value>Typ danych "{0}" nie istnieje.</value>
+    </data>
+    <data name="SqlParameterUnknown" xml:space="preserve">
+        <value>Parametr @{0} nie jest tutaj dostępny.</value>
+    </data>
+    <data name="SqlParameterType" xml:space="preserve">
+        <value>Parametr @{0} ma wartość typu {1}, ale jest porównywany z kolumną typu {2}.</value>
+    </data>
+</root>

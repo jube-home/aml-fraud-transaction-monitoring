@@ -27,16 +27,14 @@ namespace Jube.Validations.EntityAnalysisModelTtlCounter
         private static readonly string[] allowedResolutionIntervals = ["n", "h", "d"];
 
         public EntityAnalysisModelTtlCounterDtoValidator(EntityAnalysisModelTtlCounterRepository repository,
-            IStringLocalizer localiser,
-            EntityAnalysisModelRepository entityAnalysisModelRepository)
+            IStringLocalizer localiser)
         {
             RuleFor(p => p.EntityAnalysisModelId)
                 .Cascade(CascadeMode.Stop)
                 .GreaterThan(0)
                 .WithMessage(_ => localiser[EntityAnalysisModelTtlCounterResources.EntityAnalysisModelIdInvalid])
                 .WithErrorCode("EntityAnalysisModelIdInvalid")
-                .MustAsync(async (id, cancellation) =>
-                    await entityAnalysisModelRepository.GetByIdAsync(id, cancellation) != null)
+                .MustAsync(repository.ParentModelVisibleAsync)
                 .WithMessage(_ => localiser[EntityAnalysisModelTtlCounterResources.EntityAnalysisModelIdInvalid])
                 .WithErrorCode("EntityAnalysisModelIdInvalid");
 

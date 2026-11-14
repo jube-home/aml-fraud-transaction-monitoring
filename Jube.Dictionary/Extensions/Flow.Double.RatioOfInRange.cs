@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("True when: the value divided by the denominator is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleRatioOfInRange(flow.Value, denominator, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("True when: the value divided by the denominator is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleRatioOfInRange(flow.Value, denominator, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("True when: the value divided by the denominator is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleRatioOfInRange(flow.Value, denominator, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("True when: the value divided by the denominator is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleRatioOfInRange(flow.Value, denominator, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("True when: the value divided by the denominator is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchRatioOfInRange(denominator, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectRatioOfInRange(denominator, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakRatioOfInRange(denominator, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireRatioOfInRange(denominator, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureRatioOfInRange(double denominator, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRatioOfInRange([Description("The number the value is divided by.")] double denominator,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureRatioOfInRange(denominator, lowerBound, upperBound);
             }

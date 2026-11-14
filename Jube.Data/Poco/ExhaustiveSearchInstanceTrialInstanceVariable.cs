@@ -33,14 +33,12 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(3)] public int? ExhaustiveSearchInstanceTrialInstanceId { get; set; }
         [Column] [Nullable] [Key(4)] public int? VariableSequence { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceTrialInstanceId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceTrialInstanceId", CanBeNull = true)]
         [Key(5)]
         public IEnumerable<ExhaustiveSearchInstancePromotedTrialInstanceVariable>
             ExhaustiveSearchInstancePromotedTrialInstanceVariable { get; set; }
 
-        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceTrialInstanceId", CanBeNull = true,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Id", OtherKey = "ExhaustiveSearchInstanceTrialInstanceId", CanBeNull = true)]
         [Key(6)]
         public IEnumerable<ExhaustiveSearchInstancePromotedTrialInstanceSensitivity>
             ExhaustiveSearchInstancePromotedTrialInstanceSensitivity { get; set; }
@@ -48,8 +46,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(7)] public DateTime? DeletedDate { get; set; }
         [Column] [Nullable] [Key(8)] public byte? Deleted { get; set; }
 
-        [Association(ThisKey = "ExhaustiveSearchInstanceTrialInstanceId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "ExhaustiveSearchInstanceTrialInstanceId", OtherKey = "Id", CanBeNull = true)]
         [Key(9)]
         public ExhaustiveSearchInstanceTrialInstance ExhaustiveSearchInstanceTrialInstance { get; set; }
 

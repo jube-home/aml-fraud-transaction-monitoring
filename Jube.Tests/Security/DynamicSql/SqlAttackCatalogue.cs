@@ -198,6 +198,8 @@ internal static class SqlAttackCatalogue
         "SELECT 1 FROM generate_series(1,1) g WHERE EXISTS (SELECT 1 FROM \"UserRegistry\")",
         "SELECT (SELECT \"Password\" FROM \"UserRegistry\" LIMIT 1)",
         "WITH u AS (SELECT * FROM \"UserRegistry\") SELECT * FROM u",
+        "WITH \"UserRegistry\" AS (SELECT 1 AS \"Password\") SELECT \"Password\" FROM public.\"UserRegistry\"",
+        "WITH RECURSIVE \"TenantRegistry\" AS (SELECT 1 AS \"Id\") SELECT * FROM public.\"TenantRegistry\"",
         "SELECT 1 UNION ALL SELECT length(\"Password\") FROM \"UserRegistry\"",
         "SELECT * FROM generate_series(1,1) g, LATERAL (SELECT \"Password\" FROM \"UserRegistry\") l",
         "SELECT * FROM \"VisualisationRegistry\" v JOIN \"TenantRegistry\" t ON t.\"Id\" = v.\"TenantRegistryId\"",

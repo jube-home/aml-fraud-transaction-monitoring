@@ -17,35 +17,60 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchImpliedSpeedMphBelow(double longitude1, double latitude2, double longitude2, double hoursElapsed, double milesPerHour)
+            [Description("True when: the value is latitude 1. The implied speed in miles per hour is below the limit. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchImpliedSpeedMphBelow([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in miles per hour that counts.")] double milesPerHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleImpliedSpeedMphBelow(flow.Value, longitude1, latitude2, longitude2, hoursElapsed, milesPerHour));
             }
 
-            public Flow<double> RejectImpliedSpeedMphBelow(double longitude1, double latitude2, double longitude2, double hoursElapsed, double milesPerHour)
+            [Description("True when: the value is latitude 1. The implied speed in miles per hour is below the limit. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectImpliedSpeedMphBelow([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in miles per hour that counts.")] double milesPerHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleImpliedSpeedMphBelow(flow.Value, longitude1, latitude2, longitude2, hoursElapsed, milesPerHour));
             }
 
-            public Flow<double> BreakImpliedSpeedMphBelow(double longitude1, double latitude2, double longitude2, double hoursElapsed, double milesPerHour)
+            [Description("True when: the value is latitude 1. The implied speed in miles per hour is below the limit. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakImpliedSpeedMphBelow([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in miles per hour that counts.")] double milesPerHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleImpliedSpeedMphBelow(flow.Value, longitude1, latitude2, longitude2, hoursElapsed, milesPerHour));
             }
 
-            public Flow<double> RequireImpliedSpeedMphBelow(double longitude1, double latitude2, double longitude2, double hoursElapsed, double milesPerHour)
+            [Description("True when: the value is latitude 1. The implied speed in miles per hour is below the limit. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireImpliedSpeedMphBelow([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in miles per hour that counts.")] double milesPerHour)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleImpliedSpeedMphBelow(flow.Value, longitude1, latitude2, longitude2, hoursElapsed, milesPerHour));
             }
 
-            public Flow<double> EnsureImpliedSpeedMphBelow(double longitude1, double latitude2, double longitude2, double hoursElapsed, double milesPerHour)
+            [Description("True when: the value is latitude 1. The implied speed in miles per hour is below the limit. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureImpliedSpeedMphBelow([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in miles per hour that counts.")] double milesPerHour)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +80,52 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchImpliedSpeedMphBelow(double longitude1, double latitude2, double longitude2, double hoursElapsed, double milesPerHour)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The implied speed in miles per hour is below the limit. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchImpliedSpeedMphBelow([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in miles per hour that counts.")] double milesPerHour)
             {
                 return value.Start().MatchImpliedSpeedMphBelow(longitude1, latitude2, longitude2, hoursElapsed, milesPerHour);
             }
 
-            public Flow<double> RejectImpliedSpeedMphBelow(double longitude1, double latitude2, double longitude2, double hoursElapsed, double milesPerHour)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The implied speed in miles per hour is below the limit. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectImpliedSpeedMphBelow([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in miles per hour that counts.")] double milesPerHour)
             {
                 return value.Start().RejectImpliedSpeedMphBelow(longitude1, latitude2, longitude2, hoursElapsed, milesPerHour);
             }
 
-            public Flow<double> BreakImpliedSpeedMphBelow(double longitude1, double latitude2, double longitude2, double hoursElapsed, double milesPerHour)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The implied speed in miles per hour is below the limit. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakImpliedSpeedMphBelow([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in miles per hour that counts.")] double milesPerHour)
             {
                 return value.Start().BreakImpliedSpeedMphBelow(longitude1, latitude2, longitude2, hoursElapsed, milesPerHour);
             }
 
-            public Flow<double> RequireImpliedSpeedMphBelow(double longitude1, double latitude2, double longitude2, double hoursElapsed, double milesPerHour)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The implied speed in miles per hour is below the limit. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireImpliedSpeedMphBelow([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in miles per hour that counts.")] double milesPerHour)
             {
                 return value.Start().RequireImpliedSpeedMphBelow(longitude1, latitude2, longitude2, hoursElapsed, milesPerHour);
             }
 
-            public Flow<double> EnsureImpliedSpeedMphBelow(double longitude1, double latitude2, double longitude2, double hoursElapsed, double milesPerHour)
+            [Description("Begins a pipeline from the value. True when: the value is latitude 1. The implied speed in miles per hour is below the limit. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureImpliedSpeedMphBelow([Description("The longitude of the first point in degrees; the value is the first latitude.")] double longitude1,
+                [Description("The latitude of the second point in degrees.")] double latitude2,
+                [Description("The longitude of the second point in degrees.")] double longitude2,
+                [Description("The hours between the two positions.")] double hoursElapsed,
+                [Description("The speed in miles per hour that counts.")] double milesPerHour)
             {
                 return value.Start().EnsureImpliedSpeedMphBelow(longitude1, latitude2, longitude2, hoursElapsed, milesPerHour);
             }

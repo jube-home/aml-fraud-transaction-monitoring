@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Decides rejected, if nothing has decided yet.")]
         public static Flow<T> Reject<T>(this Flow<T> flow)
         {
             return flow.IsDecided ? flow : flow.Decide(FlowOutcome.Rejected);

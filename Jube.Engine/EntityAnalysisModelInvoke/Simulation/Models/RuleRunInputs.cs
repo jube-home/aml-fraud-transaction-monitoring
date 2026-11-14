@@ -13,7 +13,9 @@
 
 using System.Collections.Generic;
 using Jube.Dictionary;
+using Jube.GraphRecallProtocol;
 using Jube.HttpAdaptationProtocol;
+using Svirfd;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -33,7 +35,9 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Simulation.Models
         public PooledDictionary<string, double> Sanction { get; } = new();
         public PooledDictionary<string, double> ExhaustiveAdaptation { get; } = new();
         public PooledDictionary<string, double> AdvancedAnalyticsAdaptation { get; } = new();
+        public PooledDictionary<string, GraphEntity> Graph { get; } = new();
         public PooledDictionary<string, Adaptation> HttpAdaptation { get; } = new();
+        public PooledDictionary<string, IpResponse> Svirfd { get; } = new();
         public List<string> Activation { get; } = [];
     }
 }

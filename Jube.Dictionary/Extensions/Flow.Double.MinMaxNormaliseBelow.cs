@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchMinMaxNormaliseBelow(double minimum, double maximum, double bound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (1) is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMinMaxNormaliseBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 1.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleMinMaxNormaliseBelow(flow.Value, minimum, maximum, bound));
             }
 
-            public Flow<double> RejectMinMaxNormaliseBelow(double minimum, double maximum, double bound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (1) is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMinMaxNormaliseBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 1.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleMinMaxNormaliseBelow(flow.Value, minimum, maximum, bound));
             }
 
-            public Flow<double> BreakMinMaxNormaliseBelow(double minimum, double maximum, double bound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (1) is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMinMaxNormaliseBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 1.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleMinMaxNormaliseBelow(flow.Value, minimum, maximum, bound));
             }
 
-            public Flow<double> RequireMinMaxNormaliseBelow(double minimum, double maximum, double bound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (1) is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMinMaxNormaliseBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 1.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleMinMaxNormaliseBelow(flow.Value, minimum, maximum, bound));
             }
 
-            public Flow<double> EnsureMinMaxNormaliseBelow(double minimum, double maximum, double bound)
+            [Description("True when: where the value sits between the minimum (0) and maximum (1) is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMinMaxNormaliseBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 1.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchMinMaxNormaliseBelow(double minimum, double maximum, double bound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (1) is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchMinMaxNormaliseBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 1.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchMinMaxNormaliseBelow(minimum, maximum, bound);
             }
 
-            public Flow<double> RejectMinMaxNormaliseBelow(double minimum, double maximum, double bound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (1) is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectMinMaxNormaliseBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 1.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectMinMaxNormaliseBelow(minimum, maximum, bound);
             }
 
-            public Flow<double> BreakMinMaxNormaliseBelow(double minimum, double maximum, double bound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (1) is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakMinMaxNormaliseBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 1.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakMinMaxNormaliseBelow(minimum, maximum, bound);
             }
 
-            public Flow<double> RequireMinMaxNormaliseBelow(double minimum, double maximum, double bound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (1) is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireMinMaxNormaliseBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 1.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireMinMaxNormaliseBelow(minimum, maximum, bound);
             }
 
-            public Flow<double> EnsureMinMaxNormaliseBelow(double minimum, double maximum, double bound)
+            [Description("Begins a pipeline from the value. True when: where the value sits between the minimum (0) and maximum (1) is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureMinMaxNormaliseBelow([Description("The value that maps to 0.")] double minimum,
+                [Description("The value that maps to 1.")] double maximum,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureMinMaxNormaliseBelow(minimum, maximum, bound);
             }

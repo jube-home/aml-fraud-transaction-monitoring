@@ -15,6 +15,7 @@ using Jube.Data.Repository.Models;
 using System;
 using System.Linq;
 using Jube.Data.Context;
+using Jube.Data.Poco;
 
 namespace Jube.Data.Query.EntityApproval
 {
@@ -43,7 +44,12 @@ namespace Jube.Data.Query.EntityApproval
                 EntityApprovalKind.ExhaustiveSearchInstance => ExhaustiveSearchInstanceSubjects(),
                 EntityApprovalKind.EntityAnalysisModelActivationRule => ActivationRuleSubjects(),
                 EntityApprovalKind.EntityAnalysisModelTag => TagSubjects(),
-                EntityApprovalKind.AdvancedAnalyticsInstance => AdvancedAnalyticsInstanceSubjects(),
+                EntityApprovalKind.EntityAnalysisModelResponseElevationRange => ResponseElevationRangeSubjects(),
+                EntityApprovalKind.AskJoobyAnalyticsInstance => AskJoobyAnalyticsInstanceSubjects(),
+                EntityApprovalKind.EntityAnalysisModelGraphRecall => GraphRecallSubjects(),
+                EntityApprovalKind.EntityAnalysisModelSvirfd => SvirfdSubjects(),
+                EntityApprovalKind.EntityAnalysisModelOverride => OverrideSubjects(),
+                EntityApprovalKind.EntityAnalysisModelActivationRuleOverride => ActivationRuleOverrideSubjects(),
                 _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
             };
         }
@@ -57,10 +63,16 @@ namespace Jube.Data.Query.EntityApproval
                     m.DeletedUser ?? "", m.Id));
         }
 
+        private IQueryable<EntityAnalysisModel> ResolvableModels()
+        {
+            return dbContext.EntityAnalysisModel.Where(m => m.Deleted == 0 || m.Deleted == null
+                || !dbContext.EntityAnalysisModel.Any(x => x.Guid == m.Guid && (x.Deleted == 0 || x.Deleted == null)));
+        }
+
         private IQueryable<EntityApprovalSubject> ListSubjects()
         {
             return from l in dbContext.EntityAnalysisModelList
-                join m in dbContext.EntityAnalysisModel on l.EntityAnalysisModelGuid equals m.Guid
+                join m in ResolvableModels() on l.EntityAnalysisModelGuid equals m.Guid
                 where m.TenantRegistryId == tenantRegistryId
                 select new EntityApprovalSubject(EntityApprovalKind.EntityAnalysisModelList, l.Id,
                     l.Name ?? "", l.Active == 1, l.Deleted == 1, l.Version ?? 1, l.CreatedUser ?? "",
@@ -71,7 +83,7 @@ namespace Jube.Data.Query.EntityApproval
         {
             return from v in dbContext.EntityAnalysisModelListValue
                 join l in dbContext.EntityAnalysisModelList on v.EntityAnalysisModelListId equals l.Id
-                join m in dbContext.EntityAnalysisModel on l.EntityAnalysisModelGuid equals m.Guid
+                join m in ResolvableModels() on l.EntityAnalysisModelGuid equals m.Guid
                 where m.TenantRegistryId == tenantRegistryId
                 select new EntityApprovalSubject(EntityApprovalKind.EntityAnalysisModelListValue, v.Id,
                     v.ListValue ?? "", true, v.Deleted == 1, v.Version ?? 1, v.CreatedUser ?? "",
@@ -81,7 +93,7 @@ namespace Jube.Data.Query.EntityApproval
         private IQueryable<EntityApprovalSubject> DictionarySubjects()
         {
             return from d in dbContext.EntityAnalysisModelDictionary
-                join m in dbContext.EntityAnalysisModel on d.EntityAnalysisModelGuid equals m.Guid
+                join m in ResolvableModels() on d.EntityAnalysisModelGuid equals m.Guid
                 where m.TenantRegistryId == tenantRegistryId
                 select new EntityApprovalSubject(EntityApprovalKind.EntityAnalysisModelDictionary, d.Id,
                     d.Name ?? "", d.Active == 1, d.Deleted == 1, d.Version ?? 1, d.CreatedUser ?? "",
@@ -92,7 +104,7 @@ namespace Jube.Data.Query.EntityApproval
         {
             return from k in dbContext.EntityAnalysisModelDictionaryKvp
                 join d in dbContext.EntityAnalysisModelDictionary on k.EntityAnalysisModelDictionaryId equals d.Id
-                join m in dbContext.EntityAnalysisModel on d.EntityAnalysisModelGuid equals m.Guid
+                join m in ResolvableModels() on d.EntityAnalysisModelGuid equals m.Guid
                 where m.TenantRegistryId == tenantRegistryId
                 select new EntityApprovalSubject(EntityApprovalKind.EntityAnalysisModelDictionaryKvp, k.Id,
                     k.KvpKey ?? "", true, k.Deleted == 1, k.Version ?? 1, k.CreatedUser ?? "",
@@ -219,12 +231,63 @@ namespace Jube.Data.Query.EntityApproval
                     x.DeletedUser ?? "", m.Id);
         }
 
-        private IQueryable<EntityApprovalSubject> AdvancedAnalyticsInstanceSubjects()
+        private IQueryable<EntityApprovalSubject> ResponseElevationRangeSubjects()
         {
-            return from x in dbContext.AdvancedAnalyticsInstance
+            return from x in dbContext.EntityAnalysisModelResponseElevationRange
                 join m in dbContext.EntityAnalysisModel on x.EntityAnalysisModelId equals m.Id
                 where m.TenantRegistryId == tenantRegistryId
-                select new EntityApprovalSubject(EntityApprovalKind.AdvancedAnalyticsInstance, x.Id,
+                select new EntityApprovalSubject(EntityApprovalKind.EntityAnalysisModelResponseElevationRange, x.Id,
+                    x.Name ?? "", x.Active == 1, x.Deleted == 1, x.Version ?? 1, x.CreatedUser ?? "",
+                    x.DeletedUser ?? "", m.Id);
+        }
+
+        private IQueryable<EntityApprovalSubject> GraphRecallSubjects()
+        {
+            return from x in dbContext.EntityAnalysisModelGraphRecall
+                join m in dbContext.EntityAnalysisModel on x.EntityAnalysisModelId equals m.Id
+                where m.TenantRegistryId == tenantRegistryId
+                select new EntityApprovalSubject(EntityApprovalKind.EntityAnalysisModelGraphRecall, x.Id,
+                    x.Name ?? "", x.Active == 1, x.Deleted == 1, x.Version ?? 1, x.CreatedUser ?? "",
+                    x.DeletedUser ?? "", m.Id);
+        }
+
+        private IQueryable<EntityApprovalSubject> SvirfdSubjects()
+        {
+            return from x in dbContext.EntityAnalysisModelSvirfd
+                join m in dbContext.EntityAnalysisModel on x.EntityAnalysisModelId equals m.Id
+                where m.TenantRegistryId == tenantRegistryId
+                select new EntityApprovalSubject(EntityApprovalKind.EntityAnalysisModelSvirfd, x.Id,
+                    x.Name ?? "", x.Active == 1, x.Deleted == 1, x.Version ?? 1, x.CreatedUser ?? "",
+                    x.DeletedUser ?? "", m.Id);
+        }
+
+        private IQueryable<EntityApprovalSubject> OverrideSubjects()
+        {
+            return from x in dbContext.EntityAnalysisModelOverride
+                join m in ResolvableModels() on x.EntityAnalysisModelGuid equals m.Guid
+                where m.TenantRegistryId == tenantRegistryId && x.OverrideKind == 1
+                select new EntityApprovalSubject(EntityApprovalKind.EntityAnalysisModelOverride, x.Id,
+                    (x.OverrideKey ?? "") + " = " + (x.OverrideKeyValue ?? ""), true, x.Deleted == 1,
+                    x.Version ?? 1, x.CreatedUser ?? "", x.DeletedUser ?? "", m.Id);
+        }
+
+        private IQueryable<EntityApprovalSubject> ActivationRuleOverrideSubjects()
+        {
+            return from x in dbContext.EntityAnalysisModelActivationRuleOverride
+                join m in ResolvableModels() on x.EntityAnalysisModelGuid equals m.Guid
+                where m.TenantRegistryId == tenantRegistryId && x.OverrideKind == 1
+                select new EntityApprovalSubject(EntityApprovalKind.EntityAnalysisModelActivationRuleOverride, x.Id,
+                    (x.OverrideKey ?? "") + " = " + (x.OverrideKeyValue ?? "") + " / " +
+                    (x.EntityAnalysisModelActivationRuleName ?? ""), true, x.Deleted == 1, x.Version ?? 1,
+                    x.CreatedUser ?? "", x.DeletedUser ?? "", m.Id);
+        }
+
+        private IQueryable<EntityApprovalSubject> AskJoobyAnalyticsInstanceSubjects()
+        {
+            return from x in dbContext.AskJoobyAnalyticsInstance
+                join m in dbContext.EntityAnalysisModel on x.EntityAnalysisModelId equals m.Id
+                where m.TenantRegistryId == tenantRegistryId
+                select new EntityApprovalSubject(EntityApprovalKind.AskJoobyAnalyticsInstance, x.Id,
                     x.Name ?? "", x.Active == 1, x.Deleted == 1, x.Version, x.CreatedUser ?? "",
                     x.DeletedUser ?? "", m.Id, m.Id);
         }

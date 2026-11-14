@@ -40,26 +40,24 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(11)] public DateTime? DeletedDate { get; set; }
         [Column] [Nullable] [Key(12)] public int? InheritedId { get; set; }
         [Column] [Nullable] [Key(13)] public int? Version { get; set; }
-        [Column] [Nullable] [Key(14)] public int? VisualisationTypeId { get; set; }
         [Column] [Nullable] [Key(15)] public string Command { get; set; }
-        [Column] [Nullable] [Key(16)] public string VisualisationText { get; set; }
         [Column] [Nullable] [Key(17)] public double? Priority { get; set; }
         [Column] [Nullable] [Key(18)] public byte? IncludeGrid { get; set; }
-        [Column] [Nullable] [Key(19)] public byte? IncludeDisplay { get; set; }
         [Column] [Nullable] [Key(20)] public int? ColumnSpan { get; set; }
         [Column] [Nullable] [Key(21)] public int? RowSpan { get; set; }
 
-        [Association(ThisKey = "VisualisationRegistryId", OtherKey = "Id", CanBeNull = false,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "VisualisationRegistryId", OtherKey = "Id", CanBeNull = false)]
         [Key(22)]
         public VisualisationRegistry VisualisationRegistry { get; set; }
 
         [Column] [Nullable] [Key(23)] public Guid Guid { get; set; }
         [Column] [Nullable] [Key(24)] public int? ImportId { get; set; }
 
-        [Association(ThisKey = "Guid", OtherKey = "VisualisationRegistryDatasourceGuid", CanBeNull = false,
-            Relationship = Relationship.OneToMany)]
+        [Association(ThisKey = "Guid", OtherKey = "VisualisationRegistryDatasourceGuid", CanBeNull = false)]
         [Key(25)]
         public VisualisationRegistryDatasourceRole VisualisationRegistryDatasourceRole { get; set; }
+
+        [Column] [Nullable] [Key(26)] public int? DisplayKindId { get; set; }
+        [Column] [Nullable] [Key(27)] public string TemplateText { get; set; }
     }
 }

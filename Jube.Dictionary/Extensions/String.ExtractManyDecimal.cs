@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Extracts all decimal numbers from the string.")]
         public static decimal[] ExtractManyDecimal(this string @this)
         {
             return Regex.Matches(@this, @"[-]?\d+(\.\d+)?")

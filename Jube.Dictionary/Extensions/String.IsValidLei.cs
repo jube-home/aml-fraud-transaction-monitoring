@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Whether the text is a 20-character LEI passing ISO 17442 mod-97.")]
         public static bool IsValidLei(this string? @this)
         {
             var value = (@this ?? "").Trim().ToUpperInvariant();

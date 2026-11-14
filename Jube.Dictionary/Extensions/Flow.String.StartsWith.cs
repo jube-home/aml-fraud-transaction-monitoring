@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchStartsWith(string? prefix)
+            [Description("True when: starts with the prefix. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchStartsWith([Description("The text the value must start with.")] string? prefix)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringStartsWith(flow.Value, prefix));
             }
 
-            public Flow<string?> RejectStartsWith(string? prefix)
+            [Description("True when: starts with the prefix. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectStartsWith([Description("The text the value must start with.")] string? prefix)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringStartsWith(flow.Value, prefix));
             }
 
-            public Flow<string?> BreakStartsWith(string? prefix)
+            [Description("True when: starts with the prefix. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakStartsWith([Description("The text the value must start with.")] string? prefix)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringStartsWith(flow.Value, prefix));
             }
 
-            public Flow<string?> RequireStartsWith(string? prefix)
+            [Description("True when: starts with the prefix. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireStartsWith([Description("The text the value must start with.")] string? prefix)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringStartsWith(flow.Value, prefix));
             }
 
-            public Flow<string?> EnsureStartsWith(string? prefix)
+            [Description("True when: starts with the prefix. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureStartsWith([Description("The text the value must start with.")] string? prefix)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchStartsWith(string? prefix)
+            [Description("Begins a pipeline from the value. True when: starts with the prefix. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchStartsWith([Description("The text the value must start with.")] string? prefix)
             {
                 return value.Start().MatchStartsWith(prefix);
             }
 
-            public Flow<string?> RejectStartsWith(string? prefix)
+            [Description("Begins a pipeline from the value. True when: starts with the prefix. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectStartsWith([Description("The text the value must start with.")] string? prefix)
             {
                 return value.Start().RejectStartsWith(prefix);
             }
 
-            public Flow<string?> BreakStartsWith(string? prefix)
+            [Description("Begins a pipeline from the value. True when: starts with the prefix. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakStartsWith([Description("The text the value must start with.")] string? prefix)
             {
                 return value.Start().BreakStartsWith(prefix);
             }
 
-            public Flow<string?> RequireStartsWith(string? prefix)
+            [Description("Begins a pipeline from the value. True when: starts with the prefix. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireStartsWith([Description("The text the value must start with.")] string? prefix)
             {
                 return value.Start().RequireStartsWith(prefix);
             }
 
-            public Flow<string?> EnsureStartsWith(string? prefix)
+            [Description("Begins a pipeline from the value. True when: starts with the prefix. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureStartsWith([Description("The text the value must start with.")] string? prefix)
             {
                 return value.Start().EnsureStartsWith(prefix);
             }

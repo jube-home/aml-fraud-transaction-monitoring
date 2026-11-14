@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchNotEqual(double other)
+            [Description("True when: the value differs from the argument. NaN on either side is false. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchNotEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleNotEqual(flow.Value, other));
             }
 
-            public Flow<double> RejectNotEqual(double other)
+            [Description("True when: the value differs from the argument. NaN on either side is false. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectNotEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleNotEqual(flow.Value, other));
             }
 
-            public Flow<double> BreakNotEqual(double other)
+            [Description("True when: the value differs from the argument. NaN on either side is false. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakNotEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleNotEqual(flow.Value, other));
             }
 
-            public Flow<double> RequireNotEqual(double other)
+            [Description("True when: the value differs from the argument. NaN on either side is false. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireNotEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleNotEqual(flow.Value, other));
             }
 
-            public Flow<double> EnsureNotEqual(double other)
+            [Description("True when: the value differs from the argument. NaN on either side is false. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureNotEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchNotEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value differs from the argument. NaN on either side is false. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchNotEqual([Description("The other number.")] double other)
             {
                 return value.Start().MatchNotEqual(other);
             }
 
-            public Flow<double> RejectNotEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value differs from the argument. NaN on either side is false. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectNotEqual([Description("The other number.")] double other)
             {
                 return value.Start().RejectNotEqual(other);
             }
 
-            public Flow<double> BreakNotEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value differs from the argument. NaN on either side is false. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakNotEqual([Description("The other number.")] double other)
             {
                 return value.Start().BreakNotEqual(other);
             }
 
-            public Flow<double> RequireNotEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value differs from the argument. NaN on either side is false. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireNotEqual([Description("The other number.")] double other)
             {
                 return value.Start().RequireNotEqual(other);
             }
 
-            public Flow<double> EnsureNotEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value differs from the argument. NaN on either side is false. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureNotEqual([Description("The other number.")] double other)
             {
                 return value.Start().EnsureNotEqual(other);
             }

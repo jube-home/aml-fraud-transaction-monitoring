@@ -28,7 +28,7 @@ namespace Jube.Service.Repository.AdvancedAnalyticsTrainingRun
 
             var submission = await service.SubmitTrainingAsync(new PrincipalComponentTrainingDto
             {
-                AdvancedAnalyticsInstanceId = request.InstanceId,
+                AskJoobyAnalyticsInstanceId = request.InstanceId,
                 ModelName = request.ModelName,
                 CorrelationKey = request.CorrelationKey,
                 VariableNames = request.VariableNames,

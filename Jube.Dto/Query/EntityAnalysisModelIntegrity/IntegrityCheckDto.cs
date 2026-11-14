@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,29 +22,37 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.EntityAnalysisModelIntegrity
 {
     [Description("One finding of a model integrity check, with a stable code.")]
+    [MessagePackObject]
     public class IntegrityCheckDto
     {
         [Description("The check's stable code, e.g. DependencyDangling or EngineCompileFailed.")]
+        [Key(0)]
         public string Code { get; set; } = string.Empty;
 
         [Description("A short description of the check, e.g. Uses a name that does not exist.")]
+        [Key(1)]
         public string Title { get; set; } = string.Empty;
 
         [Description("Error (something does not work), Warning (something may not work as intended) or Info.")]
+        [Key(2)]
         public string Severity { get; set; } = string.Empty;
 
         [Description("Dependencies, Compilation, Configuration or Engine.")]
+        [Key(3)]
         public string Category { get; set; } = string.Empty;
 
         [Description("The kind of entity the finding is about, when it is about one.")]
+        [Key(4)]
         public string? EntityKind { get; set; }
 
-        [Description("The entity's id.")] public int? EntityId { get; set; }
+        [Description("The entity's id.")] [Key(5)] public int? EntityId { get; set; }
 
         [Description("The entity's name, or the engine instance for an engine finding.")]
+        [Key(6)]
         public string? EntityName { get; set; }
 
         [Description("What was found and what it means.")]
+        [Key(7)]
         public string Message { get; set; } = string.Empty;
     }
 }

@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using MessagePack;
 using Newtonsoft.Json;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -20,147 +21,181 @@ using Newtonsoft.Json;
 
 namespace Jube.Engine.AdvancedAnalytics.Regression.Models
 {
-    public sealed record LogisticWarning(string Code, string Message);
+    [MessagePackObject]
+    public sealed record LogisticWarning([property: Key(0)] string Code, [property: Key(1)] string Message);
 
+    [MessagePackObject]
     public sealed record LogisticSplitSizes(
-        int Train,
-        int Validation,
-        int Test,
-        int TrainPositives,
-        int ValidationPositives,
-        int TestPositives);
+        [property: Key(0)] int Train,
+        [property: Key(1)] int Validation,
+        [property: Key(2)] int Test,
+        [property: Key(3)] int TrainPositives,
+        [property: Key(4)] int ValidationPositives,
+        [property: Key(5)] int TestPositives);
 
+    [MessagePackObject]
     public sealed record LogisticReliabilityBin(
-        double Lower,
-        double Upper,
-        int Count,
-        double? MeanPredicted,
-        double? ObservedRate);
+        [property: Key(0)] double Lower,
+        [property: Key(1)] double Upper,
+        [property: Key(2)] int Count,
+        [property: Key(3)] double? MeanPredicted,
+        [property: Key(4)] double? ObservedRate);
 
+    [MessagePackObject]
     public sealed record LogisticSplitMetrics(
-        string Split,
-        int Rows,
-        int Positives,
-        double? RocAuc,
-        double? RocAucStandardError,
-        double? RocAucLower95,
-        double? RocAucUpper95,
-        double? AveragePrecision,
-        double? LogLoss,
-        double? BrierScore,
-        double? ExpectedCalibrationError,
-        LogisticReliabilityBin[] ReliabilityBins,
-        double Threshold,
-        string ThresholdSource,
-        int TruePositives,
-        int FalsePositives,
-        int TrueNegatives,
-        int FalseNegatives,
-        double? Precision,
-        double? Recall,
-        double? F1,
-        double? MatthewsCorrelation,
-        double? ExpectedCostAtThreshold,
-        double? CalibrationSlope,
-        double? CalibrationIntercept,
-        double? MeanPredictedProbability);
+        [property: Key(0)] string Split,
+        [property: Key(1)] int Rows,
+        [property: Key(2)] int Positives,
+        [property: Key(3)] double? RocAuc,
+        [property: Key(4)] double? RocAucStandardError,
+        [property: Key(5)] double? RocAucLower95,
+        [property: Key(6)] double? RocAucUpper95,
+        [property: Key(7)] double? AveragePrecision,
+        [property: Key(8)] double? LogLoss,
+        [property: Key(9)] double? BrierScore,
+        [property: Key(10)] double? ExpectedCalibrationError,
+        [property: Key(11)] LogisticReliabilityBin[] ReliabilityBins,
+        [property: Key(12)] double Threshold,
+        [property: Key(13)] string ThresholdSource,
+        [property: Key(14)] int TruePositives,
+        [property: Key(15)] int FalsePositives,
+        [property: Key(16)] int TrueNegatives,
+        [property: Key(17)] int FalseNegatives,
+        [property: Key(18)] double? Precision,
+        [property: Key(19)] double? Recall,
+        [property: Key(20)] double? F1,
+        [property: Key(21)] double? MatthewsCorrelation,
+        [property: Key(22)] double? ExpectedCostAtThreshold,
+        [property: Key(23)] double? CalibrationSlope,
+        [property: Key(24)] double? CalibrationIntercept,
+        [property: Key(25)] double? MeanPredictedProbability);
 
+    [MessagePackObject]
     public sealed record LogisticCoefficient(
-        string Name,
-        string Kind,
-        double Estimate,
-        double? StandardError,
-        double? WaldZ,
-        double? PValue,
-        double? OddsRatio,
-        double? OddsRatioLower95,
-        double? OddsRatioUpper95);
+        [property: Key(0)] string Name,
+        [property: Key(1)] string Kind,
+        [property: Key(2)] double Estimate,
+        [property: Key(3)] double? StandardError,
+        [property: Key(4)] double? WaldZ,
+        [property: Key(5)] double? PValue,
+        [property: Key(6)] double? OddsRatio,
+        [property: Key(7)] double? OddsRatioLower95,
+        [property: Key(8)] double? OddsRatioUpper95);
 
+    [MessagePackObject]
     public sealed record LogisticVariablePreprocessing(
-        string Name,
-        int MissingInTrain,
-        double FillValue,
-        double Mean,
-        double StandardDeviation,
-        bool HasMissingIndicator,
-        bool Excluded,
-        string ExclusionReason,
-        double? VarianceInflationFactor);
+        [property: Key(0)] string Name,
+        [property: Key(1)] int MissingInTrain,
+        [property: Key(2)] double FillValue,
+        [property: Key(3)] double Mean,
+        [property: Key(4)] double StandardDeviation,
+        [property: Key(5)] bool HasMissingIndicator,
+        [property: Key(6)] bool Excluded,
+        [property: Key(7)] string ExclusionReason,
+        [property: Key(8)] double? VarianceInflationFactor);
 
+    [MessagePackObject]
     public sealed record LogisticCalibrationInfo(
-        bool Applied,
-        double? Slope,
-        double? Intercept,
-        int RowsUsed,
-        string Reason);
+        [property: Key(0)] bool Applied,
+        [property: Key(1)] double? Slope,
+        [property: Key(2)] double? Intercept,
+        [property: Key(3)] int RowsUsed,
+        [property: Key(4)] string Reason);
 
+    [MessagePackObject]
     public sealed record LogisticPriors(
-        double TrainingPositiveRate,
-        double EffectivePrior,
-        double BaseRate,
-        string BaseRateSource);
+        [property: Key(0)] double TrainingPositiveRate,
+        [property: Key(1)] double EffectivePrior,
+        [property: Key(2)] double BaseRate,
+        [property: Key(3)] string BaseRateSource);
 
+    [MessagePackObject]
     public sealed record LogisticFitInfo(
-        bool Converged,
-        int Iterations,
-        int MaximumIterations,
-        double MaximumGradient,
-        bool Penalised,
-        double RidgeLambda,
-        int PredictorCount,
-        double EventsPerVariable,
-        string StandardErrorBasis);
+        [property: Key(0)] bool Converged,
+        [property: Key(1)] int Iterations,
+        [property: Key(2)] int MaximumIterations,
+        [property: Key(3)] double MaximumGradient,
+        [property: Key(4)] bool Penalised,
+        [property: Key(5)] double RidgeLambda,
+        [property: Key(6)] int PredictorCount,
+        [property: Key(7)] double EventsPerVariable,
+        [property: Key(8)] string StandardErrorBasis);
 
-    public sealed record LogisticPredictions(int[] Rows, int[] Labels, double[] Probabilities);
+    [MessagePackObject]
+    public sealed record LogisticPredictions([property: Key(0)] int[] Rows, [property: Key(1)] int[] Labels, [property: Key(2)] double[] Probabilities);
 
+    [MessagePackObject]
     public sealed class LogisticRegressionResult
     {
+        [Key(0)]
         public required string Kind { get; init; }
+        [Key(1)]
         public required int Seed { get; init; }
+        [Key(2)]
         public required LogisticRegressionOptions Options { get; init; }
+        [Key(3)]
         public required string[] Variables { get; init; }
+        [Key(4)]
         public required LogisticSplitSizes SplitSizes { get; init; }
+        [Key(5)]
         public required LogisticSplitMetrics TrainMetrics { get; init; }
+        [Key(6)]
         public required LogisticSplitMetrics ValidationMetrics { get; init; }
+        [Key(7)]
         public required LogisticSplitMetrics TestMetrics { get; init; }
+        [Key(8)]
         public required LogisticCoefficient[] Coefficients { get; init; }
+        [Key(9)]
         public required LogisticVariablePreprocessing[] Preprocessing { get; init; }
+        [Key(10)]
         public required LogisticCalibrationInfo Calibration { get; init; }
+        [Key(11)]
         public required LogisticPriors Priors { get; init; }
+        [Key(12)]
         public required LogisticFitInfo Fit { get; init; }
+        [Key(13)]
         public required LogisticWarning[] Warnings { get; init; }
+        [Key(14)]
         public required string SnapshotJson { get; init; }
 
         [JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
+        [Key(15)]
         public int[] TrainRows { get; init; } = null!;
 
         [JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
+        [Key(16)]
         public int[] ValidationRows { get; init; } = null!;
 
         [JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
+        [Key(17)]
         public int[] TestRows { get; init; } = null!;
 
         [JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
+        [Key(18)]
         public LogisticPredictions TrainPredictions { get; init; } = null!;
 
         [JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
+        [Key(19)]
         public LogisticPredictions ValidationPredictions { get; init; } = null!;
 
         [JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
+        [Key(20)]
         public LogisticPredictions TestPredictions { get; init; } = null!;
 
         [JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
+        [Key(21)]
         public double[] Weights { get; init; } = null!;
 
         [JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
+        [Key(22)]
         public double Intercept { get; init; }
     }
 }

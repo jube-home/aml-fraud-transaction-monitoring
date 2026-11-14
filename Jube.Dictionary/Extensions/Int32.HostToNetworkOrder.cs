@@ -9,6 +9,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Converts from host byte order to network byte order.")]
         public static Int32 HostToNetworkOrder(this Int32 host)
         {
             return IPAddress.HostToNetworkOrder(host);

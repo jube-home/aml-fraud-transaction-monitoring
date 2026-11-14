@@ -18,8 +18,8 @@ namespace Jube.Data.Repository.Models
         ModelInvokeWarning = 1,
         CaseCreationWarning = 2,
         ArchiverWarning = 3,
-        RedisSentinelEvent = 4,
-        RedisConnectionEvent = 5,
+        RespSentinelEvent = 4,
+        RespConnectionEvent = 5,
         OpenTelemetryMetric = 6
     }
 }

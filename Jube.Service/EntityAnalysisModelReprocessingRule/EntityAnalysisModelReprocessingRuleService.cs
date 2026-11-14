@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using FluentValidation;
 using Jube.Data.Context;
@@ -40,7 +41,8 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
     public sealed class EntityAnalysisModelReprocessingRuleService
     {
         private const int MaxListTake = 200;
-        private static readonly int[] permissions = [26];
+        private static readonly int[] permissions = ReprocessingPermissions.Read;
+        private static readonly int[] editPermissions = ReprocessingPermissions.EditRule;
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
         private readonly ILog log;
@@ -72,6 +74,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
         }
 
         public static IReadOnlyList<int> RequiredPermissions => permissions;
+        public static IReadOnlyList<int> EditPermissions => editPermissions;
 
         public static Task<EntityAnalysisModelReprocessingRuleService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -534,7 +537,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
             try
             {
                 ArgumentNullException.ThrowIfNull(model);
-                EnsurePermitted("EntityAnalysisModelReprocessingRule.Create");
+                EnsurePermitted("EntityAnalysisModelReprocessingRule.Create", editPermissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
 
@@ -619,7 +622,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
             try
             {
                 ArgumentNullException.ThrowIfNull(model);
-                EnsurePermitted("EntityAnalysisModelReprocessingRule.Validate");
+                EnsurePermitted("EntityAnalysisModelReprocessingRule.Validate", editPermissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
@@ -667,7 +670,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
             try
             {
                 ArgumentNullException.ThrowIfNull(model);
-                EnsurePermitted("EntityAnalysisModelReprocessingRule.ParseRule");
+                EnsurePermitted("EntityAnalysisModelReprocessingRule.ParseRule", editPermissions);
 
                 var results = await validator.ValidateAsync(model,
                     o => o.IncludeRuleSets(RuleScriptParser.RuleSetName), token).ConfigureAwait(false);
@@ -719,7 +722,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
             {
                 ArgumentNullException.ThrowIfNull(model);
                 ArgumentNullException.ThrowIfNull(context);
-                EnsurePermitted("EntityAnalysisModelReprocessingRule.Execute");
+                EnsurePermitted("EntityAnalysisModelReprocessingRule.Execute", editPermissions);
 
                 var result = await RuleExecutor.ExecuteAsync(dbContext, tenantRegistryId,
                     model.EntityAnalysisModelId, RuleParse.GatewayRule,
@@ -771,7 +774,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
 
             try
             {
-                EnsurePermitted("EntityAnalysisModelReprocessingRule.BuildRuleFromBuilderJson");
+                EnsurePermitted("EntityAnalysisModelReprocessingRule.BuildRuleFromBuilderJson", editPermissions);
 
                 var result = await BuilderRuleComposer.ComposeAsync(dbContext, tenantRegistryId,
                     entityAnalysisModelId, RuleParse.GatewayRule, builderJson, token).ConfigureAwait(false);
@@ -824,7 +827,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
             try
             {
                 ArgumentNullException.ThrowIfNull(model);
-                EnsurePermitted("EntityAnalysisModelReprocessingRule.Update");
+                EnsurePermitted("EntityAnalysisModelReprocessingRule.Update", editPermissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
 
@@ -886,6 +889,12 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
                 op.Outcome("notfound");
                 throw;
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
@@ -930,7 +939,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
 
             try
             {
-                EnsurePermitted("EntityAnalysisModelReprocessingRule.Delete");
+                EnsurePermitted("EntityAnalysisModelReprocessingRule.Delete", editPermissions);
 
                 try
                 {
@@ -989,18 +998,23 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            EnsurePermitted(op, permissions);
+        }
+
+        private void EnsurePermitted(string op, int[] required)
+        {
+            if (permissionValidation.Validate(required))
             {
                 return;
             }
 
             if (log.IsWarnEnabled)
             {
-                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", required)}]");
             }
 
             throw new ForbiddenException(strings[EntityAnalysisModelReprocessingRuleResources.PermissionDenied],
-                permissions);
+                required);
         }
     }
 }

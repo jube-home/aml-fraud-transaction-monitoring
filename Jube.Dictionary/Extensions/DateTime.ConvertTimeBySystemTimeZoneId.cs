@@ -10,13 +10,15 @@ namespace Jube.Dictionary.Extensions
     {
         extension(DateTime dateTime)
         {
-            public DateTime ConvertTimeBySystemTimeZoneId(String destinationTimeZoneId)
+            [Description("Converts the time using time zone identifiers.")]
+            public DateTime ConvertTimeBySystemTimeZoneId([Description("The identifier of the destination time zone.")] String destinationTimeZoneId)
             {
                 return TimeZoneInfo.ConvertTimeBySystemTimeZoneId(dateTime, destinationTimeZoneId);
             }
 
-            public DateTime ConvertTimeBySystemTimeZoneId(String sourceTimeZoneId,
-                String destinationTimeZoneId)
+            [Description("Converts the time between time zones using identifiers.")]
+            public DateTime ConvertTimeBySystemTimeZoneId([Description("The identifier of the source time zone.")] String sourceTimeZoneId,
+                [Description("The identifier of the destination time zone.")] String destinationTimeZoneId)
             {
                 return TimeZoneInfo.ConvertTimeBySystemTimeZoneId(dateTime, sourceTimeZoneId, destinationTimeZoneId);
             }

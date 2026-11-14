@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
+            [Description("True when: before 12:00. Decides matched if so; otherwise continues.")]
             public Flow<DateTime> MatchIsMorning()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeIsMorning(flow.Value));
             }
 
+            [Description("True when: before 12:00. Decides rejected if so; otherwise continues.")]
             public Flow<DateTime> RejectIsMorning()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeIsMorning(flow.Value));
             }
 
+            [Description("True when: before 12:00. Decides broken if so; otherwise continues.")]
             public Flow<DateTime> BreakIsMorning()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeIsMorning(flow.Value));
             }
 
+            [Description("True when: before 12:00. Continues if so; otherwise decides rejected.")]
             public Flow<DateTime> RequireIsMorning()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeIsMorning(flow.Value));
             }
 
+            [Description("True when: before 12:00. Continues if so; otherwise decides broken.")]
             public Flow<DateTime> EnsureIsMorning()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
+            [Description("Begins a pipeline from the value. True when: before 12:00. Decides matched if so; otherwise continues.")]
             public Flow<DateTime> MatchIsMorning()
             {
                 return value.Start().MatchIsMorning();
             }
 
+            [Description("Begins a pipeline from the value. True when: before 12:00. Decides rejected if so; otherwise continues.")]
             public Flow<DateTime> RejectIsMorning()
             {
                 return value.Start().RejectIsMorning();
             }
 
+            [Description("Begins a pipeline from the value. True when: before 12:00. Decides broken if so; otherwise continues.")]
             public Flow<DateTime> BreakIsMorning()
             {
                 return value.Start().BreakIsMorning();
             }
 
+            [Description("Begins a pipeline from the value. True when: before 12:00. Continues if so; otherwise decides rejected.")]
             public Flow<DateTime> RequireIsMorning()
             {
                 return value.Start().RequireIsMorning();
             }
 
+            [Description("Begins a pipeline from the value. True when: before 12:00. Continues if so; otherwise decides broken.")]
             public Flow<DateTime> EnsureIsMorning()
             {
                 return value.Start().EnsureIsMorning();

@@ -22,6 +22,7 @@ namespace Jube.Data.Query.GetCaseJournalQuery
     using Context;
     using DynamicResultsSchemaHelper = DynamicResultsSchema.DynamicResultsSchema;
     using log4net;
+    using ArchiveKeyLookup;
     using Newtonsoft.Json.Linq;
     using Reporting;
 
@@ -31,9 +32,9 @@ namespace Jube.Data.Query.GetCaseJournalQuery
         ILog log,
         string reportConnectionString = null)
     {
-        public async Task<GetCaseJournalQueryResultDto> ExecuteAsync(string key, string keyValue, Guid caseWorkflowGuid,
-            int limit,
-            int activationRuleCount, double responseElevation, CancellationToken token = default)
+        public async Task<GetCaseJournalQueryResultDto> ExecuteAsync(ArchiveKeyPredicate key, int? entityAnalysisModelId,
+            Guid caseWorkflowGuid, int limit, int activationRuleCount, double responseElevation,
+            CancellationToken token = default)
         {
             var caseWorkflowXPathByCaseWorkflowIdQuery =
                 new GetCaseWorkflowXPathByCaseWorkflowIdQuery.GetCaseWorkflowXPathByCaseWorkflowIdQuery(dbContext,
@@ -42,38 +43,38 @@ namespace Jube.Data.Query.GetCaseJournalQuery
             var xPaths = (await caseWorkflowXPathByCaseWorkflowIdQuery
                 .ExecuteAsync(caseWorkflowGuid, token)).ToList();
 
-            const string sql = "select '(' || \"ActivationRuleCount\" || ') ' || r.\"Name\" as \"Activation\", a.* " +
-                               "from \"Archive\" a " +
-                               "inner join \"EntityAnalysisModel\" m on m.\"Id\" = a.\"EntityAnalysisModelId\" " +
-                               "inner join \"TenantRegistry\" t on t.\"Id\" = m.\"TenantRegistryId\" " +
-                               "left join (select \"Id\", \"Name\" from \"EntityAnalysisModelActivationRule\") r on r.\"Id\" = a.\"EntityAnalysisModelActivationRuleId\" " +
-                               "where exists ( " +
-                               "    select 1 from \"UserInTenant\" u " +
-                               "    where u.\"TenantRegistryId\" = t.\"Id\" " +
-                               "    and u.\"User\" = (@1) " +
-                               ") " +
-                               "and a.\"Json\" -> 'payload' ->> (@2) = (@3) " +
-                               "and a.\"ResponseElevation\" >= (@4) " +
-                               "and a.\"ActivationRuleCount\" >= (@5) " +
-                               "order by a.\"Id\" desc " +
-                               "limit (@6)";
+            var tokens = new List<object> { user };
+            var sql = "select '(' || \"ActivationRuleCount\" || ') ' || r.\"Name\" as \"Activation\", a.* " +
+                      (ArchiveKeyLookupSql.From(key ?? ArchiveKeyPredicate.ForEntryKey(string.Empty), ArchiveKeyLookupSql.Ordered(tokens)) +
+                       $"and {ArchiveKeyLookupSql.TenantExists}(@1)) ").Replace(
+                          "inner join \"EntityAnalysisModel\" m on m.\"Id\" = a.\"EntityAnalysisModelId\" ",
+                          "inner join \"EntityAnalysisModel\" m on m.\"Id\" = a.\"EntityAnalysisModelId\" " +
+                          "left join (select \"Id\", \"Name\" from \"EntityAnalysisModelActivationRule\") r on r.\"Id\" = a.\"EntityAnalysisModelActivationRuleId\" ",
+                          StringComparison.Ordinal);
 
-            var tokens = new List<object>
+            if (entityAnalysisModelId.HasValue)
             {
-                user,
-                key,
-                keyValue,
-                responseElevation,
-                activationRuleCount,
-                limit
-            };
+                tokens.Add(entityAnalysisModelId.Value);
+                sql += $"and a.\"EntityAnalysisModelId\" = (@{tokens.Count}) ";
+            }
+
+            tokens.Add(responseElevation);
+            sql += $"and a.\"ResponseElevation\" >= (@{tokens.Count}) ";
+            tokens.Add(activationRuleCount);
+            sql += $"and a.\"ActivationRuleCount\" >= (@{tokens.Count}) ";
+            tokens.Add(limit);
+            sql += $"order by a.\"Id\" desc limit (@{tokens.Count})";
 
             using var postgres = new Postgres(reportConnectionString ?? dbContext.Connection.ConnectionString, log);
 
-            await postgres.PrepareAsync(sql, tokens, token).ConfigureAwait(false);
+            if (key is not null)
+            {
+                await postgres.PrepareAsync(sql, tokens, token).ConfigureAwait(false);
+            }
 
-            var records = (await postgres.ExecuteByOrderedParametersAsync(sql, tokens, token).ConfigureAwait(false))
-                .ToList();
+            var records = key is null
+                ? []
+                : (await postgres.ExecuteByOrderedParametersAsync(sql, tokens, token).ConfigureAwait(false)).ToList();
 
             var schema = new Dictionary<string, string>
             {
@@ -147,7 +148,7 @@ namespace Jube.Data.Query.GetCaseJournalQuery
                 {
                     try
                     {
-                        var jToken = json.SelectToken(xPath.XPath);
+                        var jToken = Helpers.BoundedJsonPath.Select(json, xPath.XPath);
 
                         if (jToken != null)
                         {
@@ -173,7 +174,7 @@ namespace Jube.Data.Query.GetCaseJournalQuery
                                     try
                                     {
                                         var valueToken = jToken.Value<string>();
-                                        var regex = new Regex(xPath.RegularExpression);
+                                        var regex = new Regex(xPath.RegularExpression, RegexOptions.None, TimeSpan.FromMilliseconds(100));
                                         var match = regex.Match(valueToken);
 
                                         if (match.Success)

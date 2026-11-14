@@ -17,7 +17,10 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static bool IsWithinBusinessHours(this DateTime @this, int startHour, int endHour)
+        [Description("Checks if the time falls within a given hour range (start inclusive, end exclusive).")]
+        public static bool IsWithinBusinessHours(this DateTime @this,
+            [Description("The first hour (0-23) considered within business hours.")] int startHour,
+            [Description("The first hour (0-23) no longer considered within business hours.")] int endHour)
         {
             var hour = @this.Hour;
 

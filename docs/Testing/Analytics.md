@@ -387,3 +387,50 @@ categorical encoding.
 | `TotalIndicatorBudgetRemovesTheLeastFrequentLevelsAcrossFields` | Fact | Total indicator budget removes the least frequent levels across fields. |
 | `TotalIndicatorBudgetIsDeterministic`                           | Fact | Total indicator budget is deterministic.                                |
 | `OptionsRoundTripAndSanitise`                                   | Fact | Options round trip and sanitise.                                        |
+
+## Aggregation
+
+### AggregationCatalogueTests
+
+`Jube.Test.Analytics.Aggregation.AggregationCatalogueTests` — 11 tests. Category: Unit.
+
+| Test                                                                             | Kind   | Verifies                                                                                      |
+|----------------------------------------------------------------------------------|--------|-----------------------------------------------------------------------------------------------|
+| `EveryCatalogueFunctionIsASearchFunctionTypeOfTheSameNameAndTheReverse`          | Fact   | Every catalogue function is a search function type of the same name and the reverse.          |
+| `TheFunctionsThatPredateTheCatalogueStayOutOfIt`                                 | Fact   | The functions that predate the catalogue stay out of it.                                      |
+| `EveryFunctionAndParameterIsDescribedAndEveryParameterHasADefaultInsideItsRange` | Fact   | Every function and parameter is described and every parameter has a default inside its range. |
+| `ParametersAreReflectedWithTheirKindDefaultAndRange`                             | Fact   | Parameters are reflected with their kind default and range.                                   |
+| `BindingAppliesSuppliedParametersWithoutRegardToCaseAndDefaultsTheRest`          | Fact   | Binding applies supplied parameters without regard to case and defaults the rest.             |
+| `BindingAFunctionOutsideTheCatalogueGivesNothing`                                | Fact   | Binding a function outside the catalogue gives nothing.                                       |
+| `InvalidParametersAreRefusedWithTheReason`                                       | Theory | Invalid parameters are refused with the reason.                                               |
+| `ValidOrAbsentParametersAreAccepted`                                             | Theory | Valid or absent parameters are accepted.                                                      |
+| `ATypedMapOfParametersIsValidatedTheSameWayAsStoredJson`                         | Fact   | A typed map of parameters is validated the same way as stored json.                           |
+| `ParametersAreWrittenAsSortedJsonAndReadBackWithTrueAndFalseAsOneAndZero`        | Fact   | Parameters are written as sorted json and read back with true and false as one and zero.      |
+| `BindingInvalidParametersThrowsRatherThanGuessing`                               | Fact   | Binding invalid parameters throws rather than guessing.                                       |
+
+### AggregationFunctionTests
+
+`Jube.Test.Analytics.Aggregation.AggregationFunctionTests` — 10 tests. Category: Unit.
+
+| Test                                                                   | Kind | Verifies                                                                           |
+|------------------------------------------------------------------------|------|------------------------------------------------------------------------------------|
+| `CentralTendencyKnownAnswers`                                          | Fact | Central tendency known answers.                                                    |
+| `GeometricAndHarmonicMeansAreUndefinedForValuesThatAreNotPositive`     | Fact | Geometric and harmonic means are undefined for values that are not positive.       |
+| `DispersionKnownAnswers`                                               | Fact | Dispersion known answers.                                                          |
+| `ShapeKnownAnswers`                                                    | Fact | Shape known answers.                                                               |
+| `PositionalKnownAnswersFollowTheOrderGiven`                            | Fact | Positional known answers follow the order given.                                   |
+| `ThresholdKnownAnswersTreatAValueOnTheThresholdAsNeitherAboveNorBelow` | Fact | Threshold known answers treat a value on the threshold as neither above nor below. |
+| `LastValueKnownAnswersScoreTheLastValueAgainstTheOnesBeforeIt`         | Fact | Last value known answers score the last value against the ones before it.          |
+| `TrendKnownAnswers`                                                    | Fact | Trend known answers.                                                               |
+| `EveryFunctionAnswersAnEmptyArrayWithoutThrowing`                      | Fact | Every function answers an empty array without throwing.                            |
+| `NoFunctionChangesTheArrayItIsGiven`                                   | Fact | No function changes the array it is given.                                         |
+
+### AggregationParityTests
+
+`Jube.Test.Analytics.Aggregation.AggregationParityTests` — 3 tests. Category: Unit.
+
+| Test                                                        | Kind   | Verifies                                                           |
+|-------------------------------------------------------------|--------|--------------------------------------------------------------------|
+| `CentralTendencyAgreesWithTheDescriptiveTools`              | Theory | Central tendency agrees with the descriptive tools.                |
+| `DispersionAndShapeAgreeWithTheDescriptiveTools`            | Theory | Dispersion and shape agree with the descriptive tools.             |
+| `PercentilesAndThresholdSharesAgreeWithTheDescriptiveTools` | Theory | Percentiles and threshold shares agree with the descriptive tools. |

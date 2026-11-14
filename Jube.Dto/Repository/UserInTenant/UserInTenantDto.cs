@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,13 +21,16 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Repository.UserInTenant
 {
+    [MessagePackObject]
     public class UserInTenantDto
     {
         [Description("Username of the account allocated to the Tenant. Server-managed from the authenticated " +
                      "identity; never accepted from client input.")]
+        [Key(0)]
         public string? User { get; set; }
 
         [Description("Identifier of the Tenant Registry the user is currently allocated to.")]
+        [Key(1)]
         public int TenantRegistryId { get; set; }
     }
 }

@@ -25,7 +25,7 @@ builder.WebHost.ConfigureKestrel(o =>
 
 var app = builder.Build();
 
-app.MapPost("/v1/{signal}", async (string signal, HttpRequest request) =>
+app.MapPost("/v1/{signal:regex(traces|metrics|logs)}", async (string signal, HttpRequest request) =>
 {
     using var memoryStream = new MemoryStream();
     await request.Body.CopyToAsync(memoryStream);
@@ -36,11 +36,11 @@ app.MapPost("/v1/{signal}", async (string signal, HttpRequest request) =>
     if (logContents)
     {
         var strings = ProtobufStringScanner.ExtractStrings(body);
-        contents = $" strings=[{string.Join(", ", strings.Distinct())}]";
+        contents = $" strings=[{string.Join(", ", strings.Distinct().Select(ConsoleText.Escape))}]";
     }
 
     Console.WriteLine(
-        $"[{DateTime.UtcNow:O}] POST /v1/{signal} contentType={request.ContentType} bytes={body.Length}{contents}");
+        $"[{DateTime.UtcNow:O}] POST /v1/{signal} contentType={ConsoleText.Escape(request.ContentType)} bytes={body.Length}{contents}");
 
     return Results.Ok();
 });

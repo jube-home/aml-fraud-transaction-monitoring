@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double NthRoot(this double @this, double degree)
+        [Description("The real n-th root; NaN for an even root of a negative number.")]
+        public static double NthRoot(this double @this,
+            [Description("The degree of the root, for example 3 for the cube root.")] double degree)
         {
             if (double.IsNaN(@this) || !double.IsFinite(degree) || degree == 0)
             {

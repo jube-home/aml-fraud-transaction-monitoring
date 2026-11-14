@@ -109,15 +109,15 @@ namespace Jube.Service.EntityAnalysisAsynchronousQueueBalance
 
         [Description("Lists platform-wide asynchronous processing queue balance rows, most recent first when " +
                      "no sort is given, capped at 'take' rows (max 100000, default 100000). Each row is a " +
-                     "roughly one-minute interval's queue depth for asynchronous CaseCreation, Tagging and " +
-                     "Notification dispatch. Not scoped to any tenant -- these are the whole instance's own " +
+                     "roughly one-minute interval's queue depth for asynchronous CaseCreation, Tagging, " +
+                     "Notification and Web hook dispatch. Not scoped to any tenant -- these are the whole instance's own " +
                      "queue-balance counters, not per-Model or per-tenant data. Each of from/to defaults " +
                      "independently to the last hour when omitted. Optionally apply samplePercentage on top of " +
                      "the date range to draw a random subset instead of the most recent rows -- useful for " +
                      "taking an unbiased baseline sample of activity to compare later, rather than only ever " +
                      "seeing the latest, potentially unrepresentative rows. The response also carries the true " +
                      "Total row count (ignoring 'take') and summary Statistics for this DTO's continuous " +
-                     "per-interval counters (CaseCreation, Tagging, Notification, AsynchronousEntityInvoke) " +
+                     "per-interval counters (CaseCreation, Tagging, Notification, Webhook, AsynchronousEntityInvoke) " +
                      "over the full filtered set. Name is always null and AsynchronousEntityInvoke is " +
                      "always 0 -- a pre-existing gap in the legacy DTO's mapping, carried forward unchanged " +
                      "(so AsynchronousEntityInvoke's own statistics are always zeroed too).")]
@@ -136,7 +136,7 @@ namespace Jube.Service.EntityAnalysisAsynchronousQueueBalance
                 "Percentage (0-100) chance of including each row that already matches every other filter, evaluated independently per row -- e.g. 10 returns roughly a random one-tenth of matching rows, not the newest tenth. Omit for the normal most-recent-first behaviour. Not surfaced in any admin UI; intended for an agent building an unbiased baseline sample of activity to compare against later, rather than for browsing.")]
             double? samplePercentage = null,
             [Description(
-                "Column to sort by (e.g. 'createdDate', 'caseCreation', 'tagging', 'notification', 'instance'); unrecognised or omitted falls back to most-recent-first.")]
+                "Column to sort by (e.g. 'createdDate', 'caseCreation', 'tagging', 'notification', 'webhook', 'instance'); unrecognised or omitted falls back to most-recent-first.")]
             string? sortField = null,
             [Description("'asc' for ascending; anything else (including omitted) sorts descending.")]
             string? sortDirection = null,
@@ -173,7 +173,7 @@ namespace Jube.Service.EntityAnalysisAsynchronousQueueBalance
                         ? new DateTimeOffset(DateTime.SpecifyKind(r.CreatedDate.Value, DateTimeKind.Utc))
                         : null,
                     0, r.CaseCreation.GetValueOrDefault(), r.Tagging.GetValueOrDefault(),
-                    r.Notification.GetValueOrDefault())).ToList();
+                    r.Notification.GetValueOrDefault(), r.Webhook.GetValueOrDefault())).ToList();
 
                 var total = await repository.CountAsync(from, to, clampedSamplePercentage, token)
                     .ConfigureAwait(false);

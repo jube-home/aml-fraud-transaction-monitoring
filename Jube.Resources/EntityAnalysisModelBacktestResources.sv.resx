@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Du har inte behörighet att utföra den här åtgärden.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Du måste vara inloggad i en tenant för att utföra den här åtgärden.</value>
+  </data>
+    <data name="ModelNotFound" xml:space="preserve">
+    <value>Entitetsanalysmodellen hittades inte.</value>
+  </data>
+    <data name="RuleTypeInvalid" xml:space="preserve">
+    <value>Regeltypen {0} kan inte backtestas; använd GatewayRule, ActivationRule eller ReprocessingRule.</value>
+  </data>
+    <data name="RangeInvalid" xml:space="preserve">
+    <value>Från-datumet måste vara tidigare än till-datumet.</value>
+  </data>
+    <data name="InstanceNotFound" xml:space="preserve">
+    <value>Backtestet hittades inte.</value>
+  </data>
+    <data name="RuleTextRequired" xml:space="preserve">
+    <value>En regel att backtesta krävs.</value>
+  </data>
+    <data name="ArchiveNotFound" xml:space="preserve">
+    <value>Transaktionen finns inte i den här modellens arkiv.</value>
+  </data>
+    <data name="LimitTooLarge" xml:space="preserve">
+    <value>Ett omedelbart backtest läser högst {0} transaktioner; skicka det som ett bakgrundsbacktest för att läsa fler.</value>
+  </data>
+    <data name="ResultUnavailable" xml:space="preserve">
+    <value>Backtestet är {0} och har inget resultat.</value>
+  </data>
+    <data name="OnlineTimeLimit" xml:space="preserve">
+    <value>Ett omedelbart backtest stoppas efter {0} sekunder; begränsa intervallet eller sänk gränsen, eller skicka det som ett bakgrundsbacktest.</value>
+  </data>
+    <data name="PendingLimitModel" xml:space="preserve">
+    <value>Den här modellen har redan {0} backtester som väntar eller körs; vänta tills ett är klart eller stoppa ett innan du skickar in ett nytt.</value>
+  </data>
+    <data name="PendingLimitTenant" xml:space="preserve">
+    <value>Din organisation har redan {0} backtester som väntar eller körs; vänta tills ett är klart eller stoppa ett innan du skickar in ett nytt.</value>
+  </data>
+    <data name="PlaceholderNotInRule" xml:space="preserve">
+    <value>Regeltexten måste innehålla platshållaren.</value>
+  </data>
+    <data name="CandidatesInvalid" xml:space="preserve">
+    <value>Ange mellan 1 och {0} kandidater, var och en ett vanligt tal.</value>
+  </data>
+</root>

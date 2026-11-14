@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static Flow<DateTime> ToZone(this Flow<DateTime> flow, string? zoneId)
+        [Description("Replaces the value being tested with the time converted to the named time zone; an unknown zone errors the pipeline.")]
+        public static Flow<DateTime> ToZone(this Flow<DateTime> flow,
+            [Description("The IANA or Windows time zone id, for example Europe/London.")] string? zoneId)
         {
             if (flow.IsDecided)
             {
@@ -29,7 +31,9 @@ namespace Jube.Dictionary.Extensions
                 : flow.Carry(local.Value);
         }
 
-        public static Flow<DateTime> ToZone(this DateTime value, string? zoneId)
+        [Description("Begins a pipeline from the value. Replaces the value being tested with the time converted to the named time zone; an unknown zone errors the pipeline.")]
+        public static Flow<DateTime> ToZone(this DateTime value,
+            [Description("The IANA or Windows time zone id, for example Europe/London.")] string? zoneId)
         {
             return value.Start().ToZone(zoneId);
         }

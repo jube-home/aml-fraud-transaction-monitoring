@@ -60,4 +60,7 @@
     <data name="SampleRange" xml:space="preserve">
     <value>Le taux d'échantillonnage doit être compris entre 0 et 1.</value>
   </data>
+    <data name="SampleTooLarge" xml:space="preserve">
+    <value>L'échantillon dépasse {0} Mio. Réduisez la période ou diminuez le taux d'échantillonnage.</value>
+  </data>
 </root>

@@ -61,7 +61,7 @@ namespace Jube.Engine.Exhaustive.Stages
                 await repositoryExhaustiveSearchInstance.UpdateStatusAsync(exhaustiveSearchInstance.Id, 3, token)
                     .ConfigureAwait(false);
 
-                var copyOfDataForUnsupervised = new Normalisation(log).NormaliseData(variables, data.Copy());
+                var copyOfDataForUnsupervised = new Normalisation(log, environment).NormaliseData(variables, data.Copy());
 
                 if (log.IsInfoEnabled)
                 {
@@ -97,7 +97,7 @@ namespace Jube.Engine.Exhaustive.Stages
                         run.MockData, log,
                         environment?.AppSettings("ReportConnectionString"), token).ConfigureAwait(false);
 
-                    labelledPositives = new Normalisation(log).NormaliseData(variables, classification.Item1);
+                    labelledPositives = new Normalisation(log, environment).NormaliseData(variables, classification.Item1);
                 }
 
                 var request = new AnomalyRunRequest(copyOfDataForUnsupervised,

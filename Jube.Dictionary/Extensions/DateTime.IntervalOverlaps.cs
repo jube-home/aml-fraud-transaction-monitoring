@@ -15,7 +15,11 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IntervalOverlaps(this DateTime start, DateTime end, DateTime otherStart, DateTime otherEnd)
+        [Description("Whether the half-open interval from this start to an end overlaps another interval.")]
+        public static bool IntervalOverlaps(this DateTime start,
+            [Description("The end of this interval.")] DateTime end,
+            [Description("The start of the other interval.")] DateTime otherStart,
+            [Description("The end of the other interval.")] DateTime otherEnd)
         {
             return start < otherEnd && otherStart < end;
         }

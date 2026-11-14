@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,12 +22,15 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.EntityAnalysisModelBacktest
 {
     [Description("A value the rule or filter read from a transaction.")]
+    [MessagePackObject]
     public class BacktestValueDto
     {
         [Description("The completion name, e.g. Payload.Amount.")]
+        [Key(0)]
         public string Name { get; set; } = string.Empty;
 
         [Description("Its value on the transaction, or null when it had none.")]
+        [Key(1)]
         public string? Value { get; set; }
     }
 }

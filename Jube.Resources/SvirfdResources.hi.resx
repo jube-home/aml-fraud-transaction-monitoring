@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+        <value>अनुमति अस्वीकृत।</value>
+    </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+        <value>प्रमाणित नहीं।</value>
+    </data>
+    <data name="Disabled" xml:space="preserve">
+        <value>Svirfd बंद है।</value>
+    </data>
+    <data name="NotAnIpAddress" xml:space="preserve">
+        <value>यह मान आईपी पता नहीं है।</value>
+    </data>
+    <data name="IndexLoading" xml:space="preserve">
+        <value>Svirfd इंडेक्स अभी लोड नहीं हुआ है।</value>
+    </data>
+    <data name="NoRecord" xml:space="preserve">
+        <value>इस समय उस पते के लिए कोई रिकॉर्ड उपलब्ध नहीं है।</value>
+    </data>
+    <data name="RemoteLookupsDisabledForTenant" xml:space="preserve">
+        <value>प्लेटफ़ॉर्म ऑपरेटर ने आपके टेनेंट के लिए रिमोट Svirfd लुकअप बंद कर दिए हैं।</value>
+    </data>
+</root>

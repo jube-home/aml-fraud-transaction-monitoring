@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
+            [Description("True when: null, malformed or elapsed. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsNotValidCardExpiry()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringIsNotValidCardExpiry(flow.Value));
             }
 
+            [Description("True when: null, malformed or elapsed. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsNotValidCardExpiry()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringIsNotValidCardExpiry(flow.Value));
             }
 
+            [Description("True when: null, malformed or elapsed. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsNotValidCardExpiry()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringIsNotValidCardExpiry(flow.Value));
             }
 
+            [Description("True when: null, malformed or elapsed. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsNotValidCardExpiry()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringIsNotValidCardExpiry(flow.Value));
             }
 
+            [Description("True when: null, malformed or elapsed. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsNotValidCardExpiry()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
+            [Description("Begins a pipeline from the value. True when: null, malformed or elapsed. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsNotValidCardExpiry()
             {
                 return value.Start().MatchIsNotValidCardExpiry();
             }
 
+            [Description("Begins a pipeline from the value. True when: null, malformed or elapsed. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsNotValidCardExpiry()
             {
                 return value.Start().RejectIsNotValidCardExpiry();
             }
 
+            [Description("Begins a pipeline from the value. True when: null, malformed or elapsed. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsNotValidCardExpiry()
             {
                 return value.Start().BreakIsNotValidCardExpiry();
             }
 
+            [Description("Begins a pipeline from the value. True when: null, malformed or elapsed. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsNotValidCardExpiry()
             {
                 return value.Start().RequireIsNotValidCardExpiry();
             }
 
+            [Description("Begins a pipeline from the value. True when: null, malformed or elapsed. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsNotValidCardExpiry()
             {
                 return value.Start().EnsureIsNotValidCardExpiry();

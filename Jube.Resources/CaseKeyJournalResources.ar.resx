@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>ليس لديك صلاحية لتنفيذ هذا الإجراء.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>يجب تسجيل الدخول إلى مستأجر لتنفيذ هذا الإجراء.</value>
+  </data>
+    <data name="WorkflowNotFound" xml:space="preserve">
+    <value>لم يتم العثور على سير عمل القضية أو ليس لديك صلاحية الوصول إليه.</value>
+  </data>
+    <data name="KeyRequired" xml:space="preserve">
+    <value>يحتاج السجل إلى اسم حقل من الحمولة للمطابقة.</value>
+  </data>
+    <data name="ValueRequired" xml:space="preserve">
+    <value>يحتاج السجل إلى قيمة للمطابقة.</value>
+  </data>
+    <data name="KeyInvalid" xml:space="preserve">
+    <value>يجب ألا يتجاوز اسم حقل الحمولة 256 حرفاً ولا يحتوي على أحرف تحكم.</value>
+  </data>
+    <data name="LensInvalid" xml:space="preserve">
+    <value>يجب أن تكون العدسة إحدى: payload أو rules أو features أو models أو sanctions.</value>
+  </data>
+    <data name="LimitInvalid" xml:space="preserve">
+    <value>يجب أن يكون الحد بين 1 و5000.</value>
+  </data>
+    <data name="PeriodInvalid" xml:space="preserve">
+    <value>يجب أن يسبق «من» قيمة «إلى»، وألا تتجاوز النافذة 3660 يوماً.</value>
+  </data>
+    <data name="SectionInvalid" xml:space="preserve">
+    <value>يجب أن يكون القسم أحد: summary أو notable أو progression أو distributions أو velocity أو gaps أو novelty أو counterparties أو correlation أو drift أو peers.</value>
+  </data>
+    <data name="TransactionNotFound" xml:space="preserve">
+    <value>لم يتم العثور على المعاملة لسير عمل القضية هذا.</value>
+  </data>
+    <data name="TransactionIdInvalid" xml:space="preserve">
+    <value>يجب أن يكون معرّف المعاملة أكبر من صفر.</value>
+  </data>
+    <data name="TagTransactionsInvalid" xml:space="preserve">
+    <value>مطلوب ما بين معاملة واحدة و500 معاملة، ولا يجوز تكرار أي معاملة.</value>
+  </data>
+    <data name="TagChangeRequired" xml:space="preserve">
+    <value>مطلوب وسم واحد على الأقل للإضافة أو الإزالة.</value>
+  </data>
+    <data name="TagNameInvalid" xml:space="preserve">
+    <value>يجب أن يحتوي اسم الوسم على نص وألا يتجاوز 256 حرفاً.</value>
+  </data>
+    <data name="TagUnknown" xml:space="preserve">
+    <value>يجب أن يكون كل وسم يُضاف وسماً نشطاً في نموذج سير العمل.</value>
+  </data>
+    <data name="TagLimitInvalid" xml:space="preserve">
+    <value>لا يجوز إضافة أو إزالة أو الاحتفاظ بأكثر من 20 وسماً دفعة واحدة.</value>
+  </data>
+    <data name="PinTransactionsInvalid" xml:space="preserve">
+    <value>مطلوب ما بين معاملة واحدة و50 معاملة، ولا يجوز تكرار أي معاملة.</value>
+  </data>
+    <data name="TravelLimitInvalid" xml:space="preserve">
+    <value>يجب أن يكون حد السرعة بين 1 و10,000 كيلومتر في الساعة وأقصر مرحلة بين 0 و20,000 كيلومتر.</value>
+  </data>
+    <data name="ReplayNotFound" xml:space="preserve">
+    <value>لم يتم العثور على إعادة التشغيل المحفوظة في هذه القضية.</value>
+  </data>
+    <data name="ReplayNameInvalid" xml:space="preserve">
+    <value>تحتاج إعادة التشغيل إلى اسم بطول من 1 إلى 100 حرف.</value>
+  </data>
+    <data name="ReplayWindowInvalid" xml:space="preserve">
+    <value>تنظر إعادة التشغيل إلى الوراء 7 أو 30 أو 90 أو 365 يوماً.</value>
+  </data>
+    <data name="ReplayLimitInvalid" xml:space="preserve">
+    <value>لا يجوز أن يزيد عدد إعادات التشغيل المحفوظة في القضية الواحدة على 10.</value>
+  </data>
+    <data name="PinLimitInvalid" xml:space="preserve">
+    <value>لا يجوز أن يزيد عدد المعاملات المثبتة في القضية الواحدة على 50.</value>
+  </data>
+    <data name="CaseNotFound" xml:space="preserve">
+    <value>لم يتم العثور على القضية.</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>القضية مقفلة لمستخدم آخر.</value>
+  </data>
+    <data name="FilterInvalid" xml:space="preserve">
+    <value>المرشح غير صالح. يحتاج إلى مجموعة قواعد، لكل منها حقل من النموذج ومعامل يناسب الحقل وقيمة من نوع الحقل.</value>
+  </data>
+    <data name="FilterUnreadable" xml:space="preserve">
+    <value>تعذّر تطبيق المرشح لأن قيمة مخزنة لا يمكن قراءتها بوصفها نوع الحقل الذي قورنت به.</value>
+  </data>
+    <data name="MergeInvalid" xml:space="preserve">
+    <value>يحتاج الدمج إلى مصفوفة JSON تضم ثلاثة كائنات على الأكثر، لكل منها مفتاح وقيمة، إضافةً إلى مفتاح القضية.</value>
+  </data>
+    <data name="TagJobTooManyMatches" xml:space="preserve">
+    <value>عدد المعاملات المطابقة كبير جداً بحيث لا يمكن وسمها في مهمة واحدة. ضيّق العرض وحاول مرة أخرى.</value>
+  </data>
+    <data name="TagJobNoMatches" xml:space="preserve">
+    <value>لا توجد معاملة تطابق العرض.</value>
+  </data>
+    <data name="TagJobNotFound" xml:space="preserve">
+    <value>لم يتم العثور على مهمة الوسم.</value>
+  </data>
+    <data name="TagJobNotUndoable" xml:space="preserve">
+    <value>لا يمكن التراجع إلا عن وسم منتهٍ غيّر شيئاً ولم يُتراجع عنه من قبل.</value>
+  </data>
+    <data name="TagJobActiveLimit" xml:space="preserve">
+    <value>عدد كبير جداً من مهام الوسم الجماعي في الانتظار أو قيد التنفيذ. انتظر انتهاء إحداها أو ألغِ واحدة وحاول مرة أخرى.</value>
+  </data>
+    <data name="KeyNotArchiveKey" xml:space="preserve">
+    <value>المفتاح ليس حقلاً موسوماً بـ Archive Key في نموذج سير العمل، لذا لا يمكن البحث عن معاملاته. ضع الوسم Archive Key على الحقل في request XPath الخاص بالنموذج أو اختر مفتاحاً آخر.</value>
+  </data>
+    <data name="KeyValueInvalid" xml:space="preserve">
+    <value>لا يمكن قراءة القيمة بوصفها نوع بيانات حقل المفتاح.</value>
+  </data>
+    <data name="KeyNotLookupable" xml:space="preserve">
+    <value>حقل المفتاح مشفّر بمتجه عشوائي، لذا لا يمكن البحث عن قيمه.</value>
+  </data>
+    <data name="LaneOperatorNotAllowed" xml:space="preserve">
+    <value>المعامل النطاقي مسموح به فقط للمفتاح الرقمي أو التاريخ؛ أما المفتاح النصي أو المنطقي فيطابق بالمساواة فقط.</value>
+  </data>
+    <data name="CaseKeyNotArchiveKey" xml:space="preserve">
+    <value>مفتاح القضية ليس حقلاً موسوماً بـ Archive Key في نموذج سير العمل، لذا لا يمكن قراءة سجل هذه القضية. ضع الوسم Archive Key على الحقل في request XPath الخاص بالنموذج وشغّل نص ترحيل archive key للسجل التاريخي.</value>
+  </data>
+</root>

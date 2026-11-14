@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The JSON without insignificant whitespace, otherwise empty.")]
         public static string JsonMinified(this string? @this)
         {
             return StructuredDataSupport.Parse(@this)?.ToJsonString() ?? "";

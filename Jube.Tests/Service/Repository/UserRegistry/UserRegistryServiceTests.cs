@@ -33,6 +33,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.Repository.UserRegistry.Models;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
@@ -245,6 +246,37 @@ namespace Jube.Test.Service.Repository.UserRegistry
             var auditRows = await dbContext.GetTable<UserRegistryVersion>()
                 .Where(w => w.UserRegistryId == saved.Id).CountAsync();
             auditRows.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task RenamingAUserMovesItsTenantMappingToTheNewNameAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var roleRegistryGuid = await CreateParentRoleAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var saved = await service.InsertAsync(NewDto(roleRegistryGuid, UniqueName("RenameFrom")));
+            createdIds.Add(saved.Id);
+
+            var tenantRegistryId = await UserInTenantRepository.GetTenantRegistryIdAsync(dbContext, saved.Name);
+            tenantRegistryId.Should().NotBeNull();
+
+            var newName = UniqueName("RenameTo");
+            var dto = NewDto(roleRegistryGuid, newName);
+            dto.Id = saved.Id;
+
+            await service.UpdateAsync(dto);
+
+            try
+            {
+                (await UserInTenantRepository.GetTenantRegistryIdAsync(dbContext, newName))
+                    .Should().Be(tenantRegistryId);
+                (await UserInTenantRepository.GetTenantRegistryIdAsync(dbContext, saved.Name)).Should().BeNull();
+            }
+            finally
+            {
+                await dbContext.UserInTenant.Where(w => w.User == saved.Name || w.User == newName).DeleteAsync();
+            }
         }
 
         [Fact]
@@ -529,7 +561,6 @@ namespace Jube.Test.Service.Repository.UserRegistry
             var dto = NewDto(roleRegistryGuid, saved.Name);
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
-            dto.Version = 999;
 
             var updated = await service.UpdateAsync(dto);
             updated.CreatedUser.Should().Be(fx.Seed.UserWithPermission);

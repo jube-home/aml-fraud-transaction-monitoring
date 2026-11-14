@@ -17,18 +17,30 @@
 // ReSharper disable RedundantAttributeUsageProperty
 // ReSharper disable UnusedMember.Global
 
+using MessagePack;
+
 namespace Jube.Dto.Authentication
 {
+    [MessagePackObject]
     public class AuthenticationRequestDto
     {
+        [Key(0)]
         public string? UserName { get; set; }
+        [Key(1)]
         public string? Password { get; set; }
+        [Key(2)]
         public string? NewPassword { get; set; }
+        [Key(3)]
         public string? RepeatNewPassword { get; set; }
+        [Key(4)]
         public string? RemoteIp { get; set; }
+        [Key(5)]
         public string? LocalIp { get; set; }
+        [Key(6)]
         public string? UserAgent { get; set; }
+        [Key(7)]
         public bool PasswordChangeState { get; set; }
+        [Key(8)]
         public string? Mfa { get; set; }
     }
 }

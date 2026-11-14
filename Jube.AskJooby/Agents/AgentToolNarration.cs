@@ -101,7 +101,7 @@ namespace Jube.AskJooby.Agents
             ["Jooby"] = "Jooby",
             ["Rag"] = "Rag",
             ["Postgres"] = "Postgres",
-            ["Redis"] = "Redis",
+            ["RESP"] = "RESP",
             ["Patroni"] = "Patroni",
             ["Docker"] = "Docker",
             ["Sentinel"] = "Sentinel",

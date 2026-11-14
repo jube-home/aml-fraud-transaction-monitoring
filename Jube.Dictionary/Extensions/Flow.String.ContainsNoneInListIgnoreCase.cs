@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchContainsNoneInListIgnoreCase(IEnumerable<string> list)
+            [Description("True when: present and contains no entry of the List token, ignoring case. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsNoneInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringContainsNoneInListIgnoreCase(flow.Value, list));
             }
 
-            public Flow<string?> RejectContainsNoneInListIgnoreCase(IEnumerable<string> list)
+            [Description("True when: present and contains no entry of the List token, ignoring case. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsNoneInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringContainsNoneInListIgnoreCase(flow.Value, list));
             }
 
-            public Flow<string?> BreakContainsNoneInListIgnoreCase(IEnumerable<string> list)
+            [Description("True when: present and contains no entry of the List token, ignoring case. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsNoneInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringContainsNoneInListIgnoreCase(flow.Value, list));
             }
 
-            public Flow<string?> RequireContainsNoneInListIgnoreCase(IEnumerable<string> list)
+            [Description("True when: present and contains no entry of the List token, ignoring case. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsNoneInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringContainsNoneInListIgnoreCase(flow.Value, list));
             }
 
-            public Flow<string?> EnsureContainsNoneInListIgnoreCase(IEnumerable<string> list)
+            [Description("True when: present and contains no entry of the List token, ignoring case. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsNoneInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchContainsNoneInListIgnoreCase(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: present and contains no entry of the List token, ignoring case. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsNoneInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().MatchContainsNoneInListIgnoreCase(list);
             }
 
-            public Flow<string?> RejectContainsNoneInListIgnoreCase(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: present and contains no entry of the List token, ignoring case. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsNoneInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RejectContainsNoneInListIgnoreCase(list);
             }
 
-            public Flow<string?> BreakContainsNoneInListIgnoreCase(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: present and contains no entry of the List token, ignoring case. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsNoneInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().BreakContainsNoneInListIgnoreCase(list);
             }
 
-            public Flow<string?> RequireContainsNoneInListIgnoreCase(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: present and contains no entry of the List token, ignoring case. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsNoneInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RequireContainsNoneInListIgnoreCase(list);
             }
 
-            public Flow<string?> EnsureContainsNoneInListIgnoreCase(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: present and contains no entry of the List token, ignoring case. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsNoneInListIgnoreCase([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().EnsureContainsNoneInListIgnoreCase(list);
             }

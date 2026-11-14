@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,12 +22,15 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.EntityAnalysisModelInvocationContext
 {
     [Description("A request to build a context from a transaction that has already been invoked and archived.")]
+    [MessagePackObject]
     public class InvocationContextFromArchiveDto
     {
         [Description("Id of the Entity Analysis Model; must belong to the caller's tenant.")]
+        [Key(0)]
         public int EntityAnalysisModelId { get; set; }
 
         [Description("Guid of the archived transaction (EntityAnalysisModelInstanceEntryGuid).")]
+        [Key(1)]
         public Guid EntityAnalysisModelInstanceEntryGuid { get; set; }
     }
 }

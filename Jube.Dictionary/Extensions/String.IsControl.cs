@@ -8,7 +8,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Boolean IsControl(this String s, Int32 index)
+        [Description("Checks if a character at a position is a control character.")]
+        public static Boolean IsControl(this String s,
+            [Description("The position of the character to evaluate.")] Int32 index)
         {
             return char.IsControl(s, index);
         }

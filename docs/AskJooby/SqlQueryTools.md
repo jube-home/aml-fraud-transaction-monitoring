@@ -25,12 +25,18 @@ and will not let through, and why there are two independent checks rather than o
   *before* writing SQL, not after a guess fails: "a name that is not on this list fails the whole query, and a name
   you invented will not be on it." `nameContains` narrows a genuinely long list by substring, case-insensitively,
   which matters because the unfiltered list, once asked for, stays in the model's context for the rest of the turn.
-* **`ValidateSqlQuery(sql)`** -- plans the statement (resolving every table, column, function and type) and throws
-  the plan away: nothing is read, nothing is cached. This is the tool to reach for when the SQL was worked out
-  against a guessed schema rather than one already queried successfully -- a misspelled column or an incompatible
-  type comparison comes back as the real database error with no round trip spent fetching rows that were never
-  coming back. It says nothing about whether the query answers the actual question, only that the database
-  understands it.
+* **`ValidateSqlQuery(sql)`** -- the validator, and the tool every agent calls *before* `RunSqlQuery`. It first runs
+  the schema-aware, parse-only checker (`SqlSchemaChecker` in `Jube.Data/Reporting/Check`), which walks the real
+  Postgres parse tree against a cached catalogue snapshot (tables, columns with types, primary keys, function
+  signatures, type names) and refuses an unknown table, column, alias or function, an ambiguous column, a wrong
+  argument count, an aggregate in `WHERE`, an ungrouped column, an obvious type clash, an invalid literal, a bad
+  `LIMIT` and similar faults without opening a connection. Every finding has a stable code, a message in our own
+  words, the line and column, and, where one exists, a "did you mean" drawn only from names the caller may already
+  see. Findings are authoritative: the agent fixes exactly what each names and validates again until clean. Only a
+  statement the checker passes is then planned (`EXPLAIN`), as a last-resort second check; if the database still
+  rejects it, that is logged at warning as a "validator gap", and the agent receives the SQLSTATE alone, never the
+  error text. A clean validation is recorded in a per-conversation ledger (`SqlValidationLedger`), which is what lets
+  `RunSqlQuery` proceed. It says nothing about whether the query answers the actual question, only that it is sound.
 * **`ExplainSqlQuery(sql)`** -- returns Postgres's own plan and cost estimate without running the query: total and
   startup cost, estimated row count, and which of the touched tables get a sequential scan versus an index scan.
   Worth calling before anything expected to be expensive (a wide date range, a multi-area join, an unfiltered
@@ -46,16 +52,28 @@ and will not let through, and why there are two independent checks rather than o
   tables: call count, average/worst execution time, average rows returned, and cache-hit percentage. The method
   applies three judgement thresholds itself and appends a warning sentence for each that fires: a worst case over
   ten times the average latency ("some parameter values fall off a cliff"), a cache-hit rate under 85% over more
-  than 100 calls ("these tables are being read from disk rather than memory"), and an average return over 5,000 rows
-  ("put an explicit LIMIT on yours"). When nothing has been recorded for these tables yet, the tool says so and
+  than 100 calls ("these tables are being read from disk rather than memory"), and an average return over 5,000 rows (
+  "put an explicit LIMIT on yours"). When nothing has been recorded for these tables yet, the tool says so and
   points back to `ExplainSqlQuery` for a cold-start estimate instead.
-* **`RunSqlQuery(sql, label = null)`** -- the only one of the six that actually executes anything. It runs the
+* **`RunSqlQuery(sql, label = null)`** -- the only one of the six that actually executes anything. It runs the checker
+  again, and in production refuses with a message pointing at `ValidateSqlQuery` any statement that was not validated
+  in the same conversation (whitespace and a trailing semicolon do not matter). It then runs the
   statement, infers a `CachedColumn` list from the first returned row's keys, and caches the full result through
   `IToolResultCache.StoreAsync` exactly as `CacheAssembledTable` and `GetDemoDataset` do -- see
   `docs/AskJooby/DataPointerCache.md` for the pointer mechanic this feeds into, and `docs/AskJooby/RenderChart.md`
   for what happens to a pointer afterwards. The method returns only a `data_pointer`, the row/column counts, and a
   three-row preview; the model is told to use `InspectDataSchema`/`PreviewDataRows`/`QueryCachedData` against the
   pointer to actually look at what came back, "never assume you can see the raw rows here."
+
+## Validate first, always (prompt direction)
+
+Every agent's instructions carry `ValidateFirst.Instructions` (`Jube.AskJooby/Prompts/ValidateFirst.cs`, assembled by
+`InstructionsBuilder`): validate before running, loop on findings, treat findings as authoritative, never retry an
+unchanged statement, never ask the user about a fault the validator already described, and expect only a SQLSTATE
+from the database. The `[Description]` text of the validate tools says "call this before running" and the run tools
+say "validate first"; `ValidateFirstPromptTests` fails if that direction regresses. The same applies to R:
+`ValidateRScript` is called first, and `AskJoobyScriptExecutionClient.RunScriptAsync` validates the script itself
+before executing it, so an unvalidated script cannot reach `/execute` however the agent behaves.
 
 ## Two independent gates, not one
 

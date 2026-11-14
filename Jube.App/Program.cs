@@ -27,6 +27,15 @@ namespace Jube.App
     {
         public static void Main(string[] args)
         {
+            Data.Context.UtcTimestampStorage.Apply();
+
+            if (Wire.WireGeneration.Handles(args))
+            {
+                Environment.ExitCode = Wire.WireGeneration.Run(args, Console.WriteLine, Console.Error.WriteLine);
+
+                return;
+            }
+
             var host = CreateHostBuilder(args).Build();
 
             var lifetime = host.Services.GetRequiredService<IHostApplicationLifetime>();

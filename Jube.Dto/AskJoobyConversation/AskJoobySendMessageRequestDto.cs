@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,10 +22,14 @@ using System.ComponentModel;
 namespace Jube.Dto.AskJoobyConversation
 {
     [Description("The body of a streamed AskJooby send-message request.")]
+    [MessagePackObject]
     public class AskJoobySendMessageRequestDto
     {
+        [Key(0)]
         public string Text { get; set; } = string.Empty;
+        [Key(1)]
         public string PageContext { get; set; } = string.Empty;
+        [Key(2)]
         public List<int> AttachmentFileIds { get; set; } = [];
     }
 }

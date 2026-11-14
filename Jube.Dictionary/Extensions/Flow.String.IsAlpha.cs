@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
+            [Description("True when: non-empty, letters only. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsAlpha()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringIsAlpha(flow.Value));
             }
 
+            [Description("True when: non-empty, letters only. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsAlpha()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringIsAlpha(flow.Value));
             }
 
+            [Description("True when: non-empty, letters only. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsAlpha()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringIsAlpha(flow.Value));
             }
 
+            [Description("True when: non-empty, letters only. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsAlpha()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringIsAlpha(flow.Value));
             }
 
+            [Description("True when: non-empty, letters only. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsAlpha()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
+            [Description("Begins a pipeline from the value. True when: non-empty, letters only. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsAlpha()
             {
                 return value.Start().MatchIsAlpha();
             }
 
+            [Description("Begins a pipeline from the value. True when: non-empty, letters only. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsAlpha()
             {
                 return value.Start().RejectIsAlpha();
             }
 
+            [Description("Begins a pipeline from the value. True when: non-empty, letters only. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsAlpha()
             {
                 return value.Start().BreakIsAlpha();
             }
 
+            [Description("Begins a pipeline from the value. True when: non-empty, letters only. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsAlpha()
             {
                 return value.Start().RequireIsAlpha();
             }
 
+            [Description("Begins a pipeline from the value. True when: non-empty, letters only. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsAlpha()
             {
                 return value.Start().EnsureIsAlpha();

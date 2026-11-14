@@ -70,7 +70,8 @@ namespace Jube.Test.RuleParser
             rule = parser.WrapGatewayRule(rule, true);
 
             var references = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))
+                .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location) &&
+                            a.GetName().Name?.EndsWith(".resources", StringComparison.Ordinal) != true)
                 .Select(a => a.Location)
                 .ToArray();
 
@@ -89,7 +90,7 @@ namespace Jube.Test.RuleParser
 
             var match = compile.CompiledAssembly.GetType("GatewayRule")!.GetMethod("Match")!;
 
-            return (bool)match.Invoke(null, [data, lists, kvp, TestLog.NoOp])!;
+            return (bool)match.Invoke(null, [data, lists, kvp, null, TestLog.NoOp])!;
         }
 
         [Theory]

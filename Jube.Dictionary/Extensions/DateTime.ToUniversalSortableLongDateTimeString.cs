@@ -10,17 +10,20 @@ namespace Jube.Dictionary.Extensions
     {
         extension(DateTime @this)
         {
+            [Description("Converts the date to a universal sortable long date time string.")]
             public string ToUniversalSortableLongDateTimeString()
             {
                 return @this.ToString("U", DateTimeFormatInfo.CurrentInfo);
             }
 
-            public string ToUniversalSortableLongDateTimeString(string culture)
+            [Description("Converts the date to a universal sortable long date time string using a culture.")]
+            public string ToUniversalSortableLongDateTimeString([Description("The culture.")] string culture)
             {
                 return @this.ToString("U", new CultureInfo(culture));
             }
 
-            public string ToUniversalSortableLongDateTimeString(CultureInfo culture)
+            [Description("Converts the date to a universal sortable long date time string using a culture.")]
+            public string ToUniversalSortableLongDateTimeString([Description("The culture.")] CultureInfo culture)
             {
                 return @this.ToString("U", culture);
             }

@@ -65,7 +65,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch139
             var redisKeyExpiryIndex =
                 $"TtlCounterEntryExpiry:{tenantRegistryId}:{entityAnalysisModelGuid}:{entityAnalysisModelTtlCounterGuid}:{dataName}";
 
-            foreach (var hashEntry in cacheService.ResilientRedisResilientRedisDatabase.HashScan(redisKey))
+            foreach (var hashEntry in cacheService.ResilientRespResilientRespDatabase.HashScan(redisKey))
             {
                 if (!long.TryParse(hashEntry.Name.ToString(), out var timestamp))
                 {
@@ -76,7 +76,7 @@ namespace Jube.Migrations.Branches.GitHubIssueBranch139
 
 #pragma warning disable VSTHRD002
 
-                cacheService.ResilientRedisResilientRedisDatabase
+                cacheService.ResilientRespResilientRespDatabase
                     .SortedSetAddAsync(redisKeyExpiryIndex, member, timestamp)
                     .GetAwaiter().GetResult();
 #pragma warning restore VSTHRD002

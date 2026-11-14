@@ -21,7 +21,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
-        <PackageReference Include="Npgsql" Version="5.0.18"/>
+        <PackageReference Include="Npgsql" Version="10.0.3"/>
         <PackageReference Include="RabbitMQ.Client" Version="6.2.1"/>
         <PackageReference Include="StackExchange.Redis" Version="2.11.8"/>
         <PackageReference Include="System.ComponentModel.Composition" Version="5.0.0"/>
@@ -46,11 +46,15 @@
         <ProjectReference Include="..\Jube.Analytics\Jube.Analytics.csproj"/>
         <ProjectReference Include="..\Jube.Cache\Jube.Cache.csproj"/>
         <ProjectReference Include="..\Jube.Case\Jube.Case.csproj"/>
+        <ProjectReference Include="..\Jube.CaseRisk\Jube.CaseRisk.csproj"/>
         <ProjectReference Include="..\Jube.Cryptography\Jube.Cryptography.csproj"/>
         <ProjectReference Include="..\Jube.Data\Jube.Data.csproj"/>
         <ProjectReference Include="..\Jube.DynamicEnvironment\Jube.DynamicEnvironment.csproj"/>
         <ProjectReference Include="..\Jube.Dictionary\Jube.Dictionary.csproj"/>
         <ProjectReference Include="..\Jube.HttpAdaptationProtocol\Jube.HttpAdaptationProtocol.csproj"/>
+        <ProjectReference Include="..\Jube.ResilientHttp\Jube.ResilientHttp.csproj"/>
+        <ProjectReference Include="..\Jube.GraphRecallProtocol\Jube.GraphRecallProtocol.csproj"/>
+        <ProjectReference Include="..\Jube.Svirfd\Jube.Svirfd.csproj"/>
         <ProjectReference Include="..\Jube.Parser\Jube.Parser.csproj"/>
         <ProjectReference Include="..\Jube.TaskCancellation\Jube.TaskCancellation.csproj"/>
     </ItemGroup>

@@ -37,5 +37,6 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(8)] public byte? Deleted { get; set; }
         [Column] [Nullable] [Key(9)] public DateTime? DeletedDate { get; set; }
         [Column] [Nullable] [Key(10)] public string DeletedUser { get; set; }
+        [Column] [Nullable] [Key(11)] public int? LastImportId { get; set; }
     }
 }

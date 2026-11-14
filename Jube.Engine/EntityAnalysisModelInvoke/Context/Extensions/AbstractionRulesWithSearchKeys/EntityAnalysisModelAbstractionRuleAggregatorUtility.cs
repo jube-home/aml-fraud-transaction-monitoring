@@ -27,6 +27,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
 {
     public static class EntityAnalysisModelAbstractionRuleAggregatorUtility
     {
+        private const int CursorResultFunctionType = 46;
+
         public static double Aggregate(EntityAnalysisModelInstanceEntryPayload payload,
             ConcurrentDictionary<int, List<DictionaryNoBoxing<string>>> abstractionRuleMatches,
             EntityAnalysisModelAbstractionRule abstractionRule, ILog log)
@@ -78,6 +80,11 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
         internal static double AggregateMatches(EntityAnalysisModelInstanceEntryPayload payload,
             List<DictionaryNoBoxing<string>> matches, EntityAnalysisModelAbstractionRule abstractionRule, ILog log)
         {
+            if (abstractionRule.AbstractionRuleAggregationFunctionType == CursorResultFunctionType)
+            {
+                return matches is AbstractionMatchList scanned ? scanned.CursorResult : 0;
+            }
+
             var matchesCount = matches.Count;
 
             var (skip, fetch) = ResolveSkipAndFetch(abstractionRule, matchesCount);
@@ -368,7 +375,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.AbstractionRu
 
             var values = BuildValuesArray(payload, cacheDocumentsList, abstractionRule, log);
 
-            return ComputeExtremeStatistic(abstractionRule.AbstractionRuleAggregationFunctionType, values);
+            return abstractionRule.AggregationFunction?.Invoke(values) ??
+                   ComputeExtremeStatistic(abstractionRule.AbstractionRuleAggregationFunctionType, values);
         }
 
         internal static double[] BuildValuesArray(EntityAnalysisModelInstanceEntryPayload payload,

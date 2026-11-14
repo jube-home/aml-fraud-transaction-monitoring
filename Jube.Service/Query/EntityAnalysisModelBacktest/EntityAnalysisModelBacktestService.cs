@@ -37,6 +37,7 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
 {
     public sealed class EntityAnalysisModelBacktestService
     {
+        private const int MaximumTuneCandidates = 12;
         private static readonly int[] permissions = [61];
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
@@ -160,34 +161,105 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
             BacktestRequestDto? request,
             CancellationToken token = default)
         {
-            return RunAsync("RunRule", async () =>
+            return RunAsync("RunRule", () => RunRuleCoreAsync(request, token), token);
+        }
+
+        [Description("Tunes a rule from outcomes: runs the same backtest once for each candidate value, putting the " +
+                     "candidate in place of Placeholder wherever it appears in RuleText, and returns each " +
+                     "variant's confusion matrix with precision and recall so the thresholds can be compared. The class " +
+                     "decides what is positive, so set ClassJson to a confirmed outcome tag. At most 12 candidates, " +
+                     "each a plain number. Nothing is stored or changed: promote a chosen variant by saving it as " +
+                     "a shadow activation rule and promoting it through approval.")]
+        [ServiceOperation("EntityAnalysisModelBacktestTune", OperationKind.Read, Idempotent = true)]
+        public Task<BacktestTuneResultDto> TuneAsync(
+            [Description("The base backtest, the placeholder in its RuleText and the candidate values.")]
+            BacktestTuneRequestDto? request,
+            CancellationToken token = default)
+        {
+            return RunAsync("Tune", async () =>
             {
                 ArgumentNullException.ThrowIfNull(request);
-                var model = await RequireModelAsync(request.EntityAnalysisModelId, token).ConfigureAwait(false);
-                var onlineMax = Setting("BacktestOnlineMaxRows", 10_000);
+                ArgumentNullException.ThrowIfNull(request.Request);
 
-                if (request.Limit > onlineMax)
+                var errors = new List<ValidationErrorDto>();
+
+                if (string.IsNullOrEmpty(request.Placeholder) || request.Request.RuleText?.Contains(
+                        request.Placeholder, StringComparison.Ordinal) != true)
                 {
-                    return new BacktestResultDto
+                    errors.Add(Error("Placeholder", "PlaceholderNotInRule",
+                        strings[EntityAnalysisModelBacktestResources.PlaceholderNotInRule]));
+                }
+
+                var candidates = request.Candidates ?? [];
+
+                if (candidates.Count is 0 or > MaximumTuneCandidates || candidates.Any(c =>
+                        !decimal.TryParse(c, System.Globalization.NumberStyles.Float,
+                            System.Globalization.CultureInfo.InvariantCulture, out _)))
+                {
+                    errors.Add(Error("Candidates", "CandidatesInvalid",
+                        strings[EntityAnalysisModelBacktestResources.CandidatesInvalid, MaximumTuneCandidates]));
+                }
+
+                if (errors.Count > 0)
+                {
+                    return new BacktestTuneResultDto { Errors = errors };
+                }
+
+                var variants = new List<BacktestTuneVariantDto>();
+
+                if (!TuneGate.TryEnter(tenantRegistryId))
+                {
+                    return new BacktestTuneResultDto
                     {
-                        Errors =
-                        [
-                            Error("Limit", "LimitTooLarge",
-                                $"An immediate backtest reads at most {onlineMax} transactions; submit it with " +
-                                "EntityAnalysisModelBacktestSubmit to read more.")
-                        ]
+                        Errors = [Error("Request", "TuneBusy", "Two sweeps are already running; try again when one finishes.")]
                     };
                 }
 
-                await using var archive = ReportDbContext();
+                try
+                {
+                foreach (var candidate in candidates.Distinct(StringComparer.Ordinal))
+                {
+                    token.ThrowIfCancellationRequested();
 
-                var execution = await BacktestExecutor.ExecuteAsync(dbContext, tenantRegistryId,
-                    ToSpecification(request, model.Id, request.Limit), (int)Setting("BacktestPageSize", 5000), null,
-                    token, archive).ConfigureAwait(false);
+                    var variantRequest = ToRequest(ToSpecification(request.Request, request.Request.EntityAnalysisModelId,
+                        request.Request.Limit), request.Request.RuleId);
+                    variantRequest.RuleText = request.Request.RuleText!.Replace(request.Placeholder,
+                        candidate, StringComparison.Ordinal);
+                    variantRequest.SampleSize = 0;
 
-                return execution.Valid
-                    ? ToDto(execution.Result)
-                    : new BacktestResultDto { Errors = execution.Errors.Select(ToDto).ToList() };
+                    var result = await RunRuleCoreAsync(variantRequest, token).ConfigureAwait(false);
+
+                    if (!result.Valid)
+                    {
+                        return new BacktestTuneResultDto { Errors = result.Errors };
+                    }
+
+                    var firedPositives = result.TruePositives;
+                    var firedAll = result.TruePositives + result.FalsePositives;
+                    var positives = result.TruePositives + result.FalseNegatives;
+
+                    variants.Add(new BacktestTuneVariantDto
+                    {
+                        Value = candidate,
+                        Evaluated = result.Evaluated,
+                        Fired = result.Fired,
+                        RuntimeErrors = result.RuntimeErrors,
+                        TruePositives = result.TruePositives,
+                        FalsePositives = result.FalsePositives,
+                        FalseNegatives = result.FalseNegatives,
+                        TrueNegatives = result.TrueNegatives,
+                        Precision = firedAll == 0 ? null : (double)firedPositives / firedAll,
+                        Recall = positives == 0 ? null : (double)firedPositives / positives
+                    });
+                }
+
+                }
+                finally
+                {
+                    TuneGate.Leave(tenantRegistryId);
+                }
+
+                return new BacktestTuneResultDto { Valid = true, Variants = variants };
             }, token);
         }
 
@@ -208,6 +280,13 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
                 ArgumentNullException.ThrowIfNull(request);
                 var model = await RequireModelAsync(request.EntityAnalysisModelId, token).ConfigureAwait(false);
 
+                var refusal = await PendingLimitRefusalAsync(model.Id, token).ConfigureAwait(false);
+
+                if (refusal != null)
+                {
+                    return new BacktestSubmitResultDto { Errors = [refusal] };
+                }
+
                 var specification = ToSpecification(request, model.Id,
                     Math.Min(request.Limit, Setting("BacktestMaxRows", 1_000_000)));
 
@@ -216,7 +295,10 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
 
                 if (plan == null)
                 {
-                    return new BacktestSubmitResultDto { Errors = errors.Select(ToDto).ToList() };
+                    return new BacktestSubmitResultDto
+                    {
+                        Errors = errors.Select(e => ToDto(e, request.RuleType)).ToList()
+                    };
                 }
 
                 var instance = await new EntityAnalysisModelBacktestInstanceRepository(dbContext, tenantRegistryId)
@@ -289,8 +371,9 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
                         Errors =
                         [
                             Error("Status", "ResultUnavailable",
-                                $"The backtest is {(BacktestInstanceStatus)instance.Status} and has no result" +
-                                (instance.Error == null ? "." : $": {instance.Error}"))
+                                strings[EntityAnalysisModelBacktestResources.ResultUnavailable,
+                                    (BacktestInstanceStatus)instance.Status] +
+                                (instance.Error == null ? string.Empty : $": {instance.Error}"))
                         ]
                     };
                 }
@@ -341,7 +424,10 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
 
                 if (explanation == null)
                 {
-                    return new BacktestExplanationDto { Errors = errors.Select(ToDto).ToList() };
+                    return new BacktestExplanationDto
+                    {
+                        Errors = errors.Select(e => ToDto(e, request.RuleType)).ToList()
+                    };
                 }
 
                 return new BacktestExplanationDto
@@ -360,6 +446,79 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
                         .ToList()
                 };
             }, token);
+        }
+
+        private async Task<BacktestResultDto> RunRuleCoreAsync(BacktestRequestDto? request, CancellationToken token)
+        {
+            ArgumentNullException.ThrowIfNull(request);
+            var model = await RequireModelAsync(request.EntityAnalysisModelId, token).ConfigureAwait(false);
+            var onlineMax = Setting("BacktestOnlineMaxRows", 10_000);
+
+            if (request.Limit > onlineMax)
+            {
+                return new BacktestResultDto
+                {
+                    Errors =
+                    [
+                        Error("Limit", "LimitTooLarge",
+                            strings[EntityAnalysisModelBacktestResources.LimitTooLarge, onlineMax])
+                    ]
+                };
+            }
+
+            await using var archive = ReportDbContext();
+
+            using var timeLimit = CancellationTokenSource.CreateLinkedTokenSource(token);
+            var onlineSeconds = Setting("BacktestOnlineMaxSeconds", 60);
+            timeLimit.CancelAfter(TimeSpan.FromSeconds(onlineSeconds));
+
+            BacktestExecution execution;
+
+            try
+            {
+                execution = await BacktestExecutor.ExecuteAsync(dbContext, tenantRegistryId,
+                    ToSpecification(request, model.Id, request.Limit), (int)Setting("BacktestPageSize", 5000),
+                    null, timeLimit.Token, archive).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (!token.IsCancellationRequested)
+            {
+                return new BacktestResultDto
+                {
+                    Errors =
+                    [
+                        Error("Limit", "OnlineTimeLimit",
+                            strings[EntityAnalysisModelBacktestResources.OnlineTimeLimit, onlineSeconds])
+                    ]
+                };
+            }
+
+            return execution.Valid
+                ? ToDto(execution.Result)
+                : new BacktestResultDto
+                {
+                    Errors = execution.Errors.Select(e => ToDto(e, request.RuleType)).ToList()
+                };
+        }
+
+        private async Task<ValidationErrorDto?> PendingLimitRefusalAsync(int modelId, CancellationToken token)
+        {
+            var repository = new EntityAnalysisModelBacktestInstanceRepository(dbContext, tenantRegistryId);
+            var perModel = Setting("BacktestMaxPendingPerModel", 5);
+            var perTenant = Setting("BacktestMaxPendingPerTenant", 20);
+
+            if (await repository.CountUncompletedAsync(modelId, token).ConfigureAwait(false) >= perModel)
+            {
+                return Error("Instance", "PendingLimitModel",
+                    strings[EntityAnalysisModelBacktestResources.PendingLimitModel, perModel]);
+            }
+
+            if (await repository.CountUncompletedAsync(null, token).ConfigureAwait(false) >= perTenant)
+            {
+                return Error("Instance", "PendingLimitTenant",
+                    strings[EntityAnalysisModelBacktestResources.PendingLimitTenant, perTenant]);
+            }
+
+            return null;
         }
 
         private async Task<EntityAnalysisModelBacktestInstance> RequireInstanceAsync(int id,
@@ -474,11 +633,21 @@ namespace Jube.Service.Query.EntityAnalysisModelBacktest
             };
         }
 
-        private static ValidationErrorDto ToDto(BacktestError error)
+        private ValidationErrorDto ToDto(BacktestError error, string? ruleType)
         {
+            var message = error.Code switch
+            {
+                "RuleTypeInvalid" => strings[EntityAnalysisModelBacktestResources.RuleTypeInvalid,
+                    ruleType ?? string.Empty],
+                "RangeInvalid" => strings[EntityAnalysisModelBacktestResources.RangeInvalid],
+                "RuleTextRequired" => strings[EntityAnalysisModelBacktestResources.RuleTextRequired],
+                "ArchiveNotFound" => strings[EntityAnalysisModelBacktestResources.ArchiveNotFound],
+                _ => error.Message
+            };
+
             return new ValidationErrorDto
             {
-                PropertyName = error.Property, ErrorCode = error.Code, Message = error.Message, Line = error.Line,
+                PropertyName = error.Property, ErrorCode = error.Code, Message = message, Line = error.Line,
                 Start = error.Start, Length = error.Length
             };
         }

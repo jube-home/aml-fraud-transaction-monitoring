@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,18 +21,23 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Query.EntityAnalysisModelSample
 {
+    [MessagePackObject]
     public class EntityAnalysisModelSampleOptionsDto
     {
         [Description("Guid of the Entity Analysis Model to sample archived transactions from.")]
+        [Key(0)]
         public Guid EntityAnalysisModelGuid { get; set; }
 
         [Description("Start of the archive ReferenceDate window to sample from (required).")]
+        [Key(1)]
         public DateTimeOffset? DateFrom { get; set; }
 
         [Description("End of the archive ReferenceDate window to sample from (required, must be after DateFrom).")]
+        [Key(2)]
         public DateTimeOffset? DateTo { get; set; }
 
         [Description("Sampling rate between 0 and 1 inclusive; each archived row is included with this probability.")]
+        [Key(3)]
         public double Sample { get; set; }
     }
 

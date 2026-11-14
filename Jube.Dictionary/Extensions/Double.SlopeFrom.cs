@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double SlopeFrom(this double @this, double previous, double elapsed)
+        [Description("The change from the previous value per unit of time.")]
+        public static double SlopeFrom(this double @this,
+            [Description("The earlier value the change is measured from.")] double previous,
+            [Description("The time between the two values, in any unit; the result is per that unit.")] double elapsed)
         {
             return CalculationSupport.Finite((@this - previous) / elapsed);
         }

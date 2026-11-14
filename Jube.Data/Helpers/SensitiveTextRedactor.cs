@@ -73,7 +73,7 @@ namespace Jube.Data.Helpers
             }
         }
 
-        public static string RedactRedisCommand(string command)
+        public static string RedactRespCommand(string command)
         {
             if (string.IsNullOrEmpty(command))
             {
@@ -124,7 +124,7 @@ namespace Jube.Data.Helpers
             return Redact(string.Join(' ', tokens));
         }
 
-        public static string RedactRedisKeyName(string commandName, string keyName)
+        public static string RedactRespKeyName(string commandName, string keyName)
         {
             if (string.IsNullOrEmpty(keyName) || string.IsNullOrEmpty(commandName))
             {

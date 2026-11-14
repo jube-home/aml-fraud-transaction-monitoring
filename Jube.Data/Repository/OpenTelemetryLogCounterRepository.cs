@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ using System.Threading.Tasks;
 using Jube.Data.Context;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace Jube.Data.Repository
 {
@@ -37,6 +39,14 @@ namespace Jube.Data.Repository
             return dbContext.OpenTelemetryLogCounter
                 .Where(w => (w.Deleted == 0 || w.Deleted == null) && w.Active == 1)
                 .ToListAsync(token);
+        }
+
+        public Task<bool> NameExistsAsync(string name, int excludingId, CancellationToken token = default)
+        {
+            var lowerName = name.ToLower();
+
+            return dbContext.OpenTelemetryLogCounter.AnyAsync(w =>
+                w.Id != excludingId && (w.Deleted == 0 || w.Deleted == null) && w.Name.ToLower() == lowerName, token);
         }
 
         public Task<OpenTelemetryLogCounter> GetByIdAsync(int id, CancellationToken token = default)
@@ -71,6 +81,8 @@ namespace Jube.Data.Repository
             {
                 throw new InvalidOperationException("The row is locked and cannot be updated.");
             }
+
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
 
             var version = (existing.Version ?? 0) + 1;
             var updatedDate = DateTime.UtcNow;

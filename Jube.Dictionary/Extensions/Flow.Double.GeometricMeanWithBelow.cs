@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchGeometricMeanWithBelow(double other, double bound)
+            [Description("True when: the geometric mean of the value and another, for growth factors and multiples is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchGeometricMeanWithBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleGeometricMeanWithBelow(flow.Value, other, bound));
             }
 
-            public Flow<double> RejectGeometricMeanWithBelow(double other, double bound)
+            [Description("True when: the geometric mean of the value and another, for growth factors and multiples is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectGeometricMeanWithBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleGeometricMeanWithBelow(flow.Value, other, bound));
             }
 
-            public Flow<double> BreakGeometricMeanWithBelow(double other, double bound)
+            [Description("True when: the geometric mean of the value and another, for growth factors and multiples is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakGeometricMeanWithBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleGeometricMeanWithBelow(flow.Value, other, bound));
             }
 
-            public Flow<double> RequireGeometricMeanWithBelow(double other, double bound)
+            [Description("True when: the geometric mean of the value and another, for growth factors and multiples is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireGeometricMeanWithBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleGeometricMeanWithBelow(flow.Value, other, bound));
             }
 
-            public Flow<double> EnsureGeometricMeanWithBelow(double other, double bound)
+            [Description("True when: the geometric mean of the value and another, for growth factors and multiples is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureGeometricMeanWithBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchGeometricMeanWithBelow(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the geometric mean of the value and another, for growth factors and multiples is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchGeometricMeanWithBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchGeometricMeanWithBelow(other, bound);
             }
 
-            public Flow<double> RejectGeometricMeanWithBelow(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the geometric mean of the value and another, for growth factors and multiples is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectGeometricMeanWithBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectGeometricMeanWithBelow(other, bound);
             }
 
-            public Flow<double> BreakGeometricMeanWithBelow(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the geometric mean of the value and another, for growth factors and multiples is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakGeometricMeanWithBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakGeometricMeanWithBelow(other, bound);
             }
 
-            public Flow<double> RequireGeometricMeanWithBelow(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the geometric mean of the value and another, for growth factors and multiples is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireGeometricMeanWithBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireGeometricMeanWithBelow(other, bound);
             }
 
-            public Flow<double> EnsureGeometricMeanWithBelow(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the geometric mean of the value and another, for growth factors and multiples is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureGeometricMeanWithBelow([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureGeometricMeanWithBelow(other, bound);
             }

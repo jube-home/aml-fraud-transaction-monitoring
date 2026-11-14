@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchEmailAliasNormalisedEqual(string? other)
+            [Description("True when: equal to the argument after removing case and any plus tag (multi-accounting). Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchEmailAliasNormalisedEqual([Description("The email address the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringEmailAliasNormalisedEqual(flow.Value, other));
             }
 
-            public Flow<string?> RejectEmailAliasNormalisedEqual(string? other)
+            [Description("True when: equal to the argument after removing case and any plus tag (multi-accounting). Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectEmailAliasNormalisedEqual([Description("The email address the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringEmailAliasNormalisedEqual(flow.Value, other));
             }
 
-            public Flow<string?> BreakEmailAliasNormalisedEqual(string? other)
+            [Description("True when: equal to the argument after removing case and any plus tag (multi-accounting). Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakEmailAliasNormalisedEqual([Description("The email address the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringEmailAliasNormalisedEqual(flow.Value, other));
             }
 
-            public Flow<string?> RequireEmailAliasNormalisedEqual(string? other)
+            [Description("True when: equal to the argument after removing case and any plus tag (multi-accounting). Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireEmailAliasNormalisedEqual([Description("The email address the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringEmailAliasNormalisedEqual(flow.Value, other));
             }
 
-            public Flow<string?> EnsureEmailAliasNormalisedEqual(string? other)
+            [Description("True when: equal to the argument after removing case and any plus tag (multi-accounting). Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureEmailAliasNormalisedEqual([Description("The email address the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchEmailAliasNormalisedEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: equal to the argument after removing case and any plus tag (multi-accounting). Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchEmailAliasNormalisedEqual([Description("The email address the value is compared with.")] string? other)
             {
                 return value.Start().MatchEmailAliasNormalisedEqual(other);
             }
 
-            public Flow<string?> RejectEmailAliasNormalisedEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: equal to the argument after removing case and any plus tag (multi-accounting). Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectEmailAliasNormalisedEqual([Description("The email address the value is compared with.")] string? other)
             {
                 return value.Start().RejectEmailAliasNormalisedEqual(other);
             }
 
-            public Flow<string?> BreakEmailAliasNormalisedEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: equal to the argument after removing case and any plus tag (multi-accounting). Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakEmailAliasNormalisedEqual([Description("The email address the value is compared with.")] string? other)
             {
                 return value.Start().BreakEmailAliasNormalisedEqual(other);
             }
 
-            public Flow<string?> RequireEmailAliasNormalisedEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: equal to the argument after removing case and any plus tag (multi-accounting). Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireEmailAliasNormalisedEqual([Description("The email address the value is compared with.")] string? other)
             {
                 return value.Start().RequireEmailAliasNormalisedEqual(other);
             }
 
-            public Flow<string?> EnsureEmailAliasNormalisedEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: equal to the argument after removing case and any plus tag (multi-accounting). Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureEmailAliasNormalisedEqual([Description("The email address the value is compared with.")] string? other)
             {
                 return value.Start().EnsureEmailAliasNormalisedEqual(other);
             }

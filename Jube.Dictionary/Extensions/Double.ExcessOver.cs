@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double ExcessOver(this double @this, double limit)
+        [Description("How far the value is over the limit, zero when within it.")]
+        public static double ExcessOver(this double @this, [Description("The limit.")] double limit)
         {
             return CalculationSupport.Finite(Math.Max(0, @this - limit));
         }

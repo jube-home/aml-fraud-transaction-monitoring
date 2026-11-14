@@ -35,6 +35,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Infrastructure.Reactivity;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
@@ -640,6 +641,235 @@ namespace Jube.Test.Service.EntityAnalysisModelAbstractionRule
             ex.Result.Errors.Should().Contain(e => e.ErrorCode == "OffsetValueRange");
         }
 
+        [Theory]
+        [InlineData("s", int.MaxValue)]
+        [InlineData("n", 52_560_001)]
+        [InlineData("h", 876_001)]
+        [InlineData("d", 36_501)]
+        public async Task SearchValueAboveTheIntervalLimitIsRejectedAsync(string interval, int value)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(modelId, UniqueName("HugeSearchValue"));
+            dto.SearchInterval = interval;
+            dto.SearchValue = value;
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "SearchValueRange");
+        }
+
+        [Fact]
+        public async Task SearchValueAtTheIntervalLimitIsAcceptedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(modelId, UniqueName("LimitSearchValue"));
+            dto.SearchInterval = "d";
+            dto.SearchValue = 36_500;
+
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+        }
+
+        [Theory]
+        [InlineData(1_000_001)]
+        [InlineData(int.MaxValue)]
+        public async Task OffsetValueAboveTheFetchLimitIsRejectedAsync(int value)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(modelId, UniqueName("HugeOffsetValue"));
+            dto.Offset = true;
+            dto.OffsetValue = value;
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "OffsetValueRange");
+        }
+
+        [Fact]
+        public async Task IterationOrderDefaultsToAscendingWhenTheClientDoesNotSendItAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var saved = await service.InsertAsync(NewDto(modelId, UniqueName("DefaultOrder")));
+            createdIds.Add(saved.Id);
+
+            saved.IterationOrderId.Should().Be(1);
+            saved.SearchFunctionParameters.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task IterationOrderAndFunctionParametersRoundTripAndAreCarriedIntoTheVersionRowAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(modelId, UniqueName("OrderAndParameters"));
+            dto.IterationOrderId = 2;
+            dto.SearchFunctionTypeId = 23;
+            dto.SearchFunctionKey = "IP";
+            dto.SearchFunctionParameters = new Dictionary<string, double> { ["unbiased"] = 0 };
+
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+
+            saved.IterationOrderId.Should().Be(2);
+            saved.SearchFunctionTypeId.Should().Be(23);
+            saved.SearchFunctionParameters.Should().Contain("unbiased");
+
+            var read = await service.GetByIdAsync(saved.Id);
+
+            read!.SearchFunctionParameters.Should().Equal(new Dictionary<string, double> { ["unbiased"] = 0 });
+
+            dto.Id = saved.Id;
+            dto.IterationOrderId = 1;
+            dto.SearchFunctionParameters = [];
+
+            var updated = await service.UpdateAsync(dto);
+
+            updated.IterationOrderId.Should().Be(1);
+            updated.SearchFunctionParameters.Should().BeNull();
+
+            var version = await dbContext.GetTable<EntityAnalysisModelAbstractionRuleVersion>()
+                .Where(w => w.EntityAnalysisModelAbstractionRuleId == saved.Id).SingleAsync();
+
+            version.IterationOrderId.Should().Be(2);
+            version.SearchFunctionParameters.Should().Contain("unbiased");
+        }
+
+        [Fact]
+        public async Task FunctionParametersStoredAsTrueOrFalseAreReadBackAsOneOrZeroAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(modelId, UniqueName("StoredBoolean"));
+            dto.SearchFunctionTypeId = 23;
+            dto.SearchFunctionKey = "IP";
+
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+
+            await dbContext.GetTable<Data.Poco.EntityAnalysisModelAbstractionRule>()
+                .Where(w => w.Id == saved.Id)
+                .Set(s => s.SearchFunctionParameters, "{\"unbiased\": true}")
+                .UpdateAsync();
+
+            var read = await service.GetByIdAsync(saved.Id);
+
+            read!.SearchFunctionParameters.Should().Equal(new Dictionary<string, double> { ["unbiased"] = 1 });
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(3)]
+        [InlineData(-1)]
+        public async Task IterationOrderOtherThanAscendingOrDescendingIsRejectedAsync(int iterationOrderId)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(modelId, UniqueName("BadOrder"));
+            dto.IterationOrderId = iterationOrderId;
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "IterationOrderIdInvalid");
+        }
+
+        [Theory]
+        [InlineData(19, "trimFraction", 0.9)]
+        [InlineData(19, "fraction", 0.1)]
+        [InlineData(19, "trimFraction", double.NaN)]
+        [InlineData(23, "unbiased", 2)]
+        [InlineData(32, "position", 0)]
+        [InlineData(32, "position", 1.5)]
+        [InlineData(3, "anything", 1)]
+        public async Task FunctionParametersThatDoNotFitTheFunctionAreRejectedAsync(int functionTypeId,
+            string name, double value)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(modelId, UniqueName("BadParameters"));
+            dto.SearchFunctionTypeId = functionTypeId;
+            dto.SearchFunctionKey = "IP";
+            dto.SearchFunctionParameters = new Dictionary<string, double> { [name] = value };
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "SearchFunctionParametersInvalid");
+        }
+
+        [Fact]
+        public async Task MoreFunctionParametersThanAnyFunctionTakesAreRejectedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(modelId, UniqueName("ManyParameters"));
+            dto.SearchFunctionTypeId = 19;
+            dto.SearchFunctionKey = "IP";
+            dto.SearchFunctionParameters = Enumerable.Range(0, 17).ToDictionary(i => "p" + i, i => (double)i);
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "SearchFunctionParametersInvalid");
+        }
+
+        [Theory]
+        [InlineData(17)]
+        [InlineData(45)]
+        public async Task TheCatalogueFunctionTypesAreAcceptedAsync(int functionTypeId)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(modelId, UniqueName("CatalogueFunction"));
+            dto.SearchFunctionTypeId = functionTypeId;
+            dto.SearchFunctionKey = "IP";
+
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+
+            saved.SearchFunctionTypeId.Should().Be(functionTypeId);
+        }
+
+        [Fact]
+        public async Task TheCursorResultFunctionNeedsNoFunctionKeyAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(modelId, UniqueName("CursorResult"));
+            dto.SearchFunctionTypeId = 46;
+            dto.SearchFunctionKey = null;
+
+            var saved = await service.InsertAsync(dto);
+            createdIds.Add(saved.Id);
+
+            saved.SearchFunctionTypeId.Should().Be(46);
+        }
+
+        [Theory]
+        [InlineData(9)]
+        [InlineData(10)]
+        [InlineData(47)]
+        public async Task FunctionTypesOutsideTheEnumerationAreRejectedAsync(int functionTypeId)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = NewDto(modelId, UniqueName("UnknownFunction"));
+            dto.SearchFunctionTypeId = functionTypeId;
+            dto.SearchFunctionKey = "IP";
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "SearchFunctionTypeIdInvalid");
+        }
+
         [Fact]
         public async Task OffsetNotValidatedWhenOffsetDisabledAsync()
         {
@@ -686,7 +916,6 @@ namespace Jube.Test.Service.EntityAnalysisModelAbstractionRule
             var dto = NewDto(modelId, saved.Name);
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
-            dto.Version = 999;
             dto.UpdatedUser = "also-tampered";
 
             var updated = await service.UpdateAsync(dto);

@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchEqualIgnoreCase(string? other)
+            [Description("True when: equals the argument, ignoring case. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchEqualIgnoreCase([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringEqualIgnoreCase(flow.Value, other));
             }
 
-            public Flow<string?> RejectEqualIgnoreCase(string? other)
+            [Description("True when: equals the argument, ignoring case. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectEqualIgnoreCase([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringEqualIgnoreCase(flow.Value, other));
             }
 
-            public Flow<string?> BreakEqualIgnoreCase(string? other)
+            [Description("True when: equals the argument, ignoring case. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakEqualIgnoreCase([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringEqualIgnoreCase(flow.Value, other));
             }
 
-            public Flow<string?> RequireEqualIgnoreCase(string? other)
+            [Description("True when: equals the argument, ignoring case. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireEqualIgnoreCase([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringEqualIgnoreCase(flow.Value, other));
             }
 
-            public Flow<string?> EnsureEqualIgnoreCase(string? other)
+            [Description("True when: equals the argument, ignoring case. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureEqualIgnoreCase([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchEqualIgnoreCase(string? other)
+            [Description("Begins a pipeline from the value. True when: equals the argument, ignoring case. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchEqualIgnoreCase([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().MatchEqualIgnoreCase(other);
             }
 
-            public Flow<string?> RejectEqualIgnoreCase(string? other)
+            [Description("Begins a pipeline from the value. True when: equals the argument, ignoring case. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectEqualIgnoreCase([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().RejectEqualIgnoreCase(other);
             }
 
-            public Flow<string?> BreakEqualIgnoreCase(string? other)
+            [Description("Begins a pipeline from the value. True when: equals the argument, ignoring case. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakEqualIgnoreCase([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().BreakEqualIgnoreCase(other);
             }
 
-            public Flow<string?> RequireEqualIgnoreCase(string? other)
+            [Description("Begins a pipeline from the value. True when: equals the argument, ignoring case. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireEqualIgnoreCase([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().RequireEqualIgnoreCase(other);
             }
 
-            public Flow<string?> EnsureEqualIgnoreCase(string? other)
+            [Description("Begins a pipeline from the value. True when: equals the argument, ignoring case. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureEqualIgnoreCase([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().EnsureEqualIgnoreCase(other);
             }

@@ -11,15 +11,20 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Jube.Validations
 {
-    public static partial class FilterSqlText
+    public static class FilterSqlText
     {
         private const int MaxLength = 65536;
+
+        private static readonly Regex forbidden = new(
+            @"\b(select|union|intersect|except|from|into|copy|insert|update|delete|drop|alter|create|truncate|grant|revoke|call|do|execute|pg_[a-z_]+|lo_[a-z_]+|set|with|values|returning|window|offset|limit|order|group|having|for)\b|::\s*regclass|\bcurrent_setting\b|\bversion\s*\(",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromSeconds(2));
 
         public static bool IsAcceptable(string? sql)
         {
@@ -52,6 +57,11 @@ namespace Jube.Validations
                 switch (c)
                 {
                     case '\'' or '"':
+                        if (c == '\'' && StartsEscapeString(outside))
+                        {
+                            return false;
+                        }
+
                         quote = c;
                         outside.Append(' ');
                         continue;
@@ -88,7 +98,36 @@ namespace Jube.Validations
 
             var text = outside.ToString();
 
-            return !text.Contains("--") && !text.Contains("/*") && !text.Contains("*/") && !Forbidden().IsMatch(text);
+            if (text.Contains("--") || text.Contains("/*") || text.Contains("*/"))
+            {
+                return false;
+            }
+
+            try
+            {
+                return !forbidden.IsMatch(text);
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return false;
+            }
+        }
+
+        private static bool StartsEscapeString(StringBuilder outside)
+        {
+            if (outside.Length == 0 || outside[^1] is not ('e' or 'E'))
+            {
+                return false;
+            }
+
+            if (outside.Length == 1)
+            {
+                return true;
+            }
+
+            var before = outside[^2];
+
+            return !(char.IsLetterOrDigit(before) || before is '_' or '$');
         }
 
         public static bool IsAcceptableTokens(string? tokens)
@@ -114,10 +153,5 @@ namespace Jube.Validations
                 return false;
             }
         }
-
-        [GeneratedRegex(
-            @"\b(select|union|intersect|except|from|into|copy|insert|update|delete|drop|alter|create|truncate|grant|revoke|call|do|execute|pg_[a-z_]+|lo_[a-z_]+|set|with|values|returning|window|offset|limit|order|group|having|for)\b|::\s*regclass|\bcurrent_setting\b|\bversion\s*\(",
-            RegexOptions.IgnoreCase)]
-        private static partial Regex Forbidden();
     }
 }

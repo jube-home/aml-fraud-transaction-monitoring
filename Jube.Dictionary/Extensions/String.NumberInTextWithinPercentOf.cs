@@ -15,7 +15,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool NumberInTextWithinPercentOf(this string? @this, double target, double tolerancePercent)
+        [Description("True when: a number found in the text is within the tolerance percentage of the target.")]
+        public static bool NumberInTextWithinPercentOf(this string? @this,
+            [Description("The number the numbers found in the text are compared with.")] double target,
+            [Description("How far from the target still counts, as a percentage of it.")] double tolerancePercent)
         {
             if (string.IsNullOrEmpty(@this))
             {

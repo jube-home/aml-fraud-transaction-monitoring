@@ -63,4 +63,16 @@
     <data name="NoInferenceBackend" xml:space="preserve">
     <value>I'm Jooby. There's {0} Bites in the Pasture, {1} Trails trodden, {2} Saltlicks laid down, {3} specialist Joobriks on call, and {4} Yokes in the harness -- but there's no inference backend configured right now, so none of that is actually running yet. Anything you can do in Jube's own screens, I can do here too, every step validated by the platform before it reaches you: I reach into this platform's own service layer directly, and when no tool fits, I find a way inside the fence -- real SQL against the database, rewritten to what you're allowed to see, a hardened R sandbox for the odd calculation, even a web search or a company-records lookup when I need outside eyes. I lay down what I find at the Salt Lick for next time. Point AskJoobyApiEndpoint and AskJoobyModel at OpenRouter and drop your key into AskJoobyApiKey -- that's the whole setup, and providers start competing for your token budget on its spot market from the first call. Sovereignty demands your own inference server instead? Azure AI Foundry, Alibaba Cloud's Model Studio, anywhere self-hosted -- same three settings, pointed there. Either way, set EnableAskJooby to True and I'll be ready before you've finished typing.</value>
   </data>
+    <data name="StreamFailed" xml:space="preserve">
+    <value>The reply could not be completed. Please try again.</value>
+  </data>
+    <data name="ApprovalSummary" xml:space="preserve">
+    <value>Jooby wants to make a change using {0} and needs your approval first. Nothing has been changed yet.</value>
+  </data>
+    <data name="ApprovalNotFound" xml:space="preserve">
+    <value>That approval request was not found or has already been decided.</value>
+  </data>
+    <data name="RateLimited" xml:space="preserve">
+    <value>You are sending messages too quickly or have too many replies running. Please wait a moment and try again.</value>
+  </data>
 </root>

@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Decodes URL-safe Base64 to UTF-8 text.")]
         public static string DecodeBase64Url(this string? @this)
         {
             var value = (@this ?? "").Trim().Replace('-', '+').Replace('_', '/');

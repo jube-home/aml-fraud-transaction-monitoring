@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,16 +21,20 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Query.EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataType
 {
+    [MessagePackObject]
     public class EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeDto
     {
         [Description("Name of the model field that can be referenced by a rule as a String or Float search key: " +
                      "a request XPath, an Inline Script public property or an Inline Function.")]
+        [Key(0)]
         public string? Name { get; set; }
 
         [Description("Data type of the field: 1 String, 3 Float.")]
+        [Key(1)]
         public int DataTypeId { get; set; }
 
         [Description("True when the field is flagged as a search key.")]
+        [Key(2)]
         public bool SearchKey { get; set; }
     }
 }

@@ -21,6 +21,7 @@ using Jube.Data.Repository;
 using Jube.Data.Repository.Models;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 
 namespace Jube.Test.Repository.Sanctions

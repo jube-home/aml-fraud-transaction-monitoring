@@ -81,4 +81,7 @@
     <data name="ImageLocationInvalid" xml:space="preserve">
     <value>L'emplacement de l'image doit être le nom de fichier d'une icône et ne peut pas contenir de séparateurs de chemin.</value>
   </data>
+    <data name="HttpEndpointInvalid" xml:space="preserve">
+    <value>Le point de terminaison HTTP doit être une URL http ou https absolue dont le schéma, l'hôte et le port sont écrits littéralement, avec des jetons uniquement dans le chemin et la requête.</value>
+  </data>
 </root>

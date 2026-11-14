@@ -46,6 +46,8 @@ namespace Jube.TaskCancellation.TaskHelper.Models
         InlineFunction = 36,
         InlineScript = 37,
         Gateway = 38,
-        HttpAdaptation = 39
+        HttpAdaptation = 39,
+        GraphAsync = 40,
+        SvirfdAsync = 41
     }
 }

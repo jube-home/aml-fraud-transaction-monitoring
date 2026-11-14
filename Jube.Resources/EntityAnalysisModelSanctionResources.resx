@@ -78,4 +78,10 @@
     <data name="MaxCoverageRatioRange" xml:space="preserve">
     <value>The maximum coverage ratio cannot be negative.</value>
   </data>
+    <data name="MatchAlgorithmInvalid" xml:space="preserve">
+    <value>The match algorithm must be 1 (Levenshtein), 2 (Jaro-Winkler) or 3 (Token set).</value>
+  </data>
+    <data name="MinimumSimilarityRange" xml:space="preserve">
+    <value>The minimum similarity must be between 0 and 1.</value>
+  </data>
 </root>

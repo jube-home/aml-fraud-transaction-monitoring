@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchEntropyOfSharesWithAbove(double bound, params double[] others)
+            [Description("True when: the Shannon entropy in bits of how the total is shared across the value and the others is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchEntropyOfSharesWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleEntropyOfSharesWithAbove(flow.Value, bound, others));
             }
 
-            public Flow<double> RejectEntropyOfSharesWithAbove(double bound, params double[] others)
+            [Description("True when: the Shannon entropy in bits of how the total is shared across the value and the others is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectEntropyOfSharesWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleEntropyOfSharesWithAbove(flow.Value, bound, others));
             }
 
-            public Flow<double> BreakEntropyOfSharesWithAbove(double bound, params double[] others)
+            [Description("True when: the Shannon entropy in bits of how the total is shared across the value and the others is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakEntropyOfSharesWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleEntropyOfSharesWithAbove(flow.Value, bound, others));
             }
 
-            public Flow<double> RequireEntropyOfSharesWithAbove(double bound, params double[] others)
+            [Description("True when: the Shannon entropy in bits of how the total is shared across the value and the others is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireEntropyOfSharesWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleEntropyOfSharesWithAbove(flow.Value, bound, others));
             }
 
-            public Flow<double> EnsureEntropyOfSharesWithAbove(double bound, params double[] others)
+            [Description("True when: the Shannon entropy in bits of how the total is shared across the value and the others is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureEntropyOfSharesWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchEntropyOfSharesWithAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the Shannon entropy in bits of how the total is shared across the value and the others is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchEntropyOfSharesWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().MatchEntropyOfSharesWithAbove(bound, others);
             }
 
-            public Flow<double> RejectEntropyOfSharesWithAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the Shannon entropy in bits of how the total is shared across the value and the others is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectEntropyOfSharesWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RejectEntropyOfSharesWithAbove(bound, others);
             }
 
-            public Flow<double> BreakEntropyOfSharesWithAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the Shannon entropy in bits of how the total is shared across the value and the others is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakEntropyOfSharesWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().BreakEntropyOfSharesWithAbove(bound, others);
             }
 
-            public Flow<double> RequireEntropyOfSharesWithAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the Shannon entropy in bits of how the total is shared across the value and the others is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireEntropyOfSharesWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RequireEntropyOfSharesWithAbove(bound, others);
             }
 
-            public Flow<double> EnsureEntropyOfSharesWithAbove(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the Shannon entropy in bits of how the total is shared across the value and the others is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureEntropyOfSharesWithAbove([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().EnsureEntropyOfSharesWithAbove(bound, others);
             }

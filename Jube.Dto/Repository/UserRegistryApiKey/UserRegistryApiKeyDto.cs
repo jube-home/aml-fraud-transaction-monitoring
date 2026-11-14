@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,29 +21,36 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Repository.UserRegistryApiKey
 {
+    [MessagePackObject]
     public class UserRegistryApiKeyDto
     {
         [Description("Server-assigned identifier of the API key grant. Read-only.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("Identifier of the UserRegistry (service account) this API key authenticates as. Must " +
                      "resolve to a UserRegistry visible to the caller's tenant.")]
+        [Key(1)]
         public int UserRegistryId { get; set; }
 
         [Description("Display name of the API key, chosen by the caller for their own reference. Not required " +
                      "to be unique.")]
+        [Key(2)]
         public string? Name { get; set; }
 
         [Description("Free-text description of the API key's purpose. Optional.")]
+        [Key(3)]
         public string? Description { get; set; }
 
         [Description("Server-assigned creation timestamp. Read-only.")]
+        [Key(4)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("Server-assigned. Immediately after Create, this carries the full plaintext API key -- " +
                      "the only time it is ever returned. On every later read it carries only the first 8 " +
                      "characters of the key, for display/identification purposes; the full key is not " +
                      "recoverable once this response is gone.")]
+        [Key(5)]
         public string? ApiKeyDisplay { get; set; }
     }
 }

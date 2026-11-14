@@ -115,13 +115,24 @@ namespace Jube.AskJooby.Agents
                 toolDefinitions.Add(snapshotTool);
             }
 
-            var tools = context.AutoSnapshot is { } autoSnapshot
-                ? toolDefinitions.Select(tool => tool.RequiresSnapshot
-                        ? new SnapshotOnWriteAiFunction(tool.Function, autoSnapshot, context.DelegationChannel,
-                            AgentStreamNarrator.DescribeAgentLabel(agentType))
-                        : tool.Function)
-                    .ToList()
-                : toolDefinitions.Select(tool => tool.Function).ToList();
+            var tools = toolDefinitions.Select(tool =>
+                {
+                    var function = tool.Function;
+
+                    if (tool.RequiresSnapshot && context.AutoSnapshot is { } autoSnapshot)
+                    {
+                        function = new SnapshotOnWriteAiFunction(function, autoSnapshot, context.DelegationChannel,
+                            AgentStreamNarrator.DescribeAgentLabel(agentType));
+                    }
+
+                    if (tool.RequiresSnapshot && context.ApprovalGate is { } approvalGate)
+                    {
+                        function = new ApprovalGatedAiFunction(function, approvalGate);
+                    }
+
+                    return function;
+                })
+                .ToList();
 
             var canDelegate = context.AllowDelegation && depth < context.MaxDepth
                                                       && definition.AllowedDelegates?.Count != 0;

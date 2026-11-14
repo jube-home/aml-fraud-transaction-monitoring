@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchSimilarInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the Levenshtein ratio to an entry is at least the threshold. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchSimilarInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringSimilarInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> RejectSimilarInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the Levenshtein ratio to an entry is at least the threshold. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectSimilarInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringSimilarInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> BreakSimilarInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the Levenshtein ratio to an entry is at least the threshold. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakSimilarInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringSimilarInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> RequireSimilarInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the Levenshtein ratio to an entry is at least the threshold. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireSimilarInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringSimilarInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> EnsureSimilarInList(IEnumerable<string> list, double threshold)
+            [Description("True when: the Levenshtein ratio to an entry is at least the threshold. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureSimilarInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchSimilarInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the Levenshtein ratio to an entry is at least the threshold. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchSimilarInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().MatchSimilarInList(list, threshold);
             }
 
-            public Flow<string?> RejectSimilarInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the Levenshtein ratio to an entry is at least the threshold. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectSimilarInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().RejectSimilarInList(list, threshold);
             }
 
-            public Flow<string?> BreakSimilarInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the Levenshtein ratio to an entry is at least the threshold. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakSimilarInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().BreakSimilarInList(list, threshold);
             }
 
-            public Flow<string?> RequireSimilarInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the Levenshtein ratio to an entry is at least the threshold. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireSimilarInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().RequireSimilarInList(list, threshold);
             }
 
-            public Flow<string?> EnsureSimilarInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: the Levenshtein ratio to an entry is at least the threshold. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureSimilarInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().EnsureSimilarInList(list, threshold);
             }

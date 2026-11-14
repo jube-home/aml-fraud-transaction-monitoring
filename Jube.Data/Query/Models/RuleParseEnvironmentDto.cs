@@ -35,6 +35,8 @@ namespace Jube.Data.Query.Models
         public List<string> HttpAdaptations { get; set; }
         public List<string> ExhaustiveAdaptations { get; set; }
         public List<string> AdvancedAnalyticsAdaptations { get; set; }
+        public List<string> Graph { get; set; }
+        public List<string> Svirfd { get; set; }
         public List<string> ActivationRules { get; set; }
     }
 }

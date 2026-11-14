@@ -21,5 +21,9 @@ namespace Jube.Resources
         public const string NameRequired = nameof(NameRequired);
         public const string NameMaxLength = nameof(NameMaxLength);
         public const string NameAlreadyExists = nameof(NameAlreadyExists);
+        public const string NameInvalidCharacters = nameof(NameInvalidCharacters);
+        public const string LandlordMustStayActive = nameof(LandlordMustStayActive);
+        public const string HttpAdaptationUrlInvalid = nameof(HttpAdaptationUrlInvalid);
+        public const string HttpAdaptationTimeoutRange = nameof(HttpAdaptationTimeoutRange);
     }
 }

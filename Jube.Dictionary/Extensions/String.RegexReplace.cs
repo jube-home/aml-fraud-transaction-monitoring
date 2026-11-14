@@ -17,7 +17,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static string RegexReplace(this string? @this, string pattern, string? replacement)
+        [Description("Replaces every match of a pattern, with a 250 ms match time limit.")]
+        public static string RegexReplace(this string? @this,
+            [Description("The regular expression to replace.")] string pattern,
+            [Description("The replacement text.")] string? replacement)
         {
             return Regex.Replace(@this ?? "", pattern, replacement ?? "", RegexOptions.None, RegexSupport.matchTimeout);
         }

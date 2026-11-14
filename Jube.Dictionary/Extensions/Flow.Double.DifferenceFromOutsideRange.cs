@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the value minus the other is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleDifferenceFromOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the value minus the other is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleDifferenceFromOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the value minus the other is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleDifferenceFromOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the value minus the other is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleDifferenceFromOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the value minus the other is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value minus the other is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchDifferenceFromOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value minus the other is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectDifferenceFromOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value minus the other is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakDifferenceFromOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value minus the other is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireDifferenceFromOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureDifferenceFromOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the value minus the other is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureDifferenceFromOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureDifferenceFromOutsideRange(other, lowerBound, upperBound);
             }

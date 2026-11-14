@@ -46,7 +46,7 @@ namespace Jube.Data.Observability
 
                 started = true;
                 DataConnection.TurnTraceSwitchOn();
-                DataConnection.OnTrace = Record;
+                DataConnection.DefaultOnTraceConnection = Record;
             }
         }
 

@@ -25,6 +25,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models
         public bool EnableTtlCounter { get; set; }
         public bool EnableActivationArchive { get; set; }
         public bool EnableRdbmsArchive { get; set; }
+        public bool EnablePayloadJObject { get; set; } = true;
         public bool EnableActivationWatcher { get; set; }
         public bool EnableResponseElevationLimit { get; set; }
         public bool EnableImplicitAsync { get; set; }

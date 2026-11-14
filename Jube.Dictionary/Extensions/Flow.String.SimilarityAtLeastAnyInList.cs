@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchSimilarityAtLeastAnyInList(IEnumerable<string> list, double threshold)
+            [Description("True when: at least the similarity of any entry of the List token. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchSimilarityAtLeastAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringSimilarityAtLeastAnyInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> RejectSimilarityAtLeastAnyInList(IEnumerable<string> list, double threshold)
+            [Description("True when: at least the similarity of any entry of the List token. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectSimilarityAtLeastAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringSimilarityAtLeastAnyInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> BreakSimilarityAtLeastAnyInList(IEnumerable<string> list, double threshold)
+            [Description("True when: at least the similarity of any entry of the List token. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakSimilarityAtLeastAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringSimilarityAtLeastAnyInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> RequireSimilarityAtLeastAnyInList(IEnumerable<string> list, double threshold)
+            [Description("True when: at least the similarity of any entry of the List token. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireSimilarityAtLeastAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringSimilarityAtLeastAnyInList(flow.Value, list, threshold));
             }
 
-            public Flow<string?> EnsureSimilarityAtLeastAnyInList(IEnumerable<string> list, double threshold)
+            [Description("True when: at least the similarity of any entry of the List token. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureSimilarityAtLeastAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchSimilarityAtLeastAnyInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: at least the similarity of any entry of the List token. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchSimilarityAtLeastAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().MatchSimilarityAtLeastAnyInList(list, threshold);
             }
 
-            public Flow<string?> RejectSimilarityAtLeastAnyInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: at least the similarity of any entry of the List token. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectSimilarityAtLeastAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().RejectSimilarityAtLeastAnyInList(list, threshold);
             }
 
-            public Flow<string?> BreakSimilarityAtLeastAnyInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: at least the similarity of any entry of the List token. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakSimilarityAtLeastAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().BreakSimilarityAtLeastAnyInList(list, threshold);
             }
 
-            public Flow<string?> RequireSimilarityAtLeastAnyInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: at least the similarity of any entry of the List token. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireSimilarityAtLeastAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().RequireSimilarityAtLeastAnyInList(list, threshold);
             }
 
-            public Flow<string?> EnsureSimilarityAtLeastAnyInList(IEnumerable<string> list, double threshold)
+            [Description("Begins a pipeline from the value. True when: at least the similarity of any entry of the List token. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureSimilarityAtLeastAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The similarity from 0 to 1 that counts.")] double threshold)
             {
                 return value.Start().EnsureSimilarityAtLeastAnyInList(list, threshold);
             }

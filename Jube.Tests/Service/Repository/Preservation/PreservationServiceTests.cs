@@ -44,9 +44,11 @@ using Jube.Service.Repository.Preservation;
 using Jube.Service.Repository.PreservationSnapshot;
 using Jube.Test.Analytics.Categorical;
 using Jube.Test.Infrastructure;
+using Jube.Test.Preservation;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.Repository.Preservation.Models;
 using LinqToDB;
+using LinqToDB.Async;
 using LinqToDB.Data;
 using log4net;
 using MessagePack;
@@ -64,7 +66,6 @@ namespace Jube.Test.Service.Repository.Preservation
     [Collection("Database")]
     public sealed class PreservationServiceTests(DatabaseFixture fx) : IAsyncLifetime
     {
-        private const string Salt = "ZzTestPreservationSalt";
         private const string Password = "correct horse";
 
         private static readonly IStringLocalizerFactory localizers =
@@ -195,16 +196,16 @@ namespace Jube.Test.Service.Repository.Preservation
             await dbContext.EntityApproval.Where(w => tenantIdsNullable.Contains(w.TenantRegistryId)).DeleteAsync();
             await dbContext.Import.Where(w => tenantIds.Contains(w.TenantRegistryId)).DeleteAsync();
             await dbContext.Export.Where(w => tenantIds.Contains(w.TenantRegistryId)).DeleteAsync();
-            await dbContext.ExportPeek.Where(w => tenantIds.Contains(w.TenantRegistryId)).DeleteAsync();
+            await dbContext.PreservationDiff.Where(w => tenantIds.Contains(w.TenantRegistryId)).DeleteAsync();
             await dbContext.TenantRegistry.Where(w => tenantIds.Contains(w.Id)).DeleteAsync();
         }
 
         private static Task<PreservationService> BuildServiceAsync(
             DbContext dbContext, string? userName, ILog? log = null, ILog? auditLog = null,
-            IServiceChangeBus? serviceChangeBus = null, bool legacyFallback = false)
+            IServiceChangeBus? serviceChangeBus = null)
         {
             return PreservationService.CreateAsync(dbContext, userName, log ?? TestLog.NoOp, localizers,
-                serviceChangeBus ?? new NullServiceChangeBus(), auditLog ?? TestLog.NoOp, Salt, legacyFallback);
+                serviceChangeBus ?? new NullServiceChangeBus(), auditLog ?? TestLog.NoOp);
         }
 
         private async Task GrantPermissionAsync(Tenant tenant, int permissionSpecificationId)
@@ -232,7 +233,7 @@ namespace Jube.Test.Service.Repository.Preservation
             IServiceChangeBus? serviceChangeBus = null)
         {
             return PreservationSnapshotService.CreateAsync(dbContext, userName, log ?? TestLog.NoOp, localizers,
-                serviceChangeBus ?? new NullServiceChangeBus(), auditLog ?? TestLog.NoOp, Salt, false);
+                serviceChangeBus ?? new NullServiceChangeBus(), auditLog ?? TestLog.NoOp);
         }
 
         private async Task<Tenant> CreateTenantAsync(string label, bool withPermission = true)
@@ -427,20 +428,30 @@ namespace Jube.Test.Service.Repository.Preservation
         }
 
         private async Task ImportAsync(Tenant tenant, byte[] bytes, string? password = Password, ILog? log = null,
-            ILog? auditLog = null, IServiceChangeBus? bus = null, bool legacyFallback = false,
+            ILog? auditLog = null, IServiceChangeBus? bus = null,
             CancellationToken token = default)
         {
             await using var dbContext = fx.GetDbContext();
-            var service = await BuildServiceAsync(dbContext, tenant.UserName, log, auditLog, bus, legacyFallback);
+            var service = await BuildServiceAsync(dbContext, tenant.UserName, log, auditLog, bus);
             await using var stream = new MemoryStream(bytes);
 
             await service.ImportAsync([new PreservationImportFileDto { FileName = "x.jemp", Content = stream }],
                 password, token);
         }
 
+        private async Task<PreservationImportPreviewDto> PreviewAsync(Tenant tenant, byte[] bytes)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, tenant.UserName);
+            await using var stream = new MemoryStream(bytes);
+
+            return await service.ImportPreviewAsync(
+                [new PreservationImportFileDto { FileName = "x.jemp", Content = stream }], Password);
+        }
+
         private static Wrapper Decrypt(byte[] encrypted, string password = Password)
         {
-            var bytes = new JempAesEncryption(password, Salt).Decrypt(encrypted);
+            var bytes = new JempAesEncryption(password).Decrypt(encrypted);
 
             return MessagePackSerializer.Deserialize<Wrapper>(bytes,
                 MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray));
@@ -451,7 +462,7 @@ namespace Jube.Test.Service.Repository.Preservation
             var bytes = MessagePackSerializer.Serialize(wrapper,
                 MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray));
 
-            return new JempAesEncryption(Password, Salt).Encrypt(bytes);
+            return new JempAesEncryption(Password).Encrypt(bytes);
         }
 
         [Theory]
@@ -497,8 +508,7 @@ namespace Jube.Test.Service.Repository.Preservation
             var import = await Assert.ThrowsAsync<ForbiddenException>(() =>
                 service.ImportAsync([new PreservationImportFileDto { Content = stream }], Password));
 
-            var peek = await Assert.ThrowsAsync<ForbiddenException>(() =>
-                service.ExportPeekAsync(true, true, true, true));
+            var peek = await Assert.ThrowsAsync<ForbiddenException>(() => service.SummaryAsync());
 
             var export = await Assert.ThrowsAsync<ForbiddenException>(() => service.ExportAsync(FullOptions()));
 
@@ -512,11 +522,11 @@ namespace Jube.Test.Service.Repository.Preservation
             log.Entries.Should().NotContain(e => e.Level == "ERROR");
             (await dbContext.Import.CountAsync(w => w.TenantRegistryId == tenant.Id)).Should().Be(0);
             (await dbContext.Export.CountAsync(w => w.TenantRegistryId == tenant.Id)).Should().Be(0);
-            (await dbContext.ExportPeek.CountAsync(w => w.TenantRegistryId == tenant.Id)).Should().Be(0);
+            (await dbContext.PreservationDiff.CountAsync(w => w.TenantRegistryId == tenant.Id)).Should().Be(0);
         }
 
         [Fact]
-        public async Task ExportContainsOnlyCallersTenantAndPeekMatchesAsync()
+        public async Task ExportContainsOnlyCallersTenantAndTheLivePayloadMatchesAsync()
         {
             var tenantA = await CreateTenantAsync("IsoA");
             var tenantB = await CreateTenantAsync("IsoB");
@@ -536,8 +546,7 @@ namespace Jube.Test.Service.Repository.Preservation
                 .BeEquivalentTo(seededB.ModelName);
 
             await using var dbContext = fx.GetDbContext();
-            var serviceA = await BuildServiceAsync(dbContext, tenantA.UserName);
-            var peekA = await serviceA.ExportPeekAsync(true, true, true, true);
+            var peekA = await PreservationHarness.LiveJsonAsync(dbContext, tenantA.UserName);
 
             peekA.Should().Contain(seededA.ModelName).And.Contain(seededA.ListName)
                 .And.Contain(seededA.DictionaryName);
@@ -546,8 +555,7 @@ namespace Jube.Test.Service.Repository.Preservation
                 .And.NotContain(seededB.DictionaryName).And.NotContain(seededB.XpathName)
                 .And.NotContain(seededB.KvpKey);
 
-            var serviceB = await BuildServiceAsync(dbContext, tenantB.UserName);
-            var peekB = await serviceB.ExportPeekAsync(true, true, true, true);
+            var peekB = await PreservationHarness.LiveJsonAsync(dbContext, tenantB.UserName);
             peekB.Should().Contain(seededB.ModelName).And.NotContain(seededA.ModelName);
         }
 
@@ -712,7 +720,7 @@ namespace Jube.Test.Service.Repository.Preservation
             var bytes = await ExportAsync(source, options);
 
             var payload = MessagePackSerializer.Deserialize<Wrapper>(
-                new JempAesEncryption(Password, Salt).Decrypt(bytes),
+                new JempAesEncryption(Password).Decrypt(bytes),
                 MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray));
 
             var exportedVariable = payload.Payload!.EntityAnalysisModel!.Single(m => m.Guid == seeded.ModelGuid)
@@ -1133,6 +1141,49 @@ namespace Jube.Test.Service.Repository.Preservation
         }
 
         [Fact]
+        public async Task ImportOfRolesCarryingAPermissionTheCallerLacksIsRefusedAndChangesNothingAsync()
+        {
+            var source = await CreateTenantAsync("EscS");
+            await GrantPermissionAsync(source, 34);
+            var target = await CreateTenantAsync("EscT");
+            var bytes = await ExportAsync(source, FullOptions(true));
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => ImportAsync(target, bytes));
+
+            await using var dbContext = fx.GetDbContext();
+            (await dbContext.RoleRegistry.CountAsync(w => w.TenantRegistryId == target.Id)).Should().Be(1);
+
+            (await dbContext.RoleRegistryPermission.CountAsync(w =>
+                w.RoleRegistry.TenantRegistryId == target.Id && w.PermissionSpecificationId == 34)).Should().Be(0);
+        }
+
+        [Fact]
+        public async Task ImportThatWouldReplaceARoleCarryingAPermissionTheCallerLacksIsRefusedAsync()
+        {
+            var tenant = await CreateTenantAsync("EscR");
+            var bytes = await ExportAsync(tenant, FullOptions(true));
+
+            await using (var dbContext = fx.GetDbContext())
+            {
+                var other = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.RoleRegistry
+                {
+                    Guid = Guid.NewGuid(), Name = $"{DatabaseFixture.Prefix}EscRoleHigher{Guid.NewGuid():N}"[..40],
+                    Active = 1, Locked = 0, Deleted = 0, TenantRegistryId = tenant.Id, Version = 1,
+                    CreatedDate = DateTime.UtcNow, CreatedUser = DatabaseFixture.Prefix
+                });
+
+                await dbContext.InsertAsync(new Data.Poco.RoleRegistryPermission
+                {
+                    Guid = Guid.NewGuid(), PermissionSpecificationId = 34, RoleRegistryId = other, Active = 1,
+                    Locked = 0, Deleted = 0, Version = 1, CreatedDate = DateTime.UtcNow,
+                    CreatedUser = DatabaseFixture.Prefix
+                });
+            }
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => ImportAsync(tenant, bytes));
+        }
+
+        [Fact]
         public async Task ImportRestoresGuidWhenSameTenantReimportsItsOwnExportAsync()
         {
             var tenant = await CreateTenantAsync("Self");
@@ -1147,6 +1198,143 @@ namespace Jube.Test.Service.Repository.Preservation
             live.Should().ContainSingle();
             live[0].Name.Should().Be(seeded.ModelName);
             live[0].Id.Should().NotBe(seeded.ModelId);
+        }
+
+        [Fact]
+        public async Task ImportStampsTheImportersTenantAndDropsPermissionRowsThatPointOutsideThePackageAsync()
+        {
+            var tenant = await CreateTenantAsync("PrgT");
+            var bystander = await CreateTenantAsync("PrgB");
+            var bystanderSeed = await SeedTenantAsync(bystander, "PrgB");
+            await SeedTenantAsync(tenant, "PrgT");
+
+            var wrapper = Decrypt(await ExportAsync(tenant, FullOptions(true)));
+            var model = wrapper.Payload.Required().EntityAnalysisModel.Required().Single();
+            model.TenantRegistryId = bystander.Id;
+
+            wrapper.Payload!.EntityPermission = new EntityPermission
+            {
+                EntityAnalysisModelRole =
+                [
+                    new Data.Poco.EntityAnalysisModelRole
+                        { EntityAnalysisModelGuid = model.Guid, RoleRegistryGuid = tenant.RoleGuid },
+                    new Data.Poco.EntityAnalysisModelRole
+                        { EntityAnalysisModelGuid = bystanderSeed.ModelGuid, RoleRegistryGuid = tenant.RoleGuid },
+                    new Data.Poco.EntityAnalysisModelRole
+                        { EntityAnalysisModelGuid = model.Guid, RoleRegistryGuid = bystander.RoleGuid }
+                ]
+            };
+
+            try
+            {
+                await ImportAsync(tenant, Encrypt(wrapper));
+
+                await using var dbContext = fx.GetDbContext();
+
+                (await dbContext.EntityAnalysisModel.CountAsync(w =>
+                        w.TenantRegistryId == tenant.Id && w.Name == model.Name && (w.Deleted ?? 0) == 0))
+                    .Should().Be(1, "the tenant id carried in the package is replaced by the importer's own");
+
+                var bystanderModels = await dbContext.EntityAnalysisModel
+                    .Where(w => w.TenantRegistryId == bystander.Id && (w.Deleted ?? 0) == 0).ToListAsync();
+
+                bystanderModels.Should().ContainSingle().Which.Id.Should().Be(bystanderSeed.ModelId);
+
+                var rows = await dbContext.EntityAnalysisModelRole
+                    .Where(w => w.RoleRegistryGuid == tenant.RoleGuid || w.RoleRegistryGuid == bystander.RoleGuid
+                                                                      || w.EntityAnalysisModelGuid ==
+                                                                      bystanderSeed.ModelGuid)
+                    .ToListAsync();
+
+                rows.Should().ContainSingle("a row that names a model or role outside the package is dropped")
+                    .Which.EntityAnalysisModelGuid.Should().Be(model.Guid);
+            }
+            finally
+            {
+                await using var cleanup = fx.GetDbContext();
+
+                await cleanup.EntityAnalysisModelRole
+                    .Where(w => w.RoleRegistryGuid == tenant.RoleGuid || w.RoleRegistryGuid == bystander.RoleGuid
+                                                                      || w.EntityAnalysisModelGuid ==
+                                                                      bystanderSeed.ModelGuid)
+                    .DeleteAsync();
+            }
+        }
+
+        [Fact]
+        public async Task TwoConcurrentImportsIntoOneTenantLeaveASingleCopyOfTheConfigurationAsync()
+        {
+            var tenant = await CreateTenantAsync("Conc");
+            var seeded = await SeedTenantAsync(tenant, "Conc");
+            var bytes = await ExportAsync(tenant, FullOptions());
+
+            await Task.WhenAll(ImportAsync(tenant, bytes), ImportAsync(tenant, bytes));
+
+            await using var dbContext = fx.GetDbContext();
+
+            (await dbContext.EntityAnalysisModel.CountAsync(w =>
+                    w.TenantRegistryId == tenant.Id && w.Name == seeded.ModelName && (w.Deleted ?? 0) == 0))
+                .Should().Be(1, "the second import must wait for the first and then replace its result");
+
+            (await dbContext.Import.CountAsync(w =>
+                    w.TenantRegistryId == tenant.Id && w.CompletedDate != null && (w.InError ?? 0) == 0))
+                .Should().Be(2);
+        }
+
+        [Fact]
+        public async Task ImportPreviewBlocksAPackageCarryingAPermissionTheCallerLacksAsync()
+        {
+            var source = await CreateTenantAsync("PvS");
+            await GrantPermissionAsync(source, 34);
+            var target = await CreateTenantAsync("PvT");
+
+            var foreign = await PreviewAsync(target, await ExportAsync(source, FullOptions(true)));
+            foreign.Blockers.Should().Contain(b => b.Code == "Privilege");
+
+            var own = await PreviewAsync(target, await ExportAsync(target, FullOptions(true)));
+            own.Blockers.Should().NotContain(b => b.Code == "Privilege");
+        }
+
+        [Fact]
+        public async Task SameTenantReimportKeepsTheGuidOfAVisualisationAsync()
+        {
+            var tenant = await CreateTenantAsync("Vis");
+            var guid = Guid.NewGuid();
+
+            await using (var dbContext = fx.GetDbContext())
+            {
+                await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.VisualisationRegistry
+                {
+                    Guid = guid, Name = $"{DatabaseFixture.Prefix}PrVis{Guid.NewGuid():N}"[..30], Active = 1,
+                    Locked = 0, Deleted = 0, TenantRegistryId = tenant.Id, Version = 1,
+                    CreatedDate = DateTime.UtcNow, CreatedUser = tenant.UserName
+                });
+            }
+
+            try
+            {
+                var options = FullOptions();
+                options.Visualisations = true;
+
+                await ImportAsync(tenant, await ExportAsync(tenant, options));
+
+                await using var dbContext = fx.GetDbContext();
+
+                var rows = await dbContext.VisualisationRegistry.Where(w => w.TenantRegistryId == tenant.Id)
+                    .Select(s => new { s.Id, s.Guid, s.Deleted, s.ImportId }).ToListAsync();
+
+                var held = string.Join("; ", rows.Select(r =>
+                    $"id={r.Id} guid={r.Guid} deleted={r.Deleted} importId={r.ImportId}"));
+
+                (await dbContext.VisualisationRegistry.CountAsync(w =>
+                        w.TenantRegistryId == tenant.Id && w.Guid == guid && (w.Deleted ?? 0) == 0))
+                    .Should().Be(1, $"a visualisation already in the importing tenant keeps its guid {guid}; the tenant holds: {held}");
+            }
+            finally
+            {
+                await using var cleanup = fx.GetDbContext();
+                await cleanup.VisualisationRegistry.Where(w => w.TenantRegistryId == tenant.Id).DeleteAsync();
+            }
         }
 
         [Fact]
@@ -1189,7 +1377,7 @@ namespace Jube.Test.Service.Repository.Preservation
         }
 
         [Fact]
-        public async Task TamperedFileWithLegacyFallbackDisabledIsInvalidFileAsync()
+        public async Task TamperedFileIsInvalidFileAsync()
         {
             var source = await CreateTenantAsync("TpS");
             var target = await CreateTenantAsync("TpT");
@@ -1199,6 +1387,38 @@ namespace Jube.Test.Service.Repository.Preservation
             bytes[^1] ^= 0xFF;
 
             await Assert.ThrowsAsync<InvalidPreservationFileException>(() => ImportAsync(target, bytes));
+
+            await AssertTargetUntouchedAsync(target, targetSeed);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("elevenchars")]
+        public async Task ExportWithAPasswordShorterThanTheMinimumIsRefusedAndRecordsNothingAsync(string? password)
+        {
+            var tenant = await CreateTenantAsync("WkP");
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, tenant.UserName);
+            var before = await dbContext.Export.CountAsync(w => w.TenantRegistryId == tenant.Id);
+            var options = FullOptions();
+            options.Password = password;
+
+            var ex = await Assert.ThrowsAsync<WeakPasswordException>(() => service.ExportAsync(options));
+
+            ex.Code.Should().Be("WeakPassword");
+            ex.Message.Should().Contain("12");
+            (await dbContext.Export.CountAsync(w => w.TenantRegistryId == tenant.Id)).Should().Be(before);
+        }
+
+        [Fact]
+        public async Task ImportOfAFileFromAnEarlierReleaseIsAnInvalidFileAsync()
+        {
+            var target = await CreateTenantAsync("ErT");
+            var targetSeed = await SeedTenantAsync(target, "ErT");
+
+            await Assert.ThrowsAsync<InvalidPreservationFileException>(() =>
+                ImportAsync(target, System.Security.Cryptography.RandomNumberGenerator.GetBytes(4096)));
 
             await AssertTargetUntouchedAsync(target, targetSeed);
         }
@@ -1297,7 +1517,7 @@ namespace Jube.Test.Service.Repository.Preservation
             var service = await BuildServiceAsync(dbContext, tenant.UserName);
 
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
-                service.ExportPeekAsync(true, true, true, true, true, cts.Token));
+                service.SummaryAsync(cts.Token));
 
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
                 service.ExportAsync(FullOptions(), cts.Token));
@@ -1313,7 +1533,7 @@ namespace Jube.Test.Service.Repository.Preservation
         }
 
         [Fact]
-        public async Task ExportAndPeekWriteExactlyOneAuditRecordEachAndPublishNothingAsync()
+        public async Task ExportAndSummaryWriteExactlyOneAuditRecordEachAndPublishNothingAsync()
         {
             var tenant = await CreateTenantAsync("Au");
             var audit = new TestLog();
@@ -1321,10 +1541,10 @@ namespace Jube.Test.Service.Repository.Preservation
             await using var dbContext = fx.GetDbContext();
             var service = await BuildServiceAsync(dbContext, tenant.UserName, auditLog: audit, serviceChangeBus: bus);
 
-            await service.ExportPeekAsync(false, false, false, false);
+            await service.SummaryAsync();
             await service.ExportAsync(FullOptions());
 
-            audit.Entries.Count(e => e.Message.Contains("area=Preservation op=ExportPeek ")).Should().Be(1);
+            audit.Entries.Count(e => e.Message.Contains("area=Preservation op=Summary ")).Should().Be(1);
             audit.Entries.Count(e => e.Message.Contains("area=Preservation op=Export ")).Should().Be(1);
             audit.Entries.Should().OnlyContain(e => e.Message.Contains($"tenant={tenant.Id} outcome=ok"));
             bus.Published.Should().BeEmpty();
@@ -1773,6 +1993,237 @@ namespace Jube.Test.Service.Repository.Preservation
             (await service.GetAsync()).Should().NotContain(s => s.Id == created.Id);
             var gone = async () => await service.GetByIdAsync(created.Id);
             await gone.Should().ThrowAsync<NotFoundException>();
+        }
+
+        [Fact]
+        public async Task SnapshotRestoreThatWouldReplaceARoleCarryingAPermissionTheCallerLacksIsRefusedAsync()
+        {
+            var tenant = await CreateTenantAsync("SnapEsc");
+            var seeded = await SeedTenantAsync(tenant, "SnapEsc");
+            await GrantPermissionAsync(tenant, 63);
+
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildSnapshotServiceAsync(dbContext, tenant.UserName);
+            var snapshot = await service.CreateAsync(new PreservationSnapshotRequestDto { Name = "before escalation" });
+
+            var higherName = $"{DatabaseFixture.Prefix}SnapHigher{Guid.NewGuid():N}"[..40];
+
+            var higherId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.RoleRegistry
+            {
+                Guid = Guid.NewGuid(), Name = higherName, Active = 1, Locked = 0, Deleted = 0,
+                TenantRegistryId = tenant.Id, Version = 1, CreatedDate = DateTime.UtcNow,
+                CreatedUser = DatabaseFixture.Prefix
+            });
+
+            await dbContext.InsertAsync(new Data.Poco.RoleRegistryPermission
+            {
+                Guid = Guid.NewGuid(), PermissionSpecificationId = 34, RoleRegistryId = higherId, Active = 1,
+                Locked = 0, Deleted = 0, Version = 1, CreatedDate = DateTime.UtcNow,
+                CreatedUser = DatabaseFixture.Prefix
+            });
+
+            var renamed = $"{DatabaseFixture.Prefix}Kept{Guid.NewGuid():N}"[..40];
+
+            await dbContext.EntityAnalysisModel.Where(w => w.Id == seeded.ModelId)
+                .Set(s => s.Name, renamed).UpdateAsync();
+
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ImportAsync(snapshot.Id));
+            await Assert.ThrowsAsync<ForbiddenException>(() => service.ImportForProcessAsync(snapshot.Id));
+
+            (await dbContext.RoleRegistry.CountAsync(w => w.Id == higherId && (w.Deleted ?? 0) == 0)).Should().Be(1);
+
+            (await dbContext.EntityAnalysisModel.CountAsync(w => w.Id == seeded.ModelId && w.Name == renamed))
+                .Should().Be(1, "a refused restore must not have replaced any configuration");
+        }
+
+        [Fact]
+        public async Task SnapshotCreateRefusesUnknownAndReservedSourcesAndOverlongNamesAsync()
+        {
+            var tenant = await CreateTenantAsync("SnapSrc");
+
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildSnapshotServiceAsync(dbContext, tenant.UserName);
+
+            foreach (var source in new[]
+                     {
+                         PreservationSnapshotSource.BeforeImport, (PreservationSnapshotSource)99,
+                         (PreservationSnapshotSource)0
+                     })
+            {
+                await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
+                    service.CreateAsync(new PreservationSnapshotRequestDto { SnapshotSourceId = source }));
+            }
+
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
+                service.CreateAsync(new PreservationSnapshotRequestDto { Name = new string('n', 201) }));
+
+            (await service.GetAsync()).Should().BeEmpty("a refused request must not leave a snapshot behind");
+
+            var accepted = await service.CreateAsync(new PreservationSnapshotRequestDto
+                { Name = new string('n', 200), SnapshotSourceId = PreservationSnapshotSource.AskJooby });
+
+            accepted.Name.Should().HaveLength(200);
+        }
+
+        [Fact]
+        public async Task ImportAndPreviewOfAPackageOverTheSizeLimitAreRefusedBeforeAnythingIsReadAsync()
+        {
+            var tenant = await CreateTenantAsync("Big");
+            var seeded = await SeedTenantAsync(tenant, "Big");
+            var bytes = await ExportAsync(tenant, FullOptions());
+
+            await using var dbContext = fx.GetDbContext();
+
+            var service = (await BuildServiceAsync(dbContext, tenant.UserName))
+                .WithLimits(PreservationLimits.Default with { MaximumPackageBytes = bytes.Length - 1 });
+
+            await using var stream = new MemoryStream(bytes);
+
+            await Assert.ThrowsAsync<PackageTooLargeException>(() => service.ImportAsync(
+                [new PreservationImportFileDto { FileName = "x.jemp", Content = stream }], Password));
+
+            await using var second = new MemoryStream(bytes);
+
+            await Assert.ThrowsAsync<PackageTooLargeException>(() => service.ImportPreviewAsync(
+                [new PreservationImportFileDto { FileName = "x.jemp", Content = second }], Password));
+
+            (await dbContext.Import.CountAsync(w => w.TenantRegistryId == tenant.Id)).Should().Be(0);
+
+            await using var exact = new MemoryStream(bytes);
+
+            await service.WithLimits(PreservationLimits.Default with { MaximumPackageBytes = bytes.Length }).ImportAsync(
+                [new PreservationImportFileDto { FileName = "x.jemp", Content = exact }], Password);
+
+            (await dbContext.EntityAnalysisModel.CountAsync(w =>
+                    w.TenantRegistryId == tenant.Id && w.Name == seeded.ModelName && (w.Deleted ?? 0) == 0))
+                .Should().Be(1, "a package exactly at the limit is accepted");
+        }
+
+        [Fact]
+        public async Task ImportOfAPackageDeclaringMoreDecompressedBytesThanTheLimitIsRefusedAndChangesNothingAsync()
+        {
+            var source = await CreateTenantAsync("DecS");
+            var target = await CreateTenantAsync("DecT");
+            await SeedTenantAsync(source, "DecS");
+            var targetSeed = await SeedTenantAsync(target, "DecT");
+            var bytes = await ExportAsync(source, FullOptions());
+
+            await using var dbContext = fx.GetDbContext();
+
+            var service = (await BuildServiceAsync(dbContext, target.UserName))
+                .WithLimits(PreservationLimits.Default with { MaximumDecompressedBytes = 10 });
+
+            await using var stream = new MemoryStream(bytes);
+
+            await Assert.ThrowsAsync<PackageTooLargeException>(() => service.ImportAsync(
+                [new PreservationImportFileDto { FileName = "x.jemp", Content = stream }], Password));
+
+            await AssertTargetUntouchedAsync(target, targetSeed);
+        }
+
+        [Fact]
+        public async Task SnapshotRetentionKeepsTheNewestAndTheLastBeforeImportAndPurgesTheRestAsync()
+        {
+            var tenant = await CreateTenantAsync("Ret");
+            await SeedTenantAsync(tenant, "Ret");
+            await ImportAsync(tenant, await ExportAsync(tenant, FullOptions()));
+
+            await using var dbContext = fx.GetDbContext();
+            var audit = new TestLog();
+
+            var beforeImport = await dbContext.PreservationSnapshot
+                .Where(w => w.TenantRegistryId == tenant.Id && w.SnapshotSourceId == 4)
+                .Select(s => s.Id).SingleAsync();
+
+            var service = (await BuildSnapshotServiceAsync(dbContext, tenant.UserName, auditLog: audit))
+                .WithLimits(PreservationLimits.Default with { MaximumSnapshotsPerTenant = 2 });
+
+            var ids = new List<int>();
+
+            for (var i = 0; i < 4; i++)
+            {
+                ids.Add((await service.CreateAsync(new PreservationSnapshotRequestDto { Name = $"r{i}" })).Id);
+            }
+
+            var live = await dbContext.PreservationSnapshot
+                .Where(w => w.TenantRegistryId == tenant.Id && (w.Deleted == 0 || w.Deleted == null))
+                .Select(s => s.Id).ToListAsync();
+
+            live.Should().BeEquivalentTo([beforeImport, ids[2], ids[3]]);
+
+            (await dbContext.PreservationSnapshot.Where(w => w.Id == ids[0] || w.Id == ids[1])
+                    .Select(s => s.Json).ToListAsync())
+                .Should().OnlyContain(j => j == null, "a pruned snapshot body is purged, not just hidden");
+
+            (await dbContext.PreservationSnapshot.Where(w => w.Id == beforeImport || w.Id == ids[3])
+                    .Select(s => s.Json).ToListAsync())
+                .Should().OnlyContain(j => j != null);
+
+            audit.Entries.Should().Contain(e => e.Message.Contains("area=PreservationSnapshot op=Prune "));
+        }
+
+        [Fact]
+        public async Task SnapshotRetentionRemovesSnapshotsOlderThanTheMaximumAgeAsync()
+        {
+            var tenant = await CreateTenantAsync("RetAge");
+
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildSnapshotServiceAsync(dbContext, tenant.UserName);
+            var old = (await service.CreateAsync(new PreservationSnapshotRequestDto { Name = "old" })).Id;
+
+            await dbContext.PreservationSnapshot.Where(w => w.Id == old)
+                .Set(s => s.CreatedDate, DateTime.UtcNow.AddDays(-400)).UpdateAsync();
+
+            var fresh = (await service.CreateAsync(new PreservationSnapshotRequestDto { Name = "fresh" })).Id;
+
+            (await service.GetAsync()).Select(s => s.Id).Should().Equal(fresh);
+
+            (await dbContext.PreservationSnapshot.Where(w => w.Id == old).Select(s => s.Json).SingleAsync())
+                .Should().BeNull();
+        }
+
+        [Fact]
+        public async Task SnapshotRetentionDoesNothingWhileAnImportOfTheTenantIsRunningAsync()
+        {
+            var tenant = await CreateTenantAsync("RetRun");
+
+            await using var dbContext = fx.GetDbContext();
+
+            var service = (await BuildSnapshotServiceAsync(dbContext, tenant.UserName))
+                .WithLimits(PreservationLimits.Default with { MaximumSnapshotsPerTenant = 1 });
+
+            var importId = await dbContext.InsertWithInt32IdentityAsync(new Data.Poco.Import
+            {
+                Guid = Guid.NewGuid(), TenantRegistryId = tenant.Id, CreatedDate = DateTime.UtcNow,
+                CreatedUser = tenant.UserName
+            });
+
+            await service.CreateAsync(new PreservationSnapshotRequestDto { Name = "a" });
+            await service.CreateAsync(new PreservationSnapshotRequestDto { Name = "b" });
+
+            (await service.GetAsync()).Should().HaveCount(2, "nothing is pruned while an import is in flight");
+
+            await dbContext.Import.Where(w => w.Id == importId)
+                .Set(s => s.CompletedDate, DateTime.UtcNow).UpdateAsync();
+
+            await service.CreateAsync(new PreservationSnapshotRequestDto { Name = "c" });
+
+            (await service.GetAsync()).Should().HaveCount(1);
+        }
+
+        [Fact]
+        public async Task DeletingASnapshotPurgesItsBodyAsync()
+        {
+            var tenant = await CreateTenantAsync("DelBody");
+
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildSnapshotServiceAsync(dbContext, tenant.UserName);
+            var id = (await service.CreateAsync(new PreservationSnapshotRequestDto())).Id;
+
+            await service.DeleteAsync(id);
+
+            (await dbContext.PreservationSnapshot.Where(w => w.Id == id).Select(s => s.Json).SingleAsync())
+                .Should().BeNull();
         }
 
         [Fact]

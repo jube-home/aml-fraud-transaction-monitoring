@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Checks if the character is a punctuation mark.")]
         public static Boolean IsPunctuation(this Char c)
         {
             return char.IsPunctuation(c);

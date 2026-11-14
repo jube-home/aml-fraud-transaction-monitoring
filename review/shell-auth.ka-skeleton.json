@@ -1,0 +1,164 @@
+{
+  "login": {
+    "title": "Sign in",
+    "subtitle": "Use your Jube account to continue.",
+    "stepsLabel": "Sign-in progress",
+    "steps": {
+      "credentials": "Credentials",
+      "mfa": "Verification",
+      "password": "New password"
+    },
+    "userName": "User name",
+    "password": "Password",
+    "show": "Show password",
+    "hide": "Hide password",
+    "submit": "Sign in",
+    "submitting": "Signing in",
+    "back": "Start again",
+    "mfa": {
+      "title": "Verify it is you",
+      "intro": "Enter the code from your security token to finish signing in.",
+      "label": "Verification code",
+      "hint": "Digits only, exactly as your token shows them.",
+      "submit": "Verify and continue"
+    },
+    "change": {
+      "title": "Choose a new password",
+      "intro": "Your password must be changed before you can continue. The new password replaces the old one for every future sign-in.",
+      "newPassword": "New password",
+      "repeatPassword": "Confirm new password",
+      "submit": "Change password and sign in"
+    },
+    "rules": {
+      "title": "Your new password needs",
+      "met": "Met",
+      "unmet": "Not met",
+      "minLength": "At least {count} characters",
+      "maxLength": "No more than {count} characters",
+      "uppercase": "One uppercase letter",
+      "lowercase": "One lowercase letter",
+      "number": "One number",
+      "special": "One special character",
+      "repeat": "No character repeated more than twice in a row",
+      "common": "Not starting with a common pattern such as 123456"
+    },
+    "errors": {
+      "invalid": "The details were not accepted. Check them and try again.",
+      "mismatch": "The two new passwords do not match.",
+      "weak": "The new password does not meet every requirement.",
+      "rejected": "The server did not accept the request.",
+      "unavailable": "Jube could not be reached. Try again in a moment."
+    },
+    "checking": "Checking how you sign in…",
+    "redirecting": "Taking you to your organisation’s sign-in…",
+    "continueToProvider": "Continue to sign-in",
+    "negotiateFailed": "Your computer did not sign you in automatically, and this installation does not accept a password. Check you are signed in to your organisation’s network, then try again.",
+    "retry": "Try again"
+  },
+  "shell": {
+    "resources": "Resources",
+    "documentation": "Documentation",
+    "copyright": "Copyright",
+    "account": "Account",
+    "signedInAs": "Signed in as",
+    "changePassword": "Change password",
+    "signOut": "Sign out",
+    "signOutFailed": "Sign-out failed. Check your connection and try again.",
+    "sessionExpired": "Your session has expired. Sign in again to continue.",
+    "dismiss": "Dismiss",
+    "tenant": "Tenant",
+    "sessionWarning": "Your session is about to expire.",
+    "extendSession": "Extend session",
+    "toggleMenu": "Toggle navigation",
+    "tenantSearch": "Search tenants...",
+    "tenantNone": "No tenants match.",
+    "tenantMore": "Showing the first {count}. Keep typing to narrow the list."
+  },
+  "nav": {
+    "label": "Main navigation",
+    "home": "Scaffolding",
+    "grid": "Data grid",
+    "api": "API and cache",
+    "theme": "Theme",
+    "askJooby": "Ask Jooby",
+    "cases": "Cases",
+    "override": "Override",
+    "models": "Models",
+    "sanctions": "Sanctions",
+    "watcher": "Watcher",
+    "admin": "Administration",
+    "tools": "TEMP: Tools",
+    "visualisation": "Visualisation",
+    "preservationSnapshots": "Snapshots",
+    "preservationMove": "JEMP import and export",
+    "adminSecurity": "Security",
+    "adminPerformance": "Performance",
+    "adminVisualisations": "Visualisation setup",
+    "adminTelemetry": "Telemetry settings",
+    "adminSanctionsLoader": "Sanctions loader",
+    "adminPreservation": "Preservation",
+    "adminTenants": "Tenants",
+    "graph": "Graph",
+    "adminGraphs": "Graph setup",
+    "svirfd": "Svirfd"
+  },
+  "prefs": {
+    "theme": "Theme",
+    "themeSystem": "System",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "language": "Language"
+  },
+  "locale": {
+    "en": "English",
+    "pl": "Polski",
+    "ar": "العربية"
+  },
+  "notifications": {
+    "label": "Notifications",
+    "labelUnread": "no notifications | one unread notification | {count} unread notifications",
+    "title": "Notifications",
+    "markAllRead": "Mark all read",
+    "empty": "Nothing new. Notifications will appear here once the notification service is connected.",
+    "unread": "Unread",
+    "severity": {
+      "info": "Info",
+      "warning": "Warning",
+      "error": "Error"
+    }
+  },
+  "errors": {
+    "unexpected": "Something unexpected went wrong.",
+    "forbidden": "You are not permitted to do that.",
+    "conflict": "That record changed. Reload it and try again.",
+    "network": "The server could not be reached. Check your connection.",
+    "notFound": "That record could not be found.",
+    "server": "The server could not complete the request."
+  },
+  "permissions": {
+    "role": "Role",
+    "pickRole": "Pick a role",
+    "search": "Find a permission",
+    "granted": "{count} granted",
+    "choose": "Pick a role to see and change its permissions.",
+    "loading": "Loading permissions",
+    "loadFailed": "The permissions could not be loaded. Refresh the page to try again.",
+    "noMatches": "No permissions match that search.",
+    "locked": "Locked",
+    "save": "Save changes",
+    "discard": "Discard changes",
+    "unsaved": "{count} unsaved",
+    "saved": "Permissions saved.",
+    "area": {
+      "cases": "Cases",
+      "rules": "Rules",
+      "models": "Models",
+      "lists": "Lists and data",
+      "visualisation": "Visualisation",
+      "security": "Security",
+      "operations": "Operations",
+      "analytics": "Analytics",
+      "other": "Other"
+    }
+  }
+}

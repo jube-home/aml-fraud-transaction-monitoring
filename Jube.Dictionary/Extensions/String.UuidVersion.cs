@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The version number of a UUID, or -1 when it is not one.")]
         public static int UuidVersion(this string? @this)
         {
             if (!Guid.TryParse((@this ?? "").Trim(), out var guid))

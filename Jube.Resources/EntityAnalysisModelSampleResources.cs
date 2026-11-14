@@ -17,6 +17,7 @@ namespace Jube.Resources
     {
         public const string PermissionDenied = nameof(PermissionDenied);
         public const string NotAuthenticated = nameof(NotAuthenticated);
+        public const string SampleTooLarge = nameof(SampleTooLarge);
         public const string ModelNotFound = nameof(ModelNotFound);
         public const string ModelRequired = nameof(ModelRequired);
         public const string DateFromRequired = nameof(DateFromRequired);

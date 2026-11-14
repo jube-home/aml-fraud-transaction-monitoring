@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchNotInList(IEnumerable<string> list)
+            [Description("True when: present and not a member of the List token. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchNotInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringNotInList(flow.Value, list));
             }
 
-            public Flow<string?> RejectNotInList(IEnumerable<string> list)
+            [Description("True when: present and not a member of the List token. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectNotInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringNotInList(flow.Value, list));
             }
 
-            public Flow<string?> BreakNotInList(IEnumerable<string> list)
+            [Description("True when: present and not a member of the List token. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakNotInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringNotInList(flow.Value, list));
             }
 
-            public Flow<string?> RequireNotInList(IEnumerable<string> list)
+            [Description("True when: present and not a member of the List token. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireNotInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringNotInList(flow.Value, list));
             }
 
-            public Flow<string?> EnsureNotInList(IEnumerable<string> list)
+            [Description("True when: present and not a member of the List token. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureNotInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchNotInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: present and not a member of the List token. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchNotInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().MatchNotInList(list);
             }
 
-            public Flow<string?> RejectNotInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: present and not a member of the List token. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectNotInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RejectNotInList(list);
             }
 
-            public Flow<string?> BreakNotInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: present and not a member of the List token. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakNotInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().BreakNotInList(list);
             }
 
-            public Flow<string?> RequireNotInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: present and not a member of the List token. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireNotInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RequireNotInList(list);
             }
 
-            public Flow<string?> EnsureNotInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: present and not a member of the List token. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureNotInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().EnsureNotInList(list);
             }

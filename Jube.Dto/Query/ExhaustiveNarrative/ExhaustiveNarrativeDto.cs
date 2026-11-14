@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -24,16 +25,19 @@ namespace Jube.Dto.Query.ExhaustiveNarrative
                  "holistic set of paragraphs synthesising all available evidence, plus a shorter set of " +
                  "paragraphs per chart group interpreting that group's actual values for this model. Each " +
                  "entry is a list of paragraphs, rendered as separate <p> elements, never a single run-on block.")]
+    [MessagePackObject]
     public class ExhaustiveNarrativeDto
     {
         [Description("Paragraphs synthesising performance, calibration and sensitivity for this model, in " +
                      "reading order.")]
+        [Key(0)]
         public List<string> Holistic { get; set; } = [];
 
         [Description("Paragraphs per chart group (Performance, Calibration, Sensitivity, Prescription, " +
                      "Confusion, Discrimination, Ks, ThresholdSweep, ScoreDistribution, Gains, PrecisionRecall, " +
                      "Lift, LearningCurve), interpreting that group's actual values for this model. A group is " +
                      "omitted when there isn't enough data to say anything reliable about it.")]
+        [Key(1)]
         public Dictionary<string, List<string>> Groups { get; set; } = new();
     }
 }

@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,23 +21,29 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Repository.SessionCaseJournal
 {
+    [MessagePackObject]
     public class SessionCaseJournalDto
     {
         [Description("Server-assigned identifier of the journal record. Read-only.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("The saved journal content as a JSON string (for example the user's chosen case grid " +
                      "column layout).")]
+        [Key(1)]
         public string? Json { get; set; }
 
         [Description("Server-assigned username of the journal's owner. Read-only.")]
+        [Key(2)]
         public string? CreatedUser { get; set; }
 
         [Description("Server-assigned timestamp of the last save. Read-only.")]
+        [Key(3)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("Guid of the CaseWorkflow the journal is kept against. One journal is kept per user per " +
                      "CaseWorkflow; saving again replaces it.")]
+        [Key(4)]
         public Guid CaseWorkflowGuid { get; set; }
     }
 }

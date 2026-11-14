@@ -28,6 +28,40 @@ namespace Jube.Engine.Observability
             return !string.IsNullOrEmpty(name) && excludedNames.Contains(name);
         }
 
+        public void Apply(IEnumerable<string> names)
+        {
+            var refreshed = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var name in names)
+            {
+                if (!string.IsNullOrEmpty(name))
+                {
+                    refreshed.Add(name);
+                }
+            }
+
+            excludedNames = refreshed;
+        }
+
+        public async Task RefreshAsync(CancellationToken token)
+        {
+            await using var dbContext =
+                DataConnectionDbContext.GetResilientDbContextDataConnection(connectionString, log);
+
+            var repository = new OpenTelemetryExcludeRepository(dbContext);
+
+            var rows = await repository.GetAllActiveAsync(token).ConfigureAwait(false);
+
+            var names = new List<string>(rows.Count);
+
+            foreach (var row in rows)
+            {
+                names.Add(row.Name);
+            }
+
+            Apply(names);
+        }
+
         public async Task StartAsync(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
@@ -60,27 +94,5 @@ namespace Jube.Engine.Observability
         private const int PollIntervalMilliseconds = 60000;
         private const int RetryDelayMilliseconds = 5000;
         private volatile HashSet<string> excludedNames = [];
-
-        private async Task RefreshAsync(CancellationToken token)
-        {
-            await using var dbContext =
-                DataConnectionDbContext.GetResilientDbContextDataConnection(connectionString, log);
-
-            var repository = new OpenTelemetryExcludeRepository(dbContext);
-
-            var rows = await repository.GetAllActiveAsync(token).ConfigureAwait(false);
-
-            var refreshed = new HashSet<string>(StringComparer.Ordinal);
-
-            foreach (var row in rows)
-            {
-                if (!string.IsNullOrEmpty(row.Name))
-                {
-                    refreshed.Add(row.Name);
-                }
-            }
-
-            excludedNames = refreshed;
-        }
     }
 }

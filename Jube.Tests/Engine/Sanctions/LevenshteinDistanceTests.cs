@@ -464,5 +464,25 @@ namespace Jube.Test.Engine.Sanctions
             LevenshteinDistance.ParseNullableCoverageRatio("-2").Should().Be(0);
             LevenshteinDistance.ParseNullableCoverageRatio("100").Should().Be(100);
         }
+
+        [Fact]
+        public void CheckMultipartStringReturnsMatchesInAscendingEntryIdOrderWhateverTheInsertionOrder()
+        {
+            var entries = Entries(
+                (50, ["robert", "mugabe"]),
+                (7, ["robert", "mugabe"]),
+                (31, ["robert", "mugabe"]),
+                (2, ["robert", "mugabe"]),
+                (19, ["robert", "mugabe"]),
+                (44, ["robert", "mugabe"]));
+
+            for (var run = 0; run < 20; run++)
+            {
+                var result = new LevenshteinDistance().CheckMultipartString("Robert Mugabe", 0, entries,
+                    noStopTokens);
+
+                result.Select(r => r.SanctionEntry.SanctionEntryId).Should().Equal(2, 7, 19, 31, 44, 50);
+            }
+        }
     }
 }

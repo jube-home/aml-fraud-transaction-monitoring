@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchNotIn(params string[] values)
+            [Description("True when: present and none of the listed strings. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchNotIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringNotIn(flow.Value, values));
             }
 
-            public Flow<string?> RejectNotIn(params string[] values)
+            [Description("True when: present and none of the listed strings. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectNotIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringNotIn(flow.Value, values));
             }
 
-            public Flow<string?> BreakNotIn(params string[] values)
+            [Description("True when: present and none of the listed strings. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakNotIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringNotIn(flow.Value, values));
             }
 
-            public Flow<string?> RequireNotIn(params string[] values)
+            [Description("True when: present and none of the listed strings. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireNotIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringNotIn(flow.Value, values));
             }
 
-            public Flow<string?> EnsureNotIn(params string[] values)
+            [Description("True when: present and none of the listed strings. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureNotIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchNotIn(params string[] values)
+            [Description("Begins a pipeline from the value. True when: present and none of the listed strings. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchNotIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return value.Start().MatchNotIn(values);
             }
 
-            public Flow<string?> RejectNotIn(params string[] values)
+            [Description("Begins a pipeline from the value. True when: present and none of the listed strings. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectNotIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return value.Start().RejectNotIn(values);
             }
 
-            public Flow<string?> BreakNotIn(params string[] values)
+            [Description("Begins a pipeline from the value. True when: present and none of the listed strings. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakNotIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return value.Start().BreakNotIn(values);
             }
 
-            public Flow<string?> RequireNotIn(params string[] values)
+            [Description("Begins a pipeline from the value. True when: present and none of the listed strings. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireNotIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return value.Start().RequireNotIn(values);
             }
 
-            public Flow<string?> EnsureNotIn(params string[] values)
+            [Description("Begins a pipeline from the value. True when: present and none of the listed strings. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureNotIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return value.Start().EnsureNotIn(values);
             }

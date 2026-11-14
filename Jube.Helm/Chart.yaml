@@ -1,0 +1,6 @@
+apiVersion: v2
+name: jube
+description: Jube real-time transaction monitoring and fraud detection, as three roles of one stateless image (ui, api and jobs) with the R sandbox
+type: application
+version: 0.1.0
+appVersion: "latest"

@@ -30,6 +30,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -316,12 +317,30 @@ namespace Jube.Test.Service.Repository.CaseWorkflowDisplay
 
             created.Guid = Guid.NewGuid();
             created.CreatedUser = "tampered";
-            created.Version = 999;
             var updated = await service.UpdateAsync(created);
 
             updated.Guid.Should().NotBe(created.Guid);
             updated.CreatedUser.Should().NotBe("tampered");
             updated.Version.Should().Be(2);
+        }
+
+        [Fact]
+        public async Task UpdateCannotMoveADisplayToAnotherWorkflowOfTheSameTenantAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var workflowId = await CreateWorkflowAsync(dbContext, modelId, fx.Seed.UserWithPermission);
+            var otherWorkflowId = await CreateWorkflowAsync(dbContext, modelId, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var created = await service.InsertAsync(ValidDto(workflowId));
+            createdDisplayIds.Add(created.Id);
+
+            created.CaseWorkflowId = otherWorkflowId;
+            var updated = await service.UpdateAsync(created);
+
+            updated.CaseWorkflowId.Should().Be(workflowId);
+            (await dbContext.CaseWorkflowDisplay.Where(w => w.Id == created.Id)
+                .Select(w => w.CaseWorkflowId).FirstAsync()).Should().Be(workflowId);
         }
 
         [Fact]

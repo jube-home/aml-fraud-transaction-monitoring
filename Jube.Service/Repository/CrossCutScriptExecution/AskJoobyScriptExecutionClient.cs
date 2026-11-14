@@ -75,6 +75,15 @@ namespace Jube.Service.Repository.CrossCutScriptExecution
             IReadOnlyList<RScriptDataframeRequest>? dataframes = null,
             IReadOnlyList<RScriptVariableRequest>? variables = null, CancellationToken token = default)
         {
+            var validation = await RunAsync(() => runs.ValidateAsync(script, token)).ConfigureAwait(false);
+
+            if (!validation.Ok)
+            {
+                throw new InvalidOperationException(
+                    "The script failed validation and was not run: " + string.Join("; ", validation.Errors) +
+                    ". Fix every error named, check it again with ValidateRScript, and only then run it.");
+            }
+
             var result = await RunAsync(() => runs.RunScriptAsync(script, timeoutSeconds,
                 dataframes?.Select(dataframe =>
                     new CrossCutRun.RScriptDataframeRequest(dataframe.Name, dataframe.Pointer)).ToList(),

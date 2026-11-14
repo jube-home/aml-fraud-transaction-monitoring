@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchExcessOverInRange(double limit, double lowerBound, double upperBound)
+            [Description("True when: how far the value is over the limit, zero when within it is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchExcessOverInRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleExcessOverInRange(flow.Value, limit, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectExcessOverInRange(double limit, double lowerBound, double upperBound)
+            [Description("True when: how far the value is over the limit, zero when within it is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectExcessOverInRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleExcessOverInRange(flow.Value, limit, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakExcessOverInRange(double limit, double lowerBound, double upperBound)
+            [Description("True when: how far the value is over the limit, zero when within it is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakExcessOverInRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleExcessOverInRange(flow.Value, limit, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireExcessOverInRange(double limit, double lowerBound, double upperBound)
+            [Description("True when: how far the value is over the limit, zero when within it is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireExcessOverInRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleExcessOverInRange(flow.Value, limit, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureExcessOverInRange(double limit, double lowerBound, double upperBound)
+            [Description("True when: how far the value is over the limit, zero when within it is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureExcessOverInRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchExcessOverInRange(double limit, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how far the value is over the limit, zero when within it is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchExcessOverInRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchExcessOverInRange(limit, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectExcessOverInRange(double limit, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how far the value is over the limit, zero when within it is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectExcessOverInRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectExcessOverInRange(limit, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakExcessOverInRange(double limit, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how far the value is over the limit, zero when within it is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakExcessOverInRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakExcessOverInRange(limit, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireExcessOverInRange(double limit, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how far the value is over the limit, zero when within it is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireExcessOverInRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireExcessOverInRange(limit, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureExcessOverInRange(double limit, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how far the value is over the limit, zero when within it is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureExcessOverInRange([Description("The limit.")] double limit,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureExcessOverInRange(limit, lowerBound, upperBound);
             }

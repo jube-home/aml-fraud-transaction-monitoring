@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchContainsNoneInList(IEnumerable<string> list)
+            [Description("True when: present and contains no entry of the List token. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsNoneInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringContainsNoneInList(flow.Value, list));
             }
 
-            public Flow<string?> RejectContainsNoneInList(IEnumerable<string> list)
+            [Description("True when: present and contains no entry of the List token. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsNoneInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringContainsNoneInList(flow.Value, list));
             }
 
-            public Flow<string?> BreakContainsNoneInList(IEnumerable<string> list)
+            [Description("True when: present and contains no entry of the List token. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsNoneInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringContainsNoneInList(flow.Value, list));
             }
 
-            public Flow<string?> RequireContainsNoneInList(IEnumerable<string> list)
+            [Description("True when: present and contains no entry of the List token. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsNoneInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringContainsNoneInList(flow.Value, list));
             }
 
-            public Flow<string?> EnsureContainsNoneInList(IEnumerable<string> list)
+            [Description("True when: present and contains no entry of the List token. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsNoneInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchContainsNoneInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: present and contains no entry of the List token. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchContainsNoneInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().MatchContainsNoneInList(list);
             }
 
-            public Flow<string?> RejectContainsNoneInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: present and contains no entry of the List token. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectContainsNoneInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RejectContainsNoneInList(list);
             }
 
-            public Flow<string?> BreakContainsNoneInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: present and contains no entry of the List token. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakContainsNoneInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().BreakContainsNoneInList(list);
             }
 
-            public Flow<string?> RequireContainsNoneInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: present and contains no entry of the List token. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireContainsNoneInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RequireContainsNoneInList(list);
             }
 
-            public Flow<string?> EnsureContainsNoneInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: present and contains no entry of the List token. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureContainsNoneInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().EnsureContainsNoneInList(list);
             }

@@ -13,7 +13,9 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,22 +25,27 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.EntityAnalysisModelAbstractionCalculation
 {
     [FormEndpoint("EntityAnalysisModelAbstractionCalculation")]
+    [FormApproval]
+    [RuleEditor(RuleParseType.AbstractionCalculation, Coder = nameof(FunctionScript))]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
     [FormGroup("Calculation", Order = 20)]
     [FormGroup("Output", Order = 30)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
+    [MessagePackObject]
     public class EntityAnalysisModelAbstractionCalculationDto : IUpdated, IActivatable, ILockable, ITreeChild
     {
         [Description("Identifier of the Model this Abstraction Calculation is registered against. Set from the " +
                      "parent Model context; not user-editable.")]
+        [Key(0)]
         public int EntityAnalysisModelId { get; set; }
 
         [Description("Display name of this Abstraction Calculation. Unique within the Model " +
                      "(case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Spend ratio to average")]
         [ListColumn(Order = 10, Title = "Name")]
+        [Key(1)]
         public string? Name { get; set; }
 
         [Description("The hand-written VB.Net function fragment computing the result. The value it assigns to " +
@@ -46,71 +53,84 @@ namespace Jube.Dto.EntityAnalysisModelAbstractionCalculation
                      "fields, Inline Script properties, Inline Functions, TTL Counters, Abstraction Rules, " +
                      "Sanctions, Dictionaries and earlier Abstraction Calculations. Required.")]
         [FormField(Group = "Calculation", Order = 10)]
-        [Forms.Editor("RuleBuilder")]
+        [Key(2)]
         public string? FunctionScript { get; set; }
 
         [Description("When true, every evaluation of this Abstraction Calculation is persisted to the reporting " +
                      "table for later analysis.")]
-        [FormField(Group = "Output", Order = 10, Widget = "switch")]
+        [FormField(Group = "Output", Order = 10, Widget = "switch", Label = "Archive Key")]
         [NewDefault(false)]
+        [Key(3)]
         public bool ReportTable { get; set; }
 
         [Description("Whether the response payload is returned for this Abstraction Calculation.")]
         [FormField(Group = "Output", Order = 20, Widget = "switch")]
         [NewDefault(false)]
+        [Key(4)]
         public bool ResponsePayload { get; set; }
 
         [Description("Globally-addressable identifier for this row, stable across environments and the form "
                      + "in which every other area refers to it. Server-assigned. Read-only.")]
+        [Key(5)]
         public Guid Guid { get; set; }
 
         [Description("When true, this Abstraction Calculation participates in evaluation on transaction " +
                      "invocation.")]
         [FormField(Group = "Identity", Order = 20, Widget = "switch")]
         [NewDefault(false)]
+        [Key(6)]
         public bool Active { get; set; }
 
         [Description("When true, this Abstraction Calculation is locked and cannot be edited or deleted.")]
         [FormField(Group = "Identity", Order = 30, Widget = "switch")]
         [NewDefault(false)]
+        [Key(7)]
         public bool Locked { get; set; }
 
         [Description("Server-assigned row identifier. Read-only.")]
         [FormField(Group = "Audit", Order = 10, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(8)]
         public int Id { get; set; }
 
         [Description("User who created this Abstraction Calculation. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 20, ReadOnly = true)]
+        [Key(9)]
         public string? CreatedUser { get; set; }
 
         [Description("Timestamp (UTC) this Abstraction Calculation was created. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 30, ReadOnly = true, Widget = "date")]
+        [Key(10)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("User who last updated this Abstraction Calculation. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 40, ReadOnly = true)]
+        [Key(11)]
         public string? UpdatedUser { get; set; }
 
         [Description("Timestamp (UTC) this Abstraction Calculation was last updated. Server-assigned. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 50, ReadOnly = true, Widget = "date")]
+        [Key(12)]
         public DateTimeOffset? UpdatedDate { get; set; }
 
         [Description("Server-assigned optimistic-concurrency version number, incremented on every update. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 60, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(13)]
         public int Version { get; set; }
 
         [Description("User who deleted this Abstraction Calculation, if soft-deleted. Server-assigned. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 70, ReadOnly = true)]
+        [Key(14)]
         public string? DeletedUser { get; set; }
 
         [Description("Timestamp (UTC) this Abstraction Calculation was soft-deleted, if applicable. " +
                      "Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 80, ReadOnly = true, Widget = "date")]
+        [Key(15)]
         public DateTimeOffset? DeletedDate { get; set; }
     }
 }

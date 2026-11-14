@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchHarmonicMeanWithAbove(double other, double bound)
+            [Description("True when: the harmonic mean of the value and another, for averaging rates is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchHarmonicMeanWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleHarmonicMeanWithAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> RejectHarmonicMeanWithAbove(double other, double bound)
+            [Description("True when: the harmonic mean of the value and another, for averaging rates is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectHarmonicMeanWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleHarmonicMeanWithAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> BreakHarmonicMeanWithAbove(double other, double bound)
+            [Description("True when: the harmonic mean of the value and another, for averaging rates is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakHarmonicMeanWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleHarmonicMeanWithAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> RequireHarmonicMeanWithAbove(double other, double bound)
+            [Description("True when: the harmonic mean of the value and another, for averaging rates is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireHarmonicMeanWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleHarmonicMeanWithAbove(flow.Value, other, bound));
             }
 
-            public Flow<double> EnsureHarmonicMeanWithAbove(double other, double bound)
+            [Description("True when: the harmonic mean of the value and another, for averaging rates is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureHarmonicMeanWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchHarmonicMeanWithAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the harmonic mean of the value and another, for averaging rates is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchHarmonicMeanWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchHarmonicMeanWithAbove(other, bound);
             }
 
-            public Flow<double> RejectHarmonicMeanWithAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the harmonic mean of the value and another, for averaging rates is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectHarmonicMeanWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectHarmonicMeanWithAbove(other, bound);
             }
 
-            public Flow<double> BreakHarmonicMeanWithAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the harmonic mean of the value and another, for averaging rates is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakHarmonicMeanWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakHarmonicMeanWithAbove(other, bound);
             }
 
-            public Flow<double> RequireHarmonicMeanWithAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the harmonic mean of the value and another, for averaging rates is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireHarmonicMeanWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireHarmonicMeanWithAbove(other, bound);
             }
 
-            public Flow<double> EnsureHarmonicMeanWithAbove(double other, double bound)
+            [Description("Begins a pipeline from the value. True when: the harmonic mean of the value and another, for averaging rates is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureHarmonicMeanWithAbove([Description("The other number.")] double other,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureHarmonicMeanWithAbove(other, bound);
             }

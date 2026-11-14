@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using System.Globalization;
 using Jube.Charting.Core;
 using Jube.Charting.Svg;
 using Jube.Charting.Text;
@@ -26,19 +27,29 @@ namespace Jube.Charting.Diagrams
         public static string Render(GraphDiagramSpec spec, GraphLayoutResult layout)
         {
             var roles = spec.Nodes.Select(n => n.Role).Distinct().OrderBy(r => (int)r).ToArray();
-            var legend = roles.Select(r => new LegendEntry(RoleName(r), Series(r))).ToArray();
+            var groups = GroupSeries(spec);
+            var network = IsNetwork(layout.Kind);
+
+            var legend = groups.Count > 0
+                ? groups.Select(g => new LegendEntry(g.Key, g.Value)).OrderBy(e => e.Series).ToArray()
+                : roles.Select(r => new LegendEntry(RoleName(r), Series(r))).ToArray();
             var hasProbability = spec.Edges.Any(e => e.Probability.HasValue);
-            var weights = spec.Edges.Where(e => e.Weight.HasValue).Select(e => e.Weight!.Value).ToArray();
+            var weights = layout.Edges.Select(e => Weight(spec, e)).Where(w => w.HasValue).Select(w => w!.Value)
+                .ToArray();
             var hasWeight = weights.Length > 0;
             var signed = weights.Any(w => w < 0);
             var maxAbs = hasWeight ? Math.Max(weights.Max(Math.Abs), 1e-12) : 0;
 
-            var summary = (layout.Kind == GraphLayoutKind.Circular ? "State graph" : "Graph") + " diagram with " +
+            var summary = KindName(layout.Kind) + " diagram with " +
                           spec.Nodes.Count + " nodes and " + spec.Edges.Count + " " +
                           (spec.Directed ? "directed " : string.Empty) + "edges" +
                           (layout.Kind == GraphLayoutKind.Layered
                               ? " in " + layout.LayerCount + " levels"
-                              : string.Empty) +
+                              : layout.Kind == GraphLayoutKind.Flow
+                                  ? " in " + layout.LayerCount + " lanes"
+                                  : layout.Kind == GraphLayoutKind.Radial
+                                      ? " in " + layout.LayerCount + " rings"
+                                      : string.Empty) +
                           (hasProbability ? "; edge thickness shows probability" :
                               hasWeight ? "; edge thickness shows " +
                                           TextMetrics.Truncate(spec.WeightName, 60, 12).ToLowerInvariant() :
@@ -102,24 +113,72 @@ namespace Jube.Charting.Diagrams
                 foreach (var p in layout.Nodes)
                 {
                     placedLabels.Add((p.X - p.Width / 2, p.X + p.Width / 2, p.Y - p.Height / 2, p.Y + p.Height / 2));
+
+                    if (!network && !spec.Nodes[p.Index].Shape.HasValue)
+                    {
+                        continue;
+                    }
+
+                    var half = Math.Min(NetworkGeometry.LabelWidth, TextMetrics.Width(p.Label, 11, true)) / 2 + 2;
+                    placedLabels.Add((p.X - half, p.X + half, p.Y + p.Height / 2 + 2, p.Y + p.Height / 2 + 16));
+
+                    if (spec.Nodes[p.Index].Badges is { Count: > 0 })
+                    {
+                        placedLabels.Add((p.X + p.Width / 2 - 4, p.X + p.Width / 2 + 44, p.Y - p.Height / 2 - 6,
+                            p.Y - p.Height / 2 + 10));
+                    }
                 }
 
                 scene.OpenGroup(ox, oy);
+
+                if (network)
+                {
+                    scene.Rules(DiagramRules.Network(scene.K));
+                }
+
+                var marker = network && layout.Edges.Any(e => Directed(spec, e)) ? id + "-ar" : null;
+
+                if (marker is not null)
+                {
+                    w.Open("defs");
+
+                    w.Open("marker", ("id", marker), ("viewBox", "0 0 10 10"), ("refX", "9"), ("refY", "5"),
+                        ("markerWidth", "9"), ("markerHeight", "9"), ("markerUnits", "userSpaceOnUse"),
+                        ("orient", "auto"));
+
+                    w.Empty("path", ("class", "ah"), ("d", "M0 0L10 5L0 10Z"));
+                    w.Close();
+                    w.Close();
+                }
+
+                if (layout.Kind == GraphLayoutKind.Flow)
+                {
+                    FlowFrame(spec, layout, w);
+                }
 
                 foreach (var e in layout.Edges)
                 {
                     var src = spec.Edges[e.Index];
                     var a = layout.Nodes[e.From];
                     var b = layout.Nodes[e.To];
+                    var sources = e.Merged ?? [e.Index];
+                    var count = sources.Sum(s => spec.Edges[s].Count ?? 1);
+                    var weight = Weight(spec, e);
+                    var first = sources.Select(s => spec.Edges[s].First).Where(t => t.HasValue).Min();
+                    var last = sources.Select(s => spec.Edges[s].Last ?? spec.Edges[s].First).Where(t => t.HasValue)
+                        .Max();
+                    var directed = Directed(spec, e);
+                    var tagged = network || src.Id is not null || src.First.HasValue || src.Last.HasValue ||
+                                 src.Count.HasValue || src.Directed.HasValue;
 
                     var value = src.Probability.HasValue ? "Probability: " + NumberFormat.Value(src.Probability.Value)
-                        : src.Weight.HasValue ? TextMetrics.Truncate(spec.WeightName, 80, 12) + ": " +
-                                                NumberFormat.Value(src.Weight.Value) : null;
+                        : weight.HasValue ? TextMetrics.Truncate(spec.WeightName, 80, 12) + ": " +
+                                            NumberFormat.Value(weight.Value) : null;
 
                     var rows = new List<TipRow>
                     {
                         new(
-                            TextMetrics.Truncate(a.Label, 100, 12) + (spec.Directed ? " to " : " and ") +
+                            TextMetrics.Truncate(a.Label, 100, 12) + (directed ? " to " : " and ") +
                             TextMetrics.Truncate(b.Label, 100, 12), true)
                     };
 
@@ -139,14 +198,29 @@ namespace Jube.Charting.Diagrams
                         rows.Add(new TipRow(TextMetrics.Truncate(src.Label, 240, 12)));
                     }
 
+                    if (count > 1)
+                    {
+                        rows.Add(new TipRow("Events: " + count.ToString(CultureInfo.InvariantCulture)));
+                    }
+
+                    if (first is { } firstTime)
+                    {
+                        rows.Add(new TipRow("First: " + Stamp(firstTime)));
+                    }
+
+                    if (last is { } lastTime && last != first)
+                    {
+                        rows.Add(new TipRow("Last: " + Stamp(lastTime)));
+                    }
+
                     var thickness = src.Probability.HasValue ? 1 + 4.5 * src.Probability.Value
-                        : src.Weight.HasValue ? Diverge.Width(src.Weight.Value, maxAbs, 0.9, 4.5) : 1.6;
+                        : weight.HasValue ? Diverge.Width(weight.Value, maxAbs, 0.9, 4.5) : 1.6;
 
                     var cls = "ep";
 
-                    if (src.Weight.HasValue && signed && !src.Probability.HasValue)
+                    if (weight.HasValue && signed && !src.Probability.HasValue)
                     {
-                        cls += " sd" + Diverge.Bin(src.Weight.Value, maxAbs);
+                        cls += " sd" + Diverge.Bin(weight.Value, maxAbs);
                     }
                     else
                     {
@@ -160,20 +234,40 @@ namespace Jube.Charting.Diagrams
 
                     var key = "x" + e.Index;
 
+                    var attributes = new List<(string Name, string? Value)>
+                        { ("data-from", a.Id), ("data-to", b.Id) };
+
+                    if (tagged)
+                    {
+                        attributes.Add(("data-edge", src.Id ?? key));
+                        attributes.Add(("data-kind", src.Label ?? (directed ? "directed" : "undirected")));
+                        attributes.Add(("data-first", first is { } f ? Unix(f) : null));
+                        attributes.Add(("data-last", last is { } l ? Unix(l) : null));
+                    }
+
                     scene.OpenMark(key, string.Join(", ", rows.Select(r => r.Text)),
-                        "eg " + StyleCaps.Tokens(scene.External, "e", [e.From, e.To]));
+                        "eg " + StyleCaps.Tokens(scene.External, "e", [e.From, e.To]), [.. attributes]);
 
                     w.Empty("path", ("class", "eh"), ("d", e.Path));
-                    w.Empty("path", ("class", cls), ("d", e.Path), scene.StrokeWidth(thickness));
 
-                    if (spec.Directed)
+                    w.Empty("path", ("class", cls), ("d", e.Path), scene.StrokeWidth(thickness),
+                        ("marker-end", marker is not null && directed ? "url(#" + marker + ")" : null));
+
+                    if (directed && marker is null)
                     {
                         Arrow(w, e, thickness);
                     }
 
-                    var text = !string.IsNullOrWhiteSpace(src.Label) ? src.Label
-                        : src.Probability.HasValue ? NumberFormat.Value(src.Probability.Value)
-                        : src.Weight.HasValue ? NumberFormat.Value(src.Weight.Value) : null;
+                    var text = count > 1
+                        ? "×" + count.ToString(CultureInfo.InvariantCulture) +
+                          (weight.HasValue ? " " + NumberFormat.Value(weight.Value) : string.Empty)
+                        : !string.IsNullOrWhiteSpace(src.Label)
+                            ? src.Label
+                            : src.Probability.HasValue
+                                ? NumberFormat.Value(src.Probability.Value)
+                                : weight.HasValue
+                                    ? NumberFormat.Value(weight.Value)
+                                    : null;
 
                     if (showLabels && text is not null)
                     {
@@ -204,6 +298,8 @@ namespace Jube.Charting.Diagrams
                 foreach (var p in layout.Nodes)
                 {
                     var src = spec.Nodes[p.Index];
+                    var glyph = network || src.Shape.HasValue;
+                    var shape = src.Shape ?? GraphNodeShape.Circle;
 
                     var rows = new List<TipRow>
                         { new(TextMetrics.Truncate(p.Label, 240, 12, true), true), new(RoleName(p.Role)) };
@@ -216,15 +312,70 @@ namespace Jube.Charting.Diagrams
                     rows.Add(new TipRow("Edges in: " + incoming[p.Index] + ", out: " + outgoing[p.Index]));
                     var key = "n" + p.Index;
 
+                    var seriesIndex = src.Group is not null && groups.TryGetValue(src.Group, out var grouped)
+                        ? grouped
+                        : Series(p.Role);
+
+                    if (src.Group is not null)
+                    {
+                        rows.Insert(1, new TipRow(TextMetrics.Truncate(src.Group, 240, 12)));
+                        rows.RemoveAt(2);
+                    }
+
+                    var seen = spec.Times is { } times && times.TryGetValue(src.Id, out var when)
+                        ? when
+                        : (DateTimeOffset?)null;
+
+                    if (seen is { } seenAt)
+                    {
+                        rows.Add(new TipRow("First seen: " + Stamp(seenAt)));
+                    }
+
+                    if (src.Badges is { Count: > 0 } badges)
+                    {
+                        rows.Add(new TipRow(string.Join(", ", badges.Select(BadgeText))));
+                    }
+
+                    var attributes = new List<(string Name, string? Value)> { ("data-node", p.Id) };
+
+                    if (glyph)
+                    {
+                        attributes.Add(("data-kind", shape.ToString().ToLowerInvariant()));
+                    }
+
+                    if (seen is { } at)
+                    {
+                        attributes.Add(("data-first", Unix(at)));
+                    }
+
                     scene.OpenMark(key, string.Join(", ", rows.Select(r => r.Text)),
-                        "nd s" + Series(p.Role) + " " +
-                        StyleCaps.Tokens(scene.External, "j", neighbours[p.Index].OrderBy(j => j)));
+                        "nd s" + seriesIndex + " " +
+                        StyleCaps.Tokens(scene.External, "j", neighbours[p.Index].OrderBy(j => j)), [.. attributes]);
 
-                    Shape(w, p, "nb");
-                    Shape(w, p, "nt");
+                    if (glyph)
+                    {
+                        Glyph(w, p, "nb", shape, src.Dashed);
+                        Glyph(w, p, "nt", shape, src.Dashed);
 
-                    w.Element("text", TextMetrics.Truncate(p.Label, p.Width - 12, 11, true), ("class", "lbl ctr mid"),
-                        ("x", Num.F(p.X)), ("y", Num.F(p.Y)));
+                        w.Element("text", TextMetrics.Truncate(p.Label, NetworkGeometry.LabelWidth, 11, true),
+                            ("class", "lbl ctr"), ("x", Num.F(p.X)), ("y", Num.F(p.Y + p.Height / 2 + 12)));
+
+                        Badges(w, p, src.Badges);
+                    }
+                    else
+                    {
+                        if (src.Emphasis != GraphEmphasis.None)
+                        {
+                            Ring(w, p, src.Emphasis == GraphEmphasis.Error ? 7 : 3);
+                        }
+
+                        Shape(w, p, "nb", src.Dashed);
+                        Shape(w, p, "nt", src.Dashed);
+
+                        w.Element("text", TextMetrics.Truncate(p.Label, p.Width - 12, 11, true),
+                            ("class", "lbl ctr mid"),
+                            ("x", Num.F(p.X)), ("y", Num.F(p.Y)));
+                    }
 
                     scene.EndMark(key, ox + p.X + p.Width / 2, oy + p.Y, rows, true);
 
@@ -252,6 +403,143 @@ namespace Jube.Charting.Diagrams
 
                 return scene.End();
             });
+        }
+
+        private static bool IsNetwork(GraphLayoutKind kind)
+        {
+            return kind is GraphLayoutKind.Force or GraphLayoutKind.Radial or GraphLayoutKind.Flow;
+        }
+
+        private static string KindName(GraphLayoutKind kind)
+        {
+            return kind switch
+            {
+                GraphLayoutKind.Circular => "State graph",
+                GraphLayoutKind.Force => "Network graph",
+                GraphLayoutKind.Radial => "Radial graph",
+                GraphLayoutKind.Flow => "Flow graph",
+                _ => "Graph"
+            };
+        }
+
+        private static double? Weight(GraphDiagramSpec spec, PlacedGraphEdge e)
+        {
+            if (e.Merged is null)
+            {
+                return spec.Edges[e.Index].Weight;
+            }
+
+            var values = e.Merged.Select(s => spec.Edges[s].Weight).Where(v => v.HasValue).Select(v => v!.Value)
+                .ToArray();
+
+            return values.Length == 0 ? null : values.Sum();
+        }
+
+        private static bool Directed(GraphDiagramSpec spec, PlacedGraphEdge e)
+        {
+            return (e.Merged ?? [e.Index]).Any(s => spec.Edges[s].Directed ?? spec.Directed);
+        }
+
+        private static string Unix(DateTimeOffset when)
+        {
+            return when.ToUnixTimeSeconds().ToString(CultureInfo.InvariantCulture);
+        }
+
+        private static string Stamp(DateTimeOffset when)
+        {
+            return when.UtcDateTime.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+        }
+
+        private static string BadgeText(GraphBadge badge)
+        {
+            if (!string.IsNullOrWhiteSpace(badge.Text))
+            {
+                return badge.Kind == GraphBadgeKind.Cluster ? "×" + badge.Text : badge.Text;
+            }
+
+            return badge.Kind switch
+            {
+                GraphBadgeKind.Confirmed => "★",
+                GraphBadgeKind.OpenCase => "○",
+                GraphBadgeKind.Records => "#",
+                GraphBadgeKind.Cluster => "×",
+                GraphBadgeKind.Pattern => "✓",
+                _ => "hub"
+            };
+        }
+
+        private static void Badges(SvgWriter w, PlacedGraphNode p, IReadOnlyList<GraphBadge>? badges)
+        {
+            if (badges is null || badges.Count == 0)
+            {
+                return;
+            }
+
+            var x = p.X + p.Width / 2 - 4;
+            var y = p.Y - p.Height / 2 + 2;
+
+            foreach (var badge in badges.Take(4))
+            {
+                var text = TextMetrics.Truncate(BadgeText(badge), 40, 9, true);
+                var width = Math.Max(14, TextMetrics.Width(text, 9, true) + 8);
+
+                w.Empty("rect", ("class", "nb"), ("x", Num.F(x)), ("y", Num.F(y - 7)), ("width", Num.F(width)),
+                    ("height", "14"), ("rx", "7"));
+
+                w.Element("text", text, ("class", "lbl ctr mid fs10"), ("x", Num.F(x + width / 2)), ("y", Num.F(y)));
+                x += width + 2;
+            }
+        }
+
+        private static void FlowFrame(GraphDiagramSpec spec, GraphLayoutResult layout, SvgWriter w)
+        {
+            var labelX = NetworkGeometry.Margin + FlowLayout.LaneLabelWidth(spec) - 8;
+
+            foreach (var lane in layout.Nodes.GroupBy(p => p.Layer).OrderBy(g => g.Key))
+            {
+                var firstNode = lane.OrderBy(p => p.Index).First();
+                var y = lane.Average(p => p.Y);
+
+                w.Element("text", TextMetrics.Truncate(FlowLayout.LaneOf(spec, firstNode.Index), 160, 11, true),
+                    ("class", "key end mid"), ("x", Num.F(labelX)), ("y", Num.F(y)));
+
+                w.Empty("line", ("class", "gl"), ("x1", Num.F(labelX + 8)), ("y1", Num.F(y)),
+                    ("x2", Num.F(layout.Width - NetworkGeometry.Margin)), ("y2", Num.F(y)));
+            }
+
+            var index = new Dictionary<string, int>(StringComparer.Ordinal);
+
+            for (var i = 0; i < spec.Nodes.Count; i++)
+            {
+                index[spec.Nodes[i].Id] = i;
+            }
+
+            var times = FlowLayout.NodeTimes(spec, index);
+            var known = times.Where(t => t.HasValue).Select(t => t!.Value).ToList();
+
+            if (known.Count == 0)
+            {
+                return;
+            }
+
+            var span = known.Max() - known.Min();
+            var lastEnd = double.NegativeInfinity;
+            var y0 = layout.Height - 6;
+
+            foreach (var column in layout.Nodes.Where(p => times[p.Index].HasValue).GroupBy(p => p.X)
+                         .OrderBy(g => g.Key))
+            {
+                var label = FlowLayout.FormatTime(column.Min(p => times[p.Index]!.Value), span);
+                var half = TextMetrics.Width(label, 11) / 2;
+
+                if (column.Key - half < lastEnd + 6)
+                {
+                    continue;
+                }
+
+                lastEnd = column.Key + half;
+                w.Element("text", label, ("class", "tk ctr"), ("x", Num.F(column.Key)), ("y", Num.F(y0)));
+            }
         }
 
         private static int Series(GraphNodeRole role)
@@ -286,9 +574,104 @@ namespace Jube.Charting.Diagrams
             w.Empty("path", ("class", "ah"), ("d", path.ToString()));
         }
 
-        private static void Shape(SvgWriter w, PlacedGraphNode p, string cls)
+        private static Dictionary<string, int> GroupSeries(GraphDiagramSpec spec)
         {
-            var dash = p.Role == GraphNodeRole.Latent ? " dash" : string.Empty;
+            var present = spec.Nodes.Where(n => n.Group is not null).Select(n => n.Group!).Distinct().ToList();
+            var ordered = spec.GroupOrder.ToList();
+            var map = new Dictionary<string, int>();
+            var next = ordered.Count;
+
+            foreach (var name in present)
+            {
+                var position = ordered.IndexOf(name);
+
+                map[name] = name.Equals("Missing", StringComparison.OrdinalIgnoreCase) ? 7
+                    : position >= 0 ? position % 7
+                    : next++ % 7;
+            }
+
+            return map;
+        }
+
+        private static void Glyph(SvgWriter w, PlacedGraphNode p, string cls, GraphNodeShape shape, bool dashed)
+        {
+            var dash = dashed ? " dash" : string.Empty;
+            var h = Math.Min(p.Width, p.Height) / 2;
+
+            switch (shape)
+            {
+                case GraphNodeShape.Square:
+                    w.Empty("rect", ("class", cls + dash), ("x", Num.F(p.X - h * 0.9)), ("y", Num.F(p.Y - h * 0.9)),
+                        ("width", Num.F(h * 1.8)), ("height", Num.F(h * 1.8)), ("rx", "3"));
+
+                    return;
+                case GraphNodeShape.Diamond:
+                    w.Empty("path", ("class", cls + dash), ("d", new PathBuilder().Move(p.X, p.Y - h)
+                        .Line(p.X + h, p.Y).Line(p.X, p.Y + h).Line(p.X - h, p.Y).Close().ToString()));
+
+                    return;
+                case GraphNodeShape.Triangle:
+                    w.Empty("path", ("class", cls + dash), ("d", new PathBuilder().Move(p.X, p.Y - h)
+                        .Line(p.X + h * 0.95, p.Y + h * 0.6).Line(p.X - h * 0.95, p.Y + h * 0.6).Close().ToString()));
+
+                    return;
+                case GraphNodeShape.Hexagon:
+                    var hex = new PathBuilder();
+
+                    for (var i = 0; i < 6; i++)
+                    {
+                        var angle = Math.PI / 6 + i * Math.PI / 3;
+                        var x = p.X + h * Math.Cos(angle);
+                        var y = p.Y + h * Math.Sin(angle);
+
+                        if (i == 0)
+                        {
+                            hex.Move(x, y);
+                        }
+                        else
+                        {
+                            hex.Line(x, y);
+                        }
+                    }
+
+                    w.Empty("path", ("class", cls + dash), ("d", hex.Close().ToString()));
+
+                    return;
+                case GraphNodeShape.Stack:
+                    if (cls == "nb")
+                    {
+                        foreach (var offset in new[] { 6.0, 3.0 })
+                        {
+                            w.Empty("rect", ("class", cls), ("x", Num.F(p.X - h * 0.9 + offset)),
+                                ("y", Num.F(p.Y - h * 0.9 - offset)), ("width", Num.F(h * 1.8)),
+                                ("height", Num.F(h * 1.8)), ("rx", "4"));
+                        }
+                    }
+
+                    w.Empty("rect", ("class", cls + dash), ("x", Num.F(p.X - h * 0.9)), ("y", Num.F(p.Y - h * 0.9)),
+                        ("width", Num.F(h * 1.8)), ("height", Num.F(h * 1.8)), ("rx", "4"));
+
+                    return;
+                case GraphNodeShape.Circle:
+                default:
+                    w.Empty("circle", ("class", cls + dash), ("cx", Num.F(p.X)), ("cy", Num.F(p.Y)), ("r", Num.F(h)));
+
+                    return;
+            }
+        }
+
+        private static void Ring(SvgWriter w, PlacedGraphNode p, int series)
+        {
+            const double gap = 4;
+
+            w.Empty("rect", ("class", "nb s" + series), ("x", Num.F(p.X - p.Width / 2 - gap)),
+                ("y", Num.F(p.Y - p.Height / 2 - gap)), ("width", Num.F(p.Width + 2 * gap)),
+                ("height", Num.F(p.Height + 2 * gap)), ("rx", Num.F(p.Height / 2 + gap)));
+        }
+
+        private static void Shape(SvgWriter w, PlacedGraphNode p, string cls, bool dashed = false)
+        {
+            var dash = p.Role == GraphNodeRole.Latent || dashed ? " dash" : string.Empty;
 
             if (p.Role == GraphNodeRole.State)
             {

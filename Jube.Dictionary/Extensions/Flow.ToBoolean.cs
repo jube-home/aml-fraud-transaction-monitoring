@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The Boolean the pipeline converts to: True only when it has decided matched.")]
         public static bool ToBoolean<T>(this Flow<T> flow)
         {
             return flow.Outcome == FlowOutcome.Matched;

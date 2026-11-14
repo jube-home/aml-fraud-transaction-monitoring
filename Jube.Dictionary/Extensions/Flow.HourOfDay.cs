@@ -15,11 +15,13 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Replaces the value being tested with the hour of the day as an integer.")]
         public static Flow<int> HourOfDay(this Flow<DateTime> flow)
         {
             return flow.Carry(flow.Value.Hour);
         }
 
+        [Description("Begins a pipeline from the value. Replaces the value being tested with the hour of the day as an integer.")]
         public static Flow<int> HourOfDay(this DateTime value)
         {
             return value.Start().HourOfDay();

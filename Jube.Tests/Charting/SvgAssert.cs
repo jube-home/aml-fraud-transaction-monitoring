@@ -22,15 +22,23 @@ namespace Jube.Test.Charting
     {
         private static readonly HashSet<string> allowedElements =
         [
-            "svg", "title", "desc", "style", "rect", "text", "line", "path", "circle", "g"
+            "svg", "title", "desc", "style", "rect", "text", "line", "path", "circle", "g", "defs", "marker"
         ];
 
         private static readonly HashSet<string> allowedAttributes =
         [
-            "xmlns", "class", "viewBox", "preserveAspectRatio", "width", "height", "data-theme", "role",
+            "xmlns", "class", "viewBox", "preserveAspectRatio", "width", "height", "data-theme", "data-node",
+            "data-from",
+            "data-to", "role",
             "aria-labelledby", "aria-label", "id", "x", "y", "x1", "y1", "x2", "y2", "d", "transform", "rx", "r", "cx",
-            "cy", "style", "tabindex"
+            "cy", "style", "tabindex", "data-edge", "data-first", "data-last", "data-kind", "data-bin", "marker-end",
+            "markerWidth", "markerHeight", "markerUnits", "refX", "refY", "orient"
         ];
+
+        public static string WithoutFragmentReferences(string svg)
+        {
+            return svg.Replace("url(#", string.Empty);
+        }
 
         public static XDocument WellFormed(string svg)
         {
@@ -54,7 +62,7 @@ namespace Jube.Test.Charting
                 svg.Should().NotContain("@import");
                 svg.Should().NotContain("NaN");
                 svg.Should().NotContain("Infinity");
-                svg.Should().NotContain("url(");
+                WithoutFragmentReferences(svg).Should().NotContain("url(");
                 svg.Replace("http://www.w3.org/2000/svg", string.Empty).Should().NotContain("http");
             }
 
@@ -71,7 +79,7 @@ namespace Jube.Test.Charting
                     {
                         attribute.Value.Should().NotContain("javascript:");
                         attribute.Value.Should().NotContain("http");
-                        attribute.Value.Should().NotContain("url(");
+                        WithoutFragmentReferences(attribute.Value).Should().NotContain("url(");
                     }
                 }
             }

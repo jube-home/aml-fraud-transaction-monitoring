@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Extracts an Int32 from the string.")]
         public static int ExtractInt32(this string @this)
         {
             var sb = new StringBuilder();

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>ნებართვა უარყოფილია.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>ავტორიზაცია არ არის გავლილი.</value>
+  </data>
+    <data name="CaseNotFound" xml:space="preserve">
+    <value>საქმე ვერ მოიძებნა ან არ ჩანს.</value>
+  </data>
+    <data name="SuppressionNotFound" xml:space="preserve">
+    <value>ჩახშობის მოთხოვნა ვერ მოიძებნა ან არ ჩანს.</value>
+  </data>
+    <data name="CaseIdRequired" xml:space="preserve">
+    <value>საქმე აუცილებელია.</value>
+  </data>
+    <data name="IdRequired" xml:space="preserve">
+    <value>მოთხოვნა აუცილებელია.</value>
+  </data>
+    <data name="PathInvalid" xml:space="preserve">
+    <value>გზა უნდა იყოს 1 (საქმის გასაღები) ან 2 (ტრანზაქცია).</value>
+  </data>
+    <data name="OverrideKeyRequired" xml:space="preserve">
+    <value>გადაფარვის გასაღები აუცილებელია.</value>
+  </data>
+    <data name="OverrideKeyMaxLength" xml:space="preserve">
+    <value>გადაფარვის გასაღები არაუმეტეს {0} სიმბოლოსი უნდა იყოს.</value>
+  </data>
+    <data name="OverrideKeyValueRequired" xml:space="preserve">
+    <value>ტრანზაქციის გზაზე მნიშვნელობა აუცილებელია.</value>
+  </data>
+    <data name="OverrideKeyValueMaxLength" xml:space="preserve">
+    <value>მნიშვნელობა არაუმეტეს {0} სიმბოლოსი უნდა იყოს.</value>
+  </data>
+    <data name="ReasonRequired" xml:space="preserve">
+    <value>მიზეზი აუცილებელია.</value>
+  </data>
+    <data name="ReasonMaxLength" xml:space="preserve">
+    <value>მიზეზი არაუმეტეს {0} სიმბოლოსი უნდა იყოს.</value>
+  </data>
+    <data name="ExpiryRequired" xml:space="preserve">
+    <value>აუცილებელია მომავალში არსებული ვადის გასვლის თარიღი.</value>
+  </data>
+    <data name="TargetsRequired" xml:space="preserve">
+    <value>აირჩიეთ ერთი მოდელი ან წესი მაინც.</value>
+  </data>
+    <data name="TargetsTooMany" xml:space="preserve">
+    <value>მოთხოვნაში მაქსიმუმ {0} მოდელი და წესი შეიძლება მიეთითოს.</value>
+  </data>
+    <data name="TargetModelRequired" xml:space="preserve">
+    <value>თითოეულ მოდელს ან წესს თავისი მოდელი სჭირდება.</value>
+  </data>
+    <data name="RuleNameMaxLength" xml:space="preserve">
+    <value>წესის სახელი არაუმეტეს {0} სიმბოლოსი უნდა იყოს.</value>
+  </data>
+    <data name="OverrideKindInvalid" xml:space="preserve">
+    <value>გადაფარვის სახეობა უნდა იყოს 0 (ჩახშობა) ან 1 (იძულება).</value>
+  </data>
+    <data name="ArchiveIdsTooMany" xml:space="preserve">
+    <value>მტკიცებულებად მაქსიმუმ {0} ტრანზაქციის მონიშვნაა შესაძლებელი.</value>
+  </data>
+    <data name="ArchiveIdInvalid" xml:space="preserve">
+    <value>მონიშნული ტრანზაქცია არასწორია.</value>
+  </data>
+    <data name="MergeInvalid" xml:space="preserve">
+    <value>გაერთიანებული ჟურნალის გასაღებები არასწორია.</value>
+  </data>
+    <data name="NoteMaxLength" xml:space="preserve">
+    <value>შენიშვნა არაუმეტეს {0} სიმბოლოსი უნდა იყოს.</value>
+  </data>
+    <data name="KeyNotOverrideEnabled" xml:space="preserve">
+    <value>გასაღები არ არის მონიშნული Enable Override-ით მოთხოვნის XPath-ზე, ამიტომ მისი ჩახშობა შეუძლებელია.</value>
+  </data>
+    <data name="KeyNotInJournal" xml:space="preserve">
+    <value>მნიშვნელობა ამ საქმის ჟურნალში არ არის.</value>
+  </data>
+    <data name="EvidenceRequired" xml:space="preserve">
+    <value>მონიშნეთ ერთი ტრანზაქცია მაინც, რომელიც ამ მნიშვნელობას შეიცავს.</value>
+  </data>
+    <data name="EvidenceNotInScope" xml:space="preserve">
+    <value>მონიშნული ტრანზაქცია ამ საქმის ჟურნალში არ არის ან არ შეიცავს მნიშვნელობას.</value>
+  </data>
+    <data name="CaseKeyValueTooLong" xml:space="preserve">
+    <value>საქმის გასაღების მნიშვნელობა ძალიან გრძელია ჩასახშობად.</value>
+  </data>
+    <data name="ForcePermissionRequired" xml:space="preserve">
+    <value>იძულებას სჭირდება Apply Force Override ნებართვა.</value>
+  </data>
+    <data name="OverridePermissionRequired" xml:space="preserve">
+    <value>ჩახშობას სჭირდება Override ნებართვა.</value>
+  </data>
+    <data name="TargetInvalid" xml:space="preserve">
+    <value>მოდელი ან წესი ამ გასაღებისთვის არასწორია: {0}</value>
+  </data>
+    <data name="NotPending" xml:space="preserve">
+    <value>გადაწყვეტილების მიღება მხოლოდ მოლოდინში მყოფ მოთხოვნაზეა შესაძლებელი.</value>
+  </data>
+    <data name="OwnRequest" xml:space="preserve">
+    <value>საკუთარ მოთხოვნაზე გადაწყვეტილებას ვერ მიიღებთ. სანაცვლოდ გააუქმეთ.</value>
+  </data>
+    <data name="AlreadyApproved" xml:space="preserve">
+    <value>ეს ვერსია უკვე დაამტკიცეთ.</value>
+  </data>
+    <data name="NotMaker" xml:space="preserve">
+    <value>ამის გაკეთება მხოლოდ მოთხოვნის ავტორს შეუძლია.</value>
+  </data>
+    <data name="NotRetractable" xml:space="preserve">
+    <value>გაუქმება მხოლოდ მოლოდინში მყოფ მოთხოვნას შეიძლება.</value>
+  </data>
+    <data name="NotResubmittable" xml:space="preserve">
+    <value>ხელახლა გაგზავნა მხოლოდ უარყოფილ ან გაუქმებულ მოთხოვნას შეიძლება.</value>
+  </data>
+    <data name="ExpiryPassed" xml:space="preserve">
+    <value>ვადა გავიდა.</value>
+  </data>
+    <data name="ExpiryTooFar" xml:space="preserve">
+    <value>ვადის გასვლის თარიღი ახლიდან არაუმეტეს {0} დღის შემდეგ შეიძლება იყოს.</value>
+  </data>
+    <data name="RequestLapsed" xml:space="preserve">
+    <value>მოთხოვნას ვადა გაუვიდა გადაწყვეტილების გარეშე. სთხოვეთ ავტორს გააუქმოს და ხელახლა გააგზავნოს.</value>
+  </data>
+    <data name="MakerNoLongerPermitted" xml:space="preserve">
+    <value>მოთხოვნის ავტორს აღარ აქვს მისი გამოსაყენებლად საჭირო ნებართვა.</value>
+  </data>
+    <data name="OverrideKindConflict" xml:space="preserve">
+    <value>{0}-ისთვის უკვე მოქმედებს განსხვავებული გადაფარვა; ჯერ ის წაშალეთ.</value>
+  </data>
+    <data name="ApplyFailed" xml:space="preserve">
+    <value>მოთხოვნის გამოყენება ვერ მოხერხდა: {0}</value>
+  </data>
+    <data name="KeyNotArchiveKey" xml:space="preserve">
+    <value>გასაღები არ არის სამუშაო პროცესის მოდელში Archive Key-ით მონიშნული ველი, ამიტომ მისი ტრანზაქციების მოძებნა შეუძლებელია.</value>
+  </data>
+    <data name="KeyValueInvalid" xml:space="preserve">
+    <value>მნიშვნელობის წაკითხვა გასაღების ველის მონაცემთა ტიპად შეუძლებელია.</value>
+  </data>
+    <data name="CaseKeyNotArchiveKey" xml:space="preserve">
+    <value>საქმის გასაღები არ არის სამუშაო პროცესის მოდელში Archive Key-ით მონიშნული ველი, ამიტომ ამ საქმის ტრანზაქციების წაკითხვა შეუძლებელია.</value>
+  </data>
+    <data name="KeyNotLookupable" xml:space="preserve">
+    <value>გასაღების ველი დაშიფრულია შემთხვევითი ვექტორით, ამიტომ მისი მნიშვნელობების მოძებნა შეუძლებელია.</value>
+  </data>
+    <data name="LaneOperatorNotAllowed" xml:space="preserve">
+    <value>დიაპაზონის ოპერატორი დაშვებულია მხოლოდ რიცხვით ან თარიღის გასაღებზე; ტექსტური ან ლოგიკური გასაღები მხოლოდ ტოლობით შეესაბამება.</value>
+  </data>
+</root>

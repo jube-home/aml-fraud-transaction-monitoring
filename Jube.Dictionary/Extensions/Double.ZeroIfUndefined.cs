@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The value, or zero when it is NaN or infinite, so that an undefined calculation stores a defined number.")]
         public static double ZeroIfUndefined(this double @this)
         {
             return double.IsFinite(@this) ? @this : 0;

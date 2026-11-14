@@ -46,6 +46,36 @@
     <value>Aucun fichier de préservation n'a été fourni.</value>
   </data>
     <data name="InvalidPreservationFile" xml:space="preserve">
-    <value>Le fichier de préservation n'a pas pu être déchiffré. Vérifiez le mot de passe et que le fichier est un export Jube.</value>
+    <value>Le fichier de préservation n'a pas pu être déchiffré. Vérifiez le mot de passe et que le fichier est un export Jube. Un fichier exporté par une version antérieure de Jube ne peut pas être importé.</value>
+  </data>
+    <data name="PasswordTooShort" xml:space="preserve">
+    <value>Le mot de passe doit comporter au moins 12 caractères.</value>
+  </data>
+    <data name="WarningNoApprovalHistory" xml:space="preserve">
+    <value>Le paquet ne contient aucun historique d'approbation ; chaque entité importée sera donc marquée comme approuvée dans sa version actuelle à votre nom.</value>
+  </data>
+    <data name="WarningNoRoles" xml:space="preserve">
+    <value>Le paquet ne contient aucun rôle ; les {0} rôles du locataire seront donc tous supprimés.</value>
+  </data>
+    <data name="WarningProductionData" xml:space="preserve">
+    <value>Le paquet contient des données qui peuvent être volumineuses ou sensibles : {0} valeurs de liste, {1} paires de dictionnaire et {2} lignes Exhaustive.</value>
+  </data>
+    <data name="WarningOlderFormat" xml:space="preserve">
+    <value>Le paquet est en version de format {0}, antérieure à la version actuelle {1}.</value>
+  </data>
+    <data name="BlockerRoleRekey" xml:space="preserve">
+    <value>Des rôles du paquet existent déjà dans un autre locataire et ce locataire a des utilisateurs ; l'importation serait donc refusée.</value>
+  </data>
+    <data name="BlockerPrivilege" xml:space="preserve">
+    <value>Le paquet ou les rôles actuels du locataire comportent des autorisations que vous ne détenez pas ; l'importation serait donc refusée. Seul un utilisateur détenant toutes ces autorisations, ou un landlord, peut effectuer l'importation.</value>
+  </data>
+    <data name="DiffNeedsSnapshot" xml:space="preserve">
+    <value>Au moins un des deux côtés d'une comparaison doit être un instantané.</value>
+  </data>
+    <data name="DiffSameSnapshot" xml:space="preserve">
+    <value>Un instantané ne peut pas être comparé à lui-même.</value>
+  </data>
+    <data name="PackageTooLarge" xml:space="preserve">
+    <value>Le paquet dépasse la taille acceptée par ce serveur.</value>
   </data>
 </root>

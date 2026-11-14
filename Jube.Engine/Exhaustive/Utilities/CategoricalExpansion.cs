@@ -108,14 +108,14 @@ namespace Jube.Engine.Exhaustive.Utilities
 
         internal static bool IsCandidateType(int dataTypeId, CategoricalOptions options, string name)
         {
-            return dataTypeId is 0 or 1 || options.Include.Contains(name, StringComparer.Ordinal);
+            return dataTypeId is 0 or 1 or 8 || options.Include.Contains(name, StringComparer.Ordinal);
         }
 
         internal static JToken SelectToken(JObject jObject, string path)
         {
             try
             {
-                return jObject.SelectToken(path);
+                return Jube.Data.Helpers.BoundedJsonPath.Select(jObject, path);
             }
             catch (Exception ex) when (ex is JsonException or ArgumentException)
             {

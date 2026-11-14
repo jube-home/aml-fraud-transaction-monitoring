@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="WeekdayMon" xml:space="preserve">
+        <value>सोम</value>
+    </data>
+    <data name="WeekdayTue" xml:space="preserve">
+        <value>मंगल</value>
+    </data>
+    <data name="WeekdayWed" xml:space="preserve">
+        <value>बुध</value>
+    </data>
+    <data name="WeekdayThu" xml:space="preserve">
+        <value>गुरु</value>
+    </data>
+    <data name="WeekdayFri" xml:space="preserve">
+        <value>शुक्र</value>
+    </data>
+    <data name="WeekdaySat" xml:space="preserve">
+        <value>शनि</value>
+    </data>
+    <data name="WeekdaySun" xml:space="preserve">
+        <value>रवि</value>
+    </data>
+    <data name="ImpactMinimal" xml:space="preserve">
+        <value>न्यूनतम</value>
+    </data>
+    <data name="ImpactLow" xml:space="preserve">
+        <value>कम</value>
+    </data>
+    <data name="ImpactModerate" xml:space="preserve">
+        <value>मध्यम</value>
+    </data>
+    <data name="ImpactHigh" xml:space="preserve">
+        <value>उच्च</value>
+    </data>
+    <data name="ImpactSevere" xml:space="preserve">
+        <value>गंभीर</value>
+    </data>
+    <data name="LikelihoodVeryLikely" xml:space="preserve">
+        <value>बहुत संभावित</value>
+    </data>
+    <data name="LikelihoodLikely" xml:space="preserve">
+        <value>संभावित</value>
+    </data>
+    <data name="LikelihoodPossible" xml:space="preserve">
+        <value>संभव</value>
+    </data>
+    <data name="LikelihoodUnlikely" xml:space="preserve">
+        <value>असंभावित</value>
+    </data>
+    <data name="RiskMatrixTitle" xml:space="preserve">
+        <value>जोखिम मैट्रिक्स</value>
+    </data>
+    <data name="RiskMatrixAssessed" xml:space="preserve">
+        <value>{0} आकलित मामले; {1} का अभी आकलन नहीं हुआ</value>
+    </data>
+    <data name="RiskMatrixCases" xml:space="preserve">
+        <value>{0} मामले</value>
+    </data>
+    <data name="Impact" xml:space="preserve">
+        <value>प्रभाव</value>
+    </data>
+    <data name="Likelihood" xml:space="preserve">
+        <value>संभावना</value>
+    </data>
+    <data name="Cases" xml:space="preserve">
+        <value>मामले</value>
+    </data>
+    <data name="FlowTitle" xml:space="preserve">
+        <value>खोले गए, बंद किए गए और बैकलॉग</value>
+    </data>
+    <data name="FlowSubtitle" xml:space="preserve">
+        <value>हर दिन खोले और बंद किए गए मामले, और दिन के अंत में अब भी खुले मामले</value>
+    </data>
+    <data name="Opened" xml:space="preserve">
+        <value>खोले गए</value>
+    </data>
+    <data name="Closed" xml:space="preserve">
+        <value>बंद किए गए</value>
+    </data>
+    <data name="Backlog" xml:space="preserve">
+        <value>बैकलॉग</value>
+    </data>
+    <data name="FirstViewTitle" xml:space="preserve">
+        <value>पहली नज़र तक का समय</value>
+    </data>
+    <data name="FirstViewSubtitle" xml:space="preserve">
+        <value>मामले प्रतीक्षा अवधि के अनुसार</value>
+    </data>
+    <data name="ResolutionTitle" xml:space="preserve">
+        <value>समाधान तक का समय</value>
+    </data>
+    <data name="ResolutionSubtitle" xml:space="preserve">
+        <value>बंद मामले लगे समय के अनुसार</value>
+    </data>
+    <data name="AgingTitle" xml:space="preserve">
+        <value>खुले मामले आयु के अनुसार</value>
+    </data>
+    <data name="AgingSubtitle" xml:space="preserve">
+        <value>खुले मामले कितनी देर से प्रतीक्षा में हैं, तात्कालिकता लेन के अनुसार</value>
+    </data>
+    <data name="LaneLiveMoney" xml:space="preserve">
+        <value>जीवित धन</value>
+    </data>
+    <data name="LaneMandatory" xml:space="preserve">
+        <value>अनिवार्य</value>
+    </data>
+    <data name="LaneDeadlineNear" xml:space="preserve">
+        <value>समय-सीमा निकट</value>
+    </data>
+    <data name="LaneStandard" xml:space="preserve">
+        <value>मानक</value>
+    </data>
+    <data name="StatusDwellTitle" xml:space="preserve">
+        <value>प्रत्येक स्थिति में समय</value>
+    </data>
+    <data name="StatusDwellSubtitle" xml:space="preserve">
+        <value>पूरे हुए ठहरावों का माध्यिका और सबसे धीमा दसवाँ हिस्सा, घंटों में</value>
+    </data>
+    <data name="Unknown" xml:space="preserve">
+        <value>अज्ञात</value>
+    </data>
+    <data name="Hours" xml:space="preserve">
+        <value>घंटे</value>
+    </data>
+    <data name="Median" xml:space="preserve">
+        <value>माध्यिका</value>
+    </data>
+    <data name="SlowestTenth" xml:space="preserve">
+        <value>सबसे धीमा दसवाँ हिस्सा</value>
+    </data>
+    <data name="RuleEffortTitle" xml:space="preserve">
+        <value>झूठे सकारात्मकों पर गँवाया गया विश्लेषक का समय</value>
+    </data>
+    <data name="RuleEffortSubtitle" xml:space="preserve">
+        <value>नियम द्वारा उठाए गए उन मामलों पर बिताए घंटे जो वास्तविक नहीं निकले</value>
+    </data>
+    <data name="RulePrecisionTitle" xml:space="preserve">
+        <value>नियम की परिशुद्धता</value>
+    </data>
+    <data name="RulePrecisionSubtitle" xml:space="preserve">
+        <value>नियम द्वारा उठाए गए निर्णीत मामलों का हिस्सा जिनकी पुष्टि हुई</value>
+    </data>
+    <data name="Percent" xml:space="preserve">
+        <value>प्रतिशत</value>
+    </data>
+    <data name="Precision" xml:space="preserve">
+        <value>परिशुद्धता</value>
+    </data>
+    <data name="GainsTitle" xml:space="preserve">
+        <value>मामलों पर काम करते हुए मिले पुष्ट मामले</value>
+    </data>
+    <data name="DecidedCases" xml:space="preserve">
+        <value>{0} निर्णीत मामले</value>
+    </data>
+    <data name="FewDecidedCases" xml:space="preserve">
+        <value>केवल {0} निर्णीत मामले, भरोसे के लिए बहुत कम</value>
+    </data>
+    <data name="CasesWorkedPercent" xml:space="preserve">
+        <value>काम किए गए मामले (%)</value>
+    </data>
+    <data name="ConfirmedFoundPercent" xml:space="preserve">
+        <value>मिले पुष्ट (%)</value>
+    </data>
+    <data name="PriorityOrder" xml:space="preserve">
+        <value>प्राथमिकता क्रम</value>
+    </data>
+    <data name="LikelihoodOrder" xml:space="preserve">
+        <value>संभावना क्रम</value>
+    </data>
+    <data name="OldestFirst" xml:space="preserve">
+        <value>सबसे पुराना पहले</value>
+    </data>
+    <data name="Random" xml:space="preserve">
+        <value>यादृच्छिक</value>
+    </data>
+    <data name="CalibrationTitle" xml:space="preserve">
+        <value>पूर्वानुमानित संभावना बनाम जो हुआ</value>
+    </data>
+    <data name="ArrivalsTitle" xml:space="preserve">
+        <value>मामले कब आते हैं</value>
+    </data>
+    <data name="ArrivalsSubtitle" xml:space="preserve">
+        <value>सप्ताह के दिन और घंटे के अनुसार बनाए गए मामले (UTC)</value>
+    </data>
+    <data name="Hour" xml:space="preserve">
+        <value>घंटा</value>
+    </data>
+    <data name="Weekday" xml:space="preserve">
+        <value>सप्ताह का दिन</value>
+    </data>
+    <data name="FirstViewByHourTitle" xml:space="preserve">
+        <value>आगमन के घंटे के अनुसार पहली नज़र तक का माध्यिका समय</value>
+    </data>
+    <data name="FirstViewByHourSubtitle" xml:space="preserve">
+        <value>वे मिनट जो मामले ने किसी के देखने से पहले प्रतीक्षा की, आगमन के घंटे के अनुसार (UTC)</value>
+    </data>
+    <data name="Minutes" xml:space="preserve">
+        <value>मिनट</value>
+    </data>
+    <data name="MedianMinutes" xml:space="preserve">
+        <value>माध्यिका मिनट</value>
+    </data>
+    <data name="ServiceLevelTitle" xml:space="preserve">
+        <value>साप्ताहिक सेवा स्तर की उपलब्धि</value>
+    </data>
+    <data name="ServiceLevelSubtitle" xml:space="preserve">
+        <value>उस सप्ताह बनाए गए मामलों का हिस्सा जिन्होंने हर लक्ष्य पूरा किया</value>
+    </data>
+    <data name="MetPercent" xml:space="preserve">
+        <value>पूरे हुए (%)</value>
+    </data>
+    <data name="ServiceLevelFirstView" xml:space="preserve">
+        <value>पहली नज़र</value>
+    </data>
+    <data name="ServiceLevelOwnership" xml:space="preserve">
+        <value>स्वामित्व</value>
+    </data>
+    <data name="ServiceLevelResolution" xml:space="preserve">
+        <value>समाधान</value>
+    </data>
+    <data name="ServiceLevelTimeInStatus" xml:space="preserve">
+        <value>स्थिति में समय</value>
+    </data>
+    <data name="HandoffsTitle" xml:space="preserve">
+        <value>मामले कितनी बार हाथ बदलते हैं</value>
+    </data>
+    <data name="HandoffsSubtitle" xml:space="preserve">
+        <value>{0} मामले बंद होने के बाद दोबारा खोले गए</value>
+    </data>
+    <data name="ChangesOfOwner" xml:space="preserve">
+        <value>स्वामी के बदलाव</value>
+    </data>
+</root>

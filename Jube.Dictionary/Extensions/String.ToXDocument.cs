@@ -8,6 +8,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Converts the string to an XDocument.")]
         public static XDocument ToXDocument(this string @this)
         {
             var encoding = Encoding.ASCII;

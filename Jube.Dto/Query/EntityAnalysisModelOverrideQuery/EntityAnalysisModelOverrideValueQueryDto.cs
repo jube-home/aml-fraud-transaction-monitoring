@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Dto.Overrides;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,27 +22,35 @@ using Jube.Dto.Overrides;
 
 namespace Jube.Dto.Query.EntityAnalysisModelOverrideQuery
 {
+    [MessagePackObject]
     public class EntityAnalysisModelOverrideValueQueryDto
     {
         [Description("The overridden value held against the override key, e.g. a specific card fingerprint.")]
+        [Key(0)]
         public string? OverrideKeyValue { get; set; }
 
         [Description("Name of the Model the override belongs to.")]
+        [Key(1)]
         public string? Name { get; set; }
 
         [Description("Guid of the Model the override belongs to.")]
+        [Key(2)]
         public Guid EntityAnalysisModelGuid { get; set; }
 
         [Description("Whether the override mutes the Activation Rules' consequences or forces them.")]
+        [Key(3)]
         public EntityAnalysisModelOverrideKind OverrideKind { get; set; }
 
         [Description("User who created the override.")]
+        [Key(4)]
         public string? CreatedUser { get; set; }
 
         [Description("Timestamp (UTC) the override was created.")]
+        [Key(5)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("When set, the override is removed once this date/time (UTC) is reached.")]
+        [Key(6)]
         public DateTimeOffset? DeleteExpiryDate { get; set; }
     }
 }

@@ -16,6 +16,8 @@
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable RedundantAttributeUsageProperty
 
+using Svirfd;
+
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models
 {
     using System;
@@ -27,7 +29,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Mode
     public class EntityModelGatewayRule
     {
         public delegate bool Match(DictionaryNoBoxing<string> data, Dictionary<string, List<string>> list,
-            PooledDictionary<string, double> kvp, ILog log);
+            PooledDictionary<string, double> kvp, PooledDictionary<string, IpResponse> svirfd, ILog log);
 
         public RuleCounters Counters { get; set; } = new();
         public long ActivationCounter => Counters.ActivationCounter;

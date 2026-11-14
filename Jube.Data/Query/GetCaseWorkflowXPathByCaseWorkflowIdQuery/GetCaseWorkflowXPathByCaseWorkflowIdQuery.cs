@@ -19,7 +19,10 @@ namespace Jube.Data.Query.GetCaseWorkflowXPathByCaseWorkflowIdQuery
     using System.Threading;
     using System.Threading.Tasks;
     using Context;
+    using Dto.Options;
+    using GetArchiveKeyFieldsByEntityAnalysisModelIdQuery;
     using LinqToDB;
+    using LinqToDB.Async;
 
     public class GetCaseWorkflowXPathByCaseWorkflowIdQuery
     {
@@ -38,7 +41,7 @@ namespace Jube.Data.Query.GetCaseWorkflowXPathByCaseWorkflowIdQuery
         public async Task<IEnumerable<GetCaseWorkflowXPathByCaseWorkflowIdQueryDto>> ExecuteAsync(Guid caseWorkflowGuid,
             CancellationToken token = default)
         {
-            return await dbContext.CaseWorkflowXPath
+            var rows = await dbContext.CaseWorkflowXPath
                 .Where(w =>
                     w.CaseWorkflow.Guid == caseWorkflowGuid
                     && (w.CaseWorkflow.Deleted == 0 || w.CaseWorkflow.Deleted == null)
@@ -62,31 +65,65 @@ namespace Jube.Data.Query.GetCaseWorkflowXPathByCaseWorkflowIdQuery
                             .Any(rr => dbContext.UserRegistry
                                 .Any(u => u.RoleRegistryGuid == rr.Guid && u.Name == userName)))
                 )
-                .Select(s => new GetCaseWorkflowXPathByCaseWorkflowIdQueryDto
+                .Select(s => new
                 {
-                    Name = s.Name,
-                    XPath = FormatXPath(s.XPath),
+                    s.Name,
+                    s.SourceKindId,
+                    s.SourceGuid,
+                    s.CaseWorkflow.EntityAnalysisModelId,
                     ConditionalRegularExpressionFormatting = s.ConditionalRegularExpressionFormatting == 1,
-                    ConditionalFormatForeColor = s.ConditionalFormatForeColor,
-                    ConditionalFormatBackColor = s.ConditionalFormatBackColor,
-                    RegularExpression = s.RegularExpression,
+                    s.ConditionalFormatForeColor,
+                    s.ConditionalFormatBackColor,
+                    s.RegularExpression,
                     ForeRowColorScope = s.ForeRowColorScope == 1,
                     BackRowColorScope = s.BackRowColorScope == 1,
-                    BoldLineFormatForeColor = s.BoldLineFormatForeColor,
-                    BoldLineFormatBackColor = s.BoldLineFormatBackColor,
-                    BoldLineMatched = s.BoldLineMatched == 1
+                    s.BoldLineFormatForeColor,
+                    s.BoldLineFormatBackColor,
+                    BoldLineMatched = s.BoldLineMatched == 1,
+                    s.RoleId,
+                    Segment = s.Segment == 1
                 })
                 .ToListAsync(token);
-        }
 
-        private string FormatXPath(string xPath)
-        {
-            var splits = xPath.Split(".");
-            return splits[0].ToLower() switch
+            var modelId = rows.Select(r => r.EntityAnalysisModelId).FirstOrDefault(id => id.HasValue);
+
+            if (modelId is null)
             {
-                "data" => splits[1],
-                _ => xPath
-            };
+                return [];
+            }
+
+            var fields = (await new GetArchiveKeyFieldsByEntityAnalysisModelIdQuery(dbContext)
+                    .ExecuteAsync(modelId.Value, token).ConfigureAwait(false))
+                .GroupBy(f => (f.Kind, f.Guid)).ToDictionary(g => g.Key, g => g.First());
+
+            return rows.Select(s => s.SourceGuid.HasValue && s.SourceKindId.HasValue
+                              && fields.TryGetValue(((ArchiveKeySourceKind)s.SourceKindId.Value, s.SourceGuid.Value),
+                                  out var field)
+                    ? new GetCaseWorkflowXPathByCaseWorkflowIdQueryDto
+                    {
+                        Name = s.Name,
+                        XPath = field.SelectTokenPath,
+                        Key = field.Name,
+                        DataTypeId = field.DataTypeId,
+                        ProcessingTypeId = field.ProcessingTypeId,
+                        SourceKindId = (int)field.Kind,
+                        SourceGuid = field.Guid,
+                        ConditionalRegularExpressionFormatting = s.ConditionalRegularExpressionFormatting,
+                        ConditionalFormatForeColor = s.ConditionalFormatForeColor,
+                        ConditionalFormatBackColor = s.ConditionalFormatBackColor,
+                        RegularExpression = s.RegularExpression,
+                        ForeRowColorScope = s.ForeRowColorScope,
+                        BackRowColorScope = s.BackRowColorScope,
+                        BoldLineFormatForeColor = s.BoldLineFormatForeColor,
+                        BoldLineFormatBackColor = s.BoldLineFormatBackColor,
+                        BoldLineMatched = s.BoldLineMatched,
+                        Drill = field.IsArchiveKey,
+                        RoleId = s.RoleId,
+                        Segment = s.Segment
+                    }
+                    : null)
+                .Where(dto => dto is not null)
+                .ToList();
         }
     }
 }

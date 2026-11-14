@@ -84,7 +84,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task InsertOrReplaceCacheEntriesQueuesAnInsertAndWritesToPayloadWhenNotReprocessingAsync()
         {
             var context = NewContext(reprocessingRuleInstanceId: null);
-            var cacheService = TestCacheService.Create(out var redis);
+            var cacheService = TestCacheService.Create(out var resp);
 
             ExecuteCacheEntriesExtensions.InsertOrReplaceCacheEntries(context, cacheService);
             context.PendingWriteTasks.Should().ContainSingle();
@@ -94,7 +94,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
                 $"Payload:{context.EntityAnalysisModel.Instance.TenantRegistryId}:{context.EntityAnalysisModel.Instance.Guid:N}";
 
             var field = $"{context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid:N}";
-            var raw = await redis.HashGetAsync(payloadKey, field);
+            var raw = await resp.HashGetAsync(payloadKey, field);
 
             raw.HasValue.Should().BeTrue("InsertAsync should have written the reduced payload to this key/field");
             var unpacked = cacheService.CachePayloadRepository.Unpack((byte[])raw!);
@@ -107,7 +107,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext(reprocessingRuleInstanceId: 4);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("AccountId", "ACC-1");
-            var cacheService = TestCacheService.Create(out var redis);
+            var cacheService = TestCacheService.Create(out var resp);
 
             context.ExecuteCacheDbStorage(cacheService,
                 new Dictionary<string, DistinctSearchKey> { ["AccountId"] = new() });
@@ -115,8 +115,8 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             context.PendingWriteTasks.Should().BeEmpty();
             var tenant = context.EntityAnalysisModel.Instance.TenantRegistryId;
             var model = context.EntityAnalysisModel.Instance.Guid;
-            (await redis.HashLengthAsync($"Payload:{tenant}:{model:N}")).Should().Be(0);
-            (await redis.HashLengthAsync($"PayloadLatest:{tenant}:{model:N}:AccountId")).Should().Be(0);
+            (await resp.HashLengthAsync($"Payload:{tenant}:{model:N}")).Should().Be(0);
+            (await resp.HashLengthAsync($"PayloadLatest:{tenant}:{model:N}:AccountId")).Should().Be(0);
         }
 
         [Fact]
@@ -257,7 +257,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var context = NewContext();
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("AccountId", "ACC-1");
-            var cacheService = TestCacheService.Create(out var redis);
+            var cacheService = TestCacheService.Create(out var resp);
             var searchKeys = new Dictionary<string, DistinctSearchKey> { ["AccountId"] = new() };
 
             ExecuteCacheEntriesExtensions.UpsertCachePayloadLatest(context, cacheService, searchKeys);
@@ -267,7 +267,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var payloadLatestKey =
                 $"PayloadLatest:{context.EntityAnalysisModel.Instance.TenantRegistryId}:{context.EntityAnalysisModel.Instance.Guid:N}:AccountId";
 
-            var raw = await redis.HashGetAsync(payloadLatestKey, "ACC-1");
+            var raw = await resp.HashGetAsync(payloadLatestKey, "ACC-1");
             raw.HasValue.Should().BeTrue();
         }
 
@@ -275,7 +275,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public async Task UpsertCachePayloadLatestStillQueuesAnUpsertWithAnEmptyValueWhenThePayloadHasNoMatchAsync()
         {
             var context = NewContext();
-            var cacheService = TestCacheService.Create(out var redis);
+            var cacheService = TestCacheService.Create(out var resp);
             var searchKeys = new Dictionary<string, DistinctSearchKey> { ["AccountId"] = new() };
 
             ExecuteCacheEntriesExtensions.UpsertCachePayloadLatest(context, cacheService, searchKeys);
@@ -285,7 +285,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var payloadLatestKey =
                 $"PayloadLatest:{context.EntityAnalysisModel.Instance.TenantRegistryId}:{context.EntityAnalysisModel.Instance.Guid:N}:AccountId";
 
-            var raw = await redis.HashGetAsync(payloadLatestKey, string.Empty);
+            var raw = await resp.HashGetAsync(payloadLatestKey, string.Empty);
             raw.HasValue.Should().BeTrue("current behaviour upserts using an empty-string field, not a skip");
         }
 
@@ -295,7 +295,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var context = NewContext();
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("AccountId", "ACC-1");
 
-            var cacheService = TestCacheService.Create(out var redis);
+            var cacheService = TestCacheService.Create(out var resp);
 
             var searchKeys = new Dictionary<string, DistinctSearchKey>
             {
@@ -310,10 +310,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var tenant = context.EntityAnalysisModel.Instance.TenantRegistryId;
             var model = context.EntityAnalysisModel.Instance.Guid;
 
-            (await redis.HashGetAsync($"PayloadLatest:{tenant}:{model:N}:AccountId", "ACC-1"))
+            (await resp.HashGetAsync($"PayloadLatest:{tenant}:{model:N}:AccountId", "ACC-1"))
                 .HasValue.Should().BeTrue();
 
-            (await redis.HashGetAsync($"PayloadLatest:{tenant}:{model:N}:IpAddress", string.Empty))
+            (await resp.HashGetAsync($"PayloadLatest:{tenant}:{model:N}:IpAddress", string.Empty))
                 .HasValue.Should().BeTrue();
         }
 

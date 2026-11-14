@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
+            [Description("True when: null, empty or not a valid IPv4 address. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsNotValidIp()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringIsNotValidIp(flow.Value));
             }
 
+            [Description("True when: null, empty or not a valid IPv4 address. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsNotValidIp()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringIsNotValidIp(flow.Value));
             }
 
+            [Description("True when: null, empty or not a valid IPv4 address. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsNotValidIp()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringIsNotValidIp(flow.Value));
             }
 
+            [Description("True when: null, empty or not a valid IPv4 address. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsNotValidIp()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringIsNotValidIp(flow.Value));
             }
 
+            [Description("True when: null, empty or not a valid IPv4 address. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsNotValidIp()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
+            [Description("Begins a pipeline from the value. True when: null, empty or not a valid IPv4 address. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsNotValidIp()
             {
                 return value.Start().MatchIsNotValidIp();
             }
 
+            [Description("Begins a pipeline from the value. True when: null, empty or not a valid IPv4 address. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsNotValidIp()
             {
                 return value.Start().RejectIsNotValidIp();
             }
 
+            [Description("Begins a pipeline from the value. True when: null, empty or not a valid IPv4 address. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsNotValidIp()
             {
                 return value.Start().BreakIsNotValidIp();
             }
 
+            [Description("Begins a pipeline from the value. True when: null, empty or not a valid IPv4 address. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsNotValidIp()
             {
                 return value.Start().RequireIsNotValidIp();
             }
 
+            [Description("Begins a pipeline from the value. True when: null, empty or not a valid IPv4 address. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsNotValidIp()
             {
                 return value.Start().EnsureIsNotValidIp();

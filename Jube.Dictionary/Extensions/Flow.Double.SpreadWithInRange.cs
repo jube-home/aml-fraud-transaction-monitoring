@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchSpreadWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the gap between the largest and smallest of the value and the others is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchSpreadWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleSpreadWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RejectSpreadWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the gap between the largest and smallest of the value and the others is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectSpreadWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleSpreadWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> BreakSpreadWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the gap between the largest and smallest of the value and the others is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakSpreadWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleSpreadWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RequireSpreadWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the gap between the largest and smallest of the value and the others is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireSpreadWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleSpreadWithInRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> EnsureSpreadWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: the gap between the largest and smallest of the value and the others is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureSpreadWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchSpreadWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the gap between the largest and smallest of the value and the others is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchSpreadWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().MatchSpreadWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RejectSpreadWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the gap between the largest and smallest of the value and the others is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectSpreadWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RejectSpreadWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> BreakSpreadWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the gap between the largest and smallest of the value and the others is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakSpreadWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().BreakSpreadWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RequireSpreadWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the gap between the largest and smallest of the value and the others is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireSpreadWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RequireSpreadWithInRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> EnsureSpreadWithInRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: the gap between the largest and smallest of the value and the others is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureSpreadWithInRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().EnsureSpreadWithInRange(lowerBound, upperBound, others);
             }

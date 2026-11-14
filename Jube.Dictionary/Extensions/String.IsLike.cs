@@ -7,7 +7,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool IsLike(this string @this, string pattern)
+        [Description("Checks if the string matches a pattern with wildcards; matching is limited to 250 ms.")]
+        public static bool IsLike(this string @this,
+            [Description("The pattern to use. Use '*' as wildcard string.")] string pattern)
         {
             var regexPattern = "^" + Regex.Escape(pattern) + "$";
 

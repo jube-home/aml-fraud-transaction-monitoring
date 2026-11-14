@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Du har inte behörighet att utföra den här åtgärden.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Du är inte autentiserad.</value>
+  </data>
+    <data name="RegistryNotFound" xml:space="preserve">
+    <value>Grafregistret hittades inte eller är inte aktivt.</value>
+  </data>
+    <data name="NodeNotFound" xml:space="preserve">
+    <value>Noden hittades inte.</value>
+  </data>
+    <data name="EdgeNotFound" xml:space="preserve">
+    <value>Kanten hittades inte.</value>
+  </data>
+    <data name="KeyRequired" xml:space="preserve">
+    <value>En nyckel och ett värde krävs.</value>
+  </data>
+    <data name="KeyTooLong" xml:space="preserve">
+    <value>Nyckeln eller värdet är för långt.</value>
+  </data>
+    <data name="HopsOutOfRange" xml:space="preserve">
+    <value>Antalet hopp måste vara mellan 1 och 3.</value>
+  </data>
+    <data name="FanOutOutOfRange" xml:space="preserve">
+    <value>Förgreningen måste vara mellan 1 och 100.</value>
+  </data>
+    <data name="WindowInvalid" xml:space="preserve">
+    <value>Fönstrets slut måste ligga efter dess början.</value>
+  </data>
+    <data name="EdgesInvalid" xml:space="preserve">
+    <value>Listan med kantdefinitioner är ogiltig.</value>
+  </data>
+    <data name="SentenceHub" xml:space="preserve">
+    <value>{0} {1} är ett nav som delas av {2} motparter; genomsökningen går inte via det om det inte begärs.</value>
+  </data>
+    <data name="SentenceSharedDevice" xml:space="preserve">
+    <value>{0} {1} delas av {2} konton.</value>
+  </data>
+    <data name="SentenceDistance" xml:space="preserve">
+    <value>{0} hopp från en bekräftad sann positiv, med {1} inom tre hopp.</value>
+  </data>
+    <data name="SentenceOpenCases" xml:space="preserve">
+    <value>{0} öppna ärenden på den här nyckeln.</value>
+  </data>
+    <data name="SentenceConfirmedCases" xml:space="preserve">
+    <value>{0} ärenden på den här nyckeln stängdes som bekräftade.</value>
+  </data>
+    <data name="SentenceCommunity" xml:space="preserve">
+    <value>Medlem i gemenskap {0}.</value>
+  </data>
+    <data name="SentenceDegree" xml:space="preserve">
+    <value>{0} olika motparter, {1} via penningflöde.</value>
+  </data>
+    <data name="LayoutInvalid" xml:space="preserve">
+    <value>Layouten känns inte igen.</value>
+  </data>
+    <data name="CaseNotFound" xml:space="preserve">
+    <value>Ärendet hittades inte eller är inte öppet för dig.</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>Ärendet är låst till en annan användare.</value>
+  </data>
+    <data name="CaptureNote" xml:space="preserve">
+    <value>Nätverksbild: {0} noder och {1} kanter mellan {2} och {3}.</value>
+  </data>
+    <data name="ExplorationNameInvalid" xml:space="preserve">
+    <value>Utforskningen behöver ett namn på högst 120 tecken.</value>
+  </data>
+    <data name="ExplorationAddressInvalid" xml:space="preserve">
+    <value>Utforskningens adress saknas eller är för lång.</value>
+  </data>
+    <data name="ExplorationNotFound" xml:space="preserve">
+    <value>Utforskningen hittades inte.</value>
+  </data>
+    <data name="NodeIdsRequired" xml:space="preserve">
+    <value>Båda nod-id:n krävs och måste skilja sig åt.</value>
+  </data>
+    <data name="PathHopsOutOfRange" xml:space="preserve">
+    <value>Vägar kan vara 1 till 6 hopp och 1 till 20 returneras.</value>
+  </data>
+    <data name="FlowInvalid" xml:space="preserve">
+    <value>Flödesbegäran kräver ett hoppfönster på 1 till 720 timmar, en tolerans på 0 till 0,9, ett djup på 1 till 6 och en förgrening på 1 till 50, och produkten av förgrening och djup får inte vara för stor.</value>
+  </data>
+    <data name="PatternNotFound" xml:space="preserve">
+    <value>Mönstret hittades inte.</value>
+  </data>
+    <data name="CommunityNotFound" xml:space="preserve">
+    <value>Gemenskapen hittades inte.</value>
+  </data>
+    <data name="PatternStateInvalid" xml:space="preserve">
+    <value>Ett mönster kan markeras som Sett, Avfärdat eller Ärendehanterat, och Ärendehanterat kräver ett ärende-id.</value>
+  </data>
+    <data name="HubOverrideInvalid" xml:space="preserve">
+    <value>Navöverstyrningen måste vara 0 (ingen), 1 (aldrig ett nav) eller 2 (alltid ett nav).</value>
+  </data>
+    <data name="SentencePath" xml:space="preserve">
+    <value>{0} hopp från {1} {2} till {3} {4} med vägvikt {5:0.###}.</value>
+  </data>
+    <data name="SentenceFlow" xml:space="preserve">
+    <value>{0} transcher når {1} noder inom {2} hopp; {3} noder för pengarna rakt vidare.</value>
+  </data>
+    <data name="SentencePattern" xml:space="preserve">
+    <value>{0} förankrat i {1} {2}: {3} medlemmar, poäng {4:0.###}, {5:yyyy-MM-dd} till {6:yyyy-MM-dd}.</value>
+  </data>
+    <data name="SentenceCommunityRate" xml:space="preserve">
+    <value>Gemenskap {0} med {1} noder: {2} bekräftade av {3} stängda ärenden, {4:0.0}x hyresgästens andel.</value>
+  </data>
+    <data name="SentencePatternMember" xml:space="preserve">
+    <value>Medlem i {0} mönster, nyaste {1}.</value>
+  </data>
+    <data name="SentenceTag" xml:space="preserve">
+    <value>{0} hopp från en transaktion eller ett ärende taggat {1}, med {2} inom tre hopp.</value>
+  </data>
+    <data name="ExpandedInvalid" xml:space="preserve">
+    <value>Högst 25 expanderade nod-id:n får anges.</value>
+  </data>
+    <data name="ExplorationPinnedInvalid" xml:space="preserve">
+    <value>De fästa positionerna är för stora.</value>
+  </data>
+    <data name="DetailDegree" xml:space="preserve">
+    <value>grad {0}</value>
+  </data>
+    <data name="DetailHub" xml:space="preserve">
+    <value>nav</value>
+  </data>
+    <data name="DetailConfirmedDistance" xml:space="preserve">
+    <value>{0} hopp från ett bekräftat ärende</value>
+  </data>
+    <data name="DetailOpenCases" xml:space="preserve">
+    <value>{0} öppna ärenden</value>
+  </data>
+    <data name="DetailConfirmedCases" xml:space="preserve">
+    <value>{0} bekräftade</value>
+  </data>
+    <data name="DetailCollapsed" xml:space="preserve">
+    <value>{0} noder hopfällda</value>
+  </data>
+</root>

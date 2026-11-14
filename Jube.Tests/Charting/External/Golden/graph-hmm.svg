@@ -1,13 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" class="jc jc-diagram" viewBox="0 0 640 507" preserveAspectRatio="xMidYMid meet"
-     role="img" aria-labelledby="jc-45dc0223-t jc-45dc0223-d">
-    <title id="jc-45dc0223-t">Account behaviour states</title>
-    <desc id="jc-45dc0223-d">State graph diagram with 3 nodes and 8 directed edges; edge thickness shows probability.
+     role="img" aria-labelledby="jc-ff57204c-t jc-ff57204c-d">
+    <title id="jc-ff57204c-t">Account behaviour states</title>
+    <desc id="jc-ff57204c-d">State graph diagram with 3 nodes and 8 directed edges; edge thickness shows probability.
     </desc>
     <rect class="bg" x="0" y="0" width="640" height="507" rx="8"/>
     <text class="ttl" x="16" y="32">Account behaviour states</text>
     <text class="sub" x="16" y="50">Hidden Markov model transition probabilities</text>
     <g transform="translate(94.75 66)">
-        <g class="mk x0 eg e0 e0" tabindex="0" role="graphics-symbol" aria-label="Normal to Normal, Probability: 0.92">
+        <g class="mk x0 eg e0 e0" tabindex="0" role="graphics-symbol" aria-label="Normal to Normal, Probability: 0.92"
+           data-from="n" data-to="n">
             <title>Normal to Normal, Probability: 0.92</title>
             <path class="eh" d="M216.57 73.5C182.29 31.38 278.27 31.38 243.99 73.5"/>
             <path class="ep et" d="M216.57 73.5C182.29 31.38 278.27 31.38 243.99 73.5" stroke-width="5.14"/>
@@ -15,7 +16,7 @@
             <text class="ant ctr" x="230.28" y="27">0.92</text>
         </g>
         <g class="mk x1 eg e0 e1" tabindex="0" role="graphics-symbol"
-           aria-label="Normal to Suspicious, Probability: 0.07">
+           aria-label="Normal to Suspicious, Probability: 0.07" data-from="n" data-to="s">
             <title>Normal to Suspicious, Probability: 0.07</title>
             <path class="eh" d="M254.39 113.98C309.65 149.21 338.56 196.09 341.14 254.6"/>
             <path class="ep et" d="M254.39 113.98C309.65 149.21 338.56 196.09 341.14 254.6" stroke-width="1.32"/>
@@ -23,7 +24,7 @@
             <text class="ant ctr" x="317.52" y="178.56">0.07</text>
         </g>
         <g class="mk x2 eg e0 e2" tabindex="0" role="graphics-symbol"
-           aria-label="Normal to Compromised, Probability: 0.01">
+           aria-label="Normal to Compromised, Probability: 0.01" data-from="n" data-to="c">
             <title>Normal to Compromised, Probability: 0.01</title>
             <path class="eh" d="M222.16 126.02C205.64 181.75 181.39 226.48 149.38 260.21"/>
             <path class="ep et" d="M222.16 126.02C205.64 181.75 181.39 226.48 149.38 260.21" stroke-width="1.05"/>
@@ -31,7 +32,7 @@
             <text class="ant ctr" x="191.58" y="204.36">0.01</text>
         </g>
         <g class="mk x3 eg e1 e0" tabindex="0" role="graphics-symbol"
-           aria-label="Suspicious to Normal, Probability: 0.35">
+           aria-label="Suspicious to Normal, Probability: 0.35" data-from="s" data-to="n">
             <title>Suspicious to Normal, Probability: 0.35</title>
             <path class="eh" d="M309.95 272.61C260.57 241.12 234.43 192.64 231.54 127.17"/>
             <path class="ep et" d="M309.95 272.61C260.57 241.12 234.43 192.64 231.54 127.17" stroke-width="2.58"/>
@@ -39,7 +40,7 @@
             <text class="ant ctr" x="253.31" y="215.63">0.35</text>
         </g>
         <g class="mk x4 eg e1 e1" tabindex="0" role="graphics-symbol"
-           aria-label="Suspicious to Suspicious, Probability: 0.45">
+           aria-label="Suspicious to Suspicious, Probability: 0.45" data-from="s" data-to="s">
             <title>Suspicious to Suspicious, Probability: 0.45</title>
             <path class="eh" d="M381.89 294.52C435.46 284.65 381.41 378.27 363.17 326.93"/>
             <path class="ep et" d="M381.89 294.52C435.46 284.65 381.41 378.27 363.17 326.93" stroke-width="3.03"/>
@@ -47,7 +48,7 @@
             <text class="ant ctr" x="416.51" y="339.11">0.45</text>
         </g>
         <g class="mk x5 eg e1 e2" tabindex="0" role="graphics-symbol"
-           aria-label="Suspicious to Compromised, Probability: 0.2">
+           aria-label="Suspicious to Compromised, Probability: 0.2" data-from="s" data-to="c">
             <title>Suspicious to Compromised, Probability: 0.2</title>
             <path class="eh" d="M308.23 311.61C256.26 338.63 206.36 339.71 158.53 314.84"/>
             <path class="ep et" d="M308.23 311.61C256.26 338.63 206.36 339.71 158.53 314.84" stroke-width="1.9"/>
@@ -55,7 +56,7 @@
             <text class="ant ctr" x="231.83" y="335.68">0.2</text>
         </g>
         <g class="mk x6 eg e2 e1" tabindex="0" role="graphics-symbol"
-           aria-label="Compromised to Suspicious, Probability: 0.1">
+           aria-label="Compromised to Suspicious, Probability: 0.1" data-from="c" data-to="s">
             <title>Compromised to Suspicious, Probability: 0.1</title>
             <path class="eh" d="M158.53 272.36C206.36 247.49 256.26 248.57 308.23 275.59"/>
             <path class="ep et" d="M158.53 272.36C206.36 247.49 256.26 248.57 308.23 275.59" stroke-width="1.45"/>
@@ -63,7 +64,7 @@
             <text class="ant ctr" x="231.83" y="257.52">0.1</text>
         </g>
         <g class="mk x7 eg e2 e2" tabindex="0" role="graphics-symbol"
-           aria-label="Compromised to Compromised, Probability: 0.9">
+           aria-label="Compromised to Compromised, Probability: 0.9" data-from="c" data-to="c">
             <title>Compromised to Compromised, Probability: 0.9</title>
             <path class="eh" d="M93.75 332.91C76.25 384.64 18.13 283.97 71.68 294.69"/>
             <path class="ep et" d="M93.75 332.91C76.25 384.64 18.13 283.97 71.68 294.69" stroke-width="5.05"/>
@@ -71,21 +72,21 @@
             <text class="ant ctr" x="38" y="342.61">0.9</text>
         </g>
         <g class="mk n0 nd s3 j1 j2" tabindex="0" role="graphics-symbol"
-           aria-label="Normal, State, Typical spending, Edges in: 2, out: 3">
+           aria-label="Normal, State, Typical spending, Edges in: 2, out: 3" data-node="n">
             <title>Normal, State, Typical spending, Edges in: 2, out: 3</title>
             <circle class="nb" cx="230.28" cy="98.6" r="28.6"/>
             <circle class="nt" cx="230.28" cy="98.6" r="28.6"/>
             <text class="lbl ctr mid" x="230.28" y="98.6">Normal</text>
         </g>
         <g class="mk n1 nd s3 j0 j2" tabindex="0" role="graphics-symbol"
-           aria-label="Suspicious, State, Unusual velocity, Edges in: 3, out: 3">
+           aria-label="Suspicious, State, Unusual velocity, Edges in: 3, out: 3" data-node="s">
             <title>Suspicious, State, Unusual velocity, Edges in: 3, out: 3</title>
             <circle class="nb" cx="342.87" cy="293.6" r="39.03"/>
             <circle class="nt" cx="342.87" cy="293.6" r="39.03"/>
             <text class="lbl ctr mid" x="342.87" y="293.6">Suspicious</text>
         </g>
         <g class="mk n2 nd s3 j0 j1" tabindex="0" role="graphics-symbol"
-           aria-label="Compromised, State, Takeover suspected, Edges in: 3, out: 2">
+           aria-label="Compromised, State, Takeover suspected, Edges in: 3, out: 2" data-node="c">
             <title>Compromised, State, Takeover suspected, Edges in: 3, out: 2</title>
             <circle class="nb" cx="117.7" cy="293.6" r="46.03"/>
             <circle class="nt" cx="117.7" cy="293.6" r="46.03"/>

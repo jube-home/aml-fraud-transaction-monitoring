@@ -20,6 +20,7 @@ using Jube.Data.Poco;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Security.PenTest;
 using LinqToDB;
+using LinqToDB.Async;
 using LinqToDB.Data;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -95,7 +96,7 @@ internal sealed class DynamicSqlData
             Active = 1,
             Locked = 0,
             Deleted = 0,
-            ShowInDirectory = 1,
+            ContextKindId = 1,
             TenantRegistryId = tenantId,
             Version = 1,
             CreatedUser = user,
@@ -131,11 +132,9 @@ internal sealed class DynamicSqlData
             Locked = 0,
             Deleted = 0,
             Version = 1,
-            VisualisationTypeId = 1,
             Command = command,
             Priority = 1,
             IncludeGrid = 1,
-            IncludeDisplay = 0,
             ColumnSpan = 1,
             RowSpan = 1,
             CreatedUser = user,

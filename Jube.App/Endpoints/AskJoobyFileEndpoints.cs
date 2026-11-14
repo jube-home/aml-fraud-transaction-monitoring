@@ -50,9 +50,12 @@ namespace Jube.App.Endpoints
                 .WithName("AskJoobyFileUpload");
 
             group.MapGet("Files/{fileId:int}", DownloadAsync)
+                .Produces(StatusCodes.Status200OK, contentType: "application/octet-stream")
                 .WithName("AskJoobyFileDownload");
 
             group.MapDelete("Files/{fileId:int}", DeleteAsync)
+                .ValidateAntiforgeryForCookieSessions()
+                .Produces(StatusCodes.Status204NoContent)
                 .WithName("AskJoobyFileDelete");
         }
 

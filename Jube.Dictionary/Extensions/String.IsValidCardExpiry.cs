@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Checks if the string is a MM/YY or MM/YYYY card expiry that has not yet elapsed.")]
         public static bool IsValidCardExpiry(this string? @this)
         {
             var value = @this ?? "";

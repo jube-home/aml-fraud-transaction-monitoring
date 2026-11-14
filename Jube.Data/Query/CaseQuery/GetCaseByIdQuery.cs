@@ -20,6 +20,7 @@ namespace Jube.Data.Query.CaseQuery
     using Context;
     using Dto;
     using LinqToDB;
+    using LinqToDB.Async;
 
     public class GetCaseByIdQuery
     {
@@ -83,12 +84,15 @@ namespace Jube.Data.Query.CaseQuery
                     Rating = c.Rating.GetValueOrDefault(),
                     CaseKeyValue = c.CaseKeyValue,
                     LastClosedStatus = c.LastClosedStatus.GetValueOrDefault(),
-                    ClosedStatusMigrationDate = DateTime.SpecifyKind(c.ClosedStatusMigrationDate.GetValueOrDefault(), DateTimeKind.Utc),
+                    ClosedStatusMigrationDate = DateTime.SpecifyKind(c.ClosedStatusMigrationDate.GetValueOrDefault(),
+                        DateTimeKind.Utc),
                     ForeColor = s.ForeColor,
                     BackColor = s.BackColor,
                     Json = c.Json,
                     VisualisationRegistryGuid = i.VisualisationRegistryGuid,
                     EnableVisualisation = i.EnableVisualisation.GetValueOrDefault() == 1,
+                    EnableGraph = i.EnableGraph.GetValueOrDefault() == 1,
+                    GraphRegistryGuid = i.GraphRegistryGuid,
                     EntityAnalysisModelId = c.CaseWorkflow.EntityAnalysisModel.Id
                 };
 

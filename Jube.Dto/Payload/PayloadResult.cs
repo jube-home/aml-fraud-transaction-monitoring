@@ -12,18 +12,20 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable NotAccessedPositionalProperty.Global
 
 namespace Jube.Dto.Payload
 {
+    [MessagePackObject]
     public sealed record PayloadResult<T>(
-        [property: Description(
+        [property: Key(0)] [property: Description(
             "Rows matching the filter, ordered per sortField/sortDirection, most recent first when neither is given, capped at 'take'.")]
         IReadOnlyList<T> Rows,
-        [property: Description("Total rows matching the filter, ignoring 'take'.")]
+        [property: Key(1)] [property: Description("Total rows matching the filter, ignoring 'take'.")]
         long Total,
-        [property: Description(
+        [property: Key(2)] [property: Description(
             "Summary statistics for this DTO's continuous/measured numeric columns (durations, byte counts, sums, per-interval tallies -- int, long or double), computed over the full filtered set (capped at 100000 rows), independent of 'take'. Categorical numeric columns (ids, codes, sequence numbers) are excluded even though numeric. Empty when the DTO has no qualifying columns.")]
         PayloadStatistics Statistics);
 }

@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
+            [Description("True when: the value is NaN, for example an undefined calculation. Decides matched if so; otherwise continues.")]
             public Flow<double> MatchHasNoValue()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleHasNoValue(flow.Value));
             }
 
+            [Description("True when: the value is NaN, for example an undefined calculation. Decides rejected if so; otherwise continues.")]
             public Flow<double> RejectHasNoValue()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleHasNoValue(flow.Value));
             }
 
+            [Description("True when: the value is NaN, for example an undefined calculation. Decides broken if so; otherwise continues.")]
             public Flow<double> BreakHasNoValue()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleHasNoValue(flow.Value));
             }
 
+            [Description("True when: the value is NaN, for example an undefined calculation. Continues if so; otherwise decides rejected.")]
             public Flow<double> RequireHasNoValue()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleHasNoValue(flow.Value));
             }
 
+            [Description("True when: the value is NaN, for example an undefined calculation. Continues if so; otherwise decides broken.")]
             public Flow<double> EnsureHasNoValue()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
+            [Description("Begins a pipeline from the value. True when: the value is NaN, for example an undefined calculation. Decides matched if so; otherwise continues.")]
             public Flow<double> MatchHasNoValue()
             {
                 return value.Start().MatchHasNoValue();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is NaN, for example an undefined calculation. Decides rejected if so; otherwise continues.")]
             public Flow<double> RejectHasNoValue()
             {
                 return value.Start().RejectHasNoValue();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is NaN, for example an undefined calculation. Decides broken if so; otherwise continues.")]
             public Flow<double> BreakHasNoValue()
             {
                 return value.Start().BreakHasNoValue();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is NaN, for example an undefined calculation. Continues if so; otherwise decides rejected.")]
             public Flow<double> RequireHasNoValue()
             {
                 return value.Start().RequireHasNoValue();
             }
 
+            [Description("Begins a pipeline from the value. True when: the value is NaN, for example an undefined calculation. Continues if so; otherwise decides broken.")]
             public Flow<double> EnsureHasNoValue()
             {
                 return value.Start().EnsureHasNoValue();

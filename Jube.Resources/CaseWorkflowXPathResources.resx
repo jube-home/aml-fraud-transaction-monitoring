@@ -36,6 +36,9 @@
             PublicKeyToken=b77a5c561934e089
         </value>
     </resheader>
+    <data name="RoleIdInvalid" xml:space="preserve">
+    <value>The field role must be between 0 and 6.</value>
+  </data>
     <data name="PermissionDenied" xml:space="preserve">
     <value>You do not have permission to perform this action.</value>
   </data>
@@ -81,6 +84,9 @@
     <data name="RegularExpressionMaxLength" xml:space="preserve">
     <value>The regular expression cannot exceed {0} characters.</value>
   </data>
+    <data name="RegularExpressionInvalid" xml:space="preserve">
+    <value>The regular expression is not valid. Back references and look-around are not supported.</value>
+  </data>
     <data name="ConditionalFormatForeColorRequired" xml:space="preserve">
     <value>The conditional format fore colour is required when Conditional Formatting is enabled.</value>
   </data>
@@ -89,5 +95,11 @@
   </data>
     <data name="ColorInvalid" xml:space="preserve">
     <value>The colour must be a hexadecimal value such as #FF0000, a colour name or an rgb() value.</value>
+  </data>
+    <data name="SourceRequired" xml:space="preserve">
+    <value>A source field is required: choose the model field the extraction reads.</value>
+  </data>
+    <data name="SourceNotFound" xml:space="preserve">
+    <value>The source field is not a field of the workflow's model.</value>
   </data>
 </root>

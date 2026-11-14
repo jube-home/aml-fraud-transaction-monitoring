@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Jube.Dictionary;
+using Jube.Engine.EntityAnalysisModelInvoke.Extraction.Extensions.YourNamespace.Extensions;
 using Jube.Engine.EntityAnalysisModelInvoke.Extraction.Helpers;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel;
@@ -49,6 +50,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                 ExtractModelFieldsForInvocation(payload, entityAnalysisModelReprocessingRuleInstanceId);
 
             ExtractRequestXPathForInvocation(entityAnalysisModelInstanceEntryPayload);
+            ExtractArchiveKeysForInvocation(entityAnalysisModelInstanceEntryPayload);
 
             return new Context.Context
             {
@@ -115,6 +117,28 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
             return entityAnalysisModelInstanceEntryPayload;
         }
 
+        private void ExtractArchiveKeysForInvocation(
+            EntityAnalysisModelInstanceEntryPayload entityAnalysisModelInstanceEntryPayload)
+        {
+            foreach (var xPath in snapshot.EntityAnalysisModelRequestXPaths)
+            {
+                if (!xPath.ReportTable ||
+                    !entityAnalysisModelInstanceEntryPayload.Payload.TryGetValue(xPath.Name, out var value))
+                {
+                    continue;
+                }
+
+                entityAnalysisModelInstanceEntryPayload.ArchiveKeys.AddArchiveKey(xPath,
+                    entityAnalysisModelInstanceEntryPayload, value);
+            }
+
+            if (log.IsInfoEnabled)
+            {
+                log.Info(
+                    $"Dictionary No Boxing to Context Extractor: EntityAnalysisModelInstanceEntryGUID is {entityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid} has added {entityAnalysisModelInstanceEntryPayload.ArchiveKeys.Count} archive keys for the request XPath fields flagged as archive keys.");
+            }
+        }
+
         private void ExtractRequestXPathForInvocation(
             EntityAnalysisModelInstanceEntryPayload entityAnalysisModelInstanceEntryPayload)
         {
@@ -139,6 +163,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Extraction
                     switch (xPath.DataTypeId)
                     {
                         case 1:
+                        case 8:
                             entityAnalysisModelInstanceEntryPayload.Payload.TryAdd(xPath.Name, xPath.DefaultValue);
                             break;
                         case 2:

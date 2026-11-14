@@ -247,6 +247,7 @@ namespace Jube.Service.AskJoobyConversation
         private readonly WebSearchAnswerMode webSearchAnswerMode;
         private readonly WebSearchRawContentMode webSearchRawContentMode;
         private readonly IOpenCorporatesClient? openCorporatesClient;
+        private readonly Svirfd.Interfaces.ISvirfdLookup? svirfdLookup;
         private readonly int openCorporatesMaxResults;
         private IReadOnlyDictionary<string, IReadOnlyList<AgentToolDefinition>>? serviceBoundTools;
 
@@ -269,8 +270,10 @@ namespace Jube.Service.AskJoobyConversation
             WebSearchDepth webSearchDepth = WebSearchDepth.Advanced,
             WebSearchAnswerMode webSearchAnswerMode = WebSearchAnswerMode.Advanced,
             WebSearchRawContentMode webSearchRawContentMode = WebSearchRawContentMode.Markdown,
-            IOpenCorporatesClient? openCorporatesClient = null, int openCorporatesMaxResults = 5)
+            IOpenCorporatesClient? openCorporatesClient = null, int openCorporatesMaxResults = 5,
+            Svirfd.Interfaces.ISvirfdLookup? svirfdLookup = null)
         {
+            this.svirfdLookup = svirfdLookup;
             this.webSearchClient = webSearchClient;
             this.webSearchMaxResults = webSearchMaxResults > 0 ? webSearchMaxResults : 5;
             this.webSearchDepth = webSearchDepth;
@@ -358,10 +361,10 @@ namespace Jube.Service.AskJoobyConversation
             this.guidanceExchange = guidanceExchange;
             this.turnTracker = turnTracker;
             this.routingLedger = routingLedger;
-            conversationRepository = new AskJoobyConversationRepository(dbContext, tenantRegistryId, userName);
+            conversationRepository = new AskJoobyConversationRepository(dbContext, tenantRegistryId, userName, true);
             messageRepository = new AskJoobyMessageRepository(dbContext);
             errataRepository = new AskJoobyErrataRepository(dbContext);
-            fileRepository = new AskJoobyFileRepository(dbContext, tenantRegistryId, userName);
+            fileRepository = new AskJoobyFileRepository(dbContext, tenantRegistryId, userName, true);
             runRepository = new AskJoobyRunRepository(dbContext);
             routingRepository = new AskJoobyRoutingRepository(dbContext);
             guardRejectionRepository = new AskJoobyAgentGuardRejectionRepository(dbContext);
@@ -471,7 +474,7 @@ namespace Jube.Service.AskJoobyConversation
             WebSearchAnswerMode webSearchAnswerMode = WebSearchAnswerMode.Advanced,
             WebSearchRawContentMode webSearchRawContentMode = WebSearchRawContentMode.Markdown,
             IOpenCorporatesClient? openCorporatesClient = null, int openCorporatesMaxResults = 5,
-            CancellationToken token = default)
+            Svirfd.Interfaces.ISvirfdLookup? svirfdLookup = null, CancellationToken token = default)
         {
             return CreateAsync(dbContext, userName, log, stringLocalizerFactory, serviceChangeBus, chatClient,
                 embeddingGenerator, LogManager.GetLogger("Jube.Audit"), enableValidation,
@@ -482,7 +485,7 @@ namespace Jube.Service.AskJoobyConversation
                 connectionString, serviceToolsReadOnly, dynamicEnvironment, maxConcurrentToolCalls,
                 ragReranker, memoryDecayHalfLifeDays, guidanceExchange, turnTracker, routingLedger,
                 webSearchClient, webSearchMaxResults, webSearchDepth, webSearchAnswerMode,
-                webSearchRawContentMode, openCorporatesClient, openCorporatesMaxResults, token);
+                webSearchRawContentMode, openCorporatesClient, openCorporatesMaxResults, svirfdLookup, token);
         }
 
         internal static async Task<AskJoobyConversationService> CreateAsync(DbContext dbContext, string? userName,
@@ -505,7 +508,7 @@ namespace Jube.Service.AskJoobyConversation
             WebSearchAnswerMode webSearchAnswerMode = WebSearchAnswerMode.Advanced,
             WebSearchRawContentMode webSearchRawContentMode = WebSearchRawContentMode.Markdown,
             IOpenCorporatesClient? openCorporatesClient = null, int openCorporatesMaxResults = 5,
-            CancellationToken token = default)
+            Svirfd.Interfaces.ISvirfdLookup? svirfdLookup = null, CancellationToken token = default)
         {
             var strings = stringLocalizerFactory.Create(typeof(AskJoobyConversationResources));
 
@@ -544,7 +547,7 @@ namespace Jube.Service.AskJoobyConversation
                 connectionString, stringLocalizerFactory, serviceToolsReadOnly, dynamicEnvironment,
                 maxConcurrentToolCalls, ragReranker, memoryDecayHalfLifeDays, guidanceExchange, turnTracker,
                 routingLedger, webSearchClient, webSearchMaxResults, webSearchDepth, webSearchAnswerMode,
-                webSearchRawContentMode, openCorporatesClient, openCorporatesMaxResults);
+                webSearchRawContentMode, openCorporatesClient, openCorporatesMaxResults, svirfdLookup);
         }
 
         private IReadOnlyDictionary<string, IReadOnlyList<AgentToolDefinition>> BuildServiceBoundTools(
@@ -563,11 +566,11 @@ namespace Jube.Service.AskJoobyConversation
                 }
 
                 var services = new ServiceAgentServiceProvider(log, stringLocalizerFactory, serviceChangeBus,
-                    embeddingGenerator, dynamicEnvironment);
+                    embeddingGenerator, dynamicEnvironment, svirfdLookup);
 
                 var bindingContext = new ServiceAgentBindingContext(dbContext, userName, services, token,
                     serviceToolsReadOnly, connectionString, maxConcurrentToolCalls, resultCache,
-                    maxToolResultCharacters, TenantRegistryId: tenantRegistryId);
+                    maxToolResultCharacters, tenantRegistryId);
 
                 var bound = new Dictionary<string, IReadOnlyList<AgentToolDefinition>>();
 
@@ -1050,6 +1053,29 @@ namespace Jube.Service.AskJoobyConversation
             int[]? attachmentFileIds = null,
             [EnumeratorCancellation] CancellationToken token = default)
         {
+            if (!AskJoobyRateLimiter.TryBegin(tenantRegistryId, userName ?? string.Empty,
+                    AskJoobyRateLimits.From(dynamicEnvironment), DateTime.UtcNow, out var slot))
+            {
+                throw new RateLimitedException(strings[AskJoobyConversationResources.RateLimited]);
+            }
+
+            using (slot)
+            {
+                await foreach (var item in SendMessageCoreAsync(conversationId, text, pageContext, attachmentFileIds,
+                                   token).ConfigureAwait(false))
+                {
+                    yield return item;
+                }
+            }
+        }
+
+        private async IAsyncEnumerable<AskJoobyStreamItemDto> SendMessageCoreAsync(
+            int conversationId,
+            string text,
+            string? pageContext = null,
+            int[]? attachmentFileIds = null,
+            [EnumeratorCancellation] CancellationToken token = default)
+        {
             EnsurePermitted("AskJoobyConversation.SendMessage");
 
             var conversation = await conversationRepository.GetByIdAsync(conversationId, token)
@@ -1124,7 +1150,7 @@ namespace Jube.Service.AskJoobyConversation
 
             if (attachmentFileIds is { Length: > 0 })
             {
-                await fileRepository.AttachToMessageAsync(attachmentFileIds, userMessage.Id, token)
+                await fileRepository.AttachToMessageAsync(attachmentFileIds, userMessage.Id, token, conversationId)
                     .ConfigureAwait(false);
             }
 
@@ -1232,6 +1258,7 @@ namespace Jube.Service.AskJoobyConversation
                     DisableThinkingExplicitly: DisableThinkingExplicitly,
                     ServiceBoundTools: BuildServiceBoundTools(token, cacheClient),
                     AutoSnapshot: BuildAutoSnapshot(),
+                    ApprovalGate: BuildApprovalGate(conversationId),
                     CompactedHistory: BuildCompactedHistoryClient(conversationId),
                     MaxDepth: MaxSpawnDepth,
                     MaxIterationsPerRequest: MaxIterationsPerRequest,
@@ -1271,6 +1298,11 @@ namespace Jube.Service.AskJoobyConversation
             }
             catch (OperationCanceledException)
             {
+                if (topLevelScope is not null)
+                {
+                    await topLevelScope.DisposeAsync().ConfigureAwait(false);
+                }
+
                 op.Outcome("cancelled");
                 throw;
             }
@@ -1298,6 +1330,8 @@ namespace Jube.Service.AskJoobyConversation
 
                 yield break;
             }
+
+            await using var topLevelScopeDisposer = topLevelScope;
 
             if (routedAgentType is not null)
             {
@@ -1337,7 +1371,6 @@ namespace Jube.Service.AskJoobyConversation
                 }
             }
 
-            await using var topLevelScopeDisposer = topLevelScope;
             var replyBuilder = new ReplyDraft();
             var thinkingBuilder = new ThinkingPassBuffer();
             List<string>? clarificationOptions = null;
@@ -1737,6 +1770,18 @@ namespace Jube.Service.AskJoobyConversation
 
             guidanceExchange?.Release(conversationId.ToString(CultureInfo.InvariantCulture));
 
+            foreach (var approval in ToolApprovalLedger.Shared.Pending(
+                         conversationId.ToString(CultureInfo.InvariantCulture), userName ?? string.Empty,
+                         tenantRegistryId))
+            {
+                yield return new AskJoobyStreamItemDto
+                {
+                    Kind = "Approval", ApprovalId = approval.Id, AgentLabel = approval.ToolName,
+                    Detail = approval.ArgumentsJson,
+                    Text = strings[AskJoobyConversationResources.ApprovalSummary, approval.ToolName]
+                };
+            }
+
             var runStats = await BuildRunStatsAsync(conversationId, [rootRunId], token).ConfigureAwait(false);
 
             if (runStats.TryGetValue(rootRunId, out var replyStats))
@@ -1772,6 +1817,63 @@ namespace Jube.Service.AskJoobyConversation
             if (log.IsInfoEnabled)
             {
                 log.Info($"AskJoobyConversation.SendMessage: completed id={conversationId} user={userName}");
+            }
+        }
+
+        public async Task DecideApprovalAsync(
+            [Description("The conversation's Id.")]
+            int conversationId,
+            [Description("The approval's id, as streamed in the Approval item.")]
+            string approvalId,
+            [Description("True to approve the change, false to decline it.")]
+            bool approve,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("AskJoobyConversation", "DecideApproval", userName,
+                tenantRegistryId, auditLog, log, serviceChangeBus);
+
+            try
+            {
+                EnsurePermitted("AskJoobyConversation.DecideApproval");
+
+                var conversation = await conversationRepository.GetByIdAsync(conversationId, token)
+                    .ConfigureAwait(false);
+
+                if (conversation is null)
+                {
+                    throw new NotFoundException(strings[AskJoobyConversationResources.NotFound]);
+                }
+
+                var result = ToolApprovalLedger.Shared.Decide(approvalId,
+                    conversationId.ToString(CultureInfo.InvariantCulture), userName ?? string.Empty,
+                    tenantRegistryId, approve);
+
+                if (result != ToolApprovalDecisionResult.Recorded)
+                {
+                    op.Outcome("notfound");
+
+                    throw new NotFoundException(strings[AskJoobyConversationResources.ApprovalNotFound]);
+                }
+
+                op.Entity(conversationId);
+                op.Updated();
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                op.Outcome("notfound");
+                throw;
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                op.Error(ex);
+                log.Error($"AskJoobyConversation.DecideApproval: unexpected failure id={conversationId} " +
+                          $"user={userName}", ex);
+                throw;
             }
         }
 
@@ -1890,6 +1992,30 @@ namespace Jube.Service.AskJoobyConversation
             bool hasInferenceBackend,
             [EnumeratorCancellation] CancellationToken token = default)
         {
+            IDisposable? slot = null;
+
+            if (hasInferenceBackend && !AskJoobyRateLimiter.TryBegin(tenantRegistryId, userName ?? string.Empty,
+                    AskJoobyRateLimits.From(dynamicEnvironment), DateTime.UtcNow, out slot))
+            {
+                throw new RateLimitedException(strings[AskJoobyConversationResources.RateLimited]);
+            }
+
+            using (slot)
+            {
+                await foreach (var item in StartConversationCoreAsync(conversationId, pageContext, hasInferenceBackend,
+                                   token).ConfigureAwait(false))
+                {
+                    yield return item;
+                }
+            }
+        }
+
+        private async IAsyncEnumerable<AskJoobyStreamItemDto> StartConversationCoreAsync(
+            int conversationId,
+            string? pageContext,
+            bool hasInferenceBackend,
+            [EnumeratorCancellation] CancellationToken token = default)
+        {
             EnsurePermitted("AskJoobyConversation.Start");
 
             var conversation = await conversationRepository.GetByIdAsync(conversationId, token)
@@ -1956,7 +2082,7 @@ namespace Jube.Service.AskJoobyConversation
                 yield break;
             }
 
-            var instruction = BuildOpeningInstruction(stats, hasPageContext: true);
+            var instruction = BuildOpeningInstruction(stats, true);
 
             using var turnScope = turnTracker?.Begin(conversationId.ToString(CultureInfo.InvariantCulture));
 
@@ -2023,6 +2149,7 @@ namespace Jube.Service.AskJoobyConversation
                     DisableThinkingExplicitly: DisableThinkingExplicitly,
                     ServiceBoundTools: BuildServiceBoundTools(token, cacheClient),
                     AutoSnapshot: BuildAutoSnapshot(),
+                    ApprovalGate: BuildApprovalGate(conversationId),
                     CompactedHistory: BuildCompactedHistoryClient(conversationId),
                     MaxDepth: MaxSpawnDepth,
                     MaxIterationsPerRequest: MaxIterationsPerRequest,
@@ -2039,6 +2166,11 @@ namespace Jube.Service.AskJoobyConversation
             }
             catch (OperationCanceledException)
             {
+                if (topLevelScope is not null)
+                {
+                    await topLevelScope.DisposeAsync().ConfigureAwait(false);
+                }
+
                 op.Outcome("cancelled");
                 throw;
             }
@@ -2370,6 +2502,7 @@ namespace Jube.Service.AskJoobyConversation
                     DisableThinkingExplicitly: DisableThinkingExplicitly,
                     ServiceBoundTools: BuildServiceBoundTools(token),
                     AutoSnapshot: BuildAutoSnapshot(),
+                    ApprovalGate: BuildApprovalGate(conversationId),
                     CompactedHistory: BuildCompactedHistoryClient(conversationId),
                     MaxDepth: MaxSpawnDepth,
                     MaxIterationsPerRequest: MaxIterationsPerRequest,
@@ -2500,6 +2633,7 @@ namespace Jube.Service.AskJoobyConversation
                     DisableThinkingExplicitly: DisableThinkingExplicitly,
                     ServiceBoundTools: BuildServiceBoundTools(token),
                     AutoSnapshot: BuildAutoSnapshot(),
+                    ApprovalGate: BuildApprovalGate(conversationId),
                     CompactedHistory: BuildCompactedHistoryClient(conversationId),
                     MaxDepth: MaxSpawnDepth,
                     MaxIterationsPerRequest: MaxIterationsPerRequest,
@@ -2844,7 +2978,7 @@ namespace Jube.Service.AskJoobyConversation
                 await using var scopedDbContext = DataConnectionDbContext
                     .GetResilientDbContextDataConnection(connectionString, log);
 
-                await new AskJoobyConversationRepository(scopedDbContext, tenantRegistryId, userName)
+                await new AskJoobyConversationRepository(scopedDbContext, tenantRegistryId, userName, true)
                     .UpdateTitleAsync(conversationId, title, CancellationToken.None)
                     .ConfigureAwait(false);
 
@@ -3143,6 +3277,18 @@ namespace Jube.Service.AskJoobyConversation
                 embeddingGenerator);
         }
 
+        private IToolApprovalGate? BuildApprovalGate(int conversationId)
+        {
+            if ("False".Equals(dynamicEnvironment?.AppSettings("AskJoobyRequireWriteApproval"),
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+
+            return new ToolApprovalGate(ToolApprovalLedger.Shared,
+                conversationId.ToString(CultureInfo.InvariantCulture), userName ?? string.Empty, tenantRegistryId);
+        }
+
         private IAutoSnapshot? BuildAutoSnapshot()
         {
             if (string.IsNullOrWhiteSpace(connectionString))
@@ -3151,9 +3297,7 @@ namespace Jube.Service.AskJoobyConversation
             }
 
             return new AskJoobyAutoSnapshot(connectionString, userName, log, stringLocalizerFactory,
-                serviceChangeBus, dynamicEnvironment?.AppSettings("PreservationSalt"),
-                "True".Equals(dynamicEnvironment?.AppSettings("JempFileLegacyEncryptionFallback"),
-                    StringComparison.OrdinalIgnoreCase));
+                serviceChangeBus);
         }
 
         private RServerClient? BuildRServerClient()
@@ -3176,7 +3320,7 @@ namespace Jube.Service.AskJoobyConversation
                     userName, embeddingGenerator, permissionValidation.Validate,
                     memoryDecayHalfLifeDays, ragReranker, ragCandidateCount, rerankMinScore,
                     promotionBudgetCharacters, ragMaxCandidateCharacters, stringLocalizerFactory, serviceChangeBus,
-                    BuildRServerClient());
+                    BuildRServerClient(), dynamicEnvironment?.AppSettings("ReportConnectionString"));
         }
 
         private static async IAsyncEnumerable<AgentStreamItem> MergeDelegatedStreamAsync(
@@ -3545,7 +3689,7 @@ namespace Jube.Service.AskJoobyConversation
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            if (permissionValidation.ActiveUser && permissionValidation.Validate(permissions))
             {
                 return;
             }
@@ -3580,13 +3724,28 @@ namespace Jube.Service.AskJoobyConversation
             int ragMaxCandidateCharacters = 9000,
             IStringLocalizerFactory? stringLocalizerFactory = null,
             IServiceChangeBus? serviceChangeBus = null,
-            RServerClient? rServer = null) : IIsolatedRunScopeFactory
+            RServerClient? rServer = null,
+            string? reportConnectionString = null) : IIsolatedRunScopeFactory
         {
             public async Task<IIsolatedRunScope> CreateAsync(CancellationToken token = default)
             {
                 var scopedDbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
                     connectionString, log);
 
+                try
+                {
+                    return await BuildAsync(scopedDbContext, token).ConfigureAwait(false);
+                }
+                catch
+                {
+                    await scopedDbContext.DisposeAsync().ConfigureAwait(false);
+
+                    throw;
+                }
+            }
+
+            private async Task<IIsolatedRunScope> BuildAsync(DbContext scopedDbContext, CancellationToken token)
+            {
                 var scopedGuardRejectionRepository = new AskJoobyAgentGuardRejectionRepository(scopedDbContext);
 
                 var ragClient = new AskJoobyRagClient(
@@ -3614,7 +3773,8 @@ namespace Jube.Service.AskJoobyConversation
                     userName);
 
                 var sqlQueryClient = new AskJoobySqlQueryClient(
-                    connectionString, scopedDbContext, log, userName, hasPermission, conversationId);
+                    connectionString, scopedDbContext, log, userName, hasPermission, conversationId,
+                    reportConnectionString, true);
 
                 var cacheClient = new AskJoobyDataCacheClient(
                     new AskJoobyDataCacheRepository(scopedDbContext, tenantRegistryId, userName), conversationId,

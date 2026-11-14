@@ -55,8 +55,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(19)] public byte? RuleScriptTypeId { get; set; }
         [Column] [Nullable] [Key(20)] public double? GatewaySample { get; set; }
 
-        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "EntityAnalysisModelId", OtherKey = "Id", CanBeNull = true)]
         [Key(21)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
 

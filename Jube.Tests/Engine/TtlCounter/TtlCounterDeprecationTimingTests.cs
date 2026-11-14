@@ -24,6 +24,7 @@ using Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters;
 using Jube.TaskCancellation;
 using Jube.Test.Infrastructure;
 using LinqToDB;
+using LinqToDB.Async;
 using Xunit;
 using BackgroundContext = Jube.Engine.EntityAnalysisModelManager.BackgroundTasks.Context.Context;
 using EntityAnalysisModelDomain = Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.EntityAnalysisModel;

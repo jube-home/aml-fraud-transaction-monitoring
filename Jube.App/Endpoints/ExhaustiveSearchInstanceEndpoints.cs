@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -24,6 +25,7 @@ using Jube.Service.Exceptions.ExhaustiveSearchInstance;
 using Jube.Service.Exceptions.EntityApproval;
 using Jube.Service.Reactivity.Interfaces;
 using Jube.Service.Repository.ExhaustiveSearchInstance;
+using MessagePack;
 using log4net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -401,6 +403,22 @@ namespace Jube.App.Endpoints
 
                 return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
             }
+            catch (VersionConflictException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}: 409 user={user} supplied={ex.SuppliedVersion} current={ex.CurrentVersion}");
+                }
+
+                return TypedResults.Conflict(new
+                {
+                    code = "VersionConflict",
+                    message = ex.Message,
+                    suppliedVersion = ex.SuppliedVersion,
+                    currentVersion = ex.CurrentVersion
+                });
+            }
+
             catch (OperationCanceledException)
             {
                 if (log.IsDebugEnabled)
@@ -769,5 +787,6 @@ namespace Jube.App.Endpoints
         }
     }
 
-    public sealed record ExhaustiveSearchInstanceSetActiveRequest(bool Active);
+    [MessagePackObject]
+    public sealed record ExhaustiveSearchInstanceSetActiveRequest([property: Key(0)] bool Active);
 }

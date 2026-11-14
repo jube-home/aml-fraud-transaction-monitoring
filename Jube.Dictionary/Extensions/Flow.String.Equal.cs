@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchEqual(string? other)
+            [Description("True when: equals the argument, case sensitive. Null never equals. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchEqual([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringEqual(flow.Value, other));
             }
 
-            public Flow<string?> RejectEqual(string? other)
+            [Description("True when: equals the argument, case sensitive. Null never equals. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectEqual([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringEqual(flow.Value, other));
             }
 
-            public Flow<string?> BreakEqual(string? other)
+            [Description("True when: equals the argument, case sensitive. Null never equals. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakEqual([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringEqual(flow.Value, other));
             }
 
-            public Flow<string?> RequireEqual(string? other)
+            [Description("True when: equals the argument, case sensitive. Null never equals. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireEqual([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringEqual(flow.Value, other));
             }
 
-            public Flow<string?> EnsureEqual(string? other)
+            [Description("True when: equals the argument, case sensitive. Null never equals. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureEqual([Description("The text the value is compared with.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: equals the argument, case sensitive. Null never equals. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchEqual([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().MatchEqual(other);
             }
 
-            public Flow<string?> RejectEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: equals the argument, case sensitive. Null never equals. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectEqual([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().RejectEqual(other);
             }
 
-            public Flow<string?> BreakEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: equals the argument, case sensitive. Null never equals. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakEqual([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().BreakEqual(other);
             }
 
-            public Flow<string?> RequireEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: equals the argument, case sensitive. Null never equals. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireEqual([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().RequireEqual(other);
             }
 
-            public Flow<string?> EnsureEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: equals the argument, case sensitive. Null never equals. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureEqual([Description("The text the value is compared with.")] string? other)
             {
                 return value.Start().EnsureEqual(other);
             }

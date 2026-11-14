@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="WeekdayMon" xml:space="preserve">
+        <value>pon</value>
+    </data>
+    <data name="WeekdayTue" xml:space="preserve">
+        <value>wt</value>
+    </data>
+    <data name="WeekdayWed" xml:space="preserve">
+        <value>śr</value>
+    </data>
+    <data name="WeekdayThu" xml:space="preserve">
+        <value>czw</value>
+    </data>
+    <data name="WeekdayFri" xml:space="preserve">
+        <value>pt</value>
+    </data>
+    <data name="WeekdaySat" xml:space="preserve">
+        <value>sob</value>
+    </data>
+    <data name="WeekdaySun" xml:space="preserve">
+        <value>niedz</value>
+    </data>
+    <data name="ImpactMinimal" xml:space="preserve">
+        <value>Minimalny</value>
+    </data>
+    <data name="ImpactLow" xml:space="preserve">
+        <value>Niski</value>
+    </data>
+    <data name="ImpactModerate" xml:space="preserve">
+        <value>Umiarkowany</value>
+    </data>
+    <data name="ImpactHigh" xml:space="preserve">
+        <value>Wysoki</value>
+    </data>
+    <data name="ImpactSevere" xml:space="preserve">
+        <value>Poważny</value>
+    </data>
+    <data name="LikelihoodVeryLikely" xml:space="preserve">
+        <value>Bardzo prawdopodobne</value>
+    </data>
+    <data name="LikelihoodLikely" xml:space="preserve">
+        <value>Prawdopodobne</value>
+    </data>
+    <data name="LikelihoodPossible" xml:space="preserve">
+        <value>Możliwe</value>
+    </data>
+    <data name="LikelihoodUnlikely" xml:space="preserve">
+        <value>Mało prawdopodobne</value>
+    </data>
+    <data name="RiskMatrixTitle" xml:space="preserve">
+        <value>Macierz ryzyka</value>
+    </data>
+    <data name="RiskMatrixAssessed" xml:space="preserve">
+        <value>{0} ocenionych spraw; {1} jeszcze nieocenionych</value>
+    </data>
+    <data name="RiskMatrixCases" xml:space="preserve">
+        <value>{0} spraw</value>
+    </data>
+    <data name="Impact" xml:space="preserve">
+        <value>Wpływ</value>
+    </data>
+    <data name="Likelihood" xml:space="preserve">
+        <value>Prawdopodobieństwo</value>
+    </data>
+    <data name="Cases" xml:space="preserve">
+        <value>Sprawy</value>
+    </data>
+    <data name="FlowTitle" xml:space="preserve">
+        <value>Otwarte, zamknięte i zaległe</value>
+    </data>
+    <data name="FlowSubtitle" xml:space="preserve">
+        <value>Sprawy otwarte i zamknięte każdego dnia oraz sprawy wciąż otwarte na koniec dnia</value>
+    </data>
+    <data name="Opened" xml:space="preserve">
+        <value>Otwarte</value>
+    </data>
+    <data name="Closed" xml:space="preserve">
+        <value>Zamknięte</value>
+    </data>
+    <data name="Backlog" xml:space="preserve">
+        <value>Zaległe</value>
+    </data>
+    <data name="FirstViewTitle" xml:space="preserve">
+        <value>Czas do pierwszego spojrzenia</value>
+    </data>
+    <data name="FirstViewSubtitle" xml:space="preserve">
+        <value>Sprawy według czasu oczekiwania</value>
+    </data>
+    <data name="ResolutionTitle" xml:space="preserve">
+        <value>Czas do rozstrzygnięcia</value>
+    </data>
+    <data name="ResolutionSubtitle" xml:space="preserve">
+        <value>Zamknięte sprawy według czasu trwania</value>
+    </data>
+    <data name="AgingTitle" xml:space="preserve">
+        <value>Otwarte sprawy według wieku</value>
+    </data>
+    <data name="AgingSubtitle" xml:space="preserve">
+        <value>Jak długo czekają otwarte sprawy, według ścieżki pilności</value>
+    </data>
+    <data name="LaneLiveMoney" xml:space="preserve">
+        <value>Żywe pieniądze</value>
+    </data>
+    <data name="LaneMandatory" xml:space="preserve">
+        <value>Obowiązkowe</value>
+    </data>
+    <data name="LaneDeadlineNear" xml:space="preserve">
+        <value>Termin bliski</value>
+    </data>
+    <data name="LaneStandard" xml:space="preserve">
+        <value>Standardowe</value>
+    </data>
+    <data name="StatusDwellTitle" xml:space="preserve">
+        <value>Czas w każdym statusie</value>
+    </data>
+    <data name="StatusDwellSubtitle" xml:space="preserve">
+        <value>Mediana i najwolniejsza dziesiąta część zakończonych pobytów, w godzinach</value>
+    </data>
+    <data name="Unknown" xml:space="preserve">
+        <value>Nieznany</value>
+    </data>
+    <data name="Hours" xml:space="preserve">
+        <value>Godziny</value>
+    </data>
+    <data name="Median" xml:space="preserve">
+        <value>Mediana</value>
+    </data>
+    <data name="SlowestTenth" xml:space="preserve">
+        <value>Najwolniejsza dziesiąta część</value>
+    </data>
+    <data name="RuleEffortTitle" xml:space="preserve">
+        <value>Czas analityków stracony na fałszywe alarmy</value>
+    </data>
+    <data name="RuleEffortSubtitle" xml:space="preserve">
+        <value>Godziny spędzone nad sprawami zgłoszonymi przez regułę, które okazały się nieprawdziwe</value>
+    </data>
+    <data name="RulePrecisionTitle" xml:space="preserve">
+        <value>Precyzja reguł</value>
+    </data>
+    <data name="RulePrecisionSubtitle" xml:space="preserve">
+        <value>Odsetek rozstrzygniętych spraw zgłoszonych przez regułę, które zostały potwierdzone</value>
+    </data>
+    <data name="Percent" xml:space="preserve">
+        <value>Procent</value>
+    </data>
+    <data name="Precision" xml:space="preserve">
+        <value>Precyzja</value>
+    </data>
+    <data name="GainsTitle" xml:space="preserve">
+        <value>Potwierdzone sprawy znalezione w miarę pracy nad sprawami</value>
+    </data>
+    <data name="DecidedCases" xml:space="preserve">
+        <value>{0} rozstrzygniętych spraw</value>
+    </data>
+    <data name="FewDecidedCases" xml:space="preserve">
+        <value>Tylko {0} rozstrzygniętych spraw, za mało, by polegać</value>
+    </data>
+    <data name="CasesWorkedPercent" xml:space="preserve">
+        <value>Sprawy opracowane (%)</value>
+    </data>
+    <data name="ConfirmedFoundPercent" xml:space="preserve">
+        <value>Znalezione potwierdzone (%)</value>
+    </data>
+    <data name="PriorityOrder" xml:space="preserve">
+        <value>Kolejność według priorytetu</value>
+    </data>
+    <data name="LikelihoodOrder" xml:space="preserve">
+        <value>Kolejność według prawdopodobieństwa</value>
+    </data>
+    <data name="OldestFirst" xml:space="preserve">
+        <value>Najstarsze najpierw</value>
+    </data>
+    <data name="Random" xml:space="preserve">
+        <value>Losowo</value>
+    </data>
+    <data name="CalibrationTitle" xml:space="preserve">
+        <value>Przewidywane prawdopodobieństwo a to, co się stało</value>
+    </data>
+    <data name="ArrivalsTitle" xml:space="preserve">
+        <value>Kiedy napływają sprawy</value>
+    </data>
+    <data name="ArrivalsSubtitle" xml:space="preserve">
+        <value>Sprawy utworzone według dnia tygodnia i godziny (UTC)</value>
+    </data>
+    <data name="Hour" xml:space="preserve">
+        <value>Godzina</value>
+    </data>
+    <data name="Weekday" xml:space="preserve">
+        <value>Dzień tygodnia</value>
+    </data>
+    <data name="FirstViewByHourTitle" xml:space="preserve">
+        <value>Mediana czasu do pierwszego spojrzenia według godziny napływu</value>
+    </data>
+    <data name="FirstViewByHourSubtitle" xml:space="preserve">
+        <value>Minuty, przez które sprawa czekała, zanim ktokolwiek na nią spojrzał, według godziny napływu (UTC)</value>
+    </data>
+    <data name="Minutes" xml:space="preserve">
+        <value>Minuty</value>
+    </data>
+    <data name="MedianMinutes" xml:space="preserve">
+        <value>Mediana minut</value>
+    </data>
+    <data name="ServiceLevelTitle" xml:space="preserve">
+        <value>Osiągnięcie poziomów usług według tygodnia</value>
+    </data>
+    <data name="ServiceLevelSubtitle" xml:space="preserve">
+        <value>Odsetek spraw utworzonych w danym tygodniu, które spełniły każdy cel</value>
+    </data>
+    <data name="MetPercent" xml:space="preserve">
+        <value>Spełnione (%)</value>
+    </data>
+    <data name="ServiceLevelFirstView" xml:space="preserve">
+        <value>Pierwsze spojrzenie</value>
+    </data>
+    <data name="ServiceLevelOwnership" xml:space="preserve">
+        <value>Przejęcie</value>
+    </data>
+    <data name="ServiceLevelResolution" xml:space="preserve">
+        <value>Rozstrzygnięcie</value>
+    </data>
+    <data name="ServiceLevelTimeInStatus" xml:space="preserve">
+        <value>Czas w statusie</value>
+    </data>
+    <data name="HandoffsTitle" xml:space="preserve">
+        <value>Jak często sprawy zmieniają właściciela</value>
+    </data>
+    <data name="HandoffsSubtitle" xml:space="preserve">
+        <value>{0} spraw zostało ponownie otwartych po zamknięciu</value>
+    </data>
+    <data name="ChangesOfOwner" xml:space="preserve">
+        <value>Zmiany właściciela</value>
+    </data>
+</root>

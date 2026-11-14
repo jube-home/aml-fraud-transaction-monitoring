@@ -7,7 +7,8 @@ namespace Jube.Dictionary.Extensions
     {
         extension(string? @this)
         {
-            public string? Truncate(int maxLength)
+            [Description("Truncates the string to a maximum length.")]
+            public string? Truncate([Description("The maximum length.")] int maxLength)
             {
                 const string suffix = "...";
 
@@ -21,7 +22,9 @@ namespace Jube.Dictionary.Extensions
                 return @this.Substring(0, strLength) + suffix;
             }
 
-            public string? Truncate(int maxLength, string suffix)
+            [Description("Truncates with a suffix.")]
+            public string? Truncate([Description("The maximum length.")] int maxLength,
+                [Description("The suffix to append when truncated.")] string suffix)
             {
                 if (@this == null || @this.Length <= maxLength)
                 {

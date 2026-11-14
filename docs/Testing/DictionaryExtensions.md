@@ -23,7 +23,7 @@ volatility and distribution helpers.
 
 ### CharExtensionsTests
 
-`Jube.Test.Dictionary.Extensions.CharExtensionsTests` — 33 tests. Category: Unit.
+`Jube.Test.Dictionary.Extensions.CharExtensionsTests` — 34 tests. Category: Unit.
 
 | Test                                                               | Kind   | Verifies                                                                       |
 |--------------------------------------------------------------------|--------|--------------------------------------------------------------------------------|
@@ -49,6 +49,7 @@ volatility and distribution helpers.
 | `IsWhiteSpaceDelegatesToTheBcl`                                    | Theory | Is white space delegates to the bcl.                                           |
 | `RepeatBuildsAStringOfTheCharacterRepeatedNTimes`                  | Fact   | Repeat builds a string of the character repeated n times.                      |
 | `RepeatWithZeroProducesAnEmptyString`                              | Fact   | Repeat with zero produces an empty string.                                     |
+| `RepeatRefusesAResultOverTheCharacterLimitInsteadOfAllocatingIt`   | Fact   | Repeat refuses a result over 100000 characters instead of allocating it.       |
 | `ToEnumeratesInclusivelyFromThisCharacterToTheTarget`              | Fact   | To enumerates inclusively from this character to the target.                   |
 | `ToReversesTheSequenceWhenTheTargetPrecedesThisCharacter`          | Fact   | To reverses the sequence when the target precedes this character.              |
 | `ToWithTheSameStartAndEndYieldsASingleCharacter`                   | Fact   | To with the same start and end yields a single character.                      |
@@ -333,6 +334,19 @@ volatility and distribution helpers.
 | `IsWithinRadiusKmDelegatesToHaversineDistance`                                      | Theory | Is within radius km delegates to haversine distance.                                            |
 | `LeadingSignificantDigitExtractsTheFirstNonZeroDigit`                               | Theory | Leading significant digit extracts the first non zero digit.                                    |
 | `IsWithinPercentOfChecksTheAbsolutePercentageChange`                                | Theory | Is within percent of checks the absolute percentage change.                                     |
+
+### ExtensionDescriptionTests
+
+`Jube.Test.Dictionary.Extensions.ExtensionDescriptionTests` — 6 tests. Category: Unit.
+
+| Test                                                          | Kind | Verifies                                                                 |
+|---------------------------------------------------------------|------|--------------------------------------------------------------------------|
+| `ThereAreThousandsOfExtensionMethods`                         | Fact | There are thousands of extension methods.                                |
+| `EveryExtensionMethodSaysWhatItDoesInASentence`               | Fact | Every extension method says what it does in a sentence.                  |
+| `EveryParameterSaysWhatItIsForAndTheReceiverIsNeverDescribed` | Fact | Every parameter says what it is for and the receiver is never described. |
+| `PipelineStepsSayWhatTheirPrefixDecides`                      | Fact | Pipeline steps say what their prefix decides.                            |
+| `AStepOnAPlainValueSaysThatItBeginsAPipeline`                 | Fact | A step on a plain value says that it begins a pipeline.                  |
+| `AKnownMethodCarriesTheDocumentedText`                        | Fact | A known method carries the documented text.                              |
 
 ### FlowAuditTests
 
@@ -1205,113 +1219,114 @@ volatility and distribution helpers.
 
 ### StringExtensionsPart3Tests
 
-`Jube.Test.Dictionary.Extensions.StringExtensionsPart3Tests` — 103 tests. Category: Unit.
+`Jube.Test.Dictionary.Extensions.StringExtensionsPart3Tests` — 104 tests. Category: Unit.
 
-| Test                                                                   | Kind   | Verifies                                                                           |
-|------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------|
-| `IsWhiteSpaceChecksTheCharacterAtTheGivenIndex`                        | Fact   | Is white space checks the character at the given index.                            |
-| `IsWhiteSpaceThrowsForAnOutOfRangeIndex`                               | Fact   | Is white space throws for an out of range index.                                   |
-| `JavaScriptStringEncodeEscapesSpecialCharacters`                       | Fact   | Java script string encode escapes special characters.                              |
-| `JavaScriptStringEncodeWithDoubleQuotesWrapsTheResultInQuotes`         | Fact   | Java script string encode with double quotes wraps the result in quotes.           |
-| `JoinWithAStringArrayConcatenatesUsingTheSeparator`                    | Fact   | Join with a string array concatenates using the separator.                         |
-| `JoinWithAnObjectArrayConcatenatesTheirStringRepresentations`          | Fact   | Join with an object array concatenates their string representations.               |
-| `JoinWithAGenericEnumerableConcatenatesUsingTheSeparator`              | Fact   | Join with a generic enumerable concatenates using the separator.                   |
-| `JoinWithAnEnumerableOfStringConcatenatesUsingTheSeparator`            | Fact   | Join with an enumerable of string concatenates using the separator.                |
-| `JoinWithAStartIndexAndCountOnlyJoinsTheSelectedRange`                 | Fact   | Join with a start index and count only joins the selected range.                   |
-| `JoinOnAnEmptyArrayReturnsAnEmptyString`                               | Fact   | Join on an empty array returns an empty string.                                    |
-| `LeftReturnsTheRequestedNumberOfLeadingCharacters`                     | Fact   | Left returns the requested number of leading characters.                           |
-| `LeftWithZeroReturnsAnEmptyString`                                     | Fact   | Left with zero returns an empty string.                                            |
-| `LeftThrowsWhenTheRequestedLengthExceedsTheStringsLength`              | Fact   | Left throws when the requested length exceeds the strings length.                  |
-| `LeftSafeClampsToTheStringsActualLengthInsteadOfThrowing`              | Fact   | Left safe clamps to the strings actual length instead of throwing.                 |
-| `LeftSafeBehavesLikeLeftWhenTheLengthIsWithinBounds`                   | Fact   | Left safe behaves like left when the length is within bounds.                      |
-| `MatchWithoutOptionsFindsTheFirstOccurrence`                           | Fact   | Match without options finds the first occurrence.                                  |
-| `MatchWithOptionsRespectsThoseOptions`                                 | Fact   | Match with options respects those options.                                         |
-| `MatchReturnsAnUnsuccessfulMatchWhenThereIsNoOccurrence`               | Fact   | Match returns an unsuccessful match when there is no occurrence.                   |
-| `MatchesWithoutOptionsFindsEveryOccurrence`                            | Fact   | Matches without options finds every occurrence.                                    |
-| `MatchesWithOptionsRespectsThoseOptions`                               | Fact   | Matches with options respects those options.                                       |
-| `MatchesReturnsAnEmptyCollectionWhenThereAreNoOccurrences`             | Fact   | Matches returns an empty collection when there are no occurrences.                 |
-| `Nl2BrConvertsWindowsAndUnixNewlinesToHtmlBreaks`                      | Fact   | Nl2 br converts windows and unix newlines to html breaks.                          |
-| `Nl2BrLeavesTextWithoutNewlinesUnchanged`                              | Fact   | Nl2 br leaves text without newlines unchanged.                                     |
-| `NotInIsTheInverseOfMembership`                                        | Theory | Not in is the inverse of membership.                                               |
-| `NullIfEmptyReturnsNullForNullOrEmptyAndTheOriginalValueOtherwise`     | Fact   | Null if empty returns null for null or empty and the original value otherwise.     |
-| `NullIfEmptyDoesNotTreatWhitespaceAsEmpty`                             | Fact   | Null if empty does not treat whitespace as empty.                                  |
-| `ParseQueryStringParsesKeyValuePairs`                                  | Fact   | Parse query string parses key value pairs.                                         |
-| `ParseQueryStringWithAnExplicitEncodingStillParsesKeyValuePairs`       | Fact   | Parse query string with an explicit encoding still parses key value pairs.         |
-| `ParseQueryStringDecodesUrlEncodedValues`                              | Fact   | Parse query string decodes url encoded values.                                     |
-| `RemoveDiacriticsStripsAccentsButKeepsTheBaseLetters`                  | Fact   | Remove diacritics strips accents but keeps the base letters.                       |
-| `RemoveDiacriticsLeavesPlainAsciiUnchanged`                            | Fact   | Remove diacritics leaves plain ascii unchanged.                                    |
-| `RemoveLetterStripsAllLettersButKeepsEverythingElse`                   | Fact   | Remove letter strips all letters but keeps everything else.                        |
-| `RemoveNumberStripsAllDigitsButKeepsEverythingElse`                    | Fact   | Remove number strips all digits but keeps everything else.                         |
-| `RemoveWhereStripsCharactersMatchingTheGivenPredicate`                 | Fact   | Remove where strips characters matching the given predicate.                       |
-| `RemoveWhereWithAPredicateThatNeverMatchesLeavesTheStringUnchanged`    | Fact   | Remove where with a predicate that never matches leaves the string unchanged.      |
-| `RepeatWithASingleCharacterStringRepeatsItNTimes`                      | Fact   | Repeat with a single character string repeats it n times.                          |
-| `RepeatWithAMultiCharacterStringRepeatsTheWholeStringNTimes`           | Fact   | Repeat with a multi character string repeats the whole string n times.             |
-| `RepeatWithZeroProducesAnEmptyString`                                  | Fact   | Repeat with zero produces an empty string.                                         |
-| `ReplaceByEmptyRemovesEveryOccurrenceOfEachGivenValue`                 | Fact   | Replace by empty removes every occurrence of each given value.                     |
-| `ReplaceByEmptyWithNoValuesLeavesTheStringUnchanged`                   | Fact   | Replace by empty with no values leaves the string unchanged.                       |
-| `ReplaceWithStartIndexLengthAndValueSplicesInTheReplacement`           | Fact   | Replace with start index length and value splices in the replacement.              |
-| `ReplaceFirstReplacesOnlyTheFirstOccurrence`                           | Fact   | Replace first replaces only the first occurrence.                                  |
-| `ReplaceFirstLeavesTheStringUnchangedWhenThereIsNoMatch`               | Fact   | Replace first leaves the string unchanged when there is no match.                  |
-| `ReplaceFirstWithANumberReplacesExactlyThatManyLeadingOccurrences`     | Theory | Replace first with a number replaces exactly that many leading occurrences.        |
-| `ReplaceLastReplacesOnlyTheLastOccurrence`                             | Fact   | Replace last replaces only the last occurrence.                                    |
-| `ReplaceLastLeavesTheStringUnchangedWhenThereIsNoMatch`                | Fact   | Replace last leaves the string unchanged when there is no match.                   |
-| `ReplaceLastWithANumberReplacesExactlyThatManyTrailingOccurrences`     | Theory | Replace last with a number replaces exactly that many trailing occurrences.        |
-| `ReplaceWhenEqualsSwapsTheEntireStringWhenItExactlyMatches`            | Fact   | Replace when equals swaps the entire string when it exactly matches.               |
-| `ReplaceWhenEqualsLeavesTheStringUnchangedOnAPartialMatch`             | Fact   | Replace when equals leaves the string unchanged on a partial match.                |
-| `ReverseFlipsTheCharacterOrder`                                        | Fact   | Reverse flips the character order.                                                 |
-| `ReverseOfAnEmptyOrSingleCharacterStringReturnsItUnchanged`            | Fact   | Reverse of an empty or single character string returns it unchanged.               |
-| `RightReturnsTheRequestedNumberOfTrailingCharacters`                   | Fact   | Right returns the requested number of trailing characters.                         |
-| `RightThrowsWhenTheRequestedLengthExceedsTheStringsLength`             | Fact   | Right throws when the requested length exceeds the strings length.                 |
-| `RightSafeClampsToTheStringsActualLengthInsteadOfThrowing`             | Fact   | Right safe clamps to the strings actual length instead of throwing.                |
-| `RightSafeBehavesLikeRightWhenTheLengthIsWithinBounds`                 | Fact   | Right safe behaves like right when the length is within bounds.                    |
-| `SplitByAMultiCharacterSeparatorSplitsCorrectly`                       | Fact   | Split by a multi character separator splits correctly.                             |
-| `SplitWithRemoveEmptyEntriesOmitsEmptySegments`                        | Fact   | Split with remove empty entries omits empty segments.                              |
-| `SplitDefaultsToKeepingEmptySegments`                                  | Fact   | Split defaults to keeping empty segments.                                          |
-| `ToByteArrayEncodesUsingAscii`                                         | Fact   | To byte array encodes using ascii.                                                 |
-| `ToByteArrayReplacesNonAsciiCharactersWithQuestionMarks`               | Fact   | To byte array replaces non ascii characters with question marks.                   |
-| `ToEnumParsesAMatchingMemberName`                                      | Fact   | To enum parses a matching member name.                                             |
-| `ToEnumIsCaseSensitiveBecauseItCallsEnumParseWithoutIgnoreCase`        | Fact   | To enum is case sensitive because it calls enum parse without ignore case.         |
-| `ToEnumThrowsForAMemberNameThatDoesNotExist`                           | Fact   | To enum throws for a member name that does not exist.                              |
-| `ToTitleCaseWithoutAnExplicitCultureUsesEnUs`                          | Fact   | To title case without an explicit culture uses en us.                              |
-| `ToTitleCaseWithAnExplicitCultureUsesThatCulture`                      | Fact   | To title case with an explicit culture uses that culture.                          |
-| `ToTitleCaseDoesNotLowercaseAlreadyUppercaseWords`                     | Fact   | To title case does not lowercase already uppercase words.                          |
-| `ToValidDateTimeOrNullParsesAWellFormedDate`                           | Fact   | To valid date time or null parses a well formed date.                              |
-| `ToValidDateTimeOrNullReturnsNullForUnparsableText`                    | Fact   | To valid date time or null returns null for unparsable text.                       |
-| `ToValidDateTimeOrNullReturnsNullForAnEmptyString`                     | Fact   | To valid date time or null returns null for an empty string.                       |
-| `ToXDocumentParsesWellFormedXmlIntoAnXDocument`                        | Fact   | To x document parses well formed xml into an x document.                           |
-| `ToXDocumentThrowsForMalformedXml`                                     | Fact   | To x document throws for malformed xml.                                            |
-| `ToXmlDocumentParsesWellFormedXmlIntoAnXmlDocument`                    | Fact   | To xml document parses well formed xml into an xml document.                       |
-| `ToXmlDocumentThrowsForMalformedXml`                                   | Fact   | To xml document throws for malformed xml.                                          |
-| `TruncateLeavesShortStringsUnchanged`                                  | Fact   | Truncate leaves short strings unchanged.                                           |
-| `TruncateAppendsAnEllipsisWhenTheStringExceedsTheMaxLength`            | Fact   | Truncate appends an ellipsis when the string exceeds the max length.               |
-| `TruncateWithACustomSuffixUsesThatSuffixInstead`                       | Fact   | Truncate with a custom suffix uses that suffix instead.                            |
-| `TruncateOnANullStringReturnsNull`                                     | Fact   | Truncate on a null string returns null.                                            |
-| `TruncateThrowsWhenTheMaxLengthIsShorterThanTheSuffixItself`           | Fact   | Truncate throws when the max length is shorter than the suffix itself.             |
-| `UrlEncodeThenUrlDecodeRoundTripsSpecialCharacters`                    | Fact   | Url encode then url decode round trips special characters.                         |
-| `UrlEncodeConvertsSpacesToPlusSigns`                                   | Fact   | Url encode converts spaces to plus signs.                                          |
-| `UrlEncodeWithAnExplicitEncodingStillEncodesSpaces`                    | Fact   | Url encode with an explicit encoding still encodes spaces.                         |
-| `UrlDecodeWithAnExplicitEncodingDecodesBackToTheOriginalText`          | Fact   | Url decode with an explicit encoding decodes back to the original text.            |
-| `UrlEncodeToBytesThenUrlDecodeToBytesRoundTrips`                       | Fact   | Url encode to bytes then url decode to bytes round trips.                          |
-| `UrlEncodeToBytesWithAnExplicitEncodingProducesTheSameTextWhenDecoded` | Fact   | Url encode to bytes with an explicit encoding produces the same text when decoded. |
-| `UrlDecodeToBytesWithAnExplicitEncodingDecodesCorrectly`               | Fact   | Url decode to bytes with an explicit encoding decodes correctly.                   |
-| `UrlPathEncodeEncodesSpacesAsPercentTwentyRatherThanAPlusSign`         | Fact   | Url path encode encodes spaces as percent twenty rather than a plus sign.          |
-| `LevenshteinDistanceComputesTheEditDistance`                           | Theory | Levenshtein distance computes the edit distance.                                   |
-| `SimilarityToOfIdenticalStringsIsOne`                                  | Fact   | Similarity to of identical strings is one.                                         |
-| `SimilarityToNormalisesTheEditDistanceByTheLongerStringLength`         | Fact   | Similarity to normalises the edit distance by the longer string length.            |
-| `JaroWinklerSimilarityOfIdenticalStringsIsOne`                         | Fact   | Jaro winkler similarity of identical strings is one.                               |
-| `JaroWinklerSimilarityOfAnEmptyAndNonEmptyStringIsZero`                | Fact   | Jaro winkler similarity of an empty and non empty string is zero.                  |
-| `JaroWinklerSimilarityMatchesTheWellKnownMarthaMarhtaExample`          | Fact   | Jaro winkler similarity matches the well known martha marhta example.              |
-| `JaroWinklerSimilarityMatchesTheWellKnownDixonDicksonxExample`         | Fact   | Jaro winkler similarity matches the well known dixon dicksonx example.             |
-| `SoundexEncodesNamesToTheirPhoneticCode`                               | Theory | Soundex encodes names to their phonetic code.                                      |
-| `SoundexOfSimilarSoundingNamesIsTheSame`                               | Fact   | Soundex of similar sounding names is the same.                                     |
-| `SoundexOfBlankOrLetterlessInputIsEmpty`                               | Theory | Soundex of blank or letterless input is empty.                                     |
-| `ShannonEntropyOfAllSameCharacterIsZero`                               | Fact   | Shannon entropy of all same character is zero.                                     |
-| `ShannonEntropyOfTwoEquallyLikelyCharactersIsOneBit`                   | Fact   | Shannon entropy of two equally likely characters is one bit.                       |
-| `ShannonEntropyOfFourEquallyLikelyDistinctCharactersIsTwoBits`         | Fact   | Shannon entropy of four equally likely distinct characters is two bits.            |
-| `ShannonEntropyOfAnEmptyOrNullStringIsZero`                            | Fact   | Shannon entropy of an empty or null string is zero.                                |
-| `MaskExceptLastMasksEverythingButTheTrailingVisibleCount`              | Theory | Mask except last masks everything but the trailing visible count.                  |
-| `MaskExceptLastAcceptsACustomMaskCharacter`                            | Fact   | Mask except last accepts a custom mask character.                                  |
-| `NormalizeEmailAliasStripsPlusTaggingAndLowercases`                    | Theory | Normalize email alias strips plus tagging and lowercases.                          |
+| Test                                                                   | Kind   | Verifies                                                                                             |
+|------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------------------|
+| `IsWhiteSpaceChecksTheCharacterAtTheGivenIndex`                        | Fact   | Is white space checks the character at the given index.                                              |
+| `IsWhiteSpaceThrowsForAnOutOfRangeIndex`                               | Fact   | Is white space throws for an out of range index.                                                     |
+| `JavaScriptStringEncodeEscapesSpecialCharacters`                       | Fact   | Java script string encode escapes special characters.                                                |
+| `JavaScriptStringEncodeWithDoubleQuotesWrapsTheResultInQuotes`         | Fact   | Java script string encode with double quotes wraps the result in quotes.                             |
+| `JoinWithAStringArrayConcatenatesUsingTheSeparator`                    | Fact   | Join with a string array concatenates using the separator.                                           |
+| `JoinWithAnObjectArrayConcatenatesTheirStringRepresentations`          | Fact   | Join with an object array concatenates their string representations.                                 |
+| `JoinWithAGenericEnumerableConcatenatesUsingTheSeparator`              | Fact   | Join with a generic enumerable concatenates using the separator.                                     |
+| `JoinWithAnEnumerableOfStringConcatenatesUsingTheSeparator`            | Fact   | Join with an enumerable of string concatenates using the separator.                                  |
+| `JoinWithAStartIndexAndCountOnlyJoinsTheSelectedRange`                 | Fact   | Join with a start index and count only joins the selected range.                                     |
+| `JoinOnAnEmptyArrayReturnsAnEmptyString`                               | Fact   | Join on an empty array returns an empty string.                                                      |
+| `LeftReturnsTheRequestedNumberOfLeadingCharacters`                     | Fact   | Left returns the requested number of leading characters.                                             |
+| `LeftWithZeroReturnsAnEmptyString`                                     | Fact   | Left with zero returns an empty string.                                                              |
+| `LeftThrowsWhenTheRequestedLengthExceedsTheStringsLength`              | Fact   | Left throws when the requested length exceeds the strings length.                                    |
+| `LeftSafeClampsToTheStringsActualLengthInsteadOfThrowing`              | Fact   | Left safe clamps to the strings actual length instead of throwing.                                   |
+| `LeftSafeBehavesLikeLeftWhenTheLengthIsWithinBounds`                   | Fact   | Left safe behaves like left when the length is within bounds.                                        |
+| `MatchWithoutOptionsFindsTheFirstOccurrence`                           | Fact   | Match without options finds the first occurrence.                                                    |
+| `MatchWithOptionsRespectsThoseOptions`                                 | Fact   | Match with options respects those options.                                                           |
+| `MatchReturnsAnUnsuccessfulMatchWhenThereIsNoOccurrence`               | Fact   | Match returns an unsuccessful match when there is no occurrence.                                     |
+| `MatchesWithoutOptionsFindsEveryOccurrence`                            | Fact   | Matches without options finds every occurrence.                                                      |
+| `MatchesWithOptionsRespectsThoseOptions`                               | Fact   | Matches with options respects those options.                                                         |
+| `MatchesReturnsAnEmptyCollectionWhenThereAreNoOccurrences`             | Fact   | Matches returns an empty collection when there are no occurrences.                                   |
+| `Nl2BrConvertsWindowsAndUnixNewlinesToHtmlBreaks`                      | Fact   | Nl2 br converts windows and unix newlines to html breaks.                                            |
+| `Nl2BrLeavesTextWithoutNewlinesUnchanged`                              | Fact   | Nl2 br leaves text without newlines unchanged.                                                       |
+| `NotInIsTheInverseOfMembership`                                        | Theory | Not in is the inverse of membership.                                                                 |
+| `NullIfEmptyReturnsNullForNullOrEmptyAndTheOriginalValueOtherwise`     | Fact   | Null if empty returns null for null or empty and the original value otherwise.                       |
+| `NullIfEmptyDoesNotTreatWhitespaceAsEmpty`                             | Fact   | Null if empty does not treat whitespace as empty.                                                    |
+| `ParseQueryStringParsesKeyValuePairs`                                  | Fact   | Parse query string parses key value pairs.                                                           |
+| `ParseQueryStringWithAnExplicitEncodingStillParsesKeyValuePairs`       | Fact   | Parse query string with an explicit encoding still parses key value pairs.                           |
+| `ParseQueryStringDecodesUrlEncodedValues`                              | Fact   | Parse query string decodes url encoded values.                                                       |
+| `RemoveDiacriticsStripsAccentsButKeepsTheBaseLetters`                  | Fact   | Remove diacritics strips accents but keeps the base letters.                                         |
+| `RemoveDiacriticsLeavesPlainAsciiUnchanged`                            | Fact   | Remove diacritics leaves plain ascii unchanged.                                                      |
+| `RemoveLetterStripsAllLettersButKeepsEverythingElse`                   | Fact   | Remove letter strips all letters but keeps everything else.                                          |
+| `RemoveNumberStripsAllDigitsButKeepsEverythingElse`                    | Fact   | Remove number strips all digits but keeps everything else.                                           |
+| `RemoveWhereStripsCharactersMatchingTheGivenPredicate`                 | Fact   | Remove where strips characters matching the given predicate.                                         |
+| `RemoveWhereWithAPredicateThatNeverMatchesLeavesTheStringUnchanged`    | Fact   | Remove where with a predicate that never matches leaves the string unchanged.                        |
+| `RepeatWithASingleCharacterStringRepeatsItNTimes`                      | Fact   | Repeat with a single character string repeats it n times.                                            |
+| `RepeatWithAMultiCharacterStringRepeatsTheWholeStringNTimes`           | Fact   | Repeat with a multi character string repeats the whole string n times.                               |
+| `RepeatWithZeroProducesAnEmptyString`                                  | Fact   | Repeat with zero produces an empty string.                                                           |
+| `RepeatRefusesAResultOverTheCharacterLimitInsteadOfAllocatingIt`       | Fact   | Repeat refuses a result over 100000 characters, including an int overflow, instead of allocating it. |
+| `ReplaceByEmptyRemovesEveryOccurrenceOfEachGivenValue`                 | Fact   | Replace by empty removes every occurrence of each given value.                                       |
+| `ReplaceByEmptyWithNoValuesLeavesTheStringUnchanged`                   | Fact   | Replace by empty with no values leaves the string unchanged.                                         |
+| `ReplaceWithStartIndexLengthAndValueSplicesInTheReplacement`           | Fact   | Replace with start index length and value splices in the replacement.                                |
+| `ReplaceFirstReplacesOnlyTheFirstOccurrence`                           | Fact   | Replace first replaces only the first occurrence.                                                    |
+| `ReplaceFirstLeavesTheStringUnchangedWhenThereIsNoMatch`               | Fact   | Replace first leaves the string unchanged when there is no match.                                    |
+| `ReplaceFirstWithANumberReplacesExactlyThatManyLeadingOccurrences`     | Theory | Replace first with a number replaces exactly that many leading occurrences.                          |
+| `ReplaceLastReplacesOnlyTheLastOccurrence`                             | Fact   | Replace last replaces only the last occurrence.                                                      |
+| `ReplaceLastLeavesTheStringUnchangedWhenThereIsNoMatch`                | Fact   | Replace last leaves the string unchanged when there is no match.                                     |
+| `ReplaceLastWithANumberReplacesExactlyThatManyTrailingOccurrences`     | Theory | Replace last with a number replaces exactly that many trailing occurrences.                          |
+| `ReplaceWhenEqualsSwapsTheEntireStringWhenItExactlyMatches`            | Fact   | Replace when equals swaps the entire string when it exactly matches.                                 |
+| `ReplaceWhenEqualsLeavesTheStringUnchangedOnAPartialMatch`             | Fact   | Replace when equals leaves the string unchanged on a partial match.                                  |
+| `ReverseFlipsTheCharacterOrder`                                        | Fact   | Reverse flips the character order.                                                                   |
+| `ReverseOfAnEmptyOrSingleCharacterStringReturnsItUnchanged`            | Fact   | Reverse of an empty or single character string returns it unchanged.                                 |
+| `RightReturnsTheRequestedNumberOfTrailingCharacters`                   | Fact   | Right returns the requested number of trailing characters.                                           |
+| `RightThrowsWhenTheRequestedLengthExceedsTheStringsLength`             | Fact   | Right throws when the requested length exceeds the strings length.                                   |
+| `RightSafeClampsToTheStringsActualLengthInsteadOfThrowing`             | Fact   | Right safe clamps to the strings actual length instead of throwing.                                  |
+| `RightSafeBehavesLikeRightWhenTheLengthIsWithinBounds`                 | Fact   | Right safe behaves like right when the length is within bounds.                                      |
+| `SplitByAMultiCharacterSeparatorSplitsCorrectly`                       | Fact   | Split by a multi character separator splits correctly.                                               |
+| `SplitWithRemoveEmptyEntriesOmitsEmptySegments`                        | Fact   | Split with remove empty entries omits empty segments.                                                |
+| `SplitDefaultsToKeepingEmptySegments`                                  | Fact   | Split defaults to keeping empty segments.                                                            |
+| `ToByteArrayEncodesUsingAscii`                                         | Fact   | To byte array encodes using ascii.                                                                   |
+| `ToByteArrayReplacesNonAsciiCharactersWithQuestionMarks`               | Fact   | To byte array replaces non ascii characters with question marks.                                     |
+| `ToEnumParsesAMatchingMemberName`                                      | Fact   | To enum parses a matching member name.                                                               |
+| `ToEnumIsCaseSensitiveBecauseItCallsEnumParseWithoutIgnoreCase`        | Fact   | To enum is case sensitive because it calls enum parse without ignore case.                           |
+| `ToEnumThrowsForAMemberNameThatDoesNotExist`                           | Fact   | To enum throws for a member name that does not exist.                                                |
+| `ToTitleCaseWithoutAnExplicitCultureUsesEnUs`                          | Fact   | To title case without an explicit culture uses en us.                                                |
+| `ToTitleCaseWithAnExplicitCultureUsesThatCulture`                      | Fact   | To title case with an explicit culture uses that culture.                                            |
+| `ToTitleCaseDoesNotLowercaseAlreadyUppercaseWords`                     | Fact   | To title case does not lowercase already uppercase words.                                            |
+| `ToValidDateTimeOrNullParsesAWellFormedDate`                           | Fact   | To valid date time or null parses a well formed date.                                                |
+| `ToValidDateTimeOrNullReturnsNullForUnparsableText`                    | Fact   | To valid date time or null returns null for unparsable text.                                         |
+| `ToValidDateTimeOrNullReturnsNullForAnEmptyString`                     | Fact   | To valid date time or null returns null for an empty string.                                         |
+| `ToXDocumentParsesWellFormedXmlIntoAnXDocument`                        | Fact   | To x document parses well formed xml into an x document.                                             |
+| `ToXDocumentThrowsForMalformedXml`                                     | Fact   | To x document throws for malformed xml.                                                              |
+| `ToXmlDocumentParsesWellFormedXmlIntoAnXmlDocument`                    | Fact   | To xml document parses well formed xml into an xml document.                                         |
+| `ToXmlDocumentThrowsForMalformedXml`                                   | Fact   | To xml document throws for malformed xml.                                                            |
+| `TruncateLeavesShortStringsUnchanged`                                  | Fact   | Truncate leaves short strings unchanged.                                                             |
+| `TruncateAppendsAnEllipsisWhenTheStringExceedsTheMaxLength`            | Fact   | Truncate appends an ellipsis when the string exceeds the max length.                                 |
+| `TruncateWithACustomSuffixUsesThatSuffixInstead`                       | Fact   | Truncate with a custom suffix uses that suffix instead.                                              |
+| `TruncateOnANullStringReturnsNull`                                     | Fact   | Truncate on a null string returns null.                                                              |
+| `TruncateThrowsWhenTheMaxLengthIsShorterThanTheSuffixItself`           | Fact   | Truncate throws when the max length is shorter than the suffix itself.                               |
+| `UrlEncodeThenUrlDecodeRoundTripsSpecialCharacters`                    | Fact   | Url encode then url decode round trips special characters.                                           |
+| `UrlEncodeConvertsSpacesToPlusSigns`                                   | Fact   | Url encode converts spaces to plus signs.                                                            |
+| `UrlEncodeWithAnExplicitEncodingStillEncodesSpaces`                    | Fact   | Url encode with an explicit encoding still encodes spaces.                                           |
+| `UrlDecodeWithAnExplicitEncodingDecodesBackToTheOriginalText`          | Fact   | Url decode with an explicit encoding decodes back to the original text.                              |
+| `UrlEncodeToBytesThenUrlDecodeToBytesRoundTrips`                       | Fact   | Url encode to bytes then url decode to bytes round trips.                                            |
+| `UrlEncodeToBytesWithAnExplicitEncodingProducesTheSameTextWhenDecoded` | Fact   | Url encode to bytes with an explicit encoding produces the same text when decoded.                   |
+| `UrlDecodeToBytesWithAnExplicitEncodingDecodesCorrectly`               | Fact   | Url decode to bytes with an explicit encoding decodes correctly.                                     |
+| `UrlPathEncodeEncodesSpacesAsPercentTwentyRatherThanAPlusSign`         | Fact   | Url path encode encodes spaces as percent twenty rather than a plus sign.                            |
+| `LevenshteinDistanceComputesTheEditDistance`                           | Theory | Levenshtein distance computes the edit distance.                                                     |
+| `SimilarityToOfIdenticalStringsIsOne`                                  | Fact   | Similarity to of identical strings is one.                                                           |
+| `SimilarityToNormalisesTheEditDistanceByTheLongerStringLength`         | Fact   | Similarity to normalises the edit distance by the longer string length.                              |
+| `JaroWinklerSimilarityOfIdenticalStringsIsOne`                         | Fact   | Jaro winkler similarity of identical strings is one.                                                 |
+| `JaroWinklerSimilarityOfAnEmptyAndNonEmptyStringIsZero`                | Fact   | Jaro winkler similarity of an empty and non empty string is zero.                                    |
+| `JaroWinklerSimilarityMatchesTheWellKnownMarthaMarhtaExample`          | Fact   | Jaro winkler similarity matches the well known martha marhta example.                                |
+| `JaroWinklerSimilarityMatchesTheWellKnownDixonDicksonxExample`         | Fact   | Jaro winkler similarity matches the well known dixon dicksonx example.                               |
+| `SoundexEncodesNamesToTheirPhoneticCode`                               | Theory | Soundex encodes names to their phonetic code.                                                        |
+| `SoundexOfSimilarSoundingNamesIsTheSame`                               | Fact   | Soundex of similar sounding names is the same.                                                       |
+| `SoundexOfBlankOrLetterlessInputIsEmpty`                               | Theory | Soundex of blank or letterless input is empty.                                                       |
+| `ShannonEntropyOfAllSameCharacterIsZero`                               | Fact   | Shannon entropy of all same character is zero.                                                       |
+| `ShannonEntropyOfTwoEquallyLikelyCharactersIsOneBit`                   | Fact   | Shannon entropy of two equally likely characters is one bit.                                         |
+| `ShannonEntropyOfFourEquallyLikelyDistinctCharactersIsTwoBits`         | Fact   | Shannon entropy of four equally likely distinct characters is two bits.                              |
+| `ShannonEntropyOfAnEmptyOrNullStringIsZero`                            | Fact   | Shannon entropy of an empty or null string is zero.                                                  |
+| `MaskExceptLastMasksEverythingButTheTrailingVisibleCount`              | Theory | Mask except last masks everything but the trailing visible count.                                    |
+| `MaskExceptLastAcceptsACustomMaskCharacter`                            | Fact   | Mask except last accepts a custom mask character.                                                    |
+| `NormalizeEmailAliasStripsPlusTaggingAndLowercases`                    | Theory | Normalize email alias strips plus tagging and lowercases.                                            |
 
 ### StringFuzzyExtensionsTests
 

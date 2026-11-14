@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Returns the angle whose cosine is the specified number.")]
         public static Double Acos(this Double d)
         {
             return Math.Acos(d);

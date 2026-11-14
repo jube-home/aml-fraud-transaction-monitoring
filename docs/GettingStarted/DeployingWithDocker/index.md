@@ -33,6 +33,10 @@ export DockerComposeAskJoobyApiKey='OPTIONAL_IMPORTANT:_ChangeThisKey_et8WMyVE3q
 docker compose up -d
 ```
 
+This quickstart leaves the mock HTTP Adaptation endpoints (`EnableMockEndpoints`, default True) mapped so the seeded
+example model works, and the mock RSA MFA verifier unmapped (`EnableMockMfaEndpoint`, default False). Both are anonymous
+test doubles: for anything beyond evaluation set `EnableMockEndpoints=False`, as the Jube Cluster compose files do.
+
 Every value above must be changed from the example shown - these are placeholders, not defaults you can leave in
 place. `DockerComposePostgresPassword` bootstraps the `postgres` container's own superuser password on first
 initialisation (`POSTGRES_PASSWORD`), and is packed by `docker-compose.yml` itself into the otherwise-static
@@ -46,12 +50,14 @@ keys - see [Environment Variables](../../Concepts/EnvironmentVariables/index.htm
 `ElementSymmetricEncryptionKey` ships with a well-known placeholder default - leaving it unchanged means any value
 encrypted via the Inline Script AES helper (see
 [Field Level Encryption](../../Concepts/FieldEncryption/index.html)) is trivially reversible by anyone with a copy
-of this documentation. The last two exports are optional. Ask Jooby is off (`DockerComposeEnableAskJooby=False`) until it is set to `True`, and
+of this documentation. The last two exports are optional. Ask Jooby is off (`DockerComposeEnableAskJooby=False`) until
+it is set to `True`, and
 `DockerComposeAskJoobyApiKey` is where the key goes: paste in your DigitalOcean Serverless Inference key, as
 `AskJoobyApiEndpoint` and `AskJoobyEmbeddingApiEndpoint` default to DigitalOcean Gradient. It is the only key Ask Jooby
 needs, as the embedding, reranker and AI analysis roles all inherit it, so there are no separate exports for them. A
 deployment that serves one of those roles from a different provider can add the matching `AskJoobyEmbeddingApiKey`,
-`AskJoobyRerankerApiKey` or `AskJoobyAiAnalysisApiKey` Environment Variable to the `jube` service. Like the other secrets, the two exports above are
+`AskJoobyRerankerApiKey` or `AskJoobyAiAnalysisApiKey` Environment Variable to the `jube` service. Like the other
+secrets, the two exports above are
 interpolated by Docker Compose from the shell rather than written into `docker-compose.yml`.
 
 None of these five values are hardcoded anywhere in `docker-compose.yml` itself - every
@@ -61,7 +67,8 @@ The export-then-`docker compose up` pattern above passes secrets as plain shell 
 which is fine for local evaluation but not how a real deployment should hand over credentials.
 `Jube.Cluster/secrets-init.sh`
 now provides this for the clustered Docker Swarm deployment - see [Creating
-Secrets](../DeployingWithJubeCluster/DeploymentRunbook/index.html#creating-secrets) - generating random credentials and an RSA keypair
+Secrets](../DeployingWithJubeCluster/DeploymentRunbook/index.html#creating-secrets) - generating random credentials and
+an RSA keypair
 and loading them into Swarm's own secret store, resolved at container start via Jube's own `SecretsPath`/`[@Key@]`
 Docker Secrets tokenisation already documented in
 [Environment Variables](../../Concepts/EnvironmentVariables/index.html). That script relies on `docker secret
@@ -113,9 +120,18 @@ restricted user needs DDL rights, since Migration can instead run under a separa
 `MigrationConnectionString` (falling back to `ConnectionString` when unset) - see
 [Environment Variables](../../Concepts/EnvironmentVariables/index.html).
 
+When `ReportConnectionString` is left at the quickstart value (the same superuser as `ConnectionString`), Jube logs a
+warning at startup, because user-supplied reporting SQL then runs with full privileges behind only a read-only
+transaction and the SQL validator.
+See [the reporting database role](../../Configuration/Visualisations/SecurityPolicy/index.html#the-reporting-database-role)
+for the exact `CREATE ROLE` and `GRANT SELECT` statements.
+
+<!-- TODO(docs): Confirm this paragraph with the owner. -->
+
 `docker-compose.yml` does not wire these restricted users in by default - running `CreateUsers.sql` from
 Jube.Cluster means also updating the compose file's connection strings and Postgres user setup by hand, a manual
-hardening step for production deployments specifically. The simple `docker-compose.yml` is not intended for production use, at least without
+hardening step for production deployments specifically. The simple `docker-compose.yml` is not intended for production
+use, at least without
 significant
 hardening.
 

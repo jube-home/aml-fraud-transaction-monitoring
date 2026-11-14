@@ -31,14 +31,17 @@ namespace Jube.Service.Agent.PageAgentToolBinder
                      || name.Contains("ProcessingCounter", StringComparison.Ordinal)
                      || name.Contains("ResponseTimePipelineCounter", StringComparison.Ordinal)
                      || name.Contains("AsynchronousQueueBalance", StringComparison.Ordinal)
-                     || StartsWithAny(name, "RedisCallCounter", "HttpProcessingCounter"), AgentToolIcon.Gauge),
-            (name => StartsWithAny(name, "Redis", "Postgres", "Patroni", "Etcd", "HAProxy", "Docker",
+                     || StartsWithAny(name, "RespCallCounter", "HttpProcessingCounter"), AgentToolIcon.Gauge),
+            (name => StartsWithAny(name, "Resp", "Postgres", "Patroni", "Etcd", "HAProxy", "Docker",
                 "OverlayNetwork", "DotNetRuntime", "CaptureQueue", "HttpProcessing"), AgentToolIcon.Server),
             (name => StartsWithAny(name, "AskJooby"), AgentToolIcon.Bot),
             (name => StartsWithAny(name, "Case", "SessionCase"), AgentToolIcon.Briefcase),
             (name => StartsWithAny(name, "Preservation", "Archive"), AgentToolIcon.Archive),
             (name => StartsWithAny(name, "User", "Role", "Tenant", "PermissionSpecification"), AgentToolIcon.KeyRound),
             (name => StartsWithAny(name, "Visualisation"), AgentToolIcon.LayoutDashboard),
+            (name => StartsWithAny(name, "Graph"), AgentToolIcon.Network),
+            (name => StartsWithAny(name, "Svirfd") || name.Contains("Svirfd", StringComparison.Ordinal),
+                AgentToolIcon.Globe),
             (name => StartsWithAny(name, "AdvancedAnalytics", "Exhaustive")
                      || name.Contains("Backtest", StringComparison.Ordinal)
                      || name.Contains("HistorySimulation", StringComparison.Ordinal)

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>ليس لديك صلاحية تنفيذ هذا الإجراء.</value>
+  </data>
+    <data name="SqlPermissionDenied" xml:space="preserve">
+    <value>ليس لديك صلاحية تأليف أدوات التحقق من ⁨SQL⁩.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>يجب أن تكون مسجلاً الدخول إلى مستأجر لتنفيذ هذا الإجراء.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>لم يتم العثور على أداة التحقق.</value>
+  </data>
+    <data name="CaseWorkflowFormGuidRequired" xml:space="preserve">
+    <value>النموذج مطلوب.</value>
+  </data>
+    <data name="CaseWorkflowFormNotFound" xml:space="preserve">
+    <value>لم يتم العثور على النموذج.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>الاسم مطلوب.</value>
+  </data>
+    <data name="NameTooLong" xml:space="preserve">
+    <value>الاسم أطول من 100 حرف.</value>
+  </data>
+    <data name="FieldNameRequired" xml:space="preserve">
+    <value>اسم الحقل مطلوب.</value>
+  </data>
+    <data name="FieldNameInvalid" xml:space="preserve">
+    <value>يجب أن يبدأ اسم الحقل بحرف وألا يستخدم إلا الحروف والأرقام والشرطات السفلية.</value>
+  </data>
+    <data name="FieldNotInForm" xml:space="preserve">
+    <value>لا يحتوي قالب النموذج على حقل بهذا الاسم.</value>
+  </data>
+    <data name="KindInvalid" xml:space="preserve">
+    <value>نوع القاعدة ليس من الأنواع المعروضة.</value>
+  </data>
+    <data name="ArgumentRequired" xml:space="preserve">
+    <value>هذا النوع من القواعد يحتاج إلى قيمة في ⁨{0}⁩.</value>
+  </data>
+    <data name="ArgumentNumber" xml:space="preserve">
+    <value>يجب أن يكون ⁨{0}⁩ رقمًا.</value>
+  </data>
+    <data name="ArgumentWholeNumber" xml:space="preserve">
+    <value>يجب أن يكون ⁨{0}⁩ عددًا صحيحًا يساوي صفرًا أو أكثر.</value>
+  </data>
+    <data name="ArgumentRange" xml:space="preserve">
+    <value>الحد الأدنى أكبر من الحد الأقصى.</value>
+  </data>
+    <data name="ArgumentOneNeeded" xml:space="preserve">
+    <value>حدد حدًا أدنى أو أقصى أو كليهما.</value>
+  </data>
+    <data name="ArgumentRelation" xml:space="preserve">
+    <value>يجب أن تكون العلاقة إحدى: ⁨eq⁩ أو ⁨ne⁩ أو ⁨lt⁩ أو ⁨le⁩ أو ⁨gt⁩ أو ⁨ge⁩.</value>
+  </data>
+    <data name="PatternInvalid" xml:space="preserve">
+    <value>النمط ليس تعبيرًا نمطيًا صالحًا.</value>
+  </data>
+    <data name="ArgumentTooLong" xml:space="preserve">
+    <value>⁨{0}⁩ أطول من الحد البالغ ⁨{1}⁩ حرفًا.</value>
+  </data>
+    <data name="OtherFieldNotInForm" xml:space="preserve">
+    <value>لا يحتوي قالب النموذج على حقل باسم ⁨{0}⁩.</value>
+  </data>
+    <data name="KindNotForField" xml:space="preserve">
+    <value>هذا النوع من القواعد لا ينطبق على نوع ذلك الحقل.</value>
+  </data>
+    <data name="ListNotFound" xml:space="preserve">
+    <value>لا يحتوي النموذج على قائمة بهذا الاسم.</value>
+  </data>
+    <data name="DictionaryNotFound" xml:space="preserve">
+    <value>لا يحتوي النموذج على قاموس بهذا الاسم.</value>
+  </data>
+    <data name="SqlRequired" xml:space="preserve">
+    <value>⁨SQL⁩ مطلوب لهذا النوع من القواعد.</value>
+  </data>
+    <data name="SqlTooLong" xml:space="preserve">
+    <value>⁨SQL⁩ أطول من 8000 حرف.</value>
+  </data>
+    <data name="SqlRejected" xml:space="preserve">
+    <value>تم رفض ⁨SQL⁩: ⁨{0}⁩</value>
+  </data>
+    <data name="SqlParameterUnknown" xml:space="preserve">
+    <value>يستخدم ⁨SQL⁩ المعامل ⁨@{0}⁩ وهو ليس معاملًا مدمجًا ولا حقلًا في النموذج.</value>
+  </data>
+    <data name="MessageTooLong" xml:space="preserve">
+    <value>الرسالة أطول من 500 حرف.</value>
+  </data>
+    <data name="TemplateInvalid" xml:space="preserve">
+    <value>قالب النموذج لا يُترجم: ⁨{0}⁩</value>
+  </data>
+</root>

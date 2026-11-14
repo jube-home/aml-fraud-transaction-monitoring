@@ -6,7 +6,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static bool In(this Int32 @this, params Int32[] values)
+        [Description("Checks if the value is equal to any in the provided array.")]
+        public static bool In(this Int32 @this,
+            [Description("The value list to compare with the object.")] params Int32[] values)
         {
             return Array.IndexOf(values, @this) != -1;
         }

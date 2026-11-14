@@ -60,4 +60,7 @@
     <data name="KeyIntegrityFailure" xml:space="preserve">
     <value>La clé API générée a échoué son propre contrôle d'intégrité et n'a pas été enregistrée.</value>
   </data>
+    <data name="InsufficientPrivilege" xml:space="preserve">
+    <value>Vous ne disposez pas des privilèges suffisants pour effectuer cette action.</value>
+  </data>
 </root>

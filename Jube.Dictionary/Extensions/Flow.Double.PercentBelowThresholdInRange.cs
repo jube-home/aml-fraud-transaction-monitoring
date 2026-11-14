@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchPercentBelowThresholdInRange(double threshold, double lowerBound, double upperBound)
+            [Description("True when: how far under the threshold the value is as a percentage of it, negative when over is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentBelowThresholdInRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoublePercentBelowThresholdInRange(flow.Value, threshold, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectPercentBelowThresholdInRange(double threshold, double lowerBound, double upperBound)
+            [Description("True when: how far under the threshold the value is as a percentage of it, negative when over is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentBelowThresholdInRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoublePercentBelowThresholdInRange(flow.Value, threshold, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakPercentBelowThresholdInRange(double threshold, double lowerBound, double upperBound)
+            [Description("True when: how far under the threshold the value is as a percentage of it, negative when over is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentBelowThresholdInRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoublePercentBelowThresholdInRange(flow.Value, threshold, lowerBound, upperBound));
             }
 
-            public Flow<double> RequirePercentBelowThresholdInRange(double threshold, double lowerBound, double upperBound)
+            [Description("True when: how far under the threshold the value is as a percentage of it, negative when over is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentBelowThresholdInRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoublePercentBelowThresholdInRange(flow.Value, threshold, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsurePercentBelowThresholdInRange(double threshold, double lowerBound, double upperBound)
+            [Description("True when: how far under the threshold the value is as a percentage of it, negative when over is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentBelowThresholdInRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchPercentBelowThresholdInRange(double threshold, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how far under the threshold the value is as a percentage of it, negative when over is between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchPercentBelowThresholdInRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchPercentBelowThresholdInRange(threshold, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectPercentBelowThresholdInRange(double threshold, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how far under the threshold the value is as a percentage of it, negative when over is between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectPercentBelowThresholdInRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectPercentBelowThresholdInRange(threshold, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakPercentBelowThresholdInRange(double threshold, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how far under the threshold the value is as a percentage of it, negative when over is between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakPercentBelowThresholdInRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakPercentBelowThresholdInRange(threshold, lowerBound, upperBound);
             }
 
-            public Flow<double> RequirePercentBelowThresholdInRange(double threshold, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how far under the threshold the value is as a percentage of it, negative when over is between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequirePercentBelowThresholdInRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequirePercentBelowThresholdInRange(threshold, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsurePercentBelowThresholdInRange(double threshold, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: how far under the threshold the value is as a percentage of it, negative when over is between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsurePercentBelowThresholdInRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsurePercentBelowThresholdInRange(threshold, lowerBound, upperBound);
             }

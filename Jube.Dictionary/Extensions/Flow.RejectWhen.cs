@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static Flow<T> RejectWhen<T>(this Flow<T> flow, bool condition)
+        [Description("Decides rejected when the condition, any Boolean expression, is true; otherwise continues.")]
+        public static Flow<T> RejectWhen<T>(this Flow<T> flow,
+            [Description("Any Boolean expression; the step fires when it is true.")] bool condition)
         {
             return flow.Apply(FlowKind.Reject, condition);
         }

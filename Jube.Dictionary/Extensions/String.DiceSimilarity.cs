@@ -18,7 +18,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double DiceSimilarity(this string? @this, string? other)
+        [Description("Dice bigram similarity from 0 to 1 on case-, accent- and punctuation-folded text.")]
+        public static double DiceSimilarity(this string? @this,
+            [Description("The text the value is compared with.")] string? other)
         {
             return FuzzyScorers.Dice(FuzzyNormaliser.Normalise(@this, FuzzyNormalisation.Default),
                 FuzzyNormaliser.Normalise(other, FuzzyNormalisation.Default));

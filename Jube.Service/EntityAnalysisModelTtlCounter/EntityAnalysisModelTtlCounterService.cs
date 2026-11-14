@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
@@ -66,8 +67,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
             this.permissionValidation = permissionValidation;
             repository = new EntityAnalysisModelTtlCounterRepository(dbContext, userName);
 
-            validator = new EntityAnalysisModelTtlCounterDtoValidator(repository, strings,
-                new EntityAnalysisModelRepository(dbContext, userName));
+            validator = new EntityAnalysisModelTtlCounterDtoValidator(repository, strings);
 
             deleteValidator = new ModelEntityDeleteValidator(dbContext, tenantRegistryId, userName,
                 dependencyStrings);
@@ -843,6 +843,12 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
                 op.Outcome("notfound");
                 throw;
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");

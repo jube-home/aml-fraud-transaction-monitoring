@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" class="jc jc-diagram" viewBox="0 0 702 372" preserveAspectRatio="xMidYMid meet"
-     role="img" aria-labelledby="jc-6f1bdfae-t jc-6f1bdfae-d">
-    <title id="jc-6f1bdfae-t">Principal components</title>
-    <desc id="jc-6f1bdfae-d">Principal components: scree plot of 6 components explaining 93% of the variance with a
+     role="img" aria-labelledby="jc-09e68da3-t jc-09e68da3-d">
+    <title id="jc-09e68da3-t">Principal components</title>
+    <desc id="jc-09e68da3-d">Principal components: scree plot of 6 components explaining 93% of the variance with a
         loadings heatmap of 8 features.
     </desc>
     <rect class="bg" x="0" y="0" width="702" height="372" rx="8"/>
@@ -163,10 +163,10 @@
             <rect class="cell d8" x="385.04" y="46" width="46" height="22"/>
             <text class="lbl ctr mid dt8" x="408.04" y="57">0.52</text>
             <g class="tt">
-                <rect class="tb" x="418.04" y="27" width="168.92" height="61" rx="6"/>
-                <text class="tx b" x="428.04" y="45">amount_z on PC1</text>
-                <text class="tx" x="428.04" y="62">Loading: 0.52</text>
-                <text class="tx" x="428.04" y="79">Share of component: 27.8%</text>
+                <rect class="tb" x="418.04" y="26.5" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="428.04" y="44.5">amount_z on PC1</text>
+                <text class="tx" x="428.04" y="61.5">Loading: 0.52</text>
+                <text class="tx" x="428.04" y="78.5">Share of component: 27.8%</text>
             </g>
         </g>
         <g class="mk hc rr0 cc1" tabindex="0" role="graphics-symbol"
@@ -175,10 +175,10 @@
             <rect class="cell d6" x="431.04" y="46" width="46" height="22"/>
             <text class="lbl ctr mid dt6" x="454.04" y="57">0.1</text>
             <g class="tt">
-                <rect class="tb" x="464.04" y="27" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="474.04" y="45">amount_z on PC2</text>
-                <text class="tx" x="474.04" y="62">Loading: 0.1</text>
-                <text class="tx" x="474.04" y="79">Share of component: 1.1%</text>
+                <rect class="tb" x="464.04" y="26.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="474.04" y="44.5">amount_z on PC2</text>
+                <text class="tx" x="474.04" y="61.5">Loading: 0.1</text>
+                <text class="tx" x="474.04" y="78.5">Share of component: 1.1%</text>
             </g>
         </g>
         <g class="mk hc rr0 cc2" tabindex="0" role="graphics-symbol"
@@ -187,10 +187,10 @@
             <rect class="cell d3" x="477.04" y="46" width="46" height="22"/>
             <text class="lbl ctr mid dt3" x="500.04" y="57">-0.3</text>
             <g class="tt">
-                <rect class="tb" x="327.84" y="27" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="337.84" y="45">amount_z on PC3</text>
-                <text class="tx" x="337.84" y="62">Loading: -0.3</text>
-                <text class="tx" x="337.84" y="79">Share of component: 9.2%</text>
+                <rect class="tb" x="327.84" y="26.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="337.84" y="44.5">amount_z on PC3</text>
+                <text class="tx" x="337.84" y="61.5">Loading: -0.3</text>
+                <text class="tx" x="337.84" y="78.5">Share of component: 9.2%</text>
             </g>
         </g>
         <g class="mk hc rr0 cc3" tabindex="0" role="graphics-symbol"
@@ -199,10 +199,10 @@
             <rect class="cell d5" x="523.04" y="46" width="46" height="22"/>
             <text class="lbl ctr mid dt5" x="546.04" y="57">0.05</text>
             <g class="tt">
-                <rect class="tb" x="373.84" y="27" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="383.84" y="45">amount_z on PC4</text>
-                <text class="tx" x="383.84" y="62">Loading: 0.05</text>
-                <text class="tx" x="383.84" y="79">Share of component: 0.3%</text>
+                <rect class="tb" x="373.84" y="26.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="383.84" y="44.5">amount_z on PC4</text>
+                <text class="tx" x="383.84" y="61.5">Loading: 0.05</text>
+                <text class="tx" x="383.84" y="78.5">Share of component: 0.3%</text>
             </g>
         </g>
         <g class="mk hc rr0 cc4" tabindex="0" role="graphics-symbol"
@@ -211,10 +211,10 @@
             <rect class="cell d6" x="569.04" y="46" width="46" height="22"/>
             <text class="lbl ctr mid dt6" x="592.04" y="57">0.22</text>
             <g class="tt">
-                <rect class="tb" x="429.68" y="27" width="152.36" height="61" rx="6"/>
-                <text class="tx b" x="439.68" y="45">amount_z on PC5</text>
-                <text class="tx" x="439.68" y="62">Loading: 0.22</text>
-                <text class="tx" x="439.68" y="79">Share of component: 5%</text>
+                <rect class="tb" x="429.68" y="26.5" width="152.36" height="61" rx="6"/>
+                <text class="tx b" x="439.68" y="44.5">amount_z on PC5</text>
+                <text class="tx" x="439.68" y="61.5">Loading: 0.22</text>
+                <text class="tx" x="439.68" y="78.5">Share of component: 5%</text>
             </g>
         </g>
         <g class="mk hc rr0 cc5" tabindex="0" role="graphics-symbol"
@@ -223,10 +223,10 @@
             <rect class="cell d2" x="615.04" y="46" width="46" height="22"/>
             <text class="lbl ctr mid dt2" x="638.04" y="57">-0.42</text>
             <g class="tt">
-                <rect class="tb" x="459.12" y="27" width="168.92" height="61" rx="6"/>
-                <text class="tx b" x="469.12" y="45">amount_z on PC6</text>
-                <text class="tx" x="469.12" y="62">Loading: -0.42</text>
-                <text class="tx" x="469.12" y="79">Share of component: 23.7%</text>
+                <rect class="tb" x="459.12" y="26.5" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="469.12" y="44.5">amount_z on PC6</text>
+                <text class="tx" x="469.12" y="61.5">Loading: -0.42</text>
+                <text class="tx" x="469.12" y="78.5">Share of component: 23.7%</text>
             </g>
         </g>
         <text class="tk end mid" x="375.04" y="79">velocity_1h</text>
@@ -236,10 +236,10 @@
             <rect class="cell d8" x="385.04" y="68" width="46" height="22"/>
             <text class="lbl ctr mid dt8" x="408.04" y="79">0.47</text>
             <g class="tt">
-                <rect class="tb" x="418.04" y="49" width="168.92" height="61" rx="6"/>
-                <text class="tx b" x="428.04" y="67">velocity_1h on PC1</text>
-                <text class="tx" x="428.04" y="84">Loading: 0.47</text>
-                <text class="tx" x="428.04" y="101">Share of component: 22.7%</text>
+                <rect class="tb" x="418.04" y="48.5" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="428.04" y="66.5">velocity_1h on PC1</text>
+                <text class="tx" x="428.04" y="83.5">Loading: 0.47</text>
+                <text class="tx" x="428.04" y="100.5">Share of component: 22.7%</text>
             </g>
         </g>
         <g class="mk hc rr1 cc1" tabindex="0" role="graphics-symbol"
@@ -248,10 +248,10 @@
             <rect class="cell d4" x="431.04" y="68" width="46" height="22"/>
             <text class="lbl ctr mid dt4" x="454.04" y="79">-0.18</text>
             <g class="tt">
-                <rect class="tb" x="464.04" y="49" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="474.04" y="67">velocity_1h on PC2</text>
-                <text class="tx" x="474.04" y="84">Loading: -0.18</text>
-                <text class="tx" x="474.04" y="101">Share of component: 3.5%</text>
+                <rect class="tb" x="464.04" y="48.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="474.04" y="66.5">velocity_1h on PC2</text>
+                <text class="tx" x="474.04" y="83.5">Loading: -0.18</text>
+                <text class="tx" x="474.04" y="100.5">Share of component: 3.5%</text>
             </g>
         </g>
         <g class="mk hc rr1 cc2" tabindex="0" role="graphics-symbol"
@@ -260,10 +260,10 @@
             <rect class="cell d7" x="477.04" y="68" width="46" height="22"/>
             <text class="lbl ctr mid dt7" x="500.04" y="79">0.25</text>
             <g class="tt">
-                <rect class="tb" x="327.84" y="49" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="337.84" y="67">velocity_1h on PC3</text>
-                <text class="tx" x="337.84" y="84">Loading: 0.25</text>
-                <text class="tx" x="337.84" y="101">Share of component: 6.4%</text>
+                <rect class="tb" x="327.84" y="48.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="337.84" y="66.5">velocity_1h on PC3</text>
+                <text class="tx" x="337.84" y="83.5">Loading: 0.25</text>
+                <text class="tx" x="337.84" y="100.5">Share of component: 6.4%</text>
             </g>
         </g>
         <g class="mk hc rr1 cc3" tabindex="0" role="graphics-symbol"
@@ -272,10 +272,10 @@
             <rect class="cell d6" x="523.04" y="68" width="46" height="22"/>
             <text class="lbl ctr mid dt6" x="546.04" y="79">0.1</text>
             <g class="tt">
-                <rect class="tb" x="383.68" y="49" width="152.36" height="61" rx="6"/>
-                <text class="tx b" x="393.68" y="67">velocity_1h on PC4</text>
-                <text class="tx" x="393.68" y="84">Loading: 0.1</text>
-                <text class="tx" x="393.68" y="101">Share of component: 1%</text>
+                <rect class="tb" x="383.68" y="48.5" width="152.36" height="61" rx="6"/>
+                <text class="tx b" x="393.68" y="66.5">velocity_1h on PC4</text>
+                <text class="tx" x="393.68" y="83.5">Loading: 0.1</text>
+                <text class="tx" x="393.68" y="100.5">Share of component: 1%</text>
             </g>
         </g>
         <g class="mk hc rr1 cc4" tabindex="0" role="graphics-symbol"
@@ -284,10 +284,10 @@
             <rect class="cell d1" x="569.04" y="68" width="46" height="22"/>
             <text class="lbl ctr mid dt1" x="592.04" y="79">-0.55</text>
             <g class="tt">
-                <rect class="tb" x="413.12" y="49" width="168.92" height="61" rx="6"/>
-                <text class="tx b" x="423.12" y="67">velocity_1h on PC5</text>
-                <text class="tx" x="423.12" y="84">Loading: -0.55</text>
-                <text class="tx" x="423.12" y="101">Share of component: 31.2%</text>
+                <rect class="tb" x="413.12" y="48.5" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="423.12" y="66.5">velocity_1h on PC5</text>
+                <text class="tx" x="423.12" y="83.5">Loading: -0.55</text>
+                <text class="tx" x="423.12" y="100.5">Share of component: 31.2%</text>
             </g>
         </g>
         <g class="mk hc rr1 cc5" tabindex="0" role="graphics-symbol"
@@ -296,10 +296,10 @@
             <rect class="cell d7" x="615.04" y="68" width="46" height="22"/>
             <text class="lbl ctr mid dt7" x="638.04" y="79">0.28</text>
             <g class="tt">
-                <rect class="tb" x="459.12" y="49" width="168.92" height="61" rx="6"/>
-                <text class="tx b" x="469.12" y="67">velocity_1h on PC6</text>
-                <text class="tx" x="469.12" y="84">Loading: 0.28</text>
-                <text class="tx" x="469.12" y="101">Share of component: 10.5%</text>
+                <rect class="tb" x="459.12" y="48.5" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="469.12" y="66.5">velocity_1h on PC6</text>
+                <text class="tx" x="469.12" y="83.5">Loading: 0.28</text>
+                <text class="tx" x="469.12" y="100.5">Share of component: 10.5%</text>
             </g>
         </g>
         <text class="tk end mid" x="375.04" y="101">merchant_risk</text>
@@ -309,10 +309,10 @@
             <rect class="cell d8" x="385.04" y="90" width="46" height="22"/>
             <text class="lbl ctr mid dt8" x="408.04" y="101">0.41</text>
             <g class="tt">
-                <rect class="tb" x="418.04" y="71" width="168.92" height="61" rx="6"/>
-                <text class="tx b" x="428.04" y="89">merchant_risk on PC1</text>
-                <text class="tx" x="428.04" y="106">Loading: 0.41</text>
-                <text class="tx" x="428.04" y="123">Share of component: 17.3%</text>
+                <rect class="tb" x="418.04" y="70.5" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="428.04" y="88.5">merchant_risk on PC1</text>
+                <text class="tx" x="428.04" y="105.5">Loading: 0.41</text>
+                <text class="tx" x="428.04" y="122.5">Share of component: 17.3%</text>
             </g>
         </g>
         <g class="mk hc rr2 cc1" tabindex="0" role="graphics-symbol"
@@ -321,10 +321,10 @@
             <rect class="cell d6" x="431.04" y="90" width="46" height="22"/>
             <text class="lbl ctr mid dt6" x="454.04" y="101">0.22</text>
             <g class="tt">
-                <rect class="tb" x="464.04" y="71" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="474.04" y="89">merchant_risk on PC2</text>
-                <text class="tx" x="474.04" y="106">Loading: 0.22</text>
-                <text class="tx" x="474.04" y="123">Share of component: 5.2%</text>
+                <rect class="tb" x="464.04" y="70.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="474.04" y="88.5">merchant_risk on PC2</text>
+                <text class="tx" x="474.04" y="105.5">Loading: 0.22</text>
+                <text class="tx" x="474.04" y="122.5">Share of component: 5.2%</text>
             </g>
         </g>
         <g class="mk hc rr2 cc2" tabindex="0" role="graphics-symbol"
@@ -333,10 +333,10 @@
             <rect class="cell d5" x="477.04" y="90" width="46" height="22"/>
             <text class="lbl ctr mid dt5" x="500.04" y="101">-0.05</text>
             <g class="tt">
-                <rect class="tb" x="327.84" y="71" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="337.84" y="89">merchant_risk on PC3</text>
-                <text class="tx" x="337.84" y="106">Loading: -0.05</text>
-                <text class="tx" x="337.84" y="123">Share of component: 0.3%</text>
+                <rect class="tb" x="327.84" y="70.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="337.84" y="88.5">merchant_risk on PC3</text>
+                <text class="tx" x="337.84" y="105.5">Loading: -0.05</text>
+                <text class="tx" x="337.84" y="122.5">Share of component: 0.3%</text>
             </g>
         </g>
         <g class="mk hc rr2 cc3" tabindex="0" role="graphics-symbol"
@@ -345,10 +345,10 @@
             <rect class="cell d2" x="523.04" y="90" width="46" height="22"/>
             <text class="lbl ctr mid dt2" x="546.04" y="101">-0.45</text>
             <g class="tt">
-                <rect class="tb" x="367.12" y="71" width="168.92" height="61" rx="6"/>
-                <text class="tx b" x="377.12" y="89">merchant_risk on PC4</text>
-                <text class="tx" x="377.12" y="106">Loading: -0.45</text>
-                <text class="tx" x="377.12" y="123">Share of component: 20.7%</text>
+                <rect class="tb" x="367.12" y="70.5" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="377.12" y="88.5">merchant_risk on PC4</text>
+                <text class="tx" x="377.12" y="105.5">Loading: -0.45</text>
+                <text class="tx" x="377.12" y="122.5">Share of component: 20.7%</text>
             </g>
         </g>
         <g class="mk hc rr2 cc4" tabindex="0" role="graphics-symbol"
@@ -357,10 +357,10 @@
             <rect class="cell d8" x="569.04" y="90" width="46" height="22"/>
             <text class="lbl ctr mid dt8" x="592.04" y="101">0.4</text>
             <g class="tt">
-                <rect class="tb" x="413.12" y="71" width="168.92" height="61" rx="6"/>
-                <text class="tx b" x="423.12" y="89">merchant_risk on PC5</text>
-                <text class="tx" x="423.12" y="106">Loading: 0.4</text>
-                <text class="tx" x="423.12" y="123">Share of component: 16.5%</text>
+                <rect class="tb" x="413.12" y="70.5" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="423.12" y="88.5">merchant_risk on PC5</text>
+                <text class="tx" x="423.12" y="105.5">Loading: 0.4</text>
+                <text class="tx" x="423.12" y="122.5">Share of component: 16.5%</text>
             </g>
         </g>
         <g class="mk hc rr2 cc5" tabindex="0" role="graphics-symbol"
@@ -369,10 +369,10 @@
             <rect class="cell d8" x="615.04" y="90" width="46" height="22"/>
             <text class="lbl ctr mid dt8" x="638.04" y="101">0.51</text>
             <g class="tt">
-                <rect class="tb" x="459.12" y="71" width="168.92" height="61" rx="6"/>
-                <text class="tx b" x="469.12" y="89">merchant_risk on PC6</text>
-                <text class="tx" x="469.12" y="106">Loading: 0.51</text>
-                <text class="tx" x="469.12" y="123">Share of component: 34.9%</text>
+                <rect class="tb" x="459.12" y="70.5" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="469.12" y="88.5">merchant_risk on PC6</text>
+                <text class="tx" x="469.12" y="105.5">Loading: 0.51</text>
+                <text class="tx" x="469.12" y="122.5">Share of component: 34.9%</text>
             </g>
         </g>
         <text class="tk end mid" x="375.04" y="123">geo_mismatch</text>
@@ -382,10 +382,10 @@
             <rect class="cell d7" x="385.04" y="112" width="46" height="22"/>
             <text class="lbl ctr mid dt7" x="408.04" y="123">0.28</text>
             <g class="tt">
-                <rect class="tb" x="418.04" y="93" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="428.04" y="111">geo_mismatch on PC1</text>
-                <text class="tx" x="428.04" y="128">Loading: 0.28</text>
-                <text class="tx" x="428.04" y="145">Share of component: 8.1%</text>
+                <rect class="tb" x="418.04" y="92.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="428.04" y="110.5">geo_mismatch on PC1</text>
+                <text class="tx" x="428.04" y="127.5">Loading: 0.28</text>
+                <text class="tx" x="428.04" y="144.5">Share of component: 8.1%</text>
             </g>
         </g>
         <g class="mk hc rr3 cc1" tabindex="0" role="graphics-symbol"
@@ -394,10 +394,10 @@
             <rect class="cell d9" x="431.04" y="112" width="46" height="22"/>
             <text class="lbl ctr mid dt9" x="454.04" y="123">0.55</text>
             <g class="tt">
-                <rect class="tb" x="464.04" y="93" width="168.92" height="61" rx="6"/>
-                <text class="tx b" x="474.04" y="111">geo_mismatch on PC2</text>
-                <text class="tx" x="474.04" y="128">Loading: 0.55</text>
-                <text class="tx" x="474.04" y="145">Share of component: 32.7%</text>
+                <rect class="tb" x="464.04" y="92.5" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="474.04" y="110.5">geo_mismatch on PC2</text>
+                <text class="tx" x="474.04" y="127.5">Loading: 0.55</text>
+                <text class="tx" x="474.04" y="144.5">Share of component: 32.7%</text>
             </g>
         </g>
         <g class="mk hc rr3 cc2" tabindex="0" role="graphics-symbol"
@@ -406,10 +406,10 @@
             <rect class="cell d6" x="477.04" y="112" width="46" height="22"/>
             <text class="lbl ctr mid dt6" x="500.04" y="123">0.12</text>
             <g class="tt">
-                <rect class="tb" x="327.84" y="93" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="337.84" y="111">geo_mismatch on PC3</text>
-                <text class="tx" x="337.84" y="128">Loading: 0.12</text>
-                <text class="tx" x="337.84" y="145">Share of component: 1.5%</text>
+                <rect class="tb" x="327.84" y="92.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="337.84" y="110.5">geo_mismatch on PC3</text>
+                <text class="tx" x="337.84" y="127.5">Loading: 0.12</text>
+                <text class="tx" x="337.84" y="144.5">Share of component: 1.5%</text>
             </g>
         </g>
         <g class="mk hc rr3 cc3" tabindex="0" role="graphics-symbol"
@@ -418,10 +418,10 @@
             <rect class="cell d7" x="523.04" y="112" width="46" height="22"/>
             <text class="lbl ctr mid dt7" x="546.04" y="123">0.3</text>
             <g class="tt">
-                <rect class="tb" x="373.84" y="93" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="383.84" y="111">geo_mismatch on PC4</text>
-                <text class="tx" x="383.84" y="128">Loading: 0.3</text>
-                <text class="tx" x="383.84" y="145">Share of component: 9.2%</text>
+                <rect class="tb" x="373.84" y="92.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="383.84" y="110.5">geo_mismatch on PC4</text>
+                <text class="tx" x="383.84" y="127.5">Loading: 0.3</text>
+                <text class="tx" x="383.84" y="144.5">Share of component: 9.2%</text>
             </g>
         </g>
         <g class="mk hc rr3 cc4" tabindex="0" role="graphics-symbol"
@@ -430,10 +430,10 @@
             <rect class="cell d4" x="569.04" y="112" width="46" height="22"/>
             <text class="lbl ctr mid dt4" x="592.04" y="123">-0.1</text>
             <g class="tt">
-                <rect class="tb" x="429.68" y="93" width="152.36" height="61" rx="6"/>
-                <text class="tx b" x="439.68" y="111">geo_mismatch on PC5</text>
-                <text class="tx" x="439.68" y="128">Loading: -0.1</text>
-                <text class="tx" x="439.68" y="145">Share of component: 1%</text>
+                <rect class="tb" x="429.68" y="92.5" width="152.36" height="61" rx="6"/>
+                <text class="tx b" x="439.68" y="110.5">geo_mismatch on PC5</text>
+                <text class="tx" x="439.68" y="127.5">Loading: -0.1</text>
+                <text class="tx" x="439.68" y="144.5">Share of component: 1%</text>
             </g>
         </g>
         <g class="mk hc rr3 cc5" tabindex="0" role="graphics-symbol"
@@ -442,10 +442,10 @@
             <rect class="cell d4" x="615.04" y="112" width="46" height="22"/>
             <text class="lbl ctr mid dt4" x="638.04" y="123">-0.22</text>
             <g class="tt">
-                <rect class="tb" x="465.84" y="93" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="475.84" y="111">geo_mismatch on PC6</text>
-                <text class="tx" x="475.84" y="128">Loading: -0.22</text>
-                <text class="tx" x="475.84" y="145">Share of component: 6.5%</text>
+                <rect class="tb" x="465.84" y="92.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="475.84" y="110.5">geo_mismatch on PC6</text>
+                <text class="tx" x="475.84" y="127.5">Loading: -0.22</text>
+                <text class="tx" x="475.84" y="144.5">Share of component: 6.5%</text>
             </g>
         </g>
         <text class="tk end mid" x="375.04" y="145">account_age</text>
@@ -455,10 +455,10 @@
             <rect class="cell d4" x="385.04" y="134" width="46" height="22"/>
             <text class="lbl ctr mid dt4" x="408.04" y="145">-0.22</text>
             <g class="tt">
-                <rect class="tb" x="418.04" y="115" width="152.36" height="61" rx="6"/>
-                <text class="tx b" x="428.04" y="133">account_age on PC1</text>
-                <text class="tx" x="428.04" y="150">Loading: -0.22</text>
-                <text class="tx" x="428.04" y="167">Share of component: 5%</text>
+                <rect class="tb" x="418.04" y="114.5" width="152.36" height="61" rx="6"/>
+                <text class="tx b" x="428.04" y="132.5">account_age on PC1</text>
+                <text class="tx" x="428.04" y="149.5">Loading: -0.22</text>
+                <text class="tx" x="428.04" y="166.5">Share of component: 5%</text>
             </g>
         </g>
         <g class="mk hc rr4 cc1" tabindex="0" role="graphics-symbol"
@@ -467,10 +467,10 @@
             <rect class="cell d9" x="431.04" y="134" width="46" height="22"/>
             <text class="lbl ctr mid dt9" x="454.04" y="145">0.61</text>
             <g class="tt">
-                <rect class="tb" x="464.04" y="115" width="168.92" height="61" rx="6"/>
-                <text class="tx b" x="474.04" y="133">account_age on PC2</text>
-                <text class="tx" x="474.04" y="150">Loading: 0.61</text>
-                <text class="tx" x="474.04" y="167">Share of component: 40.3%</text>
+                <rect class="tb" x="464.04" y="114.5" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="474.04" y="132.5">account_age on PC2</text>
+                <text class="tx" x="474.04" y="149.5">Loading: 0.61</text>
+                <text class="tx" x="474.04" y="166.5">Share of component: 40.3%</text>
             </g>
         </g>
         <g class="mk hc rr4 cc2" tabindex="0" role="graphics-symbol"
@@ -479,10 +479,10 @@
             <rect class="cell d6" x="477.04" y="134" width="46" height="22"/>
             <text class="lbl ctr mid dt6" x="500.04" y="145">0.2</text>
             <g class="tt">
-                <rect class="tb" x="327.84" y="115" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="337.84" y="133">account_age on PC3</text>
-                <text class="tx" x="337.84" y="150">Loading: 0.2</text>
-                <text class="tx" x="337.84" y="167">Share of component: 4.1%</text>
+                <rect class="tb" x="327.84" y="114.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="337.84" y="132.5">account_age on PC3</text>
+                <text class="tx" x="337.84" y="149.5">Loading: 0.2</text>
+                <text class="tx" x="337.84" y="166.5">Share of component: 4.1%</text>
             </g>
         </g>
         <g class="mk hc rr4 cc3" tabindex="0" role="graphics-symbol"
@@ -491,10 +491,10 @@
             <rect class="cell d4" x="523.04" y="134" width="46" height="22"/>
             <text class="lbl ctr mid dt4" x="546.04" y="145">-0.15</text>
             <g class="tt">
-                <rect class="tb" x="373.84" y="115" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="383.84" y="133">account_age on PC4</text>
-                <text class="tx" x="383.84" y="150">Loading: -0.15</text>
-                <text class="tx" x="383.84" y="167">Share of component: 2.3%</text>
+                <rect class="tb" x="373.84" y="114.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="383.84" y="132.5">account_age on PC4</text>
+                <text class="tx" x="383.84" y="149.5">Loading: -0.15</text>
+                <text class="tx" x="383.84" y="166.5">Share of component: 2.3%</text>
             </g>
         </g>
         <g class="mk hc rr4 cc4" tabindex="0" role="graphics-symbol"
@@ -503,10 +503,10 @@
             <rect class="cell d7" x="569.04" y="134" width="46" height="22"/>
             <text class="lbl ctr mid dt7" x="592.04" y="145">0.35</text>
             <g class="tt">
-                <rect class="tb" x="413.12" y="115" width="168.92" height="61" rx="6"/>
-                <text class="tx b" x="423.12" y="133">account_age on PC5</text>
-                <text class="tx" x="423.12" y="150">Loading: 0.35</text>
-                <text class="tx" x="423.12" y="167">Share of component: 12.6%</text>
+                <rect class="tb" x="413.12" y="114.5" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="423.12" y="132.5">account_age on PC5</text>
+                <text class="tx" x="423.12" y="149.5">Loading: 0.35</text>
+                <text class="tx" x="423.12" y="166.5">Share of component: 12.6%</text>
             </g>
         </g>
         <g class="mk hc rr4 cc5" tabindex="0" role="graphics-symbol"
@@ -515,10 +515,10 @@
             <rect class="cell d7" x="615.04" y="134" width="46" height="22"/>
             <text class="lbl ctr mid dt7" x="638.04" y="145">0.25</text>
             <g class="tt">
-                <rect class="tb" x="465.84" y="115" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="475.84" y="133">account_age on PC6</text>
-                <text class="tx" x="475.84" y="150">Loading: 0.25</text>
-                <text class="tx" x="475.84" y="167">Share of component: 8.4%</text>
+                <rect class="tb" x="465.84" y="114.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="475.84" y="132.5">account_age on PC6</text>
+                <text class="tx" x="475.84" y="149.5">Loading: 0.25</text>
+                <text class="tx" x="475.84" y="166.5">Share of component: 8.4%</text>
             </g>
         </g>
         <text class="tk end mid" x="375.04" y="167">night_time</text>
@@ -528,10 +528,10 @@
             <rect class="cell d6" x="385.04" y="156" width="46" height="22"/>
             <text class="lbl ctr mid dt6" x="408.04" y="167">0.12</text>
             <g class="tt">
-                <rect class="tb" x="418.04" y="137" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="428.04" y="155">night_time on PC1</text>
-                <text class="tx" x="428.04" y="172">Loading: 0.12</text>
-                <text class="tx" x="428.04" y="189">Share of component: 1.5%</text>
+                <rect class="tb" x="418.04" y="136.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="428.04" y="154.5">night_time on PC1</text>
+                <text class="tx" x="428.04" y="171.5">Loading: 0.12</text>
+                <text class="tx" x="428.04" y="188.5">Share of component: 1.5%</text>
             </g>
         </g>
         <g class="mk hc rr5 cc1" tabindex="0" role="graphics-symbol"
@@ -540,10 +540,10 @@
             <rect class="cell d3" x="431.04" y="156" width="46" height="22"/>
             <text class="lbl ctr mid dt3" x="454.04" y="167">-0.3</text>
             <g class="tt">
-                <rect class="tb" x="464.04" y="137" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="474.04" y="155">night_time on PC2</text>
-                <text class="tx" x="474.04" y="172">Loading: -0.3</text>
-                <text class="tx" x="474.04" y="189">Share of component: 9.7%</text>
+                <rect class="tb" x="464.04" y="136.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="474.04" y="154.5">night_time on PC2</text>
+                <text class="tx" x="474.04" y="171.5">Loading: -0.3</text>
+                <text class="tx" x="474.04" y="188.5">Share of component: 9.7%</text>
             </g>
         </g>
         <g class="mk hc rr5 cc2" tabindex="0" role="graphics-symbol"
@@ -552,10 +552,10 @@
             <rect class="cell d10" x="477.04" y="156" width="46" height="22"/>
             <text class="lbl ctr mid dt10" x="500.04" y="167">0.72</text>
             <g class="tt">
-                <rect class="tb" x="321.12" y="137" width="168.92" height="61" rx="6"/>
-                <text class="tx b" x="331.12" y="155">night_time on PC3</text>
-                <text class="tx" x="331.12" y="172">Loading: 0.72</text>
-                <text class="tx" x="331.12" y="189">Share of component: 52.9%</text>
+                <rect class="tb" x="321.12" y="136.5" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="331.12" y="154.5">night_time on PC3</text>
+                <text class="tx" x="331.12" y="171.5">Loading: 0.72</text>
+                <text class="tx" x="331.12" y="188.5">Share of component: 52.9%</text>
             </g>
         </g>
         <g class="mk hc rr5 cc3" tabindex="0" role="graphics-symbol"
@@ -564,10 +564,10 @@
             <rect class="cell d6" x="523.04" y="156" width="46" height="22"/>
             <text class="lbl ctr mid dt6" x="546.04" y="167">0.2</text>
             <g class="tt">
-                <rect class="tb" x="373.84" y="137" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="383.84" y="155">night_time on PC4</text>
-                <text class="tx" x="383.84" y="172">Loading: 0.2</text>
-                <text class="tx" x="383.84" y="189">Share of component: 4.1%</text>
+                <rect class="tb" x="373.84" y="136.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="383.84" y="154.5">night_time on PC4</text>
+                <text class="tx" x="383.84" y="171.5">Loading: 0.2</text>
+                <text class="tx" x="383.84" y="188.5">Share of component: 4.1%</text>
             </g>
         </g>
         <g class="mk hc rr5 cc4" tabindex="0" role="graphics-symbol"
@@ -576,10 +576,10 @@
             <rect class="cell d6" x="569.04" y="156" width="46" height="22"/>
             <text class="lbl ctr mid dt6" x="592.04" y="167">0.1</text>
             <g class="tt">
-                <rect class="tb" x="429.68" y="137" width="152.36" height="61" rx="6"/>
-                <text class="tx b" x="439.68" y="155">night_time on PC5</text>
-                <text class="tx" x="439.68" y="172">Loading: 0.1</text>
-                <text class="tx" x="439.68" y="189">Share of component: 1%</text>
+                <rect class="tb" x="429.68" y="136.5" width="152.36" height="61" rx="6"/>
+                <text class="tx b" x="439.68" y="154.5">night_time on PC5</text>
+                <text class="tx" x="439.68" y="171.5">Loading: 0.1</text>
+                <text class="tx" x="439.68" y="188.5">Share of component: 1%</text>
             </g>
         </g>
         <g class="mk hc rr5 cc5" tabindex="0" role="graphics-symbol"
@@ -588,10 +588,10 @@
             <rect class="cell d5" x="615.04" y="156" width="46" height="22"/>
             <text class="lbl ctr mid dt5" x="638.04" y="167">-0.02</text>
             <g class="tt">
-                <rect class="tb" x="465.84" y="137" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="475.84" y="155">night_time on PC6</text>
-                <text class="tx" x="475.84" y="172">Loading: -0.02</text>
-                <text class="tx" x="475.84" y="189">Share of component: 0.1%</text>
+                <rect class="tb" x="465.84" y="136.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="475.84" y="154.5">night_time on PC6</text>
+                <text class="tx" x="475.84" y="171.5">Loading: -0.02</text>
+                <text class="tx" x="475.84" y="188.5">Share of component: 0.1%</text>
             </g>
         </g>
         <text class="tk end mid" x="375.04" y="189">channel_atm</text>
@@ -601,10 +601,10 @@
             <rect class="cell d5" x="385.04" y="178" width="46" height="22"/>
             <text class="lbl ctr mid dt5" x="408.04" y="189">0.05</text>
             <g class="tt">
-                <rect class="tb" x="418.04" y="159" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="428.04" y="177">channel_atm on PC1</text>
-                <text class="tx" x="428.04" y="194">Loading: 0.05</text>
-                <text class="tx" x="428.04" y="211">Share of component: 0.3%</text>
+                <rect class="tb" x="418.04" y="158.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="428.04" y="176.5">channel_atm on PC1</text>
+                <text class="tx" x="428.04" y="193.5">Loading: 0.05</text>
+                <text class="tx" x="428.04" y="210.5">Share of component: 0.3%</text>
             </g>
         </g>
         <g class="mk hc rr6 cc1" tabindex="0" role="graphics-symbol"
@@ -613,10 +613,10 @@
             <rect class="cell d7" x="431.04" y="178" width="46" height="22"/>
             <text class="lbl ctr mid dt7" x="454.04" y="189">0.25</text>
             <g class="tt">
-                <rect class="tb" x="464.04" y="159" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="474.04" y="177">channel_atm on PC2</text>
-                <text class="tx" x="474.04" y="194">Loading: 0.25</text>
-                <text class="tx" x="474.04" y="211">Share of component: 6.8%</text>
+                <rect class="tb" x="464.04" y="158.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="474.04" y="176.5">channel_atm on PC2</text>
+                <text class="tx" x="474.04" y="193.5">Loading: 0.25</text>
+                <text class="tx" x="474.04" y="210.5">Share of component: 6.8%</text>
             </g>
         </g>
         <g class="mk hc rr6 cc2" tabindex="0" role="graphics-symbol"
@@ -625,10 +625,10 @@
             <rect class="cell d3" x="477.04" y="178" width="46" height="22"/>
             <text class="lbl ctr mid dt3" x="500.04" y="189">-0.35</text>
             <g class="tt">
-                <rect class="tb" x="321.12" y="159" width="168.92" height="61" rx="6"/>
-                <text class="tx b" x="331.12" y="177">channel_atm on PC3</text>
-                <text class="tx" x="331.12" y="194">Loading: -0.35</text>
-                <text class="tx" x="331.12" y="211">Share of component: 12.5%</text>
+                <rect class="tb" x="321.12" y="158.5" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="331.12" y="176.5">channel_atm on PC3</text>
+                <text class="tx" x="331.12" y="193.5">Loading: -0.35</text>
+                <text class="tx" x="331.12" y="210.5">Share of component: 12.5%</text>
             </g>
         </g>
         <g class="mk hc rr6 cc3" tabindex="0" role="graphics-symbol"
@@ -637,10 +637,10 @@
             <rect class="cell d10" x="523.04" y="178" width="46" height="22"/>
             <text class="lbl ctr mid dt10" x="546.04" y="189">0.78</text>
             <g class="tt">
-                <rect class="tb" x="367.12" y="159" width="168.92" height="61" rx="6"/>
-                <text class="tx b" x="377.12" y="177">channel_atm on PC4</text>
-                <text class="tx" x="377.12" y="194">Loading: 0.78</text>
-                <text class="tx" x="377.12" y="211">Share of component: 62.2%</text>
+                <rect class="tb" x="367.12" y="158.5" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="377.12" y="176.5">channel_atm on PC4</text>
+                <text class="tx" x="377.12" y="193.5">Loading: 0.78</text>
+                <text class="tx" x="377.12" y="210.5">Share of component: 62.2%</text>
             </g>
         </g>
         <g class="mk hc rr6 cc4" tabindex="0" role="graphics-symbol"
@@ -649,10 +649,10 @@
             <rect class="cell d6" x="569.04" y="178" width="46" height="22"/>
             <text class="lbl ctr mid dt6" x="592.04" y="189">0.12</text>
             <g class="tt">
-                <rect class="tb" x="419.84" y="159" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="429.84" y="177">channel_atm on PC5</text>
-                <text class="tx" x="429.84" y="194">Loading: 0.12</text>
-                <text class="tx" x="429.84" y="211">Share of component: 1.5%</text>
+                <rect class="tb" x="419.84" y="158.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="429.84" y="176.5">channel_atm on PC5</text>
+                <text class="tx" x="429.84" y="193.5">Loading: 0.12</text>
+                <text class="tx" x="429.84" y="210.5">Share of component: 1.5%</text>
             </g>
         </g>
         <g class="mk hc rr6 cc5" tabindex="0" role="graphics-symbol"
@@ -661,10 +661,10 @@
             <rect class="cell d3" x="615.04" y="178" width="46" height="22"/>
             <text class="lbl ctr mid dt3" x="638.04" y="189">-0.28</text>
             <g class="tt">
-                <rect class="tb" x="459.12" y="159" width="168.92" height="61" rx="6"/>
-                <text class="tx b" x="469.12" y="177">channel_atm on PC6</text>
-                <text class="tx" x="469.12" y="194">Loading: -0.28</text>
-                <text class="tx" x="469.12" y="211">Share of component: 10.5%</text>
+                <rect class="tb" x="459.12" y="158.5" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="469.12" y="176.5">channel_atm on PC6</text>
+                <text class="tx" x="469.12" y="193.5">Loading: -0.28</text>
+                <text class="tx" x="469.12" y="210.5">Share of component: 10.5%</text>
             </g>
         </g>
         <text class="tk end mid" x="375.04" y="211">balance_ratio</text>
@@ -674,10 +674,10 @@
             <rect class="cell d2" x="385.04" y="200" width="46" height="22"/>
             <text class="lbl ctr mid dt2" x="408.04" y="211">-0.41</text>
             <g class="tt">
-                <rect class="tb" x="418.04" y="181" width="168.92" height="61" rx="6"/>
-                <text class="tx b" x="428.04" y="199">balance_ratio on PC1</text>
-                <text class="tx" x="428.04" y="216">Loading: -0.41</text>
-                <text class="tx" x="428.04" y="233">Share of component: 17.3%</text>
+                <rect class="tb" x="418.04" y="180.5" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="428.04" y="198.5">balance_ratio on PC1</text>
+                <text class="tx" x="428.04" y="215.5">Loading: -0.41</text>
+                <text class="tx" x="428.04" y="232.5">Share of component: 17.3%</text>
             </g>
         </g>
         <g class="mk hc rr7 cc1" tabindex="0" role="graphics-symbol"
@@ -686,10 +686,10 @@
             <rect class="cell d6" x="431.04" y="200" width="46" height="22"/>
             <text class="lbl ctr mid dt6" x="454.04" y="211">0.08</text>
             <g class="tt">
-                <rect class="tb" x="464.04" y="181" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="474.04" y="199">balance_ratio on PC2</text>
-                <text class="tx" x="474.04" y="216">Loading: 0.08</text>
-                <text class="tx" x="474.04" y="233">Share of component: 0.7%</text>
+                <rect class="tb" x="464.04" y="180.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="474.04" y="198.5">balance_ratio on PC2</text>
+                <text class="tx" x="474.04" y="215.5">Loading: 0.08</text>
+                <text class="tx" x="474.04" y="232.5">Share of component: 0.7%</text>
             </g>
         </g>
         <g class="mk hc rr7 cc2" tabindex="0" role="graphics-symbol"
@@ -698,10 +698,10 @@
             <rect class="cell d7" x="477.04" y="200" width="46" height="22"/>
             <text class="lbl ctr mid dt7" x="500.04" y="211">0.36</text>
             <g class="tt">
-                <rect class="tb" x="321.12" y="181" width="168.92" height="61" rx="6"/>
-                <text class="tx b" x="331.12" y="199">balance_ratio on PC3</text>
-                <text class="tx" x="331.12" y="216">Loading: 0.36</text>
-                <text class="tx" x="331.12" y="233">Share of component: 13.2%</text>
+                <rect class="tb" x="321.12" y="180.5" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="331.12" y="198.5">balance_ratio on PC3</text>
+                <text class="tx" x="331.12" y="215.5">Loading: 0.36</text>
+                <text class="tx" x="331.12" y="232.5">Share of component: 13.2%</text>
             </g>
         </g>
         <g class="mk hc rr7 cc3" tabindex="0" role="graphics-symbol"
@@ -710,10 +710,10 @@
             <rect class="cell d5" x="523.04" y="200" width="46" height="22"/>
             <text class="lbl ctr mid dt5" x="546.04" y="211">0.05</text>
             <g class="tt">
-                <rect class="tb" x="373.84" y="181" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="383.84" y="199">balance_ratio on PC4</text>
-                <text class="tx" x="383.84" y="216">Loading: 0.05</text>
-                <text class="tx" x="383.84" y="233">Share of component: 0.3%</text>
+                <rect class="tb" x="373.84" y="180.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="383.84" y="198.5">balance_ratio on PC4</text>
+                <text class="tx" x="383.84" y="215.5">Loading: 0.05</text>
+                <text class="tx" x="383.84" y="232.5">Share of component: 0.3%</text>
             </g>
         </g>
         <g class="mk hc rr7 cc4" tabindex="0" role="graphics-symbol"
@@ -722,10 +722,10 @@
             <rect class="cell d9" x="569.04" y="200" width="46" height="22"/>
             <text class="lbl ctr mid dt9" x="592.04" y="211">0.55</text>
             <g class="tt">
-                <rect class="tb" x="413.12" y="181" width="168.92" height="61" rx="6"/>
-                <text class="tx b" x="423.12" y="199">balance_ratio on PC5</text>
-                <text class="tx" x="423.12" y="216">Loading: 0.55</text>
-                <text class="tx" x="423.12" y="233">Share of component: 31.2%</text>
+                <rect class="tb" x="413.12" y="180.5" width="168.92" height="61" rx="6"/>
+                <text class="tx b" x="423.12" y="198.5">balance_ratio on PC5</text>
+                <text class="tx" x="423.12" y="215.5">Loading: 0.55</text>
+                <text class="tx" x="423.12" y="232.5">Share of component: 31.2%</text>
             </g>
         </g>
         <g class="mk hc rr7 cc5" tabindex="0" role="graphics-symbol"
@@ -734,10 +734,10 @@
             <rect class="cell d4" x="615.04" y="200" width="46" height="22"/>
             <text class="lbl ctr mid dt4" x="638.04" y="211">-0.2</text>
             <g class="tt">
-                <rect class="tb" x="465.84" y="181" width="162.2" height="61" rx="6"/>
-                <text class="tx b" x="475.84" y="199">balance_ratio on PC6</text>
-                <text class="tx" x="475.84" y="216">Loading: -0.2</text>
-                <text class="tx" x="475.84" y="233">Share of component: 5.4%</text>
+                <rect class="tb" x="465.84" y="180.5" width="162.2" height="61" rx="6"/>
+                <text class="tx b" x="475.84" y="198.5">balance_ratio on PC6</text>
+                <text class="tx" x="475.84" y="215.5">Loading: -0.2</text>
+                <text class="tx" x="475.84" y="232.5">Share of component: 5.4%</text>
             </g>
         </g>
         <text class="key" x="302" y="277">Loading</text>

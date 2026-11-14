@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
@@ -597,10 +598,10 @@ namespace Jube.Service.EntityAnalysisModel
                     if (log.IsWarnEnabled)
                     {
                         log.Warn(
-                            $"EntityAnalysisModel.Update: id={model.Id} not found, locked, deleted, or not visible to tenant user={userName}");
+                            $"EntityAnalysisModel.Update: id={model.Id} not found, locked, or not visible to tenant user={userName}");
                     }
 
-                    throw new NotFoundException("The model was not found.", ex);
+                    throw new NotFoundException(strings[EntityAnalysisModelResources.ModelNotFound], ex);
                 }
 
                 op.Entity(saved.Id);
@@ -629,6 +630,12 @@ namespace Jube.Service.EntityAnalysisModel
                 op.Outcome("notfound");
                 throw;
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
@@ -680,7 +687,7 @@ namespace Jube.Service.EntityAnalysisModel
                             $"EntityAnalysisModel.Delete: id={id} not found, locked, already deleted, or not visible to tenant user={userName}");
                     }
 
-                    throw new NotFoundException("The model was not found.", ex);
+                    throw new NotFoundException(strings[EntityAnalysisModelResources.ModelNotFound], ex);
                 }
 
                 op.Entity(id);
@@ -720,6 +727,72 @@ namespace Jube.Service.EntityAnalysisModel
             }
         }
 
+        [Description("Unlocks a locked Model in the caller's tenant by its Id so that it can be edited and " +
+                     "deleted again. Fails as not found when the model is not locked. Recorded in the version " +
+                     "history like an update.")]
+        public async Task<ModelPoco> UnlockAsync(
+            [Description("Numeric identifier of the model to unlock.")]
+            int id,
+            CancellationToken token = default)
+        {
+            using var op = OperationScope.Start("EntityAnalysisModel", "Unlock", userName, tenantRegistryId, auditLog,
+                log, serviceChangeBus);
+
+            try
+            {
+                EnsurePermitted(permissions, "EntityAnalysisModel.Unlock");
+
+                ModelPoco saved;
+
+                try
+                {
+                    saved = await repository.UnlockAsync(id, token).ConfigureAwait(false);
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn(
+                            $"EntityAnalysisModel.Unlock: id={id} not found, not locked, or not visible to tenant user={userName}");
+                    }
+
+                    throw new NotFoundException(strings[EntityAnalysisModelResources.ModelNotFound], ex);
+                }
+
+                op.Entity(saved.Id);
+                op.Version(saved.Version.GetValueOrDefault());
+                op.Updated();
+
+                if (log.IsInfoEnabled)
+                {
+                    log.Info($"EntityAnalysisModel.Unlock: Id={saved.Id} version->{saved.Version} user={userName}");
+                }
+
+                return saved;
+            }
+            catch (ForbiddenException)
+            {
+                op.Outcome("forbidden");
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                op.Outcome("notfound");
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                op.Outcome("cancelled");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                op.Error(ex);
+                log.Error($"EntityAnalysisModel.Unlock: unexpected failure id={id} user={userName}", ex);
+                throw;
+            }
+        }
+
         [Description("Resubmits a rejected Model for approval again, unchanged, opening a fresh approval cycle " +
                      "without requiring an edit. Use after a rejection was explained and the maker still wants " +
                      "the same change (including a delete) approved.")]
@@ -749,7 +822,7 @@ namespace Jube.Service.EntityAnalysisModel
                 }
                 catch (KeyNotFoundException ex)
                 {
-                    throw new NotFoundException("The model was not found.", ex);
+                    throw new NotFoundException(strings[EntityAnalysisModelResources.ModelNotFound], ex);
                 }
                 catch (InvalidOperationException ex)
                 {
@@ -824,7 +897,7 @@ namespace Jube.Service.EntityAnalysisModel
                 }
                 catch (KeyNotFoundException ex)
                 {
-                    throw new NotFoundException("The model was not found.", ex);
+                    throw new NotFoundException(strings[EntityAnalysisModelResources.ModelNotFound], ex);
                 }
                 catch (InvalidOperationException ex)
                 {

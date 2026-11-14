@@ -12,12 +12,14 @@ namespace Jube.Dictionary.Extensions
     {
         extension(String str)
         {
+            [Description("URL decodes a string.")]
             public String UrlDecode()
             {
                 return HttpUtility.UrlDecode(str);
             }
 
-            public String UrlDecode(Encoding e)
+            [Description("URL decodes with specified encoding.")]
+            public String UrlDecode([Description("The encoding that specifies the decoding scheme.")] Encoding e)
             {
                 return HttpUtility.UrlDecode(str, e);
             }

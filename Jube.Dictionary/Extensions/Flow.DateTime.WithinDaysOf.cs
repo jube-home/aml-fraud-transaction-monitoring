@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
-            public Flow<DateTime> MatchWithinDaysOf(DateTime other, double days)
+            [Description("True when: within the days of the argument, in either direction. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchWithinDaysOf([Description("The other date.")] DateTime other,
+                [Description("The number of days either side.")] double days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeWithinDaysOf(flow.Value, other, days));
             }
 
-            public Flow<DateTime> RejectWithinDaysOf(DateTime other, double days)
+            [Description("True when: within the days of the argument, in either direction. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectWithinDaysOf([Description("The other date.")] DateTime other,
+                [Description("The number of days either side.")] double days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeWithinDaysOf(flow.Value, other, days));
             }
 
-            public Flow<DateTime> BreakWithinDaysOf(DateTime other, double days)
+            [Description("True when: within the days of the argument, in either direction. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakWithinDaysOf([Description("The other date.")] DateTime other,
+                [Description("The number of days either side.")] double days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeWithinDaysOf(flow.Value, other, days));
             }
 
-            public Flow<DateTime> RequireWithinDaysOf(DateTime other, double days)
+            [Description("True when: within the days of the argument, in either direction. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireWithinDaysOf([Description("The other date.")] DateTime other,
+                [Description("The number of days either side.")] double days)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeWithinDaysOf(flow.Value, other, days));
             }
 
-            public Flow<DateTime> EnsureWithinDaysOf(DateTime other, double days)
+            [Description("True when: within the days of the argument, in either direction. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureWithinDaysOf([Description("The other date.")] DateTime other,
+                [Description("The number of days either side.")] double days)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
-            public Flow<DateTime> MatchWithinDaysOf(DateTime other, double days)
+            [Description("Begins a pipeline from the value. True when: within the days of the argument, in either direction. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchWithinDaysOf([Description("The other date.")] DateTime other,
+                [Description("The number of days either side.")] double days)
             {
                 return value.Start().MatchWithinDaysOf(other, days);
             }
 
-            public Flow<DateTime> RejectWithinDaysOf(DateTime other, double days)
+            [Description("Begins a pipeline from the value. True when: within the days of the argument, in either direction. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectWithinDaysOf([Description("The other date.")] DateTime other,
+                [Description("The number of days either side.")] double days)
             {
                 return value.Start().RejectWithinDaysOf(other, days);
             }
 
-            public Flow<DateTime> BreakWithinDaysOf(DateTime other, double days)
+            [Description("Begins a pipeline from the value. True when: within the days of the argument, in either direction. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakWithinDaysOf([Description("The other date.")] DateTime other,
+                [Description("The number of days either side.")] double days)
             {
                 return value.Start().BreakWithinDaysOf(other, days);
             }
 
-            public Flow<DateTime> RequireWithinDaysOf(DateTime other, double days)
+            [Description("Begins a pipeline from the value. True when: within the days of the argument, in either direction. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireWithinDaysOf([Description("The other date.")] DateTime other,
+                [Description("The number of days either side.")] double days)
             {
                 return value.Start().RequireWithinDaysOf(other, days);
             }
 
-            public Flow<DateTime> EnsureWithinDaysOf(DateTime other, double days)
+            [Description("Begins a pipeline from the value. True when: within the days of the argument, in either direction. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureWithinDaysOf([Description("The other date.")] DateTime other,
+                [Description("The number of days either side.")] double days)
             {
                 return value.Start().EnsureWithinDaysOf(other, days);
             }

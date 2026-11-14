@@ -18,6 +18,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Lower-case hex MD5 digest, for matching legacy values only.")]
         public static string Md5Hex(this string? @this)
         {
             return Convert.ToHexStringLower(MD5.HashData(Encoding.UTF8.GetBytes(@this ?? "")));

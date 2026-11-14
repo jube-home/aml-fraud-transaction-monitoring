@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,16 +21,20 @@ using System.ComponentModel;
 
 namespace Jube.Dto.ExhaustiveInstanceDataset
 {
+    [MessagePackObject]
     public class ExhaustiveInstanceDatasetMappingDto
     {
         [Description(
             "Identifier of the dataset the mapping applies to, within the store chosen by the route (Csv or Json).")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("Optional replacement display name for the dataset.")]
+        [Key(1)]
         public string? Name { get; set; }
 
         [Description("One entry per column of the dataset.")]
+        [Key(2)]
         public List<ExhaustiveInstanceDatasetMappingColumnDto>? Columns { get; set; }
     }
 }

@@ -39,13 +39,12 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(6)] public int? ImportId { get; set; }
 
         [Association(ThisKey = "ExhaustiveSearchInstancePromotedTrialInstancePredictedActualId", OtherKey = "Id",
-            CanBeNull = true, Relationship = Relationship.ManyToOne)]
+            CanBeNull = true)]
         [Key(7)]
         public ExhaustiveSearchInstancePromotedTrialInstancePredictedActual
             ExhaustiveSearchInstancePromotedTrialInstancePredictedActual { get; set; }
 
-        [Association(ThisKey = "ExhaustiveSearchInstanceVariableId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "ExhaustiveSearchInstanceVariableId", OtherKey = "Id", CanBeNull = true)]
         [Key(8)]
         public ExhaustiveSearchInstanceVariable ExhaustiveSearchInstanceVariable { get; set; }
     }

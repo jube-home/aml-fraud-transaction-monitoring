@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root"
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
                 xmlns="">
         <xsd:element name="root" msdata:IsDataSet="true">
             <xsd:complexType>
@@ -54,13 +55,16 @@
     <value>This name already exists.</value>
   </data>
     <data name="DataTypeIdInvalid" xml:space="preserve">
-    <value>The data type must be String, Integer, Float, Date, Boolean, Latitude or Longitude.</value>
+    <value>The data type must be String, Integer, Float, Date, Boolean, Latitude, Longitude or IP.</value>
   </data>
     <data name="XPathRequired" xml:space="preserve">
     <value>An XPath (JSONPath) is required.</value>
   </data>
     <data name="XPathMaxLength" xml:space="preserve">
     <value>The XPath must be {0} characters or fewer.</value>
+  </data>
+    <data name="XPathRegexNotPermitted" xml:space="preserve">
+    <value>The XPath must not use the regular expression operator (=~).</value>
   </data>
     <data name="DefaultValueRequired" xml:space="preserve">
     <value>A default value is required.</value>

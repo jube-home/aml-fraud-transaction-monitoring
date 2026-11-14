@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -88,7 +89,7 @@ namespace Jube.App.Endpoints
                 .Produces((int)HttpStatusCode.NoContent)
                 .WithName("EntityAnalysisModelListValueRetract");
 
-            endpoints.MapPost(CsvUploadBase, UploadCsvAsync)
+            endpoints.MapPost(CsvUploadBase + "/{entityAnalysisModelListId:int}", UploadCsvAsync)
                 .RequireAuthorization()
                 .ValidateAntiforgeryForCookieSessions()
                 .WithTags("EntityAnalysisModelListValue")
@@ -98,35 +99,12 @@ namespace Jube.App.Endpoints
                 .WithName("EntityAnalysisModelListValueUploadCsv");
         }
 
-        private static async Task<int> ResolveListIdAsync(HttpContext httpContext)
-        {
-            if (httpContext.Request.Query.TryGetValue("entityAnalysisModelListId", out var queryValue) &&
-                int.TryParse(queryValue, out var queryId))
-            {
-                return queryId;
-            }
-
-            if (httpContext.Request.HasFormContentType)
-            {
-                var form = await httpContext.Request.ReadFormAsync();
-
-                if (form.TryGetValue("entityAnalysisModelListId", out var formValue) &&
-                    int.TryParse(formValue, out var formId))
-                {
-                    return formId;
-                }
-            }
-
-            return 0;
-        }
-
         private static async Task<IResult> UploadCsvAsync(
-            IFormFileCollection files, HttpContext httpContext, ILog log,
+            int entityAnalysisModelListId, IFormFileCollection files, HttpContext httpContext, ILog log,
             DynamicEnvironment.DynamicEnvironment dynamicEnvironment, IStringLocalizerFactory stringLocalizerFactory,
             IServiceChangeBus serviceChangeBus, CancellationToken token)
         {
             var user = httpContext.User.Identity?.Name;
-            var entityAnalysisModelListId = await ResolveListIdAsync(httpContext);
 
             if (log.IsDebugEnabled)
             {
@@ -214,25 +192,12 @@ namespace Jube.App.Endpoints
             }
         }
 
-        private static async Task<int?> ResolveIdAsync(HttpContext httpContext)
+        private static int? ResolveId(HttpContext httpContext)
         {
-            if (httpContext.Request.Query.TryGetValue("id", out var queryValue) &&
-                int.TryParse(queryValue, out var queryId))
-            {
-                return queryId;
-            }
-
-            if (httpContext.Request.HasFormContentType)
-            {
-                var form = await httpContext.Request.ReadFormAsync();
-
-                if (form.TryGetValue("id", out var formValue) && int.TryParse(formValue, out var formId))
-                {
-                    return formId;
-                }
-            }
-
-            return null;
+            return httpContext.Request.Query.TryGetValue("id", out var queryValue) &&
+                   int.TryParse(queryValue, out var queryId)
+                ? queryId
+                : null;
         }
 
         private static async Task<IResult> GetAsync(
@@ -558,6 +523,22 @@ namespace Jube.App.Endpoints
 
                 return TypedResults.StatusCode((int)HttpStatusCode.NoContent);
             }
+            catch (VersionConflictException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"PUT {Base}: 409 user={user} supplied={ex.SuppliedVersion} current={ex.CurrentVersion}");
+                }
+
+                return TypedResults.Conflict(new
+                {
+                    code = "VersionConflict",
+                    message = ex.Message,
+                    suppliedVersion = ex.SuppliedVersion,
+                    currentVersion = ex.CurrentVersion
+                });
+            }
+
             catch (OperationCanceledException)
             {
                 if (log.IsDebugEnabled)
@@ -582,7 +563,7 @@ namespace Jube.App.Endpoints
         {
             var user = httpContext.User.Identity?.Name;
 
-            var id = await ResolveIdAsync(httpContext);
+            var id = ResolveId(httpContext);
 
             if (id is null)
             {

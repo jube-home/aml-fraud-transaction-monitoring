@@ -61,7 +61,7 @@ namespace Jube.App.Endpoints.Query
             try
             {
                 var service = await ParserService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
-                    serviceChangeBus, token);
+                    serviceChangeBus, token, dynamicEnvironment);
 
                 return TypedResults.Ok(await service.ParseAsync(parseRuleRequestDto, token));
             }
@@ -73,6 +73,15 @@ namespace Jube.App.Endpoints.Query
                 }
 
                 return TypedResults.Forbid();
+            }
+            catch (RateLimitedException ex)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"POST {Base}: 429 user={user}");
+                }
+
+                return TypedResults.Json(new { ex.Message }, statusCode: (int)HttpStatusCode.TooManyRequests);
             }
             catch (ForbiddenException)
             {

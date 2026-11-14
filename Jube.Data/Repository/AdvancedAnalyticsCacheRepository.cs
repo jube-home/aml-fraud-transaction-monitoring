@@ -19,6 +19,7 @@ using Jube.Data.Context;
 using Jube.Data.Poco;
 using Jube.Data.Repository.Exceptions;
 using LinqToDB;
+using LinqToDB.Async;
 using LinqToDB.Data;
 using Jube.Analytics.Datasets;
 

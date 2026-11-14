@@ -20,8 +20,8 @@ using System.ComponentModel;
 
 namespace Jube.Dto.EntityAnalysisModelListValue
 {
-    [Description("One CSV file supplied for upload into a List. The transport layer resolves the multipart " +
-                 "form binding; the service consumes only the parsed stream and its metadata.")]
+    [Description("One CSV file supplied for upload into a List. The file is the only part of a multipart " +
+                 "body; the List it loads into is named by the route. The service consumes only the stream and its metadata.")]
     public sealed class EntityAnalysisModelListValueCsvFileDto
     {
         [Description("The original file name, recorded against the upload for audit.")]

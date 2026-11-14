@@ -71,7 +71,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void TheRuleResultIsStoredUnderTheCalculationName()
         {
-            var context = NewContext(NewCalculation("FromRule", (_, _, _, _, _, _, _, _) => 77));
+            var context = NewContext(NewCalculation("FromRule", (_, _, _, _, _, _, _, _, _) => 77));
 
             context.ExecuteAbstractionCalculations();
 
@@ -83,7 +83,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var received = new Dictionary<string, object?>();
 
-            var calculation = NewCalculation("FromRule", (data, ttl, abstraction, _, calculations, sanctions, kvp, _) =>
+            var calculation = NewCalculation("FromRule", (data, ttl, abstraction, _, calculations, sanctions, kvp, _, _) =>
             {
                 received["Data"] = data;
                 received["TTLCounter"] = ttl;
@@ -111,9 +111,9 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void ALaterCalculationCanReadAnEarlierOneInTheSameInvocation()
         {
-            var first = NewCalculation("First", (_, _, _, _, _, _, _, _) => 21, id: 1);
+            var first = NewCalculation("First", (_, _, _, _, _, _, _, _, _) => 21, id: 1);
 
-            var second = NewCalculation("Second", (_, _, _, _, calculations, _, _, _) => calculations["First"] * 2,
+            var second = NewCalculation("Second", (_, _, _, _, calculations, _, _, _, _) => calculations["First"] * 2,
                 id: 2);
 
             var context = NewContext(first, second);
@@ -128,13 +128,13 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         {
             var order = new List<string>();
 
-            var first = NewCalculation("First", (_, _, _, _, _, _, _, _) =>
+            var first = NewCalculation("First", (_, _, _, _, _, _, _, _, _) =>
             {
                 order.Add("First");
 
                 return 1;
             }, id: 1);
-            var second = NewCalculation("Second", (_, _, _, _, _, _, _, _) =>
+            var second = NewCalculation("Second", (_, _, _, _, _, _, _, _, _) =>
             {
                 order.Add("Second");
 
@@ -151,7 +151,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void AFiniteNegativeResultIsStoredUnchanged()
         {
-            var context = NewContext(NewCalculation("FromRule", (_, _, _, _, _, _, _, _) => -0.25));
+            var context = NewContext(NewCalculation("FromRule", (_, _, _, _, _, _, _, _, _) => -0.25));
 
             context.ExecuteAbstractionCalculations();
 
@@ -161,7 +161,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void AnUndefinedResultIsStoredAsReturnedSoARuleThatWantsZeroUsesZeroIfUndefined()
         {
-            var context = NewContext(NewCalculation("FromRule", (_, _, _, _, _, _, _, _) => double.NaN));
+            var context = NewContext(NewCalculation("FromRule", (_, _, _, _, _, _, _, _, _) => double.NaN));
 
             context.ExecuteAbstractionCalculations();
 
@@ -172,7 +172,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void ReportTableAddsAnArchiveKeyWithProcessingTypeSix()
         {
-            var context = NewContext(NewCalculation("Result", (_, _, _, _, _, _, _, _) => 2, true));
+            var context = NewContext(NewCalculation("Result", (_, _, _, _, _, _, _, _, _) => 2, true));
 
             context.ExecuteAbstractionCalculations();
 
@@ -186,7 +186,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void WithoutReportTableNoArchiveKeyIsAdded()
         {
-            var context = NewContext(NewCalculation("Result", (_, _, _, _, _, _, _, _) => 2));
+            var context = NewContext(NewCalculation("Result", (_, _, _, _, _, _, _, _, _) => 2));
 
             context.ExecuteAbstractionCalculations();
 
@@ -197,10 +197,10 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void AnExceptionThrownByTheRuleDelegateIsCaughtAndTheCalculationIsSkipped()
         {
             var throwing = NewCalculation("Throws",
-                (_, _, _, _, _, _, _, _) => throw new InvalidOperationException("boom"),
+                (_, _, _, _, _, _, _, _, _) => throw new InvalidOperationException("boom"),
                 id: 1);
 
-            var second = NewCalculation("Second", (_, _, _, _, _, _, _, _) => 5, id: 2);
+            var second = NewCalculation("Second", (_, _, _, _, _, _, _, _, _) => 5, id: 2);
             var context = NewContext(throwing, second);
 
             var act = context.ExecuteAbstractionCalculations;
@@ -217,7 +217,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         public void AnEntryWithNoCompiledDelegateIsSkippedWithoutThrowing()
         {
             var noDelegate = new EntityAnalysisModelAbstractionCalculation { Id = 1, Name = "NoScript" };
-            var second = NewCalculation("Second", (_, _, _, _, _, _, _, _) => 5, id: 2);
+            var second = NewCalculation("Second", (_, _, _, _, _, _, _, _, _) => 5, id: 2);
             var context = NewContext(noDelegate, second);
 
             var act = context.ExecuteAbstractionCalculations;
@@ -233,7 +233,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void WhenSampledTheStageTimingRecordsOneItemPerCalculation()
         {
-            var context = NewContext(NewCalculation("Result", (_, _, _, _, _, _, _, _) => 1));
+            var context = NewContext(NewCalculation("Result", (_, _, _, _, _, _, _, _, _) => 1));
 
             context.ExecuteAbstractionCalculations();
 
@@ -246,7 +246,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void WhenNotSampledNoStageTimingIsBuiltButBusinessLogicStillRuns()
         {
-            var context = NewContext(NewCalculation("Result", (_, _, _, _, _, _, _, _) => 10));
+            var context = NewContext(NewCalculation("Result", (_, _, _, _, _, _, _, _, _) => 10));
             context.LogSampled = false;
 
             context.ExecuteAbstractionCalculations();

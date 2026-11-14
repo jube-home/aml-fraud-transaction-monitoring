@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchExcessOverAbove(double limit, double bound)
+            [Description("True when: how far the value is over the limit, zero when within it is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchExcessOverAbove([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleExcessOverAbove(flow.Value, limit, bound));
             }
 
-            public Flow<double> RejectExcessOverAbove(double limit, double bound)
+            [Description("True when: how far the value is over the limit, zero when within it is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectExcessOverAbove([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleExcessOverAbove(flow.Value, limit, bound));
             }
 
-            public Flow<double> BreakExcessOverAbove(double limit, double bound)
+            [Description("True when: how far the value is over the limit, zero when within it is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakExcessOverAbove([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleExcessOverAbove(flow.Value, limit, bound));
             }
 
-            public Flow<double> RequireExcessOverAbove(double limit, double bound)
+            [Description("True when: how far the value is over the limit, zero when within it is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireExcessOverAbove([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleExcessOverAbove(flow.Value, limit, bound));
             }
 
-            public Flow<double> EnsureExcessOverAbove(double limit, double bound)
+            [Description("True when: how far the value is over the limit, zero when within it is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureExcessOverAbove([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchExcessOverAbove(double limit, double bound)
+            [Description("Begins a pipeline from the value. True when: how far the value is over the limit, zero when within it is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchExcessOverAbove([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchExcessOverAbove(limit, bound);
             }
 
-            public Flow<double> RejectExcessOverAbove(double limit, double bound)
+            [Description("Begins a pipeline from the value. True when: how far the value is over the limit, zero when within it is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectExcessOverAbove([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectExcessOverAbove(limit, bound);
             }
 
-            public Flow<double> BreakExcessOverAbove(double limit, double bound)
+            [Description("Begins a pipeline from the value. True when: how far the value is over the limit, zero when within it is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakExcessOverAbove([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakExcessOverAbove(limit, bound);
             }
 
-            public Flow<double> RequireExcessOverAbove(double limit, double bound)
+            [Description("Begins a pipeline from the value. True when: how far the value is over the limit, zero when within it is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireExcessOverAbove([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireExcessOverAbove(limit, bound);
             }
 
-            public Flow<double> EnsureExcessOverAbove(double limit, double bound)
+            [Description("Begins a pipeline from the value. True when: how far the value is over the limit, zero when within it is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureExcessOverAbove([Description("The limit.")] double limit,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureExcessOverAbove(limit, bound);
             }

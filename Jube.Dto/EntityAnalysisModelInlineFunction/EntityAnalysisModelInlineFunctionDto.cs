@@ -13,8 +13,9 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
-using EditorAttribute = Jube.Dto.Forms.EditorAttribute;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -24,21 +25,26 @@ using EditorAttribute = Jube.Dto.Forms.EditorAttribute;
 namespace Jube.Dto.EntityAnalysisModelInlineFunction
 {
     [FormEndpoint("EntityAnalysisModelInlineFunction")]
+    [FormApproval]
+    [RuleEditor(RuleParseType.InlineFunction, Coder = nameof(FunctionScript))]
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
     [FormGroup("Function", Order = 20)]
     [FormGroup("Behaviour", Order = 30)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
+    [MessagePackObject]
     public class EntityAnalysisModelInlineFunctionDto : IUpdated, IActivatable, ILockable, ITreeChild
     {
         [Description("Identifier of the Model this Inline Function belongs to. Set from the parent Model context; " +
                      "not user-editable.")]
+        [Key(0)]
         public int EntityAnalysisModelId { get; set; }
 
         [Description("Display name of this field. Unique within the Model (case-insensitive).")]
-        [FormField(Group = "Identity", Order = 10)]
+        [FormField(Group = "Identity", Order = 10, Placeholder = "e.g. Normalise country code")]
         [ListColumn(Order = 10, Title = "Name")]
+        [Key(1)]
         public string? Name { get; set; }
 
         [Description("The datatype of the value returned by the Function Script, so that Abstraction and " +
@@ -46,12 +52,14 @@ namespace Jube.Dto.EntityAnalysisModelInlineFunction
                      "Boolean.")]
         [FormField(Group = "Function", Order = 10, Widget = "select")]
         [NewDefault(1)]
+        [Options(typeof(FieldDataType), FieldDataType.String, FieldDataType.Integer, FieldDataType.Float, FieldDataType.Date, FieldDataType.Boolean)]
+        [Key(2)]
         public int ReturnDataTypeId { get; set; }
 
         [Description("A VB.net code fragment evaluated against the fields extracted so far by Request XPath and " +
                      "Inline Scripts, returning its result in the Matched variable.")]
         [FormField(Group = "Function", Order = 20, Widget = "code")]
-        [Editor("BuilderCoder")]
+        [Key(3)]
         public string? FunctionScript { get; set; }
 
         [Description("Encrypts the returned value before it is stored and archived. Only shown, and only " +
@@ -59,66 +67,81 @@ namespace Jube.Dto.EntityAnalysisModelInlineFunction
         [FormField(Group = "Function", Order = 30, Widget = "radio")]
         [VisibleWhen(nameof(ReturnDataTypeId), 1)]
         [NewDefault(0)]
+        [Options(typeof(PayloadEncryption))]
+        [Key(4)]
         public int EncryptionId { get; set; }
 
-        [Description("When true, this field's returned value is written to the report table.")]
-        [FormField(Group = "Behaviour", Order = 10, Widget = "switch")]
+        [Description("When true, this field's returned value is written to the Archive Key table.")]
+        [FormField(Group = "Behaviour", Order = 10, Widget = "switch", Label = "Archive Key")]
         [NewDefault(false)]
+        [Key(5)]
         public bool ReportTable { get; set; }
 
         [Description("When true, this field's returned value is included in the response payload.")]
         [FormField(Group = "Behaviour", Order = 20, Widget = "switch")]
         [NewDefault(false)]
+        [Key(6)]
         public bool ResponsePayload { get; set; }
 
         [Description("Globally-addressable identifier for this row, stable across environments and the form "
                      + "in which every other area refers to it. Server-assigned. Read-only.")]
+        [Key(7)]
         public Guid Guid { get; set; }
 
         [Description("When true, this field participates in evaluation on transaction invocation.")]
         [FormField(Group = "Identity", Order = 20, Widget = "switch")]
         [NewDefault(false)]
+        [Key(8)]
         public bool Active { get; set; }
 
         [Description("When true, this field is locked and cannot be edited or deleted.")]
         [FormField(Group = "Identity", Order = 30, Widget = "switch")]
         [NewDefault(false)]
+        [Key(9)]
         public bool Locked { get; set; }
 
         [Description("Server-assigned row identifier. Read-only.")]
         [FormField(Group = "Audit", Order = 10, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(10)]
         public int Id { get; set; }
 
         [Description("User who created this Inline Function. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 20, ReadOnly = true)]
+        [Key(11)]
         public string? CreatedUser { get; set; }
 
         [Description("Timestamp (UTC) this Inline Function was created. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 30, ReadOnly = true, Widget = "date")]
+        [Key(12)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("User who last updated this Inline Function. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 40, ReadOnly = true)]
+        [Key(13)]
         public string? UpdatedUser { get; set; }
 
         [Description("Timestamp (UTC) this Inline Function was last updated. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 50, ReadOnly = true, Widget = "date")]
+        [Key(14)]
         public DateTimeOffset? UpdatedDate { get; set; }
 
         [Description("Server-assigned optimistic-concurrency version number, incremented on every update. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 60, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(15)]
         public int Version { get; set; }
 
         [Description("User who deleted this Inline Function, if soft-deleted. Server-assigned. Read-only.")]
         [FormField(Group = "Audit", Order = 70, ReadOnly = true)]
+        [Key(16)]
         public string? DeletedUser { get; set; }
 
         [Description("Timestamp (UTC) this Inline Function was soft-deleted, if applicable. Server-assigned. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 80, ReadOnly = true, Widget = "date")]
+        [Key(17)]
         public DateTimeOffset? DeletedDate { get; set; }
     }
 }

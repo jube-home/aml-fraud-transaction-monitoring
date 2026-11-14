@@ -17,35 +17,55 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchWeightedMeanWithBelow(double weight, double other, double otherWeight, double bound)
+            [Description("True when: the weighted average of the value and another value is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchWeightedMeanWithBelow([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleWeightedMeanWithBelow(flow.Value, weight, other, otherWeight, bound));
             }
 
-            public Flow<double> RejectWeightedMeanWithBelow(double weight, double other, double otherWeight, double bound)
+            [Description("True when: the weighted average of the value and another value is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectWeightedMeanWithBelow([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleWeightedMeanWithBelow(flow.Value, weight, other, otherWeight, bound));
             }
 
-            public Flow<double> BreakWeightedMeanWithBelow(double weight, double other, double otherWeight, double bound)
+            [Description("True when: the weighted average of the value and another value is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakWeightedMeanWithBelow([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleWeightedMeanWithBelow(flow.Value, weight, other, otherWeight, bound));
             }
 
-            public Flow<double> RequireWeightedMeanWithBelow(double weight, double other, double otherWeight, double bound)
+            [Description("True when: the weighted average of the value and another value is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireWeightedMeanWithBelow([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleWeightedMeanWithBelow(flow.Value, weight, other, otherWeight, bound));
             }
 
-            public Flow<double> EnsureWeightedMeanWithBelow(double weight, double other, double otherWeight, double bound)
+            [Description("True when: the weighted average of the value and another value is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureWeightedMeanWithBelow([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +75,47 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchWeightedMeanWithBelow(double weight, double other, double otherWeight, double bound)
+            [Description("Begins a pipeline from the value. True when: the weighted average of the value and another value is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchWeightedMeanWithBelow([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchWeightedMeanWithBelow(weight, other, otherWeight, bound);
             }
 
-            public Flow<double> RejectWeightedMeanWithBelow(double weight, double other, double otherWeight, double bound)
+            [Description("Begins a pipeline from the value. True when: the weighted average of the value and another value is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectWeightedMeanWithBelow([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectWeightedMeanWithBelow(weight, other, otherWeight, bound);
             }
 
-            public Flow<double> BreakWeightedMeanWithBelow(double weight, double other, double otherWeight, double bound)
+            [Description("Begins a pipeline from the value. True when: the weighted average of the value and another value is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakWeightedMeanWithBelow([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakWeightedMeanWithBelow(weight, other, otherWeight, bound);
             }
 
-            public Flow<double> RequireWeightedMeanWithBelow(double weight, double other, double otherWeight, double bound)
+            [Description("Begins a pipeline from the value. True when: the weighted average of the value and another value is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireWeightedMeanWithBelow([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireWeightedMeanWithBelow(weight, other, otherWeight, bound);
             }
 
-            public Flow<double> EnsureWeightedMeanWithBelow(double weight, double other, double otherWeight, double bound)
+            [Description("Begins a pipeline from the value. True when: the weighted average of the value and another value is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureWeightedMeanWithBelow([Description("The weight of the value.")] double weight,
+                [Description("The other number.")] double other,
+                [Description("The weight of the other value.")] double otherWeight,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureWeightedMeanWithBelow(weight, other, otherWeight, bound);
             }

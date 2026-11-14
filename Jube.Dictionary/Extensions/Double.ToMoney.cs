@@ -6,6 +6,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Converts the number to a money format.")]
         public static Double ToMoney(this Double @this)
         {
             return Math.Round(@this, 2);

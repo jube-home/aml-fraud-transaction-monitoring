@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("An IPv4 address as an unsigned 32-bit number, otherwise -1.")]
         public static long IPv4AddressToNumber(this string? @this)
         {
             return @this.IsIPv4Address() && NetworkAddressSupport.TryParseAddress(@this, out var address)

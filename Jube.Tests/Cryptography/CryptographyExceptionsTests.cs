@@ -40,12 +40,12 @@ namespace Jube.Test.Cryptography
         }
 
         [Fact]
-        public void InvalidHmacExceptionCanBeConstructedWithoutAMessage()
+        public void InvalidPasswordExceptionNamesTheMinimumLength()
         {
-            var exception = new InvalidHmacException();
+            var exception = new InvalidPasswordException(12);
 
-            exception.Should().BeAssignableTo<Exception>();
-            exception.Message.Should().NotBeNullOrEmpty();
+            exception.MinimumLength.Should().Be(12);
+            exception.Message.Should().Contain("12");
         }
     }
 }

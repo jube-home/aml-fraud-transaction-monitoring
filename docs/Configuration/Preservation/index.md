@@ -39,10 +39,10 @@ in the case of:
 * Lists and List Values, which has the potential to contain sensitive or production data.
 * Dictionaries and Dictionary Values, which has the potential to contain sensitive or production data.
 
-Overrides are deliberately **not** carried by Preservation, in either direction.  An override suppresses or
-forces an Activation Rule for one live key value, such as a card or a customer;  it is operational data belonging
+Overrides are deliberately **not** carried by Preservation, in either direction. An override suppresses or
+forces an Activation Rule for one live key value, such as a card or a customer; it is operational data belonging
 to a running estate, not model configuration, and moving it between environments would carry production decisions
-into places they were never meant to reach.  Overrides are administered on the Override page and expire on their
+into places they were never meant to reach. Overrides are administered on the Override page and expire on their
 own Delete Expiry Date.
 
 Visualisation Registry (reports configuration) data, and all data rolling up to Visualisation Registries, can be
@@ -90,92 +90,107 @@ cache backup procedures. Production data includes, but is not limited to:
 
 # Navigating to Preservation
 
-Preservation assumes that the "Allow Preservation Import and Export" permission is granted to the Role.
+<!-- TODO(screenshot): file=preservation-move-page.png route=/administration/preservation?tab=move state="Move tab, password entered, export switches visible with sizes" -->
+<!-- TODO(screenshot): file=preservation-snapshots-page.png route=/administration/preservation state="Snapshots tab, list with a Before import row and a failed row" -->
+<!-- TODO(docs): every sentence on this page predates the Vue port and the privilege rule; the whole page needs the owner's read. -->
 
-Navigate to Preservation via Administration >>> Preservation:
+Preservation answers two different concerns, and each has its own page under Administration >>> Preservation:
 
-![NavigateToPreservation.png](NavigateToPreservation.png)
+| Concern       | Page                 | Purpose                                                                                   |
+|---------------|----------------------|-------------------------------------------------------------------------------------------|
+| **Move**      | JEMP Import & Export | Carry configuration between environments as an encrypted `.jemp` file.                    |
+| **Safeguard** | Snapshots            | Keep, compare and restore the configuration of one estate, so there is always a way back. |
 
-The Preservation screen comprises the following:
+Both assume the "Allow Preservation Import and Export" permission is granted to the Role. Restoring a snapshot needs
+the separate permission described under Snapshots.
 
-| Field                  | Example                            | Description                                                                                                                               |
-|------------------------|------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
-| Encryption Password    | SuperSecretPasswordToProtectExport | Subject to the encryption scheme described below a password, rather encryption key, to protect the contents of the .jemp file downloaded. |
-| Include Exhaustive     | True                               | A flag to indicate that the Exhaustive models and training data should be included in either the Import or the Export.                    |
-| Include Lists          | True                               | A flag to indicate that the Lists and List Values data should be included in either the Import or the Export.                             |
-| Include Dictionaries   | True                               | A flag to indicate that the Dictionaries and Dictionary Values data should be included in either the Import or the Export.                |
-| Include Visualisations | True                               | A flag to indicate that the Visualisation data should be included in either the Import or the Export.                                     |
-| Include Roles          | True                                | A flag to indicate that Role and Role Permission data should be included in either the Import or the Export. See Role Import and Orphaned Users below. |
+# Move
 
-The values set out in the above table are passed to actions as follows. There are three actions available:
+The JEMP Import & Export page begins with a single **Password**, shared by the export and the import below it. It is
+the only secret needed to move a file: the key is derived from it as described in the encryption scheme below, and
+nothing about the environment is involved. The password must be at least 12 characters. Until it is, the page says
+so and both Download and Preview stay switched off, and the server refuses to export with a shorter one.
 
-| Field    | Example                                                                                                                                                                      |
-|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Download | The downloading of a compressed encrypted serialisation of an export model containing all included data.  See encryption scheme below.                                       |
-| Peek     | The rendering of a human readable serialisation of an export model containing all included data.  See purpose and limitations below                                          |
-| Import   | A file upload control that accepts a compressed encrypted serialisation of an export model containing all included data.  See encryption scheme below and consistency notes. |
+## Export
 
-![LoadedPreservationEmpty.png](LoadedPreservationEmpty.png)
+Each kind of optional data has its own switch, and beside it the number of items it carries and how large it is, taken
+from the live configuration, with a running total:
 
-# Export Download
+| Switch             | Default | Carries                                                                             |
+|--------------------|---------|-------------------------------------------------------------------------------------|
+| Visualisations     | On      | Visualisation Registry data and all data rolling up to it.                          |
+| Roles              | On      | Role and Role Permission data. See Role Import and Orphaned Users below.            |
+| Lists              | On      | Lists and List Values, which may contain sensitive or production data.              |
+| Dictionaries       | On      | Dictionaries and Dictionary Values, which may contain sensitive or production data. |
+| Advanced Analytics | On      | Advanced Analytics definitions.                                                     |
+| Exhaustive         | Off     | Exhaustive models and training data, which has the potential to be very large.      |
 
-Configure the parameters as described above:
+Pressing Download compresses and encrypts the export model to the scheme below and saves a file. The file name is a
+GUID allocated in the auditing of the export process, as described below. The file extension is .jemp, which stands
+for Jube Encrypted Message Pack.
 
-![Configure.png](Configure.png)
+The file is not human-readable: it is encrypted and authenticated, and cannot be opened without the password.
 
-Identify the Download button next to Export:
+Given binary serialisation and compression .jemp files are very small, which allows for the simple exchange of files
+via email, irrespective of content filtering.
 
-![IdentifyDownloadButton.png](IdentifyDownloadButton.png)
+## Import
 
-Click the Download button to populate the export model containing all included data, compress and encrypt to encryption
-scheme as below. The bytes will be available in a file for download:
+Importing is three steps: choose a `.jemp` file, preview it, and confirm. Only .jemp files are eligible for upload,
+decryption, deserialisation and import.
 
-![FileReadyForSave.png](FileReadyForSave.png)
+The password and the package travel together in one serialised request body, JSON or MessagePack, never in a form,
+the query string or a header. The package is base64 text in a JSON body and a binary value in MessagePack. The format
+of the package itself, and the checks made on it, are unchanged.
 
-The file name is a GUID allocated in the auditing of the export process, as described below. The file extension is
-.jemp, which stands for Jube Encrypted Message Pack, as encryption scheme below.
+**Preview** decrypts and reads the file with the password and compares it with the live configuration. Nothing is
+imported and nothing from the file is stored on the server, so the browser keeps the file and sends it again when the
+import is confirmed. The preview shows:
 
-The file is not human-readable, except to the extent no password or salt is provided, and even then, given
-weak encryption and binary serialisation, the file would still require decryption - albeit with empty pad keys - and
-deserialization using strongly
-typed export types only available programmatically.
+* How many entities the import would add, remove and change, and how many are unchanged, by section and then entity by
+  entity, with the before and after of every changed property. Identifiers, GUIDs, audit stamps, versions and the
+  numeric references between entities are ignored, because they differ between environments without meaning anything.
+* **Warnings**, which do not stop the import: the file carries no approval history (see Approval History below), the
+  file carries no Roles (an import replaces the tenant's Roles, so they would be removed), the file carries Lists or
+  Dictionaries that may hold production data, or the file is of an older format.
+* **Blockers**, which disable the confirmation: for example a Role that would have to be re-keyed.
+* The Users who would be left without a Role and deactivated (see Role Import and Orphaned Users below), and whether
+  the importing User stays active.
 
-Given binary serialisation and compression .jemp files are very small, with the default configuration of Jube taking a
-mere
-16kb:
+The preview is dropped when the password or the file changes, so a stale preview can never be imported.
 
-![FileSize.png](FileSize.png)
+**Import** needs the confirmation box ticked, and replaces the configuration of the tenant the User is switched into
+with the contents of the file. Assuming the decryption is valid to the scheme, the bytes are decompressed,
+deserialised and iterated to import all data. A success message is displayed, or an error in the event of failure.
 
-By contrast that same data in JSON when peeked would be appreciably larger, being neither compressed nor encrypted.
+**Every import first takes a safety snapshot** of the configuration it is about to replace, named "Before import of"
+followed by the identifier of the package and with everything included, so an import can always be undone from the
+Snapshots page.
 
-The small size and its encryption allows for the simple exchange of files via email, irrespective of content filtering.
+Privilege limit: an import (and a snapshot restore) replaces the tenant's Roles and their permission grants, so it is
+refused unless the person importing holds every permission carried by the Roles in the package and by the Roles about to
+be replaced. Landlord users are exempt. Users whose Role is left without a match are given a recovery Role carrying only
+the importer's own
+permissions. <!-- TODO(docs): owner to confirm this wording and the user-facing refusal text; see review/privilege-escalation-rule.md. -->
 
-# Peek
+The preview shows this up front: when the package, or the Roles it would replace, carry a permission the importing User
+does not hold, the preview lists a **Privilege** blocker and the confirmation stays disabled, rather than the refusal
+arriving only when Import is pressed. The refusal itself is a bare 403, the same as any permission
+refusal. <!-- TODO(docs): confirm the blocker wording against the UI and capture a screenshot of it. -->
 
-Peek is functionality to export a human-readable serialisation of the export model containing all included data without
-any encryption or compression. The serialisation format is indented JSON, held in a `json` column, which preserves
-the text exactly as it was written. That matters because a peek exists to be compared against another peek with file
-difference tooling: a `jsonb` column would reorder keys and discard the formatting, and two peeks of identical
-configuration could then differ on the page for no reason.
+Two imports into the same tenant at the same time are serialised: the second waits for the first to commit and then
+replaces its result, so the tenant never ends with two copies of the
+configuration. <!-- TODO(docs): owner to decide whether this belongs in the user guide or only in the technical notes. -->
 
-A human-readable peek of the export model containing all included data cannot be imported nor recovered.
+Permission rows (the role grants on Models, Case Workflows and Visualisations) that name a Model, Case Workflow,
+Visualisation or Role which is not part of the package are discarded on import, so a package can never attach a grant to
+something belonging to another tenant. The tenant a row is stamped with is always the importer's own, whatever the file
+says. <!-- TODO(docs): confirm this is worth stating in the user guide. -->
 
-Peek exists for a very specific and narrow purpose, to allow for an export model containing all included data to be
-compared
-to one another at a point in time, which is useful for identifying changes without necessitating inspection of the audit
-tables of Jube.
-
-A peek is not an import format. For the avoidance of doubt, only .jemp files can be imported from a file, and a peek
-must in no way be relied on as a means to preserve definitions. Where a restorable point in time is wanted, take a
-Preservation Snapshot, which holds the same JSON and can be imported back.
-
-To obtain a peek, upon configuring the parameters as would be required for Export, identify the Peek hyperlink:
-
-![IdentifyPeekLink.png](IdentifyPeekLink.png)
-
-Click the Peek Hyperlink which will open the JSON data in a new tab:
-
-![YAMLRender.png](YAMLRender.png)
+Size: the package is bounded by PreservationImportMaxBytes (100 MiB by default). The request body limit of the import
+and preview routes is derived from it, allowing for base64 text and a 1 MiB envelope, and a larger body is refused with
+413 before it is
+parsed. <!-- TODO(docs): owner to decide the intended maximum package size and document it; see review/preservation.md design question 2. -->
 
 # Snapshots
 
@@ -186,37 +201,65 @@ Snapshots exist so there is always a way back. The intention is that a snapshot 
 changes, so the state before the change can be restored, and so the estate can be examined as it stood at a point in
 time without reading through audit tables.
 
-Snapshots are reached from Administration, Snapshots. The grid lists what has been taken for the tenant, most recent
-first, with the source, how many Models the body holds, its size, who took it and when. The body itself is never
-listed, only described.
+Snapshots are reached from Administration >>> Preservation >>> Snapshots. The page has four parts: take a snapshot,
+the list of what has been taken, compare, and restore. The list shows the tenant's snapshots, most recent first, with
+the name, source, when it was taken and by whom, how many Models the body holds, its size and whether it completed.
+The body itself is never listed, only described, but a row's Download action saves the JSON.
 
 ## Taking one
 
-The Take Snapshot button records the tenant's configuration as it currently stands, with an optional label for the
-reason. Nothing in the running configuration is changed by taking a snapshot.
+A snapshot name may be at most 200 characters, and the source of a request made directly (not by a process) must be a
+known one other than "Before import", which only an import can claim. <!-- TODO(docs): confirm. -->
+
+Snapshots are pruned: every import and every Ask Jooby change adds a full copy of the configuration to the
+PreservationSnapshot table, and after each new snapshot the oldest are pruned so that no more than
+PreservationSnapshotMaxPerTenant (200 by default) are kept per tenant and none is older than
+PreservationSnapshotMaxAgeDays (365 by default). Pruning empties the stored copy and marks the row deleted rather than
+deleting the row, so the history of what was taken remains. Deleting a snapshot by hand likewise only hides
+it. <!-- TODO(docs): confirm with the owner whether a hand deletion should also empty the stored copy, as pruning does; see review/preservation.md design question 3. -->
+
+Take snapshot records the tenant's configuration as it currently stands, with an optional name for the reason.
+A snapshot is always whole: Exhaustive models, their training data and their trial history are included, because a
+snapshot that left them out could not restore the tenant to the state it recorded. Nothing in the running
+configuration is changed by taking a snapshot.
 
 Each snapshot records **what took it**:
 
-| Source | Meaning |
-|---|---|
-| Preservation Page | A person pressed Take Snapshot |
-| Model Sync | A model synchronisation state change caused one to be taken |
-| AskJooby | AskJooby took one before changing configuration, so the change can be undone |
+| Source            | Meaning                                                                                              |
+|-------------------|------------------------------------------------------------------------------------------------------|
+| Preservation page | A person pressed Take snapshot                                                                       |
+| Model sync        | A model synchronisation state change caused one to be taken                                          |
+| Ask Jooby         | AskJooby took one before changing configuration, so the change can be undone                         |
+| Before import     | An import of a `.jemp` file or the restore of a snapshot took one before replacing the configuration |
 
 The user is recorded in every case, including where a process forced the snapshot rather than a person asking for
-it, so it is always possible to see whose change a snapshot belongs to.
+it, so it is always possible to see whose change a snapshot belongs to. A snapshot that failed is marked as failed and
+can be deleted but not compared, restored or downloaded.
+
+## Comparing
+
+Compare shows what differs between two snapshots, or between a snapshot and the live configuration: choose a From and a
+To, each of which can be "Live configuration", and press Compare. A row's Compare action compares that snapshot with
+the live configuration. Both sides must differ, and a comparison of two identical sides says so.
+
+The result is the same as the import preview: counts of entities added, removed, changed and unchanged, by section and
+then entity by entity with the before and after of each changed property, under the same rules for what is ignored.
+Very large differences are cut off at five thousand entries, with the counts still complete and a note saying so.
+
+Every comparison is recorded, with its counts, in the PreservationDiff table, and the page shows its identifier.
 
 ## Restoring one
 
-The Import button on a row rolls the tenant back to that snapshot, by running the same import a Preservation
-package uses. **This replaces configuration and is not itself reversible**, so take a snapshot first if the current
-state matters. The button is disabled for a snapshot that did not complete or is in error.
+Restore on a row first shows a preview of what would change, as an import preview does, and rolls the tenant back to
+that snapshot only once the confirmation box is ticked, by running the same import a Preservation package uses. **This
+replaces configuration and is not itself reversible**, but because the restore takes a "Before import" snapshot first,
+it can be undone by restoring that snapshot. Restore is disabled for a snapshot that did not complete or is in error.
 
 Restoring is guarded by its own permission, **Import Preservation Snapshot**, separate from the permission that
 allows taking snapshots and exporting. Taking a snapshot records state; restoring one replaces the whole tenant's
 configuration, and the two are not the same risk. On upgrade the permission is granted to the Administrator role
-alone and must be granted deliberately to any other role. Where a role does not hold it, the Import button is
-disabled rather than merely refused on use.
+alone and must be granted deliberately to any other role. Where a role does not hold it, the page says so and the
+restore is disabled rather than merely refused on use.
 
 ## Why JSON rather than the encrypted package
 
@@ -224,50 +267,13 @@ The body could have been stored as the same compressed, encrypted MessagePack an
 JSON so that snapshots can be **queried**: the column is `jsonb` with a GIN index, so the estate as it stood at a
 given moment can be interrogated directly, which an opaque encrypted blob could not support.
 
-Note the difference from a Peek, which is deliberate. A snapshot is `jsonb` because it is there to be queried, and
-`jsonb` normalises what it stores, reordering keys and dropping formatting. A peek is plain `json` because it is
-there to be read and diffed, and must come back exactly as written. The two therefore are not expected to match
-character for character, even where they describe the same configuration.
-
 That choice has a consequence worth stating plainly. A snapshot body is the tenant's configuration in the clear,
 inside the database. It is confined to the tenant that took it and reading it needs the Preservation permission, but
 it is not encrypted at rest in the way an exported file is.
 
-# Import Upload
-
-Only .jemp files are eligible for upload, decryption, deserialisation and import.
-
-To import a .jemp file, start by identifying the Select Files button in the file upload widget:
-
-![IdentifySelectFilesButtonInUploadWidget.png](IdentifySelectFilesButtonInUploadWidget.png)
-
-Click Select Files to expand the file search of the local file system:
-
-![ClickSelectFilesToExpand.png](ClickSelectFilesToExpand.png)
-
-Select the .jemp file to be uploaded:
-
-![SelectJempFileToBeUploaded.png](SelectJempFileToBeUploaded.png)
-
-Click open to stage the file:
-
-![ClickOpenToStageTheFIle.png](ClickOpenToStageTheFIle.png)
-
-Once the file is staged, note the Upload button:
-
-![NoteTheUploadButton.png](NoteTheUploadButton.png)
-
-Click the Upload button to upload file, decrypt, decompress, deserialize and import the file containing the exported
-model including all
-exported data:
-
-![UploadDone.png](UploadDone.png)
-
-Assuming that the decryption is valid to scheme, the bytes are decompressed, deserialized and iterated to import all
-data. Assuming all preconditions a success message is displayed. In the event of failure, an error will be displayed
-instead.
-
 # Consistency
+
+<!-- TODO(docs): verify the whole Consistency section against the current import after the concurrency lock and the escalation guard. -->
 
 Encryption goes a long way to ensure the integrity of the exported data for import, reference the encryption scheme as
 below.
@@ -278,7 +284,8 @@ can be
 assured that data is not left in a partial state and that the existing data is not corrupted (i.e. all, or nothing at
 all is imported).
 
-An import identifier will have been created, outside a transaction and before any attempt at decryption, decompression of
+An import identifier will have been created, outside a transaction and before any attempt at decryption, decompression
+of
 deserialisation.
 
 The import process follows the following steps, assuming deserialisation has taken place:
@@ -333,12 +340,15 @@ There is no way to automatically determine which imported Role an orphaned User 
 that mapping does not exist anywhere in the imported file, so this cannot be resolved automatically as a data
 migration concern. Instead, as the final step of every import, all Users in the tenant are checked for orphaning as
 a consequence of the import. If any are found, a single Role named "Orphaned Preservation Import" is created and
-granted every permission in Permission Specification, and every orphaned User in the tenant, not only the User who
-performed the import, is reallocated to it. This is performed inside the same transaction as the rest of the
+granted only the permissions held by the User performing the import (every permission when that User is a landlord),
+and every orphaned User in the tenant, not only the User who performed the import, is reallocated to it. The role
+therefore never carries a permission the importer
+lacks. <!-- TODO(docs): earlier text said every permission in Permission Specification; owner to confirm the narrowed wording. -->
+This is performed inside the same transaction as the rest of the
 import, so it either succeeds alongside the import or rolls back with it.
 
-With one exception, every User reallocated to the "Orphaned Preservation Import" role is also deactivated
-(Active = 0), since a User silently gaining full permissions is not a safe default to leave standing. The exception
+With one exception, every User reallocated to the "Orphaned Preservation Import" role is also deactivated (Active = 0),
+since a User silently gaining full permissions is not a safe default to leave standing. The exception
 is the User performing the import: they are reallocated to the same temporary role but left active, so the import
 does not lock out the person who just performed it.
 
@@ -359,44 +369,48 @@ The compression is provided for by the MessagePack Library and the compression s
 # Encryption Scheme
 
 Serialisation of the export model containing all data is performed by MessagePack, and the result is a byte
-array that would otherwise be unencrypted. The serialisation is not rendered in an unencrypted state to prohibit
-injection (although the absence of a password or salt has the effect of the file being unencrypted, even though the
-bytes are encrypted, they would be null pad bytes, and easily reverse engineered).
+array that is then encrypted with AES-256 in Galois/Counter Mode (AES-GCM), which both encrypts and authenticates.
 
-The encryption is AES256 and relies on a salt (set in the environment variables) and an encryption key (passed during
-import
-and export as a password) combination.
+The only secret is the password supplied during export and import. It must be at least 12 characters; the server
+refuses to export with a shorter one, and there is no way to export without a password. The key is derived from the
+password with PBKDF2 (HMAC-SHA256, 600,000 iterations) and a random 16 byte salt generated afresh for every file. The
+salt is not secret, and is stored in the file, so that the same password gives a different key for every file and
+precomputed tables of keys are of no use. No environment variable is involved, so a file can be imported into any
+Jube environment given only its password.
 
-The salt is optional, and allows for more secure encryption, preventing the decryption of the file in foreign
-environments where the salt is not common or known. For example, if a salt is set, files cannot be imported into
-foreign environment unless the same salt is shared, and configured in the environment variable. The salt is optional,
-and the absence means to say the salt becomes empty null pad bytes. To set the salt, update the following environment
-variable:
+The layout of a file is a header, the cipher text and the authentication tag:
 
-```shell
-export PreservationSalt="SuperSecretPasswordToChangeForSalting"
-```
+| Bytes | Content                                                                 |
+|-------|-------------------------------------------------------------------------|
+| 4     | The marker `JEMP`.                                                      |
+| 1     | The format version, currently 3.                                        |
+| 4     | The PBKDF2 iteration count, big-endian, held so it can be raised later. |
+| 16    | The random PBKDF2 salt.                                                 |
+| 12    | The random AES-GCM nonce.                                               |
+| n     | The cipher text, the same length as the compressed MessagePack.         |
+| 16    | The AES-GCM authentication tag.                                         |
 
-The encryption key is the password provided during import and export. Like the salt, the password is
-optional, and the absence becomes empty null pad bytes and has the practical effect of the file becoming unencrypted, as
-it
-would easily be reversible given knowledge of this encryption scheme.
+The header is authenticated as associated data, so altering any byte of the file, the header included, makes
+decryption fail. Decryption cannot tell a wrong password from a damaged file and reports the same failure for both,
+so a file reveals nothing about the password.
 
-Before encryption, the unencrypted bytes are hashed using HMAC, with a 32 byte hash being produced. Upon encryption, the
-HMAC is prepended to the encrypted bytes, henceforth the first 32 bytes of the final export are an unencrypted HMAC
-hash, with the bytes thereafter, to end, being encrypted.
+Such is the strength of the scheme that there is no means to recover a file should the password become lost. It is
+however possible to recover the unencrypted bytes from the export auditing, but only on the same instance of Jube
+that created it.
 
-For the uploaded bytes, discounting the first 32 bytes HMAC hash for the original unencrypted bytes, the remaining bytes
-are decrypted and the HMAC hash of the decrypted bytes is verified against the HMAC hash prepended.
-Only upon the original unencrypted bytes HMAC hash and decrypted bytes HMAC hash matching will decryption be considered
-successful, after which decompression and deserialisation is attempted.
+## Compatibility
 
-Such is the strength of the encryption scheme, subject to, at a minimum, a password encryption key, there is no
-means to recover a file should the encryption key or salt become lost. It is however possible to recover unencrypted
-bytes from the export auditing, but only on the same instance of Jube that created it, but, not unlike the reasoning
-held for a peek, the importing of unencrypted serialisation is unsupported.
+<!-- TODO(docs): the iteration count held in the header is accepted between 100,000 and 1,000,000 on import; confirm this range is worth stating. -->
+
+This format replaced an earlier one, and the change is a breaking one. **A `.jemp` file exported by an earlier
+release of Jube cannot be imported**, whether or not it was exported with a password, and a file exported now cannot
+be imported by an earlier release. The `PreservationSalt` and `JempFileLegacyEncryptionFallback` environment
+variables no longer exist and are ignored if still set. Configuration that must move from an earlier release has to be
+re-created in the new one, for example by exporting it again from the new release once it has been rebuilt there.
 
 # Auditing
+
+<!-- TODO(docs): the Import and Export rows are written by the service; the CreatedDate of both is now the time the operation started, not the time it finished. Confirm and refresh the screenshots. -->
 
 There are several audit tables available for the Preservation functionality.
 
@@ -407,6 +421,7 @@ select *
 from "Export"
 ```
 
+<!-- TODO(screenshot): file=preservation-export-table.png route=/ state="Export table query result after one export" -->
 ![ExportTable.png](ExportTable.png)
 
 The Import table details all imports of .jemp files, or rather bytes:
@@ -416,13 +431,16 @@ select *
 from "Import"
 ```
 
+<!-- TODO(screenshot): file=preservation-import-table.png route=/ state="Import table query result after one import" -->
 ![ImportTable.png](ImportTable.png)
 
-The ExportPeek table details all rendering of human-readable JSON responses, held in a jsonb column named Json:
+The PreservationDiff table details every comparison and preview, whether of a package against the live configuration,
+of a snapshot against the live configuration, or of two snapshots, with the counts of what was added, removed and
+changed and the human-readable result held in a jsonb column named Json:
 
 ```sql
-select *
-from "ExportPeek"
+select "Id", "DiffKindId", "LeftSnapshotId", "RightSnapshotId", "RightLabel", "AddedCount", "RemovedCount", "ChangedCount"
+from "PreservationDiff"
 ```
 
-![ExportPeek.png](ExportPeek.png)
+The PreservationSnapshot table holds the snapshots, including those taken before an import.

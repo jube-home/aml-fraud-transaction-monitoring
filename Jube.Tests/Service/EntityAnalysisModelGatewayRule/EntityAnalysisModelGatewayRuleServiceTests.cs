@@ -37,6 +37,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Infrastructure.Reactivity;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
@@ -587,7 +588,6 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
             var dto = NewDto(modelId, saved.Name);
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
-            dto.Version = 999;
             dto.UpdatedUser = "also-tampered";
 
             var updated = await service.UpdateAsync(dto);
@@ -1237,6 +1237,58 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
 
             var oversized = await service.ListAsync(10_000);
             oversized.Items.Count.Should().BeLessThanOrEqualTo(200);
+        }
+
+        [Theory]
+        [InlineData(1, "BuilderRuleScript")]
+        [InlineData(2, "CoderRuleScript")]
+        public async Task SavingAHostileRuleScriptIsRefusedAndNothingIsStoredAsync(int ruleScriptTypeId,
+            string propertyName)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var name = UniqueName("Hostile");
+            var dto = NewDto(modelId, name);
+            dto.RuleScriptTypeId = ruleScriptTypeId;
+            dto.BuilderRuleScript = "Return System.Diagnostics.Process.Start(\"id\") Is Nothing";
+            dto.CoderRuleScript = dto.BuilderRuleScript;
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "RuleScriptInvalid" &&
+                                                   e.PropertyName == propertyName);
+
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelGatewayRule>().CountAsync(w => w.Name == name))
+                .Should().Be(0);
+        }
+
+        [Fact]
+        public async Task UpdatingARuleToAHostileScriptIsRefusedAndTheStoredScriptIsUnchangedAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var saved = await service.InsertAsync(NewDto(modelId, UniqueName("HostileUpdate")));
+            createdIds.Add(saved.Id);
+
+            var dto = NewDto(modelId, saved.Name);
+            dto.Id = saved.Id;
+            dto.RuleScriptTypeId = 2;
+            dto.CoderRuleScript = "Return System.Diagnostics.Process.Start(\"id\") Is Nothing";
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.UpdateAsync(dto));
+
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "RuleScriptInvalid" &&
+                                                   e.PropertyName == "CoderRuleScript");
+
+            var stored = await dbContext.GetTable<Data.Poco.EntityAnalysisModelGatewayRule>()
+                .FirstAsync(w => w.Id == saved.Id);
+
+            stored.Version.Should().Be(1);
+            stored.RuleScriptTypeId.Should().Be(1);
+            stored.CoderRuleScript.Should().Be("Return True");
         }
     }
 }

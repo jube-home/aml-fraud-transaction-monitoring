@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Checks if the character is a letter or decimal digit.")]
         public static Boolean IsLetterOrDigit(this Char c)
         {
             return char.IsLetterOrDigit(c);

@@ -8,6 +8,8 @@ grand_parent: Configuration
 
 # Exhaustive Adaptation Recall
 
+<!-- TODO(docs): this page predates the Vue port and describes the Razor layout (tabs, grids, buttons); re-read it against the Exhaustive pages under Models and correct names, positions and labels. -->
+
 Upon models having been promoted during Exhaustive training, they will be available for recall as part of model
 invocation.
 
@@ -17,7 +19,8 @@ required.
 Proceed to post the example JSON
 to [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc):
 
-![Image](Recalled.png)
+<!-- TODO(screenshot): file=model-exhaustive-recalled.png route=/models state="Recall: replace the Razor-era image Recalled.png with the Vue Exhaustive page" -->
+![Image](model-exhaustive-recalled.png)
 
 Notice that the score has been returned for use in Activation Rules in the Adaptation entity.
 

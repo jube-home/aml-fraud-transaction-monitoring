@@ -20,6 +20,7 @@ namespace Jube.Data.Repository
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
 
     public class CaseFileRepository
@@ -52,13 +53,27 @@ namespace Jube.Data.Repository
             CancellationToken token = default)
         {
             return await dbContext.CaseFile.Where(w
-                => (w.Case.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
-                    !tenantRegistryId.HasValue)
+                => (tenantRegistryId.HasValue
+                    && w.Case.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId)
                    && (w.Case.CaseWorkflow.EntityAnalysisModel.Deleted == 0 ||
                        w.Case.CaseWorkflow.EntityAnalysisModel.Deleted == null)
                    && (w.Case.CaseWorkflow.Deleted == 0 || w.Case.CaseWorkflow.Deleted == null)
                    && (w.Case.CaseWorkflowStatus.Deleted == 0 || w.Case.CaseWorkflowStatus.Deleted == null)
                    && w.CaseKey == key && w.CaseKeyValue == value && (w.Deleted == 0 || w.Deleted == null)
+                   && (w.CaseNoteId == null
+                       || dbContext.CaseNote.Any(n => n.Id == w.CaseNoteId
+                                                      && (n.ActionId == null
+                                                          || dbContext.CaseWorkflowActionRole
+                                                              .Where(r => dbContext.CaseWorkflowAction
+                                                                              .Any(a => a.Id == n.ActionId
+                                                                                        && a.Guid == r.CaseWorkflowActionGuid)
+                                                                          && (r.Deleted == 0 || r.Deleted == null))
+                                                              .Any(r => dbContext.RoleRegistry
+                                                                  .Where(rr => rr.Guid == r.RoleRegistryGuid
+                                                                               && (rr.Deleted == 0 || rr.Deleted == null))
+                                                                  .Any(rr => dbContext.UserRegistry
+                                                                      .Any(u => u.RoleRegistryGuid == rr.Guid
+                                                                                && u.Name == userName))))))
                    && dbContext.CaseWorkflowRole
                        .Where(r => r.CaseWorkflowGuid == w.Case.CaseWorkflow.Guid
                                    && (r.Deleted == 0 || r.Deleted == null))
@@ -79,8 +94,8 @@ namespace Jube.Data.Repository
         public Task<CaseFile> GetByIdAsync(int id, CancellationToken token = default)
         {
             return dbContext.CaseFile.FirstOrDefaultAsync(w
-                => (w.Case.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId ||
-                    !tenantRegistryId.HasValue)
+                => (tenantRegistryId.HasValue
+                    && w.Case.CaseWorkflow.EntityAnalysisModel.TenantRegistryId == tenantRegistryId)
                    && w.Id == id && (w.Deleted == 0 || w.Deleted == null), token);
         }
 

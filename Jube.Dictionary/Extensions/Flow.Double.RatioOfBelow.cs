@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchRatioOfBelow(double denominator, double bound)
+            [Description("True when: the value divided by the denominator is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRatioOfBelow([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleRatioOfBelow(flow.Value, denominator, bound));
             }
 
-            public Flow<double> RejectRatioOfBelow(double denominator, double bound)
+            [Description("True when: the value divided by the denominator is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRatioOfBelow([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleRatioOfBelow(flow.Value, denominator, bound));
             }
 
-            public Flow<double> BreakRatioOfBelow(double denominator, double bound)
+            [Description("True when: the value divided by the denominator is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRatioOfBelow([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleRatioOfBelow(flow.Value, denominator, bound));
             }
 
-            public Flow<double> RequireRatioOfBelow(double denominator, double bound)
+            [Description("True when: the value divided by the denominator is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRatioOfBelow([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleRatioOfBelow(flow.Value, denominator, bound));
             }
 
-            public Flow<double> EnsureRatioOfBelow(double denominator, double bound)
+            [Description("True when: the value divided by the denominator is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRatioOfBelow([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchRatioOfBelow(double denominator, double bound)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchRatioOfBelow([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchRatioOfBelow(denominator, bound);
             }
 
-            public Flow<double> RejectRatioOfBelow(double denominator, double bound)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectRatioOfBelow([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectRatioOfBelow(denominator, bound);
             }
 
-            public Flow<double> BreakRatioOfBelow(double denominator, double bound)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakRatioOfBelow([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakRatioOfBelow(denominator, bound);
             }
 
-            public Flow<double> RequireRatioOfBelow(double denominator, double bound)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireRatioOfBelow([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireRatioOfBelow(denominator, bound);
             }
 
-            public Flow<double> EnsureRatioOfBelow(double denominator, double bound)
+            [Description("Begins a pipeline from the value. True when: the value divided by the denominator is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureRatioOfBelow([Description("The number the value is divided by.")] double denominator,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureRatioOfBelow(denominator, bound);
             }

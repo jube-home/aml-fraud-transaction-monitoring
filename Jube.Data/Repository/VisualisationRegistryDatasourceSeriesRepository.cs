@@ -19,6 +19,7 @@ namespace Jube.Data.Repository
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
 
     public class VisualisationRegistryDatasourceSeriesRepository
@@ -54,7 +55,8 @@ namespace Jube.Data.Repository
                             tenantRegistryId
                             && w.VisualisationRegistryDatasourceId == visualisationRegistryDatasourceId &&
                             (w.VisualisationRegistryDatasource.Deleted == 0 ||
-                             w.VisualisationRegistryDatasource.Deleted == null)).ToListAsync(token);
+                             w.VisualisationRegistryDatasource.Deleted == null))
+                .OrderBy(o => o.Id).ToListAsync(token);
         }
     }
 }

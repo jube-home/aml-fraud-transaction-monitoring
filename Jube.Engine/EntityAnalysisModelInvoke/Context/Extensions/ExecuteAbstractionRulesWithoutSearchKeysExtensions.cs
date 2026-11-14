@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Jube.Data.Poco;
+using Jube.Dictionary;
 using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHelpers;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
 
@@ -27,6 +28,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
         {
             var stopwatch = Stopwatch.StartNew();
             var items = new Dictionary<string, TaskPerformance>();
+            var cursor = new AbstractionCursor();
 
             foreach (var evaluateAbstractionRule in
                      from evaluateAbstractionRuleLinq in context.Snapshot.ModelAbstractionRules
@@ -45,7 +47,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
                     if (ReflectRuleHelper.Execute(evaluateAbstractionRule, context.Snapshot,
                             context.EntityAnalysisModelInstanceEntryPayload.Payload,
-                            context.EntityAnalysisModelInstanceEntryPayload.Dictionary, context.Log))
+                            context.EntityAnalysisModelInstanceEntryPayload.Dictionary,
+                            context.EntityAnalysisModelInstanceEntryPayload.Svirfd, cursor, context.Log))
                     {
                         abstractionValue = 1;
 

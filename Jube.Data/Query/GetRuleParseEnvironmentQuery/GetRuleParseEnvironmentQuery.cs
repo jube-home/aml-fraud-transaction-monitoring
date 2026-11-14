@@ -104,7 +104,7 @@ namespace Jube.Data.Query.GetRuleParseEnvironmentQuery
 
                 environment.AdvancedAnalyticsAdaptations =
                 [
-                    .. (await new AdvancedAnalyticsTrainedModelRepository(
+                    .. (await new AskJoobyAnalyticsTrainedModelRepository(
                             dbContext, tenantRegistryId, string.Empty)
                         .ListActiveByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token)
                         .ConfigureAwait(false))
@@ -117,6 +117,20 @@ namespace Jube.Data.Query.GetRuleParseEnvironmentQuery
                             tenantRegistryId)
                         .GetByEntityAnalysisModelIdOrderByIdDescAsync(entityAnalysisModelId, token)
                         .ConfigureAwait(false))
+                    .Select(s => s.Name)
+                ];
+
+                environment.Graph =
+                [
+                    .. (await new EntityAnalysisModelGraphRecallRepository(dbContext, tenantRegistryId)
+                        .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false))
+                    .Select(s => s.Name)
+                ];
+
+                environment.Svirfd =
+                [
+                    .. (await new EntityAnalysisModelSvirfdRepository(dbContext, tenantRegistryId)
+                        .GetByEntityAnalysisModelIdOrderByIdAsync(entityAnalysisModelId, token).ConfigureAwait(false))
                     .Select(s => s.Name)
                 ];
             }

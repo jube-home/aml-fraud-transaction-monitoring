@@ -17,7 +17,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static int JsonArrayLengthAt(this string? @this, string? path)
+        [Description("The length of the array at a path, otherwise -1.")]
+        public static int JsonArrayLengthAt(this string? @this,
+            [Description("The path to the array, for example $.items.")] string? path)
         {
             var node = StructuredDataSupport.Navigate(StructuredDataSupport.Parse(@this), path);
 

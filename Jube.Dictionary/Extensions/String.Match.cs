@@ -12,12 +12,15 @@ namespace Jube.Dictionary.Extensions
     {
         extension(String input)
         {
-            public Match Match(String pattern)
+            [Description("Searches for the first regex match; matching is limited to 250 ms.")]
+            public Match Match([Description("The regular expression pattern to match.")] String pattern)
             {
                 return Regex.Match(input, pattern, RegexOptions.None, RegexSupport.matchTimeout);
             }
 
-            public Match Match(String pattern, RegexOptions options)
+            [Description("Searches for the first regex match with options; matching is limited to 250 ms.")]
+            public Match Match([Description("The regular expression pattern to match.")] String pattern,
+                [Description("A bitwise combination of the enumeration values that provide options for matching.")] RegexOptions options)
             {
                 return Regex.Match(input, pattern, options, RegexSupport.matchTimeout);
             }

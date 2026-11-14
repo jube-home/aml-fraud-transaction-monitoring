@@ -79,7 +79,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasourceSeries
                 Active = 1,
                 Locked = 0,
                 Deleted = 0,
-                ShowInDirectory = 0,
+                ContextKindId = 2,
             }).ConfigureAwait(false);
 
             createdRegistryIds.Add(saved.Id);

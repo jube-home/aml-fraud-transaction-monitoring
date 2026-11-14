@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Whether the text is a nine-digit ABA routing number passing its weighted checksum.")]
         public static bool IsValidAbaRoutingNumber(this string? @this)
         {
             var value = (@this ?? "").Trim();

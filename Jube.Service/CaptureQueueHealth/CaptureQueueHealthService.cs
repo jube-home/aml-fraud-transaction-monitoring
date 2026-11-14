@@ -104,7 +104,7 @@ namespace Jube.Service.CaptureQueueHealth
 
         [Description("Lists per-cycle health snapshots (queue depth and dropped-since-last-flush count) for " +
                      "every bounded in-memory capture queue in the observability suite -- ModelInvokeWarning, " +
-                     "CaseCreationWarning, ArchiverWarning, RedisSentinelEvent, RedisConnectionEvent, " +
+                     "CaseCreationWarning, ArchiverWarning, RespSentinelEvent, RespConnectionEvent, " +
                      "OpenTelemetryMetric. One row per queue is written every ~60 seconds regardless of " +
                      "activity, so a flatline at zero is itself meaningful (everything's fine) -- watch for " +
                      "any non-zero DroppedCount, which means real data was silently discarded because a " +
@@ -130,7 +130,7 @@ namespace Jube.Service.CaptureQueueHealth
                 "Only include rows with CreatedDate on or before this UTC timestamp; defaults to the current time when omitted.")]
             DateTime? to = null,
             [Description(
-                "Only include rows for this queue -- 1=ModelInvokeWarning, 2=CaseCreationWarning, 3=ArchiverWarning, 4=RedisSentinelEvent, 5=RedisConnectionEvent, 6=OpenTelemetryMetric; omit to include every queue.")]
+                "Only include rows for this queue -- 1=ModelInvokeWarning, 2=CaseCreationWarning, 3=ArchiverWarning, 4=RespSentinelEvent, 5=RespConnectionEvent, 6=OpenTelemetryMetric; omit to include every queue.")]
             int? queueId = null,
             [Description(
                 "Percentage (0-100) chance of including each row that already matches every other filter, evaluated independently per row -- e.g. 10 returns roughly a random one-tenth of matching rows, not the newest tenth. Omit for the normal most-recent-first behaviour. Not surfaced in any admin UI; intended for an agent building an unbiased baseline sample of activity to compare against later, rather than for browsing.")]
@@ -219,8 +219,8 @@ namespace Jube.Service.CaptureQueueHealth
                 CaptureQueueType.ModelInvokeWarning => "Model Invoke Warning",
                 CaptureQueueType.CaseCreationWarning => "Case Creation Warning",
                 CaptureQueueType.ArchiverWarning => "Archiver Warning",
-                CaptureQueueType.RedisSentinelEvent => "Redis Sentinel Event",
-                CaptureQueueType.RedisConnectionEvent => "Redis Connection Event",
+                CaptureQueueType.RespSentinelEvent => "RESP Sentinel Event",
+                CaptureQueueType.RespConnectionEvent => "RESP Connection Event",
                 CaptureQueueType.OpenTelemetryMetric => "OpenTelemetry Metric",
                 _ => "Unknown"
             };

@@ -7,9 +7,21 @@ grand_parent: Configuration
 ---
 
 # Activation Rule Notifications
-It is possible to send Email and SMS notifications as a consequence of an Activation Rule having matched,  with Notification configuration strings being available for tokenization (i.e. swapping values with that available in the processing for the purposes of providing context to the recipient).
 
-It is important to note that the Engine must be configured to use SMTP gateway in the case of email by updating Environment Variables:
+> **Breaking change.** Email and SMS notifications are no longer configured on an Activation Rule. The five fields
+> (Enable Notification, Notification Type, Destination, Subject and Body) have been removed from the Activation Rule, and
+> the Engine no longer reads them or sends notifications for a rule match. The stored values are left in the database so
+> they can be copied by hand, and they are not changed when a rule is updated. Configure the equivalent on
+> a [Response Elevation Range](../ResponseElevationRanges/) instead, which carries a web hook and notification of its own,
+> although the Engine does not send those yet. The remainder of this page describes the behaviour before the change, and
+> the SMTP and Clickatell settings still apply.
+
+It is possible to send Email and SMS notifications as a consequence of an Activation Rule having matched, with
+Notification configuration strings being available for tokenization (i.e. swapping values with that available in the
+processing for the purposes of providing context to the recipient).
+
+It is important to note that the Engine must be configured to use SMTP gateway in the case of email by updating
+Environment Variables:
 
 ```text
 SMTPHost=email.emailhost.com
@@ -47,45 +59,59 @@ EnableNotification=True
 |--------------------|---------------------------------------------------------------------------------------------|
 | EnableNotification | Enables Notification dispatch from the engine either via AMQP or internal concurrent queue. |
 
-To send a notification asynchronously on Activation Rule match, navigate to rule that was created beforehand,  titled Volume1DayUSDForIPOver100,  clicking on it for the purposes of editing:
+To send a notification asynchronously on Activation Rule match, navigate to rule that was created beforehand, titled
+Volume1DayUSDForIPOver100, clicking on it for the purposes of editing:
 
+<!-- TODO(screenshot): file=model-activation-activationrulenotifications-1.png route=/models state="Activation Rule notification settings, replace the Razor-era image referenced below with the Vue UI" -->
 ![Image](ExistingActivationRuleForNotification.png)
 
 Scroll down to the Notification switch:
 
+<!-- TODO(screenshot): file=model-activation-activationrulenotifications-2.png route=/models state="Activation Rule notification settings, replace the Razor-era image referenced below with the Vue UI" -->
 ![Image](LocationOfNotificationSwitch.png)
 
 Check the Notification check box to expand on Notification options:
 
+<!-- TODO(screenshot): file=model-activation-activationrulenotifications-3.png route=/models state="Activation Rule notification settings, replace the Razor-era image referenced below with the Vue UI" -->
 ![Image](NotificationOptionsExposed.png)
 
-All fields for a Notification support tokenization which will swap values enclosed in [@ @] brackets with a corresponding value.  For example, the AccountID is present in model definition,  hence will be available in the payload.  To instruct the AccountID to be swapped in during processing,  the value would be tokenized as [@AccountID@].
+All fields for a Notification support tokenization which will swap values enclosed in [@ @] brackets with a
+corresponding value. For example, the AccountID is present in model definition, hence will be available in the payload.
+To instruct the AccountID to be swapped in during processing, the value would be tokenized as [@AccountID@].
 
-In this example a notification will be sent to richard.churchman@jube.io,  showing some elements of tokenization.
+In this example a notification will be sent to richard.churchman@jube.io, showing some elements of tokenization.
 
-The process to send an SMS over an Email is similar,  except for radio buttons between SMS and email, and the subject being ignored in the case of SMS.
+The process to send an SMS over an Email is similar, except for radio buttons between SMS and email, and the subject
+being ignored in the case of SMS.
 
 Complete the notification section of the Activation Rule:
 
+<!-- TODO(screenshot): file=model-activation-activationrulenotifications-4.png route=/models state="Activation Rule notification settings, replace the Razor-era image referenced below with the Vue UI" -->
 ![Image](ExampleNotification.png)
 
 Scroll down to update the Activation Rule with a new version:
 
+<!-- TODO(screenshot): file=model-activation-activationrulenotifications-5.png route=/models state="Activation Rule notification settings, replace the Razor-era image referenced below with the Vue UI" -->
 ![Image](UpdatedWithNotification.png)
 
-Synchronise the model via Entity >> Synchronisation and repeat the HTTP POST to endpoint [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc) for response.
+Synchronise the model via Entity >> Synchronisation and repeat the HTTP POST to
+endpoint [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc)
+for response.
 
-There will be no noticeable difference to the response payload, however, an email will have been dispatched asynchronously.  
+There will be no noticeable difference to the response payload, however, an email will have been dispatched
+asynchronously.
 
-Receipt of the email can be observed on inspection of the email addresses Inbox, that the message has been received and correctly tokenized:
+Receipt of the email can be observed on inspection of the email addresses Inbox, that the message has been received and
+correctly tokenized:
 
+<!-- TODO(screenshot): file=model-activation-activationrulenotifications-6.png route=/models state="Activation Rule notification settings, replace the Razor-era image referenced below with the Vue UI" -->
 ![Image](EmailRecieved.png)
 
 Only plain text emails are supported.
 
-Exactly the same tokenization process would take place given an SMS selected,  although the destination would need be the telephone number as per the Clickatell API specifications.  The subject is ignored in SMS dispatch. To send SMS, simply change the Notification Type from Email to SMS and change the email from richard.churchman@jube.io to a mobile telephone number (noting in the Clickatell API this should be + and not 00 for the country code at the time of writing).
+Exactly the same tokenization process would take place given an SMS selected, although the destination would need be the
+telephone number as per the Clickatell API specifications. The subject is ignored in SMS dispatch. To send SMS, simply
+change the Notification Type from Email to SMS and change the email from richard.churchman@jube.io to a mobile telephone
+number (noting in the Clickatell API this should be + and not 00 for the country code at the time of writing).
 
-
-
-
-
+<!-- TODO(docs): Verify against the Vue UI and the server locales; notification fields on an Activation Rule are preserved from the stored row on edit (not editable through the rule form). -->

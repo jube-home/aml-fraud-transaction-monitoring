@@ -23,7 +23,7 @@ namespace Jube.LoadTest.Models
         public static readonly IReadOnlyList<ContainerRole> DefaultContainerRoles =
         [
             new("Postgres", ["postgres", "patroni"]),
-            new("Redis", ["redis"]),
+            new("RESP", ["resp", "garnet", "redis"]),
             new("Sentinel", ["sentinel"]),
             new("Etcd", ["etcd"]),
             new("HAProxy", ["haproxy"]),
@@ -50,6 +50,6 @@ namespace Jube.LoadTest.Models
         public bool SampleContainerStats { get; init; } = true;
         public bool SampleHostStats { get; init; } = true;
         public string? PostgresConnectionString { get; init; }
-        public string? RedisConnectionString { get; init; }
+        public string? RespConnectionString { get; init; }
     }
 }

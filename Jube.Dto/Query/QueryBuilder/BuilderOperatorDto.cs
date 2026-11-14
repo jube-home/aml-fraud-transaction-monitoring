@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,26 +22,33 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.QueryBuilder
 {
     [Description("An operator the rule builder offers, with the rule text it produces.")]
+    [MessagePackObject]
     public class BuilderOperatorDto
     {
         [Description("The operator key used in builder JSON, e.g. is_valid_iban.")]
+        [Key(0)]
         public string Type { get; set; } = string.Empty;
 
         [Description("The label shown to the user, e.g. Is a valid IBAN.")]
+        [Key(1)]
         public string Label { get; set; } = string.Empty;
 
         [Description("The group the operator is listed under, e.g. Validation.")]
+        [Key(2)]
         public string Group { get; set; } = string.Empty;
 
         [Description("The values the operator takes, in order: each has a name, a kind (value, number, integer, " +
                      "text, date, list or field) and whether it takes several values separated by commas.")]
+        [Key(3)]
         public List<BuilderOperatorArgumentDto> Arguments { get; set; } = [];
 
         [Description(
             "The field data types the operator applies to: string, integer, double, boolean, datetime or list.")]
+        [Key(4)]
         public List<string> ApplyTo { get; set; } = [];
 
         [Description("The rule text appended to the field, with ? replaced by the values separated by commas.")]
+        [Key(5)]
         public string Template { get; set; } = string.Empty;
     }
 }

@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchHerfindahlWithBelow(double bound, params double[] others)
+            [Description("True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchHerfindahlWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleHerfindahlWithBelow(flow.Value, bound, others));
             }
 
-            public Flow<double> RejectHerfindahlWithBelow(double bound, params double[] others)
+            [Description("True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectHerfindahlWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleHerfindahlWithBelow(flow.Value, bound, others));
             }
 
-            public Flow<double> BreakHerfindahlWithBelow(double bound, params double[] others)
+            [Description("True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakHerfindahlWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleHerfindahlWithBelow(flow.Value, bound, others));
             }
 
-            public Flow<double> RequireHerfindahlWithBelow(double bound, params double[] others)
+            [Description("True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireHerfindahlWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleHerfindahlWithBelow(flow.Value, bound, others));
             }
 
-            public Flow<double> EnsureHerfindahlWithBelow(double bound, params double[] others)
+            [Description("True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureHerfindahlWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchHerfindahlWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchHerfindahlWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().MatchHerfindahlWithBelow(bound, others);
             }
 
-            public Flow<double> RejectHerfindahlWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectHerfindahlWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RejectHerfindahlWithBelow(bound, others);
             }
 
-            public Flow<double> BreakHerfindahlWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakHerfindahlWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().BreakHerfindahlWithBelow(bound, others);
             }
 
-            public Flow<double> RequireHerfindahlWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireHerfindahlWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RequireHerfindahlWithBelow(bound, others);
             }
 
-            public Flow<double> EnsureHerfindahlWithBelow(double bound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureHerfindahlWithBelow([Description("The bound the calculation is compared with.")] double bound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().EnsureHerfindahlWithBelow(bound, others);
             }

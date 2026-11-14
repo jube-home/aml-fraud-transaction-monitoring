@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>अनुमति अस्वीकृत।</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>प्रमाणित नहीं है।</value>
+  </data>
+    <data name="CaseNotFound" xml:space="preserve">
+    <value>केस नहीं मिला या दिखाई नहीं देता।</value>
+  </data>
+    <data name="TopicRequired" xml:space="preserve">
+    <value>शोध के लिए एक विषय आवश्यक है।</value>
+  </data>
+    <data name="TopicMaxLength" xml:space="preserve">
+    <value>शोध विषय {0} अक्षरों या उससे कम का होना चाहिए।</value>
+  </data>
+    <data name="FindingsRequired" xml:space="preserve">
+    <value>शोध के लिए उसके निष्कर्ष आवश्यक हैं।</value>
+  </data>
+    <data name="FindingsMaxLength" xml:space="preserve">
+    <value>निष्कर्ष {0} अक्षरों या उससे कम के होने चाहिए।</value>
+  </data>
+    <data name="CaseIdRequired" xml:space="preserve">
+    <value>केस आईडी आवश्यक है।</value>
+  </data>
+    <data name="UrlInvalid" xml:space="preserve">
+    <value>प्रत्येक स्रोत के लिए अधिकतम {0} अक्षरों का http या https पता आवश्यक है, जिसमें रिक्त स्थान, क्रेडेंशियल या कोणीय कोष्ठक न हों।</value>
+  </data>
+    <data name="TitleMaxLength" xml:space="preserve">
+    <value>स्रोत शीर्षक {0} अक्षरों या उससे कम का होना चाहिए।</value>
+  </data>
+    <data name="TooMany" xml:space="preserve">
+    <value>शोध अधिकतम {0} स्रोतों का हवाला दे सकता है।</value>
+  </data>
+    <data name="CaseLocked" xml:space="preserve">
+    <value>केस किसी अन्य उपयोगकर्ता द्वारा लॉक किया गया है।</value>
+  </data>
+</root>

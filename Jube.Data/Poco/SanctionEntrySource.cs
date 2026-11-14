@@ -36,5 +36,9 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(8)] public byte? EnableHttpLocation { get; set; }
         [Column] [Nullable] [Key(9)] public string HttpLocation { get; set; }
         [Column] [Nullable] [Key(10)] public byte? Skip { get; set; }
+        [Column] [Nullable] [Key(11)] public short? AliasIndex { get; set; }
+        [Column] [Nullable] [Key(12)] public string AliasSeparator { get; set; }
+        [Column] [Nullable] [Key(13)] public short? FilterIndex { get; set; }
+        [Column] [Nullable] [Key(14)] public string FilterValues { get; set; }
     }
 }

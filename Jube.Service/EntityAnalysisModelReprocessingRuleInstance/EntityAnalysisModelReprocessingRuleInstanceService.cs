@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using System.ComponentModel;
 using Jube.Data.Context;
 using Jube.Data.Repository;
@@ -35,7 +36,9 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
     public sealed class EntityAnalysisModelReprocessingRuleInstanceService
     {
         private const int MaxListTake = 200;
-        private static readonly int[] permissions = [26];
+        private static readonly int[] permissions = ReprocessingPermissions.Read;
+        private static readonly int[] triggerPermissions = ReprocessingPermissions.TriggerRun;
+        private static readonly int[] stopPermissions = ReprocessingPermissions.StopRun;
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
@@ -64,6 +67,8 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
         }
 
         public static IReadOnlyList<int> RequiredPermissions => permissions;
+        public static IReadOnlyList<int> TriggerPermissions => triggerPermissions;
+        public static IReadOnlyList<int> StopPermissions => stopPermissions;
 
         public static Task<EntityAnalysisModelReprocessingRuleInstanceService> CreateAsync(DbContext dbContext,
             string? userName, ILog log, IStringLocalizerFactory stringLocalizerFactory,
@@ -529,7 +534,8 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
         }
 
         [Description("Registers a new Reprocessing Rule instance under a Reprocessing Rule in the caller's " +
-                     "tenant. Not idempotent -- calling twice creates two rows.")]
+                     "tenant. Queues the run: status and counts are server-assigned, and a Reprocessing Rule with an " +
+                     "uncompleted instance refuses a second one (conflict). Not idempotent.")]
         [ServiceOperation("EntityAnalysisModelReprocessingRuleInstanceCreate", OperationKind.Write,
             Idempotent = false)]
         public async Task<ReprocessingRuleInstancePoco> InsertAsync(
@@ -549,7 +555,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             try
             {
                 ArgumentNullException.ThrowIfNull(model);
-                EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.Create");
+                EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.Create", triggerPermissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
 
@@ -565,9 +571,26 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                     throw new DtoValidationException(results);
                 }
 
-                var saved = await repository
-                    .InsertAsync(EntityAnalysisModelReprocessingRuleInstanceMapper.ToPoco(model), token)
-                    .ConfigureAwait(false);
+                ReprocessingRuleInstancePoco saved;
+
+                try
+                {
+                    saved = await repository
+                        .InsertByExistingUpdateUncompletedAsync(
+                            EntityAnalysisModelReprocessingRuleInstanceMapper.ToPoco(model), token)
+                        .ConfigureAwait(false);
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn(
+                            $"EntityAnalysisModelReprocessingRuleInstance.Create: entityAnalysisModelReprocessingRuleId={model.EntityAnalysisModelReprocessingRuleId} already has an uncompleted instance user={userName}");
+                    }
+
+                    throw new ConflictException(
+                        strings[EntityAnalysisModelReprocessingRuleInstanceResources.AlreadyHasActiveInstance], ex);
+                }
 
                 op.Entity(saved.Id);
                 op.Version(saved.Version);
@@ -590,6 +613,11 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             catch (DtoValidationException)
             {
                 op.Outcome("invalid");
+                throw;
+            }
+            catch (ConflictException)
+            {
+                op.Outcome("conflict");
                 throw;
             }
             catch (OperationCanceledException)
@@ -635,7 +663,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             try
             {
                 ArgumentNullException.ThrowIfNull(model);
-                EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.Validate");
+                EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.Validate", triggerPermissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 op.Rows(results.Errors.Count);
@@ -686,7 +714,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             try
             {
                 ArgumentNullException.ThrowIfNull(model);
-                EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.CreateByExistingUpdateUncompleted");
+                EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.CreateByExistingUpdateUncompleted", triggerPermissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
 
@@ -799,7 +827,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
             try
             {
                 ArgumentNullException.ThrowIfNull(model);
-                EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.Update");
+                EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.Update", triggerPermissions);
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
 
@@ -861,6 +889,12 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                 op.Outcome("notfound");
                 throw;
             }
+            catch (VersionConflictException)
+            {
+                op.Outcome("conflict");
+                throw;
+            }
+
             catch (OperationCanceledException)
             {
                 op.Outcome("cancelled");
@@ -903,7 +937,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
 
             try
             {
-                EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.Delete");
+                EnsurePermitted("EntityAnalysisModelReprocessingRuleInstance.Delete", stopPermissions);
 
                 try
                 {
@@ -964,18 +998,23 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            EnsurePermitted(op, permissions);
+        }
+
+        private void EnsurePermitted(string op, int[] required)
+        {
+            if (permissionValidation.Validate(required))
             {
                 return;
             }
 
             if (log.IsWarnEnabled)
             {
-                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", permissions)}]");
+                log.Warn($"{op}: permission denied user={userName} specs=[{string.Join(",", required)}]");
             }
 
             throw new ForbiddenException(
-                strings[EntityAnalysisModelReprocessingRuleInstanceResources.PermissionDenied], permissions);
+                strings[EntityAnalysisModelReprocessingRuleInstanceResources.PermissionDenied], required);
         }
     }
 }

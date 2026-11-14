@@ -17,6 +17,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Data.Repository;
+    using LinqToDB;
+    using LinqToDB.Async;
     using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 
     public static class SyncEntityAnalysisModelHttpAdaptationExtensions
@@ -27,7 +29,9 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
             {
                 context.Services.Parser.EntityAnalysisModelsHttpAdaptations = [];
 
-                foreach (var (key, value) in context.EntityAnalysisModels.ActiveEntityAnalysisModels)
+                var tenantSettings = new Dictionary<int, HttpAdaptationSettings>();
+
+                foreach (var (key, value) in context.ModelsInScope())
                 {
                     context.Services.CancellationToken.ThrowIfCancellationRequested();
 
@@ -38,6 +42,25 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                     }
 
                     var repository = new EntityAnalysisModelHttpAdaptationRepository(context.Services.DbContext);
+
+                    var tenantRegistryId = value.Instance.TenantRegistryId;
+
+                    if (!tenantSettings.TryGetValue(tenantRegistryId, out var settings))
+                    {
+                        var tenant = await context.Services.DbContext.TenantRegistry
+                            .FirstOrDefaultAsync(w => w.Id == tenantRegistryId
+                                                      && (w.Deleted == 0 || w.Deleted == null),
+                                context.Services.CancellationToken).ConfigureAwait(false);
+
+                        settings = HttpAdaptationSettings.Resolve(context.Services.DynamicEnvironment, tenant);
+                        tenantSettings[tenantRegistryId] = settings;
+
+                        if (settings.Refusal != null)
+                        {
+                            context.Services.Log.Error(
+                                $"Entity Start: Tenant {tenantRegistryId} has an HTTP Adaptation base URL refused by the outbound policy ({settings.Refusal}); its adaptations will not be recalled.");
+                        }
+                    }
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
@@ -74,7 +97,23 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     $"Entity Start: Adaptation ID ID {record.Id} returned for model {key} is active.");
                             }
 
-                            var entityAnalysisModelAdaptation = new EntityAnalysisModelHttpAdaptation(10, false, 1000)
+                            if (record.HttpEndpoint != null &&
+                                !EntityAnalysisModelHttpAdaptation.IsPlainPath(record.HttpEndpoint))
+                            {
+                                context.Services.Log.Error(
+                                    $"Entity Start: Adaptation ID {record.Id} returned for model {key} has an HTTP Endpoint that is not a plain path and has been skipped.");
+
+                                continue;
+                            }
+
+                            if (settings.Refusal != null)
+                            {
+                                continue;
+                            }
+
+                            var entityAnalysisModelAdaptation = new EntityAnalysisModelHttpAdaptation(10,
+                                settings.ValidateSsl, settings.TimeoutMilliseconds, settings.AllowInsecureTargets,
+                                tenantRegistryId)
                             {
                                 Id = record.Id
                             };
@@ -176,16 +215,19 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             }
                             else
                             {
-                                var validHost = context.Services.DynamicEnvironment.AppSettings("HttpAdaptationUrl")
-                                    .EndsWith('/')
-                                    ? context.Services.DynamicEnvironment.AppSettings("HttpAdaptationUrl")
-                                    : context.Services.DynamicEnvironment.AppSettings("HttpAdaptationUrl") + "/";
+                                var validHost = settings.BaseUrl.EndsWith('/')
+                                    ? settings.BaseUrl
+                                    : settings.BaseUrl + "/";
 
                                 var validUrl = record.HttpEndpoint.StartsWith('/')
                                     ? record.HttpEndpoint.Remove(0, 1)
                                     : record.HttpEndpoint;
 
                                 var rPlumberEndpoint = $"{validHost}{validUrl}";
+
+                                entityAnalysisModelAdaptation.BreakerKey =
+                                    $"{tenantRegistryId}|{new Uri(rPlumberEndpoint).Authority}";
+                                entityAnalysisModelAdaptation.Resilience = settings.Resilience;
 
                                 entityAnalysisModelAdaptation.HttpEndpoint = rPlumberEndpoint;
 

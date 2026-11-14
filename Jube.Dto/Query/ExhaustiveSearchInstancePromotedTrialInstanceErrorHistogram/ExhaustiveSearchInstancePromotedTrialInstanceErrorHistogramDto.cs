@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,14 +21,17 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogram
 {
+    [MessagePackObject]
     public class ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramDto
     {
         [Description("Lower bound of the histogram bin, rounded to two decimal places. Each bin covers the " +
                      "prediction error (actual minus predicted) of the active promoted trial instance of the " +
                      "exhaustive search instance, across ten equal-width bins.")]
+        [Key(0)]
         public double Bin { get; set; }
 
         [Description("Number of prediction errors (actual minus predicted) that fall within this bin.")]
+        [Key(1)]
         public int Frequency { get; set; }
     }
 }

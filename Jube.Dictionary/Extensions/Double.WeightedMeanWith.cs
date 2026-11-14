@@ -15,7 +15,11 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double WeightedMeanWith(this double @this, double weight, double other, double otherWeight)
+        [Description("The weighted average of the value and another value.")]
+        public static double WeightedMeanWith(this double @this,
+            [Description("The weight of the value.")] double weight,
+            [Description("The other number.")] double other,
+            [Description("The weight of the other value.")] double otherWeight)
         {
             return CalculationSupport.Finite((@this * weight + other * otherWeight) / (weight + otherWeight));
         }

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Du har inte behörighet att utföra den här åtgärden.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Du är inte autentiserad.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>Grafregistret hittades inte.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>Namn krävs.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Namnet får vara högst {0} tecken.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Ett grafregister med det här namnet finns redan.</value>
+  </data>
+    <data name="DefaultHopsOutOfRange" xml:space="preserve">
+    <value>Standardantalet hopp måste vara mellan 1 och 3.</value>
+  </data>
+    <data name="DefaultWindowDaysOutOfRange" xml:space="preserve">
+    <value>Standardfönstret måste vara mellan 1 och 3650 dagar.</value>
+  </data>
+    <data name="RenderCapOutOfRange" xml:space="preserve">
+    <value>Renderingsgränsen måste vara mellan 10 och 150 noder.</value>
+  </data>
+    <data name="ContextKindInvalid" xml:space="preserve">
+    <value>Visas i måste vara Katalog eller Ärende.</value>
+  </data>
+    <data name="LayoutInvalid" xml:space="preserve">
+    <value>Standardlayouten känns inte igen.</value>
+  </data>
+    <data name="HubPolicyInvalid" xml:space="preserve">
+    <value>Navpolicyn känns inte igen.</value>
+  </data>
+</root>

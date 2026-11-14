@@ -13,6 +13,7 @@
 
 namespace Jube.Engine.BackgroundTasks.Context
 {
+    using GraphRecall;
     using Helpers;
     using Models;
 
@@ -40,6 +41,11 @@ namespace Jube.Engine.BackgroundTasks.Context
         {
             get;
         } = new Sanctions();
+
+        public GraphRecallCache GraphRecall
+        {
+            get;
+        } = new GraphRecallCache();
 
         public Tasks Tasks
         {

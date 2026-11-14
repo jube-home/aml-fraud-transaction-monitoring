@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="WeekdayMon" xml:space="preserve">
+        <value>Sen</value>
+    </data>
+    <data name="WeekdayTue" xml:space="preserve">
+        <value>Sel</value>
+    </data>
+    <data name="WeekdayWed" xml:space="preserve">
+        <value>Rab</value>
+    </data>
+    <data name="WeekdayThu" xml:space="preserve">
+        <value>Kam</value>
+    </data>
+    <data name="WeekdayFri" xml:space="preserve">
+        <value>Jum</value>
+    </data>
+    <data name="WeekdaySat" xml:space="preserve">
+        <value>Sab</value>
+    </data>
+    <data name="WeekdaySun" xml:space="preserve">
+        <value>Min</value>
+    </data>
+    <data name="BucketHour" xml:space="preserve">
+        <value>jam</value>
+    </data>
+    <data name="BucketDay" xml:space="preserve">
+        <value>hari</value>
+    </data>
+    <data name="BucketWeek" xml:space="preserve">
+        <value>minggu</value>
+    </data>
+    <data name="BucketMonth" xml:space="preserve">
+        <value>bulan</value>
+    </data>
+    <data name="ProgressionTitle" xml:space="preserve">
+        <value>{0} dari waktu ke waktu</value>
+    </data>
+    <data name="ProgressionSubtitle" xml:space="preserve">
+        <value>Median per {0}, terbaru {1}</value>
+    </data>
+    <data name="DistributionTitle" xml:space="preserve">
+        <value>Distribusi {0}</value>
+    </data>
+    <data name="DistributionSubtitle" xml:space="preserve">
+        <value>Nilai terbaru, {0}, berada di persentil ke-{1} dari {2} transaksi</value>
+    </data>
+    <data name="Transactions" xml:space="preserve">
+        <value>Transaksi</value>
+    </data>
+    <data name="VelocityTitle" xml:space="preserve">
+        <value>Kapan transaksi terjadi</value>
+    </data>
+    <data name="VelocitySubtitle" xml:space="preserve">
+        <value>Menurut hari dalam seminggu dan jam (UTC)</value>
+    </data>
+    <data name="Hour" xml:space="preserve">
+        <value>Jam</value>
+    </data>
+    <data name="Weekday" xml:space="preserve">
+        <value>Hari dalam seminggu</value>
+    </data>
+    <data name="GapsTitle" xml:space="preserve">
+        <value>Jeda antar transaksi</value>
+    </data>
+    <data name="GapsSubtitle" xml:space="preserve">
+        <value>Berapa lama kunci tidak aktif sebelum setiap transaksi</value>
+    </data>
+    <data name="CounterpartiesTitle" xml:space="preserve">
+        <value>Pihak lawan {0}</value>
+    </data>
+    <data name="CounterpartiesSubtitle" xml:space="preserve">
+        <value>{0} berbeda, {1} baru dalam 30 hari terakhir</value>
+    </data>
+    <data name="CorrelationTitle" xml:space="preserve">
+        <value>Bagaimana ukuran-ukuran bergerak bersama</value>
+    </data>
+    <data name="CorrelationSubtitle" xml:space="preserve">
+        <value>Korelasi Pearson, dari -1 hingga 1</value>
+    </data>
+    <data name="DriftTitle" xml:space="preserve">
+        <value>Pergeseran antara riwayat awal dan terbaru</value>
+    </data>
+    <data name="DriftSubtitle" xml:space="preserve">
+        <value>Jarak antara dua bagian; di atas nilai kritis berarti telah bergeser</value>
+    </data>
+    <data name="Distance" xml:space="preserve">
+        <value>Jarak</value>
+    </data>
+    <data name="Critical" xml:space="preserve">
+        <value>Kritis</value>
+    </data>
+    <data name="ContributionMoved" xml:space="preserve">
+        <value>{0}: apa yang menggerakkan skor</value>
+    </data>
+    <data name="ContributionPushed" xml:space="preserve">
+        <value>{0}: apa yang mendorong skor</value>
+    </data>
+    <data name="BaseSubtitle" xml:space="preserve">
+        <value>Dari nilai dasar {0}</value>
+    </data>
+    <data name="InSpace" xml:space="preserve">
+        <value> dalam {0}</value>
+    </data>
+    <data name="HiddenInputs" xml:space="preserve">
+        <value>; {0} masukan disembunyikan</value>
+    </data>
+    <data name="BaseValue" xml:space="preserve">
+        <value>Nilai dasar</value>
+    </data>
+    <data name="VisibleInputs" xml:space="preserve">
+        <value>Masukan terlihat</value>
+    </data>
+    <data name="Score" xml:space="preserve">
+        <value>Skor</value>
+    </data>
+    <data name="RelativeContributions" xml:space="preserve">
+        <value>Kontribusi relatif</value>
+    </data>
+    <data name="ByMethod" xml:space="preserve">
+        <value> menurut {0}</value>
+    </data>
+    <data name="NotAdditive" xml:space="preserve">
+        <value>, tidak aditif</value>
+    </data>
+    <data name="Contribution" xml:space="preserve">
+        <value>Kontribusi</value>
+    </data>
+    <data name="GaugeThreshold" xml:space="preserve">
+        <value>ambang {0}</value>
+    </data>
+    <data name="GaugeNoThreshold" xml:space="preserve">
+        <value>tidak ada ambang yang dideklarasikan</value>
+    </data>
+    <data name="GaugeCalibrated" xml:space="preserve">
+        <value>Probabilitas terkalibrasi {0} · {1} · {2}</value>
+    </data>
+    <data name="GaugeScore" xml:space="preserve">
+        <value>Skor {0} (bukan probabilitas) · {1}</value>
+    </data>
+    <data name="DriversMoved" xml:space="preserve">
+        <value>Apa yang menggerakkan {0}</value>
+    </data>
+    <data name="DriversPushed" xml:space="preserve">
+        <value>Apa yang mendorong {0}</value>
+    </data>
+    <data name="RelativeNotAdditive" xml:space="preserve">
+        <value>Kontribusi relatif, tidak aditif</value>
+    </data>
+    <data name="OtherInputs" xml:space="preserve">
+        <value>{0} masukan lainnya</value>
+    </data>
+    <data name="CalibrationTitle" xml:space="preserve">
+        <value>{0}: apakah skor berarti seperti yang dikatakannya</value>
+    </data>
+    <data name="CalibrationValidated" xml:space="preserve">
+        <value>Divalidasi pada {0} kasus</value>
+    </data>
+    <data name="CalibrationExpected" xml:space="preserve">
+        <value>Yang diharapkan dibanding yang teramati</value>
+    </data>
+</root>

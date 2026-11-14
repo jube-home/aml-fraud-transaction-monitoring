@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Jube.Data.Poco;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 
 namespace Jube.Test.Security.Observability;
 

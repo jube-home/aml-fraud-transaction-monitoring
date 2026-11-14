@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchLengthInRange(int minimum, int maximum)
+            [Description("True when: length between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchLengthInRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringLengthInRange(flow.Value, minimum, maximum));
             }
 
-            public Flow<string?> RejectLengthInRange(int minimum, int maximum)
+            [Description("True when: length between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectLengthInRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringLengthInRange(flow.Value, minimum, maximum));
             }
 
-            public Flow<string?> BreakLengthInRange(int minimum, int maximum)
+            [Description("True when: length between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakLengthInRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringLengthInRange(flow.Value, minimum, maximum));
             }
 
-            public Flow<string?> RequireLengthInRange(int minimum, int maximum)
+            [Description("True when: length between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireLengthInRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringLengthInRange(flow.Value, minimum, maximum));
             }
 
-            public Flow<string?> EnsureLengthInRange(int minimum, int maximum)
+            [Description("True when: length between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureLengthInRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchLengthInRange(int minimum, int maximum)
+            [Description("Begins a pipeline from the value. True when: length between the bounds, both included. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchLengthInRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return value.Start().MatchLengthInRange(minimum, maximum);
             }
 
-            public Flow<string?> RejectLengthInRange(int minimum, int maximum)
+            [Description("Begins a pipeline from the value. True when: length between the bounds, both included. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectLengthInRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return value.Start().RejectLengthInRange(minimum, maximum);
             }
 
-            public Flow<string?> BreakLengthInRange(int minimum, int maximum)
+            [Description("Begins a pipeline from the value. True when: length between the bounds, both included. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakLengthInRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return value.Start().BreakLengthInRange(minimum, maximum);
             }
 
-            public Flow<string?> RequireLengthInRange(int minimum, int maximum)
+            [Description("Begins a pipeline from the value. True when: length between the bounds, both included. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireLengthInRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return value.Start().RequireLengthInRange(minimum, maximum);
             }
 
-            public Flow<string?> EnsureLengthInRange(int minimum, int maximum)
+            [Description("Begins a pipeline from the value. True when: length between the bounds, both included. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureLengthInRange([Description("The lower bound.")] int minimum,
+                [Description("The upper bound.")] int maximum)
             {
                 return value.Start().EnsureLengthInRange(minimum, maximum);
             }

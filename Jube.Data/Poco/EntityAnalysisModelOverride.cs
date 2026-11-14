@@ -38,8 +38,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(9)] public string OverrideKey { get; set; }
         [Column] [Nullable] [Key(10)] public int InheritedId { get; set; }
 
-        [Association(ThisKey = "EntityAnalysisModelGuid", OtherKey = "Guid", CanBeNull = false,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "EntityAnalysisModelGuid", OtherKey = "Guid", CanBeNull = false)]
         [Key(11)]
         public EntityAnalysisModel EntityAnalysisModel { get; set; }
 

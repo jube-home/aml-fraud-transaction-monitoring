@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="FunnelTitle" xml:space="preserve">
+        <value>Från arkiv till utlösning</value>
+    </data>
+    <data name="FunnelSubtitle" xml:space="preserve">
+        <value>Transaktioner lästa, behållna av filtret och utlösta av regeln</value>
+    </data>
+    <data name="StageRead" xml:space="preserve">
+        <value>Lästa</value>
+    </data>
+    <data name="StageKept" xml:space="preserve">
+        <value>Behållna av filtret</value>
+    </data>
+    <data name="StageFired" xml:space="preserve">
+        <value>Utlösta</value>
+    </data>
+    <data name="ConfusionTitle" xml:space="preserve">
+        <value>Förväxlingsmatris</value>
+    </data>
+    <data name="ConfusionSubtitle" xml:space="preserve">
+        <value>Vad regeln gjorde jämfört med vad transaktionen var</value>
+    </data>
+    <data name="FiredQuestion" xml:space="preserve">
+        <value>Utlöst?</value>
+    </data>
+    <data name="PositiveQuestion" xml:space="preserve">
+        <value>Positiv?</value>
+    </data>
+    <data name="No" xml:space="preserve">
+        <value>Nej</value>
+    </data>
+    <data name="Yes" xml:space="preserve">
+        <value>Ja</value>
+    </data>
+    <data name="Precision" xml:space="preserve">
+        <value>Precision</value>
+    </data>
+    <data name="Recall" xml:space="preserve">
+        <value>Täckning</value>
+    </data>
+    <data name="Specificity" xml:space="preserve">
+        <value>Specificitet</value>
+    </data>
+    <data name="PositiveRate" xml:space="preserve">
+        <value>Andel positiva</value>
+    </data>
+    <data name="FiredRate" xml:space="preserve">
+        <value>Utlösningsandel</value>
+    </data>
+    <data name="RatesTitle" xml:space="preserve">
+        <value>Andel</value>
+    </data>
+    <data name="RatesSubtitle" xml:space="preserve">
+        <value>Precision, täckning och andelen transaktioner som utlösts och är positiva</value>
+    </data>
+    <data name="Percent" xml:space="preserve">
+        <value>Procent</value>
+    </data>
+    <data name="Rate" xml:space="preserve">
+        <value>Andel</value>
+    </data>
+    <data name="TagsTitle" xml:space="preserve">
+        <value>Taggar på de utvärderade transaktionerna</value>
+    </data>
+    <data name="Transactions" xml:space="preserve">
+        <value>Transaktioner</value>
+    </data>
+</root>

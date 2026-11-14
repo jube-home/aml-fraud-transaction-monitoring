@@ -35,6 +35,9 @@ namespace Jube.AskJooby.Tools.WebSearch
         IReadOnlyList<AgentGuardRuleSetting>? agentGuardRules = null)
     {
         private const int MaxAllowedResults = 10;
+        private const int MaxSnippetCharacters = 4000;
+        private const int MaxPageCharacters = 12000;
+        private const int MaxAnswerCharacters = 4000;
         private const string RequestGuardPipelineName = "askjooby-websearch-query-withheld";
         private const string ResultGuardPipelineName = "askjooby-websearch-result-withheld";
 
@@ -90,9 +93,31 @@ namespace Jube.AskJooby.Tools.WebSearch
             var hits = new List<WebSearchResult>();
             var withheldFindings = new List<AskJoobyGuardFinding>();
 
-            foreach (var candidate in response.Results)
+            var answer = response.Answer is { Length: > MaxAnswerCharacters }
+                ? response.Answer[..MaxAnswerCharacters]
+                : response.Answer;
+
+            if (!string.IsNullOrWhiteSpace(answer))
             {
-                var finding = await AskJoobyInjectionGuard.CheckToolContentAsync(candidate.Content, agentGuardRules);
+                var answerFinding = await AskJoobyInjectionGuard.CheckToolContentAsync(answer, agentGuardRules);
+
+                if (answerFinding is not null)
+                {
+                    withheldFindings.Add(answerFinding);
+                    answer = null;
+                }
+            }
+
+            foreach (var rawCandidate in response.Results)
+            {
+                var candidate = rawCandidate with
+                {
+                    Content = Truncate(rawCandidate.Content, MaxSnippetCharacters) ?? string.Empty,
+                    RawContent = Truncate(rawCandidate.RawContent, MaxPageCharacters)
+                };
+
+                var finding = await AskJoobyInjectionGuard.CheckToolContentAsync(
+                    $"{candidate.Title}\n{candidate.Content}", agentGuardRules);
 
                 if (finding is null && !string.IsNullOrEmpty(candidate.RawContent))
                 {
@@ -138,10 +163,10 @@ namespace Jube.AskJooby.Tools.WebSearch
                     "prompt-injection screening.");
             }
 
-            if (!string.IsNullOrWhiteSpace(response.Answer))
+            if (!string.IsNullOrWhiteSpace(answer))
             {
                 builder.AppendLine();
-                builder.AppendLine($"Synthesised answer: {response.Answer}");
+                builder.AppendLine($"Synthesised answer: {answer}");
             }
 
             builder.AppendLine();
@@ -166,6 +191,11 @@ namespace Jube.AskJooby.Tools.WebSearch
             builder.AppendLine("[CRITICAL CONTEXT END]");
 
             return builder.ToString();
+        }
+
+        private static string? Truncate(string? value, int limit)
+        {
+            return value is { Length: var length } && length > limit ? value[..limit] : value;
         }
     }
 }

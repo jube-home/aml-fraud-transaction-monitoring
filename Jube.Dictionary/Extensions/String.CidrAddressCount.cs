@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The number of addresses in a CIDR range, otherwise NaN.")]
         public static double CidrAddressCount(this string? @this)
         {
             return NetworkAddressSupport.TryParseCidr(@this, out _, out var prefix, out var bits)

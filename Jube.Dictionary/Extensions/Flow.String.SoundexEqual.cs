@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchSoundexEqual(string? other)
+            [Description("True when: sounds the same as the argument. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchSoundexEqual([Description("The text the value must sound like.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringSoundexEqual(flow.Value, other));
             }
 
-            public Flow<string?> RejectSoundexEqual(string? other)
+            [Description("True when: sounds the same as the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectSoundexEqual([Description("The text the value must sound like.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringSoundexEqual(flow.Value, other));
             }
 
-            public Flow<string?> BreakSoundexEqual(string? other)
+            [Description("True when: sounds the same as the argument. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakSoundexEqual([Description("The text the value must sound like.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringSoundexEqual(flow.Value, other));
             }
 
-            public Flow<string?> RequireSoundexEqual(string? other)
+            [Description("True when: sounds the same as the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireSoundexEqual([Description("The text the value must sound like.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringSoundexEqual(flow.Value, other));
             }
 
-            public Flow<string?> EnsureSoundexEqual(string? other)
+            [Description("True when: sounds the same as the argument. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureSoundexEqual([Description("The text the value must sound like.")] string? other)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchSoundexEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: sounds the same as the argument. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchSoundexEqual([Description("The text the value must sound like.")] string? other)
             {
                 return value.Start().MatchSoundexEqual(other);
             }
 
-            public Flow<string?> RejectSoundexEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: sounds the same as the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectSoundexEqual([Description("The text the value must sound like.")] string? other)
             {
                 return value.Start().RejectSoundexEqual(other);
             }
 
-            public Flow<string?> BreakSoundexEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: sounds the same as the argument. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakSoundexEqual([Description("The text the value must sound like.")] string? other)
             {
                 return value.Start().BreakSoundexEqual(other);
             }
 
-            public Flow<string?> RequireSoundexEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: sounds the same as the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireSoundexEqual([Description("The text the value must sound like.")] string? other)
             {
                 return value.Start().RequireSoundexEqual(other);
             }
 
-            public Flow<string?> EnsureSoundexEqual(string? other)
+            [Description("Begins a pipeline from the value. True when: sounds the same as the argument. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureSoundexEqual([Description("The text the value must sound like.")] string? other)
             {
                 return value.Start().EnsureSoundexEqual(other);
             }

@@ -30,6 +30,7 @@ namespace Jube.Engine.EntityAnalysisModelManager
                 DynamicEnvironment = context.Services.DynamicEnvironment,
                 RabbitMqConnection = context.Services.RabbitMqConnection,
                 CacheService = context.Services.CacheService,
+                Svirfd = context.Services.Svirfd,
                 TaskCoordinator = context.Services.TaskCoordinator,
                 ImplicitAsyncInvocationTracker = context.Services.ImplicitAsyncInvocationTracker,
                 ReportConnectionString = context.Services.ReportConnectionString
@@ -39,7 +40,8 @@ namespace Jube.Engine.EntityAnalysisModelManager
                 HashCacheAssembly = context.Services.HashCacheAssembly,
                 HashCacheAssemblyMetadata = context.Services.HashCacheAssemblyMetadata,
                 SanctionsEntries = context.Sanctions.SanctionsEntries,
-                SanctionsStopTokens = context.Sanctions.SanctionsStopTokens
+                SanctionsStopTokens = context.Sanctions.SanctionsStopTokens,
+                GraphRecall = context.GraphRecall
             },
             EntityAnalysisModels =
             {
@@ -48,6 +50,7 @@ namespace Jube.Engine.EntityAnalysisModelManager
             ConcurrentQueues =
             {
                 PendingNotifications = context.ConcurrentQueues.PendingNotifications,
+                PendingWebhooks = context.ConcurrentQueues.PendingWebhooks,
                 PendingEntityInvoke = context.ConcurrentQueues.PendingEntityInvoke,
                 PendingCases = context.ConcurrentQueues.PendingCases
             }

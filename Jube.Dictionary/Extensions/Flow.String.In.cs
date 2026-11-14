@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchIn(params string[] values)
+            [Description("True when: one of the listed strings, case sensitive. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringIn(flow.Value, values));
             }
 
-            public Flow<string?> RejectIn(params string[] values)
+            [Description("True when: one of the listed strings, case sensitive. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringIn(flow.Value, values));
             }
 
-            public Flow<string?> BreakIn(params string[] values)
+            [Description("True when: one of the listed strings, case sensitive. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringIn(flow.Value, values));
             }
 
-            public Flow<string?> RequireIn(params string[] values)
+            [Description("True when: one of the listed strings, case sensitive. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringIn(flow.Value, values));
             }
 
-            public Flow<string?> EnsureIn(params string[] values)
+            [Description("True when: one of the listed strings, case sensitive. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchIn(params string[] values)
+            [Description("Begins a pipeline from the value. True when: one of the listed strings, case sensitive. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return value.Start().MatchIn(values);
             }
 
-            public Flow<string?> RejectIn(params string[] values)
+            [Description("Begins a pipeline from the value. True when: one of the listed strings, case sensitive. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return value.Start().RejectIn(values);
             }
 
-            public Flow<string?> BreakIn(params string[] values)
+            [Description("Begins a pipeline from the value. True when: one of the listed strings, case sensitive. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return value.Start().BreakIn(values);
             }
 
-            public Flow<string?> RequireIn(params string[] values)
+            [Description("Begins a pipeline from the value. True when: one of the listed strings, case sensitive. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return value.Start().RequireIn(values);
             }
 
-            public Flow<string?> EnsureIn(params string[] values)
+            [Description("Begins a pipeline from the value. True when: one of the listed strings, case sensitive. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureIn([Description("The value list to compare with the object.")] params string[] values)
             {
                 return value.Start().EnsureIn(values);
             }

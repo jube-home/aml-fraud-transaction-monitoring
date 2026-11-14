@@ -28,7 +28,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
             {
                 context.Services.Parser.EntityAnalysisModelsSanctions = [];
 
-                foreach (var (key, value) in context.EntityAnalysisModels.ActiveEntityAnalysisModels)
+                foreach (var (key, value) in context.ModelsInScope())
                 {
                     context.Services.CancellationToken.ThrowIfCancellationRequested();
 
@@ -255,6 +255,10 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                         $"Entity Start: Model {key} and Sanctions {entityAnalysisModelSanctions.EntityAnalysisModelSanctionsId} set AggregationTypeId as {entityAnalysisModelSanctions.MaxCoverageRatio}.");
                                 }
                             }
+
+                            entityAnalysisModelSanctions.MatchAlgorithmId = record.MatchAlgorithmId ?? 1;
+                            entityAnalysisModelSanctions.MinimumSimilarity = record.MinimumSimilarity ?? 0.9;
+                            entityAnalysisModelSanctions.Transliterate = record.Transliterate == 1;
 
                             if (record.CacheInterval == null)
                             {

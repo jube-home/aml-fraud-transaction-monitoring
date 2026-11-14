@@ -37,6 +37,7 @@ namespace Jube.Service.Repository.SanctionEntrySource
     public sealed class SanctionEntrySourceService
     {
         private const int MaxListTake = 200;
+        public const long MaximumImportBytes = 64L * 1024 * 1024;
         private readonly ILog auditLog;
         private readonly DbContext dbContext;
         private readonly ILog log;
@@ -397,6 +398,16 @@ namespace Jube.Service.Repository.SanctionEntrySource
                     ]));
                 }
 
+                if (fileLength > MaximumImportBytes)
+                {
+                    throw new DtoValidationException(new ValidationResult([
+                        new ValidationFailure("files",
+                                strings[SanctionEntrySourceResources.FileTooLarge,
+                                    MaximumImportBytes / (1024 * 1024)])
+                            { ErrorCode = "FilesTooLarge" }
+                    ]));
+                }
+
                 var sanctionEntrySource = await repository.GetByIdAsync(sanctionEntrySourceId, token)
                     .ConfigureAwait(false);
 
@@ -443,6 +454,14 @@ namespace Jube.Service.Repository.SanctionEntrySource
                         $"SanctionEntrySource.Import: sanctionEntrySourceId={sanctionEntrySourceId} " +
                         $"importId={sanctionEntryImport.Id} successful={sanctionEntryImport.Successful} " +
                         $"user={userName}");
+                }
+
+                if (sanctionEntryImport.Successful != 1)
+                {
+                    throw new DtoValidationException(new ValidationResult([
+                        new ValidationFailure("files", strings[SanctionEntrySourceResources.ImportFailed])
+                            { ErrorCode = "ImportFailed" }
+                    ]));
                 }
             }
             catch (ForbiddenException)
@@ -503,6 +522,8 @@ namespace Jube.Service.Repository.SanctionEntrySource
                 var result = await SanctionEntryFileImporter.ImportAsync(textFieldParser, sanctionEntrySource.Id,
                     sanctionEntrySource.MultiPartStringIndex, sanctionEntrySource.ReferenceIndex,
                     sanctionEntrySource.Skip ?? 0,
+                    new Jube.Engine.Sanctions.Models.SanctionEntryFileOptions(sanctionEntrySource.AliasIndex, sanctionEntrySource.AliasSeparator,
+                        sanctionEntrySource.FilterIndex, sanctionEntrySource.FilterValues),
                     async (record, ct) =>
                     {
                         var sanctionEntry = new SanctionEntry
@@ -516,8 +537,8 @@ namespace Jube.Service.Repository.SanctionEntrySource
                             CreatedUser = userName
                         };
 
-                        var (_, outcome) = await sanctionsEntryRepository.UpsertAsync(sanctionEntry, ct)
-                            .ConfigureAwait(false);
+                        var (_, outcome) = await sanctionsEntryRepository
+                            .UpsertAsync(sanctionEntry, ct, sanctionEntryImport.Id).ConfigureAwait(false);
 
                         switch (outcome)
                         {
@@ -547,8 +568,13 @@ namespace Jube.Service.Repository.SanctionEntrySource
                     log,
                     token).ConfigureAwait(false);
 
-                var removed = await SanctionEntryFileImporter.ReconcileRemovedAsync(sanctionsEntryRepository,
-                    sanctionEntrySource.Id, result.Hashes, userName, log, token).ConfigureAwait(false);
+                IReadOnlyCollection<SanctionEntry> removed = [];
+
+                if (result.Completed)
+                {
+                    removed = await SanctionEntryFileImporter.ReconcileRemovedAsync(sanctionsEntryRepository,
+                        sanctionEntrySource.Id, result.Hashes, userName, log, token).ConfigureAwait(false);
+                }
 
                 sanctionEntryImport.EndDate = DateTime.UtcNow;
                 sanctionEntryImport.TotalRows = result.TotalRows;
@@ -557,7 +583,12 @@ namespace Jube.Service.Repository.SanctionEntrySource
                 sanctionEntryImport.UnchangedCount = unchanged;
                 sanctionEntryImport.RemovedCount = removed.Count;
                 sanctionEntryImport.RejectedCount = result.RejectedRows;
-                sanctionEntryImport.Successful = 1;
+                sanctionEntryImport.Successful = (byte)(result.Completed ? 1 : 0);
+
+                if (!result.Completed)
+                {
+                    sanctionEntryImport.ErrorMessage = "The file could not be read to the end; nothing was delisted.";
+                }
 
                 await sanctionEntryImportRepository.UpdateAsync(sanctionEntryImport, token).ConfigureAwait(false);
             }

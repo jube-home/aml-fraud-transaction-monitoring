@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static Flow<T> AddScore<T>(this Flow<T> flow, double weight)
+        [Description("Adds the weight to the pipeline's score; a negative weight subtracts.")]
+        public static Flow<T> AddScore<T>(this Flow<T> flow,
+            [Description("How much to add to the score; negative subtracts.")] double weight)
         {
             return flow.IsDecided ? flow : flow.WithScore(flow.Score + weight);
         }

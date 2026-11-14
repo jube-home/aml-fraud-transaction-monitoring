@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double SpreadWith(this double @this, params double[] others)
+        [Description("The gap between the largest and smallest of the value and the others.")]
+        public static double SpreadWith(this double @this, [Description("The other numbers.")] params double[] others)
         {
             return CalculationSupport.Finite(CalculationSupport.Largest(@this, others) - CalculationSupport.Smallest(@this, others));
         }

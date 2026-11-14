@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+        <value>Nie masz uprawnień do wykonania tej czynności.</value>
+    </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+        <value>Musisz być zalogowany do tenanta, aby wykonać tę czynność.</value>
+    </data>
+    <data name="NoFileSupplied" xml:space="preserve">
+        <value>Nie przesłano pliku zachowania.</value>
+    </data>
+    <data name="InvalidPreservationFile" xml:space="preserve">
+        <value>Nie udało się odszyfrować pliku zachowania. Sprawdź hasło i upewnij się, że plik pochodzi z eksportu Jube. Pliku wyeksportowanego we wcześniejszej wersji Jube nie można zaimportować.</value>
+    </data>
+    <data name="PasswordTooShort" xml:space="preserve">
+        <value>Hasło musi mieć co najmniej 12 znaków.</value>
+    </data>
+    <data name="WarningNoApprovalHistory" xml:space="preserve">
+        <value>Pakiet nie zawiera historii zatwierdzeń, więc każdy importowany obiekt zostanie oznaczony jako zatwierdzony w bieżącej wersji pod Twoim nazwiskiem.</value>
+    </data>
+    <data name="WarningNoRoles" xml:space="preserve">
+        <value>Pakiet nie zawiera ról, więc wszystkie role tenanta ({0}) zostaną usunięte.</value>
+    </data>
+    <data name="WarningProductionData" xml:space="preserve">
+        <value>Pakiet zawiera dane, które mogą być duże lub wrażliwe: {0} wartości list, {1} par słownika i {2} wierszy Exhaustive.</value>
+    </data>
+    <data name="WarningOlderFormat" xml:space="preserve">
+        <value>Pakiet ma wersję formatu {0}, starszą niż bieżąca wersja {1}.</value>
+    </data>
+    <data name="BlockerRoleRekey" xml:space="preserve">
+        <value>Role z pakietu już istnieją w innym tenancie, a ten tenant ma użytkowników, więc import zostałby odrzucony.</value>
+    </data>
+    <data name="BlockerPrivilege" xml:space="preserve">
+        <value>Pakiet lub bieżące role tenanta zawierają uprawnienia, których nie posiadasz, więc import zostałby odrzucony. Importować może tylko użytkownik posiadający wszystkie te uprawnienia lub landlord.</value>
+    </data>
+    <data name="DiffNeedsSnapshot" xml:space="preserve">
+        <value>Co najmniej jedna strona porównania musi być migawką.</value>
+    </data>
+    <data name="DiffSameSnapshot" xml:space="preserve">
+        <value>Migawki nie można porównać samej ze sobą.</value>
+    </data>
+    <data name="PackageTooLarge" xml:space="preserve">
+    <value>Pakiet jest większy, niż akceptuje ten serwer.</value>
+  </data>
+</root>

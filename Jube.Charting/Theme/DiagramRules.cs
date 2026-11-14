@@ -142,6 +142,18 @@ namespace Jube.Charting.Theme
             css.Has(c, ".lk.k" + j + " .lkp", "fill-opacity:.62");
         }
 
+        public static string Network(string k)
+        {
+            var r = new CssRules(k);
+            r.Raw(ChartCss.Hidden(k));
+            r.Rule("[data-selected] .ep", "stroke:var(--jc-text);stroke-opacity:1;stroke-width:3px");
+            r.Rule("[data-selected] .nb", "stroke:var(--jc-text);stroke-width:3.5");
+            r.Rule("[data-kind=\"hexagon\"] .nt", "fill:var(--jc-c3);fill-opacity:.4");
+            r.Rule("[data-kind=\"stack\"] .nt", "fill-opacity:.32");
+
+            return r.ToString();
+        }
+
         public static string MatrixRow(string k, int r)
         {
             return new CssRules(k).Has(".mk.r" + r + ":hover", ".mk.r" + r + " .pt",

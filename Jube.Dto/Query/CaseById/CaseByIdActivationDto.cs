@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -21,9 +22,11 @@ using System.ComponentModel;
 namespace Jube.Dto.Query.CaseById
 {
     [Description("A visible activation on a case.")]
+    [MessagePackObject]
     public class CaseByIdActivationDto
     {
         [Description("Name of the activation.")]
+        [Key(0)]
         public string? Name { get; set; }
     }
 }

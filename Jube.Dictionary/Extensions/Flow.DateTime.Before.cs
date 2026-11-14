@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
-            public Flow<DateTime> MatchBefore(DateTime other)
+            [Description("True when: earlier than the argument. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchBefore([Description("The other date.")] DateTime other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeBefore(flow.Value, other));
             }
 
-            public Flow<DateTime> RejectBefore(DateTime other)
+            [Description("True when: earlier than the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectBefore([Description("The other date.")] DateTime other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeBefore(flow.Value, other));
             }
 
-            public Flow<DateTime> BreakBefore(DateTime other)
+            [Description("True when: earlier than the argument. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakBefore([Description("The other date.")] DateTime other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeBefore(flow.Value, other));
             }
 
-            public Flow<DateTime> RequireBefore(DateTime other)
+            [Description("True when: earlier than the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireBefore([Description("The other date.")] DateTime other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeBefore(flow.Value, other));
             }
 
-            public Flow<DateTime> EnsureBefore(DateTime other)
+            [Description("True when: earlier than the argument. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureBefore([Description("The other date.")] DateTime other)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
-            public Flow<DateTime> MatchBefore(DateTime other)
+            [Description("Begins a pipeline from the value. True when: earlier than the argument. Decides matched if so; otherwise continues.")]
+            public Flow<DateTime> MatchBefore([Description("The other date.")] DateTime other)
             {
                 return value.Start().MatchBefore(other);
             }
 
-            public Flow<DateTime> RejectBefore(DateTime other)
+            [Description("Begins a pipeline from the value. True when: earlier than the argument. Decides rejected if so; otherwise continues.")]
+            public Flow<DateTime> RejectBefore([Description("The other date.")] DateTime other)
             {
                 return value.Start().RejectBefore(other);
             }
 
-            public Flow<DateTime> BreakBefore(DateTime other)
+            [Description("Begins a pipeline from the value. True when: earlier than the argument. Decides broken if so; otherwise continues.")]
+            public Flow<DateTime> BreakBefore([Description("The other date.")] DateTime other)
             {
                 return value.Start().BreakBefore(other);
             }
 
-            public Flow<DateTime> RequireBefore(DateTime other)
+            [Description("Begins a pipeline from the value. True when: earlier than the argument. Continues if so; otherwise decides rejected.")]
+            public Flow<DateTime> RequireBefore([Description("The other date.")] DateTime other)
             {
                 return value.Start().RequireBefore(other);
             }
 
-            public Flow<DateTime> EnsureBefore(DateTime other)
+            [Description("Begins a pipeline from the value. True when: earlier than the argument. Continues if so; otherwise decides broken.")]
+            public Flow<DateTime> EnsureBefore([Description("The other date.")] DateTime other)
             {
                 return value.Start().EnsureBefore(other);
             }

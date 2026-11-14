@@ -1,0 +1,257 @@
+{
+  "ka": {
+    "roleAllocation": {
+      "available": "ხელმისაწვდომი როლები",
+      "assigned": "მინიჭებული როლები",
+      "save": "ცვლილებების შენახვა",
+      "discard": "ცვლილებების გაუქმება",
+      "unsaved": "{count} შეუნახავი",
+      "saved": "როლები შენახულია.",
+      "loading": "როლების ჩატვირთვა",
+      "loadFailed": "როლების ჩატვირთვა ვერ მოხერხდა. განაახლეთ გვერდი და სცადეთ ხელახლა.",
+      "bench": {
+        "parent": "როლების მინიჭება",
+        "guid": "ჩანაწერის guid",
+        "load": "როლების ჩატვირთვა",
+        "choose": "აირჩიეთ, რას მიანიჭოთ როლები და შეიყვანეთ მისი guid."
+      }
+    },
+    "permissions": {
+      "role": "როლი",
+      "pickRole": "აირჩიეთ როლი",
+      "search": "ნებართვის მოძებნა",
+      "granted": "{count} მინიჭებულია",
+      "choose": "აირჩიეთ როლი მისი ნებართვების სანახავად და შესაცვლელად.",
+      "loading": "ნებართვების ჩატვირთვა",
+      "loadFailed": "ნებართვების ჩატვირთვა ვერ მოხერხდა. განაახლეთ გვერდი და სცადეთ ხელახლა.",
+      "noMatches": "ამ ძიებას ნებართვები არ შეესაბამება.",
+      "locked": "დაბლოკილი",
+      "save": "ცვლილებების შენახვა",
+      "discard": "ცვლილებების გაუქმება",
+      "unsaved": "{count} შეუნახავი",
+      "saved": "ნებართვები შენახულია.",
+      "area": {
+        "cases": "საქმეები",
+        "rules": "წესები",
+        "models": "მოდელები",
+        "lists": "სიები და მონაცემები",
+        "visualisation": "ვიზუალიზაცია",
+        "security": "უსაფრთხოება",
+        "operations": "ოპერაციები",
+        "analytics": "ანალიტიკა",
+        "other": "სხვა"
+      }
+    },
+    "transferList": {
+      "assignSelected": "არჩეულის მინიჭება",
+      "assignAll": "ყველას მინიჭება",
+      "unassignSelected": "არჩეულის მოხსნა",
+      "unassignAll": "ყველას მოხსნა",
+      "empty": "აქ არაფერია."
+    }
+  },
+  "id": {
+    "roleAllocation": {
+      "available": "Peran tersedia",
+      "assigned": "Peran ditetapkan",
+      "save": "Simpan perubahan",
+      "discard": "Buang perubahan",
+      "unsaved": "{count} belum disimpan",
+      "saved": "Peran disimpan.",
+      "loading": "Memuat peran",
+      "loadFailed": "Peran tidak dapat dimuat. Muat ulang halaman untuk mencoba lagi.",
+      "bench": {
+        "parent": "Alokasikan peran ke",
+        "guid": "Guid rekaman",
+        "load": "Muat peran",
+        "choose": "Pilih apa yang akan dialokasikan peran dan masukkan guid-nya."
+      }
+    },
+    "permissions": {
+      "role": "Peran",
+      "pickRole": "Pilih peran",
+      "search": "Cari izin",
+      "granted": "{count} diberikan",
+      "choose": "Pilih peran untuk melihat dan mengubah izinnya.",
+      "loading": "Memuat izin",
+      "loadFailed": "Izin tidak dapat dimuat. Muat ulang halaman untuk mencoba lagi.",
+      "noMatches": "Tidak ada izin yang cocok dengan pencarian itu.",
+      "locked": "Terkunci",
+      "save": "Simpan perubahan",
+      "discard": "Buang perubahan",
+      "unsaved": "{count} belum disimpan",
+      "saved": "Izin disimpan.",
+      "area": {
+        "cases": "Kasus",
+        "rules": "Aturan",
+        "models": "Model",
+        "lists": "Daftar dan data",
+        "visualisation": "Visualisasi",
+        "security": "Keamanan",
+        "operations": "Operasi",
+        "analytics": "Analitik",
+        "other": "Lainnya"
+      }
+    },
+    "transferList": {
+      "assignSelected": "Tetapkan yang dipilih",
+      "assignAll": "Tetapkan semua",
+      "unassignSelected": "Batalkan penetapan yang dipilih",
+      "unassignAll": "Batalkan semua penetapan",
+      "empty": "Tidak ada apa-apa di sini."
+    }
+  },
+  "sv": {
+    "roleAllocation": {
+      "available": "Tillgängliga roller",
+      "assigned": "Tilldelade roller",
+      "save": "Spara ändringar",
+      "discard": "Förkasta ändringar",
+      "unsaved": "{count} osparade",
+      "saved": "Rollerna sparades.",
+      "loading": "Läser in roller",
+      "loadFailed": "Rollerna kunde inte läsas in. Uppdatera sidan och försök igen.",
+      "bench": {
+        "parent": "Tilldela roller till",
+        "guid": "Postens guid",
+        "load": "Läs in roller",
+        "choose": "Välj vad rollerna ska tilldelas och ange dess guid."
+      }
+    },
+    "permissions": {
+      "role": "Roll",
+      "pickRole": "Välj en roll",
+      "search": "Hitta en behörighet",
+      "granted": "{count} beviljade",
+      "choose": "Välj en roll för att se och ändra dess behörigheter.",
+      "loading": "Läser in behörigheter",
+      "loadFailed": "Behörigheterna kunde inte läsas in. Uppdatera sidan och försök igen.",
+      "noMatches": "Inga behörigheter matchar sökningen.",
+      "locked": "Låst",
+      "save": "Spara ändringar",
+      "discard": "Förkasta ändringar",
+      "unsaved": "{count} osparade",
+      "saved": "Behörigheterna sparades.",
+      "area": {
+        "cases": "Ärenden",
+        "rules": "Regler",
+        "models": "Modeller",
+        "lists": "Listor och data",
+        "visualisation": "Visualisering",
+        "security": "Säkerhet",
+        "operations": "Drift",
+        "analytics": "Analys",
+        "other": "Övrigt"
+      }
+    },
+    "transferList": {
+      "assignSelected": "Tilldela valda",
+      "assignAll": "Tilldela alla",
+      "unassignSelected": "Ta bort valda",
+      "unassignAll": "Ta bort alla",
+      "empty": "Inget här."
+    }
+  },
+  "ur": {
+    "roleAllocation": {
+      "available": "دستیاب کردار",
+      "assigned": "تفویض کردہ کردار",
+      "save": "تبدیلیاں محفوظ کریں",
+      "discard": "تبدیلیاں رد کریں",
+      "unsaved": "{count} غیر محفوظ",
+      "saved": "کردار محفوظ ہو گئے۔",
+      "loading": "کردار لوڈ ہو رہے ہیں",
+      "loadFailed": "کردار لوڈ نہیں ہو سکے۔ دوبارہ کوشش کے لیے صفحہ ریفریش کریں۔",
+      "bench": {
+        "parent": "کردار تفویض کریں برائے",
+        "guid": "ریکارڈ guid",
+        "load": "کردار لوڈ کریں",
+        "choose": "منتخب کریں کہ کردار کس کو تفویض کرنے ہیں اور اس کا guid درج کریں۔"
+      }
+    },
+    "permissions": {
+      "role": "کردار",
+      "pickRole": "کردار منتخب کریں",
+      "search": "اجازت تلاش کریں",
+      "granted": "{count} دی گئیں",
+      "choose": "کردار منتخب کریں تاکہ اس کی اجازتیں دیکھیں اور تبدیل کریں۔",
+      "loading": "اجازتیں لوڈ ہو رہی ہیں",
+      "loadFailed": "اجازتیں لوڈ نہیں ہو سکیں۔ دوبارہ کوشش کے لیے صفحہ ریفریش کریں۔",
+      "noMatches": "اس تلاش سے کوئی اجازت مطابقت نہیں رکھتی۔",
+      "locked": "مقفل",
+      "save": "تبدیلیاں محفوظ کریں",
+      "discard": "تبدیلیاں رد کریں",
+      "unsaved": "{count} غیر محفوظ",
+      "saved": "اجازتیں محفوظ ہو گئیں۔",
+      "area": {
+        "cases": "کیسز",
+        "rules": "قواعد",
+        "models": "ماڈلز",
+        "lists": "فہرستیں اور ڈیٹا",
+        "visualisation": "بصری نمائش",
+        "security": "سیکیورٹی",
+        "operations": "آپریشنز",
+        "analytics": "تجزیات",
+        "other": "دیگر"
+      }
+    },
+    "transferList": {
+      "assignSelected": "منتخب کو تفویض کریں",
+      "assignAll": "سب کو تفویض کریں",
+      "unassignSelected": "منتخب کی تفویض ختم کریں",
+      "unassignAll": "سب کی تفویض ختم کریں",
+      "empty": "یہاں کچھ نہیں ہے۔"
+    }
+  },
+  "hi": {
+    "roleAllocation": {
+      "available": "उपलब्ध भूमिकाएँ",
+      "assigned": "आवंटित भूमिकाएँ",
+      "save": "परिवर्तन सहेजें",
+      "discard": "परिवर्तन छोड़ें",
+      "unsaved": "{count} असहेजे",
+      "saved": "भूमिकाएँ सहेजी गईं।",
+      "loading": "भूमिकाएँ लोड हो रही हैं",
+      "loadFailed": "भूमिकाएँ लोड नहीं हो सकीं। पुनः प्रयास करने के लिए पृष्ठ रीफ़्रेश करें।",
+      "bench": {
+        "parent": "भूमिकाएँ आवंटित करें",
+        "guid": "रिकॉर्ड guid",
+        "load": "भूमिकाएँ लोड करें",
+        "choose": "चुनें कि भूमिकाएँ किसे आवंटित करनी हैं और उसका guid दर्ज करें।"
+      }
+    },
+    "permissions": {
+      "role": "भूमिका",
+      "pickRole": "भूमिका चुनें",
+      "search": "अनुमति खोजें",
+      "granted": "{count} प्रदत्त",
+      "choose": "किसी भूमिका की अनुमतियाँ देखने और बदलने के लिए उसे चुनें।",
+      "loading": "अनुमतियाँ लोड हो रही हैं",
+      "loadFailed": "अनुमतियाँ लोड नहीं हो सकीं। पुनः प्रयास करने के लिए पृष्ठ रीफ़्रेश करें।",
+      "noMatches": "इस खोज से कोई अनुमति मेल नहीं खाती।",
+      "locked": "लॉक",
+      "save": "परिवर्तन सहेजें",
+      "discard": "परिवर्तन छोड़ें",
+      "unsaved": "{count} असहेजे",
+      "saved": "अनुमतियाँ सहेजी गईं।",
+      "area": {
+        "cases": "केस",
+        "rules": "नियम",
+        "models": "मॉडल",
+        "lists": "सूचियाँ और डेटा",
+        "visualisation": "विज़ुअलाइज़ेशन",
+        "security": "सुरक्षा",
+        "operations": "संचालन",
+        "analytics": "विश्लेषण",
+        "other": "अन्य"
+      }
+    },
+    "transferList": {
+      "assignSelected": "चयनित आवंटित करें",
+      "assignAll": "सभी आवंटित करें",
+      "unassignSelected": "चयनित का आवंटन हटाएँ",
+      "unassignAll": "सभी का आवंटन हटाएँ",
+      "empty": "यहाँ कुछ नहीं है।"
+    }
+  }
+}

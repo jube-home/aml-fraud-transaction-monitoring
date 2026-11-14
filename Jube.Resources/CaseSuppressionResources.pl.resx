@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Brak uprawnień.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Brak uwierzytelnienia.</value>
+  </data>
+    <data name="CaseNotFound" xml:space="preserve">
+    <value>Nie znaleziono sprawy lub nie jest widoczna.</value>
+  </data>
+    <data name="SuppressionNotFound" xml:space="preserve">
+    <value>Nie znaleziono wniosku o wyłączenie lub nie jest widoczny.</value>
+  </data>
+    <data name="CaseIdRequired" xml:space="preserve">
+    <value>Sprawa jest wymagana.</value>
+  </data>
+    <data name="IdRequired" xml:space="preserve">
+    <value>Wniosek jest wymagany.</value>
+  </data>
+    <data name="PathInvalid" xml:space="preserve">
+    <value>Ścieżka musi mieć wartość 1 (klucz sprawy) lub 2 (transakcja).</value>
+  </data>
+    <data name="OverrideKeyRequired" xml:space="preserve">
+    <value>Klucz nadpisania jest wymagany.</value>
+  </data>
+    <data name="OverrideKeyMaxLength" xml:space="preserve">
+    <value>Klucz nadpisania może mieć co najwyżej {0} znaków.</value>
+  </data>
+    <data name="OverrideKeyValueRequired" xml:space="preserve">
+    <value>Wartość jest wymagana na ścieżce transakcji.</value>
+  </data>
+    <data name="OverrideKeyValueMaxLength" xml:space="preserve">
+    <value>Wartość może mieć co najwyżej {0} znaków.</value>
+  </data>
+    <data name="ReasonRequired" xml:space="preserve">
+    <value>Uzasadnienie jest wymagane.</value>
+  </data>
+    <data name="ReasonMaxLength" xml:space="preserve">
+    <value>Uzasadnienie może mieć co najwyżej {0} znaków.</value>
+  </data>
+    <data name="ExpiryRequired" xml:space="preserve">
+    <value>Wymagana jest data wygaśnięcia w przyszłości.</value>
+  </data>
+    <data name="TargetsRequired" xml:space="preserve">
+    <value>Wybierz co najmniej jeden model lub regułę.</value>
+  </data>
+    <data name="TargetsTooMany" xml:space="preserve">
+    <value>Wniosek może wskazywać co najwyżej {0} modeli i reguł.</value>
+  </data>
+    <data name="TargetModelRequired" xml:space="preserve">
+    <value>Każdy model lub reguła wymaga modelu.</value>
+  </data>
+    <data name="RuleNameMaxLength" xml:space="preserve">
+    <value>Nazwa reguły może mieć co najwyżej {0} znaków.</value>
+  </data>
+    <data name="OverrideKindInvalid" xml:space="preserve">
+    <value>Rodzaj nadpisania musi mieć wartość 0 (wyłączenie) lub 1 (wymuszenie).</value>
+  </data>
+    <data name="ArchiveIdsTooMany" xml:space="preserve">
+    <value>Jako dowód można zaznaczyć co najwyżej {0} transakcji.</value>
+  </data>
+    <data name="ArchiveIdInvalid" xml:space="preserve">
+    <value>Zaznaczona transakcja jest nieprawidłowa.</value>
+  </data>
+    <data name="MergeInvalid" xml:space="preserve">
+    <value>Scalone klucze dziennika są nieprawidłowe.</value>
+  </data>
+    <data name="NoteMaxLength" xml:space="preserve">
+    <value>Notatka może mieć co najwyżej {0} znaków.</value>
+  </data>
+    <data name="KeyNotOverrideEnabled" xml:space="preserve">
+    <value>Klucz nie jest oznaczony jako Enable Override w XPath żądania, więc nie można go wyłączyć.</value>
+  </data>
+    <data name="KeyNotInJournal" xml:space="preserve">
+    <value>Wartości nie ma w dzienniku tej sprawy.</value>
+  </data>
+    <data name="EvidenceRequired" xml:space="preserve">
+    <value>Zaznacz co najmniej jedną transakcję zawierającą tę wartość.</value>
+  </data>
+    <data name="EvidenceNotInScope" xml:space="preserve">
+    <value>Zaznaczona transakcja nie należy do dziennika tej sprawy lub nie zawiera tej wartości.</value>
+  </data>
+    <data name="CaseKeyValueTooLong" xml:space="preserve">
+    <value>Wartość klucza sprawy jest zbyt długa, aby ją wyłączyć.</value>
+  </data>
+    <data name="ForcePermissionRequired" xml:space="preserve">
+    <value>Wymuszenie wymaga uprawnienia Apply Force Override.</value>
+  </data>
+    <data name="OverridePermissionRequired" xml:space="preserve">
+    <value>Wyłączenie wymaga uprawnienia Override.</value>
+  </data>
+    <data name="TargetInvalid" xml:space="preserve">
+    <value>Model lub reguła nie jest prawidłowa dla tego klucza: {0}</value>
+  </data>
+    <data name="NotPending" xml:space="preserve">
+    <value>Można zdecydować tylko o oczekującym wniosku.</value>
+  </data>
+    <data name="OwnRequest" xml:space="preserve">
+    <value>Nie możesz zdecydować o własnym wniosku. Wycofaj go.</value>
+  </data>
+    <data name="AlreadyApproved" xml:space="preserve">
+    <value>Ta wersja została już przez Ciebie zatwierdzona.</value>
+  </data>
+    <data name="NotMaker" xml:space="preserve">
+    <value>Tylko osoba, która złożyła wniosek, może to zrobić.</value>
+  </data>
+    <data name="NotRetractable" xml:space="preserve">
+    <value>Wycofać można tylko oczekujący wniosek.</value>
+  </data>
+    <data name="NotResubmittable" xml:space="preserve">
+    <value>Ponownie złożyć można tylko wniosek odrzucony lub wycofany.</value>
+  </data>
+    <data name="ExpiryPassed" xml:space="preserve">
+    <value>Data wygaśnięcia minęła.</value>
+  </data>
+    <data name="ExpiryTooFar" xml:space="preserve">
+    <value>Data wygaśnięcia może być odległa o co najwyżej {0} dni od teraz.</value>
+  </data>
+    <data name="RequestLapsed" xml:space="preserve">
+    <value>Wniosek wygasł bez decyzji. Poproś osobę, która go złożyła, o wycofanie i ponowne złożenie.</value>
+  </data>
+    <data name="MakerNoLongerPermitted" xml:space="preserve">
+    <value>Osoba, która złożyła wniosek, nie ma już uprawnienia potrzebnego do jego zastosowania.</value>
+  </data>
+    <data name="OverrideKindConflict" xml:space="preserve">
+    <value>Inne nadpisanie jest już w mocy dla {0}; najpierw je usuń.</value>
+  </data>
+    <data name="ApplyFailed" xml:space="preserve">
+    <value>Nie można zastosować wniosku: {0}</value>
+  </data>
+    <data name="KeyNotArchiveKey" xml:space="preserve">
+    <value>Klucz nie jest polem oznaczonym jako Archive Key w modelu przepływu pracy, więc nie można wyszukać jego transakcji.</value>
+  </data>
+    <data name="KeyValueInvalid" xml:space="preserve">
+    <value>Wartości nie można odczytać jako typu danych pola klucza.</value>
+  </data>
+    <data name="CaseKeyNotArchiveKey" xml:space="preserve">
+    <value>Klucz sprawy nie jest polem oznaczonym jako Archive Key w modelu przepływu pracy, więc nie można odczytać transakcji tej sprawy.</value>
+  </data>
+    <data name="KeyNotLookupable" xml:space="preserve">
+    <value>Pole klucza jest zaszyfrowane losowym wektorem, więc jego wartości nie można wyszukiwać.</value>
+  </data>
+    <data name="LaneOperatorNotAllowed" xml:space="preserve">
+    <value>Operator zakresu jest dozwolony tylko dla klucza liczbowego lub daty; klucz tekstowy lub logiczny dopasowuje się wyłącznie przez równość.</value>
+  </data>
+</root>

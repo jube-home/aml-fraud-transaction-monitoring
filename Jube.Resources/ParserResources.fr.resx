@@ -42,4 +42,7 @@
     <data name="NotAuthenticated" xml:space="preserve">
     <value>Vous devez être connecté à un tenant pour effectuer cette action.</value>
   </data>
+    <data name="ParseRateLimited" xml:space="preserve">
+    <value>Trop de vérifications de règles en peu de temps ; patientez un instant et réessayez.</value>
+  </data>
 </root>

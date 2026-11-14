@@ -6,6 +6,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Checks if the date is the current moment.")]
         public static bool IsNow(this DateTime @this)
         {
             return @this == DateTime.Now;

@@ -42,7 +42,10 @@ namespace Jube.Charting.Diagrams.Models
         double DirY,
         bool SelfLoop,
         bool Reversed,
-        IReadOnlyList<(double X, double Y)> Points);
+        IReadOnlyList<(double X, double Y)> Points)
+    {
+        public IReadOnlyList<int>? Merged { get; init; }
+    }
 
     public sealed record GraphLayoutResult(
         IReadOnlyList<PlacedGraphNode> Nodes,
@@ -51,5 +54,8 @@ namespace Jube.Charting.Diagrams.Models
         double Height,
         GraphLayoutKind Kind,
         int LayerCount,
-        int Crossings);
+        int Crossings)
+    {
+        public IReadOnlyList<GraphAnchor> Positions => [.. Nodes.Select(n => new GraphAnchor(n.Id, n.X, n.Y))];
+    }
 }

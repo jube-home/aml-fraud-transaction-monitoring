@@ -25,6 +25,7 @@ using Jube.Engine.Helpers;
 using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Xunit;
 using Jube.Data.Query.GetNextExhaustiveSearchInstanceQuery;
@@ -54,7 +55,8 @@ namespace Jube.Test.Exhaustive
                 ["ExhaustiveTopologyExplorationEpochs"] = "2",
                 ["ExhaustiveTopologyFinalisationEpochs"] = "2",
                 ["ExhaustiveActivationFunctionExplorationEpochs"] = "3",
-                ["ExhaustiveSimulationsCount"] = "50"
+                ["ExhaustiveSimulationsCount"] = "50",
+                ["ExhaustiveChallengerModelBaseProbability"] = "0"
             });
 
             return new Training(LogManager.GetLogger(typeof(TrainInstanceRunTests)), environment,

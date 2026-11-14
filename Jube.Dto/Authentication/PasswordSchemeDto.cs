@@ -16,10 +16,14 @@
 // ReSharper disable NotAccessedPositionalProperty.Global
 // ReSharper disable RedundantAttributeUsageProperty
 
+using MessagePack;
+
 namespace Jube.Dto.Authentication
 {
+    [MessagePackObject]
     public class PasswordSchemeDto
     {
+        [Key(0)]
         public bool WirePasswordHash { get; set; }
     }
 }

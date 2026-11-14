@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchDistanceToThresholdOutsideRange(double threshold, double lowerBound, double upperBound)
+            [Description("True when: the gap between the value and the threshold in either direction is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchDistanceToThresholdOutsideRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleDistanceToThresholdOutsideRange(flow.Value, threshold, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectDistanceToThresholdOutsideRange(double threshold, double lowerBound, double upperBound)
+            [Description("True when: the gap between the value and the threshold in either direction is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectDistanceToThresholdOutsideRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleDistanceToThresholdOutsideRange(flow.Value, threshold, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakDistanceToThresholdOutsideRange(double threshold, double lowerBound, double upperBound)
+            [Description("True when: the gap between the value and the threshold in either direction is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakDistanceToThresholdOutsideRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleDistanceToThresholdOutsideRange(flow.Value, threshold, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireDistanceToThresholdOutsideRange(double threshold, double lowerBound, double upperBound)
+            [Description("True when: the gap between the value and the threshold in either direction is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireDistanceToThresholdOutsideRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleDistanceToThresholdOutsideRange(flow.Value, threshold, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureDistanceToThresholdOutsideRange(double threshold, double lowerBound, double upperBound)
+            [Description("True when: the gap between the value and the threshold in either direction is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureDistanceToThresholdOutsideRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchDistanceToThresholdOutsideRange(double threshold, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the gap between the value and the threshold in either direction is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchDistanceToThresholdOutsideRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchDistanceToThresholdOutsideRange(threshold, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectDistanceToThresholdOutsideRange(double threshold, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the gap between the value and the threshold in either direction is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectDistanceToThresholdOutsideRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectDistanceToThresholdOutsideRange(threshold, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakDistanceToThresholdOutsideRange(double threshold, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the gap between the value and the threshold in either direction is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakDistanceToThresholdOutsideRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakDistanceToThresholdOutsideRange(threshold, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireDistanceToThresholdOutsideRange(double threshold, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the gap between the value and the threshold in either direction is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireDistanceToThresholdOutsideRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireDistanceToThresholdOutsideRange(threshold, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureDistanceToThresholdOutsideRange(double threshold, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the gap between the value and the threshold in either direction is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureDistanceToThresholdOutsideRange([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureDistanceToThresholdOutsideRange(threshold, lowerBound, upperBound);
             }

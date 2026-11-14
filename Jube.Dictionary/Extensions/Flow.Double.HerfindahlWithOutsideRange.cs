@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchHerfindahlWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchHerfindahlWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleHerfindahlWithOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RejectHerfindahlWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectHerfindahlWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleHerfindahlWithOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> BreakHerfindahlWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakHerfindahlWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleHerfindahlWithOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> RequireHerfindahlWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireHerfindahlWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleHerfindahlWithOutsideRange(flow.Value, lowerBound, upperBound, others));
             }
 
-            public Flow<double> EnsureHerfindahlWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureHerfindahlWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchHerfindahlWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchHerfindahlWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().MatchHerfindahlWithOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RejectHerfindahlWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectHerfindahlWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RejectHerfindahlWithOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> BreakHerfindahlWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakHerfindahlWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().BreakHerfindahlWithOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> RequireHerfindahlWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireHerfindahlWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().RequireHerfindahlWithOutsideRange(lowerBound, upperBound, others);
             }
 
-            public Flow<double> EnsureHerfindahlWithOutsideRange(double lowerBound, double upperBound, params double[] others)
+            [Description("Begins a pipeline from the value. True when: how concentrated the total is in a few of the value and the others, from 1 over the count to 1 is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureHerfindahlWithOutsideRange([Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound,
+                [Description("The other numbers.")] params double[] others)
             {
                 return value.Start().EnsureHerfindahlWithOutsideRange(lowerBound, upperBound, others);
             }

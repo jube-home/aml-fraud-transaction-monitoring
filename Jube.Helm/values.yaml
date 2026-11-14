@@ -1,0 +1,159 @@
+image:
+  repository: jube.app
+  tag: latest
+  pullPolicy: IfNotPresent
+imagePullSecrets: [ ]
+secrets:
+  existingSecret: ""
+  create: false
+  values:
+    ASK_JOOBY_API_KEY: ""
+    JUBE_APP_PASSWORD: ""
+    JUBE_REPORTING_PASSWORD: ""
+    JUBE_MIGRATION_PASSWORD: ""
+    JUBE_PURGE_PASSWORD: ""
+    JWT_KEY: ""
+    PASSWORD_HASHING_KEY: ""
+    RESP_PASSWORD: ""
+    API_HMAC_KEY: ""
+    ENCRYPTION_KEY: ""
+    CASE_SIMILARITY_HASHING_KEY: ""
+    PASSWORD_ASYMMETRIC_ENCRYPTION_PRIVATE_KEY: ""
+    PATRONI_ETCD3_PASSWORD: ""
+postgres:
+  host: postgres
+  port: 5432
+  replicaHost: ""
+  replicaPort: 5432
+  database: postgres
+  appUser: jube_app
+  reportingUser: jube_reporting
+  migrationUser: jube_migration
+  purgeUser: jube_purge
+  poolOptions: Pooling=true;Minimum Pool Size=0;Maximum Pool Size=1000;No Reset On Close=true;Keepalive=60;Connection Idle Lifetime=300;Connection Pruning Interval=10;
+resp:
+  connectionString: "resp:6379,password=[@RESP_PASSWORD@],abortConnect=false,syncTimeout=8000,connectTimeout=10000,keepAlive=60"
+publicUrl: "https://CHANGE-ME.example.com"
+passwordAsymmetricEncryptionPublicKey: CHANGE-ME-the-public-key-printed-by-secrets-init.sh
+askJooby:
+  enabled: false
+rServerUrl: "http://jube-r:8080"
+env:
+  common:
+    RespBacklogFailFast: "True"
+    JWTKey: "[@JWT_KEY@]"
+    DOTNET_GC_SERVER: "1"
+    PasswordHashingKey: "[@PASSWORD_HASHING_KEY@]"
+    RespReconnectRetryBaseDelay: "50"
+    LocalCacheFill: "False"
+    RespReconnectRetryMaxDelay: "500"
+    EnableMockEndpoints: "False"
+  ui:
+    EnableSandbox: "False"
+    ApiHmacKey: "[@API_HMAC_KEY@]"
+    ElementSymmetricEncryptionKey: "[@ENCRYPTION_KEY@]"
+    PasswordAsymmetricEncryption: "True"
+    PasswordAsymmetricEncryptionPrivateKey: "[@PASSWORD_ASYMMETRIC_ENCRYPTION_PRIVATE_KEY@]"
+    EnableExhaustiveTraining: "False"
+    Landlord: "False"
+    EnableReprocessing: "False"
+    EnableSanctionLoader: "False"
+    CachePruneServer: "False"
+    EnableTtlCounter: "False"
+    EnableSearchKeyCache: "False"
+    EnableCasesAutomation: "False"
+    EnableMigration: "False"
+    EnableEngine: "False"
+    EnableEntityModel: "False"
+    LocalCache: "False"
+    LocalCacheBytes: "0"
+    RespPublishSubscribeEvents: "False"
+    RespBackplane: "True"
+    EnablePublicInvokeController: "False"
+    Log4NetLogLevel: INFO
+    NegotiateAuthentication: "False"
+    EnableOpenTelemetry: "True"
+  api:
+    EtcdClientUsername: patroni
+    EtcdClientPassword: "[@PATRONI_ETCD3_PASSWORD@]"
+    EnableSandbox: "False"
+    ApiHmacKey: "[@API_HMAC_KEY@]"
+    ElementSymmetricEncryptionKey: "[@ENCRYPTION_KEY@]"
+    PasswordAsymmetricEncryption: "True"
+    PasswordAsymmetricEncryptionPrivateKey: "[@PASSWORD_ASYMMETRIC_ENCRYPTION_PRIVATE_KEY@]"
+    EnableExhaustiveTraining: "False"
+    Landlord: "True"
+    EnableReprocessing: "False"
+    EnableSanctionLoader: "False"
+    CachePruneServer: "False"
+    EnableTtlCounter: "False"
+    EnableSearchKeyCache: "False"
+    EnableCasesAutomation: "False"
+    EnableMigration: "False"
+    EnableEngine: "True"
+    LocalCache: "True"
+    LocalCacheBytes: "4294967296"
+    RespPublishSubscribeEvents: "True"
+    EnableEntityModel: "True"
+    EnablePublicInvokeController: "True"
+    Log4NetLogLevel: WARN
+    ActivationWatcherBulkCopyThresholdjube-: "20"
+    ArchiverPersistThreads: "4"
+    BulkCopyThreshold: "20"
+    NegotiateAuthentication: "False"
+    EnableOpenTelemetry: "False"
+  jobs:
+    EtcdClientUsername: patroni
+    EtcdClientPassword: "[@PATRONI_ETCD3_PASSWORD@]"
+    EnableInfrastructureHealthMetricsPurge: "False"
+    ElementSymmetricEncryptionKey: "[@ENCRYPTION_KEY@]"
+    EnableExhaustiveTraining: "True"
+    EnableReprocessing: "True"
+    EnableSanctionLoader: "True"
+    CachePruneServer: "True"
+    EnableTtlCounter: "True"
+    EnableSearchKeyCache: "True"
+    EnableCasesAutomation: "True"
+    CaseSimilarityHashingKey: "[@CASE_SIMILARITY_HASHING_KEY@]"
+    StreamingActivationWatcher: "False"
+    EnableCallback: "True"
+    EnableMigration: "True"
+    EnableEngine: "True"
+    EnableEntityModel: "True"
+    EnablePublicInvokeController: "False"
+    LocalCache: "False"
+    LocalCacheBytes: "0"
+    RespPublishSubscribeEvents: "False"
+    Log4NetLogLevel: INFO
+    EnableOpenTelemetry: "False"
+roles:
+  ui:
+    replicas: 2
+    resources: { }
+  api:
+    replicas: 2
+    resources: { }
+  jobs:
+    replicas: 1
+    resources: { }
+waitForJobs:
+  enabled: true
+  image: "busybox:1.37"
+service:
+  type: ClusterIP
+  port: 5001
+ingress:
+  enabled: false
+  className: ""
+  host: jube.example.com
+  tls: [ ]
+  annotations: { }
+r:
+  enabled: true
+  image: "jube.r:latest"
+  replicas: 1
+  resources: { }
+podAnnotations: { }
+nodeSelector: { }
+tolerations: [ ]
+terminationGracePeriodSeconds: 60

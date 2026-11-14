@@ -32,6 +32,7 @@ namespace Jube.Parser.Models
         public string ParsedRuleText { get; internal init; }
         public string ClassName { get; internal init; }
         public List<RuleReference> References { get; internal init; } = [];
+        public bool UsesCursor { get; internal init; }
         internal byte[] CompiledBinary { get; init; }
     }
 }

@@ -20,6 +20,7 @@ using Jube.Analytics.Categorical;
 using Jube.Data.Repository;
 using Jube.Data.Repository.Models;
 using Jube.Engine.AdvancedAnalytics.Recall;
+using Jube.Engine.Exhaustive;
 using Jube.Engine.Exhaustive.Calibration;
 using Jube.Engine.Exhaustive.Models;
 using log4net;
@@ -114,7 +115,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                                     variableRows,
                                     context.JsonSerializationHelper.DeserializeTopologyNetworkJsonSerializerSettings,
                                     ex => context.Services.Log.Error(
-                                        $"Entity Start: Exhaustive GUID {record.Guid} (Id {record.Id}) failed to load the promoted network as {ex}."));
+                                        $"Entity Start: Exhaustive GUID {record.Guid} (Id {record.Id}) failed to load the promoted network as {ex}."),
+                                    context.Services.DynamicEnvironment);
 
                                 LogIncompleteModel(context.Services.Log, exhaustive);
 
@@ -213,8 +215,11 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
             Data.Poco.ExhaustiveSearchInstancePromotedTrialInstance promotedTrialRow,
             IEnumerable<GetExhaustiveSearchInstancePromotedTrialInstanceVariableQueryDto> variableRows,
             JsonSerializerSettings settings,
-            Action<Exception> onLoadError = null)
+            Action<Exception> onLoadError = null,
+            DynamicEnvironment.DynamicEnvironment environment = null)
         {
+            var zScoreClipBound = ExhaustiveZScoreClipBoundResolver.Resolve(environment);
+
             var exhaustive = new ExhaustiveSearchInstance
             {
                 Id = record.Id,
@@ -269,6 +274,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                             Mean = variable.Mean,
                             Sd = variable.StandardDeviation,
                             NormalisationTypeId = variable.NormalisationTypeId,
+                            ZScoreClipBound = zScoreClipBound,
                             CategoricalEncoder = encoder,
                             CategoricalIndicatorIndex = variable.CategoricalIndicatorIndex.GetValueOrDefault()
                         });

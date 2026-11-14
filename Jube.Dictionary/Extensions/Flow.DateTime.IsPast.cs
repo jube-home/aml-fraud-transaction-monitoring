@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<DateTime> flow)
         {
+            [Description("True when: earlier than now. Decides matched if so; otherwise continues.")]
             public Flow<DateTime> MatchIsPast()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.DateTimeIsPast(flow.Value));
             }
 
+            [Description("True when: earlier than now. Decides rejected if so; otherwise continues.")]
             public Flow<DateTime> RejectIsPast()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DateTimeIsPast(flow.Value));
             }
 
+            [Description("True when: earlier than now. Decides broken if so; otherwise continues.")]
             public Flow<DateTime> BreakIsPast()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.DateTimeIsPast(flow.Value));
             }
 
+            [Description("True when: earlier than now. Continues if so; otherwise decides rejected.")]
             public Flow<DateTime> RequireIsPast()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.DateTimeIsPast(flow.Value));
             }
 
+            [Description("True when: earlier than now. Continues if so; otherwise decides broken.")]
             public Flow<DateTime> EnsureIsPast()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(DateTime value)
         {
+            [Description("Begins a pipeline from the value. True when: earlier than now. Decides matched if so; otherwise continues.")]
             public Flow<DateTime> MatchIsPast()
             {
                 return value.Start().MatchIsPast();
             }
 
+            [Description("Begins a pipeline from the value. True when: earlier than now. Decides rejected if so; otherwise continues.")]
             public Flow<DateTime> RejectIsPast()
             {
                 return value.Start().RejectIsPast();
             }
 
+            [Description("Begins a pipeline from the value. True when: earlier than now. Decides broken if so; otherwise continues.")]
             public Flow<DateTime> BreakIsPast()
             {
                 return value.Start().BreakIsPast();
             }
 
+            [Description("Begins a pipeline from the value. True when: earlier than now. Continues if so; otherwise decides rejected.")]
             public Flow<DateTime> RequireIsPast()
             {
                 return value.Start().RequireIsPast();
             }
 
+            [Description("Begins a pipeline from the value. True when: earlier than now. Continues if so; otherwise decides broken.")]
             public Flow<DateTime> EnsureIsPast()
             {
                 return value.Start().EnsureIsPast();

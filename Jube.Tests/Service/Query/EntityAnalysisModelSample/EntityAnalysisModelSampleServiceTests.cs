@@ -31,6 +31,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -530,6 +531,23 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
         }
 
         [Fact]
+        public async Task AFieldWhoseJsonPathIsACatastrophicRegexFilterIsCutShortAndTheCellIsTheDefaultAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var (userName, tenantId) = await CreateUserWithPermissionAsync(dbContext, 40);
+            var (modelId, modelGuid) = await CreateModelAsync(dbContext, tenantId, 0,
+                ("x[?(@.s =~ /^(a+)+$/)]", 1));
+            var entry = Guid.NewGuid();
+            await InsertArchiveAsync(dbContext, modelId, modelGuid,
+                "{\"x\":[{\"s\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaX\"}]}", entry);
+            var service = await BuildServiceAsync(dbContext, userName);
+
+            var file = await service.ExecuteAsync(Opts(modelGuid));
+
+            Lines(file)[1].Should().Be(ExpectedRow(entry, modelGuid, "\"\""));
+        }
+
+        [Fact]
         public async Task CsvFallsBackToZeroOrEmptyStringWhenCoercionFailsAndLogsInfoAsync()
         {
             await using var dbContext = fx.GetDbContext();
@@ -604,6 +622,30 @@ namespace Jube.Test.Service.Query.EntityAnalysisModelSample
 
             text.Should().Contain("\"in1\"").And.Contain("\"in2\"")
                 .And.NotContain("tooEarly").And.NotContain("tooLate");
+        }
+
+        [Fact]
+        public async Task ASampleLargerThanTheByteLimitIsRefusedWithNoFileAndAnErrorAuditRowAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var (userName, tenantId) = await CreateUserWithPermissionAsync(dbContext, 40);
+            var (modelId, modelGuid) = await CreateModelAsync(dbContext, tenantId, 0, fiveTypes);
+            await InsertArchiveAsync(dbContext, modelId, modelGuid, "{}");
+            var env = TestDynamicEnvironment.Create(new Dictionary<string, string>
+            {
+                ["ConnectionString"] = realConnectionString,
+                ["ReportConnectionString"] = realConnectionString,
+                ["SampleMaxBytes"] = "1"
+            });
+            var service = await BuildServiceAsync(dbContext, userName, env: env);
+
+            var thrown = await Assert.ThrowsAsync<DtoValidationException>(() => service.ExecuteAsync(Opts(modelGuid)));
+
+            thrown.Result.Errors.Should().ContainSingle(e => e.ErrorCode == "SampleTooLarge");
+
+            var row = await dbContext.GetTable<Data.Poco.EntityAnalysisModelSampleExecutionLog>()
+                .SingleAsync(w => w.EntityAnalysisModelId == modelId);
+            row.InError.Should().Be(1);
         }
 
         [Fact]

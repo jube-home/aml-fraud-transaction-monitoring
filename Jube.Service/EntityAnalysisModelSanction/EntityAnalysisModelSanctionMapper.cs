@@ -38,7 +38,10 @@ namespace Jube.Service.EntityAnalysisModelSanction
                     AggregationTypeId = sanction.AggregationTypeId,
                     MaxDistanceRatio = sanction.MaxDistanceRatio,
                     MaxCoverageRatio = sanction.MaxCoverageRatio,
-                    CacheInterval = sanction.CacheInterval.GetValueOrDefault(),
+                    MatchAlgorithmId = sanction.MatchAlgorithmId,
+                    MinimumSimilarity = sanction.MinimumSimilarity,
+                    Transliterate = sanction.Transliterate == 1,
+                    CacheInterval = sanction.CacheInterval.GetValueOrDefault('h'),
                     CacheValue = sanction.CacheValue.GetValueOrDefault(),
                     ReportTable = sanction.ReportTable == 1,
                     ResponsePayload = sanction.ResponsePayload == 1,
@@ -61,6 +64,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
         {
             return new SanctionPoco
             {
+                Version = dto.Version,
                 Id = dto.Id,
                 EntityAnalysisModelId = dto.EntityAnalysisModelId,
                 Name = dto.Name,
@@ -71,6 +75,9 @@ namespace Jube.Service.EntityAnalysisModelSanction
                 AggregationTypeId = dto.AggregationTypeId,
                 MaxDistanceRatio = dto.MaxDistanceRatio,
                 MaxCoverageRatio = dto.MaxCoverageRatio,
+                MatchAlgorithmId = dto.MatchAlgorithmId,
+                MinimumSimilarity = dto.MinimumSimilarity,
+                Transliterate = (byte)(dto.Transliterate ? 1 : 0),
                 CacheInterval = dto.CacheInterval,
                 CacheValue = dto.CacheValue,
                 ReportTable = (byte)(dto.ReportTable ? 1 : 0),

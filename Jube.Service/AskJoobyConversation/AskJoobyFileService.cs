@@ -56,8 +56,8 @@ namespace Jube.Service.AskJoobyConversation
             this.userName = userName;
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
-            conversationRepository = new AskJoobyConversationRepository(dbContext, tenantRegistryId, userName);
-            fileRepository = new AskJoobyFileRepository(dbContext, tenantRegistryId, userName);
+            conversationRepository = new AskJoobyConversationRepository(dbContext, tenantRegistryId, userName, true);
+            fileRepository = new AskJoobyFileRepository(dbContext, tenantRegistryId, userName, true);
         }
 
         private static ValidationResult ToValidationResult(string propertyName, string message)
@@ -83,7 +83,7 @@ namespace Jube.Service.AskJoobyConversation
 
         private void EnsurePermitted(string op)
         {
-            if (permissionValidation.Validate(permissions))
+            if (permissionValidation.ActiveUser && permissionValidation.Validate(permissions))
             {
                 return;
             }

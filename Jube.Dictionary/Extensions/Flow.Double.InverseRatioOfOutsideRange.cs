@@ -17,35 +17,50 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchInverseRatioOfOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the other value over this value is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchInverseRatioOfOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleInverseRatioOfOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RejectInverseRatioOfOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the other value over this value is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectInverseRatioOfOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleInverseRatioOfOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> BreakInverseRatioOfOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the other value over this value is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakInverseRatioOfOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleInverseRatioOfOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> RequireInverseRatioOfOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the other value over this value is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireInverseRatioOfOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleInverseRatioOfOutsideRange(flow.Value, other, lowerBound, upperBound));
             }
 
-            public Flow<double> EnsureInverseRatioOfOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("True when: the other value over this value is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureInverseRatioOfOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +70,42 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchInverseRatioOfOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the other value over this value is below the lower or above the upper bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchInverseRatioOfOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().MatchInverseRatioOfOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RejectInverseRatioOfOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the other value over this value is below the lower or above the upper bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectInverseRatioOfOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RejectInverseRatioOfOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> BreakInverseRatioOfOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the other value over this value is below the lower or above the upper bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakInverseRatioOfOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().BreakInverseRatioOfOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> RequireInverseRatioOfOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the other value over this value is below the lower or above the upper bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireInverseRatioOfOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().RequireInverseRatioOfOutsideRange(other, lowerBound, upperBound);
             }
 
-            public Flow<double> EnsureInverseRatioOfOutsideRange(double other, double lowerBound, double upperBound)
+            [Description("Begins a pipeline from the value. True when: the other value over this value is below the lower or above the upper bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureInverseRatioOfOutsideRange([Description("The other number.")] double other,
+                [Description("The lower bound the calculation is compared with.")] double lowerBound,
+                [Description("The upper bound the calculation is compared with.")] double upperBound)
             {
                 return value.Start().EnsureInverseRatioOfOutsideRange(other, lowerBound, upperBound);
             }

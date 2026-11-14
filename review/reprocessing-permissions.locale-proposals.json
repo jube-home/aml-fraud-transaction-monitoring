@@ -1,0 +1,47 @@
+{
+  "en": {
+    "crud": {
+      "restrictedByPermission": "Some actions are hidden because your role does not hold the permission they need."
+    }
+  },
+  "pl": {
+    "crud": {
+      "restrictedByPermission": "Niektóre czynności są ukryte, ponieważ Twoja rola nie ma wymaganego uprawnienia."
+    }
+  },
+  "ar": {
+    "crud": {
+      "restrictedByPermission": "بعض الإجراءات مخفية لأن دورك لا يملك الصلاحية اللازمة لها."
+    }
+  },
+  "ka": {
+    "crud": {
+      "restrictedByPermission": "ზოგიერთი მოქმედება დამალულია, რადგან თქვენს როლს მათთვის საჭირო უფლება არ აქვს."
+    }
+  },
+  "id": {
+    "crud": {
+      "restrictedByPermission": "Beberapa tindakan disembunyikan karena peran Anda tidak memiliki izin yang diperlukan."
+    }
+  },
+  "sv": {
+    "crud": {
+      "restrictedByPermission": "Vissa åtgärder är dolda eftersom din roll saknar den behörighet de kräver."
+    }
+  },
+  "ur": {
+    "crud": {
+      "restrictedByPermission": "کچھ اقدامات چھپائے گئے ہیں کیونکہ آپ کے کردار کے پاس ان کے لیے درکار اجازت نہیں ہے۔"
+    }
+  },
+  "hi": {
+    "crud": {
+      "restrictedByPermission": "कुछ कार्रवाइयाँ छिपी हुई हैं क्योंकि आपकी भूमिका के पास उनके लिए आवश्यक अनुमति नहीं है।"
+    }
+  },
+  "fr": {
+    "crud": {
+      "restrictedByPermission": "Certaines actions sont masquées parce que votre rôle ne détient pas l'autorisation nécessaire."
+    }
+  }
+}

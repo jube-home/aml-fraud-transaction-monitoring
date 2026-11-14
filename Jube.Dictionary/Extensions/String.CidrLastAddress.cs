@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("The last address of a CIDR range, otherwise empty.")]
         public static string CidrLastAddress(this string? @this)
         {
             if (!NetworkAddressSupport.TryParseCidr(@this, out var network, out var prefix, out var bits))

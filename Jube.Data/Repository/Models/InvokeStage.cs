@@ -33,6 +33,8 @@ namespace Jube.Data.Repository.Models
         JoinWriteTasks = 16,
         WriteResponse = 17,
         BuildArchivePayload = 18,
-        AdvancedAnalyticsAdaptation = 19
+        AdvancedAnalyticsAdaptation = 19,
+        Graph = 20,
+        Svirfd = 21
     }
 }

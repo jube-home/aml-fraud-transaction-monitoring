@@ -46,7 +46,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         }
 
         private static EntityAnalysisModelActivationRule NewRule(int id = 1, bool visible = true,
-            bool enableResponseElevation = true, double responseElevation = 0)
+            bool enableResponseElevation = true, int responseElevation = 0)
         {
             return new EntityAnalysisModelActivationRule
             {
@@ -645,6 +645,56 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var outcome = context.ActivationRuleGetOverrides();
 
             outcome.KindFor("AnyRule").Should().Be(EntityAnalysisModelOverrideKind.Force);
+        }
+
+        [Fact]
+        public void ActivationRuleGetOverridesDoesNotLetAModelLevelForceReachARuleThatIsNotEnabledForForce()
+        {
+            var context = NewContext();
+            AddOverrideKey(context, "CardFingerprint");
+            AddRule(context, "OptedIn");
+            AddRule(context, "NotOptedIn", enableForce: false);
+            AddOverride(context, "CardFingerprint", "cdb7", null, EntityAnalysisModelOverrideKind.Force);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
+
+            var outcome = context.ActivationRuleGetOverrides();
+
+            outcome.KindFor("OptedIn").Should().Be(EntityAnalysisModelOverrideKind.Force);
+            outcome.KindFor("NotOptedIn").Should().BeNull(
+                "Enable Force is opt in at the rule, and a model level Force must not bypass it");
+        }
+
+        [Fact]
+        public void ActivationRuleGetOverridesDoesNotLetAModelLevelOverrideReachARuleBoundToAnotherOverrideKey()
+        {
+            var context = NewContext();
+            AddOverrideKey(context, "CardFingerprint");
+            AddRule(context, "Unbound");
+            AddRule(context, "BoundElsewhere", overrideKey: "UserId");
+            AddOverride(context, "CardFingerprint", "cdb7", null, EntityAnalysisModelOverrideKind.Suppress);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
+
+            var outcome = context.ActivationRuleGetOverrides();
+
+            outcome.KindFor("Unbound").Should().Be(EntityAnalysisModelOverrideKind.Suppress);
+            outcome.KindFor("BoundElsewhere").Should().BeNull(
+                "a rule declares the one key its overrides relate to, which a model level override on another key must respect");
+        }
+
+        [Fact]
+        public void ActivationRuleGetOverridesDoesNotLetAModelLevelOverrideReachARuleThatIsNotEnabledForOverride()
+        {
+            var context = NewContext();
+            AddOverrideKey(context, "CardFingerprint");
+            AddRule(context, "Open");
+            AddRule(context, "Closed", enableOverride: false);
+            AddOverride(context, "CardFingerprint", "cdb7", null, EntityAnalysisModelOverrideKind.Suppress);
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CardFingerprint", "cdb7");
+
+            var outcome = context.ActivationRuleGetOverrides();
+
+            outcome.KindFor("Open").Should().Be(EntityAnalysisModelOverrideKind.Suppress);
+            outcome.KindFor("Closed").Should().BeNull();
         }
 
         [Fact]

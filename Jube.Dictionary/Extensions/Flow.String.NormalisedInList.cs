@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchNormalisedInList(IEnumerable<string> list)
+            [Description("True when: equal to an entry after folding case, accents and punctuation. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchNormalisedInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringNormalisedInList(flow.Value, list));
             }
 
-            public Flow<string?> RejectNormalisedInList(IEnumerable<string> list)
+            [Description("True when: equal to an entry after folding case, accents and punctuation. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectNormalisedInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringNormalisedInList(flow.Value, list));
             }
 
-            public Flow<string?> BreakNormalisedInList(IEnumerable<string> list)
+            [Description("True when: equal to an entry after folding case, accents and punctuation. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakNormalisedInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringNormalisedInList(flow.Value, list));
             }
 
-            public Flow<string?> RequireNormalisedInList(IEnumerable<string> list)
+            [Description("True when: equal to an entry after folding case, accents and punctuation. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireNormalisedInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringNormalisedInList(flow.Value, list));
             }
 
-            public Flow<string?> EnsureNormalisedInList(IEnumerable<string> list)
+            [Description("True when: equal to an entry after folding case, accents and punctuation. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureNormalisedInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchNormalisedInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: equal to an entry after folding case, accents and punctuation. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchNormalisedInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().MatchNormalisedInList(list);
             }
 
-            public Flow<string?> RejectNormalisedInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: equal to an entry after folding case, accents and punctuation. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectNormalisedInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RejectNormalisedInList(list);
             }
 
-            public Flow<string?> BreakNormalisedInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: equal to an entry after folding case, accents and punctuation. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakNormalisedInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().BreakNormalisedInList(list);
             }
 
-            public Flow<string?> RequireNormalisedInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: equal to an entry after folding case, accents and punctuation. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireNormalisedInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().RequireNormalisedInList(list);
             }
 
-            public Flow<string?> EnsureNormalisedInList(IEnumerable<string> list)
+            [Description("Begins a pipeline from the value. True when: equal to an entry after folding case, accents and punctuation. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureNormalisedInList([Description("The List token whose entries are compared.")] IEnumerable<string> list)
             {
                 return value.Start().EnsureNormalisedInList(list);
             }

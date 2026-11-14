@@ -73,7 +73,7 @@
     <value>Une date d'agenda est requise lorsque Agenda est défini.</value>
   </data>
     <data name="RatingRequired" xml:space="preserve">
-    <value>Une note entre 1 et 5 est requise.</value>
+    <value>Une note de 0 (pas encore notée) à 5 est requise.</value>
   </data>
     <data name="PayloadRequired" xml:space="preserve">
     <value>La charge utile du formulaire est requise.</value>
@@ -86,5 +86,17 @@
   </data>
     <data name="CaseKeyValueRequired" xml:space="preserve">
     <value>La valeur de la clé du dossier est requise.</value>
+  </data>
+    <data name="ChecklistIncomplete" xml:space="preserve">
+    <value>{0} élément(s) de la liste de contrôle doivent être terminés avant que le dossier puisse quitter ce statut ou être clos : {1}.</value>
+  </data>
+    <data name="CaseKeyNotArchiveKey" xml:space="preserve">
+    <value>La clé du dossier n’est pas un champ marqué Archive Key sur le modèle du flux de travail ; la dernière transaction de la clé est introuvable.</value>
+  </data>
+    <data name="LockedUserInvalid" xml:space="preserve">
+    <value>L'utilisateur verrouillé doit être un utilisateur du même locataire pouvant voir ce dossier.</value>
+  </data>
+    <data name="LockedByAnotherUser" xml:space="preserve">
+    <value>Le dossier est verrouillé par un autre utilisateur.</value>
   </data>
 </root>

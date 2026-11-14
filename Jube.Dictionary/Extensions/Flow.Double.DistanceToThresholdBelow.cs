@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchDistanceToThresholdBelow(double threshold, double bound)
+            [Description("True when: the gap between the value and the threshold in either direction is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchDistanceToThresholdBelow([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleDistanceToThresholdBelow(flow.Value, threshold, bound));
             }
 
-            public Flow<double> RejectDistanceToThresholdBelow(double threshold, double bound)
+            [Description("True when: the gap between the value and the threshold in either direction is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectDistanceToThresholdBelow([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleDistanceToThresholdBelow(flow.Value, threshold, bound));
             }
 
-            public Flow<double> BreakDistanceToThresholdBelow(double threshold, double bound)
+            [Description("True when: the gap between the value and the threshold in either direction is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakDistanceToThresholdBelow([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleDistanceToThresholdBelow(flow.Value, threshold, bound));
             }
 
-            public Flow<double> RequireDistanceToThresholdBelow(double threshold, double bound)
+            [Description("True when: the gap between the value and the threshold in either direction is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireDistanceToThresholdBelow([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleDistanceToThresholdBelow(flow.Value, threshold, bound));
             }
 
-            public Flow<double> EnsureDistanceToThresholdBelow(double threshold, double bound)
+            [Description("True when: the gap between the value and the threshold in either direction is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureDistanceToThresholdBelow([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchDistanceToThresholdBelow(double threshold, double bound)
+            [Description("Begins a pipeline from the value. True when: the gap between the value and the threshold in either direction is below the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchDistanceToThresholdBelow([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchDistanceToThresholdBelow(threshold, bound);
             }
 
-            public Flow<double> RejectDistanceToThresholdBelow(double threshold, double bound)
+            [Description("Begins a pipeline from the value. True when: the gap between the value and the threshold in either direction is below the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectDistanceToThresholdBelow([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectDistanceToThresholdBelow(threshold, bound);
             }
 
-            public Flow<double> BreakDistanceToThresholdBelow(double threshold, double bound)
+            [Description("Begins a pipeline from the value. True when: the gap between the value and the threshold in either direction is below the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakDistanceToThresholdBelow([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakDistanceToThresholdBelow(threshold, bound);
             }
 
-            public Flow<double> RequireDistanceToThresholdBelow(double threshold, double bound)
+            [Description("Begins a pipeline from the value. True when: the gap between the value and the threshold in either direction is below the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireDistanceToThresholdBelow([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireDistanceToThresholdBelow(threshold, bound);
             }
 
-            public Flow<double> EnsureDistanceToThresholdBelow(double threshold, double bound)
+            [Description("Begins a pipeline from the value. True when: the gap between the value and the threshold in either direction is below the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureDistanceToThresholdBelow([Description("The threshold the value is tested against.")] double threshold,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureDistanceToThresholdBelow(threshold, bound);
             }

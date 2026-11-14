@@ -11,6 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Dto.Options;
+
 namespace Jube.Data.Repository.Models
 {
     public static class ArchiverStageExtensions

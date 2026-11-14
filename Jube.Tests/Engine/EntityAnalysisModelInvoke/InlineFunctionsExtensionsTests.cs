@@ -67,7 +67,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void AStringResultIsAddedToThePayload()
         {
-            var function = NewFunction("Greeting", 1, (_, _, _, _) => "Hello");
+            var function = NewFunction("Greeting", 1, (_, _, _, _, _) => "Hello");
             var context = NewContext(function);
 
             context.ExecuteInlineFunctions();
@@ -78,7 +78,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void AnIntegerResultIsAddedToThePayload()
         {
-            var function = NewFunction("Count", 2, (_, _, _, _) => 5);
+            var function = NewFunction("Count", 2, (_, _, _, _, _) => 5);
             var context = NewContext(function);
 
             context.ExecuteInlineFunctions();
@@ -89,7 +89,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void ADoubleResultIsAddedToThePayload()
         {
-            var function = NewFunction("Ratio", 3, (_, _, _, _) => 3.5);
+            var function = NewFunction("Ratio", 3, (_, _, _, _, _) => 3.5);
             var context = NewContext(function);
 
             context.ExecuteInlineFunctions();
@@ -100,7 +100,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void ABooleanResultIsAddedToThePayload()
         {
-            var function = NewFunction("Flag", 5, (_, _, _, _) => true);
+            var function = NewFunction("Flag", 5, (_, _, _, _, _) => true);
             var context = NewContext(function);
 
             context.ExecuteInlineFunctions();
@@ -111,7 +111,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void ANullStringResultIsAddedToThePayloadAsNullRatherThanThrowing()
         {
-            var function = NewFunction("Missing", 1, (_, _, _, _) => null);
+            var function = NewFunction("Missing", 1, (_, _, _, _, _) => null);
             var context = NewContext(function);
 
             var act = () => context.ExecuteInlineFunctions();
@@ -124,7 +124,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void DoesNotOverwriteAnExistingPayloadValueWithTheSameName()
         {
-            var function = NewFunction("Existing", 1, (_, _, _, _) => "NewValue");
+            var function = NewFunction("Existing", 1, (_, _, _, _, _) => "NewValue");
             var context = NewContext(function);
             context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("Existing", "OriginalValue");
 
@@ -137,7 +137,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void ReportTableAddsAStringArchiveKeyWithProcessingTypeThree()
         {
-            var function = NewFunction("Greeting", 1, (_, _, _, _) => "Hello",
+            var function = NewFunction("Greeting", 1, (_, _, _, _, _) => "Hello",
                 true);
 
             var context = NewContext(function);
@@ -154,7 +154,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void ReportTableAddsADoubleArchiveKeyWithTheNumericValue()
         {
-            var function = NewFunction("Ratio", 3, (_, _, _, _) => 3.5, true);
+            var function = NewFunction("Ratio", 3, (_, _, _, _, _) => 3.5, true);
             var context = NewContext(function);
 
             context.ExecuteInlineFunctions();
@@ -167,7 +167,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void WithoutReportTableNoArchiveKeyIsAdded()
         {
-            var function = NewFunction("Greeting", 1, (_, _, _, _) => "Hello");
+            var function = NewFunction("Greeting", 1, (_, _, _, _, _) => "Hello");
             var context = NewContext(function);
 
             context.ExecuteInlineFunctions();
@@ -181,9 +181,9 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var secondEvaluated = false;
 
             var throwing = NewFunction("Throws", 1,
-                (_, _, _, _) => throw new InvalidOperationException("boom"));
+                (_, _, _, _, _) => throw new InvalidOperationException("boom"));
 
-            var second = NewFunction("Second", 1, (_, _, _, _) =>
+            var second = NewFunction("Second", 1, (_, _, _, _, _) =>
             {
                 secondEvaluated = true;
 
@@ -203,7 +203,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void WhenSampledTheStageTimingRecordsOneItemPerFunction()
         {
-            var function = NewFunction("Greeting", 1, (_, _, _, _) => "Hello");
+            var function = NewFunction("Greeting", 1, (_, _, _, _, _) => "Hello");
             var context = NewContext(function);
 
             context.ExecuteInlineFunctions();
@@ -217,7 +217,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         [Fact]
         public void WhenNotSampledNoStageTimingIsBuiltButBusinessLogicStillRuns()
         {
-            var function = NewFunction("Greeting", 1, (_, _, _, _) => "Hello");
+            var function = NewFunction("Greeting", 1, (_, _, _, _, _) => "Hello");
             var context = NewContext(function);
             context.LogSampled = false;
 

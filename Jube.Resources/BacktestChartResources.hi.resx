@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="FunnelTitle" xml:space="preserve">
+        <value>आर्काइव से फ़ायर होने तक</value>
+    </data>
+    <data name="FunnelSubtitle" xml:space="preserve">
+        <value>पढ़े गए, फ़िल्टर द्वारा रखे गए और नियम द्वारा फ़ायर किए गए लेन-देन</value>
+    </data>
+    <data name="StageRead" xml:space="preserve">
+        <value>पढ़े गए</value>
+    </data>
+    <data name="StageKept" xml:space="preserve">
+        <value>फ़िल्टर द्वारा रखे गए</value>
+    </data>
+    <data name="StageFired" xml:space="preserve">
+        <value>फ़ायर हुए</value>
+    </data>
+    <data name="ConfusionTitle" xml:space="preserve">
+        <value>कन्फ़्यूज़न मैट्रिक्स</value>
+    </data>
+    <data name="ConfusionSubtitle" xml:space="preserve">
+        <value>नियम ने क्या किया बनाम लेन-देन वास्तव में क्या था</value>
+    </data>
+    <data name="FiredQuestion" xml:space="preserve">
+        <value>फ़ायर हुआ?</value>
+    </data>
+    <data name="PositiveQuestion" xml:space="preserve">
+        <value>धनात्मक?</value>
+    </data>
+    <data name="No" xml:space="preserve">
+        <value>नहीं</value>
+    </data>
+    <data name="Yes" xml:space="preserve">
+        <value>हाँ</value>
+    </data>
+    <data name="Precision" xml:space="preserve">
+        <value>परिशुद्धता</value>
+    </data>
+    <data name="Recall" xml:space="preserve">
+        <value>रिकॉल</value>
+    </data>
+    <data name="Specificity" xml:space="preserve">
+        <value>विशिष्टता</value>
+    </data>
+    <data name="PositiveRate" xml:space="preserve">
+        <value>धनात्मक दर</value>
+    </data>
+    <data name="FiredRate" xml:space="preserve">
+        <value>फ़ायर दर</value>
+    </data>
+    <data name="RatesTitle" xml:space="preserve">
+        <value>दर</value>
+    </data>
+    <data name="RatesSubtitle" xml:space="preserve">
+        <value>परिशुद्धता, रिकॉल और फ़ायर हुए व धनात्मक लेन-देन का हिस्सा</value>
+    </data>
+    <data name="Percent" xml:space="preserve">
+        <value>प्रतिशत</value>
+    </data>
+    <data name="Rate" xml:space="preserve">
+        <value>दर</value>
+    </data>
+    <data name="TagsTitle" xml:space="preserve">
+        <value>मूल्यांकित लेन-देन पर टैग</value>
+    </data>
+    <data name="Transactions" xml:space="preserve">
+        <value>लेन-देन</value>
+    </data>
+</root>

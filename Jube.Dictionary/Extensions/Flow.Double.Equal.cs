@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchEqual(double other)
+            [Description("True when: the value equals the argument. NaN never equals anything. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleEqual(flow.Value, other));
             }
 
-            public Flow<double> RejectEqual(double other)
+            [Description("True when: the value equals the argument. NaN never equals anything. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleEqual(flow.Value, other));
             }
 
-            public Flow<double> BreakEqual(double other)
+            [Description("True when: the value equals the argument. NaN never equals anything. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleEqual(flow.Value, other));
             }
 
-            public Flow<double> RequireEqual(double other)
+            [Description("True when: the value equals the argument. NaN never equals anything. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleEqual(flow.Value, other));
             }
 
-            public Flow<double> EnsureEqual(double other)
+            [Description("True when: the value equals the argument. NaN never equals anything. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureEqual([Description("The other number.")] double other)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value equals the argument. NaN never equals anything. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchEqual([Description("The other number.")] double other)
             {
                 return value.Start().MatchEqual(other);
             }
 
-            public Flow<double> RejectEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value equals the argument. NaN never equals anything. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectEqual([Description("The other number.")] double other)
             {
                 return value.Start().RejectEqual(other);
             }
 
-            public Flow<double> BreakEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value equals the argument. NaN never equals anything. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakEqual([Description("The other number.")] double other)
             {
                 return value.Start().BreakEqual(other);
             }
 
-            public Flow<double> RequireEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value equals the argument. NaN never equals anything. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireEqual([Description("The other number.")] double other)
             {
                 return value.Start().RequireEqual(other);
             }
 
-            public Flow<double> EnsureEqual(double other)
+            [Description("Begins a pipeline from the value. True when: the value equals the argument. NaN never equals anything. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureEqual([Description("The other number.")] double other)
             {
                 return value.Start().EnsureEqual(other);
             }

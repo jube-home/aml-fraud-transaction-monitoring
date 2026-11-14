@@ -1,0 +1,335 @@
+{
+  "_note": "FormModelResources keys for the grid column titles of the 12 case workflow DTOs; apply to FormModelResources.resx and .{pl,ar,ka,id,sv,ur,hi}.resx in the integration pass (form-model-engine owns the files). en is the DTO literal.",
+  "keys": {
+    "CaseWorkflow.column.name": {
+      "en": "Name",
+      "pl": "Nazwa",
+      "ar": "الاسم",
+      "ka": "სახელი",
+      "id": "Nama",
+      "sv": "Namn",
+      "ur": "نام",
+      "hi": "नाम"
+    },
+    "CaseWorkflow.column.active": {
+      "en": "Active",
+      "pl": "Aktywny",
+      "ar": "نشط",
+      "ka": "აქტიური",
+      "id": "Aktif",
+      "sv": "Aktiv",
+      "ur": "فعال",
+      "hi": "सक्रिय"
+    },
+    "CaseWorkflowAction.column.name": {
+      "en": "Name",
+      "pl": "Nazwa",
+      "ar": "الاسم",
+      "ka": "სახელი",
+      "id": "Nama",
+      "sv": "Namn",
+      "ur": "نام",
+      "hi": "नाम"
+    },
+    "CaseWorkflowAction.column.active": {
+      "en": "Active",
+      "pl": "Aktywny",
+      "ar": "نشط",
+      "ka": "აქტიური",
+      "id": "Aktif",
+      "sv": "Aktiv",
+      "ur": "فعال",
+      "hi": "सक्रिय"
+    },
+    "CaseWorkflowChecklist.column.name": {
+      "en": "Name",
+      "pl": "Nazwa",
+      "ar": "الاسم",
+      "ka": "სახელი",
+      "id": "Nama",
+      "sv": "Namn",
+      "ur": "نام",
+      "hi": "नाम"
+    },
+    "CaseWorkflowChecklist.column.priority": {
+      "en": "Priority",
+      "pl": "Priorytet",
+      "ar": "الأولوية",
+      "ka": "პრიორიტეტი",
+      "id": "Prioritas",
+      "sv": "Prioritet",
+      "ur": "ترجیح",
+      "hi": "प्राथमिकता"
+    },
+    "CaseWorkflowChecklist.column.active": {
+      "en": "Active",
+      "pl": "Aktywny",
+      "ar": "نشط",
+      "ka": "აქტიური",
+      "id": "Aktif",
+      "sv": "Aktiv",
+      "ur": "فعال",
+      "hi": "सक्रिय"
+    },
+    "CaseWorkflowChecklistItem.column.name": {
+      "en": "Name",
+      "pl": "Nazwa",
+      "ar": "الاسم",
+      "ka": "სახელი",
+      "id": "Nama",
+      "sv": "Namn",
+      "ur": "نام",
+      "hi": "नाम"
+    },
+    "CaseWorkflowChecklistItem.column.priority": {
+      "en": "Priority",
+      "pl": "Priorytet",
+      "ar": "الأولوية",
+      "ka": "პრიორიტეტი",
+      "id": "Prioritas",
+      "sv": "Prioritet",
+      "ur": "ترجیح",
+      "hi": "प्राथमिकता"
+    },
+    "CaseWorkflowChecklistItem.column.active": {
+      "en": "Active",
+      "pl": "Aktywny",
+      "ar": "نشط",
+      "ka": "აქტიური",
+      "id": "Aktif",
+      "sv": "Aktiv",
+      "ur": "فعال",
+      "hi": "सक्रिय"
+    },
+    "CaseWorkflowChecklistItem.column.slaMinutes": {
+      "en": "SLA minutes",
+      "pl": "SLA w minutach",
+      "ar": "دقائق SLA",
+      "ka": "SLA წუთებში",
+      "id": "Menit SLA",
+      "sv": "SLA i minuter",
+      "ur": "SLA منٹ",
+      "hi": "SLA मिनट"
+    },
+    "CaseWorkflowDisplay.column.name": {
+      "en": "Name",
+      "pl": "Nazwa",
+      "ar": "الاسم",
+      "ka": "სახელი",
+      "id": "Nama",
+      "sv": "Namn",
+      "ur": "نام",
+      "hi": "नाम"
+    },
+    "CaseWorkflowDisplay.column.active": {
+      "en": "Active",
+      "pl": "Aktywny",
+      "ar": "نشط",
+      "ka": "აქტიური",
+      "id": "Aktif",
+      "sv": "Aktiv",
+      "ur": "فعال",
+      "hi": "सक्रिय"
+    },
+    "CaseWorkflowFilter.column.name": {
+      "en": "Name",
+      "pl": "Nazwa",
+      "ar": "الاسم",
+      "ka": "სახელი",
+      "id": "Nama",
+      "sv": "Namn",
+      "ur": "نام",
+      "hi": "नाम"
+    },
+    "CaseWorkflowFilter.column.active": {
+      "en": "Active",
+      "pl": "Aktywny",
+      "ar": "نشط",
+      "ka": "აქტიური",
+      "id": "Aktif",
+      "sv": "Aktiv",
+      "ur": "فعال",
+      "hi": "सक्रिय"
+    },
+    "CaseWorkflowForm.column.name": {
+      "en": "Name",
+      "pl": "Nazwa",
+      "ar": "الاسم",
+      "ka": "სახელი",
+      "id": "Nama",
+      "sv": "Namn",
+      "ur": "نام",
+      "hi": "नाम"
+    },
+    "CaseWorkflowForm.column.active": {
+      "en": "Active",
+      "pl": "Aktywny",
+      "ar": "نشط",
+      "ka": "აქტიური",
+      "id": "Aktif",
+      "sv": "Aktiv",
+      "ur": "فعال",
+      "hi": "सक्रिय"
+    },
+    "CaseWorkflowFormValidator.column.name": {
+      "en": "Name",
+      "pl": "Nazwa",
+      "ar": "الاسم",
+      "ka": "სახელი",
+      "id": "Nama",
+      "sv": "Namn",
+      "ur": "نام",
+      "hi": "नाम"
+    },
+    "CaseWorkflowFormValidator.column.active": {
+      "en": "Active",
+      "pl": "Aktywny",
+      "ar": "نشط",
+      "ka": "აქტიური",
+      "id": "Aktif",
+      "sv": "Aktiv",
+      "ur": "فعال",
+      "hi": "सक्रिय"
+    },
+    "CaseWorkflowFormValidator.column.fieldName": {
+      "en": "Field",
+      "pl": "Pole",
+      "ar": "الحقل",
+      "ka": "ველი",
+      "id": "Bidang",
+      "sv": "Fält",
+      "ur": "فیلڈ",
+      "hi": "फ़ील्ड"
+    },
+    "CaseWorkflowFormValidator.column.kindId": {
+      "en": "Kind",
+      "pl": "Rodzaj",
+      "ar": "النوع",
+      "ka": "ტიპი",
+      "id": "Jenis",
+      "sv": "Typ",
+      "ur": "قسم",
+      "hi": "प्रकार"
+    },
+    "CaseWorkflowMacro.column.name": {
+      "en": "Name",
+      "pl": "Nazwa",
+      "ar": "الاسم",
+      "ka": "სახელი",
+      "id": "Nama",
+      "sv": "Namn",
+      "ur": "نام",
+      "hi": "नाम"
+    },
+    "CaseWorkflowMacro.column.active": {
+      "en": "Active",
+      "pl": "Aktywny",
+      "ar": "نشط",
+      "ka": "აქტიური",
+      "id": "Aktif",
+      "sv": "Aktiv",
+      "ur": "فعال",
+      "hi": "सक्रिय"
+    },
+    "CaseWorkflowReleaseHook.column.name": {
+      "en": "Name",
+      "pl": "Nazwa",
+      "ar": "الاسم",
+      "ka": "სახელი",
+      "id": "Nama",
+      "sv": "Namn",
+      "ur": "نام",
+      "hi": "नाम"
+    },
+    "CaseWorkflowReleaseHook.column.active": {
+      "en": "Active",
+      "pl": "Aktywny",
+      "ar": "نشط",
+      "ka": "აქტიური",
+      "id": "Aktif",
+      "sv": "Aktiv",
+      "ur": "فعال",
+      "hi": "सक्रिय"
+    },
+    "CaseWorkflowReleaseHook.column.sourceField": {
+      "en": "Source field",
+      "pl": "Pole źródłowe",
+      "ar": "الحقل المصدر",
+      "ka": "წყაროს ველი",
+      "id": "Bidang sumber",
+      "sv": "Källfält",
+      "ur": "ماخذ فیلڈ",
+      "hi": "स्रोत फ़ील्ड"
+    },
+    "CaseWorkflowReleaseHook.column.sourceValue": {
+      "en": "Source value",
+      "pl": "Wartość źródłowa",
+      "ar": "القيمة المصدر",
+      "ka": "წყაროს მნიშვნელობა",
+      "id": "Nilai sumber",
+      "sv": "Källvärde",
+      "ur": "ماخذ قدر",
+      "hi": "स्रोत मान"
+    },
+    "CaseWorkflowStatus.column.name": {
+      "en": "Name",
+      "pl": "Nazwa",
+      "ar": "الاسم",
+      "ka": "სახელი",
+      "id": "Nama",
+      "sv": "Namn",
+      "ur": "نام",
+      "hi": "नाम"
+    },
+    "CaseWorkflowStatus.column.active": {
+      "en": "Active",
+      "pl": "Aktywny",
+      "ar": "نشط",
+      "ka": "აქტიური",
+      "id": "Aktif",
+      "sv": "Aktiv",
+      "ur": "فعال",
+      "hi": "सक्रिय"
+    },
+    "CaseWorkflowStatus.column.priority": {
+      "en": "Priority",
+      "pl": "Priorytet",
+      "ar": "الأولوية",
+      "ka": "პრიორიტეტი",
+      "id": "Prioritas",
+      "sv": "Prioritet",
+      "ur": "ترجیح",
+      "hi": "प्राथमिकता"
+    },
+    "CaseWorkflowStatus.column.outcomeId": {
+      "en": "Outcome",
+      "pl": "Wynik",
+      "ar": "النتيجة",
+      "ka": "შედეგი",
+      "id": "Hasil",
+      "sv": "Utfall",
+      "ur": "نتیجہ",
+      "hi": "परिणाम"
+    },
+    "CaseWorkflowXPath.column.name": {
+      "en": "Name",
+      "pl": "Nazwa",
+      "ar": "الاسم",
+      "ka": "სახელი",
+      "id": "Nama",
+      "sv": "Namn",
+      "ur": "نام",
+      "hi": "नाम"
+    },
+    "CaseWorkflowXPath.column.active": {
+      "en": "Active",
+      "pl": "Aktywny",
+      "ar": "نشط",
+      "ka": "აქტიური",
+      "id": "Aktif",
+      "sv": "Aktiv",
+      "ur": "فعال",
+      "hi": "सक्रिय"
+    }
+  }
+}

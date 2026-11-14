@@ -42,4 +42,22 @@
     <data name="ListNotFound" xml:space="preserve">
     <value>La liste est introuvable.</value>
   </data>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="ListValueMaxLength" xml:space="preserve">
+    <value>La valeur ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="ListValueDuplicate" xml:space="preserve">
+    <value>Cette valeur existe déjà dans la liste.</value>
+  </data>
+    <data name="EntityAnalysisModelListIdInvalid" xml:space="preserve">
+    <value>Une liste valide est requise.</value>
+  </data>
+    <data name="DeleteExpiryDateMustBeFuture" xml:space="preserve">
+    <value>La date d'expiration de suppression doit être postérieure à la date et à l'heure actuelles.</value>
+  </data>
 </root>

@@ -20,6 +20,7 @@ namespace Jube.Data.Query.GetArchiveBacktestSampleQuery
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Models;
 
     public class GetArchiveBacktestSampleQuery(DbContext dbContext, int tenantRegistryId)

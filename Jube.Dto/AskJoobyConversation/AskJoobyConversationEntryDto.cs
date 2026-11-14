@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,43 +24,55 @@ namespace Jube.Dto.AskJoobyConversation
     [Description("One entry of a conversation's full transcript -- \"Message\" (a real user/assistant turn), " +
                  "\"Step\" (narrated tool activity), \"Thought\" (narrated reasoning) or \"Delegation\" " +
                  "(narrated Joobrik hand-off), replayed in the same shape the live stream used.")]
+    [MessagePackObject]
     public class AskJoobyConversationEntryDto
     {
+        [Key(0)]
         public string Kind { get; set; } = "Message";
 
         [Description("The underlying AskJoobyMessage Id -- for Kind \"Message\", Role \"Assistant\", usable to " +
                      "submit thumbs-up/down feedback against this reply.")]
+        [Key(1)]
         public int Id { get; set; }
 
         [Description("Who sent this -- \"User\" or \"Assistant\". Only populated for Kind \"Message\".")]
+        [Key(2)]
         public string? Role { get; set; }
 
+        [Key(3)]
         public string Text { get; set; } = string.Empty;
+        [Key(4)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("Tokens sent to the model for this reply, summed across every model call this turn made " +
                      "(including any Joobrik delegations). Only populated for Kind \"Message\", Role \"Assistant\".")]
+        [Key(5)]
         public int? InputTokens { get; set; }
 
         [Description("Tokens the model generated for this reply, summed the same way as InputTokens.")]
+        [Key(6)]
         public int? OutputTokens { get; set; }
 
         [Description("How many of InputTokens the provider served from its prompt cache, summed the same " +
                      "way. Null where no model call on this reply reported a cache figure at all, which " +
                      "is not the same as zero: zero means every call reported a miss.")]
+        [Key(7)]
         public int? CachedInputTokens { get; set; }
 
         [Description("Wall-clock milliseconds this reply took to produce, start to finish.")]
+        [Key(8)]
         public long? DurationMs { get; set; }
 
         [Description("How many Joobriks this reply spawned, including the top-level Worker run itself. " +
                      "Only populated for Kind \"Message\", Role \"Assistant\", and only when " +
                      "EnableAskJoobyCostBanner is on.")]
+        [Key(9)]
         public int? JoobrikCount { get; set; }
 
         [Description("How many distinct Joobrik types (agent types) are among JoobrikCount's runs -- a " +
                      "Worker that spawned the same specialist three times still counts as one distinct " +
                      "Joobrik. Same gating as JoobrikCount.")]
+        [Key(10)]
         public int? DistinctJoobrikCount { get; set; }
 
         [Description("The reply's reconstituted all-up cost, in the same currency AskJoobyEndpointFee/" +
@@ -68,19 +81,23 @@ namespace Jube.Dto.AskJoobyConversation
                      "documents compared, each joined against its own rate and summed. Null when " +
                      "EnableAskJoobyCostBanner is off, or when a model/endpoint this reply used has no " +
                      "matching rate row -- a missing rate is silence about that call's cost, not a free one.")]
+        [Key(11)]
         public double? TotalCost { get; set; }
 
         [Description("Kind \"Step\" only: the AgentToolIcon id drawn beside the pill, the same one the live " +
                      "stream sent for this tool call. Null for a step recorded before icons existed.")]
+        [Key(12)]
         public int? IconId { get; set; }
 
         [Description("Kinds \"Step\", \"Delegation\", \"Handoff\", \"Guard\", \"Validation\" and \"Revision\" " +
                      "only: what was passed and what came back, already truncated, the same text the live " +
                      "stream sent behind the pill. Null for an entry recorded before this column existed.")]
+        [Key(13)]
         public string? Detail { get; set; }
 
         [Description("Files attached to this message, if any -- shown as a download link only, never as " +
                      "inline text (their content, when readable, is still folded into what Jooby sees).")]
+        [Key(14)]
         public List<AskJoobyMessageAttachmentDto> Attachments { get; set; } = [];
     }
 }

@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,47 +23,60 @@ namespace Jube.Dto.Query.ExhaustiveSearchInstanceTrialInstanceVariable
 {
     [Description("One variable of the promoted trial instance of an Exhaustive Search Instance, with its " +
                  "normalisation statistics.")]
+    [MessagePackObject]
     public class ExhaustiveSearchInstanceTrialInstanceVariableDto
     {
         [Description("Integer Id of the Exhaustive Search Instance Variable.")]
+        [Key(0)]
         public int Id { get; set; }
 
-        [Description("Name of the variable.")] public string? Name { get; set; }
-        [Description("Mean of the variable.")] public double Mean { get; set; }
+        [Description("Name of the variable.")] [Key(1)] public string? Name { get; set; }
+        [Description("Mean of the variable.")] [Key(2)] public double Mean { get; set; }
 
         [Description("Maximum of the variable.")]
+        [Key(3)]
         public double Maximum { get; set; }
 
         [Description("Minimum of the variable.")]
+        [Key(4)]
         public double Minimum { get; set; }
 
         [Description("Standard deviation of the variable.")]
+        [Key(5)]
         public double StandardDeviation { get; set; }
 
         [Description("Integer Id of the normalisation type of the variable.")]
+        [Key(6)]
         public byte NormalisationTypeId { get; set; }
 
         [Description("True when the maximum and minimum of the variable sum to zero.")]
+        [Key(7)]
         public bool EmptyRange { get; set; }
 
         [Description("Position of the variable in the trial instance sequence. Results are ordered by the " +
                      "trial instance variable sequence.")]
+        [Key(8)]
         public int VariableSequence { get; set; }
 
         [Description("Integer Id of the processing type of the variable.")]
+        [Key(9)]
         public int ProcessingTypeId { get; set; }
 
         [Description("Source field of a categorical indicator variable, null for an ordinary variable.")]
+        [Key(10)]
         public string? CategoricalSourceName { get; set; }
 
         [Description(
             "Kind of a categorical indicator variable: 1 level, 2 other, 3 missing, null for an ordinary variable.")]
+        [Key(11)]
         public byte? CategoricalKind { get; set; }
 
         [Description("Level label of a categorical indicator variable, null for an ordinary variable.")]
+        [Key(12)]
         public string? CategoricalLevel { get; set; }
 
         [Description("Label of the reference level of the categorical source field, null for an ordinary variable.")]
+        [Key(13)]
         public string? CategoricalReferenceLabel { get; set; }
     }
 }

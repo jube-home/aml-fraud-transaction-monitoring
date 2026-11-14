@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Checks if every character in the string is the same (e.g. \"1111111\").")]
         public static bool IsAllSameCharacter(this string? @this)
         {
             if (string.IsNullOrEmpty(@this))

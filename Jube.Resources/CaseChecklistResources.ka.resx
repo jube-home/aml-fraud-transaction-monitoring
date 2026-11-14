@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>ამ მოქმედების შესასრულებლად უფლება არ გაქვთ.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>ამ მოქმედების შესასრულებლად უნდა იყოთ შესული ტენანტში.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>საქმე ვერ მოიძებნა ან მასზე წვდომა არ გაქვთ.</value>
+  </data>
+    <data name="CaseClosed" xml:space="preserve">
+    <value>საქმე დახურულია, ამიტომ მისი ჩამონათვალის შეცვლა აღარ შეიძლება.</value>
+  </data>
+    <data name="NotLockHolder" xml:space="preserve">
+    <value>საქმის მფლობელ მომხმარებელს ერთადერთს შეუძლია მისი ჩამონათვალის პუნქტების მონიშვნა ან მონიშვნის მოხსნა.</value>
+  </data>
+    <data name="ItemNotFound" xml:space="preserve">
+    <value>ჩამონათვალის პუნქტი ამ საქმეზე ვერ მოიძებნა.</value>
+  </data>
+    <data name="ItemNotShown" xml:space="preserve">
+    <value>ეს პუნქტი ამჟამად საქმეზე არ ჩანს, ამიტომ მისი მონიშვნა შეუძლებელია.</value>
+  </data>
+    <data name="ItemAlreadyDone" xml:space="preserve">
+    <value>ეს პუნქტი უკვე მონიშნულია.</value>
+  </data>
+    <data name="ItemNotDone" xml:space="preserve">
+    <value>ეს პუნქტი მონიშნული არ არის, ამიტომ მოსახსნელი არაფერია.</value>
+  </data>
+    <data name="ValidationFailedDefault" xml:space="preserve">
+    <value>ამ პუნქტის მონიშვნის პირობა დაკმაყოფილებული არ არის.</value>
+  </data>
+    <data name="OverrideForbidden" xml:space="preserve">
+    <value>ჩამონათვალის კარიბჭის გადაფარვის უფლება არ გაქვთ.</value>
+  </data>
+    <data name="OverrideReasonRequired" xml:space="preserve">
+    <value>ჩამონათვალის კარიბჭის გადასაფარად მიზეზი აუცილებელია.</value>
+  </data>
+    <data name="OverrideReasonTooLong" xml:space="preserve">
+    <value>მიზეზი უნდა შეიცავდეს არაუმეტეს 1000 სიმბოლოს.</value>
+  </data>
+    <data name="OverrideHolderCannotOverride" xml:space="preserve">
+    <value>საქმის მფლობელ მომხმარებელს მისი ჩამონათვალის კარიბჭის გადაფარვა არ შეუძლია; ეს უნდა გააკეთოს ზედამხედველმა.</value>
+  </data>
+    <data name="OverrideNothingOpen" xml:space="preserve">
+    <value>ღია ჩამონათვალის პუნქტები არ არის, ამიტომ გადასაფარი არაფერია.</value>
+  </data>
+    <data name="OverrideAlreadyGranted" xml:space="preserve">
+    <value>საქმის მიმდინარე სტატუსისთვის გადაფარვა უკვე მინიჭებულია.</value>
+  </data>
+</root>

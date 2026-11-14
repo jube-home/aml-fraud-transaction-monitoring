@@ -1,6 +1,6 @@
 ﻿services:
   postgres:
-    image: "pgvector/pgvector:pg17"
+    image: "pgvector/pgvector:pg17@sha256:7d0a41464797aeb9862dfdc0bbf1526b82cfd324cdd8036df19e3545f4a9ccb8"
     container_name: "postgres"
     environment:
       POSTGRES_PASSWORD: $DockerComposePostgresPassword
@@ -25,18 +25,28 @@
     networks:
       - default
 
-  redis:
-    image: "redis/redis-stack:latest"
-    container_name: "redis"
+  resp:
+    image: "ghcr.io/microsoft/garnet:latest@sha256:f420f566c08c04cf89a6de05f158fa3000c5505c9edeb344aac5c034fc78a9e3"
+    container_name: "resp"
+    command:
+      - --port
+      - "6379"
+      - --bind
+      - 0.0.0.0
+      - --checkpointdir
+      - /data
+      - --aof
+      - --recover
+      - --aof-commit-freq
+      - "1000"
+      - --minthreads
+      - "4"
     volumes:
-      - redis:/data
+      - resp:/data
     ports:
       - "6379:6379"
-      - "8001:8001"
     networks:
       - default
-    environment:
-      REDIS_ARGS: --appendonly yes --save "" --auto-aof-rewrite-percentage 200 --auto-aof-rewrite-min-size 256mb --io-threads 4 --io-threads-do-reads yes --maxmemory 18gb --maxmemory-policy noeviction
 
   jube:
     image: jube.app
@@ -44,12 +54,12 @@
     depends_on:
       postgres:
         condition: service_started
-      redis:
+      resp:
         condition: service_started
       jube-r:
         condition: service_started
     links:
-      - redis
+      - resp
       - postgres
       - jube-r
     environment:
@@ -58,13 +68,17 @@
       - ReportConnectionString=Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=$DockerComposePostgresPassword;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;
       - JWTKey=$DockerComposeJWTKey
       - ApiHmacKey=$DockerComposeApiHmacKey
-      - RedisConnectionString=redis
+      - RespConnectionString=resp
       - EnableSanctionLoader=True
+      - EnableSvirfd=True
+      - SvirfdApiKey=${DockerComposeSvirfdApiKey:-}
+      - SvirfdCacheDirectory=/var/lib/jube/svirfd
       - EnableAskJooby=${DockerComposeEnableAskJooby}
       - AskJoobyApiKey=${DockerComposeAskJoobyApiKey}
       - PasswordHashingKey=$DockerComposePasswordHashingKey
       - Log4NetLogLevel=ERROR
       - ElementSymmetricEncryptionKey=$DockerComposeElementSymmetricEncryptionKey
+      - CaseSimilarityHashingKey=${DockerComposeCaseSimilarityHashingKey:-}
       - DOTNET_gcServer=1
       - DOTNET_gcConcurrent=1
       - DOTNET_GCConserveMemory=4
@@ -72,10 +86,13 @@
       - OpenTelemetryBackendEndpoint=http://jube-otel-listener:4318
       - RServerUrl=http://jube-r:8080
       - DockerMonitoringProxyUrl=http://jube-monitoring:8081
+    volumes:
+      - svirfd:/var/lib/jube/svirfd
     ports:
       - "5001:5001"
     networks:
       - default
+      - rsandbox
     build:
       context: .
       dockerfile: Jube.App/Dockerfile
@@ -116,7 +133,7 @@
     mem_limit: 2g
     cpus: 2
     networks:
-      - default
+      - rsandbox
     build:
       context: ./Jube.R
       dockerfile: Dockerfile
@@ -133,8 +150,13 @@
 networks:
   default:
     driver: bridge
+  rsandbox:
+    driver: bridge
+    internal: true
 volumes:
   postgres:
     external: false
-  redis:
+  resp:
+    external: false
+  svirfd:
     external: false

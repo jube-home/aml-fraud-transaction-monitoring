@@ -13,7 +13,9 @@
 
 using System.ComponentModel;
 using Jube.Dto.Forms;
+using Jube.Dto.Options;
 using Jube.Dto.Interfaces;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -23,15 +25,18 @@ using Jube.Dto.Interfaces;
 namespace Jube.Dto.Repository.VisualisationRegistryParameter
 {
     [FormEndpoint("VisualisationRegistryParameter")]
+    [FormRoles]
     [FormKeys(Id = nameof(Id), Parent = nameof(VisualisationRegistryId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
     [FormGroup("Value", Order = 20)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
+    [MessagePackObject]
     public class VisualisationRegistryParameterDto : IUpdated, IActivatable, ILockable
     {
         [Description("Identifier of the Visualisation Registry this Parameter belongs to. Set from the parent " +
                      "Visualisation Registry context; not user-editable.")]
+        [Key(0)]
         public int VisualisationRegistryId { get; set; }
 
         [Description("Display name of the Parameter, matched against the Case payload field of the same name " +
@@ -39,68 +44,85 @@ namespace Jube.Dto.Repository.VisualisationRegistryParameter
                      "report. Unique within the Visualisation Registry (case-insensitive).")]
         [FormField(Group = "Identity", Order = 10)]
         [ListColumn(Order = 10, Title = "Name")]
+        [Key(1)]
         public string? Name { get; set; }
 
         [Description("When true, the Parameter is available for collection and use in datasource SQL.")]
         [FormField(Group = "Identity", Order = 20, Widget = "switch")]
         [ListColumn(Order = 20, Title = "Active")]
+        [Key(2)]
         public bool Active { get; set; }
 
         [Description("When true, the Parameter is locked to read-only and cannot be edited or deleted.")]
         [FormField(Group = "Identity", Order = 30, Widget = "switch")]
+        [Key(3)]
         public bool Locked { get; set; }
 
         [Description("The data type governing the control used to collect this Parameter and the type its " +
                      "Default value is interpreted as: 1 = String, 2 = Integer, 3 = Float, 4 = Date, " +
                      "5 = Boolean.")]
-        [FormField(Group = "Value", Order = 10, Widget = "dropdown")]
+        [FormField(Group = "Value", Order = 10, Widget = "select")]
+        [NewDefault(1)]
         [ListColumn(Order = 30, Title = "Data Type")]
+        [Options(typeof(FieldDataType), FieldDataType.String, FieldDataType.Integer, FieldDataType.Float, FieldDataType.Date, FieldDataType.Boolean)]
+        [Key(4)]
         public int DataTypeId { get; set; }
 
         [Description("The default value offered by the collection control and used to parameterise the report " +
                      "when a Case is not embedding a matching payload field. For a Date data type, this is an " +
                      "offset expressed as a number of days.")]
-        [FormField(Group = "Value", Order = 20)]
+        [FormField(Group = "Value", Order = 20, Widget = "typed:dataTypeId")]
+        [Key(5)]
         public string? DefaultValue { get; set; }
 
         [Description("When true, the Parameter must be supplied before the report can be run.")]
         [FormField(Group = "Value", Order = 30, Widget = "switch")]
         [ListColumn(Order = 40, Title = "Required")]
+        [Key(6)]
         public bool Required { get; set; }
 
         [Description("Server-assigned globally-unique identifier of this Parameter, referenced by Visualisation " +
                      "Registry Parameter Roles. Read-only.")]
+        [Key(7)]
         public Guid Guid { get; set; }
 
         [Description("Server-assigned identifier. Read-only; required when updating an existing Parameter.")]
+        [Key(8)]
         public int Id { get; set; }
 
         [Description("Server-assigned user who created this Parameter. Read-only.")]
         [FormField(Group = "Audit", Order = 10, ReadOnly = true)]
+        [Key(9)]
         public string? CreatedUser { get; set; }
 
         [Description("Server-assigned timestamp (UTC) this Parameter was created. Read-only.")]
         [FormField(Group = "Audit", Order = 20, ReadOnly = true, Widget = "date")]
+        [Key(10)]
         public DateTimeOffset? CreatedDate { get; set; }
 
         [Description("Server-assigned user who last updated this Parameter. Read-only.")]
         [FormField(Group = "Audit", Order = 30, ReadOnly = true)]
+        [Key(11)]
         public string? UpdatedUser { get; set; }
 
         [Description("Server-assigned timestamp (UTC) this Parameter was last updated. Read-only.")]
         [FormField(Group = "Audit", Order = 40, ReadOnly = true, Widget = "date")]
+        [Key(12)]
         public DateTimeOffset? UpdatedDate { get; set; }
 
         [Description("Server-assigned optimistic-concurrency version number, incremented on every update. " +
                      "Read-only.")]
         [FormField(Group = "Audit", Order = 50, ReadOnly = true)]
         [ListColumn(Hidden = true)]
+        [Key(13)]
         public int Version { get; set; }
 
         [Description("Server-assigned user who soft-deleted this Parameter, if any. Read-only.")]
+        [Key(14)]
         public string? DeletedUser { get; set; }
 
         [Description("Server-assigned timestamp (UTC) this Parameter was soft-deleted, if any. Read-only.")]
+        [Key(15)]
         public DateTimeOffset? DeletedDate { get; set; }
     }
 }

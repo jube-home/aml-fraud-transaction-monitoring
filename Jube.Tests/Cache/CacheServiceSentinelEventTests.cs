@@ -26,13 +26,13 @@ namespace Jube.Test.Cache
         [Fact]
         public void HandleSentinelEventCapturesEventAndLogsWarning()
         {
-            RedisSentinelEventCapture.DrainAll();
+            RespSentinelEventCapture.DrainAll();
             var log = new TestLog();
             var channel = RedisChannel.Literal("+switch-master");
 
             CacheService.HandleSentinelEvent(log, channel, "mymaster 10.0.0.1 6379 10.0.0.2 6379");
 
-            var captured = RedisSentinelEventCapture.DrainAll();
+            var captured = RespSentinelEventCapture.DrainAll();
             captured.Should().ContainSingle();
             captured[0].Channel.Should().Be(channel.ToString());
             captured[0].Message.Should().Be("mymaster 10.0.0.1 6379 10.0.0.2 6379");

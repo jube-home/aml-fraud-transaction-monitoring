@@ -252,7 +252,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var (model, counter) = NewTargetModel(enableLiveForever: false);
             var rule = NewRule(model.Instance.Guid, counter.Guid);
             var availableModels = new Dictionary<int, EntityAnalysisModel> { [model.Instance.Id] = model };
-            var cacheService = TestCacheService.Create(out var redis);
+            var cacheService = TestCacheService.Create(out var resp);
 
             await context.ActivationRuleTtlCounterAsync(rule, availableModels, cacheService);
             await Task.WhenAll(context.PendingWriteTasks);
@@ -260,7 +260,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var expiryKey =
                 $"TtlCounterEntryExpiry:{context.EntityAnalysisModel.Instance.TenantRegistryId}:{rule.EntityAnalysisModelGuidTtlCounter:N}:{counter.Guid:N}:{counter.TtlCounterDataName}";
 
-            (await redis.SortedSetLengthAsync(expiryKey)).Should().Be(1);
+            (await resp.SortedSetLengthAsync(expiryKey)).Should().Be(1);
         }
 
         [Fact]
@@ -271,7 +271,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var (model, counter) = NewTargetModel(enableLiveForever: true);
             var rule = NewRule(model.Instance.Guid, counter.Guid);
             var availableModels = new Dictionary<int, EntityAnalysisModel> { [model.Instance.Id] = model };
-            var cacheService = TestCacheService.Create(out var redis);
+            var cacheService = TestCacheService.Create(out var resp);
 
             await context.ActivationRuleTtlCounterAsync(rule, availableModels, cacheService);
             await Task.WhenAll(context.PendingWriteTasks);
@@ -279,7 +279,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var expiryKey =
                 $"TtlCounterEntryExpiry:{context.EntityAnalysisModel.Instance.TenantRegistryId}:{rule.EntityAnalysisModelGuidTtlCounter:N}:{counter.Guid:N}:{counter.TtlCounterDataName}";
 
-            (await redis.SortedSetLengthAsync(expiryKey)).Should().Be(0);
+            (await resp.SortedSetLengthAsync(expiryKey)).Should().Be(0);
             context.EntityAnalysisModelInstanceEntryPayload.TtlCounter[counter.Name].Should().Be(1);
         }
 
@@ -315,6 +315,73 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         }
 
         [Fact]
+        public async Task ClaimsIdempotencyUnderTheCounterKeyWithTheEntryGuidAsTheMemberAsync()
+        {
+            var context = NewContext(new Dictionary<string, string> { ["ActivationRuleIdempotency"] = "True" });
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CurrencyAmount", "1");
+            var (model, counter) = NewTargetModel();
+            var rule = NewRule(model.Instance.Guid, counter.Guid);
+            var availableModels = new Dictionary<int, EntityAnalysisModel> { [model.Instance.Id] = model };
+            var cacheService = TestCacheService.Create(out var resp);
+
+            await context.ActivationRuleTtlCounterAsync(rule, availableModels, cacheService);
+
+            var tenant = context.EntityAnalysisModel.Instance.TenantRegistryId;
+            var modelGuid = context.EntityAnalysisModel.Instance.Guid;
+            var entryGuid = context.EntityAnalysisModelInstanceEntryPayload.EntityAnalysisModelInstanceEntryGuid;
+            var expectedKey = $"TtlCounterIdempotency:{tenant}:{modelGuid:N}:{counter.Guid:N}";
+
+            (await resp.SetMembersAsync($"IdempotencyJournal:{tenant}:{modelGuid:N}"))
+                .Should().Contain(m => m.ToString() == expectedKey);
+
+            (await resp.SetContainsAsync(expectedKey, $"{entryGuid:N}")).Should().BeTrue(
+                "cleanup removes entry guids from the counter set, so the entry guid must be the member");
+        }
+
+        [Theory]
+        [InlineData(-5d)]
+        [InlineData(double.NaN)]
+        [InlineData(double.PositiveInfinity)]
+        public async Task DoesNotIncrementOrClaimIdempotencyForANegativeOrNonFiniteSumValueAsync(double amount)
+        {
+            var context = NewContext(new Dictionary<string, string> { ["ActivationRuleIdempotency"] = "True" });
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CurrencyAmount", amount);
+            var (model, counter) = NewTargetModel(enableSum: true, dataValueField: "CurrencyAmount");
+            var rule = NewRule(model.Instance.Guid, counter.Guid);
+            var availableModels = new Dictionary<int, EntityAnalysisModel> { [model.Instance.Id] = model };
+            var cacheService = TestCacheService.Create(out var resp);
+
+            await context.ActivationRuleTtlCounterAsync(rule, availableModels, cacheService);
+            await Task.WhenAll(context.PendingWriteTasks);
+
+            context.EntityAnalysisModelInstanceEntryPayload.TtlCounter.Should().NotContainKey(counter.Name);
+
+            var tenant = context.EntityAnalysisModel.Instance.TenantRegistryId;
+            var modelGuid = context.EntityAnalysisModel.Instance.Guid;
+
+            (await resp.SetMembersAsync($"IdempotencyJournal:{tenant}:{modelGuid:N}")).Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task IncrementsTheCounterUnderTheTargetModelGuidSoTheOwningModelReadsItAsync()
+        {
+            var context = NewContext();
+            context.EntityAnalysisModelInstanceEntryPayload.Payload.Add("CurrencyAmount", "1");
+            var (model, counter) = NewTargetModel();
+            var rule = NewRule(model.Instance.Guid, counter.Guid);
+            var availableModels = new Dictionary<int, EntityAnalysisModel> { [model.Instance.Id] = model };
+            var cacheService = TestCacheService.Create(out var resp);
+
+            await context.ActivationRuleTtlCounterAsync(rule, availableModels, cacheService);
+            await Task.WhenAll(context.PendingWriteTasks);
+
+            var tenant = context.EntityAnalysisModel.Instance.TenantRegistryId;
+            var key = $"TtlCounter:{tenant}:{model.Instance.Guid:N}:{counter.Guid:N}:{counter.TtlCounterDataName}";
+
+            ((double)await resp.HashGetAsync(key, "1")).Should().Be(1d);
+        }
+
+        [Fact]
         public async Task StillIncrementsTheInMemoryCounterWhenTheBackgroundCacheWriteFailsAsync()
         {
             var context = NewContext();
@@ -322,8 +389,8 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
             var (model, counter) = NewTargetModel();
             var rule = NewRule(model.Instance.Guid, counter.Guid);
             var availableModels = new Dictionary<int, EntityAnalysisModel> { [model.Instance.Id] = model };
-            var cacheService = TestCacheService.Create(out var redis);
-            redis.ThrowOnMethod = "SortedSetAddAsync";
+            var cacheService = TestCacheService.Create(out var resp);
+            resp.ThrowOnMethod = "SortedSetAddAsync";
 
             await context.ActivationRuleTtlCounterAsync(rule, availableModels, cacheService);
             var awaitPendingWrites = async () => await Task.WhenAll(context.PendingWriteTasks);

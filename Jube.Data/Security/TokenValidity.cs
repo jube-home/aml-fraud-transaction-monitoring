@@ -28,6 +28,14 @@ namespace Jube.Data.Security
     {
         public const string IssuedMillisecondsClaim = "jube_iat_ms";
 
+        private const string TenantDisabledPredicate =
+            "EXISTS (SELECT 1 FROM \"RoleRegistry\" rr " +
+            "INNER JOIN \"TenantRegistry\" tr ON rr.\"TenantRegistryId\" = tr.\"Id\" " +
+            "WHERE rr.\"Guid\" = \"UserRegistry\".\"RoleRegistryGuid\" " +
+            "AND (rr.\"Deleted\" = 0 OR rr.\"Deleted\" IS NULL) " +
+            "AND COALESCE(tr.\"Landlord\", 0) <> 1 " +
+            "AND (COALESCE(tr.\"Active\", 0) <> 1 OR COALESCE(tr.\"Deleted\", 0) = 1))";
+
         public static async Task RevokeUserBeforeAsync(DbContext dbContext, string userName, DateTimeOffset cutoff,
             CancellationToken token = default)
         {
@@ -61,7 +69,7 @@ namespace Jube.Data.Security
             var rows = await dbContext.QueryToListAsync<SessionStateRow>(
                 "SELECT max(\"TokensValidFrom\") AS \"ValidFrom\", " +
                 "min(CASE WHEN COALESCE(\"PasswordLocked\", 0) = 1 OR COALESCE(\"Active\", 0) <> 1 " +
-                "OR COALESCE(\"Deleted\", 0) = 1 THEN 1 ELSE 0 END) AS \"Blocked\" " +
+                "OR COALESCE(\"Deleted\", 0) = 1 OR " + TenantDisabledPredicate + " THEN 1 ELSE 0 END) AS \"Blocked\" " +
                 "FROM \"UserRegistry\" WHERE \"Name\" = @name",
                 new DataParameter("name", userName, DataType.NVarChar)).ConfigureAwait(false);
 
@@ -88,7 +96,7 @@ namespace Jube.Data.Security
             var rows = await dbContext.QueryToListAsync<SessionState>(
                 "SELECT \"Name\", max(\"TokensValidFrom\") AS \"ValidFrom\", " +
                 "min(CASE WHEN COALESCE(\"PasswordLocked\", 0) = 1 OR COALESCE(\"Active\", 0) <> 1 " +
-                "OR COALESCE(\"Deleted\", 0) = 1 THEN 1 ELSE 0 END) AS \"Blocked\" " +
+                "OR COALESCE(\"Deleted\", 0) = 1 OR " + TenantDisabledPredicate + " THEN 1 ELSE 0 END) AS \"Blocked\" " +
                 "FROM \"UserRegistry\" WHERE \"Name\" = ANY(@names) GROUP BY \"Name\"",
                 new DataParameter("names", userNames.ToArray())).ConfigureAwait(false);
 

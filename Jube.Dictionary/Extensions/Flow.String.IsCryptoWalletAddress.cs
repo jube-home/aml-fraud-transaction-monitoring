@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
+            [Description("True when: a well formed cryptocurrency wallet address. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsCryptoWalletAddress()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringIsCryptoWalletAddress(flow.Value));
             }
 
+            [Description("True when: a well formed cryptocurrency wallet address. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsCryptoWalletAddress()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringIsCryptoWalletAddress(flow.Value));
             }
 
+            [Description("True when: a well formed cryptocurrency wallet address. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsCryptoWalletAddress()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringIsCryptoWalletAddress(flow.Value));
             }
 
+            [Description("True when: a well formed cryptocurrency wallet address. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsCryptoWalletAddress()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringIsCryptoWalletAddress(flow.Value));
             }
 
+            [Description("True when: a well formed cryptocurrency wallet address. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsCryptoWalletAddress()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
+            [Description("Begins a pipeline from the value. True when: a well formed cryptocurrency wallet address. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsCryptoWalletAddress()
             {
                 return value.Start().MatchIsCryptoWalletAddress();
             }
 
+            [Description("Begins a pipeline from the value. True when: a well formed cryptocurrency wallet address. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsCryptoWalletAddress()
             {
                 return value.Start().RejectIsCryptoWalletAddress();
             }
 
+            [Description("Begins a pipeline from the value. True when: a well formed cryptocurrency wallet address. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsCryptoWalletAddress()
             {
                 return value.Start().BreakIsCryptoWalletAddress();
             }
 
+            [Description("Begins a pipeline from the value. True when: a well formed cryptocurrency wallet address. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsCryptoWalletAddress()
             {
                 return value.Start().RequireIsCryptoWalletAddress();
             }
 
+            [Description("Begins a pipeline from the value. True when: a well formed cryptocurrency wallet address. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsCryptoWalletAddress()
             {
                 return value.Start().EnsureIsCryptoWalletAddress();

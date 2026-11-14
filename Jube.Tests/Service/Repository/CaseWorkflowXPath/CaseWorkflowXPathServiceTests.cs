@@ -33,6 +33,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.EntityAnalysisModel.CapturingBus;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
@@ -53,6 +54,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
                 NullLoggerFactory.Instance);
 
         private readonly List<int> createdXPathIds = [];
+        private readonly Dictionary<int, Guid> sources = new();
         private readonly List<int> createdWorkflowIds = [];
         private readonly List<int> createdModelIds = [];
         private readonly List<int> createdRoleRegistryIds = [];
@@ -103,6 +105,8 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
 
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelVersion>()
                 .Where(w => createdModelIds.Contains(w.EntityAnalysisModelId)).DeleteAsync();
+
+            await ArchiveKeySeed.CleanupAsync(dbContext, createdModelIds);
 
             await dbContext.EntityAnalysisModel.Where(w => createdModelIds.Contains(w.Id)).DeleteAsync();
 
@@ -221,6 +225,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
             }).ConfigureAwait(false);
 
             createdWorkflowIds.Add(workflowId);
+            sources[workflowId] = await ArchiveKeySeed.SourceAsync(dbContext, entityAnalysisModelId, "AmountUSD", 3);
 
             return workflowId;
         }
@@ -259,14 +264,13 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
             });
         }
 
-        private static CaseWorkflowXPathDto ValidDto(int caseWorkflowId, string? name = null) => new()
+        private CaseWorkflowXPathDto ValidDto(int caseWorkflowId, string? name = null) => new()
         {
             Name = name ?? $"{DatabaseFixture.Prefix}XPath{Guid.NewGuid():N}"[..40],
             CaseWorkflowId = caseWorkflowId,
             Active = true,
             Locked = false,
-            XPath = "payload.AmountUSD",
-            Drill = false,
+            SourceGuid = sources.GetValueOrDefault(caseWorkflowId),
             BoldLineMatched = false,
             ConditionalRegularExpressionFormatting = false,
         };
@@ -392,7 +396,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
             var workflowId = await CreateWorkflowAsync(dbContext, modelId, userXPathA);
             var service = await BuildServiceAsync(dbContext, userXPathA);
             var dto = ValidDto(workflowId);
-            dto.XPath = "";
+            dto.SourceGuid = null;
 
             await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
         }
@@ -684,7 +688,6 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
             toUpdate.Id = created.Id;
             toUpdate.Guid = Guid.NewGuid();
             toUpdate.CreatedUser = "tampered";
-            toUpdate.Version = 999;
 
             var updated = await service.UpdateAsync(toUpdate);
 
@@ -763,7 +766,6 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
             var workflowId = await CreateWorkflowAsync(dbContext, modelId, userXPathA);
             var ownerService = await BuildServiceAsync(dbContext, userXPathA);
             var dto = ValidDto(workflowId);
-            dto.Drill = true;
             var created = await ownerService.InsertAsync(dto);
             createdXPathIds.Add(created.Id);
 
@@ -789,7 +791,7 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
             var workflowId = await CreateWorkflowAsync(dbContext, modelId, userXPathA);
             var ownerService = await BuildServiceAsync(dbContext, userXPathA);
             var dto = ValidDto(workflowId);
-            dto.Drill = false;
+            dto.SourceGuid = await ArchiveKeySeed.SourceAsync(dbContext, modelId, "NotAKey", archiveKey: false);
             var created = await ownerService.InsertAsync(dto);
             createdXPathIds.Add(created.Id);
 
@@ -814,7 +816,6 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
 
             var ownerService = await BuildServiceAsync(dbContext, userXPathA);
             var dto = ValidDto(workflowId);
-            dto.Drill = true;
             var created = await ownerService.InsertAsync(dto);
             createdXPathIds.Add(created.Id);
 
@@ -846,7 +847,6 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
             var workflowId = await CreateWorkflowAsync(dbContext, modelId, userXPathA);
             var service = await BuildServiceAsync(dbContext, userXPathA);
             var dto = ValidDto(workflowId);
-            dto.Drill = true;
             dto.BoldLineMatched = true;
             dto.BoldLineFormatForeColor = "#111111";
             dto.BoldLineFormatBackColor = "#222222";
@@ -863,7 +863,8 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
             fetched = fetched.Required();
 
             fetched.Should().NotBeNull();
-            fetched.Drill.Should().BeTrue();
+            fetched.SourceGuid.Should().Be(dto.SourceGuid);
+            fetched.SourceKindId.Should().Be(6);
             fetched.BoldLineMatched.Should().BeTrue();
             fetched.BoldLineFormatForeColor.Should().Be("#111111");
             fetched.BoldLineFormatBackColor.Should().Be("#222222");
@@ -873,6 +874,25 @@ namespace Jube.Test.Service.Repository.CaseWorkflowXPath
             fetched.ConditionalFormatBackColor.Should().Be("#444444");
             fetched.ForeRowColorScope.Should().BeTrue();
             fetched.BackRowColorScope.Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData("(a)\\1")]
+        [InlineData("(?=a)a")]
+        [InlineData("[")]
+        public async Task ConditionalRegularExpressionThatBacktracksOrDoesNotCompileIsRefusedAsync(string pattern)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateModelAsync(dbContext, userXPathA);
+            var workflowId = await CreateWorkflowAsync(dbContext, modelId, userXPathA);
+            var service = await BuildServiceAsync(dbContext, userXPathA);
+            var dto = ValidDto(workflowId);
+            dto.ConditionalRegularExpressionFormatting = true;
+            dto.RegularExpression = pattern;
+            dto.ConditionalFormatForeColor = "#333333";
+            dto.ConditionalFormatBackColor = "#444444";
+
+            await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
         }
 
         [Fact]

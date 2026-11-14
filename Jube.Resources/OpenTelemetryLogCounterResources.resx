@@ -60,4 +60,7 @@
     <data name="RegexTooLong" xml:space="preserve">
     <value>Regex must be {0} characters or fewer.</value>
   </data>
+    <data name="NameDuplicate" xml:space="preserve">
+    <value>An active row with this Name already exists (names are compared ignoring case).</value>
+  </data>
 </root>

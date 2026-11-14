@@ -21,6 +21,7 @@ namespace Jube.Data.Query.GetDockerContainerMetricStatisticsQuery
     using Context;
     using Helpers;
     using LinqToDB;
+    using LinqToDB.Async;
     using Poco;
     using Dto.Payload;
 

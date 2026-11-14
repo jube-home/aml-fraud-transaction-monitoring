@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Extracts an Int16 from the string.")]
         public static short ExtractInt16(this string @this)
         {
             var sb = new StringBuilder();

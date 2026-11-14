@@ -15,7 +15,8 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double ShareOfMax(this double @this, params double[] others)
+        [Description("The value over the largest of it and the others.")]
+        public static double ShareOfMax(this double @this, [Description("The other numbers.")] params double[] others)
         {
             return CalculationSupport.Finite(@this / CalculationSupport.Largest(@this, others));
         }

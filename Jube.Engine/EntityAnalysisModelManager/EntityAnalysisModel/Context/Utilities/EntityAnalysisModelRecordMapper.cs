@@ -39,6 +39,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Uti
                     RabbitMqChannel = context.Services.RabbitMqChannel,
                     JubeEnvironment = context.Services.DynamicEnvironment,
                     CacheService = context.Services.CacheService,
+                    Svirfd = context.Services.Svirfd,
                     ImplicitAsyncInvocationTracker =
                         context.Services.ImplicitAsyncInvocationTracker,
                     AesEncryption = new AesEncryption(
@@ -51,6 +52,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Uti
                         context.ConcurrentQueues.PersistToActivationWatcherAsync,
                     PendingTagging = context.ConcurrentQueues.PendingTagging,
                     PendingNotifications = context.ConcurrentQueues.PendingNotifications,
+                    PendingWebhooks = context.ConcurrentQueues.PendingWebhooks,
                     Callbacks = context.ConcurrentQueues.Callbacks,
                     PendingEntityInvoke = context.ConcurrentQueues.PendingEntityInvoke
                 },
@@ -59,7 +61,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Uti
                     ActiveEntityAnalysisModels =
                         context.EntityAnalysisModels.ActiveEntityAnalysisModels,
                     SanctionsEntries = context.EntityAnalysisModels.SanctionsEntries,
-                    SanctionsStopTokens = context.EntityAnalysisModels.SanctionsStopTokens
+                    SanctionsStopTokens = context.EntityAnalysisModels.SanctionsStopTokens,
+                    GraphRecall = context.EntityAnalysisModels.GraphRecall
                 }
             };
 
@@ -657,6 +660,27 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Uti
                 {
                     log.Debug(
                         $"Entity Start: Model {entityAnalysisModel.Instance.Id} with DEFAULT Enable Database value {entityAnalysisModel.Flags.EnableRdbmsArchive}.");
+                }
+            }
+
+            if (record.EnablePayloadJObject.HasValue)
+            {
+                entityAnalysisModel.Flags.EnablePayloadJObject = record.EnablePayloadJObject.Value == 1;
+
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug(
+                        $"Entity Start: Model {entityAnalysisModel.Instance.Id} with Enable Payload JObject value {entityAnalysisModel.Flags.EnablePayloadJObject}.");
+                }
+            }
+            else
+            {
+                entityAnalysisModel.Flags.EnablePayloadJObject = true;
+
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug(
+                        $"Entity Start: Model {entityAnalysisModel.Instance.Id} with DEFAULT Enable Payload JObject value {entityAnalysisModel.Flags.EnablePayloadJObject}.");
                 }
             }
         }

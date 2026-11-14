@@ -17,10 +17,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Jube.Cache;
-using Jube.Cache.Redis.Callback;
+using Jube.Cache.Resp.Callback;
 using Jube.Engine.EntityAnalysisModelInvoke.ImplicitAsync;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel;
 using Jube.Engine.Helpers;
+using Jube.Svirfd;
 using Jube.TaskCancellation;
 
 namespace Jube.Test.Infrastructure.ModelScaffolding
@@ -29,29 +30,41 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
     {
         private readonly CancellationTokenProvider cancellation;
         private readonly Task startTask;
+        private readonly TaskCoordinator taskCoordinator;
+        private readonly CacheService cacheService;
+        private SvirfdHost? svirfd;
 
         private ModelEngineHost(Jube.DynamicEnvironment.DynamicEnvironment environment, TestLog log,
-            Jube.Engine.Engine engine, CancellationTokenProvider cancellation, Task startTask)
+            Jube.Engine.Engine engine, CancellationTokenProvider cancellation, TaskCoordinator taskCoordinator,
+            CacheService cacheService, Task startTask)
         {
             Environment = environment;
             Log = log;
             Engine = engine;
             this.cancellation = cancellation;
+            this.taskCoordinator = taskCoordinator;
+            this.cacheService = cacheService;
             this.startTask = startTask;
         }
 
         public Jube.DynamicEnvironment.DynamicEnvironment Environment { get; }
         public TestLog Log { get; }
         public Jube.Engine.Engine Engine { get; }
+        public SvirfdHost? Svirfd => svirfd;
 
-        public static string RedisConnectionString { get; } =
-            System.Environment.GetEnvironmentVariable("JubeTestRedis")
-            ?? System.Environment.GetEnvironmentVariable("JubeTestRedisConnectionString")
+        public static string RespConnectionString { get; } =
+            System.Environment.GetEnvironmentVariable("JubeTestResp")
+            ?? System.Environment.GetEnvironmentVariable("JubeTestRespConnectionString")
             ?? "localhost,defaultDatabase=1";
 
         public async ValueTask DisposeAsync()
         {
             cancellation.Cancel();
+
+            if (svirfd != null)
+            {
+                await svirfd.DisposeAsync().ConfigureAwait(false);
+            }
 
             try
             {
@@ -61,6 +74,17 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             catch (Exception)
             {
             }
+
+            try
+            {
+                await taskCoordinator.WaitForAllAsync().WaitAsync(TimeSpan.FromSeconds(30)).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is TimeoutException or OperationCanceledException)
+            {
+                Log.Warn($"ModelEngineHost: background tasks did not stop cleanly: {ex.Message}");
+            }
+
+            await cacheService.DisposeAsync().ConfigureAwait(false);
         }
 
         private static Dictionary<string, string> DefaultSettings()
@@ -70,7 +94,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                 ["ConnectionString"] = ModelScaffold.ConnectionString,
                 ["ReportConnectionString"] = ModelScaffold.ConnectionString,
                 ["JWTKey"] = "an-adequately-long-unit-test-signing-key-0123456789",
-                ["RedisConnectionString"] = RedisConnectionString,
+                ["RespConnectionString"] = RespConnectionString,
                 ["AMQP"] = "False",
                 ["EnableEngine"] = "True",
                 ["EnablePublicInvokeController"] = "True",
@@ -78,6 +102,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                 ["EnableExhaustiveTraining"] = "False",
                 ["EnableReprocessing"] = "False",
                 ["EnableSanctionLoader"] = "False",
+                ["EnableSvirfd"] = "False",
                 ["EnableCasesAutomation"] = "False",
                 ["EnableTtlCounter"] = "False",
                 ["EnableSearchKeyCache"] = "False",
@@ -90,7 +115,8 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
                 ["LocalCacheFill"] = "False",
                 ["LocalCacheBytes"] = "50000000",
                 ["MaxInvokeControllerRequestBytes"] = "20000",
-                ["CallbackTimeout"] = "10000"
+                ["CallbackTimeout"] = "10000",
+                [Jube.Case.Outbound.OutboundHostPolicy.AllowedCidrsKey] = LoopbackAllowed.Cidrs
             };
         }
 
@@ -113,7 +139,7 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
         }
 
         public static async Task<ModelEngineHost> StartAsync(IReadOnlyDictionary<string, string>? overrides = null,
-            TimeSpan? readyTimeout = null)
+            TimeSpan? readyTimeout = null, RabbitMQ.Client.IConnection? rabbitMqConnection = null)
         {
             var environment = CreateEnvironment(overrides);
             var log = new TestLog(false);
@@ -124,19 +150,32 @@ namespace Jube.Test.Infrastructure.ModelScaffolding
             var cancellation = new CancellationTokenProvider();
             var taskCoordinator = new TaskCoordinator(cancellation, log);
 
-            var cacheService = new CacheService(RedisConnectionString, ModelScaffold.ConnectionString, callbacks,
+            var cacheService = new CacheService(RespConnectionString, environment.AppSettings("ConnectionString"), callbacks,
                 int.Parse(environment.AppSettings("CallbackTimeout")), true, false, 50_000_000, false, false, false,
                 false, TimeSpan.FromDays(1), false, log);
 
             cacheService.InstantiateRepositoriesTask = taskCoordinator.RunAsync("InstantiateRepositoriesAsync",
                 _ => cacheService.StartAsync(taskCoordinator, static (_, _) => { }));
 
-            var engine = new Jube.Engine.Engine(environment, log, null, cacheService,
+            var svirfdSettings = SvirfdSettings.From(environment.AppSettings);
+
+            SvirfdHost? svirfdHost = null;
+
+            if (svirfdSettings.Enabled)
+            {
+                svirfdHost = new SvirfdHost(svirfdSettings, new System.Net.Http.HttpClient(),
+                    Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance);
+
+                await svirfdHost.StartAsync(System.Threading.CancellationToken.None).ConfigureAwait(false);
+            }
+
+            var engine = new Jube.Engine.Engine(environment, log, rabbitMqConnection, cacheService,
                 new JsonSerializationHelper(), taskCoordinator, new ImplicitAsyncInvocationTracker(log),
-                ModelScaffold.ConnectionString);
+                environment.AppSettings("ConnectionString"), null, null, svirfdHost);
 
             var startTask = engine.StartAsync();
-            var host = new ModelEngineHost(environment, log, engine, cancellation, startTask);
+            var host = new ModelEngineHost(environment, log, engine, cancellation, taskCoordinator, cacheService,
+                startTask) { svirfd = svirfdHost };
 
             var deadline = DateTime.UtcNow + (readyTimeout ?? TimeSpan.FromSeconds(120));
 

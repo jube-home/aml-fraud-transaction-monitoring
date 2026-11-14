@@ -17,35 +17,40 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchLengthGreater(int length)
+            [Description("True when: longer than the length. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchLengthGreater([Description("The length in characters.")] int length)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringLengthGreater(flow.Value, length));
             }
 
-            public Flow<string?> RejectLengthGreater(int length)
+            [Description("True when: longer than the length. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectLengthGreater([Description("The length in characters.")] int length)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringLengthGreater(flow.Value, length));
             }
 
-            public Flow<string?> BreakLengthGreater(int length)
+            [Description("True when: longer than the length. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakLengthGreater([Description("The length in characters.")] int length)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringLengthGreater(flow.Value, length));
             }
 
-            public Flow<string?> RequireLengthGreater(int length)
+            [Description("True when: longer than the length. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireLengthGreater([Description("The length in characters.")] int length)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringLengthGreater(flow.Value, length));
             }
 
-            public Flow<string?> EnsureLengthGreater(int length)
+            [Description("True when: longer than the length. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureLengthGreater([Description("The length in characters.")] int length)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +60,32 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchLengthGreater(int length)
+            [Description("Begins a pipeline from the value. True when: longer than the length. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchLengthGreater([Description("The length in characters.")] int length)
             {
                 return value.Start().MatchLengthGreater(length);
             }
 
-            public Flow<string?> RejectLengthGreater(int length)
+            [Description("Begins a pipeline from the value. True when: longer than the length. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectLengthGreater([Description("The length in characters.")] int length)
             {
                 return value.Start().RejectLengthGreater(length);
             }
 
-            public Flow<string?> BreakLengthGreater(int length)
+            [Description("Begins a pipeline from the value. True when: longer than the length. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakLengthGreater([Description("The length in characters.")] int length)
             {
                 return value.Start().BreakLengthGreater(length);
             }
 
-            public Flow<string?> RequireLengthGreater(int length)
+            [Description("Begins a pipeline from the value. True when: longer than the length. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireLengthGreater([Description("The length in characters.")] int length)
             {
                 return value.Start().RequireLengthGreater(length);
             }
 
-            public Flow<string?> EnsureLengthGreater(int length)
+            [Description("Begins a pipeline from the value. True when: longer than the length. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureLengthGreater([Description("The length in characters.")] int length)
             {
                 return value.Start().EnsureLengthGreater(length);
             }

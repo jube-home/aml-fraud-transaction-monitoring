@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Anda tidak memiliki izin untuk melakukan tindakan ini.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Anda harus masuk ke sebuah tenant untuk melakukan tindakan ini.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>Kasus tidak ditemukan.</value>
+  </data>
+    <data name="CaseWorkflowNotFound" xml:space="preserve">
+    <value>Alur kerja kasus tidak ditemukan.</value>
+  </data>
+    <data name="ArchiveNotFound" xml:space="preserve">
+    <value>Tidak ada transaksi yang ditemukan untuk kombinasi Kunci/Nilai Kasus ini.</value>
+  </data>
+    <data name="InvalidCaseWorkflowStatus" xml:space="preserve">
+    <value>Status alur kerja kasus yang diminta bukan milik alur kerja kasus ini.</value>
+  </data>
+    <data name="CaseAlreadyExists" xml:space="preserve">
+    <value>Sebuah kasus sudah ada untuk kombinasi Kunci/Nilai Kasus ini.</value>
+  </data>
+    <data name="CaseCreationFailed" xml:space="preserve">
+    <value>Pembuatan kasus tidak selesai. Silakan coba lagi.</value>
+  </data>
+    <data name="IdRequired" xml:space="preserve">
+    <value>Pengenal kasus diperlukan.</value>
+  </data>
+    <data name="LockedUserRequired" xml:space="preserve">
+    <value>Pengguna tujuan penguncian diperlukan saat Locked diaktifkan.</value>
+  </data>
+    <data name="CaseWorkflowStatusGuidRequired" xml:space="preserve">
+    <value>Status alur kerja kasus diperlukan.</value>
+  </data>
+    <data name="DiaryDateRequired" xml:space="preserve">
+    <value>Tanggal diari diperlukan saat Diary diaktifkan.</value>
+  </data>
+    <data name="RatingRequired" xml:space="preserve">
+    <value>Peringkat dari 0 (belum diberi peringkat) hingga 5 diperlukan.</value>
+  </data>
+    <data name="PayloadRequired" xml:space="preserve">
+    <value>Payload formulir diperlukan.</value>
+  </data>
+    <data name="CaseWorkflowGuidRequired" xml:space="preserve">
+    <value>Alur kerja kasus diperlukan.</value>
+  </data>
+    <data name="CaseKeyRequired" xml:space="preserve">
+    <value>Kunci kasus diperlukan.</value>
+  </data>
+    <data name="CaseKeyValueRequired" xml:space="preserve">
+    <value>Nilai kunci kasus diperlukan.</value>
+  </data>
+    <data name="LockedUserInvalid" xml:space="preserve">
+    <value>Pengguna pengunci harus pengguna dari tenant yang sama yang dapat melihat kasus ini.</value>
+  </data>
+    <data name="LockedByAnotherUser" xml:space="preserve">
+    <value>Kasus dikunci oleh pengguna lain.</value>
+  </data>
+    <data name="ChecklistIncomplete" xml:space="preserve">
+    <value>{0} butir daftar periksa harus diselesaikan sebelum kasus dapat meninggalkan status ini atau ditutup: {1}.</value>
+  </data>
+    <data name="CaseKeyNotArchiveKey" xml:space="preserve">
+    <value>Kunci kasus bukan bidang yang ditandai Archive Key pada model alur kerja, sehingga transaksi terakhir dari kunci tersebut tidak dapat ditemukan.</value>
+  </data>
+</root>

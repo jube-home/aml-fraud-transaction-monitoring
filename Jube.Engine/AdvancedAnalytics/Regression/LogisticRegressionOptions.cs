@@ -14,26 +14,41 @@
 using System;
 using Jube.Analytics;
 using Jube.Engine.AdvancedAnalytics.Regression.Models;
+using MessagePack;
 
 namespace Jube.Engine.AdvancedAnalytics.Regression
 {
+    [MessagePackObject]
     public sealed record LogisticRegressionOptions
     {
+        [Key(0)]
         public double ValidationFraction { get; init; } = 0.2;
+        [Key(1)]
         public double TestFraction { get; init; } = 0.2;
+        [Key(2)]
         public int Seed { get; init; } = 1;
+        [Key(3)]
         public double RidgeLambda { get; init; }
+        [Key(4)]
         public LogisticClassWeighting ClassWeighting { get; init; } = LogisticClassWeighting.None;
 
+        [Key(5)]
         public LogisticMissingValuePolicy MissingValuePolicy { get; init; } =
             LogisticMissingValuePolicy.ImputeMedianWithIndicators;
 
+        [Key(6)]
         public bool Standardise { get; init; } = true;
+        [Key(7)]
         public bool Calibrate { get; init; } = true;
+        [Key(8)]
         public double? BaseRateOverride { get; init; }
+        [Key(9)]
         public CostMatrix? Costs { get; init; }
+        [Key(10)]
         public double? DecisionThreshold { get; init; }
+        [Key(11)]
         public int MaximumIterations { get; init; } = 50;
+        [Key(12)]
         public double Tolerance { get; init; } = 1e-8;
 
         internal void Validate()

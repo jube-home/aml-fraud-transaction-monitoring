@@ -11,6 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
+using Jube.Data.Concurrency;
 using Jube.Data.Query.GetApprovedEntityQuery;
 using Jube.Data.Repository.Models;
 using System;
@@ -21,8 +22,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Jube.Data.Context;
 using Jube.Data.Extensions;
+using Jube.Data.Helpers;
 using Jube.Data.Poco;
 using LinqToDB;
+using LinqToDB.Async;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Jube.Data.Repository
@@ -63,6 +66,12 @@ namespace Jube.Data.Repository
             CancellationToken token)
         {
             return GetByIdAsync(id, token);
+        }
+
+        public Task<bool> ParentModelVisibleAsync(int entityAnalysisModelId, CancellationToken token = default)
+        {
+            return EntityAnalysisModelParentGuard.IsVisibleAsync(dbContext, tenantRegistryId, entityAnalysisModelId,
+                token);
         }
 
         public Task<EntityAnalysisModelTtlCounter> GetByNameEntityAnalysisModelIdAsync(string name,
@@ -160,6 +169,7 @@ namespace Jube.Data.Repository
 
             model.CreatedUser = userName;
             model.CreatedDate = DateTime.UtcNow;
+            OptimisticConcurrency.Verify(model.Version, existing.Version);
             model.Version = existing.Version + 1;
             model.Deleted = 0;
             model.DeletedDate = null;

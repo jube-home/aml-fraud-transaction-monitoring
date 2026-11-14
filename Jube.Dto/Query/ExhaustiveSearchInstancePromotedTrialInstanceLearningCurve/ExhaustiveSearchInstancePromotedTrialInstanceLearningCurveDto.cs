@@ -12,6 +12,7 @@
  */
 
 using System.ComponentModel;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,13 +21,16 @@ using System.ComponentModel;
 
 namespace Jube.Dto.Query.ExhaustiveSearchInstancePromotedTrialInstanceLearningCurve
 {
+    [MessagePackObject]
     public class ExhaustiveSearchInstancePromotedTrialInstanceLearningCurveDto
     {
         [Description("Score (rounded to 2 decimal places) of a promoted trial instance of the exhaustive search " +
                      "instance. One point on the learning curve.")]
+        [Key(0)]
         public double Score { get; set; }
 
         [Description("UTC timestamp at which the trial instance was promoted. The x-axis of the learning curve.")]
+        [Key(1)]
         public DateTime CreatedDate { get; set; }
     }
 }

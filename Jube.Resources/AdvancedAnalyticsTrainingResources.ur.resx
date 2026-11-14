@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>آپ کو یہ کارروائی انجام دینے کی اجازت (permission) نہیں ہے۔</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>یہ کارروائی انجام دینے کے لیے آپ کا کسی tenant میں سائن اِن ہونا ضروری ہے۔</value>
+  </data>
+    <data name="InstanceNotFound" xml:space="preserve">
+    <value>AskJooby Analytics کا انسٹینس نہیں ملا۔</value>
+  </data>
+    <data name="InstanceIdInvalid" xml:space="preserve">
+    <value>ایک درست انسٹینس درکار ہے۔</value>
+  </data>
+    <data name="ModelNameRequired" xml:space="preserve">
+    <value>model کا نام درکار ہے۔</value>
+  </data>
+    <data name="ModelNameMaxLength" xml:space="preserve">
+    <value>model کا نام {0} حروف یا اس سے کم پر مشتمل ہونا چاہیے۔</value>
+  </data>
+    <data name="CorrelationKeyMaxLength" xml:space="preserve">
+    <value>correlation key {0} حروف یا اس سے کم پر مشتمل ہونی چاہیے۔</value>
+  </data>
+    <data name="InputsRequired" xml:space="preserve">
+    <value>کم از کم ایک ان پٹ قطار درکار ہے۔</value>
+  </data>
+    <data name="InputsTooManyRows" xml:space="preserve">
+    <value>ایک وقت میں {0} سے زیادہ قطاروں پر تربیت نہیں کی جا سکتی۔</value>
+  </data>
+    <data name="VariablesRequired" xml:space="preserve">
+    <value>کم از کم ایک متغیر کا نام درکار ہے۔</value>
+  </data>
+    <data name="VariablesTooMany" xml:space="preserve">
+    <value>ایک وقت میں {0} سے زیادہ متغیرات استعمال نہیں کیے جا سکتے۔</value>
+  </data>
+    <data name="VariableNameBlank" xml:space="preserve">
+    <value>ہر متغیر کا نام غیر خالی ہونا چاہیے۔</value>
+  </data>
+    <data name="VariableNamesNotUnique" xml:space="preserve">
+    <value>متغیرات کے نام منفرد ہونے چاہییں۔</value>
+  </data>
+    <data name="RowLengthMismatch" xml:space="preserve">
+    <value>ہر ان پٹ قطار میں ہر متغیر کے نام کے لیے ٹھیک ایک قدر ہونی چاہیے۔</value>
+  </data>
+    <data name="LabelsLengthMismatch" xml:space="preserve">
+    <value>ہر ان پٹ قطار کے لیے ٹھیک ایک لیبل ہونا چاہیے۔</value>
+  </data>
+    <data name="LabelsNotBinary" xml:space="preserve">
+    <value>ہر لیبل 0 یا 1 ہونا چاہیے۔</value>
+  </data>
+    <data name="FractionRange" xml:space="preserve">
+    <value>توثیق اور ٹیسٹ کے حصے ہر ایک کم از کم 0 اور 1 سے کم ہونے چاہییں۔</value>
+  </data>
+    <data name="FractionsTooLarge" xml:space="preserve">
+    <value>توثیق اور ٹیسٹ کے حصے مجموعی طور پر 0.9 سے زیادہ نہیں ہونے چاہییں۔</value>
+  </data>
+    <data name="RidgeInvalid" xml:space="preserve">
+    <value>ridge کی شدت محدود اور غیر منفی ہونی چاہیے۔</value>
+  </data>
+    <data name="BaseRateInvalid" xml:space="preserve">
+    <value>بنیادی شرح لازماً 0 اور 1 کے درمیان ہونی چاہیے۔</value>
+  </data>
+    <data name="ThresholdInvalid" xml:space="preserve">
+    <value>فیصلے کی حد 0 اور 1 کے درمیان ہونی چاہیے۔</value>
+  </data>
+    <data name="IterationsInvalid" xml:space="preserve">
+    <value>تکرار کی زیادہ سے زیادہ تعداد کم از کم 1 ہونی چاہیے۔</value>
+  </data>
+    <data name="ToleranceInvalid" xml:space="preserve">
+    <value>رواداری مثبت اور محدود ہونی چاہیے۔</value>
+  </data>
+    <data name="CostsBothOrNeither" xml:space="preserve">
+    <value>دونوں لاگتیں دیں، یا کوئی بھی نہ دیں۔</value>
+  </data>
+    <data name="CostsInvalid" xml:space="preserve">
+    <value>لاگتیں محدود اور مثبت ہونی چاہییں۔</value>
+  </data>
+    <data name="TrainingFailedUnexpectedly" xml:space="preserve">
+    <value>تربیتی عمل غیر متوقع طور پر ناکام ہو گیا۔</value>
+  </data>
+    <data name="TrainingCancelled" xml:space="preserve">
+    <value>تربیتی عمل منسوخ کر دیا گیا۔</value>
+  </data>
+    <data name="ProcessingTypeIdsRequired" xml:space="preserve">
+    <value>ہر متغیر کے لیے پروسیسنگ کی قسم درکار ہے۔</value>
+  </data>
+    <data name="ProcessingTypeIdsMismatch" xml:space="preserve">
+    <value>ہر متغیر کے نام کے لیے پروسیسنگ کی ٹھیک ایک قسم ہونی چاہیے۔</value>
+  </data>
+    <data name="ProcessingTypeIdsInvalid" xml:space="preserve">
+    <value>ہر پروسیسنگ کی قسم 1 سے 7 تک، یا 99 ہونی چاہیے۔</value>
+  </data>
+    <data name="RunNotFound" xml:space="preserve">
+    <value>تربیتی عمل نہیں ملا۔</value>
+  </data>
+    <data name="DatasetInputNotSupported" xml:space="preserve">
+    <value>ڈیٹاسیٹ کے ذریعے تربیتی ان پٹ فی الحال معاون نہیں ہے۔</value>
+  </data>
+    <data name="InlineTooManyRows" xml:space="preserve">
+    <value>ان لائن ان پٹ {0} قطاروں تک محدود ہے۔ بڑا ڈیٹا cache میں رکھیں اور cache pointer جمع کرائیں۔</value>
+  </data>
+    <data name="InlineTooLarge" xml:space="preserve">
+    <value>ان لائن ان پٹ {0} بائٹس تک محدود ہے۔ بڑا ڈیٹا cache میں رکھیں اور cache pointer جمع کرائیں۔</value>
+  </data>
+    <data name="OnlineTooManyRows" xml:space="preserve">
+    <value>فوری تربیتی عمل {0} قطاروں تک محدود ہے۔ بڑے ڈیٹا کے لیے جمع کرانے کا عمل استعمال کریں۔</value>
+  </data>
+    <data name="CachePointerRequired" xml:space="preserve">
+    <value>cache ان پٹ کے لیے cache pointer درکار ہے۔</value>
+  </data>
+    <data name="CachePointerNotFound" xml:space="preserve">
+    <value>cache شدہ ان پٹ کی میعاد ختم ہو چکی ہے یا وہ موجود نہیں ہے۔</value>
+  </data>
+    <data name="CacheShapeMismatch" xml:space="preserve">
+    <value>cache شدہ جدول میں ہر متغیر کے نام کے لیے ایک کالم اور ایک لیبل کالم ہونا چاہیے۔</value>
+  </data>
+    <data name="InputKindInvalid" xml:space="preserve">
+    <value>تربیتی ان پٹ کی قسم پہچانی نہیں گئی۔</value>
+  </data>
+    <data name="OutputsRequired" xml:space="preserve">
+    <value>کم از کم ایک آؤٹ پٹ قدر درکار ہے۔</value>
+  </data>
+    <data name="OutputsLengthMismatch" xml:space="preserve">
+    <value>ہر ان پٹ قطار کے لیے ٹھیک ایک آؤٹ پٹ ہونا چاہیے۔</value>
+  </data>
+    <data name="OutputsNotFinite" xml:space="preserve">
+    <value>ہر آؤٹ پٹ ایک محدود عدد ہونا چاہیے۔</value>
+  </data>
+    <data name="ClustersInvalid" xml:space="preserve">
+    <value>clusters کی تعداد کم از کم 1 اور قطاروں کی تعداد سے زیادہ نہیں ہونی چاہیے۔</value>
+  </data>
+    <data name="VarianceThresholdInvalid" xml:space="preserve">
+    <value>تغیر کی حد لازماً 0 سے زیادہ اور زیادہ سے زیادہ 1 ہونی چاہیے۔</value>
+  </data>
+    <data name="MaximumComponentsInvalid" xml:space="preserve">
+    <value>components کی زیادہ سے زیادہ تعداد کم از کم 1 ہونی چاہیے۔</value>
+  </data>
+    <data name="ComponentsInvalid" xml:space="preserve">
+    <value>components کی تعداد کم از کم 1 اور قطاروں کی تعداد سے زیادہ نہیں ہونی چاہیے۔</value>
+  </data>
+    <data name="LabelsRequired" xml:space="preserve">
+    <value>کم از کم ایک لیبل درکار ہے، ہر ان پٹ قطار کے لیے ایک۔</value>
+  </data>
+    <data name="LabelsBothClassesRequired" xml:space="preserve">
+    <value>لیبلز میں دونوں classes موجود ہونی چاہییں۔</value>
+  </data>
+    <data name="HiddenUnitsInvalid" xml:space="preserve">
+    <value>پوشیدہ یونٹس کی تعداد کم از کم 1 اور {0} سے زیادہ نہیں ہونی چاہیے۔</value>
+  </data>
+    <data name="EpochsInvalid" xml:space="preserve">
+    <value>epochs کی تعداد کم از کم 1 اور {0} سے زیادہ نہیں ہونی چاہیے۔</value>
+  </data>
+    <data name="LearningRateInvalid" xml:space="preserve">
+    <value>سیکھنے کی شرح محدود اور مثبت ہونی چاہیے۔</value>
+  </data>
+    <data name="TreeCountInvalid" xml:space="preserve">
+    <value>درختوں کی تعداد کم از کم 1 ہونی چاہیے۔</value>
+  </data>
+    <data name="MaxDepthInvalid" xml:space="preserve">
+    <value>زیادہ سے زیادہ گہرائی کم از کم 1 ہونی چاہیے۔</value>
+  </data>
+    <data name="MinLeafSizeInvalid" xml:space="preserve">
+    <value>leaf کا کم از کم سائز کم از کم 1 ہونا چاہیے۔</value>
+  </data>
+    <data name="FeatureFractionInvalid" xml:space="preserve">
+    <value>feature کا حصہ 0 (مربع جذر ڈیفالٹ) اور 1 کے درمیان ہونا چاہیے۔</value>
+  </data>
+    <data name="SampleFractionInvalid" xml:space="preserve">
+    <value>نمونے کا حصہ 0 سے زیادہ اور زیادہ سے زیادہ 1 ہونا چاہیے۔</value>
+  </data>
+    <data name="DecisionThresholdInvalid" xml:space="preserve">
+    <value>فیصلے کی حد لازماً 0 اور 1 کے درمیان ہونی چاہیے۔</value>
+  </data>
+    <data name="MinimumLeafSizeInvalid" xml:space="preserve">
+    <value>leaf کا کم از کم سائز کم از کم 1 ہونا چاہیے۔</value>
+  </data>
+    <data name="VarianceRegularisationInvalid" xml:space="preserve">
+    <value>تغیر کی regularisation محدود اور غیر منفی ہونی چاہیے۔</value>
+  </data>
+    <data name="NeighbourCountInvalid" xml:space="preserve">
+    <value>ہمسایوں کی تعداد کم از کم 1 اور تربیتی قطاروں کی تعداد سے زیادہ نہیں ہونی چاہیے۔</value>
+  </data>
+    <data name="SmoothingInvalid" xml:space="preserve">
+    <value>smoothing کا مستقلہ محدود اور غیر منفی ہونا چاہیے۔</value>
+  </data>
+    <data name="ComplexityInvalid" xml:space="preserve">
+    <value>پیچیدگی محدود اور لازماً مثبت ہونی چاہیے۔</value>
+  </data>
+    <data name="KernelInvalid" xml:space="preserve">
+    <value>kernel تسلیم شدہ kernel فنکشنز میں سے ایک ہونا چاہیے۔</value>
+  </data>
+    <data name="GammaInvalid" xml:space="preserve">
+    <value>gamma پیرامیٹر محدود اور غیر منفی ہونا چاہیے۔</value>
+  </data>
+    <data name="DegreeInvalid" xml:space="preserve">
+    <value>کثیر رقمی کا درجہ کم از کم 1 ہونا چاہیے۔</value>
+  </data>
+    <data name="SubsampleSizeInvalid" xml:space="preserve">
+    <value>ذیلی نمونے کا سائز کم از کم 2 ہونا چاہیے۔</value>
+  </data>
+    <data name="NuInvalid" xml:space="preserve">
+    <value>Nu محدود اور لازماً 0 اور 1 کے درمیان ہونا چاہیے۔</value>
+  </data>
+    <data name="BatchSizeInvalid" xml:space="preserve">
+    <value>batch کا سائز کم از کم 1 اور تربیتی قطاروں کی تعداد سے زیادہ نہیں ہونا چاہیے۔</value>
+  </data>
+    <data name="InitializationBatchSizeInvalid" xml:space="preserve">
+    <value>ابتدائی batch کا سائز، اگر دیا جائے، کم از کم clusters کی تعداد کے برابر ہونا چاہیے۔</value>
+  </data>
+    <data name="NumberOfInitializationsInvalid" xml:space="preserve">
+    <value>ابتدائی کاری کی تعداد کم از کم 1 ہونی چاہیے۔</value>
+  </data>
+    <data name="BandwidthInvalid" xml:space="preserve">
+    <value>bandwidth محدود اور صفر سے زیادہ ہونی چاہیے۔</value>
+  </data>
+    <data name="MaxNeighboursInvalid" xml:space="preserve">
+    <value>ہمسایوں کی زیادہ سے زیادہ تعداد منفی نہیں ہونی چاہیے۔</value>
+  </data>
+</root>

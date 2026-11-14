@@ -58,6 +58,8 @@ namespace Jube.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
 
         public static IReadOnlyList<int> RequiredPermissions => permissions;
 
+        public int ApprovalsRequired { get; set; } = 1;
+
         public static Task<EntityAnalysisModelActivationRuleOverrideQueryService> CreateAsync(DbContext dbContext,
             string? userName,
             ILog log, IStringLocalizerFactory stringLocalizerFactory, IServiceChangeBus serviceChangeBus,
@@ -142,7 +144,7 @@ namespace Jube.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery
 
                 var dtos = EntityAnalysisModelActivationRuleOverrideQueryMapper.ToDto(await query
                     .ExecuteAsync(entityAnalysisModelGuid, overrideKey ?? string.Empty,
-                        overrideKeyValue ?? string.Empty, token)
+                        overrideKeyValue ?? string.Empty, ApprovalsRequired, token)
                     .ConfigureAwait(false));
                 op.Rows(dtos.Count);
 

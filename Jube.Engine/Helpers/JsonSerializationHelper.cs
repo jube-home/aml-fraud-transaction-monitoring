@@ -14,6 +14,7 @@
 namespace Jube.Engine.Helpers
 {
     using System;
+    using Accord.Neuro;
     using Dictionary.Serialization;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
@@ -47,6 +48,7 @@ namespace Jube.Engine.Helpers
                 return new JsonSerializerSettings
                 {
                     TypeNameHandling = TypeNameHandling.Auto,
+                    SerializationBinder = new AnchoredAssemblySerializationBinder(typeof(ActivationNetwork)),
                     ContractResolver = defaultContractResolver
                 };
             }
@@ -60,6 +62,7 @@ namespace Jube.Engine.Helpers
                 {
                     TypeNameHandling = TypeNameHandling.Auto,
                     MetadataPropertyHandling = MetadataPropertyHandling.ReadAhead,
+                    SerializationBinder = new AnchoredAssemblySerializationBinder(typeof(ActivationNetwork)),
                     ContractResolver = defaultContractResolver
                 };
 

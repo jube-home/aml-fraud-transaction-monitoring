@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>You do not have permission to perform this action.</value>
+  </data>
+    <data name="SqlPermissionDenied" xml:space="preserve">
+    <value>You do not have permission to author SQL validators.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>You must be signed in to a tenant to perform this action.</value>
+  </data>
+    <data name="NotFound" xml:space="preserve">
+    <value>The validator was not found.</value>
+  </data>
+    <data name="CaseWorkflowFormGuidRequired" xml:space="preserve">
+    <value>The form is required.</value>
+  </data>
+    <data name="CaseWorkflowFormNotFound" xml:space="preserve">
+    <value>The form was not found.</value>
+  </data>
+    <data name="NameRequired" xml:space="preserve">
+    <value>A name is required.</value>
+  </data>
+    <data name="NameTooLong" xml:space="preserve">
+    <value>The name is longer than 100 characters.</value>
+  </data>
+    <data name="FieldNameRequired" xml:space="preserve">
+    <value>The field name is required.</value>
+  </data>
+    <data name="FieldNameInvalid" xml:space="preserve">
+    <value>The field name must start with a letter and use only letters, digits and underscores.</value>
+  </data>
+    <data name="FieldNotInForm" xml:space="preserve">
+    <value>The form template has no field with that name.</value>
+  </data>
+    <data name="KindInvalid" xml:space="preserve">
+    <value>The kind of rule is not one of the kinds offered.</value>
+  </data>
+    <data name="ArgumentRequired" xml:space="preserve">
+    <value>This kind of rule needs a value in {0}.</value>
+  </data>
+    <data name="ArgumentNumber" xml:space="preserve">
+    <value>{0} must be a number.</value>
+  </data>
+    <data name="ArgumentWholeNumber" xml:space="preserve">
+    <value>{0} must be a whole number of zero or more.</value>
+  </data>
+    <data name="ArgumentRange" xml:space="preserve">
+    <value>The minimum is greater than the maximum.</value>
+  </data>
+    <data name="ArgumentOneNeeded" xml:space="preserve">
+    <value>Give a minimum, a maximum or both.</value>
+  </data>
+    <data name="ArgumentRelation" xml:space="preserve">
+    <value>The relation must be one of eq, ne, lt, le, gt or ge.</value>
+  </data>
+    <data name="PatternInvalid" xml:space="preserve">
+    <value>The pattern is not a valid regular expression.</value>
+  </data>
+    <data name="ArgumentTooLong" xml:space="preserve">
+    <value>{0} is longer than the limit of {1} characters.</value>
+  </data>
+    <data name="OtherFieldNotInForm" xml:space="preserve">
+    <value>The form template has no field named {0}.</value>
+  </data>
+    <data name="KindNotForField" xml:space="preserve">
+    <value>That kind of rule does not apply to the type of that field.</value>
+  </data>
+    <data name="ListNotFound" xml:space="preserve">
+    <value>The model has no list with that name.</value>
+  </data>
+    <data name="DictionaryNotFound" xml:space="preserve">
+    <value>The model has no dictionary with that name.</value>
+  </data>
+    <data name="SqlRequired" xml:space="preserve">
+    <value>The SQL is required for this kind of rule.</value>
+  </data>
+    <data name="SqlTooLong" xml:space="preserve">
+    <value>The SQL is longer than 8,000 characters.</value>
+  </data>
+    <data name="SqlRejected" xml:space="preserve">
+    <value>The SQL was refused: {0}</value>
+  </data>
+    <data name="SqlParameterUnknown" xml:space="preserve">
+    <value>The SQL uses the parameter @{0}, which is neither a built-in parameter nor a field of the form.</value>
+  </data>
+    <data name="MessageTooLong" xml:space="preserve">
+    <value>The message is longer than 500 characters.</value>
+  </data>
+    <data name="TemplateInvalid" xml:space="preserve">
+    <value>The form template does not compile: {0}</value>
+  </data>
+</root>

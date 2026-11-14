@@ -1,0 +1,689 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                id="root"
+                xmlns="">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="EntityAnalysisModelTag.name" xml:space="preserve">
+        <value>Nom</value>
+    </data>
+    <data name="EntityAnalysisModelTag.active" xml:space="preserve">
+        <value>Actif</value>
+    </data>
+    <data name="EntityAnalysisModelTag.locked" xml:space="preserve">
+        <value>Verrouillé</value>
+    </data>
+    <data name="EntityAnalysisModelTag.id" xml:space="preserve">
+        <value>Identifiant</value>
+    </data>
+    <data name="EntityAnalysisModelTag.createdUser" xml:space="preserve">
+        <value>Créé par</value>
+    </data>
+    <data name="EntityAnalysisModelTag.createdDate" xml:space="preserve">
+        <value>Date de création</value>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedUser" xml:space="preserve">
+        <value>Modifié par</value>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedDate" xml:space="preserve">
+        <value>Date de modification</value>
+    </data>
+    <data name="EntityAnalysisModelTag.version" xml:space="preserve">
+        <value>Version</value>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedUser" xml:space="preserve">
+        <value>Supprimé par</value>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedDate" xml:space="preserve">
+        <value>Date de suppression</value>
+    </data>
+    <data name="EntityAnalysisModelTag.group.Identity" xml:space="preserve">
+        <value>Identité</value>
+    </data>
+    <data name="EntityAnalysisModelTag.group.Audit" xml:space="preserve">
+        <value>Audit</value>
+    </data>
+    <data name="EntityAnalysisModelTag.column.name" xml:space="preserve">
+        <value>Nom</value>
+    </data>
+    <data name="EntityAnalysisModelTag.column.active" xml:space="preserve">
+        <value>Actif</value>
+    </data>
+    <data name="option.IntervalUnit.Second" xml:space="preserve">
+        <value>Secondes</value>
+    </data>
+    <data name="option.IntervalUnit.Minute" xml:space="preserve">
+        <value>Minutes</value>
+    </data>
+    <data name="option.IntervalUnit.Hour" xml:space="preserve">
+        <value>Heures</value>
+    </data>
+    <data name="option.IntervalUnit.Day" xml:space="preserve">
+        <value>Jours</value>
+    </data>
+    <data name="option.IntervalUnit.Month" xml:space="preserve">
+        <value>Mois</value>
+    </data>
+    <data name="option.IntervalUnit.Year" xml:space="preserve">
+        <value>Années</value>
+    </data>
+    <data name="option.NotificationType.Email" xml:space="preserve">
+        <value>E-mail</value>
+    </data>
+    <data name="option.NotificationType.Sms" xml:space="preserve">
+        <value>SMS</value>
+    </data>
+    <data name="EntityAnalysisModelTag.name.description" xml:space="preserve">
+        <value>Nom d'affichage de cette étiquette. Unique au sein du modèle (sans distinction des majuscules et minuscules). Fusionné dans la section des étiquettes de la charge utile d'archive pour l'EntityAnalysisModelEntityInstanceGuid correspondant.</value>
+        <comment>a46002d2</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.active.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, cette étiquette peut être appliquée à la charge utile d'archive.</value>
+        <comment>9ecf021f</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.locked.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, l'enregistrement de cette étiquette est verrouillé et ne peut être ni modifié ni supprimé.</value>
+        <comment>c427ac09</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.id.description" xml:space="preserve">
+        <value>Identifiant de ligne attribué par le serveur. Lecture seule.</value>
+        <comment>254b452e</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.createdUser.description" xml:space="preserve">
+        <value>Utilisateur qui a créé cette étiquette. Attribué par le serveur. Lecture seule.</value>
+        <comment>b8b7a648</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.createdDate.description" xml:space="preserve">
+        <value>Horodatage (UTC) de la création de cette étiquette. Attribué par le serveur. Lecture seule.</value>
+        <comment>2a046216</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedUser.description" xml:space="preserve">
+        <value>Utilisateur qui a modifié cette étiquette en dernier. Attribué par le serveur. Lecture seule.</value>
+        <comment>692dc498</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.updatedDate.description" xml:space="preserve">
+        <value>Horodatage (UTC) de la dernière modification de cette étiquette. Attribué par le serveur. Lecture seule.</value>
+        <comment>b845bd79</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.version.description" xml:space="preserve">
+        <value>Numéro de version pour le contrôle de concurrence optimiste, attribué par le serveur et incrémenté à chaque modification. Lecture seule.</value>
+        <comment>937d398b</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedUser.description" xml:space="preserve">
+        <value>Utilisateur qui a supprimé cette étiquette, en cas de suppression logique. Attribué par le serveur. Lecture seule.</value>
+        <comment>2e8d7efb</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.deletedDate.description" xml:space="preserve">
+        <value>Horodatage (UTC) de la suppression logique de cette étiquette, le cas échéant. Attribué par le serveur. Lecture seule.</value>
+        <comment>68166826</comment>
+    </data>
+    <data name="EntityAnalysisModelTag.name.placeholder" xml:space="preserve">
+        <value>p. ex. Vérifié par la conformité</value>
+        <comment>2ebb83c4</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.name" xml:space="preserve">
+        <value>Nom</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.name.description" xml:space="preserve">
+        <value>Nom sous lequel les règles lisent l'entité, sous la forme Graph.{Nom}, par exemple AccountId ou Payee. Lettres et chiffres uniquement, en commençant par une lettre ; unique au sein du modèle.</value>
+        <comment>4a7fc4f0</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.name.placeholder" xml:space="preserve">
+        <value>p. ex. Payee</value>
+        <comment>81ff940b</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.name" xml:space="preserve">
+        <value>Nom</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.active" xml:space="preserve">
+        <value>Actif</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.active.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, l'entité est rappelée depuis le graphe à chaque invocation du modèle.</value>
+        <comment>ba3c6a3d</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.active" xml:space="preserve">
+        <value>Actif</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.locked" xml:space="preserve">
+        <value>Verrouillé</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.locked.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, cette entité est verrouillée et ne peut être ni modifiée ni supprimée.</value>
+        <comment>17318987</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.requestXPathName" xml:space="preserve">
+        <value>Champ</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.requestXPathName.description" xml:space="preserve">
+        <value>Champ de requête de ce modèle, marqué Clé d'archive, dont la valeur identifie l'entité dans le graphe, tel que AccountId ou ToAccountId.</value>
+        <comment>af382e5f</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.requestXPathName" xml:space="preserve">
+        <value>Champ</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.nodeKey" xml:space="preserve">
+        <value>Clé de nœud</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.nodeKey.description" xml:space="preserve">
+        <value>Clé de nœud du graphe sous laquelle la valeur est classée lorsqu'elle diffère du nom du champ, comme le fait le To Node Key d'une définition d'arête : une valeur ToAccountId est classée comme un nœud AccountId. Laissez vide pour utiliser le nom du champ.</value>
+        <comment>49a08603</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.counterpartName" xml:space="preserve">
+        <value>Contrepartie</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.counterpartName.description" xml:space="preserve">
+        <value>Nom d'une autre entité de ce modèle à laquelle celle-ci est reliée pour les faits d'arête (nombre, montant, première occurrence) et la détection de ponts, par exemple une entité Payer reliée à son Payee. Les jointures sont explicites et jamais devinées ; laissez vide s'il n'y en a pas.</value>
+        <comment>60120df2</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.column.counterpartName" xml:space="preserve">
+        <value>Contrepartie</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.graphRegistryGuid" xml:space="preserve">
+        <value>Registre de graphe</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.graphRegistryGuid.description" xml:space="preserve">
+        <value>Registre de graphe dont les définitions d'arête délimitent les faits d'arête par rapport à la contrepartie. Laissez vide pour utiliser toutes les définitions actives du locataire.</value>
+        <comment>d48d9af2</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.responsePayload" xml:space="preserve">
+        <value>Charge utile de la réponse</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.responsePayload.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, l'objet entité est renvoyé dans le JSON de la réponse sous Graph. Exclusif avec la Clé d'archive : une entité est soit renvoyée, soit stockée, pas les deux.</value>
+        <comment>8648201c</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.reportTable" xml:space="preserve">
+        <value>Clé d'archive</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.reportTable.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, l'objet entité est écrit dans le JSON d'archive pour le reporting et l'entraînement. Exclusif avec la Charge utile de la réponse.</value>
+        <comment>87f888f3</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdDate" xml:space="preserve">
+        <value>Date de création</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdDate.description" xml:space="preserve">
+        <value>Horodatage de création attribué par le serveur. Lecture seule.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdUser" xml:space="preserve">
+        <value>Créé par</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.createdUser.description" xml:space="preserve">
+        <value>Utilisateur ayant créé cette ligne, attribué par le serveur. Lecture seule.</value>
+        <comment>c7492dc3</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedUser" xml:space="preserve">
+        <value>Modifié par</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedUser.description" xml:space="preserve">
+        <value>Utilisateur ayant modifié cette ligne en dernier, attribué par le serveur. Lecture seule.</value>
+        <comment>dfe8daba</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedDate" xml:space="preserve">
+        <value>Date de modification</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.updatedDate.description" xml:space="preserve">
+        <value>Horodatage de la dernière modification, attribué par le serveur. Lecture seule.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.version" xml:space="preserve">
+        <value>Version</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.version.description" xml:space="preserve">
+        <value>Numéro de version attribué par le serveur, incrémenté à chaque modification. Lecture seule.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Identity" xml:space="preserve">
+        <value>Identité</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Entity" xml:space="preserve">
+        <value>Entité</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Output" xml:space="preserve">
+        <value>Sortie</value>
+    </data>
+    <data name="EntityAnalysisModelGraphRecall.group.Audit" xml:space="preserve">
+        <value>Audit</value>
+    </data>
+    <data name="EntityAnalysisModel.hub.Network" xml:space="preserve">
+        <value>Réseau</value>
+    </data>
+    <data name="EntityAnalysisModel.child.EntityAnalysisModelGraphRecall" xml:space="preserve">
+        <value>Rappel de graphe</value>
+    </data>
+    <data name="CaseWorkflowXPath.sourceGuid" xml:space="preserve">
+        <value>Champ source</value>
+    </data>
+    <data name="CaseWorkflowXPath.sourceGuid.description" xml:space="preserve">
+        <value>Champ du modèle lu par l'extraction, choisi parmi les XPath de requête, les fonctions intégrées, les règles d'abstraction, les calculs d'abstraction, les compteurs TTL, les adaptations HTTP et les règles d'activation du modèle du flux de travail (le modèle lui-même représente sa clé d'entrée). Le chemin JSON, la clé d'archive et le type de données en découlent, et l'extraction peut être explorée en détail précisément lorsque le champ est marqué Clé d'archive.</value>
+        <comment>9af5ba6a</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.name" xml:space="preserve">
+        <value>Nom</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.name.description" xml:space="preserve">
+        <value>Nom d'entrée sous lequel les règles lisent l'enregistrement d'intelligence IP, sous la forme Svirfd.{Nom}.{Composante}, par exemple Svirfd.Customer.Privacy.Vpn. Lettres et chiffres uniquement, en commençant par une lettre ; unique au sein du modèle.</value>
+        <comment>26ee861d</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.name.placeholder" xml:space="preserve">
+        <value>p. ex. Customer</value>
+        <comment>d4f90c87</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.active" xml:space="preserve">
+        <value>Actif</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.active.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, l'adresse est recherchée à chaque invocation du modèle.</value>
+        <comment>a03783be</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.locked" xml:space="preserve">
+        <value>Verrouillé</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.locked.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, cette entrée est verrouillée et ne peut être ni modifiée ni supprimée.</value>
+        <comment>d3777afa</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.requestXPathName" xml:space="preserve">
+        <value>Champ</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.requestXPathName.description" xml:space="preserve">
+        <value>Champ de requête de ce modèle, de type de données IP, dont la valeur est l'adresse recherchée.</value>
+        <comment>bfb592ae</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.responsePayload" xml:space="preserve">
+        <value>Charge utile de la réponse</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.responsePayload.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, l'enregistrement d'intelligence IP complet est renvoyé dans le JSON de la réponse sous Svirfd.</value>
+        <comment>bd6e75d5</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.reportTable" xml:space="preserve">
+        <value>Archive</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.reportTable.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, l'enregistrement est écrit dans le JSON d'archive pour le reporting, l'entraînement et le journal du dossier, qui le compare à une nouvelle recherche pour montrer la dérive.</value>
+        <comment>08bbf83a</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.narrative" xml:space="preserve">
+        <value>Narration</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.narrative.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, la narration en langage courant est ajoutée à l'enregistrement, de sorte qu'elle est renvoyée dans la réponse et archivée avec lui. Désactivez pour ne conserver que les données dans l'enregistrement.</value>
+        <comment>98a1314b</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdDate" xml:space="preserve">
+        <value>Date de création</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdDate.description" xml:space="preserve">
+        <value>Horodatage de création attribué par le serveur. Lecture seule.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdUser" xml:space="preserve">
+        <value>Créé par</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.createdUser.description" xml:space="preserve">
+        <value>Utilisateur ayant créé cette ligne, attribué par le serveur. Lecture seule.</value>
+        <comment>c7492dc3</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedUser" xml:space="preserve">
+        <value>Modifié par</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedUser.description" xml:space="preserve">
+        <value>Utilisateur ayant modifié cette ligne en dernier, attribué par le serveur. Lecture seule.</value>
+        <comment>dfe8daba</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedDate" xml:space="preserve">
+        <value>Date de modification</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.updatedDate.description" xml:space="preserve">
+        <value>Horodatage de la dernière modification, attribué par le serveur. Lecture seule.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.version" xml:space="preserve">
+        <value>Version</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.version.description" xml:space="preserve">
+        <value>Numéro de version attribué par le serveur, incrémenté à chaque modification. Lecture seule.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.column.name" xml:space="preserve">
+        <value>Nom</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.column.active" xml:space="preserve">
+        <value>Actif</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.column.requestXPathName" xml:space="preserve">
+        <value>Champ</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Identity" xml:space="preserve">
+        <value>Identité</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Field" xml:space="preserve">
+        <value>Champ</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Output" xml:space="preserve">
+        <value>Sortie</value>
+    </data>
+    <data name="EntityAnalysisModelSvirfd.group.Audit" xml:space="preserve">
+        <value>Audit</value>
+    </data>
+    <data name="EntityAnalysisModel.child.EntityAnalysisModelSvirfd" xml:space="preserve">
+        <value>Svirfd</value>
+    </data>
+    <data name="option.FieldDataType.Ip" xml:space="preserve">
+        <value>IP</value>
+    </data>
+    <data name="TenantRegistry.svirfdRemoteLookupsEnabled" xml:space="preserve">
+        <value>Recherches distantes Svirfd</value>
+    </data>
+    <data name="TenantRegistry.svirfdRemoteLookupsEnabled.description" xml:space="preserve">
+        <value>Commutateur de protection des données réservé au landlord. Lorsque la valeur est vraie (par défaut), le moteur peut envoyer les adresses IP présentes dans les transactions de ce locataire au service distant d'intelligence IP Svirfd (svirfd.com) pour des recherches. Lorsque la valeur est fausse, aucune recherche Svirfd distante n'est effectuée pour ce locataire : rien ne quitte l'installation, tandis que les recherches locales et dans l'annuaire de la base de données ne sont pas affectées.</value>
+        <comment>8c1916e8</comment>
+    </data>
+    <data name="TenantRegistry.group.DataProtection" xml:space="preserve">
+        <value>Protection des données</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationUrl" xml:space="preserve">
+        <value>URL de l'adaptation HTTP</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationTimeoutMilliseconds" xml:space="preserve">
+        <value>Délai d'expiration de l'adaptation HTTP (ms)</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationValidateSsl" xml:space="preserve">
+        <value>Valider le SSL de l'adaptation HTTP</value>
+    </data>
+    <data name="TenantRegistry.group.HttpAdaptation" xml:space="preserve">
+        <value>Adaptation HTTP</value>
+    </data>
+    <data name="TenantRegistry.httpAdaptationUrl.description" xml:space="preserve">
+        <value>Réservé au landlord. URL de base à laquelle sont ajoutés les points de terminaison d'adaptation HTTP de ce locataire. Laissez vide pour utiliser l'HttpAdaptationUrl valable pour toute l'installation. Doit être une URL https vers un hôte public, sans identifiants, chaîne de requête ni fragment.</value>
+        <comment>ee19d732</comment>
+    </data>
+    <data name="TenantRegistry.httpAdaptationTimeoutMilliseconds.description" xml:space="preserve">
+        <value>Réservé au landlord. Délai d'expiration en millisecondes des appels d'adaptation HTTP de ce locataire, compris entre 100 et 30000. Zéro applique l'HttpAdaptationTimeout valable pour toute l'installation.</value>
+        <comment>f8d39b15</comment>
+    </data>
+    <data name="TenantRegistry.httpAdaptationValidateSsl.description" xml:space="preserve">
+        <value>Réservé au landlord. Lorsque la valeur est vraie, le certificat TLS du point de terminaison d'adaptation HTTP de ce locataire est validé. S'applique uniquement lorsqu'une HttpAdaptationUrl est définie pour le locataire.</value>
+        <comment>2cf1b2e6</comment>
+    </data>
+    <data name="TenantRegistry.httpAdaptationUrl.placeholder" xml:space="preserve">
+        <value>https://scoring.example.com</value>
+        <comment>9591a0fb</comment>
+    </data>
+    <data name="TenantRegistry.name.description" xml:space="preserve">
+        <value>Nom d'affichage du locataire, affiché dans le sélecteur de locataire et dans Administration &gt; Sécurité &gt; Locataires. Unique parmi tous les locataires de l'installation (cette table n'a pas de portée parente propre au sein de laquelle être unique).</value>
+        <comment>9a55131b</comment>
+    </data>
+    <data name="TenantRegistry.name.placeholder" xml:space="preserve">
+        <value>p. ex. Acme Bank</value>
+        <comment>c18a9b46</comment>
+    </data>
+    <data name="TenantRegistry.active.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, le locataire est disponible (p. ex. sélectionnable via le sélecteur de locataire).</value>
+        <comment>81029c1e</comment>
+    </data>
+    <data name="TenantRegistry.locked.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, le locataire est verrouillé en lecture seule et ne peut être ni modifié ni supprimé.</value>
+        <comment>01ae7e98</comment>
+    </data>
+    <data name="TenantRegistry.createdDate.description" xml:space="preserve">
+        <value>Horodatage de création attribué par le serveur. Lecture seule.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="TenantRegistry.createdUser.description" xml:space="preserve">
+        <value>Utilisateur ayant créé ce locataire, attribué par le serveur. Lecture seule.</value>
+        <comment>8352b7ce</comment>
+    </data>
+    <data name="TenantRegistry.updatedUser.description" xml:space="preserve">
+        <value>Utilisateur ayant le plus récemment mis à jour ce locataire, attribué par le serveur. Lecture seule.</value>
+        <comment>6fe961d0</comment>
+    </data>
+    <data name="TenantRegistry.updatedDate.description" xml:space="preserve">
+        <value>Horodatage de la mise à jour la plus récente, attribué par le serveur. Lecture seule.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="TenantRegistry.version.description" xml:space="preserve">
+        <value>Numéro de version attribué par le serveur, incrémenté à chaque mise à jour. Lecture seule.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="RoleRegistry.name.description" xml:space="preserve">
+        <value>Nom d'affichage du rôle, montré aux administrateurs lors de l'attribution de permissions ou d'utilisateurs. Unique au sein du locataire (sans distinction des majuscules et minuscules).</value>
+        <comment>31293430</comment>
+    </data>
+    <data name="RoleRegistry.name.placeholder" xml:space="preserve">
+        <value>p. ex. Analyste fraude</value>
+        <comment>07225315</comment>
+    </data>
+    <data name="RoleRegistry.active.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, le rôle peut être attribué à un utilisateur ou à un modèle.</value>
+        <comment>bd788127</comment>
+    </data>
+    <data name="RoleRegistry.locked.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, le rôle est verrouillé en lecture seule et ne peut être ni modifié ni supprimé.</value>
+        <comment>5ae0abde</comment>
+    </data>
+    <data name="RoleRegistry.createdDate.description" xml:space="preserve">
+        <value>Horodatage de création attribué par le serveur. Lecture seule.</value>
+        <comment>3899358c</comment>
+    </data>
+    <data name="RoleRegistry.createdUser.description" xml:space="preserve">
+        <value>Utilisateur ayant créé ce rôle, attribué par le serveur. Lecture seule.</value>
+        <comment>8ec04d32</comment>
+    </data>
+    <data name="RoleRegistry.updatedUser.description" xml:space="preserve">
+        <value>Utilisateur ayant le plus récemment mis à jour ce rôle, attribué par le serveur. Lecture seule.</value>
+        <comment>fb01581b</comment>
+    </data>
+    <data name="RoleRegistry.updatedDate.description" xml:space="preserve">
+        <value>Horodatage de la mise à jour la plus récente, attribué par le serveur. Lecture seule.</value>
+        <comment>1dd470bb</comment>
+    </data>
+    <data name="RoleRegistry.version.description" xml:space="preserve">
+        <value>Numéro de version attribué par le serveur, incrémenté à chaque mise à jour. Lecture seule.</value>
+        <comment>da32c3e6</comment>
+    </data>
+    <data name="RoleRegistryPermission.permissionSpecificationId.description" xml:space="preserve">
+        <value>Identifiant de la spécification de permission accordée au rôle -- le même littéral entier que celui sur lequel est codée en dur la vérification de permission de chaque service. Doit référencer une ligne existante du catalogue des spécifications de permission.</value>
+        <comment>a04fe2e8</comment>
+    </data>
+    <data name="RoleRegistryPermission.active.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, cette attribution de permission est appliquée. Lorsqu'elle est fausse, elle est ignorée et le rôle ne reçoit pas la permission.</value>
+        <comment>f16785e0</comment>
+    </data>
+    <data name="RoleRegistryPermission.locked.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, cette attribution est verrouillée et ne peut être ni modifiée ni supprimée.</value>
+        <comment>51b4242c</comment>
+    </data>
+    <data name="RoleRegistryPermission.createdUser.description" xml:space="preserve">
+        <value>Utilisateur ayant créé cette ligne. Attribué par le serveur. Lecture seule.</value>
+        <comment>3b8cd8cf</comment>
+    </data>
+    <data name="RoleRegistryPermission.createdDate.description" xml:space="preserve">
+        <value>Horodatage (UTC) de création de cette ligne. Attribué par le serveur. Lecture seule.</value>
+        <comment>bb91d7cb</comment>
+    </data>
+    <data name="RoleRegistryPermission.updatedUser.description" xml:space="preserve">
+        <value>Utilisateur ayant mis à jour cette ligne en dernier. Attribué par le serveur. Lecture seule.</value>
+        <comment>eeb46a72</comment>
+    </data>
+    <data name="RoleRegistryPermission.updatedDate.description" xml:space="preserve">
+        <value>Horodatage (UTC) de la dernière mise à jour de cette ligne. Attribué par le serveur. Lecture seule.</value>
+        <comment>666366bf</comment>
+    </data>
+    <data name="RoleRegistryPermission.version.description" xml:space="preserve">
+        <value>Numéro de version de concurrence optimiste attribué par le serveur. Lecture seule.</value>
+        <comment>755d4fe7</comment>
+    </data>
+    <data name="PermissionSpecification.id.description" xml:space="preserve">
+        <value>Identifiant entier de cette spécification de permission, attribué par le serveur -- le même littéral entier que celui sur lequel sont codées en dur les vérifications de permission de chaque service. Lecture seule : le catalogue est alimenté par migration de base de données, et non créé ou modifié via cette API.</value>
+        <comment>d881018b</comment>
+    </data>
+    <data name="PermissionSpecification.name.description" xml:space="preserve">
+        <value>Nom d'affichage de la spécification de permission, montré dans la liste déroulante des permissions lors de l'attribution des permissions d'un rôle. Lecture seule : le catalogue est alimenté par migration de base de données, et non créé ou modifié via cette API.</value>
+        <comment>cda60556</comment>
+    </data>
+    <data name="UserRegistry.name.description" xml:space="preserve">
+        <value>Nom de connexion de l'utilisateur, correspondant à la revendication Name du jeton JSON Web Token émis à l'authentification. Unique au sein du locataire.</value>
+        <comment>1114b6a1</comment>
+    </data>
+    <data name="UserRegistry.roleRegistryGuid.description" xml:space="preserve">
+        <value>Identifiant du registre de rôles auquel cet utilisateur est affecté. Détermine le locataire de l'utilisateur et les permissions qu'il détient.</value>
+        <comment>f99c9842</comment>
+    </data>
+    <data name="UserRegistry.email.description" xml:space="preserve">
+        <value>Adresse e-mail de l'utilisateur, utilisée pour identifier le titulaire du compte. Non utilisée pour remettre le mot de passe temporaire, qui est renvoyé une seule fois à l'appelant qui le réinitialise.</value>
+        <comment>2767b97d</comment>
+    </data>
+    <data name="UserRegistry.email.placeholder" xml:space="preserve">
+        <value>nom@exemple.fr</value>
+        <comment>7b17fb0b</comment>
+    </data>
+    <data name="UserRegistry.wirePasswordHash.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, un mot de passe temporaire émis par l'action de réinitialisation est en outre salé avec le Name de l'utilisateur et haché en SHA-256 avant le hachage Argon2 (le format de mot de passe « wire » attendu par certaines intégrations clientes). Ne change pas l'affichage du mot de passe pour l'appelant qui effectue la réinitialisation.</value>
+        <comment>13612f72</comment>
+    </data>
+    <data name="UserRegistry.passwordLocked.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, le compte est verrouillé après des tentatives de mot de passe échouées répétées et ne peut plus s'authentifier tant qu'une réinitialisation de mot de passe n'a pas levé le verrou. Lecture seule ici ; levé uniquement par l'action de réinitialisation du mot de passe.</value>
+        <comment>6c727df1</comment>
+    </data>
+    <data name="UserRegistry.id.description" xml:space="preserve">
+        <value>Identifiant de ligne attribué par le serveur. Lecture seule.</value>
+        <comment>254b452e</comment>
+    </data>
+    <data name="UserRegistry.createdUser.description" xml:space="preserve">
+        <value>Utilisateur ayant créé ce compte. Attribué par le serveur. Lecture seule.</value>
+        <comment>7eb019f3</comment>
+    </data>
+    <data name="UserRegistry.createdDate.description" xml:space="preserve">
+        <value>Horodatage (UTC) de création de ce compte. Attribué par le serveur. Lecture seule.</value>
+        <comment>2c31adef</comment>
+    </data>
+    <data name="UserRegistry.version.description" xml:space="preserve">
+        <value>Numéro de version de concurrence optimiste attribué par le serveur, incrémenté à chaque mise à jour. Lecture seule.</value>
+        <comment>937d398b</comment>
+    </data>
+    <data name="UserRegistry.inheritedId.description" xml:space="preserve">
+        <value>Identifiant repris d'une importation de préservation de la ligne d'une installation précédente, si ce compte en provient. Non renseigné ni utilisé autrement. Lecture seule.</value>
+        <comment>cacf7d8d</comment>
+    </data>
+    <data name="UserRegistry.active.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, l'utilisateur peut s'authentifier. Lorsqu'elle est fausse, la connexion est refusée quelle que soit l'exactitude du mot de passe.</value>
+        <comment>13f02082</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.name.description" xml:space="preserve">
+        <value>Nom du compteur OpenTelemetry incrémenté à chaque correspondance, p. ex. "jube.logcounter.postgres_deadlock". Unique parmi les lignes actives, sans distinction des majuscules et minuscules. Lettres, chiffres, '.', '_' et '-' uniquement, conformément aux conventions de nommage des instruments OpenTelemetry.</value>
+        <comment>49fd6ad9</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.name.placeholder" xml:space="preserve">
+        <value>jube.logcounter.postgres_deadlock</value>
+        <comment>415927e2</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.regex.description" xml:space="preserve">
+        <value>Expression régulière .NET vérifiée sur chaque ligne ou message de journal non structuré parvenant à cette instance (ApplicationLogEntry, PostgresLogEntry, ContainerLogEntry, RespSlowOperation, EtcdClusterEvent, PatroniClusterEvent). Chaque correspondance incrémente Name de un. Doit compiler -- validé à l'enregistrement, non à la correspondance. La correspondance s'exécute en temps linéaire lorsque le motif le permet ; les motifs utilisant des assertions de position, des références arrière ou des groupes atomiques basculent vers un moteur à retour arrière limité à 100 ms par ligne, et une règle qui dépasse le délai sur cinq lignes consécutives est suspendue jusqu'à la prochaine actualisation d'une minute.</value>
+        <comment>dfb2a18d</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.regex.placeholder" xml:space="preserve">
+        <value>deadlock detected</value>
+        <comment>5561729c</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.active.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, cette règle est vérifiée sur les lignes de journal entrantes. Lorsqu'elle est fausse, elle est ignorée (et son compteur cesse simplement de s'incrémenter -- la ligne n'est pas supprimée).</value>
+        <comment>d7167dd5</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.locked.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, cette ligne est verrouillée et ne peut être ni modifiée ni supprimée.</value>
+        <comment>c9f595ac</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.createdUser.description" xml:space="preserve">
+        <value>Utilisateur ayant créé cette ligne. Attribué par le serveur. Lecture seule.</value>
+        <comment>3b8cd8cf</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.createdDate.description" xml:space="preserve">
+        <value>Horodatage (UTC) de création de cette ligne. Attribué par le serveur. Lecture seule.</value>
+        <comment>bb91d7cb</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.updatedUser.description" xml:space="preserve">
+        <value>Utilisateur ayant mis à jour cette ligne en dernier. Attribué par le serveur. Lecture seule.</value>
+        <comment>eeb46a72</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.updatedDate.description" xml:space="preserve">
+        <value>Horodatage (UTC) de la dernière mise à jour de cette ligne. Attribué par le serveur. Lecture seule.</value>
+        <comment>666366bf</comment>
+    </data>
+    <data name="OpenTelemetryLogCounter.version.description" xml:space="preserve">
+        <value>Numéro de version de concurrence optimiste attribué par le serveur. Lecture seule.</value>
+        <comment>755d4fe7</comment>
+    </data>
+    <data name="OpenTelemetryExclude.name.description" xml:space="preserve">
+        <value>Nom exact de l'instrument ou du compteur OpenTelemetry dont l'export doit cesser, p. ex. "jube.engine.logs.warn.count". Comparé en entier, sans distinction des majuscules et minuscules -- pas de jokers. Lettres, chiffres, '.', '_', '/' et '-' uniquement. Unique parmi les lignes actives. S'applique à tous les instruments, y compris ceux que OpenTelemetryLogCounter crée dynamiquement : un nom exclu n'y est même jamais créé et ne commence donc jamais à s'incrémenter. Pour tout autre compteur nommé préexistant, cela ne prend effet que pour un instrument qui n'exporte pas encore activement -- un instrument qui exporte déjà continue jusqu'au redémarrage du processus.</value>
+        <comment>7e24ca9e</comment>
+    </data>
+    <data name="OpenTelemetryExclude.name.placeholder" xml:space="preserve">
+        <value>jube.engine.logs.warn.count</value>
+        <comment>2ddc8a48</comment>
+    </data>
+    <data name="OpenTelemetryExclude.active.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, cette exclusion est appliquée. Lorsqu'elle est fausse, elle est ignorée (l'instrument est exporté normalement, sous réserve de toute autre exclusion).</value>
+        <comment>7d0dc62e</comment>
+    </data>
+    <data name="OpenTelemetryExclude.locked.description" xml:space="preserve">
+        <value>Lorsque la valeur est vraie, cette ligne est verrouillée et ne peut être ni modifiée ni supprimée.</value>
+        <comment>c9f595ac</comment>
+    </data>
+    <data name="OpenTelemetryExclude.createdUser.description" xml:space="preserve">
+        <value>Utilisateur ayant créé cette ligne. Attribué par le serveur. Lecture seule.</value>
+        <comment>3b8cd8cf</comment>
+    </data>
+    <data name="OpenTelemetryExclude.createdDate.description" xml:space="preserve">
+        <value>Horodatage (UTC) de création de cette ligne. Attribué par le serveur. Lecture seule.</value>
+        <comment>bb91d7cb</comment>
+    </data>
+    <data name="OpenTelemetryExclude.updatedUser.description" xml:space="preserve">
+        <value>Utilisateur ayant mis à jour cette ligne en dernier. Attribué par le serveur. Lecture seule.</value>
+        <comment>eeb46a72</comment>
+    </data>
+    <data name="OpenTelemetryExclude.updatedDate.description" xml:space="preserve">
+        <value>Horodatage (UTC) de la dernière mise à jour de cette ligne. Attribué par le serveur. Lecture seule.</value>
+        <comment>666366bf</comment>
+    </data>
+    <data name="OpenTelemetryExclude.version.description" xml:space="preserve">
+        <value>Numéro de version de concurrence optimiste attribué par le serveur. Lecture seule.</value>
+        <comment>755d4fe7</comment>
+    </data>
+</root>

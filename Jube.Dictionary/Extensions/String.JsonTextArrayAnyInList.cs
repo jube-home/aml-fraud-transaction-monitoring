@@ -18,7 +18,10 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static bool JsonTextArrayAnyInList(this string? @this, string? path, IEnumerable<string>? list)
+        [Description("True when: the JSON text has an array at the path with a string element that is in the List token.")]
+        public static bool JsonTextArrayAnyInList(this string? @this,
+            [Description("The path to the array, for example $.tags.")] string? path,
+            [Description("The List token whose entries are looked for.")] IEnumerable<string>? list)
         {
             if (list is null)
             {

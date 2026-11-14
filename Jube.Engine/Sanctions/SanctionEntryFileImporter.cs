@@ -13,9 +13,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Text;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Jube.Data.Repository;
@@ -31,15 +30,33 @@ namespace Jube.Engine.Sanctions
 
     public static class SanctionEntryFileImporter
     {
-        public static async Task<SanctionEntryFileImportResult> ImportAsync(TextFieldParser tfp,
+        public const int MaximumRows = 5_000_000;
+        public const double MaximumRemovalRatio = 0.5;
+        public const int RemovalGuardMinimumActive = 100;
+
+        public static Task<SanctionEntryFileImportResult> ImportAsync(TextFieldParser tfp,
             int sanctionEntrySourceId, string multiPartStringIndex, int? referenceIndex, int skip,
             Func<SanctionEntryFileRecord, CancellationToken, Task> onRecordAsync,
             Func<SanctionEntryFileRejection, CancellationToken, Task> onRejectedAsync, ILog log,
             CancellationToken token = default)
         {
+            return ImportAsync(tfp, sanctionEntrySourceId, multiPartStringIndex, referenceIndex, skip,
+                SanctionEntryFileOptions.None, onRecordAsync, onRejectedAsync, log, token);
+        }
+
+        public static async Task<SanctionEntryFileImportResult> ImportAsync(TextFieldParser tfp,
+            int sanctionEntrySourceId, string multiPartStringIndex, int? referenceIndex, int skip,
+            SanctionEntryFileOptions options,
+            Func<SanctionEntryFileRecord, CancellationToken, Task> onRecordAsync,
+            Func<SanctionEntryFileRejection, CancellationToken, Task> onRejectedAsync, ILog log,
+            CancellationToken token = default)
+        {
+            options ??= SanctionEntryFileOptions.None;
+
             var seenHashes = new HashSet<string>();
             var totalRows = 0;
             var rejectedRows = 0;
+            var completed = true;
 
             try
             {
@@ -48,6 +65,14 @@ namespace Jube.Engine.Sanctions
 
                 while (!tfp.EndOfData)
                 {
+                    if (i > MaximumRows)
+                    {
+                        completed = false;
+                        log.Error($"Sanctions Loader: the file exceeds {MaximumRows} rows and was abandoned.");
+
+                        break;
+                    }
+
                     var isDataRow = i > skip;
                     var rejected = false;
 
@@ -63,7 +88,14 @@ namespace Jube.Engine.Sanctions
 
                         if (isDataRow)
                         {
-                            if (data is { Length: > 1 })
+                            if (data is { Length: > 1 } && !PassesFilter(data, options))
+                            {
+                                if (log.IsDebugEnabled)
+                                {
+                                    log.Debug($"Sanctions Loader: record {i} is filtered out by the source filter.");
+                                }
+                            }
+                            else if (data is { Length: > 1 })
                             {
                                 var record = BuildRecord(data, sanctionEntrySourceId, multiPartStringIndex,
                                     referenceIndex);
@@ -72,6 +104,13 @@ namespace Jube.Engine.Sanctions
                                 {
                                     seenHashes.Add(record.Hash);
                                     await onRecordAsync(record, token).ConfigureAwait(false);
+
+                                    foreach (var alias in BuildAliasRecords(data, sanctionEntrySourceId, record,
+                                                 options))
+                                    {
+                                        seenHashes.Add(alias.Hash);
+                                        await onRecordAsync(alias, token).ConfigureAwait(false);
+                                    }
                                 }
                                 else
                                 {
@@ -140,10 +179,11 @@ namespace Jube.Engine.Sanctions
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
+                completed = false;
                 log.Error($"ProcessTextFieldParser: has produced an error {ex}");
             }
 
-            return new SanctionEntryFileImportResult(seenHashes, totalRows, rejectedRows);
+            return new SanctionEntryFileImportResult(seenHashes, totalRows, rejectedRows, completed);
         }
 
         public static async Task<IReadOnlyCollection<SanctionEntry>> ReconcileRemovedAsync(
@@ -166,18 +206,26 @@ namespace Jube.Engine.Sanctions
 
             try
             {
-                var active = await repository
+                var active = (await repository
                     .GetActiveBySanctionEntrySourceIdAsync(sanctionEntrySourceId, token)
-                    .ConfigureAwait(false);
+                    .ConfigureAwait(false)).ToList();
 
-                foreach (var entry in active)
+                var missing = active.Where(entry => !currentHashes.Contains(entry.SanctionEntryHash)).ToList();
+
+                if (active.Count >= RemovalGuardMinimumActive && missing.Count > active.Count * MaximumRemovalRatio)
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn(
+                            $"Sanctions Loader: Skipped removal reconciliation for source {sanctionEntrySourceId} as it would remove {missing.Count} of {active.Count} active entries, over the {MaximumRemovalRatio:P0} safety limit. A truncated or wrong file is the likely cause; investigate before delisting.");
+                    }
+
+                    return removed;
+                }
+
+                foreach (var entry in missing)
                 {
                     token.ThrowIfCancellationRequested();
-
-                    if (currentHashes.Contains(entry.SanctionEntryHash))
-                    {
-                        continue;
-                    }
 
                     await repository.DeleteAsync(entry.Id, userName, token).ConfigureAwait(false);
                     removed.Add(entry);
@@ -199,16 +247,7 @@ namespace Jube.Engine.Sanctions
 
         public static string NormalizeElementValue(string raw)
         {
-            return raw
-                .Normalize(NormalizationForm.FormD)
-                .Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
-                .Aggregate(new StringBuilder(), (sb, c) => sb.Append(c))
-                .ToString()
-                .ToLowerInvariant()
-                .Replace("-", "")
-                .Replace(",", "")
-                .Replace(".", "")
-                .Replace("'", "");
+            return SanctionTextFolding.Spaced(raw);
         }
 
         private static Task RejectAsync(Func<SanctionEntryFileRejection, CancellationToken, Task> onRejectedAsync,
@@ -222,6 +261,50 @@ namespace Jube.Engine.Sanctions
             var rawData = data != null ? string.Join(',', data) : null;
 
             return onRejectedAsync(new SanctionEntryFileRejection(rowNumber, rawData, reasonId), token);
+        }
+
+        private static bool PassesFilter(string[] data, SanctionEntryFileOptions options)
+        {
+            if (options.FilterIndex is null || string.IsNullOrWhiteSpace(options.FilterValues))
+            {
+                return true;
+            }
+
+            if (options.FilterIndex.Value < 0 || options.FilterIndex.Value >= data.Length)
+            {
+                return false;
+            }
+
+            var value = data[options.FilterIndex.Value].Trim();
+
+            return options.FilterValues
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Any(v => string.Equals(v, value, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static IEnumerable<SanctionEntryFileRecord> BuildAliasRecords(string[] data, int sanctionEntrySourceId,
+            SanctionEntryFileRecord primary, SanctionEntryFileOptions options)
+        {
+            if (options.AliasIndex is null || options.AliasIndex.Value < 0 || options.AliasIndex.Value >= data.Length
+                || string.IsNullOrWhiteSpace(data[options.AliasIndex.Value]))
+            {
+                yield break;
+            }
+
+            var aliases = data[options.AliasIndex.Value]
+                .Split(options.Separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Distinct(StringComparer.Ordinal);
+
+            foreach (var alias in aliases)
+            {
+                if (string.Equals(alias, primary.ElementValue.Trim(), StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                yield return new SanctionEntryFileRecord(alias, primary.Reference,
+                    HashHelper.GetHash(sanctionEntrySourceId + alias + primary.Reference), primary.Payload);
+            }
         }
 
         private static SanctionEntryFileRecord BuildRecord(string[] data, int sanctionEntrySourceId,

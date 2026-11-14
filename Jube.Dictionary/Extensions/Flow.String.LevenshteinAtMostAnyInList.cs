@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
-            public Flow<string?> MatchLevenshteinAtMostAnyInList(IEnumerable<string> list, int distance)
+            [Description("True when: within the edit distance of any entry of the List token, whole string against whole string. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchLevenshteinAtMostAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int distance)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringLevenshteinAtMostAnyInList(flow.Value, list, distance));
             }
 
-            public Flow<string?> RejectLevenshteinAtMostAnyInList(IEnumerable<string> list, int distance)
+            [Description("True when: within the edit distance of any entry of the List token, whole string against whole string. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectLevenshteinAtMostAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int distance)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringLevenshteinAtMostAnyInList(flow.Value, list, distance));
             }
 
-            public Flow<string?> BreakLevenshteinAtMostAnyInList(IEnumerable<string> list, int distance)
+            [Description("True when: within the edit distance of any entry of the List token, whole string against whole string. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakLevenshteinAtMostAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int distance)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringLevenshteinAtMostAnyInList(flow.Value, list, distance));
             }
 
-            public Flow<string?> RequireLevenshteinAtMostAnyInList(IEnumerable<string> list, int distance)
+            [Description("True when: within the edit distance of any entry of the List token, whole string against whole string. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireLevenshteinAtMostAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int distance)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringLevenshteinAtMostAnyInList(flow.Value, list, distance));
             }
 
-            public Flow<string?> EnsureLevenshteinAtMostAnyInList(IEnumerable<string> list, int distance)
+            [Description("True when: within the edit distance of any entry of the List token, whole string against whole string. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureLevenshteinAtMostAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int distance)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
-            public Flow<string?> MatchLevenshteinAtMostAnyInList(IEnumerable<string> list, int distance)
+            [Description("Begins a pipeline from the value. True when: within the edit distance of any entry of the List token, whole string against whole string. Decides matched if so; otherwise continues.")]
+            public Flow<string?> MatchLevenshteinAtMostAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int distance)
             {
                 return value.Start().MatchLevenshteinAtMostAnyInList(list, distance);
             }
 
-            public Flow<string?> RejectLevenshteinAtMostAnyInList(IEnumerable<string> list, int distance)
+            [Description("Begins a pipeline from the value. True when: within the edit distance of any entry of the List token, whole string against whole string. Decides rejected if so; otherwise continues.")]
+            public Flow<string?> RejectLevenshteinAtMostAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int distance)
             {
                 return value.Start().RejectLevenshteinAtMostAnyInList(list, distance);
             }
 
-            public Flow<string?> BreakLevenshteinAtMostAnyInList(IEnumerable<string> list, int distance)
+            [Description("Begins a pipeline from the value. True when: within the edit distance of any entry of the List token, whole string against whole string. Decides broken if so; otherwise continues.")]
+            public Flow<string?> BreakLevenshteinAtMostAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int distance)
             {
                 return value.Start().BreakLevenshteinAtMostAnyInList(list, distance);
             }
 
-            public Flow<string?> RequireLevenshteinAtMostAnyInList(IEnumerable<string> list, int distance)
+            [Description("Begins a pipeline from the value. True when: within the edit distance of any entry of the List token, whole string against whole string. Continues if so; otherwise decides rejected.")]
+            public Flow<string?> RequireLevenshteinAtMostAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int distance)
             {
                 return value.Start().RequireLevenshteinAtMostAnyInList(list, distance);
             }
 
-            public Flow<string?> EnsureLevenshteinAtMostAnyInList(IEnumerable<string> list, int distance)
+            [Description("Begins a pipeline from the value. True when: within the edit distance of any entry of the List token, whole string against whole string. Continues if so; otherwise decides broken.")]
+            public Flow<string?> EnsureLevenshteinAtMostAnyInList([Description("The List token whose entries are compared.")] IEnumerable<string> list,
+                [Description("The most edits allowed.")] int distance)
             {
                 return value.Start().EnsureLevenshteinAtMostAnyInList(list, distance);
             }

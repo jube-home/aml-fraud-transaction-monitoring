@@ -12,6 +12,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(String s)
         {
+            [Description("HTML decodes a string.")]
             public String HtmlDecode()
             {
                 return HttpUtility.HtmlDecode(s);

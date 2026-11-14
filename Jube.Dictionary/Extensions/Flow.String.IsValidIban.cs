@@ -17,6 +17,7 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<string?> flow)
         {
+            [Description("True when: passes the IBAN checksum. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsValidIban()
             {
                 return flow.IsDecided
@@ -24,6 +25,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Match, FlowPredicates.StringIsValidIban(flow.Value));
             }
 
+            [Description("True when: passes the IBAN checksum. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsValidIban()
             {
                 return flow.IsDecided
@@ -31,6 +33,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Reject, FlowPredicates.StringIsValidIban(flow.Value));
             }
 
+            [Description("True when: passes the IBAN checksum. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsValidIban()
             {
                 return flow.IsDecided
@@ -38,6 +41,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Break, FlowPredicates.StringIsValidIban(flow.Value));
             }
 
+            [Description("True when: passes the IBAN checksum. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsValidIban()
             {
                 return flow.IsDecided
@@ -45,6 +49,7 @@ namespace Jube.Dictionary.Extensions
                     : flow.Apply(FlowKind.Require, FlowPredicates.StringIsValidIban(flow.Value));
             }
 
+            [Description("True when: passes the IBAN checksum. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsValidIban()
             {
                 return flow.IsDecided
@@ -55,26 +60,31 @@ namespace Jube.Dictionary.Extensions
 
         extension(string? value)
         {
+            [Description("Begins a pipeline from the value. True when: passes the IBAN checksum. Decides matched if so; otherwise continues.")]
             public Flow<string?> MatchIsValidIban()
             {
                 return value.Start().MatchIsValidIban();
             }
 
+            [Description("Begins a pipeline from the value. True when: passes the IBAN checksum. Decides rejected if so; otherwise continues.")]
             public Flow<string?> RejectIsValidIban()
             {
                 return value.Start().RejectIsValidIban();
             }
 
+            [Description("Begins a pipeline from the value. True when: passes the IBAN checksum. Decides broken if so; otherwise continues.")]
             public Flow<string?> BreakIsValidIban()
             {
                 return value.Start().BreakIsValidIban();
             }
 
+            [Description("Begins a pipeline from the value. True when: passes the IBAN checksum. Continues if so; otherwise decides rejected.")]
             public Flow<string?> RequireIsValidIban()
             {
                 return value.Start().RequireIsValidIban();
             }
 
+            [Description("Begins a pipeline from the value. True when: passes the IBAN checksum. Continues if so; otherwise decides broken.")]
             public Flow<string?> EnsureIsValidIban()
             {
                 return value.Start().EnsureIsValidIban();

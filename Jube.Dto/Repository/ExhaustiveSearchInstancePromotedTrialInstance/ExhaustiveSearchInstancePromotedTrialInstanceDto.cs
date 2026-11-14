@@ -14,6 +14,7 @@
 using System.ComponentModel;
 using Jube.Dto.Forms;
 using Jube.Dto.Interfaces;
+using MessagePack;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -22,12 +23,14 @@ using Jube.Dto.Interfaces;
 
 namespace Jube.Dto.Repository.ExhaustiveSearchInstancePromotedTrialInstance
 {
-    [FormEndpoint("ExhaustiveSearchInstancePromotedTrialInstance")]
+    [FormEndpoint("ExhaustiveSearchInstancePromotedTrialInstance", Operations = FormOperations.Update)]
     [FormKeys(Id = nameof(Id))]
     [FormGroup("Promotion", Order = 10)]
+    [MessagePackObject]
     public class ExhaustiveSearchInstancePromotedTrialInstanceDto : IActivatable
     {
         [Description("Server-assigned identifier of the promoted trial instance to toggle. Required.")]
+        [Key(0)]
         public int Id { get; set; }
 
         [Description("When true, this trial instance is promoted and considered for production use -- its " +
@@ -36,6 +39,7 @@ namespace Jube.Dto.Repository.ExhaustiveSearchInstancePromotedTrialInstance
                      "false, the trial instance is rejected/deactivated and the next highest-performing " +
                      "promoted trial instance takes its place.")]
         [FormField(Group = "Promotion", Order = 10, Widget = "switch")]
+        [Key(1)]
         public bool Active { get; set; }
     }
 }

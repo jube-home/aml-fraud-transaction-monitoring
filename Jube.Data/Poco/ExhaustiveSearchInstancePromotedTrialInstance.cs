@@ -47,8 +47,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(10)] public byte? Active { get; set; }
 
         [Association(ThisKey = "ExhaustiveSearchInstanceTrialInstanceId",
-            OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+            OtherKey = "Id", CanBeNull = true)]
         [Key(11)]
         public ExhaustiveSearchInstanceTrialInstance ExhaustiveSearchInstanceTrialInstance { get; set; }
 

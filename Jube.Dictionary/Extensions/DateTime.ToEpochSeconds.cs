@@ -15,6 +15,7 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
+        [Description("Seconds since 1970-01-01T00:00:00Z, treating the value as UTC.")]
         public static double ToEpochSeconds(this DateTime @this)
         {
             return (DateTime.SpecifyKind(@this, DateTimeKind.Utc) - DateTime.UnixEpoch).TotalSeconds;

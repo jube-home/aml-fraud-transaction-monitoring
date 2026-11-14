@@ -17,35 +17,45 @@ namespace Jube.Dictionary.Extensions
     {
         extension(Flow<double> flow)
         {
-            public Flow<double> MatchGrowthFactorFromAbove(double previous, double bound)
+            [Description("True when: the value as a multiple of the previous value is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchGrowthFactorFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Match, FlowPredicates.DoubleGrowthFactorFromAbove(flow.Value, previous, bound));
             }
 
-            public Flow<double> RejectGrowthFactorFromAbove(double previous, double bound)
+            [Description("True when: the value as a multiple of the previous value is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectGrowthFactorFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Reject, FlowPredicates.DoubleGrowthFactorFromAbove(flow.Value, previous, bound));
             }
 
-            public Flow<double> BreakGrowthFactorFromAbove(double previous, double bound)
+            [Description("True when: the value as a multiple of the previous value is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakGrowthFactorFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Break, FlowPredicates.DoubleGrowthFactorFromAbove(flow.Value, previous, bound));
             }
 
-            public Flow<double> RequireGrowthFactorFromAbove(double previous, double bound)
+            [Description("True when: the value as a multiple of the previous value is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireGrowthFactorFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
                     : flow.Apply(FlowKind.Require, FlowPredicates.DoubleGrowthFactorFromAbove(flow.Value, previous, bound));
             }
 
-            public Flow<double> EnsureGrowthFactorFromAbove(double previous, double bound)
+            [Description("True when: the value as a multiple of the previous value is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureGrowthFactorFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return flow.IsDecided
                     ? flow
@@ -55,27 +65,37 @@ namespace Jube.Dictionary.Extensions
 
         extension(double value)
         {
-            public Flow<double> MatchGrowthFactorFromAbove(double previous, double bound)
+            [Description("Begins a pipeline from the value. True when: the value as a multiple of the previous value is above the bound. Decides matched if so; otherwise continues.")]
+            public Flow<double> MatchGrowthFactorFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().MatchGrowthFactorFromAbove(previous, bound);
             }
 
-            public Flow<double> RejectGrowthFactorFromAbove(double previous, double bound)
+            [Description("Begins a pipeline from the value. True when: the value as a multiple of the previous value is above the bound. Decides rejected if so; otherwise continues.")]
+            public Flow<double> RejectGrowthFactorFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RejectGrowthFactorFromAbove(previous, bound);
             }
 
-            public Flow<double> BreakGrowthFactorFromAbove(double previous, double bound)
+            [Description("Begins a pipeline from the value. True when: the value as a multiple of the previous value is above the bound. Decides broken if so; otherwise continues.")]
+            public Flow<double> BreakGrowthFactorFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().BreakGrowthFactorFromAbove(previous, bound);
             }
 
-            public Flow<double> RequireGrowthFactorFromAbove(double previous, double bound)
+            [Description("Begins a pipeline from the value. True when: the value as a multiple of the previous value is above the bound. Continues if so; otherwise decides rejected.")]
+            public Flow<double> RequireGrowthFactorFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().RequireGrowthFactorFromAbove(previous, bound);
             }
 
-            public Flow<double> EnsureGrowthFactorFromAbove(double previous, double bound)
+            [Description("Begins a pipeline from the value. True when: the value as a multiple of the previous value is above the bound. Continues if so; otherwise decides broken.")]
+            public Flow<double> EnsureGrowthFactorFromAbove([Description("The earlier value the change is measured from.")] double previous,
+                [Description("The bound the calculation is compared with.")] double bound)
             {
                 return value.Start().EnsureGrowthFactorFromAbove(previous, bound);
             }

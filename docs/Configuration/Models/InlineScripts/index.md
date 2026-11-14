@@ -25,7 +25,7 @@ functionality:
 * The exposure of public properties to make data available to context payload and processing.
 * The availability of attributes to allow for similar functionality to that available in Request XPath on public
   properties.
-* The implementation of the ExecuteAsync() method from IInlineScript interface.
+* The implementation of the ExecuteAsync () method from IInlineScript interface.
 
 ``` sql
 select * from EntityAnalysisInlineScript
@@ -40,6 +40,7 @@ The EntityAnalysisInlineScript table in the database contains the following fiel
 | Name       | Example Inline Script | The name of the InlineScript, and available in model configuration.                                                                         |
 | LanguageId | 2                     | 1 for Visual Basic,  2 for C#.                                                                                                              |
 
+<!-- TODO(screenshot): file=model-references-inline-script-in-database.png route=/models/references/inline-scripts state="replace the Razor-era image InlineScriptInDatabase.png with the Vue UI showing the same step" -->
 ![Image](InlineScriptInDatabase.png)
 
 The database contains the following Visual Basic code to provide a "straight through", No IO, demonstration in the
@@ -199,8 +200,8 @@ using Jube.Engine.EntityAnalysisModelInvoke.Context;
 using Jube.Engine.Interfaces;
 ```
 
-After the using statements, the class can be declared, implementing the IInlineScript interface, and named as desired (
-it can be anything that is not a reserved C# token):
+After the using statements, the class can be declared, implementing the IInlineScript interface, and named as desired
+(it can be anything that is not a reserved C# token):
 
 ```csharp
 public class Example : IInlineScript
@@ -220,12 +221,13 @@ public async Task<bool> ExecuteAsync(Context context)
 }
 ```
 
-The ExecuteAsync() method is called on each and every invocation, taking the invocation context as a parameter.  
+The ExecuteAsync () method is called on each and every invocation, taking the invocation context as a parameter.  
 A return of true or false is required which has different behavior depending upon the event.  
 In all cases only upon true being returned will properties be inspected for inclusion in the payload.
 
 The invocation context is a reference, hence updates to the context will be available in subsequent invocation pipeline
-processing, the same process calling the class upstream. To return values from the ExecuteAsync() method, simply set the
+processing, the same process calling the class upstream. To return values from the ExecuteAsync () method, simply set
+the
 value of a public property, as can be seen in the setting of UserAgent string as below:
 
 ```csharp
@@ -304,8 +306,8 @@ available in the attribute:
 | SearchKeyCacheTtlInterval | h       |
 | SearchKeyCacheTtlValue    | 1       |
 
-For each public property post invocation of the Inline Script, the public property value will be added to the context (
-in the same manner as Request XPath would be),
+For each public property post invocation of the Inline Script, the public property value will be added to the context
+(in the same manner as Request XPath would be),
 and it does not need to be added manually (although it can be if for any reason the value needs to be silent).
 
 # Event Attributes
@@ -350,7 +352,8 @@ ActivationRuleOverride):
 In the absence of the properties being provided, as is the case of PayloadEvent above, it implies broad coverage, for
 example, for all Activation Rules in the case of ActivationRuleOverride.
 
-True return values will have special behavior in the invocation depending on the invocation event,  however, property extraction with only take place given return True in all instances.
+True return values will have special behavior in the invocation depending on the invocation event, however, property
+extraction with only take place given return True in all instances.
 
 Event coverage during invocation is described in the following table:
 
@@ -387,10 +390,12 @@ Values (@TheInlineScriptAsAbove,
 The Inline Script page exists to facilitate the registration of Inline Scripts for a model. The page is available by
 navigating through the menu as Models >> References >> Inline Scripts:
 
+<!-- TODO(screenshot): file=model-references-inline-script-top-of-tree.png route=/models/references/inline-scripts state="replace the Razor-era image InlineScriptTopOfTree.png with the Vue UI showing the same step" -->
 ![Index](InlineScriptTopOfTree.png)
 
 Add a new Inline Script by clicking an Entity Model entry in the tree towards the left hand side:
 
+<!-- TODO(screenshot): file=model-references-empty-inline-script.png route=/models/references/inline-scripts state="replace the Razor-era image EmptyInlineScript.png with the Vue UI showing the same step" -->
 ![Index](EmptyInlineScript.png)
 
 The parameters available to Inline Script allocation in the model are:
@@ -401,16 +406,19 @@ The parameters available to Inline Script allocation in the model are:
 
 Complete the page as above parameter and as follows:
 
+<!-- TODO(screenshot): file=model-references-values-for-inline-script.png route=/models/references/inline-scripts state="replace the Razor-era image ValuesForInlineScript.png with the Vue UI showing the same step" -->
 ![Image](ValuesForInlineScript.png)
 
 Click Add to create the first version of this Inline Script allocation in the model:
 
+<!-- TODO(screenshot): file=model-references-inline-script-added.png route=/models/references/inline-scripts state="replace the Razor-era image InlineScriptAdded.png with the Vue UI showing the same step" -->
 ![Image](InlineScriptAdded.png)
 
 Synchronise the model via Entity >> Synchronisation and repeat the HTTP POST to
 endpoint [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc)
 for response as follows:
 
+<!-- TODO(screenshot): file=model-references-o-t-p-populated-in-response-payload.png route=/models/references/inline-scripts state="replace the Razor-era image OTPPopulatedInResponsePayload.png with the Vue UI showing the same step" -->
 ![Image](OTPPopulatedInResponsePayload.png)
 
 Notice a field added as "OTP" in the response, which was also exposed by the Inline Script as being a property such that
@@ -419,3 +427,18 @@ many elements, hence the name of the inline script itself has limited relevance.
 
 Although the inline script set out above is basic, simply appending a value to the payload as if it had been passed
 originally in the request JSON, Inline Scripts can be used for far more complex integration and data processing.
+
+## Permissions and security
+
+<!-- TODO(docs): confirm the permission number and wording against the running menu and the Roles page -->
+Reading and writing this area requires permission 9. A user without it receives 403, and an unauthenticated request
+receives 401. Every mutation also needs the antiforgery token for cookie sessions.
+
+<!-- TODO(docs): owner to review this security paragraph, it was written from code, not from a running system -->
+An Inline Script row is only a reference: the C# or VB.net code lives in the system-wide Inline Script catalogue, which
+is read-only through the API (rows are created and compiled outside it), so a tenant user cannot author code here. The
+catalogue is not tenant scoped.
+
+<!-- TODO(docs): changes are subject to maker-checker approval when ApprovalsRequired is on; describe the Approvals tab, Resubmit and Retract for Inline Scripts from the real UI -->
+<!-- TODO(docs): every statement above about the Razor-era page layout (tree on the left, Add button, version pane) may be stale after the Vue port; re-read the whole page against the new UI -->
+<!-- TODO(docs): add the Arabic and Urdu right-to-left note: identifiers, paths and code stay left-to-right inside right-to-left text -->

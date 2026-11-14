@@ -13,6 +13,7 @@
 
 using System.ComponentModel;
 using Jube.Data.Context;
+using Jube.Data.Query;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.ExhaustiveSearchInstancePromotedTrialInstance;
 using Jube.Resources;
@@ -34,6 +35,7 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstancePromotedTrialInstance
         private readonly ILog auditLog;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
+        private readonly ExhaustiveSearchInstanceRepository instances;
         private readonly RuleRepository repository;
         private readonly IServiceChangeBus serviceChangeBus;
         private readonly IStringLocalizer strings;
@@ -53,6 +55,7 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstancePromotedTrialInstance
             this.tenantRegistryId = tenantRegistryId;
             this.permissionValidation = permissionValidation;
             repository = new RuleRepository(dbContext, userName);
+            instances = new ExhaustiveSearchInstanceRepository(dbContext, userName);
             validator = new ExhaustiveSearchInstancePromotedTrialInstanceDtoValidator(strings);
         }
 
@@ -147,6 +150,27 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstancePromotedTrialInstance
 
                 try
                 {
+                    var scope = await repository.GetScopeAsync(model.Id, token).ConfigureAwait(false);
+
+                    if (scope == null)
+                    {
+                        throw new KeyNotFoundException();
+                    }
+
+                    if (scope.Value.Active == model.Active)
+                    {
+                        op.Entity(model.Id);
+
+                        return;
+                    }
+
+                    if (await instances.IsLiveAsync(scope.Value.InstanceId, ApprovalsRequiredResolver.Default, token)
+                            .ConfigureAwait(false))
+                    {
+                        throw new ConflictException(
+                            strings[ExhaustiveSearchInstancePromotedTrialInstanceResources.InstanceIsLive]);
+                    }
+
                     await repository.UpdateActiveAsync(model.Id, model.Active, token).ConfigureAwait(false);
                 }
                 catch (KeyNotFoundException ex)
@@ -185,6 +209,11 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstancePromotedTrialInstance
             catch (NotFoundException)
             {
                 op.Outcome("notfound");
+                throw;
+            }
+            catch (ConflictException)
+            {
+                op.Outcome("conflict");
                 throw;
             }
             catch (OperationCanceledException)

@@ -30,8 +30,7 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(2)] public string Value { get; set; }
         [Column] [Nullable] [Key(3)] public int? CaseWorkflowFormEntryId { get; set; }
 
-        [Association(ThisKey = "CaseWorkflowFormEntryId", OtherKey = "Id", CanBeNull = true,
-            Relationship = Relationship.ManyToOne)]
+        [Association(ThisKey = "CaseWorkflowFormEntryId", OtherKey = "Id", CanBeNull = true)]
         [Key(4)]
         public CaseWorkflowFormEntry CaseWorkflowsFormsEntry { get; set; }
     }

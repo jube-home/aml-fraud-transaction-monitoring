@@ -20,6 +20,7 @@ using Jube.Data.Poco;
 using Jube.Data.Repository;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using LinqToDB;
+using LinqToDB.Async;
 using PocoCase = Jube.Data.Poco.Case;
 
 namespace Jube.Test.Security.QueryCase;
@@ -184,12 +185,21 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
     {
         await using var dbContext = fx.GetDbContext();
 
+        var formGuid = Guid.NewGuid();
+
         var formId = await dbContext.InsertWithInt32IdentityAsync(new CaseWorkflowForm
         {
-            Name = Unique("Form"), Guid = Guid.NewGuid(), CaseWorkflowId = graph.WorkflowId, Active = 1, Locked = 0,
+            Name = Unique("Form"), Guid = formGuid, CaseWorkflowId = graph.WorkflowId, Active = 1, Locked = 0,
             Deleted = 0, Html = "<div></div>", CreatedUser = graph.Owner, CreatedDate = DateTime.UtcNow
         });
         formIds.Add(formId);
+
+        await dbContext.InsertAsync(new CaseWorkflowFormRole
+        {
+            CaseWorkflowFormGuid = formGuid, Guid = Guid.NewGuid(),
+            RoleRegistryGuid = await RoleOfAsync(dbContext, graph.Owner), CreatedUser = graph.Owner,
+            CreatedDate = DateTime.UtcNow, Deleted = 0
+        });
 
         var id = await dbContext.InsertWithInt32IdentityAsync(new CaseWorkflowFormEntry
         {
@@ -393,6 +403,11 @@ public sealed class QueryCaseSeeder(DatabaseFixture fx)
             .Where(w => displayGuids.Contains(w.CaseWorkflowDisplayGuid)).DeleteAsync();
 
         await dbContext.CaseWorkflowDisplay.Where(w => displayIds.Contains(w.Id)).DeleteAsync();
+
+        var formGuids = dbContext.CaseWorkflowForm.Where(w => formIds.Contains(w.Id)).Select(w => w.Guid);
+
+        await dbContext.GetTable<CaseWorkflowFormRole>().Where(w => formGuids.Contains(w.CaseWorkflowFormGuid))
+            .DeleteAsync();
 
         await dbContext.CaseWorkflowForm.Where(w => formIds.Contains(w.Id)).DeleteAsync();
 

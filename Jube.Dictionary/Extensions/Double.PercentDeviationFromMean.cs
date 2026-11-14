@@ -15,7 +15,9 @@ namespace Jube.Dictionary.Extensions
 {
     public static partial class Extensions
     {
-        public static double PercentDeviationFromMean(this double @this, double mean)
+        [Description("The percentage the value sits above or below the mean.")]
+        public static double PercentDeviationFromMean(this double @this,
+            [Description("The mean the value is measured from.")] double mean)
         {
             return CalculationSupport.Finite((@this - mean) / Math.Abs(mean) * 100.0);
         }

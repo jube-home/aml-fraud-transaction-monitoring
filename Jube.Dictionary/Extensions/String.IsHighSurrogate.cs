@@ -8,7 +8,9 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
-        public static Boolean IsHighSurrogate(this String s, Int32 index)
+        [Description("Checks if a character at a position is a high surrogate.")]
+        public static Boolean IsHighSurrogate(this String s,
+            [Description("The position of the character to evaluate.")] Int32 index)
         {
             return char.IsHighSurrogate(s, index);
         }

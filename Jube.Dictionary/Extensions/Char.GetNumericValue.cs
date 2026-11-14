@@ -7,6 +7,7 @@ namespace Jube.Dictionary.Extensions
 
     public static partial class Extensions
     {
+        [Description("Gets the numeric value of a Unicode character.")]
         public static Double GetNumericValue(this Char c)
         {
             return char.GetNumericValue(c);

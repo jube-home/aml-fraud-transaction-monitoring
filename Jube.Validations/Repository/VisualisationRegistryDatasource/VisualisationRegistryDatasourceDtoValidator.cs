@@ -12,6 +12,7 @@
  */
 
 using FluentValidation;
+using Jube.Dto.Options;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.VisualisationRegistryDatasource;
 using Jube.Resources;
@@ -23,9 +24,19 @@ namespace Jube.Validations.Repository.VisualisationRegistryDatasource
         VisualisationRegistryDatasourceDtoValidator : AbstractValidator<VisualisationRegistryDatasourceDto>
     {
         private const int MaxNameLength = 256;
-        private const int MaxCommandLength = 65536;
-        private const int MaxVisualisationTextLength = 65536;
-        private static readonly int[] allowedVisualisationTypeIds = [1, 2, 3];
+        public const int MaxCommandLength = 65536;
+        private const int MaxTemplateTextLength = 65536;
+        private const int MaxMappingColumnNameLength = 128;
+
+        private static T? Maybe<T>(T? value) where T : class
+        {
+            return value;
+        }
+
+        private static List<DatasourceMappingEntryDto> Entries(List<DatasourceMappingEntryDto>? mapping)
+        {
+            return (mapping ?? []).Where(e => Maybe(e) is not null).ToList();
+        }
 
         public VisualisationRegistryDatasourceDtoValidator(
             VisualisationRegistryDatasourceRepository repository,
@@ -92,23 +103,45 @@ namespace Jube.Validations.Repository.VisualisationRegistryDatasource
                 .WithMessage(_ => localiser[VisualisationRegistryDatasourceResources.RowSpanRange])
                 .WithErrorCode("RowSpanRange");
 
-            RuleFor(p => p.VisualisationTypeId)
-                .Must(m => allowedVisualisationTypeIds.Contains(m))
-                .WithMessage(_ => localiser[VisualisationRegistryDatasourceResources.VisualisationTypeIdInvalid])
-                .WithErrorCode("VisualisationTypeIdInvalid")
-                .When(w => w.IncludeDisplay);
+            RuleFor(p => p.DisplayKindId)
+                .Must(m => m == 0 || Enum.IsDefined(typeof(DatasourceDisplayKind), m))
+                .WithMessage(_ => localiser[VisualisationRegistryDatasourceResources.DisplayKindIdInvalid])
+                .WithErrorCode("DisplayKindIdInvalid");
 
-            RuleFor(p => p.VisualisationText)
-                .Cascade(CascadeMode.Stop)
-                .NotEmpty()
-                .WithMessage(_ => localiser[VisualisationRegistryDatasourceResources.VisualisationTextRequired])
-                .WithErrorCode("VisualisationTextNotEmpty")
-                .MaximumLength(MaxVisualisationTextLength)
+            RuleFor(p => p.TemplateText)
+                .MaximumLength(MaxTemplateTextLength)
                 .WithMessage(_ =>
-                    string.Format(localiser[VisualisationRegistryDatasourceResources.VisualisationTextMaxLength],
-                        MaxVisualisationTextLength))
-                .WithErrorCode("VisualisationTextMaximumLength")
-                .When(w => w.IncludeDisplay);
+                    string.Format(localiser[VisualisationRegistryDatasourceResources.TemplateTextMaxLength],
+                        MaxTemplateTextLength))
+                .WithErrorCode("TemplateTextMaximumLength");
+
+            RuleFor(p => p.Mapping)
+                .Must(m => Entries(m).Select(e => e.RoleId).All(r => Enum.IsDefined(typeof(DatasourceChartRole), r)))
+                .WithMessage(_ => localiser[VisualisationRegistryDatasourceResources.MappingRoleInvalid])
+                .WithErrorCode("MappingRoleInvalid")
+                .Must(m => Entries(m).Select(e => e.RoleId).Distinct().Count() == Entries(m).Count)
+                .WithMessage(_ => localiser[VisualisationRegistryDatasourceResources.MappingRoleDuplicate])
+                .WithErrorCode("MappingRoleDuplicate")
+                .Must(m => Entries(m).SelectMany(e => Maybe(e.Columns) ?? []).All(c =>
+                    !string.IsNullOrWhiteSpace(c) && c.Length <= MaxMappingColumnNameLength))
+                .WithMessage(_ =>
+                    string.Format(localiser[VisualisationRegistryDatasourceResources.MappingColumnInvalid],
+                        MaxMappingColumnNameLength))
+                .WithErrorCode("MappingColumnInvalid")
+                .Must(m =>
+                {
+                    var columns = Entries(m).SelectMany(e => Maybe(e.Columns) ?? []).ToList();
+
+                    return columns.Distinct(StringComparer.Ordinal).Count() == columns.Count;
+                })
+                .WithMessage(_ => localiser[VisualisationRegistryDatasourceResources.MappingColumnDuplicate])
+                .WithErrorCode("MappingColumnDuplicate");
+
+            RuleFor(p => p.DisplayKindId)
+                .Must(m => m > 0)
+                .WithMessage(_ => localiser[VisualisationRegistryDatasourceResources.DisplayRequired])
+                .WithErrorCode("DisplayRequired")
+                .When(w => !w.IncludeGrid);
         }
     }
 }

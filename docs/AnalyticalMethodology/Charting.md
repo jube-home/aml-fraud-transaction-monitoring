@@ -243,7 +243,7 @@ chosen implicitly by the chart.
 The product does not use `ggplot2`, base R graphics, or any JavaScript charting library anywhere;
 `Jube.Charting` is the single charting library, for every chart on every page, report and agent tool.
 
-For the AskJooby agent tool specifically -- `RenderChart`, its eight chart types, how a cached table's columns map
+For the AskJooby agent tool specifically -- `RenderChart`, its chart types, how a cached table's columns map
 onto a chart specification, and exactly how the finished SVG reaches the person's screen (a backend-rendered file
 attached to the turn's reply, not anything the model itself sees or draws) -- see `docs/AskJooby/RenderChart.md`,
 which deliberately does not repeat this page's own material.

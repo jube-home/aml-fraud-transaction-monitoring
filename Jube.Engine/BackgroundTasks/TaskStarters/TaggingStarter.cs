@@ -25,14 +25,9 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
         {
             try
             {
-                var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
-                    context.Services.DynamicEnvironment.AppSettings("ConnectionString"), context.Services.Log);
-
-                var repository = new ArchiveRepository(dbContext);
-
                 if (context.Services.Log.IsDebugEnabled)
                 {
-                    context.Services.Log.Debug("Tagging: Created db context and repository. Entering loop to look for new tags.");
+                    context.Services.Log.Debug("Tagging: Entering loop to look for new tags.");
                 }
 
                 while (true)
@@ -47,6 +42,12 @@ namespace Jube.Engine.BackgroundTasks.TaskStarters
                     {
                         try
                         {
+                            await using var dbContext = DataConnectionDbContext.GetResilientDbContextDataConnection(
+                                context.Services.DynamicEnvironment.AppSettings("ConnectionString"),
+                                context.Services.Log);
+
+                            var repository = new ArchiveRepository(dbContext);
+
                             if (context.Services.Log.IsInfoEnabled)
                             {
                                 context.Services.Log.Info($"Tagging: Found {tag.EntityAnalysisModelInstanceEntryGuid} with Tags {tag.Tag}. Fetching record.");

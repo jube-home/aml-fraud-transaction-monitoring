@@ -20,7 +20,9 @@ namespace Jube.Data.Query.GetEntityAnalysisModelOverrideQuery
     using System.Threading.Tasks;
     using Context;
     using LinqToDB;
+    using LinqToDB.Async;
     using Models;
+    using Repository;
 
     public class GetEntityAnalysisModelOverrideQuery
     {
@@ -182,7 +184,14 @@ namespace Jube.Data.Query.GetEntityAnalysisModelOverrideQuery
             string overrideKeyValue,
             CancellationToken token = default)
         {
-            var overrideRows = await dbContext.EntityAnalysisModelOverride
+            return await ExecuteAsync(overrideKey, overrideKeyValue, 1, token).ConfigureAwait(false);
+        }
+
+        public async Task<IEnumerable<EntityAnalysisModelOverrideQueryRow>> ExecuteAsync(string overrideKey,
+            string overrideKeyValue, int approvalsRequired,
+            CancellationToken token = default)
+        {
+            var liveRows = await dbContext.EntityAnalysisModelOverride
                 .Where(w => w.OverrideKey == overrideKey && w.OverrideKeyValue == overrideKeyValue
                                                          && (w.Deleted == 0 || w.Deleted == null)
                                                          && (w.DeleteExpiryDate == null ||
@@ -191,10 +200,26 @@ namespace Jube.Data.Query.GetEntityAnalysisModelOverrideQuery
                                                          tenantRegistryId)
                 .Select(s => new
                 {
+                    s.Id,
                     s.EntityAnalysisModelGuid,
                     s.DeleteExpiryDate,
-                    s.OverrideKind
+                    s.OverrideKind,
+                    PendingRemoval = false
                 }).ToListAsync(token: token);
+
+            var pendingRemovals = (await new EntityAnalysisModelOverrideRepository(dbContext, tenantRegistryId)
+                    .GetForcePendingRemovalAsync(overrideKey, overrideKeyValue, approvalsRequired, token)
+                    .ConfigureAwait(false))
+                .Select(s => new
+                {
+                    s.Id,
+                    s.EntityAnalysisModelGuid,
+                    s.DeleteExpiryDate,
+                    s.OverrideKind,
+                    PendingRemoval = true
+                });
+
+            var overrideRows = liveRows.Concat(pendingRemovals).ToList();
 
             var models = await
                 (from m in dbContext.EntityAnalysisModel
@@ -218,6 +243,8 @@ namespace Jube.Data.Query.GetEntityAnalysisModelOverrideQuery
                         EntityAnalysisModelGuid = model.Guid,
                         HasOverride = overrideRow != null,
                         OverrideKind = overrideRow?.OverrideKind ?? 0,
+                        OverrideId = overrideRow?.Id ?? 0,
+                        PendingRemoval = overrideRow?.PendingRemoval ?? false,
                         DeleteExpiryDate = overrideRow?.DeleteExpiryDate == null
                             ? null
                             : new DateTimeOffset(DateTime.SpecifyKind(overrideRow.DeleteExpiryDate.Value,

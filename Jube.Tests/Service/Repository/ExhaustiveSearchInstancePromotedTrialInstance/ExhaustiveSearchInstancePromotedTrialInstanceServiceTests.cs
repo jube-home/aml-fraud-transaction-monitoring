@@ -33,6 +33,7 @@ using Jube.Test.Infrastructure;
 using Jube.Test.Infrastructure.DatabaseFixture;
 using Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInstance.Models;
 using LinqToDB;
+using LinqToDB.Async;
 using log4net;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Localization;
@@ -108,7 +109,7 @@ namespace Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInst
         }
 
         private async Task<int> CreatePromotedTrialInstanceAsync(DbContext dbContext, string createdUser,
-            bool active = false)
+            bool active = false, bool instanceLive = false)
         {
             var modelRepository = new EntityAnalysisModelRepository(dbContext, createdUser);
 
@@ -129,7 +130,7 @@ namespace Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInst
                 Name = $"{DatabaseFixture.Prefix}Search{Guid.NewGuid():N}"[..40],
                 Guid = Guid.NewGuid(),
                 EntityAnalysisModelId = model.Id,
-                Active = 1,
+                Active = (byte)(instanceLive ? 1 : 0),
                 Locked = 0,
                 Deleted = 0,
                 StatusId = 0
@@ -214,7 +215,7 @@ namespace Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInst
         }
 
         [Fact]
-        public async Task UpdateOfSoftDeletedRowStillSucceedsBecauseTheRepositoryDoesNotFilterDeletedAsync()
+        public async Task UpdateOfSoftDeletedRowThrowsNotFoundAndDoesNotReactivateItAsync()
         {
             await using var dbContext = fx.GetDbContext();
             var id = await CreatePromotedTrialInstanceAsync(dbContext, fx.Seed.UserWithPermission);
@@ -224,11 +225,54 @@ namespace Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInst
 
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
 
+            await Assert.ThrowsAsync<NotFoundException>(
+                () => service.UpdateActiveAsync(
+                    new ExhaustiveSearchInstancePromotedTrialInstanceDto { Id = id, Active = true }));
+
+            var active = await ReadActiveAsync(dbContext, id);
+            active.Should().NotBe(1);
+        }
+
+        [Fact]
+        public async Task ChangingThePromotedModelOfALiveInstanceIsRefusedAndChangesNothingAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var id = await CreatePromotedTrialInstanceAsync(dbContext, fx.Seed.UserWithPermission,
+                instanceLive: true);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            await Assert.ThrowsAsync<ConflictException>(() => service.UpdateActiveAsync(
+                new ExhaustiveSearchInstancePromotedTrialInstanceDto { Id = id, Active = true }));
+
+            (await ReadActiveAsync(dbContext, id)).Should().NotBe(1);
+        }
+
+        [Fact]
+        public async Task DeactivatingTheActivePromotedModelOfALiveInstanceIsRefusedAndChangesNothingAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var id = await CreatePromotedTrialInstanceAsync(dbContext, fx.Seed.UserWithPermission, true,
+                true);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            await Assert.ThrowsAsync<ConflictException>(() => service.UpdateActiveAsync(
+                new ExhaustiveSearchInstancePromotedTrialInstanceDto { Id = id, Active = false }));
+
+            (await ReadActiveAsync(dbContext, id)).Should().Be(1);
+        }
+
+        [Fact]
+        public async Task RequestingTheStateAPromotedModelAlreadyHasIsANoOpEvenOnALiveInstanceAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var id = await CreatePromotedTrialInstanceAsync(dbContext, fx.Seed.UserWithPermission, true,
+                true);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
             await service.UpdateActiveAsync(
                 new ExhaustiveSearchInstancePromotedTrialInstanceDto { Id = id, Active = true });
 
-            var active = await ReadActiveAsync(dbContext, id);
-            active.Should().Be(1);
+            (await ReadActiveAsync(dbContext, id)).Should().Be(1);
         }
 
         [Fact]

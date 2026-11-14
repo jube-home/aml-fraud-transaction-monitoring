@@ -39,4 +39,52 @@
     <data name="NameRequired" xml:space="preserve">
     <value>Un nom est requis.</value>
   </data>
+    <data name="PermissionDenied" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'effectuer cette action.</value>
+  </data>
+    <data name="NotAuthenticated" xml:space="preserve">
+    <value>Vous devez être connecté à un locataire pour effectuer cette action.</value>
+  </data>
+    <data name="EntityAnalysisModelIdInvalid" xml:space="preserve">
+    <value>Un modèle valide est requis.</value>
+  </data>
+    <data name="NameMaxLength" xml:space="preserve">
+    <value>Le nom ne doit pas dépasser {0} caractères.</value>
+  </data>
+    <data name="NameAlreadyExists" xml:space="preserve">
+    <value>Ce nom existe déjà.</value>
+  </data>
+    <data name="PriorityRange" xml:space="preserve">
+    <value>La priorité ne peut pas être négative.</value>
+  </data>
+    <data name="RuleScriptTypeIdInvalid" xml:space="preserve">
+    <value>Le type de script de règle doit être Builder ou Coder.</value>
+  </data>
+    <data name="BuilderRuleScriptRequired" xml:space="preserve">
+    <value>Un script de règle est requis.</value>
+  </data>
+    <data name="BuilderRuleScriptMaxLength" xml:space="preserve">
+    <value>Le script de règle doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="JsonInvalid" xml:space="preserve">
+    <value>La définition du constructeur de règles doit être un JSON valide.</value>
+  </data>
+    <data name="JsonRequired" xml:space="preserve">
+    <value>Une définition du constructeur de règles est requise.</value>
+  </data>
+    <data name="CoderRuleScriptRequired" xml:space="preserve">
+    <value>Un script de règle Coder est requis.</value>
+  </data>
+    <data name="CoderRuleScriptMaxLength" xml:space="preserve">
+    <value>Le script de règle Coder doit comporter {0} caractères au maximum.</value>
+  </data>
+    <data name="ReprocessingSampleRange" xml:space="preserve">
+    <value>L'échantillon de retraitement doit être compris entre 0 et 100 pour cent.</value>
+  </data>
+    <data name="ReprocessingValueRange" xml:space="preserve">
+    <value>La valeur de l'intervalle de retraitement ne peut pas être négative.</value>
+  </data>
+    <data name="ReprocessingIntervalInvalid" xml:space="preserve">
+    <value>L'intervalle de retraitement doit être Minutes, Heures, Jours ou Mois.</value>
+  </data>
 </root>

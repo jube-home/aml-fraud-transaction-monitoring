@@ -177,6 +177,8 @@ on).
 | `DistanceMilesBelow`         | `double longitude1, double latitude2, double longitude2, double miles`                                  | The value is latitude 1. The distance to the second point is below the miles.                                                                                   |
 | `ImpliedSpeedMphAbove`       | `double longitude1, double latitude2, double longitude2, double hoursElapsed, double milesPerHour`      | The value is latitude 1. The implied speed in miles per hour is above the limit. Zero hours is infinite speed.                                                  |
 | `ImpliedSpeedMphBelow`       | `double longitude1, double latitude2, double longitude2, double hoursElapsed, double milesPerHour`      | The value is latitude 1. The implied speed in miles per hour is below the limit.                                                                                |
+| `IsInsidePolygon`            | `double longitude, List vertices`                                                                       | The point at the value as latitude and the argument as longitude is inside the polygon given as a list of latitude,longitude vertices.                          |
+| `IsWithinAnyRadiusKm`        | `double longitude, List centres, double radiusKm`                                                       | The point at the value as latitude and the argument as longitude is within the radius in kilometres of any of the centres given as latitude,longitude text.     |
 
 ### Integer tests
 
@@ -300,6 +302,11 @@ on).
 | `InitialsInList`               | `List list`                                   | Matches an entry where a first name may be an initial (`J Smith` for `John Smith`).                                                          |
 | `FuzzyScoreAtLeast`            | `List list, double threshold, string options` | The best score across the List token, from 0 to 1, is at least the threshold. Options string may be null.                                    |
 | `FuzzyMatchCountAtLeast`       | `List list, int count, string options`        | At least the count of entries in the List token match. Options string may be null.                                                           |
+| `IsCryptoWalletAddress`        | none                                          | A well formed cryptocurrency wallet address.                                                                                                 |
+| `IsDelimitedMember`            | `string delimitedList, string separator`      | Equal, after trimming, to one of the entries of the delimited list split on the separator.                                                   |
+| `IsInAnyCidr`                  | `List cidrs`                                  | An IP address inside any of the CIDR ranges.                                                                                                 |
+| `JsonTextArrayAnyInList`       | `string path, List list`                      | The JSON text has an array at the path with a string element that is in the List token.                                                      |
+| `NumberInTextWithinPercentOf`  | `double target, double tolerancePercent`      | A number found in the text is within the tolerance percentage of the target.                                                                 |
 
 ### DateTime tests
 
@@ -339,6 +346,7 @@ Begin from `Payload.<Date field>`, or from any token of that type (`TTLCounter`,
 | `OutsideWeekdayBusinessHoursInZone` | `string zoneId, int startHour, int endHour` | A weekend in that time zone, or outside the hours there. An unknown zone is false.                                       |
 | `IsWeekdayInZone`                   | `string zoneId`                             | A weekday in that time zone. An unknown zone is false.                                                                   |
 | `IsWeekendInZone`                   | `string zoneId`                             | A weekend in that time zone. An unknown zone is false.                                                                   |
+| `DayOfMonthIn`                      | `int... days`                               | Day of the month is one of the numbers.                                                                                  |
 
 ### Boolean tests
 
