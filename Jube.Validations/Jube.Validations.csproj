@@ -29,7 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="15.1.3"/>
+        <PackageReference Include="AutoMapper" Version="15.1.4"/>
         <Compile Update="Resources\Resources.Designer.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
