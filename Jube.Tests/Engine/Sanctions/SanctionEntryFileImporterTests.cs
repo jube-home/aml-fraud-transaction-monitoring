@@ -114,6 +114,28 @@ namespace Jube.Test.Engine.Sanctions
         }
 
         [Fact]
+        public async Task ImportAsyncLoadsEachNameOfAUsRestrictedPartiesFileAsync()
+        {
+            using var parser = NewParser(
+                "RECORD_ID,NAME,NAME_TYPE,DATA_SOURCE,LIST_NAME,LISTED_ON,PARENT_NAME,SOURCE_URL\n" +
+                "us_dod_1260h-shenzhen-dji-technology-co-ltd,\"Shenzhen DJI Technology Co., Ltd.\",PRIMARY,US_DOD_1260H,DoD Chinese Military Companies (Section 1260H),2026-06-10,,https://www.federalregister.gov/d/2026-11571\n" +
+                "us_dod_1260h-shenzhen-dji-technology-co-ltd,DJI,ALIAS,US_DOD_1260H,DoD Chinese Military Companies (Section 1260H),2026-06-10,,https://www.federalregister.gov/d/2026-11571\n" +
+                "us_far_889-hangzhou-hikvision-digital-technology-company,Hangzhou Hikvision Digital Technology Company,PRIMARY,US_FAR_889,Section 889 covered telecommunications and video surveillance companies,2019-08-13,,https://www.ecfr.gov/current/title-48/section-52.204-25\n");
+            var capture = new Capture();
+
+            var result = await SanctionEntryFileImporter.ImportAsync(parser, 1, "1", 0, 1,
+                capture.OnRecordAsync, capture.OnRejectedAsync, noOpLog);
+
+            capture.Rejections.Should().BeEmpty();
+            capture.Records.Select(s => s.ElementValue).Should().Equal("Shenzhen DJI Technology Co., Ltd.", "DJI",
+                "Hangzhou Hikvision Digital Technology Company");
+            capture.Records[1].Reference.Should().Be(capture.Records[0].Reference,
+                "an alias row carries the record id of its primary name");
+            result.TotalRows.Should().Be(3, "the header row is skipped");
+            result.Hashes.Should().HaveCount(3, "a primary name and its alias are separate entries");
+        }
+
+        [Fact]
         public async Task ImportAsyncCombinesMultipleColumnsWhenMultiPartStringIndexListsSeveralIndicesAsync()
         {
             using var parser = NewParser("1,John,Middle,Smith\n");
