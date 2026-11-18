@@ -32,12 +32,18 @@ select * from "SanctionEntrySource"
 
 ![Image](SanctionsEntrySource.png)
 
-By default there are four file definitions in place, alongside their locations on the internet:
+By default there are four file definitions in place and enabled, alongside their locations on the internet:
 
 * US Office Of Foreign Assets Control (OFAC) Specially Designated National (SDN).
 * Bank of England (BOE) Sanctions.
 * European Union (EU) Sanctions.
 * US Office Of Foreign Assets Control (OFAC) Specially Designated National (SDN) alternative names.
+
+A fifth definition, US Restricted Parties, is in place but switched off (Enable HTTP Location is 0). It covers US lists
+that are not in the SDN file: DoD Section 1260H Chinese military companies with their named subsidiaries, Section 889,
+the FCC Covered List, the UFLPA Entity List and the interim BIOSECURE list, one row per name (primary name and each
+alias) at https://github.com/Mattbusel/us-restricted-parties/releases/latest/download/all.csv, rebuilt daily from the
+official sources. Set Enable HTTP Location to 1 to load it.
 
 New entries to the SanctionEntrySource table can be accepted as following definition:
 

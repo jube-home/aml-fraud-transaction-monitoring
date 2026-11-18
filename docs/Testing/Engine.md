@@ -1174,7 +1174,7 @@ SanctionsSdnLoad.
 
 ### SanctionEntryFileImporterTests
 
-`Jube.Test.Engine.Sanctions.SanctionEntryFileImporterTests` — 22 tests. Category: Unit.
+`Jube.Test.Engine.Sanctions.SanctionEntryFileImporterTests` — 23 tests. Category: Unit.
 
 | Test                                                                                 | Kind   | Verifies                                                                                      |
 |--------------------------------------------------------------------------------------|--------|-----------------------------------------------------------------------------------------------|
@@ -1182,6 +1182,7 @@ SanctionsSdnLoad.
 | `ImportAsyncSkipsTheConfiguredNumberOfHeaderRowsAsync`                               | Fact   | Import async skips the configured number of header rows.                                      |
 | `ImportAsyncWithSkipGreaterThanRowCountProducesNoRecordsAndNoRejectionsAsync`        | Fact   | Import async with skip greater than row count produces no records and no rejections.          |
 | `ImportAsyncHandlesFieldsWithEmbeddedCommasViaQuotingAsync`                          | Fact   | Import async handles fields with embedded commas via quoting.                                 |
+| `ImportAsyncLoadsEachNameOfAUsRestrictedPartiesFileAsync`                            | Fact   | Import async loads each name of a us restricted parties file.                                 |
 | `ImportAsyncCombinesMultipleColumnsWhenMultiPartStringIndexListsSeveralIndicesAsync` | Fact   | Import async combines multiple columns when multi part string index lists several indices.    |
 | `ImportAsyncFallsBackToColumnZeroWhenAMultiPartIndexTokenIsNotANumberAsync`          | Fact   | Import async falls back to column zero when a multi part index token is not a number.         |
 | `ImportAsyncCapturesTheFullRawRowAsThePayloadAsync`                                  | Fact   | Import async captures the full raw row as the payload.                                        |
