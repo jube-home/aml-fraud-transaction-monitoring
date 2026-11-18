@@ -26,6 +26,7 @@ namespace Jube.Validations.Repository.CaseWorkflow
         private const int MaxDescriptionLength = 1024;
         private const int MaxRiskSettingLength = 200;
         private const int MaxDailyGoal = 1000;
+        private const int MaxServiceLevelMinutes = 525_600;
 
         public CaseWorkflowDtoValidator(CaseWorkflowRepository repository, IStringLocalizer localiser)
         {
@@ -126,6 +127,24 @@ namespace Jube.Validations.Repository.CaseWorkflow
                 .When(p => p.DailyGoal.HasValue)
                 .WithMessage(_ => localiser[CaseWorkflowResources.DailyGoalOutOfRange])
                 .WithErrorCode("DailyGoalOutOfRange");
+
+            RuleFor(p => p.FirstViewTargetMinutes)
+                .InclusiveBetween(1, MaxServiceLevelMinutes)
+                .When(p => p.FirstViewTargetMinutes.HasValue)
+                .WithMessage(_ => localiser[CaseWorkflowResources.ServiceLevelTargetOutOfRange])
+                .WithErrorCode("ServiceLevelTargetOutOfRange");
+
+            RuleFor(p => p.OwnershipTargetMinutes)
+                .InclusiveBetween(1, MaxServiceLevelMinutes)
+                .When(p => p.OwnershipTargetMinutes.HasValue)
+                .WithMessage(_ => localiser[CaseWorkflowResources.ServiceLevelTargetOutOfRange])
+                .WithErrorCode("ServiceLevelTargetOutOfRange");
+
+            RuleFor(p => p.ResolutionTargetMinutes)
+                .InclusiveBetween(1, MaxServiceLevelMinutes)
+                .When(p => p.ResolutionTargetMinutes.HasValue)
+                .WithMessage(_ => localiser[CaseWorkflowResources.ServiceLevelTargetOutOfRange])
+                .WithErrorCode("ServiceLevelTargetOutOfRange");
 
             RuleFor(p => p.VisualisationRegistryGuid)
                 .NotEmpty()

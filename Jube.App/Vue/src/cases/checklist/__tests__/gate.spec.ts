@@ -68,6 +68,22 @@ describe('deriveGate', () => {
     expect(gate.blocked).toBe(false)
     expect(gate.override?.grantedUser).toBe('sam')
     expect(gate.canOverride).toBe(false)
+    expect(gate.own).toBe(false)
+  })
+
+  it('still blocks the user who granted the override, whom the server refuses', () => {
+    const gate = deriveGate(view([item()], {override}), {...context, userName: 'sam'})
+
+    expect(gate.blocked).toBe(true)
+    expect(gate.own).toBe(true)
+    expect(gate.canOverride).toBe(false)
+  })
+
+  it('lets another user move under the override', () => {
+    const gate = deriveGate(view([item()], {override}), {...context, userName: 'alex'})
+
+    expect(gate.blocked).toBe(false)
+    expect(gate.own).toBe(false)
   })
 
   it('offers the override to a permitted user who is not the holder', () => {

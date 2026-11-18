@@ -10,8 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with Jube™. If not,
  * see <https://www.gnu.org/licenses/>.
  */
-import {ref, watch} from 'vue'
+import {provide, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
+import {storyPathOwnerKey} from './storyPathOwnerKey'
 
 export function useStoryPath() {
   const route = useRoute()
@@ -29,6 +30,12 @@ export function useStoryPath() {
     written = text === '' ? undefined : text
     void router.replace({query: {...route.query, path: written}})
   }
+
+  provide(storyPathOwnerKey, (to) => {
+    const next = typeof to.query.path === 'string' ? to.query.path : undefined
+
+    return next === written
+  })
 
   watch(
     () => queryPath(),

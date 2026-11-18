@@ -13,11 +13,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation.Results;
 using Jube.App.Code;
+using Jube.Charting.Diagrams.Icons;
 using Jube.Data.Concurrency;
 using Jube.Data.Context;
 using Jube.Dto.Repository.GraphRegistryEdge;
@@ -54,6 +56,10 @@ namespace Jube.App.Endpoints.Repository
             group.MapGet("Keys", KeysAsync)
                 .Produces<List<GraphRegistryEdgeKeyDto>>()
                 .WithName("GraphRegistryEdgeKeys");
+
+            group.MapGet("Icons", IconsAsync)
+                .Produces<List<GraphIconDto>>()
+                .WithName("GraphRegistryEdgeIcons");
 
             group.MapGet("{id:int}", GetByIdAsync)
                 .Produces<GraphRegistryEdgeDto>()
@@ -95,6 +101,19 @@ namespace Jube.App.Endpoints.Repository
         {
             return ExecuteAsync("GET", $"{Base}/ByGraphRegistryId/{graphRegistryId}", httpContext, log, dynamicEnvironment, stringLocalizerFactory,
                 serviceChangeBus, async service => TypedResults.Ok(await service.GetByGraphRegistryIdAsync(graphRegistryId, token)), token);
+        }
+
+        private static Task<IResult> IconsAsync()
+        {
+            return Task.FromResult<IResult>(TypedResults.Ok(GraphIcons.Names
+                .Select(name => new GraphIconDto { Name = name, Label = IconLabel(name) }).ToList()));
+        }
+
+        private static string IconLabel(string name)
+        {
+            var words = name.Replace('-', ' ');
+
+            return char.ToUpperInvariant(words[0]) + words[1..];
         }
 
         private static Task<IResult> KeysAsync(HttpContext httpContext, ILog log,

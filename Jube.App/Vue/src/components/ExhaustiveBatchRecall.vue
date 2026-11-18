@@ -16,6 +16,7 @@ import {computed, ref} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {ApiError} from '../api/useApi'
 import {useFormat} from '../composables/useFormat'
+import {usePagerLabels} from '../composables/usePagerLabels'
 import {directionFor} from '../i18n'
 import {exhaustiveApi} from '../exhaustive/api'
 import {batchErrorText, batchNotes} from '../exhaustive/model'
@@ -28,6 +29,7 @@ import ProblemAlert from './ProblemAlert.vue'
 const props = defineProps<{ guid: string }>()
 
 const {t, locale} = useI18n()
+const pagerLabels = usePagerLabels()
 const {fixed, number} = useFormat()
 
 const direction = computed(() => directionFor(locale.value))
@@ -106,6 +108,7 @@ const columns = computed<GridColumn[]>(() => [
         :label="t('exhaustive.batch.title')"
         row-key="rowNumber"
         :page-size="25"
+        :pager-labels="pagerLabels"
         auto-height
       />
     </template>

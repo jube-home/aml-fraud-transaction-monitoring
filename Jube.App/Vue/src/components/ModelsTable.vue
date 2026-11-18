@@ -31,6 +31,7 @@ import type {RecordValues} from '../formModel/types'
 import {modelArea, type StoryStep} from '../story/path'
 import {hasPermission, meQueryOptions} from '../auth/me'
 import {integrityPermission} from '../integrity/model'
+import {operationPermitted} from '../permissions/areaOperations'
 import DataGrid from './DataGrid.vue'
 import ModelSynchronisation from './ModelSynchronisation.vue'
 import type {GridActionEvent, GridBadge, GridColumn} from './dataGridTypes'
@@ -114,7 +115,11 @@ function approvalBadge(value: unknown): GridBadge {
   return {label: approvalState.label(state), tone: approvalState.tone(state)}
 }
 
-const canCreate = computed(() => model.data.value?.operations.includes('create') ?? false)
+const canCreate = computed(
+  () =>
+    (model.data.value?.operations.includes('create') ?? false) &&
+    operationPermitted(modelArea, 'create', me.data.value),
+)
 const direction = computed(() => directionFor(locale.value))
 const failure = computed(() => {
   const error = model.error.value ?? records.error.value
@@ -250,6 +255,7 @@ function onAction(event: GridActionEvent): void {
       :empty-text="t('models.empty')"
       :label="t('models.list')"
       row-key="id"
+      state-key="models"
       :expand-labels="expandLabels"
       @action="onAction"
     >

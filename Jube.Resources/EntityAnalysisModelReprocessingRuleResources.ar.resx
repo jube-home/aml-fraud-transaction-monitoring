@@ -82,7 +82,7 @@
     <value>يجب أن تكون عينة إعادة المعالجة بين 0 و100 بالمئة.</value>
   </data>
     <data name="ReprocessingValueRange" xml:space="preserve">
-    <value>لا يمكن أن تكون قيمة فترة إعادة المعالجة سالبة.</value>
+    <value>يجب أن تكون قيمة فترة إعادة المعالجة صفرًا أو أكثر وضمن الحد المسموح للفاصل المختار.</value>
   </data>
     <data name="ReprocessingIntervalInvalid" xml:space="preserve">
     <value>يجب أن تكون فترة إعادة المعالجة بالدقائق أو الساعات أو الأيام أو الأشهر.</value>

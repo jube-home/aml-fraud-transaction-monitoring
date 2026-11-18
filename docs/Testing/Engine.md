@@ -856,7 +856,7 @@ Category: Unit.
 
 ### ExhaustiveAdaptationsExtensionsTests
 
-`Jube.Test.Engine.EntityAnalysisModelInvoke.ExhaustiveAdaptationsExtensionsTests` — 14 tests. Category: Unit.
+`Jube.Test.Engine.EntityAnalysisModelInvoke.ExhaustiveAdaptationsExtensionsTests` — 16 tests. Category: Unit.
 
 | Test                                                                              | Kind   | Verifies                                                                                       |
 |-----------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------------|
@@ -864,6 +864,8 @@ Category: Unit.
 | `PayloadValuesAreExtractedAndPassedThroughTheNetworkWithZScoreApplied`            | Fact   | Payload values are extracted and passed through the network with z score applied.              |
 | `EachNonPayloadProcessingTypeIsExtractedFromItsOwnDictionaryAndRecalledCorrectly` | Theory | Each non payload processing type is extracted from its own dictionary and recalled correctly.  |
 | `AnUnrecognisedProcessingTypeFallsBackToAbstraction`                              | Fact   | An unrecognised processing type falls back to abstraction.                                     |
+| `AnAbstractionCalculationTrainedAsProcessingTypeSevenIsReadFromTheCalculationsNotTheMean` | Fact | An abstraction calculation trained as processing type seven is read from the calculations not the mean. |
+| `AnAbstractionRuleTrainedAsProcessingTypeSevenStillReadsTheAbstractionDictionary` | Fact | An abstraction rule trained as processing type seven still reads the abstraction dictionary. |
 | `AMissingValueFallsBackToTheVariablesConfiguredMean`                              | Fact   | A missing value falls back to the variables configured mean.                                   |
 | `ANameContainingADotUsesOnlyTheSegmentAfterTheFirstDotAsTheLookupKey`             | Fact   | A name containing a dot uses only the segment after the first dot as the lookup key.           |
 | `NormalisationTypeTwoAppliesTheZScoreFormulaBeforeRecall`                         | Fact   | Normalisation type two applies the z score formula before recall.                              |
@@ -1079,8 +1081,7 @@ Category: Unit.
 
 ### EntityAnalysisModelAbstractionRuleExecutionUtilityTests
 
-`Jube.Test.Engine.EntityAnalysisModelInvoke.ContextExtensions.AbstractionRulesWithSearchKeys.EntityAnalysisModelAbstractionRuleExecutionUtilityTests` —
-8 tests. Category: Unit.
+`Jube.Test.Engine.EntityAnalysisModelInvoke.ContextExtensions.AbstractionRulesWithSearchKeys.EntityAnalysisModelAbstractionRuleExecutionUtilityTests` — 8 tests. Category: Unit.
 
 | Test                                                                                 | Kind | Verifies                                                                                     |
 |--------------------------------------------------------------------------------------|------|----------------------------------------------------------------------------------------------|
@@ -1095,8 +1096,7 @@ Category: Unit.
 
 ### AbstractionRuleVariableScanTests
 
-`Jube.Test.Engine.EntityAnalysisModelInvoke.ContextExtensions.AbstractionRulesWithSearchKeys.AbstractionRuleVariableScanTests` —
-6 tests. Category: Unit.
+`Jube.Test.Engine.EntityAnalysisModelInvoke.ContextExtensions.AbstractionRulesWithSearchKeys.AbstractionRuleVariableScanTests` — 6 tests. Category: Unit.
 
 | Test                                                                   | Kind | Verifies                                                                            |
 |------------------------------------------------------------------------|------|-------------------------------------------------------------------------------------|
@@ -1109,8 +1109,7 @@ Category: Unit.
 
 ### EntityAnalysisModelAbstractionRuleAggregatorUtilityTests
 
-`Jube.Test.Engine.EntityAnalysisModelInvoke.ContextExtensions.AbstractionRulesWithSearchKeys.EntityAnalysisModelAbstractionRuleAggregatorUtilityTests` —
-58 tests. Category: Unit.
+`Jube.Test.Engine.EntityAnalysisModelInvoke.ContextExtensions.AbstractionRulesWithSearchKeys.EntityAnalysisModelAbstractionRuleAggregatorUtilityTests` — 58 tests. Category: Unit.
 
 | Test                                                                                                      | Kind   | Verifies                                                                                                                   |
 |-----------------------------------------------------------------------------------------------------------|--------|----------------------------------------------------------------------------------------------------------------------------|
@@ -1316,8 +1315,7 @@ Unit.
 
 ### InvocationLogTests
 
-`Jube.Test.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Logs.InvocationLogTests` —
-4 tests. Category: Unit.
+`Jube.Test.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.Logs.InvocationLogTests` — 4 tests. Category: Unit.
 
 | Test                                                            | Kind   | Verifies                                                                   |
 |-----------------------------------------------------------------|--------|----------------------------------------------------------------------------|
@@ -1377,7 +1375,7 @@ Unit.
 
 ### InlineScriptRunnerTests
 
-`Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation.InlineScriptRunnerTests` — 1 test. Category: Unit.
+`Jube.Test.Engine.EntityAnalysisModelInvoke.Simulation.InlineScriptRunnerTests` — 4 tests. Category: Unit.
 
 | Test                                                       | Kind | Verifies                                                      |
 |------------------------------------------------------------|------|---------------------------------------------------------------|
@@ -1462,13 +1460,11 @@ Category: Unit.
 
 ### CachePruneTaskStarterPostgresBackedTests
 
-`Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.CachePruneTaskStarterPostgresBackedTests` — 1
-| `PruneModelAsyncDeletesOnlyWhatsExpiredAcrossPayloadAndPayloadLatestAndAuditsBothToPostgresAsync` | Fact | Prune model
-async deletes only whats expired across payload and payload latest and audits both to postgres. |
-test. Category: Service. Collection: Database.
+`Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.CachePruneTaskStarterPostgresBackedTests` — 1 test. Category: Service. Collection: Database.
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                                              | Kind | Verifies                                                                                                    |
+|---------------------------------------------------------------------------------------------------|------|-------------------------------------------------------------------------------------------------------------|
+| `PruneModelAsyncDeletesOnlyWhatsExpiredAcrossPayloadAndPayloadLatestAndAuditsBothToPostgresAsync` | Fact | Prune model async deletes only whats expired across payload and payload latest and audits both to postgres. |
 
 ### CachePruneTaskStarterTests
 
@@ -1484,8 +1480,7 @@ Category: Unit.
 
 ### EntityAnalysisModelSyncWatermarkQueryPostgresBackedTests
 
-`Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.EntityAnalysisModelSyncWatermarkQueryPostgresBackedTests` —
-4 tests. Category: Service. Collection: Database.
+`Jube.Test.Engine.EntityAnalysisModelManager.BackgroundTasks.TaskStarters.EntityAnalysisModelSyncWatermarkQueryPostgresBackedTests` — 4 tests. Category: Service. Collection: Database.
 
 | Test                                                                                         | Kind | Verifies                                                                                                 |
 |----------------------------------------------------------------------------------------------|------|----------------------------------------------------------------------------------------------------------|
@@ -1558,39 +1553,55 @@ Database.
 
 ### InlineScriptCompilationExtensionsTests
 
-`Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Extensions.InlineScriptCompilationExtensionsTests` —
-14 tests. Category: Unit.
-| `CompilingTheSameCodeTwiceProducesIndependentDelegatesThatStillBehaveIdentically`                | Fact | Compiling
-the same code twice produces independent delegates that still behave identically. |
-| `TheSystemWideDemonstrationVisualBasicScriptCompilesAndProducesASixDigitOtpAsync`                | Fact | The system
-wide demonstration visual basic script compiles and produces a six digit otp. |
-| `RunningTheCompiledScriptThroughExecuteInlineScriptsAsyncEndToEndPopulatesThePayloadAsync`       | Fact | Running the
-compiled script through execute inline scripts async end to end populates the payload. |
-| `EventAttributesOnExecuteAsyncArePopulatedAndOrderedByPriority`                                  | Fact | Event
-attributes on execute async are populated and ordered by priority. |
-| `APropertyWithNoAttributesHasEveryDecorationFlagFalseAndNoSearchKey`                             | Fact | A property
-with no attributes has every decoration flag false and no search key. |
-| `LatitudeAndLongitudeAttributesAreReflectedIndependentlyOfEachOther`                             | Fact | Latitude and
-longitude attributes are reflected independently of each other. |
-| `SearchKeyDecoratedPropertyIsAlsoAddedAsAModelGroupingKey`                                       | Fact | Search key
-decorated property is also added as a model grouping key. |
-| `SearchKeyAttributeSubFieldsAreCapturedOntoTheDistinctSearchKey`                                 | Fact | Search key
-attribute sub fields are captured onto the distinct search key. |
-| `ReportTableResponsePayloadAndCacheIndexAttributesAreReflectedOntoThePropertyAttribute`          | Fact | Report table
-response payload and cache index attributes are reflected onto the property attribute. |
-| `TheExecuteAsyncDelegateInvokesTheCompiledMethodAndReturnsItsResultAsync`                        | Fact | The execute
-async delegate invokes the compiled method and returns its result. |
-| `TheActivatorDelegateCreatesANewInstanceOfTheCompiledType`                                       | Fact | The
-activator delegate creates a new instance of the compiled type. |
-| `ASyntaxOrSemanticErrorProducesCompileErrorsAndNoInterfaceImplementation`                        | Fact | A syntax or
-semantic error produces compile errors and no interface implementation. |
-| `AValidCSharpScriptCompilesWithoutErrorsAndLocatesTheInterfaceImplementation`                    | Fact | A valid c
-sharp script compiles without errors and locates the interface implementation. |
-| `RunningTheCompiledScriptThroughReflectInlineScriptHelperPopulatesThePayloadAndArchiveKeysAsync` | Fact | Running the
-compiled script through reflect inline script helper populates the payload and archive keys. |
+`Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Extensions.InlineScriptCompilationExtensionsTests` — 17 tests. Category: Unit.
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                                             | Kind   | Verifies                                                                                                 |
+|--------------------------------------------------------------------------------------------------|--------|----------------------------------------------------------------------------------------------------------|
+| `AValidCSharpScriptCompilesWithoutErrorsAndLocatesTheInterfaceImplementation`                    | Fact   | A valid c sharp script compiles without errors and locates the interface implementation.                 |
+| `ASyntaxOrSemanticErrorProducesCompileErrorsAndNoInterfaceImplementation`                        | Fact   | A syntax or semantic error produces compile errors and no interface implementation.                      |
+| `TheActivatorDelegateCreatesANewInstanceOfTheCompiledType`                                       | Fact   | The activator delegate creates a new instance of the compiled type.                                      |
+| `TheExecuteAsyncDelegateInvokesTheCompiledMethodAndReturnsItsResultAsync`                        | Fact   | The execute async delegate invokes the compiled method and returns its result.                           |
+| `ReportTableResponsePayloadAndCacheIndexAttributesAreReflectedOntoThePropertyAttribute`          | Fact   | Report table response payload and cache index attributes are reflected onto the property attribute.      |
+| `SearchKeyAttributeSubFieldsAreCapturedOntoTheDistinctSearchKey`                                 | Fact   | Search key attribute sub fields are captured onto the distinct search key.                               |
+| `SearchKeyDecoratedPropertyIsAlsoAddedAsAModelGroupingKey`                                       | Fact   | Search key decorated property is also added as a model grouping key.                                     |
+| `LatitudeAndLongitudeAttributesAreReflectedIndependentlyOfEachOther`                             | Fact   | Latitude and longitude attributes are reflected independently of each other.                             |
+| `APropertyWithNoAttributesHasEveryDecorationFlagFalseAndNoSearchKey`                             | Fact   | A property with no attributes has every decoration flag false and no search key.                         |
+| `EventAttributesOnExecuteAsyncArePopulatedAndOrderedByPriority`                                  | Fact   | Event attributes on execute async are populated and ordered by priority.                                 |
+| `RunningTheCompiledScriptThroughReflectInlineScriptHelperPopulatesThePayloadAndArchiveKeysAsync` | Fact   | Running the compiled script through reflect inline script helper populates the payload and archive keys. |
+| `ABooleanPropertyIsAddedToThePayloadAsABooleanAndArchivedAsABooleanKeyAsync`                     | Fact   | A boolean property is added to the payload as a boolean and archived as a boolean key.                   |
+| `DeclaredDependenciesAreSplitOnSemicolonOrCommaAndTrimmed`                                       | Theory | Declared dependencies are split on semicolon or comma and trimmed.                                       |
+| `NoDeclaredDependenciesAddsNothingBeyondTheLoadedAssembliesAndCryptography`                      | Theory | No declared dependencies adds nothing beyond the loaded assemblies and cryptography.                     |
+| `RunningTheCompiledScriptThroughExecuteInlineScriptsAsyncEndToEndPopulatesThePayloadAsync`       | Fact   | Running the compiled script through execute inline scripts async end to end populates the payload.       |
+| `TheSystemWideDemonstrationVisualBasicScriptCompilesAndProducesASixDigitOtpAsync`                | Fact   | The system wide demonstration visual basic script compiles and produces a six digit otp.                 |
+| `CompilingTheSameCodeTwiceProducesIndependentDelegatesThatStillBehaveIdentically`                | Fact   | Compiling the same code twice produces independent delegates that still behave identically.              |
+
+### InlineScriptLoadTests
+
+`Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Extensions.InlineScriptLoadTests` — 21 tests. Category: Unit.
+
+| Test                                                                               | Kind   | Verifies                                                                                     |
+|------------------------------------------------------------------------------------|--------|----------------------------------------------------------------------------------------------|
+| `ANewRecordIsCompiledAddedOnceAndReportedAsCompiled`                               | Fact   | A new record is compiled, added once and reported as compiled.                               |
+| `AnUnchangedRecordKeepsTheLoadedInstanceAndIsReportedAsUnchanged`                  | Fact   | An unchanged record keeps the loaded instance and is reported as unchanged.                  |
+| `AnUnchangedRecordStillTakesTheLatestNameAndCreatedDate`                           | Fact   | An unchanged record still takes the latest name and created date.                            |
+| `ChangedCodeReplacesTheLoadedScriptInPlaceWithTheNewAttributes`                    | Fact   | Changed code replaces the loaded script in place with the new attributes.                    |
+| `ChangedCodeIsPickedUpWhenTheCreatedDateHasNotMoved`                               | Fact   | Changed code is picked up when the created date has not moved.                               |
+| `ChangedCodeWithASearchKeyDoesNotAccumulateGroupingKeys`                           | Fact   | Changed code with a search key does not accumulate grouping keys.                            |
+| `CodeRevertedToAnAlreadyCompiledVersionIsConfiguredInFullFromTheAssemblyCache`     | Fact   | Code reverted to an already compiled version is configured in full from the assembly cache.  |
+| `TwoRecordsSharingTheSameCodeAreBothLoadedFromOneCompiledAssembly`                 | Fact   | Two records sharing the same code are both loaded from one compiled assembly.                |
+| `ACompileErrorIsReportedAndLeavesThePreviouslyLoadedScriptInPlace`                 | Fact   | A compile error is reported and leaves the previously loaded script in place.                |
+| `ACompileErrorOnANewRecordLoadsNothing`                                            | Fact   | A compile error on a new record loads nothing.                                               |
+| `CodeWithNoClassImplementingTheInterfaceIsReportedAndLoadsNothing`                 | Fact   | Code with no class implementing the interface is reported and loads nothing.                 |
+| `ANullLanguageIsLoadedAsVisualBasic`                                               | Fact   | A null language is loaded as visual basic.                                                   |
+| `TheDeclaredDependencyIsCarriedOntoTheLoadedScript`                                | Fact   | The declared dependency is carried onto the loaded script.                                   |
+| `HasChangedComparesCodeDependenciesAndLanguage`                                    | Theory | Has changed compares code, dependencies and language.                                        |
+| `ConfiguringTheSameInstanceTwiceDoesNotDuplicatePropertiesOrGroupingKeys`          | Fact   | Configuring the same instance twice does not duplicate properties or grouping keys.          |
+| `APropertyDecoratedWithResponsePayloadIsWrittenToTheResponsePayloadAsync`          | Fact   | A property decorated with response payload is written to the response payload.               |
+| `APropertyWithoutResponsePayloadIsLeftOutOfTheResponsePayloadAsync`                | Fact   | A property without response payload is left out of the response payload.                     |
+| `AddingResponsePayloadToALoadedScriptPutsThePropertyInTheResponseAfterReloadAsync` | Fact   | Adding response payload to a loaded script puts the property in the response after reload.   |
+| `AddingResponsePayloadToTheVisualBasicDemonstrationScriptReturnsTheOtpAsync`       | Fact   | Adding response payload to the visual basic demonstration script returns the otp.            |
+| `AScriptReturningFalseLeavesItsPropertiesOutOfTheResponsePayloadAsync`             | Fact   | A script returning false leaves its properties out of the response payload.                  |
+| `EverySupportedPropertyTypeIsWrittenToTheResponsePayloadWithItsOwnJsonTypeAsync`   | Fact   | Every supported property type is written to the response payload with its own json type.     |
 
 ## Entity analysis model manager entity analysis model context models
 
@@ -1613,8 +1624,7 @@ Unit.
 
 ### EntityAnalysisModelRecordMapperTests
 
-`Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Utilities.EntityAnalysisModelRecordMapperTests` —
-32 tests. Category: Unit.
+`Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Utilities.EntityAnalysisModelRecordMapperTests` — 32 tests. Category: Unit.
 
 | Test                                                                                           | Kind   | Verifies                                                                                                    |
 |------------------------------------------------------------------------------------------------|--------|-------------------------------------------------------------------------------------------------------------|
@@ -1830,8 +1840,6 @@ Collection: Database.
 | `SyncAppliesAnApprovedForceOverrideAsync`                            | Fact | Sync applies an approved Force override.                                                                    |
 | `SyncKeepsTheApprovedVersionLiveWhileAnEditOrARemovalIsPendingAsync` | Fact | Sync keeps the approved version live while a removal is pending, and drops it once the removal is approved. |
 | `SyncStillSkipsAnApprovedForceOverrideThatHasExpiredAsync`           | Fact | Sync still skips an approved Force override that has expired.                                               |
-
-<!-- TODO(docs): SyncCarriesTheForceOverrideKindAsync and SyncLetsForceWinWhereBothKindsAreHeldForOneActivationRuleAsync now seed an approval for the Force row; their descriptions above are unchanged. -->
 
 ## Sanctions
 
@@ -2424,7 +2432,7 @@ Collection: Database.
 
 ### RetentionPurgeTests
 
-`Jube.Test.Retention.RetentionPurgeTests` — 9 tests. Category: Service.
+`Jube.Test.Retention.RetentionPurgeTests` — 10 tests. Category: Service.
 
 | Test                                                                             | Kind   | Verifies                                                                                                                                           |
 |----------------------------------------------------------------------------------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------|

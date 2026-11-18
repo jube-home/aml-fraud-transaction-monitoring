@@ -120,6 +120,57 @@ namespace Jube.Test.Service.Repository.GraphRegistryEdge
         }
 
         [Fact]
+        public async Task StoresTheLinkAndNodeIconsAndKeepsThePreviousOnesInTheVersionRowAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, authorA);
+            var dto = ValidDto("Shares device", 1, "AccountId", "FingerprintHash", null);
+            dto.IconName = " smartphone ";
+            dto.FromNodeIcon = "landmark";
+            var created = await service.InsertAsync(dto);
+            createdEdgeIds.Add(created.Id);
+
+            created.IconName.Should().Be("smartphone");
+            created.FromNodeIcon.Should().Be("landmark");
+            created.ToNodeIcon.Should().BeNull();
+
+            created.IconName = "wifi";
+            created.ToNodeIcon = "router";
+            var updated = await service.UpdateAsync(created);
+
+            updated.IconName.Should().Be("wifi");
+            updated.ToNodeIcon.Should().Be("router");
+            var version = await dbContext.GraphRegistryEdgeVersion.SingleAsync(v => v.GraphRegistryEdgeId == created.Id);
+            version.IconName.Should().Be("smartphone");
+            version.ToNodeIcon.Should().BeNull();
+        }
+
+        [Theory]
+        [InlineData("not-a-real-icon")]
+        [InlineData("<script>alert(1)</script>")]
+        [InlineData("../../etc/passwd")]
+        public async Task RefusesAnIconOutsideTheCuratedSetOnAnyOfTheThreeFieldsAsync(string icon)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var service = await BuildServiceAsync(dbContext, authorA);
+
+            foreach (var (field, code) in new (string, string)[]
+                         { ("IconName", "IconInvalid"), ("FromNodeIcon", "FromNodeIconInvalid"), ("ToNodeIcon", "ToNodeIconInvalid") })
+            {
+                var dto = ValidDto("Bad icon", 1, "AccountId", "FingerprintHash", null);
+
+                switch (field)
+                {
+                    case "IconName": dto.IconName = icon; break;
+                    case "FromNodeIcon": dto.FromNodeIcon = icon; break;
+                    default: dto.ToNodeIcon = icon; break;
+                }
+
+                (await service.ValidateAsync(dto)).Errors.Select(e => e.ErrorCode).Should().Contain(code);
+            }
+        }
+
+        [Fact]
         public async Task ListsTheReportKeysOfTheTenantsModelsWithFlagsAsync()
         {
             await using var dbContext = fx.GetDbContext();

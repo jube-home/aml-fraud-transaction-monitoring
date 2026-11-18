@@ -260,27 +260,6 @@ Unit.
 | `PowerSpectrumConservesEnergyAndDoesNotDoubleTheNyquistBin`          | Theory | Power spectrum conserves energy and does not double the nyquist bin.           |
 | `HilbertTransformOfCosineIsSine`                                     | Fact   | Hilbert transform of cosine is sine.                                           |
 
-## Page
-
-### AdvancedAnalyticsPageWiringTests
-
-`Jube.Test.AdvancedAnalytics.Page.AdvancedAnalyticsPageWiringTests` — 12 tests. Category: Service.
-
-| Test                                                                                                    | Kind   | Verifies                                                                                                                 |
-|---------------------------------------------------------------------------------------------------------|--------|--------------------------------------------------------------------------------------------------------------------------|
-| `ThePageLoadsItsScriptAndStylesheetAndCarriesTheGridsAndTabs`                                           | Fact   | The page loads its script and stylesheet and carries the grids and tabs.                                                 |
-| `TheScriptUsesOnlyTheReadRoutesTheChartRoutesTheDeleteRouteTheActiveSwitchRouteAndTheApprovalRoutes`    | Fact   | The script uses only the read routes the chart routes the delete route the active switch route and the approval routes.  |
-| `TheScriptEscapesServerTextBeforeItBuildsMarkup`                                                        | Fact   | The script escapes server text before it builds markup.                                                                  |
-| `TheScriptCarriesNoComments`                                                                            | Theory | The script carries no comments.                                                                                          |
-| `NothingWrittenForThePageMentionsTheLibraryName`                                                        | Fact   | Nothing written for the page mentions the library name.                                                                  |
-| `TheModelsMenuGroupLinksTheAnalyticsPageUnderTheFourPermissions`                                        | Fact   | The models menu group links the analytics page under the four permissions.                                               |
-| `TheModelsGroupIsVisibleToAUserWhoHoldsOnlyAnAdvancedAnalyticsPermission`                               | Fact   | The models group is visible to a user who holds only an advanced analytics permission.                                   |
-| `TheEndpointsAreRegisteredAndEveryGroupRequiresAuthorisation`                                           | Fact   | The endpoints are registered and every group requires authorisation.                                                     |
-| `TheHttpSurfaceIsReadRoutesChartRoutesOneDeleteTheApprovalRoutesAndNothingThatMutatesElse`              | Fact   | The http surface is read routes chart routes one delete the approval routes and nothing that mutates else.               |
-| `TheChartEndpointsCarryTheSvgHeadersAndTheRunnerMapsTheServiceCodes`                                    | Fact   | The chart endpoints carry the svg headers and the runner maps the service codes.                                         |
-| `ThePermissionDropdownOfTheRoleScreenReadsTheSpecificationTableSoTheNewPermissionsAppear`               | Fact   | The permission dropdown of the role screen reads the specification table so the new permissions appear.                  |
-| `ThePageModelIsGatedOnTheFourAdvancedAnalyticsPermissionsAndDeletingAnAllocatedInstanceNeedsFortySeven` | Fact   | The page model is gated on the four advanced analytics permissions and deleting an allocated instance needs forty seven. |
-
 ## R script
 
 ### AskJoobyScriptExecutionClientTests
@@ -489,7 +468,7 @@ Collection: Database.
 
 ### ModelSelectionToolsCachePointerIntegrationTests
 
-`Jube.Test.AdvancedAnalytics.Repository.ModelSelectionToolsCachePointerIntegrationTests` — 1 test. Category: Service.
+`Jube.Test.AdvancedAnalytics.Repository.ModelSelectionToolsCachePointerIntegrationTests` — 2 tests. Category: Service.
 Collection: Database.
 
 | Test                                                                                            | Kind | Verifies                                                                                                    |

@@ -112,8 +112,13 @@ export function tileStyle(
   registry: VisualisationRegistry,
   tile: TileDefinition,
 ): Record<string, string> {
+  const columns = Math.max(registry.columns, 1)
+  const span = Math.min(Math.max(tile.columnSpan, 1), columns)
+  const half = Math.ceil(columns / 2)
+
   return {
-    '--tile-columns': String(Math.min(Math.max(tile.columnSpan, 1), Math.max(registry.columns, 1))),
+    '--tile-columns': String(span),
+    '--tile-columns-mid': String(span <= half ? half : columns),
     '--tile-rows': String(Math.max(tile.rowSpan, 1)),
     '--tile-height': `${tileSize(registry, tile).height}px`,
   }

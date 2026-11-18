@@ -34,6 +34,7 @@ import {whereOf, type Beat} from '../story/model'
 import type {StoryStep} from '../story/path'
 import AreaRecordBeat from './AreaRecordBeat.vue'
 import AreaRootCard from './AreaRootCard.vue'
+import HubDeck from './HubDeck.vue'
 import ConfirmDialog from './ConfirmDialog.vue'
 import CrudPanel from './CrudPanel.vue'
 import NewRecordBeat from './NewRecordBeat.vue'
@@ -279,7 +280,7 @@ function settleDeepLink(): void {
 
   if (child && next) {
     pending.value = pending.value.slice(1)
-    levels.value = [levelFor(child, false, next.id)]
+    levels.value = [levelFor(child, next.startNew === true, next.id)]
   }
 }
 
@@ -370,7 +371,7 @@ function chooseRecord(chosen: OpenedRecord): void {
 
   pending.value = child ? pending.value.slice(1) : []
 
-  if (child && next) levels.value = [levelFor(child, false, next.id)]
+  if (child && next) levels.value = [levelFor(child, next.startNew === true, next.id)]
 
   publish()
 }
@@ -451,7 +452,7 @@ function levelOpened(index: number, opened: OpenedRecord): void {
 
   if (child && next && levels.value.length === index + 1) {
     pending.value = pending.value.slice(1)
-    descend(index, child, false, next.id)
+    descend(index, child, next.startNew === true, next.id)
     return
   }
 
@@ -523,19 +524,19 @@ function createdOpened(created: OpenedRecord): void {
 <template>
   <StorySpine :beats="beats" @reopen="reopen">
     <template #default="{ beat, index }">
-      <div
-        v-if="beat.id === 'entry'"
-        key="entry"
-        class="grid grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-2"
-        data-testid="area-entry"
-      >
-        <AreaRootCard
-          v-for="candidate in roots"
-          :key="candidate.id"
-          :root="candidate"
-          @open="chooseRoot(candidate.id)"
-        />
-      </div>
+      <HubDeck v-if="beat.id === 'entry'" key="entry">
+        <div
+          class="grid grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-2"
+          data-testid="area-entry"
+        >
+          <AreaRootCard
+            v-for="candidate in roots"
+            :key="candidate.id"
+            :root="candidate"
+            @open="chooseRoot(candidate.id)"
+          />
+        </div>
+      </HubDeck>
 
       <template v-else-if="beat.id === 'view' && rootId">
         <slot

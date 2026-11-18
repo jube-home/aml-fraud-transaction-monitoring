@@ -39,9 +39,8 @@ namespace Jube.Dto.Repository.VisualisationRegistryParameter
         [Key(0)]
         public int VisualisationRegistryId { get; set; }
 
-        [Description("Display name of the Parameter, matched against the Case payload field of the same name " +
-                     "when the Visualisation is embedded, and used as the named SQL parameter when running the " +
-                     "report. Unique within the Visualisation Registry (case-insensitive).")]
+        [Description("Display name of the Parameter, used as the named SQL parameter when running the report. " +
+                     "Unique within the Visualisation Registry (case-insensitive).")]
         [FormField(Group = "Identity", Order = 10)]
         [ListColumn(Order = 10, Title = "Name")]
         [Key(1)]
@@ -68,9 +67,9 @@ namespace Jube.Dto.Repository.VisualisationRegistryParameter
         [Key(4)]
         public int DataTypeId { get; set; }
 
-        [Description("The default value offered by the collection control and used to parameterise the report " +
-                     "when a Case is not embedding a matching payload field. For a Date data type, this is an " +
-                     "offset expressed as a number of days.")]
+        [Description("The default value offered by the collection control, and the value used to parameterise the " +
+                     "report when the Visualisation is embedded in a Case, where there is no control to collect " +
+                     "it. For a Date data type, this is an offset expressed as a number of days.")]
         [FormField(Group = "Value", Order = 20, Widget = "typed:dataTypeId")]
         [Key(5)]
         public string? DefaultValue { get; set; }

@@ -78,7 +78,7 @@
       - PasswordHashingKey=$DockerComposePasswordHashingKey
       - Log4NetLogLevel=ERROR
       - ElementSymmetricEncryptionKey=$DockerComposeElementSymmetricEncryptionKey
-      - CaseSimilarityHashingKey=${DockerComposeCaseSimilarityHashingKey:-}
+      - CaseSimilarityHashingKey=$DockerComposeCaseSimilarityHashingKey
       - DOTNET_gcServer=1
       - DOTNET_gcConcurrent=1
       - DOTNET_GCConserveMemory=4

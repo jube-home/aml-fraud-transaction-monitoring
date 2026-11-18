@@ -11,17 +11,23 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-import {watch} from 'vue'
+import {onScopeDispose, watch} from 'vue'
 import {useJoobyContextStore, type JoobyPageContext} from '../stores/joobyContext'
 
 export function useJoobyPageContext(source: () => JoobyPageContext | undefined): void {
   const store = useJoobyContextStore()
+  let current: JoobyPageContext | undefined
 
   watch(
     source,
     (next) => {
+      if (current !== undefined && current !== next) store.clear(current)
+
+      current = next
       if (next) store.set(next)
     },
     {immediate: true},
   )
+
+  onScopeDispose(() => store.clear(current))
 }

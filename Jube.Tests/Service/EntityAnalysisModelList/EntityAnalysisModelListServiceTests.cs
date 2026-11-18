@@ -211,14 +211,14 @@ namespace Jube.Test.Service.EntityAnalysisModelList
             var saved = await service.InsertAsync(NewDto(model.Guid, UniqueName("Update")));
             createdIds.Add(saved.Id);
 
-            var dto = NewDto(model.Guid, saved.Name);
+            var dto = NewDto(model.Guid, saved.Name!);
             dto.Id = saved.Id;
             dto.Active = true;
 
             var updated = await service.UpdateAsync(dto);
 
             updated.Version.Should().Be(2);
-            updated.Active.Should().Be(1);
+            updated.Active.Should().BeTrue();
             updated.Guid.Should().Be(saved.Guid);
 
             var auditRows = await dbContext.GetTable<EntityAnalysisModelListVersion>()
@@ -281,7 +281,7 @@ namespace Jube.Test.Service.EntityAnalysisModelList
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetByIdAsync(seedRow.Id));
 
-            var updateDto = NewDto(model.Guid, seedRow.Name);
+            var updateDto = NewDto(model.Guid, seedRow.Name!);
             updateDto.Id = seedRow.Id;
             await Assert.ThrowsAsync<ForbiddenException>(() => service.UpdateAsync(updateDto));
             await Assert.ThrowsAsync<ForbiddenException>(() => service.DeleteAsync(seedRow.Id));
@@ -344,7 +344,7 @@ namespace Jube.Test.Service.EntityAnalysisModelList
             var byId = await otherTenant.GetByIdAsync(saved.Id);
             byId.Should().BeNull();
 
-            var updateDto = NewDto(model.Guid, saved.Name);
+            var updateDto = NewDto(model.Guid, saved.Name!);
             updateDto.Id = saved.Id;
             await Assert.ThrowsAsync<DtoValidationException>(() => otherTenant.UpdateAsync(updateDto));
             await Assert.ThrowsAsync<NotFoundException>(() => otherTenant.DeleteAsync(saved.Id));
@@ -477,7 +477,7 @@ namespace Jube.Test.Service.EntityAnalysisModelList
             var saved = await service.InsertAsync(NewDto(model.Guid, UniqueName("TamperUpdate")));
             createdIds.Add(saved.Id);
 
-            var dto = NewDto(model.Guid, saved.Name);
+            var dto = NewDto(model.Guid, saved.Name!);
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
             dto.UpdatedUser = "also-tampered";
@@ -501,7 +501,7 @@ namespace Jube.Test.Service.EntityAnalysisModelList
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelList>()
                 .Where(w => w.Id == saved.Id).Set(s => s.Locked, (byte)1).UpdateAsync();
 
-            var dto = NewDto(model.Guid, saved.Name);
+            var dto = NewDto(model.Guid, saved.Name!);
             dto.Id = saved.Id;
             await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateAsync(dto));
         }
@@ -517,7 +517,7 @@ namespace Jube.Test.Service.EntityAnalysisModelList
 
             await service.DeleteAsync(saved.Id);
 
-            var dto = NewDto(model.Guid, saved.Name);
+            var dto = NewDto(model.Guid, saved.Name!);
             dto.Id = saved.Id;
             await service.UpdateAsync(dto);
 
@@ -606,7 +606,8 @@ namespace Jube.Test.Service.EntityAnalysisModelList
             var resubmitted = await service.ResubmitAsync(saved.Id);
 
             resubmitted.Version.Should().Be(3);
-            resubmitted.Deleted.Should().Be(1,
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelList>()
+                .Where(w => w.Id == resubmitted.Id).Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(1,
                 "resubmitting a rejected delete must re-open approval without un-deleting it");
         }
 
@@ -652,7 +653,7 @@ namespace Jube.Test.Service.EntityAnalysisModelList
             await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModelList,
                 saved.Id, 1, tenantRegistryId);
 
-            var updateDto = NewDto(model.Guid, saved.Name);
+            var updateDto = NewDto(model.Guid, saved.Name!);
             updateDto.Id = saved.Id;
             updateDto.Active = true;
             await service.UpdateAsync(updateDto);
@@ -663,7 +664,7 @@ namespace Jube.Test.Service.EntityAnalysisModelList
             var retracted = await service.RetractAsync(saved.Id);
 
             retracted.Version.Should().Be(3);
-            retracted.Active.GetValueOrDefault().Should().Be(0, "retracting abandons the rejected edit and " +
+            retracted.Active.Should().BeFalse("retracting abandons the rejected edit and " +
                                                                 "restores the last approved content");
             retracted.Name.Should().Be(saved.Name);
 
@@ -694,7 +695,8 @@ namespace Jube.Test.Service.EntityAnalysisModelList
             var retracted = await service.RetractAsync(saved.Id);
 
             retracted.Version.Should().Be(3);
-            retracted.Deleted.GetValueOrDefault().Should().Be(0,
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelList>()
+                .Where(w => w.Id == retracted.Id).Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(0,
                 "retracting a rejected delete undeletes the record");
         }
 
@@ -714,7 +716,7 @@ namespace Jube.Test.Service.EntityAnalysisModelList
             await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModelList,
                 saved.Id, 2, tenantRegistryId);
 
-            var reviveDto = NewDto(model.Guid, saved.Name);
+            var reviveDto = NewDto(model.Guid, saved.Name!);
             reviveDto.Id = saved.Id;
             await service.UpdateAsync(reviveDto);
 
@@ -724,7 +726,8 @@ namespace Jube.Test.Service.EntityAnalysisModelList
             var retracted = await service.RetractAsync(saved.Id);
 
             retracted.Version.Should().Be(4);
-            retracted.Deleted.GetValueOrDefault().Should().Be(1,
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelList>()
+                .Where(w => w.Id == retracted.Id).Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(1,
                 "the last approved baseline was itself a delete, so retracting the rejected revive must restore " +
                 "that deleted state rather than refusing with 'no approved version to retract to'");
         }

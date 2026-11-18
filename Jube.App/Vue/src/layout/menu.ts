@@ -15,6 +15,8 @@ import type {Me} from '../auth/me'
 import {menuTree, type MenuNode} from './menuTree'
 
 function allowed(node: MenuNode, me: Me): boolean {
+  if (node.feature === 'svirfd' && !me.svirfd) return false
+
   const restricted = (node.permissions?.length ?? 0) > 0 || node.landlord !== undefined
 
   if (!restricted) return true

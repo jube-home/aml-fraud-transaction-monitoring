@@ -6,87 +6,98 @@ parent: Visualisations
 grand_parent: Configuration
 ---
 
-# Role Assignment Overview
+# Visualisations Security Policy
 
-Before embarking on this section of documentation it is incumbent to explain that the functionality aims to provide for
-a similar use case as Case isolation, and in the interests of being concise, the explanation of database duplication is
-not repeated.  
-It is suggested to review the core concepts under Configuration >>> Case Management >>> Security Policy beforehand.
+Before embarking on this section of documentation it is incumbent to explain that the functionality aims to provide for a similar use case as Case isolation, and in the interests of being concise, the explanation of database duplication is not repeated. It is suggested to review the core concepts under [Case Management Security Policy](../../CaseManagement/SecurityPolicy/index.html) beforehand.
 
-Every Visualisation entity supports the allocation of roles and therefore isolation of data where that entity is
-apportioned.
+Every Visualisation entity supports the allocation of roles and therefore isolation of data where that entity is apportioned.
 
-The role allocations are joined upon recall in the Visualisation page, and its embedding in the Case page, having the
-effect of that data not being in existence unless it is possible to join back to the user, through the role, through the
-allocation and to that Visualisation entity.
+The role allocations are joined upon recall in the Visualisation page, and its embedding in the Case page, having the effect of that data not being in existence unless it is possible to join back to the user, through the role, through the allocation and to that Visualisation entity.
 
-<!-- TODO(screenshot): file=visualisation-visualisation-administration.png route=/administration/visualisations state="Replace the Razor-era image VisualisationAdministration.png with the Vue Administration > Visualisations page showing the same state" -->
-![VisualisationAdministration.png](VisualisationAdministration.png)
+## Where it lives
 
-<!-- TODO(screenshot): file=visualisation-visualisation-administration-layout.png route=/administration/visualisations state="Replace the Razor-era image VisualisationAdministrationLayout.png with the Vue Administration > Visualisations page showing the same state" -->
-![VisualisationAdministrationLayout.png](VisualisationAdministrationLayout.png)
-
-Taking the Visualisation Entity, which is available by navigating Administration >>> Visualisation >>> Visualisation,
-then clicking on the Visualisation entry link:
-
-<!-- TODO(screenshot): file=visualisation-role-allocation.png route=/administration/visualisations state="Replace the Razor-era image RoleAllocation.png with the Vue Administration > Visualisations page showing the same state" -->
-![RoleAllocation](RoleAllocation.png)
-
-Note the Role Allocation widget below the Update and Delete buttons.
-
-The Role Allocation widget is common to the following Visualisation entities:
+Navigate through the menu to Administration, then Visualisation setup, and open a Visualisation Registry. The Roles section is presented with the record, beneath its form, and is common to the following Visualisation entities, each of which is allocated in its own record:
 
 * Visualisation.
 * Visualisation Parameter.
 * Visualisation Datasource.
 
-The Role allocations have different implications for data Visualisation entity isolation, as is explained in the section
-below.
+The role allocations have different implications for the isolation of each Visualisation entity, as is explained in the section below.
 
-The left-hand side of the Role Allocations widget shows available roles, while the right side shows roles that have been
-allocated. In the above, Administrator is allocated (this happens in migrations for the Administrator role in the
-Landlord Tenant only, and otherwise they need to be manually created).
+The Roles section presents two lists, Available roles and Assigned roles. Roles are moved between the two with Assign selected, Assign all, Unassign selected and Unassign all, and nothing is changed until Save changes is clicked, whereupon Roles saved is returned. For the examples created in migrations, Administrator is allocated (this happens in migrations for the Administrator role in the Landlord Tenant only, and otherwise allocations need to be manually created).
 
-# Visualisation Recall Page Isolation
+It follows that a newly created Visualisation, Parameter or Datasource is allocated to no role, and is not available for recall by anyone, its author included, until it has been allocated.
 
-The Visualisation Recall page is responsible for the invocation and full recall of datasources, and the rendering of
-responses from the database as with grids or charting as embedded.
+{% comment %}SHOT id=visualisations-security-roles-section
+     route=/administration/visualisations
+     steps=open-row:ExampleVisualisation, scroll-to:Roles
+     frame=record
+     state=the seeded ExampleVisualisation opened in Visualisation setup and scrolled to the Roles section, with Administrator in Assigned roles and the remaining roles in Available roles
+     conveys=each Visualisation entity carries its own allocation of roles, maintained as two lists beneath its form
+     alt=The Roles section of a Visualisation Registry showing a list of available roles and a list of assigned roles, with controls to move roles between them{% endcomment %}
+
+![The Roles section of a Visualisation Registry showing a list of available roles and a list of assigned roles, with controls to move roles between them](visualisations-security-roles-section.png)
+
+## Visualisation Recall Page Isolation
+
+The Visualisation Recall page is responsible for the invocation and full recall of Datasources, and the rendering of responses from the database as grids or charts.
 
 Visualisation Recall Page isolation exhibits the following behaviours:
 
-| Recall                                 | Role Allocation Isolation               | Description                                                                                                                                                                                                                                                                                                                                                                                                          |
-|----------------------------------------|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Visualisation Recall                   | Visualisation.                          | The availability of a Visualisation to a role, where the link to Visualisation recall will be hidden if the Role Allocation is not available.                                                                                                                                                                                                                                                                        |
-| Visualisation Parameter Entry          | Case Workflow and Case Workflow Filter. | The selective availability of Visualisation Parameters. In the event a Visualisation Parameter is hidden, the fallback value for that parameter is taken to be the default value configured. This functionality allows for a robust means to isolate data to given users, while providing wider search scope for administrators.                                                                                     |
-| Visualisation Datasource (Card) Recall | Case Workflow and Case Workflow Status. | A Visualisation is a collection of individual reports that have a common parameter set, and can be restricted in their recall based upon Role Allocation. In the case of direct recall of the API endpoints given no Role Allocation, the Visualisation is filtered out of the result and is not returned (HTTP 200, with an empty or partial list); the existence of an unallocated Visualisation is not disclosed. |
+| Recall                                 | Role Allocation Isolation                    | Description                                                                                                                                                                                                                                                                                                                                                                                                          |
+|----------------------------------------|----------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Visualisation Recall                   | Visualisation.                               | The availability of a Visualisation to a role, where the entry in the Visualisation directory will be hidden if the Role Allocation is not available.                                                                                                                                                                                                                                                                |
+| Visualisation Parameter Entry          | Visualisation and Visualisation Parameter.   | The selective availability of Visualisation Parameters. In the event a Visualisation Parameter is hidden, the fallback value for that parameter is taken to be the default value configured. This functionality allows for a robust means to isolate data to given users, while providing wider search scope for administrators.                                                                                     |
+| Visualisation Datasource (Card) Recall | Visualisation and Visualisation Datasource.  | A Visualisation is a collection of individual reports that have a common parameter set, and can be restricted in their recall based upon Role Allocation. In the case of direct recall of the API endpoints given no Role Allocation, the Visualisation is filtered out of the result and is not returned (HTTP 200, with an empty or partial list); the existence of an unallocated Visualisation is not disclosed. |
 
-All security policy is applied in the same manner to Visualisation where it is embedded in a Case Workflow, and it
-follows that Role Allocations must be sympathetic to the Case Workflow Role Allocations.
+A request made directly for the tile of a Datasource that is not allocated to the role of the user, or is not active, is answered with 404, in the same manner as for a Datasource that does not exist.
 
-<!-- TODO(docs): State the viewer model precisely: the datasource SQL runs for the viewer with the tenant allow-list built from the VIEWER permissions, not the author; a table the viewer cannot query directly is refused at run time even if the author could. Owner to confirm this is the intended wording. -->
-<!-- TODO(docs): Document that a viewer holding only 28 or 1 no longer receives the SQL text of a datasource (the Command field is blanked in the active-only list); only holders of 33 see it. -->
-<!-- TODO(docs): Document ReportStatementTimeoutSeconds, ReportMaximumCellBytes and ReportMaximumResultBytes (card fails with a localised refusal) and recommend a SELECT-only ReportConnectionString role. -->
-<!-- TODO(docs): Document the allow-list switch EnableVisualisationDatasourceTableAllowList (default True) and that deny mode has no tenant row filtering; link docs/Concepts/EnvironmentVariables. -->
+All security policy is applied in the same manner to a Visualisation where it is embedded in a Case Workflow, and it follows that Role Allocations must be sympathetic to the Case Workflow Role Allocations.
+
+## Permissions
+
+Role allocation operates alongside, and not in the place of, the permissions held by the role:
+
+| Permission | Name                                               | Allows                                                                                                    |
+|------------|----------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
+| 28         | View Visualisation Directory                       | The Visualisation menu item, and the recall of the Visualisations, Parameters and Datasources allocated.  |
+| 1          | Read Write Case                                    | The recall of an allocated Visualisation as the dashboard of a case.                                      |
+| 31         | Read Write Visualisation Administration            | Creating, changing and deleting a Visualisation Registry, and allocating roles to it.                     |
+| 32         | Read Write Visualisation Parameter Administration  | Creating, changing and deleting Parameters, and allocating roles to them.                                 |
+| 33         | Read Write Visualisation Datasource                | Creating, changing and deleting Datasources, checking and previewing their SQL, and allocating roles to them. |
+
+Any of permissions 31, 32 and 33 presents the Visualisation setup menu item under Administration.
+
+## The SQL runs for the viewer
+
+The SQL of a Datasource is written by its author, yet it is executed on behalf of the user recalling the Visualisation, henceforth the viewer, and it is the access of the viewer, not that of the author, which decides what is returned:
+
+* Each table named in the SQL must be in the list of tables that Datasources are allowed to query, and the viewer must hold the permission that table requires. A table the viewer is not permitted to query is refused upon recall, even where the author was permitted and saved the Datasource without error. It follows that the permissions of the roles to which a Datasource is allocated must be sympathetic to the tables its SQL reads.
+* Each table is exchanged, before the SQL is passed to the database, for a view of that table restricted to the rows of the tenant of the viewer. The SQL of a Datasource can never therefore return the rows of another tenant, however it is written.
+* The tables holding users, roles, permissions, tenants and HTTP Adaptation definitions can never be queried by a Datasource.
+* The SQL itself is returned only to a user holding permission 33. A viewer holding only permission 28 or permission 1 is given the tiles and never the SQL behind them.
+
+The list of tables is enforced by default, and is controlled by the EnableVisualisationDatasourceTableAllowList Environment Variable, which is True by default (see [Environment Variables](../../../Concepts/EnvironmentVariables/index.html)). Where it is set to False the SQL is instead checked only against a list of tables and functions that are denied, and in that mode there is no restriction of rows to the tenant. Setting it to False is not advised in an installation having more than one tenant.
+
+## Limits
+
+The execution of the SQL of a Datasource is bounded by the following Environment Variables, and a tile exceeding a limit fails with a refusal stating as much, in the language of the user interface:
+
+| Environment Variable          | Default  | Description                                                                              |
+|-------------------------------|----------|------------------------------------------------------------------------------------------|
+| ReportStatementTimeoutSeconds | 30       | The longest, in seconds, that the SQL may run before the database cancels it.            |
+| ReportMaximumCellBytes        | 1048576  | The largest single value, in bytes, that a row may return.                               |
+| ReportMaximumResultBytes      | 33554432 | The largest total result, in bytes, that a tile may read, being at most 5,000 rows.      |
 
 ## The reporting database role
 
-The SQL of a datasource (and case SQL, filters and samples) is user supplied. Jube checks it with a SQL validator and
-runs it in a read-only transaction with a statement timeout, but those are application controls. The database should
-refuse writes too. That is the job of `ReportConnectionString`. When it is not set, or uses the same login as
-`ConnectionString`, the SQL runs as the application login and Jube writes a warning to the log at startup (the warning
-carries no connection detail). The quickstart `docker-compose.yml` does this, deliberately, for evaluation only.
+The SQL of a Datasource (and case SQL, filters and samples) is user supplied. Jube checks it with a SQL validator and runs it in a read-only transaction with a statement timeout, yet those are application controls, and it follows that the database should refuse writes too, which is the purpose of the ReportConnectionString Environment Variable. When it is not set, or uses the same login as ConnectionString, the SQL runs as the application login and Jube writes a warning to the log at startup (the warning carries no connection detail). The quickstart `docker-compose.yml` does this, deliberately, for evaluation only.
 
-For production set `ReportConnectionString` to a login that can only read. The house convention is `jube_reporting` in
-`Jube.Cluster/database.sh` (the same statements appear for `reporting` in `docs/GettingStarted/CreateUsers.sql`): the
-login is created with a password, owns nothing, and holds `SELECT` on the tables in the `public` schema, with default
-privileges so that tables added by later migrations are readable. Jube never creates this login for you and no migration
-does.
+For production, ReportConnectionString is to be set to a login that can only read. The house convention is `jube_reporting` in `Jube.Cluster/database.sh` (the same statements appear for `reporting` in `docs/GettingStarted/CreateUsers.sql`), where the login is created with a password, owns nothing, and holds `SELECT` on the tables in the `public` schema, with default privileges so that tables added by later migrations are readable. Jube never creates this login and no migration does.
 
-The statements below create a narrower role that holds `SELECT` only on the tables the datasource allow-list can reach
-(the registry in `DynamicSqlTableAccess` plus the tenancy tables its templates join), and on only two columns of
-`UserRegistry`, so password hashes are unreadable even if the validator were bypassed. Replace the password and the
-database name. Because the same connection string also serves backtests, reprocessing, samples and case search, check
-that every table those features read is in the list before you adopt it; if in doubt use the house convention instead.
+The statements below create a narrower role that holds `SELECT` only on the tables the Datasource allow-list can reach (the registry in `DynamicSqlTableAccess` plus the tenancy tables its templates join), and on only two columns of `UserRegistry`, so password hashes are unreadable even if the validator were bypassed. The password and the database name are to be replaced. Keeping in mind that the same connection string also serves backtests, reprocessing, samples and case search, every table those features read must be confirmed as being in the list before the narrower role is adopted, and if in doubt the house convention is to be used instead.
+
+{% comment %}TODO(verify): owner to confirm the narrow role against the tables read by backtest, reprocessing, sample and case search before it is recommended over the house convention.{% endcomment %}
 
 ```sql
 CREATE ROLE jube_reporting_select LOGIN PASSWORD '<a long random password>'
@@ -298,10 +309,4 @@ GRANT SELECT ("Name", "RoleRegistryGuid") ON "UserRegistry" TO jube_reporting_se
 
 <!-- reporting-role-grants:end -->
 
-A table added to the allow-list later needs its own `GRANT SELECT`: the test
-`TheDocumentedSelectOnlyRoleGrantsExactlyTheTablesTheAllowListCanReach` fails until this list is updated. Then set
-`ReportConnectionString` to a connection string that uses `jube_reporting_select`. On a cluster, `jube_reporting` is
-already wired this way.
-
-<!-- TODO(docs): Owner to confirm the narrow role against backtest, reprocessing, sample and case-search reads before recommending it over the house convention. -->
-<!-- TODO(docs): Screenshot of the startup warning in the application log. -->
+A table added to the allow-list later needs its own `GRANT SELECT`, and the test `TheDocumentedSelectOnlyRoleGrantsExactlyTheTablesTheAllowListCanReach` fails until this list is updated. ReportConnectionString is then set to a connection string that uses `jube_reporting_select`. On a cluster, `jube_reporting` is already wired in this manner.

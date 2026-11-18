@@ -16,7 +16,7 @@ import {computed, ref} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/vue-query'
 import {ClipboardCheck} from 'lucide-vue-next'
-import FieldHelp from '../../components/FieldHelp.vue'
+import DecideCard from './DecideCard.vue'
 import {useToasts} from '../../stores/toasts'
 import {maximumComment, qaApi, qaKey, verdictKeys} from './qaApi'
 
@@ -65,12 +65,14 @@ function verdict(id: number | null): string {
 </script>
 
 <template>
-  <fieldset v-if="visible" class="fieldset" data-testid="case-qa">
-    <legend class="fieldset-legend">
-      <ClipboardCheck class="size-3.5" aria-hidden="true"/>
-      {{ t('caseDetail.qa.title') }}
-      <FieldHelp :label="t('caseDetail.qa.title')" :text="t('caseDetail.qa.hint')"/>
-    </legend>
+  <DecideCard v-if="visible"
+    :title="t('caseDetail.qa.title')"
+    :help="t('caseDetail.qa.hint')"
+    testid="case-qa"
+  >
+    <template #icon>
+      <ClipboardCheck class="size-5"/>
+    </template>
 
     <ul v-if="reviews.length > 0" class="flex flex-col gap-1 text-sm">
       <li v-for="(review, index) in reviews" :key="index">
@@ -88,18 +90,18 @@ function verdict(id: number | null): string {
       </li>
     </ul>
 
-    <div v-if="eligible" class="flex flex-col gap-2 pt-1">
-      <label class="flex items-center gap-2 text-sm">
-        <span class="w-40">{{ t('caseDetail.qa.analystVerdict') }}</span>
-        <select v-model="analyst" class="select select-sm" data-testid="case-qa-analyst">
+    <div v-if="eligible" class="flex flex-col gap-2">
+      <label class="flex flex-col gap-1 text-sm">
+        <span class="text-xs text-base-content/70">{{ t('caseDetail.qa.analystVerdict') }}</span>
+        <select v-model="analyst" class="select select-sm w-full" data-testid="case-qa-analyst">
           <option v-for="id in [1, 2, 3]" :key="id" :value="id">
             {{ verdict(id) }}
           </option>
         </select>
       </label>
-      <label v-if="hasRecommendation" class="flex items-center gap-2 text-sm">
-        <span class="w-40">{{ t('caseDetail.qa.agentVerdict') }}</span>
-        <select v-model="agent" class="select select-sm" data-testid="case-qa-agent">
+      <label v-if="hasRecommendation" class="flex flex-col gap-1 text-sm">
+        <span class="text-xs text-base-content/70">{{ t('caseDetail.qa.agentVerdict') }}</span>
+        <select v-model="agent" class="select select-sm w-full" data-testid="case-qa-agent">
           <option :value="0">{{ t('caseDetail.qa.noAgentVerdict') }}</option>
           <option v-for="id in [1, 2, 3]" :key="id" :value="id">
             {{ verdict(id) }}
@@ -125,5 +127,5 @@ function verdict(id: number | null): string {
         {{ t('caseDetail.qa.submit') }}
       </button>
     </div>
-  </fieldset>
+  </DecideCard>
 </template>

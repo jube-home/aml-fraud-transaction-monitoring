@@ -23,6 +23,12 @@ export interface RecordFactFormat {
 
 const longest = 240
 
+export function optionLabel(field: FormField | undefined, value: unknown): string | undefined {
+  if (typeof value !== 'string' && typeof value !== 'number') return undefined
+
+  return field?.options.find((candidate) => candidate.value === value)?.label.trim()
+}
+
 function factValue(field: FormField, value: unknown, format: RecordFactFormat): string {
   if (value === null || value === undefined || value === '') return ''
 

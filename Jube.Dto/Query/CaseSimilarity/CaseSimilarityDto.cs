@@ -56,5 +56,9 @@ namespace Jube.Dto.Query.CaseSimilarity
         [Description("The most similar cases, most alike first.")]
         [Key(7)]
         public List<CaseSimilarNeighbourDto> Neighbours { get; set; } = [];
+
+        [Description("False when the installation has no CaseSimilarityHashingKey, in which case no case is ever compared.")]
+        [Key(8)]
+        public bool Enabled { get; set; } = true;
     }
 }

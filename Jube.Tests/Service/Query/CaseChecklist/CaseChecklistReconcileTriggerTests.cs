@@ -282,7 +282,7 @@ namespace Jube.Test.Service.Query.CaseChecklist
 
             var saved = await cases.UpdateAsync(Move(caseId, current, 0, Users.Holder));
 
-            saved.Locked.Should().Be(1);
+            saved.Locked.Should().BeTrue();
             (await dbContext.Case.FirstAsync(w => w.Id == caseId)).LockedUser.Should().Be(Users.Holder);
             (await dbContext.CaseChecklistItem.CountAsync(w => w.CaseId == caseId)).Should().Be(0);
         }

@@ -53,7 +53,7 @@ the agent is told, and they are marked **Cross-Domain Reach** on each agent belo
   fragment is compiled, filed under platform reliability rather than beside the rules;
 * **sibling slices of one artefact**, where a datasource needs the registry it hangs off and the parameters it binds to.
 
-Domains follow the application's own navigation menu in `_Layout.cshtml`, because that is hand-authored information
+Domains follow the application's own navigation menu, because that is hand-authored information
 architecture with the permission gate already attached to each entry. A slice is split three ways into Inspector, Test
 Bench and Author **only where it exceeds seven tools**; smaller slices stay whole, and small related slices are packed
 together up to the same budget. The split is by what an agent may change, not by what it may see: the Author of a slice

@@ -15,7 +15,7 @@ import { dict, many, rows } from '../api/wireRuntime'
 
 type Decoder = (value: unknown) => unknown
 
-export const typesHash = 'E35D696ABEAD07A3'
+export const typesHash = '802B351A6833B809'
 
 function d_Jube_App_Endpoints_ExhaustiveSearchInstanceSetActiveRequest(value: unknown): unknown {
   if (value == null) return value
@@ -713,44 +713,6 @@ function d_Jube_CaseRisk_Journal_VelocityReport(value: unknown): unknown {
   return {
     hourByWeekday: a[0] ?? null,
     bursts: ((v) => many(v, d_Jube_CaseRisk_Journal_Burst))(a[1] ?? null),
-  }
-}
-
-function d_Jube_Data_Poco_EntityAnalysisModelSynchronisationSchedule(value: unknown): unknown {
-  if (value == null) return value
-  const a = value as unknown[]
-  return {
-    id: a[0] ?? null,
-    createdDate: a[1] ?? null,
-    scheduleDate: a[2] ?? null,
-    tenantRegistryId: a[3] ?? null,
-    createdUser: a[4] ?? null,
-    tenantRegistry: d_Jube_Data_Poco_TenantRegistry(a[5] ?? null),
-    entityAnalysisModelId: a[6] ?? null,
-  }
-}
-
-function d_Jube_Data_Poco_TenantRegistry(value: unknown): unknown {
-  if (value == null) return value
-  const a = value as unknown[]
-  return {
-    id: a[0] ?? null,
-    name: a[1] ?? null,
-    createdDate: a[2] ?? null,
-    createdUser: a[3] ?? null,
-    updatedDate: a[4] ?? null,
-    updatedUser: a[5] ?? null,
-    deletedDate: a[6] ?? null,
-    deletedUser: a[7] ?? null,
-    active: a[8] ?? null,
-    locked: a[9] ?? null,
-    deleted: a[10] ?? null,
-    landlord: a[11] ?? null,
-    version: a[12] ?? null,
-    httpAdaptationUrl: a[13] ?? null,
-    httpAdaptationTimeoutMilliseconds: a[14] ?? null,
-    httpAdaptationValidateSsl: a[15] ?? null,
-    svirfdRemoteLookupsEnabled: a[16] ?? null,
   }
 }
 
@@ -4802,6 +4764,7 @@ function d_Jube_Dto_Query_CaseSimilarity_CaseSimilarityDto(value: unknown): unkn
     open: a[5] ?? null,
     enoughToJudge: a[6] ?? null,
     neighbours: ((v) => many(v, d_Jube_Dto_Query_CaseSimilarity_CaseSimilarNeighbourDto))(a[7] ?? null),
+    enabled: a[8] ?? null,
   }
 }
 
@@ -6487,6 +6450,11 @@ function d_Jube_Dto_Query_Graph_GraphEdgeDefinitionDto(value: unknown): unknown 
     kindId: a[2] ?? null,
     restricted: a[3] ?? null,
     visible: a[4] ?? null,
+    iconName: a[5] ?? null,
+    fromNodeKey: a[6] ?? null,
+    toNodeKey: a[7] ?? null,
+    fromNodeIcon: a[8] ?? null,
+    toNodeIcon: a[9] ?? null,
   }
 }
 
@@ -8829,6 +8797,15 @@ function d_Jube_Dto_Repository_GraphRegistry_GraphRegistryDto(value: unknown): u
   }
 }
 
+function d_Jube_Dto_Repository_GraphRegistryEdge_GraphIconDto(value: unknown): unknown {
+  if (value == null) return value
+  const a = value as unknown[]
+  return {
+    name: a[0] ?? null,
+    label: a[1] ?? null,
+  }
+}
+
 function d_Jube_Dto_Repository_GraphRegistryEdge_GraphRegistryEdgeDto(value: unknown): unknown {
   if (value == null) return value
   const a = value as unknown[]
@@ -8858,6 +8835,9 @@ function d_Jube_Dto_Repository_GraphRegistryEdge_GraphRegistryEdgeDto(value: unk
     version: a[22] ?? null,
     deletedUser: a[23] ?? null,
     deletedDate: a[24] ?? null,
+    iconName: a[25] ?? null,
+    fromNodeIcon: a[26] ?? null,
+    toNodeIcon: a[27] ?? null,
   }
 }
 
@@ -10334,8 +10314,6 @@ export const decoders: Record<string, Decoder> = {
   'Jube.CaseRisk.Journal.ProgressionReport': d_Jube_CaseRisk_Journal_ProgressionReport,
   'Jube.CaseRisk.Journal.ProgressionSeries': d_Jube_CaseRisk_Journal_ProgressionSeries,
   'Jube.CaseRisk.Journal.VelocityReport': d_Jube_CaseRisk_Journal_VelocityReport,
-  'Jube.Data.Poco.EntityAnalysisModelSynchronisationSchedule': d_Jube_Data_Poco_EntityAnalysisModelSynchronisationSchedule,
-  'Jube.Data.Poco.TenantRegistry': d_Jube_Data_Poco_TenantRegistry,
   'Jube.Data.Query.DynamicResultsSchema.DynamicResultsSchemaDto': d_Jube_Data_Query_DynamicResultsSchema_DynamicResultsSchemaDto,
   'Jube.Data.Query.GetAskJoobyStartupStatsQuery.GetAskJoobyStartupStatsQueryDto': d_Jube_Data_Query_GetAskJoobyStartupStatsQuery_GetAskJoobyStartupStatsQueryDto,
   'Jube.Dto.ApplicationLogEntry.ApplicationLogEntryDto': d_Jube_Dto_ApplicationLogEntry_ApplicationLogEntryDto,
@@ -10890,6 +10868,7 @@ export const decoders: Record<string, Decoder> = {
   'Jube.Dto.Repository.Erasure.SubjectExportTransactionDto': d_Jube_Dto_Repository_Erasure_SubjectExportTransactionDto,
   'Jube.Dto.Repository.ExhaustiveSearchInstancePromotedTrialInstance.ExhaustiveSearchInstancePromotedTrialInstanceDto': d_Jube_Dto_Repository_ExhaustiveSearchInstancePromotedTrialInstance_ExhaustiveSearchInstancePromotedTrialInstanceDto,
   'Jube.Dto.Repository.GraphRegistry.GraphRegistryDto': d_Jube_Dto_Repository_GraphRegistry_GraphRegistryDto,
+  'Jube.Dto.Repository.GraphRegistryEdge.GraphIconDto': d_Jube_Dto_Repository_GraphRegistryEdge_GraphIconDto,
   'Jube.Dto.Repository.GraphRegistryEdge.GraphRegistryEdgeDto': d_Jube_Dto_Repository_GraphRegistryEdge_GraphRegistryEdgeDto,
   'Jube.Dto.Repository.GraphRegistryEdge.GraphRegistryEdgeKeyDto': d_Jube_Dto_Repository_GraphRegistryEdge_GraphRegistryEdgeKeyDto,
   'Jube.Dto.Repository.GraphRegistryRole.GraphRegistryRoleDto': d_Jube_Dto_Repository_GraphRegistryRole_GraphRegistryRoleDto,

@@ -200,7 +200,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
         [Description("Registers a new OpenTelemetryLogCounter rule. Not idempotent -- calling twice creates " +
                      "two rows.")]
         [ServiceOperation("OpenTelemetryLogCounterCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<LogCounterPoco> InsertAsync(
+        public async Task<OpenTelemetryLogCounterDto> InsertAsync(
             [Description("The rule to create.")] OpenTelemetryLogCounterDto? model,
             CancellationToken token = default)
         {
@@ -244,7 +244,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
                     log.Info($"OpenTelemetryLogCounter.Create: created Id={saved.Id} name={saved.Name} active={saved.Active} user={userName}");
                 }
 
-                return saved;
+                return OpenTelemetryLogCounterMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -316,7 +316,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
 
         [Description("Updates an existing OpenTelemetryLogCounter rule in place. Idempotent.")]
         [ServiceOperation("OpenTelemetryLogCounterUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<LogCounterPoco> UpdateAsync(
+        public async Task<OpenTelemetryLogCounterDto> UpdateAsync(
             [Description("The rule to update. Id selects the row; identity/audit fields are server-owned and " +
                          "ignored.")]
             OpenTelemetryLogCounterDto? model,
@@ -375,7 +375,7 @@ namespace Jube.Service.OpenTelemetryLogCounter
                     log.Info($"OpenTelemetryLogCounter.Update: updated Id={saved.Id} name={saved.Name} active={saved.Active} user={userName}");
                 }
 
-                return saved;
+                return OpenTelemetryLogCounterMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

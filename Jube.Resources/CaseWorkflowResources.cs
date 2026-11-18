@@ -31,6 +31,7 @@ namespace Jube.Resources
         public const string RiskPriorStrengthOutOfRange = nameof(RiskPriorStrengthOutOfRange);
         public const string RiskBaseRatePriorOutOfRange = nameof(RiskBaseRatePriorOutOfRange);
         public const string DailyGoalOutOfRange = nameof(DailyGoalOutOfRange);
+        public const string ServiceLevelTargetOutOfRange = nameof(ServiceLevelTargetOutOfRange);
         public const string RiskDeadlineLaneDaysOutOfRange = nameof(RiskDeadlineLaneDaysOutOfRange);
         public const string RiskKeyHistoryHalfLifeOutOfRange = nameof(RiskKeyHistoryHalfLifeOutOfRange);
         public const string RiskImpactWeightsInvalid = nameof(RiskImpactWeightsInvalid);

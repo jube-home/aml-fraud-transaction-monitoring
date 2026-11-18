@@ -73,6 +73,9 @@
     <data name="KeyMaxLength" xml:space="preserve">
     <value>کلید زیادہ سے زیادہ {0} حروف کی ہونی چاہیے۔</value>
   </data>
+    <data name="IconInvalid" xml:space="preserve">
+    <value>یہ آئیکن گراف کے لیے دستیاب Lucide آئیکنز میں شامل نہیں ہے۔</value>
+  </data>
     <data name="AmountKeyRequired" xml:space="preserve">
     <value>رقم کے بہاؤ کے لیے رقم کی کلید درکار ہے۔</value>
   </data>

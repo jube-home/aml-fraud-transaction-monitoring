@@ -278,22 +278,26 @@ namespace Jube.Test.Service.Query.FormModel
 
         [Theory]
         [MemberData(nameof(Areas))]
-        public void NoRadioSetOffersMoreThanThreeChoicesAndEverySpanIsOneOrTwo(string area)
+        public void NoRadioSetOffersMoreThanFourChoicesAndEverySpanIsOneOrTwo(string area)
         {
             Registry.TryGet(area, out var model).Should().BeTrue();
 
-            model!.Fields.Where(field => field.Widget == "radio" && field.Options.Count > 3)
+            model!.Fields.Where(field => field.Widget == "radio" && field.Options.Count > 4)
                 .Select(field => field.Name).Should().BeEmpty(
-                    $"{area} has a radio set with more than three choices, which belongs in a select");
+                    $"{area} has a radio set with more than four choices, which belongs in a select");
             model.Fields.Where(field => field.Span is < 1 or > 2).Select(field => field.Name).Should().BeEmpty();
         }
 
         [Fact]
-        public void ARadioSetWithMoreThanThreeChoicesIsDrawnAsASelectAndTwoOrThreeStayRadios()
+        public void ARadioSetWithMoreThanFourChoicesIsDrawnAsASelectAndFourOrFewerStayRadios()
         {
+            Registry.TryGet("EntityAnalysisModelTtlCounter", out var counter).Should().BeTrue();
+
+            counter!.Fields.Single(field => field.Name == "ttlCounterInterval").Widget.Should().Be("select");
+
             Registry.TryGet("EntityAnalysisModelActivationRule", out var model).Should().BeTrue();
 
-            model!.Fields.Single(field => field.Name == "bypassSuspendInterval").Widget.Should().Be("select");
+            model!.Fields.Single(field => field.Name == "bypassSuspendInterval").Widget.Should().Be("radio");
 
             Registry.TryGet("EntityAnalysisModelResponseElevationRange", out var range).Should().BeTrue();
             range!.Fields.Single(field => field.Name == "notificationTypeId").Widget.Should().Be("radio");

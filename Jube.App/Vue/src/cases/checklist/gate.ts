@@ -18,7 +18,13 @@ import {
   type ChecklistView,
 } from './types'
 
-const emptyGate: ChecklistGate = {names: [], blocked: false, override: null, canOverride: false}
+const emptyGate: ChecklistGate = {
+  names: [],
+  blocked: false,
+  override: null,
+  own: false,
+  canOverride: false,
+}
 
 export function openItemNames(view: ChecklistView | undefined): string[] {
   if (!view) return []
@@ -38,11 +44,13 @@ export function deriveGate(
   const names = openItemNames(view)
   const override = view.override ?? null
   const unresolved = names.length > 0 && override === null
+  const own = override !== null && override.grantedUser === context.userName
 
   return {
     names,
-    blocked: unresolved,
+    blocked: unresolved || (names.length > 0 && own),
     override,
+    own,
     canOverride: unresolved && context.permitted && !context.mine,
   }
 }

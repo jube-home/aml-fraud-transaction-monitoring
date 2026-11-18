@@ -572,7 +572,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
         [Description("Registers a new Sanction check under a Model in the caller's tenant. Not idempotent -- " +
                      "calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelSanctionCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<SanctionPoco> InsertAsync(
+        public async Task<EntityAnalysisModelSanctionDto> InsertAsync(
             [Description("The Sanction check to create.")]
             EntityAnalysisModelSanctionDto? model,
             CancellationToken token = default)
@@ -616,7 +616,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
                              $"user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelSanctionMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -697,7 +697,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
         [Description("Updates an existing Sanction check in the caller's tenant, identified by its Id. " +
                      "Idempotent -- repeating the same update has no further effect beyond incrementing Version.")]
         [ServiceOperation("EntityAnalysisModelSanctionUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<SanctionPoco> UpdateAsync(
+        public async Task<EntityAnalysisModelSanctionDto> UpdateAsync(
             [Description("The Sanction check to update. Id selects the row; identity/tenant/audit fields are " +
                          "server-owned and ignored.")]
             EntityAnalysisModelSanctionDto? model,
@@ -757,7 +757,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
                         $"EntityAnalysisModelSanction.Update: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelSanctionMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -902,7 +902,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
                      "approval cycle without requiring an edit. Use after a rejection was explained and the " +
                      "maker still wants the same change (including a delete) approved.")]
         [ServiceOperation("EntityAnalysisModelSanctionResubmit", OperationKind.Write, Idempotent = false)]
-        public async Task<SanctionPoco> ResubmitAsync(
+        public async Task<EntityAnalysisModelSanctionDto> ResubmitAsync(
             [Description("Numeric identifier of the Sanction check to resubmit.")]
             int id,
             [Description("Optional note explaining why this is being resubmitted.")]
@@ -944,7 +944,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
                         $"EntityAnalysisModelSanction.Resubmit: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelSanctionMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -979,7 +979,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
                      "undeleting it, if the rejected change was a delete) without opening a new approval cycle. " +
                      "Use when the maker agrees with the rejection and wants to abandon the change.")]
         [ServiceOperation("EntityAnalysisModelSanctionRetract", OperationKind.Write, Idempotent = false)]
-        public async Task<SanctionPoco> RetractAsync(
+        public async Task<EntityAnalysisModelSanctionDto> RetractAsync(
             [Description("Numeric identifier of the Sanction check to retract.")]
             int id,
             [Description("Optional note explaining why this is being retracted.")]
@@ -1021,7 +1021,7 @@ namespace Jube.Service.EntityAnalysisModelSanction
                         $"EntityAnalysisModelSanction.Retract: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelSanctionMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

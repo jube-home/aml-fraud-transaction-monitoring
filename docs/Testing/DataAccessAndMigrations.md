@@ -68,6 +68,32 @@ Database.
 |-------------------------------------------------------------------------------|------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `TheScriptBackfillsValidatesAndRetiresWithoutTouchingWhatTheEngineWroteAsync` | Fact | The standalone script backfills ArchiveKey for every Archive Key field over the history, validates the counts and sample values, dedupes and builds the request key identity, retires the Case Key Journal expression indexes without dropping them, and is idempotent. |
 
+### SmokeTestSeedTests
+
+`Jube.Test.Migrations.SmokeTestSeedTests` — 6 tests. Category: Service. Collection: Database.
+
+These tests read the smoke test seed (see Smoke Test Seed Data) and return without asserting when the database does not hold it, so an installation without the demonstration model is unaffected. None of them asserts a time.
+
+| Test                                                                                       | Kind | Verifies                                                                                                                                                                                                  |
+|--------------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `EveryScenarioInTheCatalogueHasExactlyTheCasesItPromisesAsync`                             | Fact | Every scenario listed on the catalogue page has exactly the number of cases it promises, and no seeded case belongs to a scenario the page does not list, so the seed and the documentation cannot drift. |
+| `EverySmokeCaseHasItsTransactionAndKeysExceptTheOneThatMustNotAsync`                       | Fact | Every smoke case has an archived transaction and its archive keys, except the single case that is meant to have no transaction.                                                                           |
+| `TheVisibilityScenariosHideAndShowTheCasesTheyAreMeantToAsync`                             | Fact | The status and workflow grants that hide a case from every role, from the analyst role or from Administrator are in place, and the inactive and deleted statuses are marked as such.                      |
+| `TheChecklistScenariosCarryTheItemsAndOverridesThatDriveTheGateAsync`                      | Fact | Each checklist scenario carries the open, done, overdue or orphaned items and the live, own, stale, consumed or wrong-status override that produces its gate behaviour.                                   |
+| `TheLockCloseHoldAndDiaryScenariosHaveTheShapeTheCatalogueDescribesAsync`                  | Fact | The lock, close, suspend, legal hold, diary and payment hold scenarios have the flags, reasons, dates and held payment states the catalogue describes.                                                    |
+| `TheDatabaseRefusesTheStatesTheCatalogueSaysItRefusesAsync`                                | Fact | The database refuses a second open transition, a second view row, a second checklist item and an event for a case that does not exist, each rolled back, as the catalogue says it does.                   |
+
+### ScaleSeedScriptTests
+
+`Jube.Test.Migrations.ScaleSeedScriptTests` — 2 tests. Category: Service. Collection: Database.
+
+These tests run the real scale seed script at 2,000 transactions and 300 cases, remove what it created when they finish, and leave alone any larger scale data already present in the database. They assert counts and relationships only and never a duration, so a slow build agent cannot fail them.
+
+| Test                                                                                                   | Kind | Verifies                                                                                                                                                                                                                       |
+|--------------------------------------------------------------------------------------------------------|------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `TheScriptBuildsTheRequestedVolumesLinksEveryCaseToATransactionAndStopsOnASecondRunAsync`              | Fact | The script creates the requested number of transactions with three archive keys each, opens a case for each alerted transaction with one transition and one risk assessment, grants its workflow, and does nothing on a second run. |
+| `EveryStatementOfTheBenchmarkFileIsValidAgainstTheSchemaAsync`                                         | Fact | Every statement of the benchmark file plans against the current schema once its sample keys are found, so a renamed column or table fails here rather than when someone next runs the benchmark.                              |
+
 ### AbstractionCalculationCoderOnlyMigrationTests
 
 `Jube.Test.Migrations.AbstractionCalculationCoderOnlyMigrationTests` — 26 tests. Category: Unit. Collection:
@@ -758,8 +784,6 @@ Category: Service. Collection: Database.
 | `TheAdministratorRoleHoldsAllThreeAfterwardsAsync`                                         | Fact | The administrator role holds all three afterwards.                                                   |
 | `TheCatalogueNamesTheThreePermissionsDistinctlyAsync`                                      | Fact | The catalogue names the three permissions distinctly.                                                |
 
-<!-- TODO(docs): owner to confirm this catalogue entry after the first run of the new tests (they were written, not run). -->
-
 ### BackfillEntityApprovalForForceOverridesTests
 
 `Jube.Test.Migrations.BackfillEntityApprovalForForceOverridesTests` — 3 tests (one Theory of 4 cases and 2 Facts).
@@ -770,8 +794,6 @@ Category: Service. Collection: Database.
 | `EveryLiveForceOverrideStaysLiveWhateverTheApprovalsRequiredAsync`                           | Theory | With ApprovalsRequired 1, 2, 3 and 5 every live Force override (model and rule level) stays in the approved projection and a removed one does not. |
 | `TheBackfillStampsDistinctSystemApproversOnlyOnLiveForceRowsAndIsRepeatableAsync`            | Fact   | Distinct approvers Administrator, Administrator2, Administrator3; no rows for Suppress or removed Force; running twice adds nothing.               |
 | `ARequirementRaisedAboveTheStampedApproversWithholdsTheOverrideUntilMoreApprovalsExistAsync` | Fact   | The documented limit: a requirement above the stamped approver count withholds the override.                                                       |
-
-<!-- TODO(docs): Counts written by hand; regenerate the catalogue. -->
 
 ### BoundedJsonPathTests
 

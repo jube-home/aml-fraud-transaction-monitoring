@@ -23,6 +23,7 @@ namespace Jube.Validations.Repository.CaseWorkflowStatus
     public sealed class CaseWorkflowStatusDtoValidator : AbstractValidator<CaseWorkflowStatusDto>
     {
         private const int MaxNameLength = 256;
+        private const int MaxDwellMinutes = 525_600;
         private static readonly int[] priorityValues = [1, 2, 3, 4, 5];
         private static readonly int[] httpEndpointTypeIds = [1, 2];
         private static readonly int[] notificationTypeIds = [1, 2];
@@ -136,6 +137,12 @@ namespace Jube.Validations.Repository.CaseWorkflowStatus
                 .When(w => w.EscalationTriggerId.HasValue)
                 .WithMessage(_ => localiser[CaseWorkflowStatusResources.EscalationTargetRequired])
                 .WithErrorCode("EscalationTargetRequired");
+
+            RuleFor(p => p.MaxDwellMinutes)
+                .InclusiveBetween(1, MaxDwellMinutes)
+                .When(p => p.MaxDwellMinutes.HasValue)
+                .WithMessage(_ => localiser[CaseWorkflowStatusResources.MaxDwellMinutesOutOfRange])
+                .WithErrorCode("MaxDwellMinutesOutOfRange");
 
             RuleFor(p => p.EscalationThreshold)
                 .Must((dto, threshold) => EscalationThresholdInRange(dto.EscalationTriggerId, threshold))

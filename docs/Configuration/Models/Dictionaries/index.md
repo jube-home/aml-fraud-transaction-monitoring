@@ -8,193 +8,167 @@ grand_parent: Configuration
 
 # Dictionary
 
-Dictionary is similar to List functionality, except, rather than allow only exist matching on a string value, they pair
-a key from the payload in model invocation, and return a value. Dictionary is a good way to enrich payload data with
-small amounts of external data without relying on Inline scripts or complex integrations.
+Dictionary is similar to List functionality, except, rather than allow only exist matching on a string value, they pair a key from the payload in model invocation, and return a value. Dictionary is a good way to enrich payload data with small amounts of external data without relying on Inline scripts or complex integrations.
 
-The main advantage of Dictionary is that they can be added from the user interface one by one or as part of a CSV text
-file upload, which affords the end use the ability to create these lookups without any technical intervention (it can
-also be added via the database table or API).
+The main advantage of Dictionary is that they can be added from the user interface one by one, or in bulk from a CSV text file through the API, which affords the end user the ability to create these lookups without any technical intervention (it can also be added via the database table).
 
-Dictionary are populated during model synchronisation and stored in the engines memory, to afford extremely fast lookups
-in real-time. It follows that it is not especially well suited for very large datasets, but it should capably handle a
-few hundred thousand entries without any noticeable degradation in performance. It follows that the Dictionary are
-available for lookup by key in the applications memory.
+## Where it lives
 
-During processing For each Dictionary KVP for the model, the following process takes place:
+Navigate through the menu to Models, open the model, then the Dictionary hub card. Creating, changing, approving and deleting a Dictionary follows the common manner described in [Child Objects](../../../Navigation/ChildObjects/index.html).
 
-* For the Dictionary KVP entry, there will be a field name specified that will serve as the key for the lookup. The
-  first step is to ensure that the data key name specified exists in the payload being processed. In the event that the
-  data name is not available in the payload, an INFO message will be written to the logs while the value will be set as
-  zero and added to a separate collection). For a key to be looked up in the dictionary the key value must be in the
-  transaction or event (although it might have come from an Inline Script, Function as well as the Payload).
+Dictionary is no longer an item in the main menu. As with [Lists](../Lists/index.html), the delegating of this otherwise administrative function to customer service orientated roles is retained by permission instead: a role granted only permission 4, Read Write Dictionary, is presented with the Models menu item and can maintain Dictionaries.
+
+## Behaviour
+
+Dictionary are populated during model synchronisation and stored in the memory of the engine, to afford extremely fast lookups in real-time. It follows that it is not especially well suited for very large datasets, but it should capably handle a few hundred thousand entries without any noticeable degradation in performance. It follows that the Dictionary are available for lookup by key in the memory of the application.
+
+During processing, for each Dictionary of the model, the following process takes place:
+
+* For the Dictionary, there will be a field name specified that will serve as the key for the lookup. The first step is to ensure that the data key name specified exists in the payload being processed. In the event that the data name is not available in the payload, an INFO message will be written to the logs while the value will be set as zero and added to a separate collection. For a key to be looked up in the dictionary the key value must be in the transaction or event (although it might have come from an Inline Script or Inline Function as well as the Payload).
 * Having established that a value exists for the key, the value of that key is extracted from the payload in process.
-* Using the key value extracted from the payload, the key value is used to lookup against a dictionary of all key values
-  for this Dictionary. Firstly, the existence of the key inside the Dictionary is checked, where if the key does not
-  exist, the value is evaluated as zero, else, the value for that key from the Dictionary values is returned.
+* Using the key value extracted from the payload, the key value is used to lookup against a dictionary of all key values for this Dictionary. Firstly, the existence of the key inside the Dictionary is checked, where if the key does not exist, the value is evaluated as zero, else, the value for that key from the Dictionary values is returned.
 
 There will always be a value added to the payload, even if it is zero in the case of a match not being made.
 
-For example, a Dictionary arrangement will be created that will pair an AccountID (from the transaction payload) with a
-Credit Limit (stored in the Key Value Pair collection of the Dictionary).
+## Fields
 
-Like Lists, the Dictionary does not require explicit synchronisation, happening perpetually. It follows that the
-Dictionary and KVP value pairs will be available for model invocation almost straight away.
+| Value            | Description                                                                                                                                                                                 | Example     |
+|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------|
+| Name             | The name of the Dictionary, by which rules refer to it. Required, limited to 256 characters, and unique within the Model without regard to case.                                            | CreditLimit |
+| Active           | Whether the Dictionary is available for lookup during model invocation. Active is off for a new Dictionary and must be switched on.                                                         | True        |
+| Locked           | Whether the Dictionary is protected from change.                                                                                                                                            | False       |
+| Data name        | The field from the data payload to pair to the Dictionary during model invocation, for the purpose of looking for a value from the key. Required, limited to 256 characters, and selected from the fields of the model. | AccountId   |
+| Response payload | Whether the value looked up is returned in the Dictionary element of the response, as described in [Response Payload](../../../Navigation/ResponsePayload/index.html). Off by default.      | True        |
 
-Navigate to the Dictionary page from the main menu:
+As rules refer to a Dictionary as `Dictionary.Name`, a name without spaces is advised.
 
-<!-- TODO(screenshot): file=model-references-dictionary-in-menu-header.png route=/models/references/dictionaries state="replace the Razor-era image DictionaryInMenuHeader.png with the Vue UI showing the same step" -->
-![Image](DictionaryInMenuHeader.png)
+{% comment %}SHOT id=models-dictionaries-record
+     route=/models
+     steps=open-default-model, open-hub:Dictionary, open-first-row
+     frame=record
+     state=the VolumeThresholdByAccountId Dictionary of the default model opened at its Properties form, showing the Identity group with the name and the Active and Locked switches, the Lookup group with the Data name, and the Output group with Response payload
+     conveys=a Dictionary is a short record, a name, the payload field it is looked up by and whether the value is returned, the pairs being kept beneath it
+     alt=The Properties form of a Dictionary record showing its Identity group with the name, its Lookup group with the Data name and its Output group with Response payload{% endcomment %}
 
-Click on the tree node in the top left hand corner of the screen to create a new Dictionary collection definition:
+![The Properties form of a Dictionary record showing its Identity group with the name, its Lookup group with the Data name and its Output group with Response payload](models-dictionaries-record.png)
 
-<!-- TODO(screenshot): file=model-references-empty-dictionary-definition.png route=/models/references/dictionaries state="replace the Razor-era image EmptyDictionaryDefinition.png with the Vue UI showing the same step" -->
-![Image](EmptyDictionaryDefinition.png)
+## Key Value Pairs
 
-The Dictionary has the following properties:
+The Key Value Pairs of a Dictionary are maintained in the Values panel, which is presented once the Dictionary has been created and is open.
 
-| Value  | Description                                                                                                                         |
-|--------|-------------------------------------------------------------------------------------------------------------------------------------|
-| Lookup | The field from the data payload to pair to Dictionary during model invocation, for the purpose of looking for a value from the key. |
+{% comment %}SHOT id=models-dictionaries-values
+     route=/models
+     steps=open-default-model, open-hub:Dictionary, open-first-row, scroll-to:Values
+     frame=record
+     state=a Dictionary of the default model opened, with the Values panel showing several Key Value Pairs in differing states: approved, awaiting approval and one with a Delete expiry
+     conveys=each key is paired with a numeric value in a grid beneath the Dictionary, and each pair carries its own approval state
+     alt=A Dictionary opened beneath its model with the Values panel listing each key alongside its value, delete expiry, state, approvals and actions{% endcomment %}
 
-The Dictionary name is required and limited to 256 characters, and must be unique within the Model. The Lookup field
-name is likewise required and limited to 256 characters.
+![A Dictionary opened beneath its model with the Values panel listing each key alongside its value, delete expiry, state, approvals and actions](models-dictionaries-values.png)
 
-The Key on a Key Value Pair is likewise required and limited to 256 characters. The Value is required, but zero is an
-accepted Value (it is not treated as an empty entry).
+The panel has a box to find a value, an Add value button, and Approve all pending. Pairs are shown 25 to a page, with the following columns:
 
-Complete the page with the details as above or as below:
+| Column              | Description                                                                                                              |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------|
+| Kvp key             | The Key, being the value that will be matched with the payload. Required, and limited to 256 characters.                 |
+| Kvp value           | The Value, being a number, that will be returned for availability to further processing. Required, although zero is an accepted Value (it is not treated as an empty entry). |
+| Delete expiry (UTC) | The date and time at which the pair expires, if any.                                                                     |
+| State               | Approved, Awaiting approval, Deletion awaiting approval, Rejected or Deletion rejected.                                  |
+| Approvals           | The approvals recorded against the number required.                                                                      |
+| Made by             | The user having made the change.                                                                                         |
+| Checker note        | The note given by the checker upon approving or rejecting.                                                               |
+| Return note         | The note given by the maker upon resubmitting or retracting.                                                             |
+| Actions             | Edit and Delete, and for the purposes of approval, Approve, Reject, Resubmit and Retract.                                |
 
-<!-- TODO(screenshot): file=model-references-template-values-for-dictionary-definition.png route=/models/references/dictionaries state="replace the Razor-era image TemplateValuesForDictionaryDefinition.png with the Vue UI showing the same step" -->
-![Image](TemplateValuesForDictionaryDefinition.png)
+Pairs are added and edited in the row itself, committing with Save or abandoning with Cancel. The updating and deletion of a Key Value Pair follows the same process as if it were a List Value: deleting seeks confirmation under the heading Delete this value?, and the pair thereafter stays listed as a pending deletion until a checker approves it. The controls of the panel, the notices they return and the states in which the panel may be found are those of the Values panel of a List, as described in [Lists](../Lists/index.html), the one difference being that Kvp value must be a number, failing which the head of the panel states that Kvp value must be a number and nothing is sent.
 
-Click Add to create the container for the Key Value Pairs:
+The clean installation carries the Dictionary VolumeThresholdByAccountId in the default model, keyed upon AccountId, by which the panel may be followed. It holds the pairs ACC-441 with 5000, ACC-02 with 20000, ACC-778 with 2500 and ACC-915 with 2500, each Approved, and CASH-BRANCH-07 with 50000, which is Awaiting approval. It follows that a transaction for the account ACC-441 is given `Dictionary.VolumeThresholdByAccountId` as 5000, that a transaction for an account not in the Dictionary is given 0, and that a transaction for CASH-BRANCH-07 is likewise given 0 until the pair has been approved by a second user. In reading the value, 0 is therefore to be taken as either a pair whose value is 0 or the absence of a pair, the two not being distinguishable in a rule.
 
-<!-- TODO(screenshot): file=model-references-added-dictionary-definition-for-key-value-pairs.png route=/models/references/dictionaries state="replace the Razor-era image AddedDictionaryDefinitionForKeyValuePairs.png with the Vue UI showing the same step" -->
-![Image](AddedDictionaryDefinitionForKeyValuePairs.png)
+### Delete Expiry Date
 
-Locate the the Add Value button:
+A Key Value Pair may optionally be given a Delete Expiry Date. It is entered in the local time of the browser and stored as UTC.
 
-<!-- TODO(screenshot): file=model-references-add-value-button.png route=/models/references/dictionaries state="replace the Razor-era image AddValueButton.png with the Vue UI showing the same step" -->
-![Image](AddValueButton.png)
+As with Lists, Delete Expiry Date has the same effect as deleting the Key Value Pair: once the date and time entered is reached, the pair is automatically excluded from lookups and from the grid, without an explicit delete ever being actioned. Leaving Delete Expiry Date blank, which is the default, means the pair never expires and will need to be removed manually if it is to stop being available. The date and time entered must be in the future.
 
-Click the Add Value button to expose the Key Value template:
+### Validation
 
-<!-- TODO(screenshot): file=model-references-exposed-key-value-pair-template.png route=/models/references/dictionaries state="replace the Razor-era image ExposedKeyValuePairTemplate.png with the Vue UI showing the same step" -->
-![Image](ExposedKeyValuePairTemplate.png)
+A Key Value Pair is validated in the server, and is rejected where:
 
-Upon clicking the Add Value button, the template for the creation of Key Value Pairs will be exposed. The left most
-value is the Key. The Key is the value that will be matched with the payload, the value is what will be returned for
-availability to further processing. Complete the Key with the AccountID value in the transaction payload (e.g. Test1):
+* The Key is empty.
+* The Key is longer than 256 characters.
+* The Value is empty, or is not a number.
+* The Delete Expiry Date is not in the future.
+* The Key already exists in the Dictionary.
 
-<!-- TODO(screenshot): file=model-references-complete-key-template.png route=/models/references/dictionaries state="replace the Razor-era image CompleteKeyTemplate.png with the Vue UI showing the same step" -->
-![Image](CompleteKeyTemplate.png)
+On rejection the reason is displayed above the grid, and the entry remains open for editing so that it can be corrected. The reasons given are: Please enter a key for this dictionary., The key must be 256 characters or fewer., Please enter a value for this dictionary., Delete Expiry Date must be greater than the current date and time., and This key already exists in the dictionary.
 
-The right most value is the value that will be returned as a consequence of the lookup AccountID = Test1 (in this
-example 123456.78). Complete the Value with 1234567.89, which will represent the Credit Limit being looked up for this
-example:
+A Dictionary itself is validated upon Create and Save changes, the Name being refused with A name is required., The name must be 256 characters or fewer. or This name already exists., and the Data name with A data name is required. or The data name must be 256 characters or fewer. A new Dictionary is presented with Active and Response payload off. A Dictionary named in the text of a rule cannot be deleted while it is so used, as described under Deleting an entity that is in use in [Child Objects](../../../Navigation/ChildObjects/index.html).
 
-<!-- TODO(screenshot): file=model-references-complete-value-template.png route=/models/references/dictionaries state="replace the Razor-era image CompleteValueTemplate.png with the Vue UI showing the same step" -->
-![Image](CompleteValueTemplate.png)
+A Key must be unique within its Dictionary. Matching is case-sensitive and exact, consistent with how the Dictionary is looked up at run time. A Key is still considered to exist, and so still blocks a duplicate, for as long as its own deletion is sitting with a checker awaiting approval, or was rejected and has not yet been retracted or resubmitted by the maker: in both cases the rule engine continues to treat the pair as live until the deletion is actually approved, so the same Key cannot be re-added in the meantime. Once a deletion is approved, the same Key may be added again like any other new entry.
 
-The Key Value Pair entry form also exposes an optional Delete Expiry Date field, using a date and time picker.
+## Approval and synchronisation
 
-As with Lists, Delete Expiry Date has the same effect as deleting the Key Value Pair: once the date and time entered is
-reached, the pair is automatically excluded from lookups and from the grid, without an explicit delete ever being
-actioned. Leaving Delete Expiry Date blank, which is the default, means the pair never expires and will need to be
-removed manually if it is to stop being available. The date and time entered must be in the future; an attempt to set a
-value in the past is rejected by the server, with the reason displayed above the grid.
+Like Lists, the Dictionary does not require explicit synchronisation, happening perpetually on every pass of model synchronisation (every ten seconds by default, as set by the ModelSynchronisationWait Environment Variable).
 
-This applies to any field on the Key Value Pair entry, not only Delete Expiry Date: an empty Key or Value is likewise
-rejected server-side. On rejection the entry is automatically re-opened for editing and highlighted in red, in addition
-to the message shown above the grid, making it clear exactly which entry needs correcting.
+The engine takes up only what has been approved, as described in [Maker Checker](../../../Concepts/MakerChecker/index.html). It follows that the Dictionary and its Key Value Pairs will be available for model invocation almost straight away upon being approved, and not before, and that a pair whose deletion is awaiting approval continues to be looked up until the deletion is approved.
 
-A Key must be unique within its Dictionary: the server rejects an attempt to add a Key that already exists, exactly
-as above. Matching is case-sensitive and exact, consistent with how the Dictionary is looked up at run time. A Key is
-still considered to exist, and so still blocks a duplicate, for as long as its own deletion is sitting with a checker
-awaiting approval, or was rejected and has not yet been retracted or resubmitted by the maker: in both cases the rule
-engine continues to treat the pair as live until the deletion is actually approved, so the same Key cannot be re-added
-in the meantime. Once a deletion is approved, the same Key may be added again like any other new entry.
+Approve all pending approves every pair awaiting approval in the Dictionary in one action, for a checker having many pairs to pass.
 
-Commit by clicking on the Tick icon:
+## Uploading Key Value Pairs
 
-<!-- TODO(screenshot): file=model-references-tick-confirm-button.png route=/models/references/dictionaries state="replace the Razor-era image TickConfirmButton.png with the Vue UI showing the same step" -->
-![Image](TickConfirmButton.png)
+Key Value Pairs can be loaded in bulk from a CSV file through the API, by a multipart POST of the file to `/api/EntityAnalysisModelDictionaryCsvFileUpload/{dictionaryId}`.
 
-Or to cancel the creation of the Value click the opposing icon:
+{% comment %}TODO(verify): the Vue user interface has no control to upload a CSV file to a Dictionary (no component calls EntityAnalysisModelDictionaryCsvFileUpload), and the Download CSV Template link was removed with the Razor pages. Owner to decide whether the upload control is to be restored; this section then needs the name of the control.{% endcomment %}
 
-<!-- TODO(screenshot): file=model-references-circle-cancel-button.png route=/models/references/dictionaries state="replace the Razor-era image CircleCancelButton.png with the Vue UI showing the same step" -->
-![Image](CircleCancelButton.png)
+There is no column header in the file. Each line follows the format Key,Value, optionally followed by a comma and a Delete Expiry Date. The Delete Expiry Date must be in .NET's round-trip ("O") format, which is enforced strictly, with no other date format accepted, to avoid the day/month ambiguity inherent in free-form date parsing of a text file. For example, a Key Value Pair with no expiry and one with a Delete Expiry Date:
 
-Upon the successful commit of the Key Value, it will appear updated:
+```
+Test1,123456.78
+Test2,5000,2027-01-01T00:00:00.0000000Z
+```
 
-<!-- TODO(screenshot): file=model-references-updated-key-value-pair-for-dictionary.png route=/models/references/dictionaries state="replace the Razor-era image UpdatedKeyValuePairForDictionary.png with the Vue UI showing the same step" -->
-![Image](UpdatedKeyValuePairForDictionary.png)
+Where the Delete Expiry Date column is omitted or left blank on a new Key Value Pair, it never expires. Where an existing Key Value Pair is updated by the upload and the Delete Expiry Date column is omitted altogether (rather than present but blank), its existing Delete Expiry Date is left unchanged.
 
-Keeping in mind that explicit synchronisation is not required, repeat the HTTP POST to
-endpoint [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc)
-for response as follows:
+A line whose key is empty, longer than 256 characters or contains a control character, or whose Delete Expiry Date is not in that format, is logged and skipped, and the remaining lines are still imported, which is to say that the import is not atomic. The cells of the file are stored as data whatever they contain, including text that starts with `=`, `+`, `-` or `@`.
 
-<!-- TODO(screenshot): file=model-references-k-v-p-returned-in-response-payload.png route=/models/references/dictionaries state="replace the Razor-era image KVPReturnedInResponsePayload.png with the Vue UI showing the same step" -->
-![Image](KVPReturnedInResponsePayload.png)
+In the event of a conflict on the key the pair is updated, otherwise it is inserted, subject to the uniqueness and pending deletion rules described above. If the Key, Value and Delete Expiry Date (where the column is present) of an uploaded line all already match an existing entry exactly, nothing is written for that line and no new approval cycle is opened, so repeatedly uploading the same file is harmless. If the Key matches an entry that is still awaiting approval of its own deletion, or was rejected and has not yet been retracted or resubmitted by the maker, the line is skipped rather than inserted as a new entry, as the Key is still considered to exist until that deletion is actually approved.
 
-Keep in mind that the AccountId in the POST body was of key Test1, the value of 123456.789 has been returned by matching
-during processing.
+## Example
 
-The updating and deletion of the Key Value pair follows the same process as it it were a List, documented beforehand.
+A Dictionary arrangement is created to pair an AccountId (from the transaction payload) with a Credit Limit (stored in the Key Value Pair collection of the Dictionary). The Dictionary is named CreditLimit, with a Data name of AccountId, Response payload switched on, and a single Key Value Pair having a Key of Test1 and a Value of 123456.78.
 
-It is also possible to upload a file of Key Value pair to the following specification given the downloadable template in
-the page.
+Keeping in mind that explicit synchronisation is not required, and upon the Dictionary and the pair being approved, make an HTTP POST to the model with the example JSON, where the AccountId is Test1, as provided in `Http/Transaction.http`:
 
-Each line follows the format Key,Value, optionally followed by a comma and a Delete Expiry Date. The Delete Expiry Date
-must be in .NET's round-trip ("O") format, for example `2027-01-01T00:00:00.0000000Z` - this is enforced strictly, with
-no other date format accepted, to avoid the day/month ambiguity inherent in free-form date parsing of a text file. Where
-the Delete Expiry Date column is omitted or left blank on a new Key Value Pair, it never expires. Where an existing Key
-Value Pair is updated by the upload and the Delete Expiry Date column is omitted altogether (rather than present but
-blank), its existing Delete Expiry Date is left unchanged. A template CSV file, illustrating both a Key Value Pair with
-no expiry and one with a Delete Expiry Date, can be downloaded directly from the Dictionary page using the Download CSV
-Template link found next to the Select Files control.
+```http
+POST https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc
+Content-Type: application/json
+X-API-KEY: <an API key>
+```
 
-A line whose key is empty, longer than 256 characters or contains a control character, or whose Delete Expiry Date is
-not in that format, is logged and skipped, and the remaining lines are still imported: the import is not atomic. The
-cells of the file are stored as data whatever they contain, including text that starts with `=`, `+`, `-` or `@`.
+The value is returned in the Dictionary element of the response, abbreviated here:
 
-If an uploaded line's Key, Value and Delete Expiry Date (where the column is present) all already match an existing
-entry exactly, nothing is written for that line and no new approval cycle is opened, so repeatedly uploading the same
-file is harmless. If the Key matches an entry that is still awaiting approval of its own deletion, or was rejected and
-has not yet been retracted or resubmitted by the maker, the line is skipped rather than inserted as a new entry: the
-Key is still considered to exist until that deletion is actually approved.
+```json
+{
+  "EntityAnalysisModelInstanceEntryGuid": "...",
+  "ResponseElevation": { },
+  "Dictionary": {
+    "CreditLimit": 123456.78
+  }
+}
+```
 
-The control to upload a file is the button Select Files:
+{% comment %}TODO(verify): replace the abbreviated response above with one captured from a running system{% endcomment %}
 
-<!-- TODO(screenshot): file=model-references-select-files-button.png route=/models/references/dictionaries state="replace the Razor-era image SelectFilesButton.png with the Vue UI showing the same step" -->
-![Image](SelectFilesButton.png)
+Keep in mind that the AccountId in the POST body was of key Test1, and the value of 123456.78 has been returned by matching during processing. The value is henceforth available to rules as `Dictionary.CreditLimit`, as in the Coder:
 
-Either drag the file to the area show above, or click the button titled Select files, navigating to the file:
-
-<!-- TODO(screenshot): file=model-references-file-selection-of-example-c-s-v.png route=/models/references/dictionaries state="replace the Razor-era image FileSelectionOfExampleCSV.png with the Vue UI showing the same step" -->
-![Image](FileSelectionOfExampleCSV.png)
-
-Clicking Open, which will happen implicitly if the file has been dragged and dropped, will both upload the file and
-process, adding each row as a new Dictionary Key Value pair:
-
-<!-- TODO(screenshot): file=model-references-merged-file-on-key.png route=/models/references/dictionaries state="replace the Razor-era image MergedFileOnKey.png with the Vue UI showing the same step" -->
-![Image](MergedFileOnKey.png)
-
-In the event of a conflict on the key, as here, it will be updated, otherwise inserted (subject to the uniqueness and
-pending-deletion rules described above).
+```vb
+If (Payload.CurrencyAmount > Dictionary.CreditLimit) Then
+  Return True
+End If
+```
 
 ## Permissions and security
 
-<!-- TODO(docs): confirm the permission number and wording against the running menu and the Roles page -->
-Reading and writing this area requires permission 4. A user without it receives 403, and an unauthenticated request
-receives 401. Every mutation also needs the antiforgery token for cookie sessions.
+Reading and writing Dictionaries and Key Value Pairs, including the upload of a CSV file, requires permission 4, Read Write Dictionary. A user without it receives 403, and an unauthenticated request receives 401. Every mutation also needs the antiforgery token for cookie sessions.
 
-<!-- TODO(docs): owner to review this security paragraph, it was written from code, not from a running system -->
-Dictionaries and their key value pairs are scoped to the caller's tenant through the parent Model; a foreign Dictionary
-id behaves like a missing one. CSV cells are stored as data (formula and markup keys included) and file names are
-sanitised and never used as paths.
-
-<!-- TODO(docs): changes are subject to maker-checker approval when ApprovalsRequired is on; describe the Approvals tab, Resubmit and Retract for Dictionaries from the real UI -->
-<!-- TODO(docs): every statement above about the Razor-era page layout (tree on the left, Add button, version pane) may be stale after the Vue port; re-read the whole page against the new UI -->
-<!-- TODO(docs): add the Arabic and Urdu right-to-left note: identifiers, paths and code stay left-to-right inside right-to-left text -->
+Dictionaries and their Key Value Pairs are scoped to the tenant of the caller through the parent Model, such that a foreign Dictionary id behaves like a missing one. CSV cells are stored as data (formula and markup keys included), never executed, and file names are sanitised and never used as paths.

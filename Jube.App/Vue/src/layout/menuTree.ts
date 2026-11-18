@@ -38,6 +38,8 @@ import {
 
 export type LandlordRule = 'any' | 'only'
 
+export type MenuFeature = 'svirfd'
+
 export interface MenuNode {
   key: string
   labelKey?: string
@@ -47,6 +49,7 @@ export interface MenuNode {
   routeName?: string
   permissions?: number[]
   landlord?: LandlordRule
+  feature?: MenuFeature
   children?: MenuNode[]
 }
 
@@ -79,7 +82,7 @@ export const menuTree: MenuNode[] = [
     routeName: 'models',
     permissions: [
       3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 37,
-      45, 46, 47, 48, 60, 73, 74,
+      40, 45, 46, 47, 48, 60, 73, 74,
     ],
   },
   {
@@ -109,6 +112,7 @@ export const menuTree: MenuNode[] = [
     icon: Radar,
     routeName: 'svirfd',
     permissions: [72],
+    feature: 'svirfd',
   },
   {
     key: 'watcher',
@@ -121,7 +125,7 @@ export const menuTree: MenuNode[] = [
     key: 'admin',
     labelKey: 'nav.admin',
     icon: Settings,
-    permissions: [6, 18, 31, 32, 33, 34, 35, 36, 38, 49, 51, 78, 79, 80],
+    permissions: [6, 18, 31, 32, 33, 34, 35, 36, 38, 49, 50, 51, 78, 79, 80],
     landlord: 'any',
     children: [
       {

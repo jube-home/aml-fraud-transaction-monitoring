@@ -190,7 +190,9 @@ export async function stubExhaustive(
     return route.fulfill({contentType: 'image/svg+xml', body: chart})
   })
 
-  await page.route('**/api/Me', (route) => route.fulfill({json: me}))
+  await page.route('**/api/Me', (route) =>
+    route.fulfill({json: {...me, permissions: [14]}}),
+  )
   await page.route('**/api/ServiceChange/Stream', (route) =>
     route.fulfill({contentType: 'text/event-stream', body: ': keep-alive\n\n'}),
   )

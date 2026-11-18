@@ -55,7 +55,7 @@
     <value>Ce nom existe déjà.</value>
   </data>
     <data name="FunctionScriptRequired" xml:space="preserve">
-    <value>Un script de fonction est requis lorsque le type de calcul est Coder.</value>
+    <value>Un script de fonction est requis.</value>
   </data>
     <data name="FunctionScriptMaxLength" xml:space="preserve">
     <value>Le script de fonction ne doit pas dépasser {0} caractères.</value>

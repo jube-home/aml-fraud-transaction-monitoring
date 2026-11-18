@@ -42,5 +42,25 @@ namespace Jube.Dto.Query.Graph
         [Description("True when the caller may see this definition's restricted edges.")]
         [Key(4)]
         public bool Visible { get; set; }
+
+        [Description("Lucide icon name for the link, or null for a plain line.")]
+        [Key(5)]
+        public string? IconName { get; set; }
+
+        [Description("Node type of the from node: the configured from node key, else the from key.")]
+        [Key(6)]
+        public string? FromNodeKey { get; set; }
+
+        [Description("Node type of the to node: the configured to node key, else the to key.")]
+        [Key(7)]
+        public string? ToNodeKey { get; set; }
+
+        [Description("Lucide icon name configured for the from node type, or null to choose one from the key name.")]
+        [Key(8)]
+        public string? FromNodeIcon { get; set; }
+
+        [Description("Lucide icon name configured for the to node type, or null to choose one from the key name.")]
+        [Key(9)]
+        public string? ToNodeIcon { get; set; }
     }
 }

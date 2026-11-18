@@ -13,6 +13,7 @@
 
 using System.Globalization;
 using Jube.Charting.Core;
+using Jube.Charting.Diagrams.Icons;
 using Jube.Charting.Svg;
 using Jube.Charting.Text;
 using Jube.Charting.Theme;
@@ -258,6 +259,15 @@ namespace Jube.Charting.Diagrams
                         Arrow(w, e, thickness);
                     }
 
+                    var edgeIcon = showLabels && GraphIcons.Exists(src.Icon) ? src.Icon : null;
+
+                    if (edgeIcon is not null)
+                    {
+                        w.Empty("circle", ("class", "nb"), ("cx", Num.F(e.LabelX)), ("cy", Num.F(e.LabelY)),
+                            ("r", "10"));
+                        Icon(w, e.LabelX, e.LabelY, 13, edgeIcon);
+                    }
+
                     var text = count > 1
                         ? "×" + count.ToString(CultureInfo.InvariantCulture) +
                           (weight.HasValue ? " " + NumberFormat.Value(weight.Value) : string.Empty)
@@ -269,21 +279,27 @@ namespace Jube.Charting.Diagrams
                                     ? NumberFormat.Value(weight.Value)
                                     : null;
 
+                    if (edgeIcon is not null && count <= 1)
+                    {
+                        text = null;
+                    }
+
                     if (showLabels && text is not null)
                     {
                         var shown = TextMetrics.Truncate(text, 90, 11);
                         var half = TextMetrics.Width(shown, 11) / 2 + 2;
-                        var ly = e.LabelY;
+                        var ly = e.LabelY + (edgeIcon is null ? 0 : 17);
 
                         foreach (var nudge in new[] { 0.0, -14, 14, -28, 28 })
                         {
+                            var baseline = e.LabelY + (edgeIcon is null ? 0 : 17);
                             var clash = placedLabels.Any(r => e.LabelX - half < r.X1 && e.LabelX + half > r.X0 &&
-                                                              e.LabelY + nudge - 11 < r.Y1 &&
-                                                              e.LabelY + nudge + 3 > r.Y0);
+                                                              baseline + nudge - 11 < r.Y1 &&
+                                                              baseline + nudge + 3 > r.Y0);
 
                             if (!clash)
                             {
-                                ly = e.LabelY + nudge;
+                                ly = baseline + nudge;
                                 break;
                             }
                         }
@@ -356,6 +372,7 @@ namespace Jube.Charting.Diagrams
                     {
                         Glyph(w, p, "nb", shape, src.Dashed);
                         Glyph(w, p, "nt", shape, src.Dashed);
+                        Icon(w, p, src.Icon);
 
                         w.Element("text", TextMetrics.Truncate(p.Label, NetworkGeometry.LabelWidth, 11, true),
                             ("class", "lbl ctr"), ("x", Num.F(p.X)), ("y", Num.F(p.Y + p.Height / 2 + 12)));
@@ -658,6 +675,33 @@ namespace Jube.Charting.Diagrams
 
                     return;
             }
+        }
+
+        private static void Icon(SvgWriter w, PlacedGraphNode p, string? name)
+        {
+            Icon(w, p.X, p.Y, Math.Min(p.Width, p.Height) * 0.7, name);
+        }
+
+        private static void Icon(SvgWriter w, double x, double y, double size, string? name)
+        {
+            var elements = GraphIcons.Resolve(name);
+
+            if (elements is null)
+            {
+                return;
+            }
+
+            var transform = "translate(" + Num.F(x - size / 2) + " " + Num.F(y - size / 2) + ") scale(" +
+                            Num.F(size / 24) + ")";
+
+            w.Open("g", ("class", "ic"), ("transform", transform), ("aria-hidden", "true"));
+
+            foreach (var element in elements)
+            {
+                w.Empty(element.Tag, element.Attributes.Select(a => (a.Name, (string?)a.Value)).ToArray());
+            }
+
+            w.Close();
         }
 
         private static void Ring(SvgWriter w, PlacedGraphNode p, int series)

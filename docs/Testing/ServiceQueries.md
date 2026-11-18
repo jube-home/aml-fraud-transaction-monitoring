@@ -438,7 +438,7 @@ Category: Unit.
 
 ### CaseSimilarityVectorReaderTests
 
-`Jube.Test.Service.Query.CaseSimilarity.CaseSimilarityVectorReaderTests` — 10 tests.
+`Jube.Test.Service.Query.CaseSimilarity.CaseSimilarityVectorReaderTests` — 11 tests.
 Category: Unit.
 
 | Test                                                                        | Kind   | Verifies                                                                                 |
@@ -457,7 +457,7 @@ Category: Unit.
 
 ### CaseSimilarityJobTests
 
-`Jube.Test.Service.Query.CaseSimilarity.CaseSimilarityJobTests` — 6 tests.
+`Jube.Test.Service.Query.CaseSimilarity.CaseSimilarityJobTests` — 7 tests.
 Category: Service. Collection: Database.
 
 | Test                                                                              | Kind | Verifies                                                                                    |
@@ -867,11 +867,9 @@ Service. Collection: Database.
 | `CatalogueRegistersUniquePascalCaseNoUnderscoreNames`                                  | Fact   | Catalogue registers unique pascal case no underscore names.                                        |
 | `PermissionDeniedMessageResolvesForFrenchCultureAsync`                                 | Fact   | Permission denied message resolves for french culture.                                             |
 | `DisplayOfAnotherWorkflowIsNotFoundForTheCaseEvenWhenTheCallerHoldsEveryRoleAsync`     | Fact   | A display of another workflow is not found for the case even when the caller holds every role.     |
+| `TheSeededExampleDisplayRendersOnceTheDialectMigrationHasReplacedItsInlineStyleAsync`  | Fact   | The seeded example display renders once the dialect migration has replaced its inline style.       |
 
 ## Case workflow form entry by case key value
-
-| `TheSeededExampleDisplayRendersOnceTheDialectMigrationHasReplacedItsInlineStyleAsync` | Fact | The seeded example
-display renders once the dialect migration has replaced its inline style. |
 
 ### CaseWorkflowFormEntryByCaseKeyValueServiceTests
 
@@ -1019,8 +1017,7 @@ Service. Collection: Database.
 
 ### EntityAnalysisModelActivationRuleOverrideQueryServiceTests
 
-`Jube.Test.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery.EntityAnalysisModelActivationRuleOverrideQueryServiceTests` —
-22 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Query.EntityAnalysisModelActivationRuleOverrideQuery.EntityAnalysisModelActivationRuleOverrideQueryServiceTests` — 22 tests. Category: Service. Collection: Database.
 
 | Test                                                       | Kind   | Verifies                                                      |
 |------------------------------------------------------------|--------|---------------------------------------------------------------|
@@ -1232,8 +1229,7 @@ Collection: Database.
 
 ### EntityAnalysisModelSynchronisationNodeStatusEntriesServiceTests
 
-`Jube.Test.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEntries.EntityAnalysisModelSynchronisationNodeStatusEntriesServiceTests` —
-20 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Query.EntityAnalysisModelSynchronisationNodeStatusEntries.EntityAnalysisModelSynchronisationNodeStatusEntriesServiceTests` — 20 tests. Category: Service. Collection: Database.
 
 | Test                                                                         | Kind   | Verifies                                                                           |
 |------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------|
@@ -1279,8 +1275,7 @@ Service. Collection: Database.
 
 ### EntityAnalysisPotentialMultiPartStringNamesServiceTests
 
-`Jube.Test.Service.Query.EntityAnalysisPotentialMultiPartStringNames.EntityAnalysisPotentialMultiPartStringNamesServiceTests` —
-17 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Query.EntityAnalysisPotentialMultiPartStringNames.EntityAnalysisPotentialMultiPartStringNamesServiceTests` — 17 tests. Category: Service. Collection: Database.
 
 | Test                                                                                | Kind   | Verifies                                                                                  |
 |-------------------------------------------------------------------------------------|--------|-------------------------------------------------------------------------------------------|
@@ -1306,8 +1301,7 @@ Service. Collection: Database.
 
 ### EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeServiceTests
 
-`Jube.Test.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataType.EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeServiceTests` —
-19 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Query.EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataType.EntityAnalysisRequestXPathInlineScriptNamesByStringIntegerFloatDataTypeServiceTests` — 19 tests. Category: Service. Collection: Database.
 
 | Test                                                                              | Kind   | Verifies                                                                                |
 |-----------------------------------------------------------------------------------|--------|-----------------------------------------------------------------------------------------|
@@ -1383,8 +1377,7 @@ tests. Category: Service. Collection: Database.
 
 ### ExhaustiveSearchInstancePromotedTrialInstanceConfusionServiceTests
 
-`Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceConfusion.ExhaustiveSearchInstancePromotedTrialInstanceConfusionServiceTests` —
-22 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceConfusion.ExhaustiveSearchInstancePromotedTrialInstanceConfusionServiceTests` — 22 tests. Category: Service. Collection: Database.
 
 | Test                                                               | Kind   | Verifies                                                               |
 |--------------------------------------------------------------------|--------|------------------------------------------------------------------------|
@@ -1415,8 +1408,7 @@ tests. Category: Service. Collection: Database.
 
 ### ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramServiceTests
 
-`Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogram.ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramServiceTests` —
-14 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogram.ExhaustiveSearchInstancePromotedTrialInstanceErrorHistogramServiceTests` — 14 tests. Category: Service. Collection: Database.
 
 | Test                                                            | Kind   | Verifies                                                             |
 |-----------------------------------------------------------------|--------|----------------------------------------------------------------------|
@@ -1439,8 +1431,7 @@ tests. Category: Service. Collection: Database.
 
 ### ExhaustiveSearchInstancePromotedTrialInstanceLearningCurveServiceTests
 
-`Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceLearningCurve.ExhaustiveSearchInstancePromotedTrialInstanceLearningCurveServiceTests` —
-17 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceLearningCurve.ExhaustiveSearchInstancePromotedTrialInstanceLearningCurveServiceTests` — 17 tests. Category: Service. Collection: Database.
 
 | Test                                                                        | Kind   | Verifies                                                                           |
 |-----------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------|
@@ -1466,8 +1457,7 @@ tests. Category: Service. Collection: Database.
 
 ### ExhaustiveSearchInstancePromotedTrialInstancePredictedActualServiceTests
 
-`Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstancePredictedActual.ExhaustiveSearchInstancePromotedTrialInstancePredictedActualServiceTests` —
-18 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstancePredictedActual.ExhaustiveSearchInstancePromotedTrialInstancePredictedActualServiceTests` — 18 tests. Category: Service. Collection: Database.
 
 | Test                                                                   | Kind   | Verifies                                                                      |
 |------------------------------------------------------------------------|--------|-------------------------------------------------------------------------------|
@@ -1494,8 +1484,7 @@ tests. Category: Service. Collection: Database.
 
 ### ExhaustiveSearchInstancePromotedTrialInstanceQueryServiceTests
 
-`Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceQuery.ExhaustiveSearchInstancePromotedTrialInstanceQueryServiceTests` —
-17 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceQuery.ExhaustiveSearchInstancePromotedTrialInstanceQueryServiceTests` — 17 tests. Category: Service. Collection: Database.
 
 | Test                                                                   | Kind   | Verifies                                                                    |
 |------------------------------------------------------------------------|--------|-----------------------------------------------------------------------------|
@@ -1521,8 +1510,7 @@ tests. Category: Service. Collection: Database.
 
 ### ExhaustiveSearchInstancePromotedTrialInstanceRocServiceTests
 
-`Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceRoc.ExhaustiveSearchInstancePromotedTrialInstanceRocServiceTests` —
-17 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceRoc.ExhaustiveSearchInstancePromotedTrialInstanceRocServiceTests` — 17 tests. Category: Service. Collection: Database.
 
 | Test                                                            | Kind   | Verifies                                                            |
 |-----------------------------------------------------------------|--------|---------------------------------------------------------------------|
@@ -1548,8 +1536,7 @@ tests. Category: Service. Collection: Database.
 
 ### ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionServiceTests
 
-`Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescription.ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionServiceTests` —
-22 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Query.ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescription.ExhaustiveSearchInstancePromotedTrialInstanceVariablePrescriptionServiceTests` — 22 tests. Category: Service. Collection: Database.
 
 | Test                                                           | Kind   | Verifies                                                         |
 |----------------------------------------------------------------|--------|------------------------------------------------------------------|
@@ -1580,8 +1567,7 @@ tests. Category: Service. Collection: Database.
 
 ### ExhaustiveSearchInstancePromotionHistoryServiceTests
 
-`Jube.Test.Service.Query.ExhaustiveSearchInstancePromotionHistory.ExhaustiveSearchInstancePromotionHistoryServiceTests` —
-18 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Query.ExhaustiveSearchInstancePromotionHistory.ExhaustiveSearchInstancePromotionHistoryServiceTests` — 18 tests. Category: Service. Collection: Database.
 
 | Test                                                                     | Kind   | Verifies                                                                       |
 |--------------------------------------------------------------------------|--------|--------------------------------------------------------------------------------|
@@ -1608,8 +1594,7 @@ tests. Category: Service. Collection: Database.
 
 ### ExhaustiveSearchInstanceTrialInstanceVariableServiceTests
 
-`Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable.ExhaustiveSearchInstanceTrialInstanceVariableServiceTests` —
-26 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariable.ExhaustiveSearchInstanceTrialInstanceVariableServiceTests` — 26 tests. Category: Service. Collection: Database.
 
 | Test                                                             | Kind   | Verifies                                                           |
 |------------------------------------------------------------------|--------|--------------------------------------------------------------------|
@@ -1644,8 +1629,7 @@ tests. Category: Service. Collection: Database.
 
 ### ExhaustiveSearchInstanceTrialInstanceVariableVarianceServiceTests
 
-`Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariableVariance.ExhaustiveSearchInstanceTrialInstanceVariableVarianceServiceTests` —
-20 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Query.ExhaustiveSearchInstanceTrialInstanceVariableVariance.ExhaustiveSearchInstanceTrialInstanceVariableVarianceServiceTests` — 20 tests. Category: Service. Collection: Database.
 
 | Test                                                           | Kind   | Verifies                                                         |
 |----------------------------------------------------------------|--------|------------------------------------------------------------------|
@@ -1712,8 +1696,7 @@ Category: Service. Collection: Database.
 
 ### ExhaustiveSearchInstanceVariableStatisticsServiceTests
 
-`Jube.Test.Service.Query.ExhaustiveSearchInstanceVariableStatistics.ExhaustiveSearchInstanceVariableStatisticsServiceTests` —
-15 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Query.ExhaustiveSearchInstanceVariableStatistics.ExhaustiveSearchInstanceVariableStatisticsServiceTests` — 15 tests. Category: Service. Collection: Database.
 
 | Test                                                                                  | Kind   | Verifies                                                                                      |
 |---------------------------------------------------------------------------------------|--------|-----------------------------------------------------------------------------------------------|
@@ -1821,31 +1804,20 @@ Category: Service. Collection: Database.
 ### FormModelOptionTests
 
 `Jube.Test.Service.Query.FormModel.FormModelOptionTests` — 11 tests. Category: Unit.
-| `EveryOptionIsInsideTheValueDomainEveryValidatorRuleAllowsWhateverItsCondition`       | Theory | Every option is
-inside the value domain every validator rule allows whatever its condition. |
-| `EveryNewDefaultOfAChoiceFieldIsOneOfItsOptions`                                      | Theory | Every new default of
-a choice field is one of its options. |
-| `OptionValuesAreUniqueAndEveryOptionIsLabelled`                                       | Theory | Option values are
-unique and every option is labelled. |
-| `EveryWidgetIsInTheClosedVocabulary`                                                  | Theory | Every widget is in
-the closed vocabulary. |
-| `EveryChoiceFieldHasOptionsOrALookup`                                                 | Theory | Every choice field
-has options or a lookup. |
-| `EveryOptionSetRegistersWithoutAFailure`                                              | Fact | Every option set
-registers without a failure. |
-| `TheRealOptionsKeepTheGapsAndTheStoredLettersTheOldPagesUsed`                         | Fact | The real options keep
-the gaps and the stored letters the old pages used. |
-| `AMemberWithNoStoredTextOnATextPropertyAndAnUnknownAllowedMemberAreRecordedNotThrown` | Fact | A member with no stored
-text on a text property and an unknown allowed member are recorded not thrown. |
-| `ATextPropertyTakesItsValuesFromEnumMemberAndItsLabelsFromDescription`                | Fact | A text property takes
-its values from enum member and its labels from description. |
-| `AnAllowedSubsetKeepsOnlyTheNamedMembers`                                             | Fact | An allowed subset keeps
-only the named members. |
-| `AnEnumGivesNumericChoicesInValueOrderLabelledByDescriptionOrTheHumanisedName`        | Fact | An enum gives numeric
-choices in value order labelled by description or the humanised name. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                                  | Kind   | Verifies                                                                                               |
+|---------------------------------------------------------------------------------------|--------|--------------------------------------------------------------------------------------------------------|
+| `EveryOptionIsInsideTheValueDomainEveryValidatorRuleAllowsWhateverItsCondition`       | Theory | Every option is inside the value domain every validator rule allows whatever its condition.            |
+| `EveryNewDefaultOfAChoiceFieldIsOneOfItsOptions`                                      | Theory | Every new default of a choice field is one of its options.                                             |
+| `OptionValuesAreUniqueAndEveryOptionIsLabelled`                                       | Theory | Option values are unique and every option is labelled.                                                 |
+| `EveryWidgetIsInTheClosedVocabulary`                                                  | Theory | Every widget is in the closed vocabulary.                                                              |
+| `EveryChoiceFieldHasOptionsOrALookup`                                                 | Theory | Every choice field has options or a lookup.                                                            |
+| `EveryOptionSetRegistersWithoutAFailure`                                              | Fact   | Every option set registers without a failure.                                                          |
+| `TheRealOptionsKeepTheGapsAndTheStoredLettersTheOldPagesUsed`                         | Fact   | The real options keep the gaps and the stored letters the old pages used.                              |
+| `AMemberWithNoStoredTextOnATextPropertyAndAnUnknownAllowedMemberAreRecordedNotThrown` | Fact   | A member with no stored text on a text property and an unknown allowed member are recorded not thrown. |
+| `ATextPropertyTakesItsValuesFromEnumMemberAndItsLabelsFromDescription`                | Fact   | A text property takes its values from enum member and its labels from description.                     |
+| `AnAllowedSubsetKeepsOnlyTheNamedMembers`                                             | Fact   | An allowed subset keeps only the named members.                                                        |
+| `AnEnumGivesNumericChoicesInValueOrderLabelledByDescriptionOrTheHumanisedName`        | Fact   | An enum gives numeric choices in value order labelled by description or the humanised name.            |
 
 ### FormModelRelationTests
 
@@ -1880,46 +1852,28 @@ choices in value order labelled by description or the humanised name. |
 ### FormModelRuleTests
 
 `Jube.Test.Service.Query.FormModel.FormModelRuleTests` — 19 tests. Category: Unit.
-| `NoConditionCarriesAnOperatorAmongItsValues`                          | Theory | No condition carries an operator
-among its values. |
-| `EveryConditionalRequiredRuleIsDeclaredAsARequiredWhenOnTheDto`       | Theory | Every conditional required rule is
-declared as a required when on the dto. |
-| `EveryRegularExpressionRuleOnAFormFieldIsCarriedToTheModel`           | Theory | Every regular expression rule on a
-form field is carried to the model. |
-| `EverySliderAndPercentFieldHasARangeFromAValidator`                   | Theory | Every slider and percent field has a
-range from a validator. |
-| `EveryValidatorOfAFormDtoBuildsWithoutItsServices`                    | Fact | Every validator of a form dto builds
-without its services. |
-| `TheTagNameIsRequiredAndLimitedToTheValidatorsLength`                 | Fact | The tag name is required and limited to
-the validators length. |
-| `ARangeFromTheValidatorsReachesTheSliderAndAnUnboundedFieldIsNotOne`  | Fact | A range from the validators reaches the
-slider and an unbounded field is not one. |
-| `AnIntegerFieldGetsItsExclusiveMinimumAdjustedToTheFirstAllowedValue` | Fact | An integer field gets its exclusive
-minimum adjusted to the first allowed value. |
-| `AMatchesRuleOnAFieldReachesTheModelAsAPattern`                       | Fact | A matches rule on a field reaches the
-model as a pattern. |
-| `OnlyAnAnchoredWholeValuePatternWithNoDotNetOnlySyntaxIsTranslated`   | Theory | Only an anchored whole value pattern
-with no dot net only syntax is translated. |
-| `MergingTwoValidatorsOfTheSameDtoKeepsTheTighterLimitAndAnyRequired`  | Fact | Merging two validators of the same dto
-keeps the tighter limit and any required. |
-| `TheTightestOfSeveralLimitsWins`                                      | Fact | The tightest of several limits wins. |
-| `ARangeUnderAConditionIsStillCarriedBecauseItBoundsTheValueWhenUsed`  | Fact | A range under a condition is still
-carried because it bounds the value when used. |
-| `GreaterThanAndLessThanOrEqualGiveAMinimumAndAMaximum`                | Fact | Greater than and less than or equal
-give a minimum and a maximum. |
-| `AnExclusiveBetweenRuleMarksBothLimitsExclusive`                      | Fact | An exclusive between rule marks both
-limits exclusive. |
-| `AnInclusiveBetweenRuleGivesBothLimits`                               | Fact | An inclusive between rule gives both
-limits. |
-| `MaximumAndMinimumLengthAreCarriedAcrossEvenUnderACondition`          | Fact | Maximum and minimum length are carried
-across even under a condition. |
-| `ANotEmptyRuleUnderAConditionIsNotRequiredButIsFlaggedConditional`    | Fact | A not empty rule under a condition is
-not required but is flagged conditional. |
-| `AnUnconditionalNotEmptyRuleMakesAFieldRequired`                      | Fact | An unconditional not empty rule makes a
-field required. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                  | Kind   | Verifies                                                                          |
+|-----------------------------------------------------------------------|--------|-----------------------------------------------------------------------------------|
+| `NoConditionCarriesAnOperatorAmongItsValues`                          | Theory | No condition carries an operator among its values.                                |
+| `EveryConditionalRequiredRuleIsDeclaredAsARequiredWhenOnTheDto`       | Theory | Every conditional required rule is declared as a required when on the dto.        |
+| `EveryRegularExpressionRuleOnAFormFieldIsCarriedToTheModel`           | Theory | Every regular expression rule on a form field is carried to the model.            |
+| `EverySliderAndPercentFieldHasARangeFromAValidator`                   | Theory | Every slider and percent field has a range from a validator.                      |
+| `EveryValidatorOfAFormDtoBuildsWithoutItsServices`                    | Fact   | Every validator of a form dto builds without its services.                        |
+| `TheTagNameIsRequiredAndLimitedToTheValidatorsLength`                 | Fact   | The tag name is required and limited to the validators length.                    |
+| `ARangeFromTheValidatorsReachesTheSliderAndAnUnboundedFieldIsNotOne`  | Fact   | A range from the validators reaches the slider and an unbounded field is not one. |
+| `AnIntegerFieldGetsItsExclusiveMinimumAdjustedToTheFirstAllowedValue` | Fact   | An integer field gets its exclusive minimum adjusted to the first allowed value.  |
+| `AMatchesRuleOnAFieldReachesTheModelAsAPattern`                       | Fact   | A matches rule on a field reaches the model as a pattern.                         |
+| `OnlyAnAnchoredWholeValuePatternWithNoDotNetOnlySyntaxIsTranslated`   | Theory | Only an anchored whole value pattern with no dot net only syntax is translated.   |
+| `MergingTwoValidatorsOfTheSameDtoKeepsTheTighterLimitAndAnyRequired`  | Fact   | Merging two validators of the same dto keeps the tighter limit and any required.  |
+| `TheTightestOfSeveralLimitsWins`                                      | Fact   | The tightest of several limits wins.                                              |
+| `ARangeUnderAConditionIsStillCarriedBecauseItBoundsTheValueWhenUsed`  | Fact   | A range under a condition is still carried because it bounds the value when used. |
+| `GreaterThanAndLessThanOrEqualGiveAMinimumAndAMaximum`                | Fact   | Greater than and less than or equal give a minimum and a maximum.                 |
+| `AnExclusiveBetweenRuleMarksBothLimitsExclusive`                      | Fact   | An exclusive between rule marks both limits exclusive.                            |
+| `AnInclusiveBetweenRuleGivesBothLimits`                               | Fact   | An inclusive between rule gives both limits.                                      |
+| `MaximumAndMinimumLengthAreCarriedAcrossEvenUnderACondition`          | Fact   | Maximum and minimum length are carried across even under a condition.             |
+| `ANotEmptyRuleUnderAConditionIsNotRequiredButIsFlaggedConditional`    | Fact   | A not empty rule under a condition is not required but is flagged conditional.    |
+| `AnUnconditionalNotEmptyRuleMakesAFieldRequired`                      | Fact   | An unconditional not empty rule makes a field required.                           |
 
 ### FormModelRegistryTests
 
@@ -1945,8 +1899,8 @@ field required. |
 | `AConditionKeepsItsOperatorValuesAndMatchMode`                             | Fact   | A condition keeps its operator values and match mode.                                       |
 | `NoFieldLabelShowsAnIdentifierWordTheUserHasNoUseFor`                      | Theory | No field label shows an identifier word the user has no use for.                            |
 | `EveryFieldLabelIsUniqueWithinItsArea`                                     | Theory | Every field label is unique within its area.                                                |
-| `NoRadioSetOffersMoreThanThreeChoicesAndEverySpanIsOneOrTwo`               | Theory | No radio set offers more than three choices and every span is one or two.                   |
-| `ARadioSetWithMoreThanThreeChoicesIsDrawnAsASelectAndTwoOrThreeStayRadios` | Fact   | A radio set with more than three choices is drawn as a select and two or three stay radios. |
+| `NoRadioSetOffersMoreThanFourChoicesAndEverySpanIsOneOrTwo`                | Theory | No radio set offers more than four choices and every span is one or two.                    |
+| `ARadioSetWithMoreThanFourChoicesIsDrawnAsASelectAndFourOrFewerStayRadios` | Fact   | A radio set with more than four choices is drawn as a select and four or fewer stay radios. |
 | `AFieldAskingForTwoColumnsKeepsThemAndTheDefaultIsOne`                     | Fact   | A field asking for two columns keeps them and the default is one.                           |
 
 ### FormModelRouteTests
@@ -2146,8 +2100,7 @@ Database.
 
 ### VisualisationRegistryDatasourceCommandExecutionServiceTests
 
-`Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecution.VisualisationRegistryDatasourceCommandExecutionServiceTests` —
-41 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecution.VisualisationRegistryDatasourceCommandExecutionServiceTests` — 41 tests. Category: Service. Collection: Database.
 
 | Test                                                                      | Kind   | Verifies                                                                      |
 |---------------------------------------------------------------------------|--------|-------------------------------------------------------------------------------|
@@ -2193,10 +2146,19 @@ Database.
 | `CatalogueDescriptorHasUniqueNameAndOperationAttributeMatches`            | Fact   | Catalogue descriptor has unique name and operation attribute matches.         |
 | `PermissionDeniedMessageResolvesForFrenchCultureAsync`                    | Fact   | Permission denied message resolves for french culture.                        |
 
+### SeededVisualisationLibraryTests
+
+`Jube.Test.Service.Query.SeededVisualisationLibrary.SeededVisualisationLibraryTests` — 3 tests. Category: Service. Collection: Database.
+
+| Test                                                                                                  | Kind | Verifies                                                                                                    |
+|-------------------------------------------------------------------------------------------------------|------|-------------------------------------------------------------------------------------------------------------|
+| `EveryDatasourceOfTheSeededLibraryRendersWithoutErrorAsync`                                           | Fact | Every datasource of the seeded library renders without error.                                               |
+| `EveryRegistryDatasourceAndParameterOfTheSeededLibraryIsGrantedToTheAdministratorRoleAsync`           | Fact | Every registry datasource and parameter of the seeded library is granted to the administrator role.         |
+| `NoDatasourceOfTheSeededLibraryReadsAColumnThatCarriesFileBytesAsync`                                 | Fact | No datasource of the seeded library reads a column that carries file bytes.                                 |
+
 ### VisualisationRegistryDatasourceCardServiceTests
 
-`Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecution.VisualisationRegistryDatasourceCardServiceTests` —
-22 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecution.VisualisationRegistryDatasourceCardServiceTests` — 22 tests. Category: Service. Collection: Database.
 
 | Test                                                                           | Kind | Verifies                                                                                    |
 |--------------------------------------------------------------------------------|------|---------------------------------------------------------------------------------------------|
@@ -2246,8 +2208,7 @@ Database.
 
 ### GetEntityAnalysisModelsSynchronisationSchedulesByInstanceNameQueryTests
 
-`Jube.Test.Service.Query.EntityAnalysisModelsSynchronisationSchedulesByInstanceName.GetEntityAnalysisModelsSynchronisationSchedulesByInstanceNameQueryTests` —
-8 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Query.EntityAnalysisModelsSynchronisationSchedulesByInstanceName.GetEntityAnalysisModelsSynchronisationSchedulesByInstanceNameQueryTests` — 8 tests. Category: Service. Collection: Database.
 
 | Test                                                                        | Kind | Verifies                                                                          |
 |-----------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------|
@@ -2279,7 +2240,7 @@ Service. Collection: Database.
 
 ### CaseNarrativeJobTests
 
-`Jube.Test.Service.Query.CaseNarrative.CaseNarrativeJobTests` — 14 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Query.CaseNarrative.CaseNarrativeJobTests` — 15 tests. Category: Service. Collection: Database.
 
 | Test                                                                   | Kind | Verifies                                                                                                                      |
 |------------------------------------------------------------------------|------|-------------------------------------------------------------------------------------------------------------------------------|
@@ -2313,7 +2274,7 @@ Service. Collection: Database.
 
 ### GraphBuildJobTests
 
-`Jube.Test.Service.Query.Graph.GraphBuildJobTests` — 3 tests.
+`Jube.Test.Service.Query.Graph.GraphBuildJobTests` — 5 tests.
 Category: Service. Collection: Database.
 
 | Test                                                           | Kind | Verifies                                                           |
@@ -2321,16 +2282,19 @@ Category: Service. Collection: Database.
 | `BuildsNodesEdgesAndEventsFromArchiveKeysAndIsIdempotentAsync` | Fact | Builds nodes edges and events from archive keys and is idempotent. |
 | `RetractsAndRebuildsAReprocessedTransactionAsync`              | Fact | Retracts and rebuilds areprocessed transaction.                    |
 | `FlagsAHubAboveTheDefinitionThresholdAndReweightsEdgesAsync`   | Fact | Flags ahub above the definition threshold and reweights edges.     |
+| `AnEdgeDefinitionAddedLaterIsBuiltFromTheTransactionsAlreadyTakenUpByAnotherAsync` | Fact | An edge definition added later is built from the transactions already taken up by another. |
+| `ABuildThatFindsNothingNewStillRecordsWhenItRanAsync`          | Fact | A build that finds nothing new still records when it ran.          |
 
 ### GraphServiceTests
 
-`Jube.Test.Service.Query.Graph.GraphServiceTests` — 15 tests.
+`Jube.Test.Service.Query.Graph.GraphServiceTests` — 16 tests.
 Category: Service. Collection: Database.
 
 | Test                                                                          | Kind | Verifies                                                                                                              |
 |-------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------------------------------------|
 | `ReturnsTheRingAroundTheSeedWithEvidenceAndExplodeAgreesAsync`                | Fact | Returns the ring around the seed with evidence and explode agrees.                                                    |
-| `RenderingAKeyValueWithNoNetworkIsNotFoundRatherThanAServerErrorAsync`        | Fact | Rendering a key value with no network is not found rather than a server error.                                        |
+| `RenderingAKeyValueWithNoNetworkReturnsAnEmptyPictureSayingWhyRatherThanAnErrorAsync` | Fact | Rendering a key value with no network returns an empty picture saying why rather than an error. |
+| `AMinimumAmountLeavesOutSmallPaymentsAndKeepsIdentityLinksAsync` | Fact | A minimum amount leaves out small payments and keeps identity links. |
 | `RendersDeterministicallyWithPositionsAndCapturesAHashedPairOfFilesAsync`     | Fact | Renders deterministically with positions and captures a hashed pair of files.                                         |
 | `SavesListsOverwritesAndRemovesTheCallersOwnExplorationsAsync`                | Fact | Saves lists overwrites and removes the callers own explorations.                                                      |
 | `CollapsesBeyondTheCapAndHidesRestrictedEdgesWithoutAGrantAsync`              | Fact | Collapses beyond the cap and hides restricted edges without agrant.                                                   |
@@ -2360,6 +2324,15 @@ Category: Service. Collection: Database.
 | `RestrictedEdgesNeverFeedTheCachedDegreesCommunitiesOrPageRankAsync`              | Fact | With a restricted device definition, cached degree, community, component and page rank are computed without it. |
 | `MarkingADefinitionRestrictedRestrictsItsExistingEdgesAtOnceAsync`                | Fact | Marking a definition restricted flips its existing edges to restricted in the same call.                        |
 | `CasingAPatternIntoAnUnknownCaseIsNotFoundAndLeavesThePatternUndecidedAsync`      | Fact | Casing a pattern into a case the caller cannot open is not found and leaves the pattern state unchanged.        |
+
+### GraphAnalyticsMapperTests
+
+`Jube.Test.Service.Query.Graph.GraphAnalyticsMapperTests` — 2 tests. Category: Unit.
+
+| Test | Kind | Verifies |
+|------|------|----------|
+| `ACommunityWithARatioStatesItAgainstTheTenantRate` | Fact | A community with a ratio states it against the tenant rate. |
+| `ACommunityWithoutARatioOmitsItRatherThanPrintingZero` | Fact | A community without a ratio omits it rather than printing zero. |
 
 ### GraphJobsTests
 
@@ -2475,7 +2448,7 @@ Database.
 
 ### CaseTriageReplayJobTests
 
-`Jube.Test.Service.Query.CaseTriage.CaseTriageReplayJobTests` — 2 tests. Category: Service.
+`Jube.Test.Service.Query.CaseTriage.CaseTriageReplayJobTests` — 3 tests. Category: Service.
 
 | Test                                                                    | Kind    | Verifies                                                                                                                                                    |
 |-------------------------------------------------------------------------|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|

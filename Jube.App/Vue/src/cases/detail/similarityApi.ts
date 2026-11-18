@@ -42,6 +42,7 @@ export interface CaseSimilarity {
   open: number
   enoughToJudge: boolean
   neighbours: CaseSimilarNeighbour[]
+  enabled: boolean
 }
 
 export const similarityKey = (caseId: number) => ['service', 'CaseSimilarity', caseId] as const
@@ -72,6 +73,7 @@ export const outcomeKeys: Record<SimilarOutcome, string> = {
 export const headlineKeys: Record<Exclude<SimilarHeadline, 'loading' | 'headline'>, string> = {
   failed: 'caseDetail.similar.failed',
   pending: 'caseDetail.similar.pending',
+  off: 'caseDetail.similar.off',
   none: 'caseDetail.similar.none',
   tooFew: 'caseDetail.similar.tooFew',
 }
@@ -84,12 +86,19 @@ export function reasonKey(kindId: number): string {
   return 'caseDetail.similar.reason.same'
 }
 
-export type SimilarHeadline = 'failed' | 'loading' | 'pending' | 'none' | 'headline' | 'tooFew'
+export type SimilarHeadline =
+  | 'failed'
+  | 'loading'
+  | 'pending'
+  | 'off'
+  | 'none'
+  | 'headline'
+  | 'tooFew'
 
 export function headlineOf(data: CaseSimilarity | undefined, failed: boolean): SimilarHeadline {
   if (failed) return 'failed'
   if (!data) return 'loading'
-  if (!data.built) return 'pending'
+  if (!data.built) return data.enabled === false ? 'off' : 'pending'
   if (data.similar === 0) return 'none'
 
   return data.enoughToJudge ? 'headline' : 'tooFew'

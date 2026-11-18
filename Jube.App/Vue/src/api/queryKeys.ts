@@ -101,6 +101,7 @@ export const queryKeys = {
   apiKeys: (userRegistryId: number) => ['service', 'UserRegistryApiKey', userRegistryId] as const,
   formRecords: (area: string, parentId: number | string | undefined) =>
     ['service', area, 'records', parentId ?? 0] as const,
+  formRecord: (area: string, id: number) => ['service', area, 'record', id] as const,
   formLookup: (source: string) => ['formModel', 'lookup', source] as const,
   overrideKeyNames: () => ['override', 'keyNames'] as const,
   overrideKeys: () => ['override', 'keys'] as const,

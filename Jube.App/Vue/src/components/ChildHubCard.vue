@@ -27,6 +27,7 @@ const props = defineProps<{
   childModel: FormModel | undefined
   parentValue: number | string | undefined
   awaiting?: number
+  unordered?: boolean
 }>()
 
 const emit = defineEmits<{ open: []; add: [] }>()
@@ -79,9 +80,11 @@ const pill = computed(() =>
     :failed="rows.isError.value ? t('hierarchy.failed') : undefined"
     :pill="pill"
     tone="warning"
-    :order="child.order"
+    :order="unordered ? undefined : child.order"
     :add-label="canAdd ? t('hierarchy.add', { label: child.label }) : undefined"
     @open="emit('open')"
     @add="emit('add')"
-  />
+  >
+    <slot/>
+  </HubTile>
 </template>

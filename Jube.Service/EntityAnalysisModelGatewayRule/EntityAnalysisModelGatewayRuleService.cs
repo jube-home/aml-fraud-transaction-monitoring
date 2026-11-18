@@ -576,7 +576,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
         [Description("Registers a new Gateway Rule under a Model in the caller's tenant. Not idempotent -- " +
                      "calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelGatewayRuleCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<GatewayRulePoco> InsertAsync(
+        public async Task<EntityAnalysisModelGatewayRuleDto> InsertAsync(
             [Description("The Gateway Rule to create.")]
             EntityAnalysisModelGatewayRuleDto? model,
             CancellationToken token = default)
@@ -621,7 +621,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
                              $"user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelGatewayRuleMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -860,7 +860,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
                      "counter fields are overwritten with whatever the caller supplies (or their defaults if " +
                      "omitted) -- see the migration report for this pre-existing quirk.")]
         [ServiceOperation("EntityAnalysisModelGatewayRuleUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<GatewayRulePoco> UpdateAsync(
+        public async Task<EntityAnalysisModelGatewayRuleDto> UpdateAsync(
             [Description("The Gateway Rule to update. Id selects the row; identity/tenant/audit fields are " +
                          "server-owned and ignored.")]
             EntityAnalysisModelGatewayRuleDto? model,
@@ -920,7 +920,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
                         $"EntityAnalysisModelGatewayRule.Update: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelGatewayRuleMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1120,7 +1120,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
                      "cycle without requiring an edit. Use after a rejection was explained and the maker still " +
                      "wants the same change (including a delete) approved.")]
         [ServiceOperation("EntityAnalysisModelGatewayRuleResubmit", OperationKind.Write, Idempotent = false)]
-        public async Task<GatewayRulePoco> ResubmitAsync(
+        public async Task<EntityAnalysisModelGatewayRuleDto> ResubmitAsync(
             [Description("Numeric identifier of the Gateway Rule to resubmit.")]
             int id,
             [Description("Optional note explaining why this is being resubmitted.")]
@@ -1162,7 +1162,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
                         $"EntityAnalysisModelGatewayRule.Resubmit: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelGatewayRuleMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1197,7 +1197,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
                      "undeleting it, if the rejected change was a delete) without opening a new approval cycle. " +
                      "Use when the maker agrees with the rejection and wants to abandon the change.")]
         [ServiceOperation("EntityAnalysisModelGatewayRuleRetract", OperationKind.Write, Idempotent = false)]
-        public async Task<GatewayRulePoco> RetractAsync(
+        public async Task<EntityAnalysisModelGatewayRuleDto> RetractAsync(
             [Description("Numeric identifier of the Gateway Rule to retract.")]
             int id,
             [Description("Optional note explaining why this is being retracted.")]
@@ -1239,7 +1239,7 @@ namespace Jube.Service.EntityAnalysisModelGatewayRule
                         $"EntityAnalysisModelGatewayRule.Retract: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelGatewayRuleMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

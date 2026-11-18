@@ -550,6 +550,7 @@ services:
       - JUBE_MIGRATION_PASSWORD
       - JWT_KEY
       - PASSWORD_HASHING_KEY
+      - CASE_SIMILARITY_HASHING_KEY
       - RESP_PASSWORD
       - API_HMAC_KEY
       - PASSWORD_ASYMMETRIC_ENCRYPTION_PRIVATE_KEY
@@ -595,6 +596,7 @@ services:
       - EnableSearchKeyCache=False
       - EnableCasesAutomation=False
       - PasswordHashingKey=[@PASSWORD_HASHING_KEY@]
+      - CaseSimilarityHashingKey=[@CASE_SIMILARITY_HASHING_KEY@]
       - EnableMigration=False
       # jube-ui never runs the rules engine or entity model - it's the presentation layer only, so unlike
       # jube-api/jube-jobs below it also has no ElementSymmetricEncryptionKey secret/env var: that key only
@@ -668,6 +670,7 @@ services:
       - JUBE_MIGRATION_PASSWORD
       - JWT_KEY
       - PASSWORD_HASHING_KEY
+      - CASE_SIMILARITY_HASHING_KEY
       - RESP_PASSWORD
       - API_HMAC_KEY
       - ENCRYPTION_KEY
@@ -724,6 +727,7 @@ services:
       - EnableSearchKeyCache=False
       - EnableCasesAutomation=False
       - PasswordHashingKey=[@PASSWORD_HASHING_KEY@]
+      - CaseSimilarityHashingKey=[@CASE_SIMILARITY_HASHING_KEY@]
       - EnableMigration=False
       - EnableEngine=True
       - LocalCache=True

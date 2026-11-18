@@ -103,7 +103,7 @@ watch(
   <div
     ref="host"
     dir="ltr"
-    class="min-h-40 overflow-hidden rounded-field border border-base-300"
+    class="flex min-h-40 flex-col overflow-hidden rounded-field border border-base-300"
     data-testid="datasource-sql"
   ></div>
 </template>

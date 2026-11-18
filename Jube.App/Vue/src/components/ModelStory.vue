@@ -173,15 +173,27 @@ function opened(values: RecordValues): OpenedRecord {
   }
 }
 
+function addressSteps(): StoryStep[] {
+  const steps: StoryStep[] = []
+
+  for (const level of levels.value) {
+    if (level.record) {
+      steps.push({area: level.area, id: level.record.id})
+    } else if (level.initialId !== undefined) {
+      return [...steps, {area: level.area, id: level.initialId}, ...pending.value]
+    }
+  }
+
+  return steps
+}
+
 function publish(): void {
   emit(
     'path',
     encodeAddress({
       modelId: model.value?.id,
       operate: operate.value,
-      steps: levels.value.flatMap((level) =>
-        level.record ? [{area: level.area, id: level.record.id}] : [],
-      ),
+      steps: addressSteps(),
     }),
   )
 }
@@ -378,7 +390,7 @@ function settleDeepLink(): void {
 
   if (child && next) {
     pending.value = pending.value.slice(1)
-    levels.value = [levelFor(child, false, next.id)]
+    levels.value = [levelFor(child, next.startNew === true, next.id)]
   }
 }
 
@@ -462,13 +474,29 @@ function chooseModel(values: RecordValues): void {
 
   pending.value = child ? pending.value.slice(1) : []
 
-  if (child && next) levels.value = [levelFor(child, false, next.id)]
+  if (child && next) levels.value = [levelFor(child, next.startNew === true, next.id)]
 
   publish()
 }
 
 function glimpse(steps: StoryStep[]): void {
   pending.value = steps
+}
+
+function fromOperate(steps: StoryStep[]): void {
+  const below = steps[0]?.area === modelForm.value?.area ? steps.slice(1) : steps
+  const first = below[0]
+  const child = first && modelForm.value?.children.find((candidate) => candidate.area === first.area)
+
+  if (first && !child) return
+
+  guarded(() => {
+    operate.value = undefined
+    analytics.value = undefined
+    pending.value = below.slice(1)
+    levels.value = child && first ? [levelFor(child, first.startNew === true, first.id)] : []
+    publish()
+  })
 }
 
 function backToModels(): void {
@@ -529,7 +557,7 @@ function levelOpened(index: number, record: OpenedRecord): void {
 
   if (child && next && levels.value.length === index + 1) {
     pending.value = pending.value.slice(1)
-    descend(index, child, false, next.id)
+    descend(index, child, next.startNew === true, next.id)
     return
   }
 
@@ -665,6 +693,7 @@ function createdOpened(record: OpenedRecord): void {
         key="integrity"
         :model-id="model.id"
         :can-synchronise="canSynchronise"
+        @open="fromOperate"
       />
 
       <AskJoobyAnalyticsInstances

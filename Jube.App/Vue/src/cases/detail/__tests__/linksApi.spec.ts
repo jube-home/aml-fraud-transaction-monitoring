@@ -20,7 +20,12 @@ describe('parseCaseNumber', () => {
     expect(parseCaseNumber(' #42 ')).toBe(42)
   })
 
-  it.each(['', ' ', '0', '-3', '4.5', 'abc', '12a', '1234567890', '#'])('refuses %j', (text) => {
+  it('reads the C-n label that cases carry everywhere else', () => {
+    expect(parseCaseNumber('C-1042')).toBe(1042)
+    expect(parseCaseNumber(' c-7 ')).toBe(7)
+  })
+
+  it.each(['', ' ', '0', '-3', '4.5', 'abc', '12a', '1234567890', '#', 'C-', 'C-0', 'C--3', '#C-4'])('refuses %j', (text) => {
     expect(parseCaseNumber(text)).toBeNull()
   })
 })

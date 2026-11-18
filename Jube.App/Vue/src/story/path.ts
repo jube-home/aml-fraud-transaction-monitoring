@@ -15,7 +15,8 @@ export type Operate = 'sample' | 'integrity' | 'analytics'
 
 export interface StoryStep {
   area: string
-  id: number
+  id?: number
+  startNew?: boolean
 }
 
 export interface StoryAddress {

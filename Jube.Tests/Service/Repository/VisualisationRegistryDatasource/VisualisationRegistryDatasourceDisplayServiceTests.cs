@@ -172,7 +172,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasource
             var update = NewDatasource(registryId, ThreeColumns, DatasourceDisplayKind.Line);
             update.Id = saved.Id;
             update.Name = saved.Name;
-            update.Version = saved.Version.GetValueOrDefault();
+            update.Version = saved.Version;
             update.Mapping = [Role(DatasourceChartRole.Value, "Beta")];
 
             await service.UpdateAsync(update);
@@ -200,7 +200,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasource
             var update = NewDatasource(registryId, ThreeColumns, DatasourceDisplayKind.Column);
             update.Id = saved.Id;
             update.Name = saved.Name;
-            update.Version = saved.Version.GetValueOrDefault();
+            update.Version = saved.Version;
 
             await service.UpdateAsync(update);
 

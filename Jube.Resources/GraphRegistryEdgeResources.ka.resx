@@ -73,6 +73,9 @@
     <data name="KeyMaxLength" xml:space="preserve">
     <value>გასაღები უნდა შეიცავდეს არაუმეტეს {0} სიმბოლოს.</value>
   </data>
+    <data name="IconInvalid" xml:space="preserve">
+    <value>ხატულა არ არის გრაფისთვის შემოთავაზებულ Lucide ხატულებს შორის.</value>
+  </data>
     <data name="AmountKeyRequired" xml:space="preserve">
     <value>ფულის ნაკადისთვის აუცილებელია თანხის გასაღები.</value>
   </data>

@@ -657,8 +657,8 @@
         <comment>b9ea12e7</comment>
     </data>
     <data name="Message.TemplateNameUnknown" xml:space="preserve">
-        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: "{2}" یہاں معلوم نہیں۔ rows، columns، rowCount، truncated یا لوپ متغیر استعمال کریں۔</value>
-        <comment>78917f7e</comment>
+        <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: "{2}" یہاں معلوم نہیں۔ یہاں معلوم نام یہ ہیں: {3}۔</value>
+        <comment>de987895</comment>
     </data>
     <data name="Message.TemplateFilterUnknown" xml:space="preserve">
         <value>ٹیمپلیٹ کی قطار {0}، کالم {1}: فلٹر "{2}" موجود نہیں۔</value>

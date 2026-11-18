@@ -111,4 +111,7 @@
     <data name="GraphRegistryNotFound" xml:space="preserve">
     <value>ग्राफ़ रजिस्ट्री नहीं मिली।</value>
   </data>
+    <data name="ServiceLevelTargetOutOfRange" xml:space="preserve">
+    <value>सेवा स्तर का लक्ष्य 1 और 525600 मिनट के बीच होना चाहिए, या लक्ष्य न होने पर खाली छोड़ें।</value>
+  </data>
 </root>

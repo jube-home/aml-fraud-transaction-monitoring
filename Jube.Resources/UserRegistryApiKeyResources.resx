@@ -63,4 +63,7 @@
     <data name="InsufficientPrivilege" xml:space="preserve">
     <value>You do not have sufficient privilege to perform this action.</value>
   </data>
+    <data name="ApiHmacKeyNotSet" xml:space="preserve">
+    <value>API keys cannot be issued because the ApiHmacKey Environment Variable is not set on this installation.</value>
+  </data>
 </root>

@@ -14,16 +14,17 @@
 <script setup vapor lang="ts">
 import {computed} from 'vue'
 import {useI18n} from 'vue-i18n'
+import {StickyNote} from 'lucide-vue-next'
+import TallySection from '../../components/TallySection.vue'
 import CaseNarrativeCard from './CaseNarrativeCard.vue'
 import CaseNoteItem from './CaseNoteItem.vue'
-import {isOwnNote, narrativeChains, timelineNotes} from './noteGroups'
+import {narrativeChains, timelineNotes} from './noteGroups'
 import type {CaseNoteEntry} from './types'
 
 const props = defineProps<{
   notes: CaseNoteEntry[]
   loading: boolean
   failed: boolean
-  userName: string | undefined
 }>()
 
 const {t} = useI18n()
@@ -33,32 +34,24 @@ const timeline = computed(() => timelineNotes(props.notes))
 </script>
 
 <template>
-  <section class="flex min-w-0 flex-col gap-3" data-testid="case-notes">
-    <div v-if="loading" key="loading" class="skeleton h-24 w-full" role="status">
-      <span class="sr-only">{{ t('cases.loading') }}</span>
-    </div>
-    <div v-else-if="failed" key="failed" role="alert" class="alert alert-error">
-      <span>{{ t('caseDetail.notes.failed') }}</span>
-    </div>
-    <template v-else>
-      <h3 class="text-sm font-semibold">{{ t('caseDetail.notes.heading') }}</h3>
-      <CaseNarrativeCard v-for="chain in chains" :key="chain.caseId" :chain="chain"/>
-      <p
-        v-if="timeline.length === 0"
-        key="empty"
-        class="text-sm text-base-content/70"
-        role="status"
-      >
-        {{ t('caseDetail.notes.empty') }}
-      </p>
-      <ul v-else key="list" class="list rounded-box border border-base-300 bg-base-100">
-        <CaseNoteItem
-          v-for="note in timeline"
-          :key="note.id"
-          :note="note"
-          :own="isOwnNote(note, userName)"
-        />
-      </ul>
+  <TallySection
+    :label="t('caseDetail.notes.heading')"
+    :count="chains.length + timeline.length"
+    :loading="loading"
+    :failed="failed"
+    :failed-text="t('caseDetail.notes.failed')"
+    testid="case-notes"
+  >
+    <template #icon>
+      <StickyNote class="size-4"/>
     </template>
-  </section>
+    <CaseNarrativeCard v-for="chain in chains" :key="chain.caseId" :chain="chain"/>
+    <ul
+      v-if="timeline.length > 0"
+      key="list"
+      class="list rounded-box border border-base-300 bg-base-100"
+    >
+      <CaseNoteItem v-for="note in timeline" :key="note.id" :note="note"/>
+    </ul>
+  </TallySection>
 </template>

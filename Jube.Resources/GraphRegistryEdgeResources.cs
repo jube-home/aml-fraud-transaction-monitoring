@@ -27,6 +27,7 @@ namespace Jube.Resources
         public const string ToKeyRequired = nameof(ToKeyRequired);
         public const string KeysMustDiffer = nameof(KeysMustDiffer);
         public const string KeyMaxLength = nameof(KeyMaxLength);
+        public const string IconInvalid = nameof(IconInvalid);
         public const string AmountKeyRequired = nameof(AmountKeyRequired);
         public const string HalfLifeOutOfRange = nameof(HalfLifeOutOfRange);
         public const string KindPriorOutOfRange = nameof(KindPriorOutOfRange);

@@ -82,6 +82,35 @@ namespace Jube.Test.Service.Repository.CaseLink
         }
 
         [Fact]
+        public async Task LinkingAndUnlinkingWriteACaseEventOnBothCasesAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var (a, b) = await TwoVisibleCasesAsync(dbContext);
+            var service = await BuildAsync(dbContext, User);
+
+            await service.LinkAsync(new CaseLinkRequestDto { CaseId = a, OtherCaseId = b, Reason = "Same scam." });
+
+            var linked = await dbContext.CaseEvent
+                .Where(w => (w.CaseId == a || w.CaseId == b)
+                            && w.CaseEventTypeId == CaseEventRepository.CaseLinkedEventTypeId).ToListAsync();
+
+            linked.Should().HaveCount(2);
+            linked.Single(w => w.CaseId == a).After.Should().Be($"Case {b}: Same scam.");
+            linked.Single(w => w.CaseId == b).After.Should().Be($"Case {a}: Same scam.");
+            linked.Should().OnlyContain(w => w.CreatedUser == User);
+
+            await service.UnlinkAsync(new CaseLinkRequestDto { CaseId = b, OtherCaseId = a });
+
+            var unlinked = await dbContext.CaseEvent
+                .Where(w => (w.CaseId == a || w.CaseId == b)
+                            && w.CaseEventTypeId == CaseEventRepository.CaseUnlinkedEventTypeId).ToListAsync();
+
+            unlinked.Should().HaveCount(2);
+            unlinked.Single(w => w.CaseId == a).Before.Should().Be($"Case {b}");
+            unlinked.Single(w => w.CaseId == b).Before.Should().Be($"Case {a}");
+        }
+
+        [Fact]
         public async Task LinkingTheSamePairAgainInEitherDirectionIsRefusedAsync()
         {
             await using var dbContext = fx.GetDbContext();

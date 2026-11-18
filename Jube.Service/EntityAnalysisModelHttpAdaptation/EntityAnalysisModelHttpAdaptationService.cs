@@ -579,7 +579,7 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
         [Description("Registers a new HTTP Adaptation under a Model in the caller's tenant. Not idempotent -- " +
                      "calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelHttpAdaptationCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<HttpAdaptationPoco> InsertAsync(
+        public async Task<EntityAnalysisModelHttpAdaptationDto> InsertAsync(
             [Description("The HTTP Adaptation to create.")]
             EntityAnalysisModelHttpAdaptationDto? model,
             CancellationToken token = default)
@@ -626,7 +626,7 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
                         $"user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelHttpAdaptationMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -707,7 +707,7 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
         [Description("Updates an existing HTTP Adaptation in the caller's tenant, identified by its Id. " +
                      "Idempotent -- repeating the same update has no further effect beyond incrementing Version.")]
         [ServiceOperation("EntityAnalysisModelHttpAdaptationUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<HttpAdaptationPoco> UpdateAsync(
+        public async Task<EntityAnalysisModelHttpAdaptationDto> UpdateAsync(
             [Description("The HTTP Adaptation to update. Id selects the row; identity/tenant/audit fields are " +
                          "server-owned and ignored.")]
             EntityAnalysisModelHttpAdaptationDto? model,
@@ -768,7 +768,7 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
                         $"EntityAnalysisModelHttpAdaptation.Update: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelHttpAdaptationMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -917,7 +917,7 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
                      "approval cycle without requiring an edit. Use after a rejection was explained and the " +
                      "maker still wants the same change (including a delete) approved.")]
         [ServiceOperation("EntityAnalysisModelHttpAdaptationResubmit", OperationKind.Write, Idempotent = false)]
-        public async Task<HttpAdaptationPoco> ResubmitAsync(
+        public async Task<EntityAnalysisModelHttpAdaptationDto> ResubmitAsync(
             [Description("Numeric identifier of the HTTP Adaptation to resubmit.")]
             int id,
             [Description("Optional note explaining why this is being resubmitted.")]
@@ -959,7 +959,7 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
                         $"EntityAnalysisModelHttpAdaptation.Resubmit: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelHttpAdaptationMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -994,7 +994,7 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
                      "undeleting it, if the rejected change was a delete) without opening a new approval cycle. " +
                      "Use when the maker agrees with the rejection and wants to abandon the change.")]
         [ServiceOperation("EntityAnalysisModelHttpAdaptationRetract", OperationKind.Write, Idempotent = false)]
-        public async Task<HttpAdaptationPoco> RetractAsync(
+        public async Task<EntityAnalysisModelHttpAdaptationDto> RetractAsync(
             [Description("Numeric identifier of the HTTP Adaptation to retract.")]
             int id,
             [Description("Optional note explaining why this is being retracted.")]
@@ -1036,7 +1036,7 @@ namespace Jube.Service.EntityAnalysisModelHttpAdaptation
                         $"EntityAnalysisModelHttpAdaptation.Retract: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelHttpAdaptationMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

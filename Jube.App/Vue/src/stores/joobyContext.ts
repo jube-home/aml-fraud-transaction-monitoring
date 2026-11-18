@@ -11,7 +11,7 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-import {ref} from 'vue'
+import {computed, ref, toRaw} from 'vue'
 import {defineStore} from 'pinia'
 
 export interface JoobyPageContext {
@@ -20,11 +20,36 @@ export interface JoobyPageContext {
   record?: unknown
 }
 
+export interface JoobyRouteContext {
+  routeName: string
+  path: string
+  title?: string
+  params?: Record<string, unknown>
+  query?: Record<string, unknown>
+}
+
 export const useJoobyContextStore = defineStore('joobyContext', () => {
-  const context = ref<JoobyPageContext>({pageName: 'default'})
+  const route = ref<JoobyRouteContext>({routeName: 'default', path: '/'})
+  const page = ref<JoobyPageContext>()
+
+  const context = computed<JoobyPageContext & { location: JoobyRouteContext }>(() => ({
+    pageName: page.value?.pageName ?? route.value.routeName,
+    state: page.value?.state,
+    record: page.value?.record,
+    location: route.value,
+  }))
 
   function set(next: JoobyPageContext): void {
-    context.value = next
+    page.value = next
+  }
+
+  function clear(owner?: JoobyPageContext): void {
+    if (owner === undefined || toRaw(page.value) === owner) page.value = undefined
+  }
+
+  function setRoute(next: JoobyRouteContext, reset: boolean): void {
+    route.value = next
+    if (reset) page.value = undefined
   }
 
   function serialised(): string {
@@ -32,10 +57,10 @@ export const useJoobyContextStore = defineStore('joobyContext', () => {
   }
 
   function storageKey(): string {
-    const record = context.value.record ? `:${JSON.stringify(context.value.record)}` : ''
+    const record = page.value?.record ? `:${JSON.stringify(page.value.record)}` : ''
 
     return `jube.askjooby.widget.${context.value.pageName}${record}`
   }
 
-  return {context, set, serialised, storageKey}
+  return {context, set, clear, setRoute, serialised, storageKey}
 })

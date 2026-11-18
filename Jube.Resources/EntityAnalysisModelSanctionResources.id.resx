@@ -64,7 +64,7 @@
     <value>Jarak harus antara 0 dan 5.</value>
   </data>
     <data name="CacheValueRange" xml:space="preserve">
-    <value>Nilai interval cache tidak boleh negatif.</value>
+    <value>Nilai interval cache harus nol atau lebih dan dalam batas untuk interval yang dipilih.</value>
   </data>
     <data name="CacheIntervalInvalid" xml:space="preserve">
     <value>Tipe interval cache harus salah satu dari detik, menit, jam, atau hari.</value>

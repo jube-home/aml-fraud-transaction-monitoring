@@ -589,7 +589,7 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
         [Description("Registers a new Inline Script invocation under a Model in the caller's tenant. Not " +
                      "idempotent -- calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelInlineScriptCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<InlineScriptPoco> InsertAsync(
+        public async Task<EntityAnalysisModelInlineScriptDto> InsertAsync(
             [Description("The Inline Script registration to create.")]
             EntityAnalysisModelInlineScriptDto? model,
             CancellationToken token = default)
@@ -633,7 +633,7 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                              $"user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelInlineScriptMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -848,7 +848,7 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                      "Id. Idempotent -- repeating the same update has no further effect beyond incrementing " +
                      "Version.")]
         [ServiceOperation("EntityAnalysisModelInlineScriptUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<InlineScriptPoco> UpdateAsync(
+        public async Task<EntityAnalysisModelInlineScriptDto> UpdateAsync(
             [Description(
                 "The Inline Script registration to update. Id selects the row; identity/tenant/audit fields " +
                 "are server-owned and ignored.")]
@@ -909,7 +909,7 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                         $"EntityAnalysisModelInlineScript.Update: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelInlineScriptMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1055,7 +1055,7 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                      "fresh approval cycle without requiring an edit. Use after a rejection was explained and the " +
                      "maker still wants the same change (including a delete) approved.")]
         [ServiceOperation("EntityAnalysisModelInlineScriptResubmit", OperationKind.Write, Idempotent = false)]
-        public async Task<InlineScriptPoco> ResubmitAsync(
+        public async Task<EntityAnalysisModelInlineScriptDto> ResubmitAsync(
             [Description("Numeric identifier of the Inline Script registration to resubmit.")]
             int id,
             [Description("Optional note explaining why this is being resubmitted.")]
@@ -1097,7 +1097,7 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                         $"EntityAnalysisModelInlineScript.Resubmit: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelInlineScriptMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1132,7 +1132,7 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                      "(including undeleting it, if the rejected change was a delete) without opening a new " +
                      "approval cycle. Use when the maker agrees with the rejection and wants to abandon the change.")]
         [ServiceOperation("EntityAnalysisModelInlineScriptRetract", OperationKind.Write, Idempotent = false)]
-        public async Task<InlineScriptPoco> RetractAsync(
+        public async Task<EntityAnalysisModelInlineScriptDto> RetractAsync(
             [Description("Numeric identifier of the Inline Script registration to retract.")]
             int id,
             [Description("Optional note explaining why this is being retracted.")]
@@ -1174,7 +1174,7 @@ namespace Jube.Service.EntityAnalysisModelInlineScript
                         $"EntityAnalysisModelInlineScript.Retract: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelInlineScriptMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

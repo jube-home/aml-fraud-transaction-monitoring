@@ -49,6 +49,8 @@ export function percent(posterior: number): string {
   return `${(posterior * 100).toFixed(1)}%`
 }
 
+export const decidePermission = 51
+
 export function canDecide(match: EntityMatch): boolean {
   return match.decisionId === matchDecision.pending
 }

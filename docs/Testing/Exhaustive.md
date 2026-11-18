@@ -152,7 +152,7 @@ promotion and model recall in the engine.
 
 ### ExhaustiveCalibrationFitterTests
 
-`Jube.Test.Exhaustive.ExhaustiveCalibrationFitterTests` — 26 tests. Category: Unit.
+`Jube.Test.Exhaustive.ExhaustiveCalibrationFitterTests` — 28 tests. Category: Unit.
 
 | Test                                                                                      | Kind   | Verifies                                                                                             |
 |-------------------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------------------|
@@ -163,6 +163,8 @@ promotion and model recall in the engine.
 | `Fit_BeforeAndAfterQuality_MatchesTheIndependentReference`                                | Fact   | Fit before and after quality matches the independent reference.                                      |
 | `Fit_QualityRoundTripsThroughItsJson`                                                     | Fact   | Fit quality round trips through its json.                                                            |
 | `Fit_AnUnusableBaseRate_LeavesTheProbabilityAtTheSamplePrior`                             | Fact   | Fit an unusable base rate leaves the probability at the sample prior.                                |
+| `Fit_BernoulliOutput_IsTheLogisticCurveAndUsesTheLogitInputAsSigmoidDoes`                 | Fact   | Fit bernoulli output is the logistic curve and uses the logit input as sigmoid does.                 |
+| `Fit_ANetworkWhoseOutputActivationIsBernoulli_GetsACalibrationFitted`                     | Fact   | Fit a network whose output activation is bernoulli gets a calibration fitted.                        |
 | `Fit_HardOutputFamilies_AreSkippedWithARecordedReason`                                    | Theory | Fit hard output families are skipped with a recorded reason.                                         |
 | `Fit_SingleClassValidation_IsSkipped`                                                     | Fact   | Fit single class validation is skipped.                                                              |
 | `Fit_ConstantScores_AreSkipped`                                                           | Fact   | Fit constant scores are skipped.                                                                     |
@@ -642,11 +644,12 @@ promotion and model recall in the engine.
 
 ### TrainLoopTests
 
-`Jube.Test.Exhaustive.TrainLoopTests` — 27 tests.
+`Jube.Test.Exhaustive.TrainLoopTests` — 28 tests.
 
 | Test                                                                                            | Kind | Verifies                                                                                                 |
 |-------------------------------------------------------------------------------------------------|------|----------------------------------------------------------------------------------------------------------|
 | `TrainAsync_RunsTrialsLimitMinusOneTrials_AndReturnsTrueAsync`                                  | Fact | Train async runs trials limit minus one trials and returns true.                                         |
+| `TrainAsync_EveryTrialSensitivity_NamesTheTrialItWasMeasuredForAsync`                           | Fact | Train async every trial sensitivity names the trial it was measured for.                                 |
 | `TrainAsync_TrialsLimitOfOne_RunsNoTrialsAtAllAsync`                                            | Fact | Train async trials limit of one runs no trials at all.                                                   |
 | `TrainAsync_RecordsEveryTrialInStageOrderAsync`                                                 | Fact | Train async records every trial in stage order.                                                          |
 | `TrainAsync_ActivationSearch_RecordsTenCandidatesPerVariableEliminationIterationAsync`          | Fact | Train async activation search records ten candidates per variable elimination iteration.                 |

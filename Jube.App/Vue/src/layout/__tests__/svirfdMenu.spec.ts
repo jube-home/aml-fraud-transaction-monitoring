@@ -15,7 +15,7 @@ import {describe, expect, it} from 'vitest'
 import type {Me} from '../../auth/me'
 import {visibleMenu} from '../menu'
 
-function me(permissions: number[]): Me {
+function me(permissions: number[], svirfd = true): Me {
   return {
     userName: 'alex',
     landlord: false,
@@ -23,7 +23,7 @@ function me(permissions: number[]): Me {
     tenantRegistryId: 1,
     canChangePassword: true,
     askJoobyInference: true,
-    svirfd: true,
+    svirfd,
     sessionExpiry: null,
   }
 }
@@ -38,5 +38,11 @@ describe('the Svirfd menu entry', () => {
     expect(hasSvirfd([15])).toBe(false)
     expect(hasSvirfd([60])).toBe(false)
     expect(hasSvirfd([71, 73])).toBe(false)
+  })
+
+  it('is hidden while the feature is switched off, whatever the permission', () => {
+    const shown = visibleMenu(me([72], false)).some((node) => node.key === 'svirfd')
+
+    expect(shown).toBe(false)
   })
 })

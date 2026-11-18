@@ -233,6 +233,17 @@ namespace Jube.Service.Repository.UserRegistryApiKey
                 }
 
                 var apiHmacKey = dynamicEnvironment.AppSettings("ApiHmacKey");
+
+                if (string.IsNullOrWhiteSpace(apiHmacKey))
+                {
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn($"UserRegistryApiKey.Insert: ApiHmacKey is not set, so no key was issued user={userName}");
+                    }
+
+                    throw new KeyIntegrityException(strings[UserRegistryApiKeyResources.ApiHmacKeyNotSet]);
+                }
+
                 var generated = ApiKeyHelper.Generate(userRegistry.Name, apiHmacKey);
 
                 if (!ApiKeyHelper.TryParse(generated.ApiKey, apiHmacKey, out var reparsed) ||

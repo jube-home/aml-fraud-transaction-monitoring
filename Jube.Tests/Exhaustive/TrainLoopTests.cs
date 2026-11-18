@@ -55,6 +55,20 @@ namespace Jube.Test.Exhaustive
         }
 
         [Fact]
+        public async Task TrainAsync_EveryTrialSensitivity_NamesTheTrialItWasMeasuredForAsync()
+        {
+            var (_, recorder) = await RunAsync(TrainSupport.Settings(3));
+
+            var trialIds = recorder.TrialInstances.Select(t => t.Id).ToList();
+
+            recorder.TrialSensitivities.Should().NotBeEmpty();
+
+            recorder.TrialSensitivities.Should().OnlyContain(s =>
+                s.ExhaustiveSearchInstanceTrialInstanceId.HasValue
+                && trialIds.Contains(s.ExhaustiveSearchInstanceTrialInstanceId.Value));
+        }
+
+        [Fact]
         public async Task TrainAsync_TrialsLimitOfOne_RunsNoTrialsAtAllAsync()
         {
             var (completed, recorder) = await RunAsync(TrainSupport.Settings(1));

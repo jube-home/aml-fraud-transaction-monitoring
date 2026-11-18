@@ -21,6 +21,7 @@ import FieldHelp from '../../components/FieldHelp.vue'
 import {useFormat} from '../../composables/useFormat'
 import {caseLabel} from '../labels'
 import {
+  headlineKeys,
   headlineOf,
   outcomeKeys,
   outcomeOf,
@@ -79,13 +80,13 @@ const outcomeClass: Record<SimilarOutcome, string> = {
       {{ t('caseDetail.similar.failed') }}
     </p>
     <p
-      v-else-if="headline === 'pending' || headline === 'none'"
+      v-else-if="headline === 'pending' || headline === 'off' || headline === 'none'"
       key="empty"
       class="text-sm text-base-content/70"
       role="status"
       data-testid="case-similar-empty"
     >
-      {{ t(headline === 'pending' ? 'caseDetail.similar.pending' : 'caseDetail.similar.none') }}
+      {{ t(headline === 'none' ? 'caseDetail.similar.none' : headlineKeys[headline]) }}
     </p>
     <template v-else-if="data">
       <p class="text-sm" data-testid="case-similar-headline">

@@ -63,4 +63,7 @@
     <data name="InsufficientPrivilege" xml:space="preserve">
     <value>ამ მოქმედების შესასრულებლად თქვენ არ გაქვთ საკმარისი პრივილეგია.</value>
   </data>
+    <data name="ApiHmacKeyNotSet" xml:space="preserve">
+    <value>API გასაღებების გაცემა შეუძლებელია, რადგან ამ ინსტალაციაში გარემოს ცვლადი ApiHmacKey დაყენებული არ არის.</value>
+  </data>
 </root>

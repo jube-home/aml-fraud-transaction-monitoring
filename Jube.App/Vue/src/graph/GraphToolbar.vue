@@ -33,7 +33,7 @@ import type {GraphEdgeDefinition, GraphLayoutId} from './types'
 const props = withDefaults(
   defineProps<{
     view: GraphView
-    hops: GraphHops
+    hops: GraphHops | null
     layout: GraphLayoutId
     edges: string[]
     definitions: GraphEdgeDefinition[]

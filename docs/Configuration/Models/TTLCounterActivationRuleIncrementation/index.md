@@ -8,71 +8,77 @@ grand_parent: Configuration
 
 # TTL Counter Activation Rule Incrementation
 
-<!-- TODO(docs): this whole page pre-dates the Vue UI; owner to read end to end and re-check every Razor-era sentence (menu paths, tab names, button labels) against the Models story page -->
-In previous documentation the TTL Counter definition was introduced and a TTL Counter by the name of IP was created.
+In previous documentation the [TTL Counter](../TTLCounters/index.html) definition was introduced and a TTL Counter by the name of IP was created. A TTL Counter does not count of its own accord, rather it is incremented as a consequence of an Activation Rule matching, and this page describes how an Activation Rule is directed to increment a TTL Counter.
 
-To remind, navigate to Models >> Abstraction >> TTL Counters:
+As introduced elsewhere in this documentation, TTL Counters exist as a lightweight means to maintain state and history for a given key.
 
-<!-- TODO(screenshot): file=model-abstraction-ttlcounter-definition.png route=/models state="TTL Counter form for IP as defined for this walkthrough" -->
-![Image](model-abstraction-ttlcounter-definition.png)
+## Where it lives
 
-This TTL Counter definition will be incremented on the match of Volume1DayUSDForIPOver100. Navigate to the
-Volume1DayUSDForIPOver100 Activation Rule:
+The incrementation is a property of the Activation Rule, not of the TTL Counter. Navigate through the menu to Models, open the model, then the Activation Rules hub card, and open the Activation Rule that is to increment the counter. The fields are in the TTL Counter group of the form, which is collapsed until opened. Changing the Activation Rule, and the approval of that change, follows the common manner described in [Child Objects](../../../Navigation/ChildObjects/index.html).
 
-<!-- TODO(screenshot): file=model-abstraction-activation-rule-to-use-for-ttlcounter.png route=/models state="Activation Rules card with the rule that will increment the counter selected" -->
-![Image](model-abstraction-activation-rule-to-use-for-ttlcounter.png)
+## Fields
 
-Scroll down to the section where the Increment TTL Counter check box exists:
+| Value | Description | Example |
+|-------|-------------|---------|
+| Increment TTL counter | Whether TTL Counter incrementation occurs on this Activation Rule matching. Switching it on presents the two fields that follow, both of which are then required. | True |
+| Model | The Model containing the TTL Counter to increment. | Detailed Account Financial Transactions |
+| TTL counter | The TTL Counter, configured on the Model selected, to be incremented. | IP |
 
-<!-- TODO(screenshot): file=model-abstraction-ttlcounter-location-in-activation-rule.png route=/models state="Activation Rule form with the TTL Counter group expanded" -->
-![Image](model-abstraction-ttlcounter-location-in-activation-rule.png)
+Increment TTL counter is off for a new Activation Rule, and while it is off neither Model nor TTL counter is presented. The Model list offers every model of the tenant, and the TTL counter list is filled upon a model being chosen, with the TTL Counters of that model, and is emptied upon the model being changed, such that a counter is always chosen afresh for the model selected. Should Create or Save changes be clicked with either left unchosen, the Activation Rule is refused with A Model is required when Increment TTL Counter is enabled. or A TTL Counter is required when Increment TTL Counter is enabled., and where the counter chosen does not belong to the model chosen, as may be the case for a request made through the API directly, with The TTL Counter to increment was not found in the selected Model.
 
-Check Increment TTL Counter to expose the options for incrementing TTL Counters:
+A TTL Counter that an Activation Rule increments cannot be deleted while it is so used, the refusal naming the Activation Rule, as described under Deleting an entity that is in use in [Child Objects](../../../Navigation/ChildObjects/index.html).
 
-<!-- TODO(screenshot): file=model-abstraction-exposed-ttlcounter-properties.png route=/models state="Activation Rule TTL Counter switch on showing the Model and Counter pickers" -->
-![Image](model-abstraction-exposed-ttlcounter-properties.png)
+It is worthy of note that TTL Counters can be incremented cross model, which assumes that the field named as the TTL counter data name of the counter (IP in this example) is available to both models, as the value is taken from the payload of the transaction having matched the Activation Rule. The Model holding the TTL Counter must have Enable TTL counter switched on, otherwise nothing is incremented.
 
-It is worthy of note that TTL Counters can be incremented cross model, which assumes that the model being incremented
-has the IP field available to both models. In this case, select the IP for the same model:
+## Behaviour
 
-<!-- TODO(screenshot): file=model-abstraction-select-ipfor-model-ttlcounter.png route=/models state="TTL Counter picker with IP selected" -->
-![Image](model-abstraction-select-ipfor-model-ttlcounter.png)
+Incrementation takes place after the activation of the rule, whereas the TTL Counters were fetched before any Activation Rule was tested. It follows that an Activation Rule cannot observe its own increment in the rule that caused it, and that the increment written to the cache is available to the subsequent transaction.
 
-Scroll down and click Update a create new version of the Activation Rule:
+Upon the Activation Rule matching, the value of the counter held for the transaction in process is advanced by the increment also, such that Activation Rules of a later priority, and the response, are presented with the value inclusive of the increment.
 
-<!-- TODO(screenshot): file=model-abstraction-updated-activation-rule-for-ttlcounter.png route=/models state="Activation Rule after Save with the TTL Counter increment set" -->
-![Image](model-abstraction-updated-activation-rule-for-ttlcounter.png)
+{% comment %}TODO(verify): the page formerly showed the first response after configuration with the counter still at 0, on the basis that counts are fetched before incrementation. ActivationRuleTtlCounterExtensions now also adds the increment to the TtlCounter collection of the transaction in process, so the first response is expected to show 1. Confirm on a running system which value the first response carries, and correct the paragraph above and the example below if it is still 0.{% endcomment %}
 
-Synchronise the model via Entity >> Synchronisation and repeat the HTTP POST to
-endpoint [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc)
-for response as follows:
-<!-- TODO(docs): the menu path or synchronisation step above is Razor-era wording; confirm against the Vue Models story page, and whether synchronisation is still a manual step -->
+A TTL Counter is not incremented where:
 
-<!-- TODO(screenshot): file=model-abstraction-ttlcounter-has-not-advanced.png route=/models state="Invocation response with the TTL Counter still at 0 before synchronisation" -->
-![Image](model-abstraction-ttlcounter-has-not-advanced.png)
+* The Activation Rule is in shadow mode, as a match in shadow has no effect.
+* The transaction is being processed by a reprocessing job.
+* The payload of the transaction does not carry the field named as the TTL counter data name.
+* Enable sum is on for the TTL Counter and the value to add is negative, not a number or infinite.
+* The ActivationRuleIdempotency Environment Variable is True and the same transaction has already incremented the same TTL Counter, in which case a duplicate invocation of the transaction is not counted twice. ActivationRuleIdempotency is False by default.
 
-The Activation Rule should of course be showing as activated, however, the TTL Counter will have been incremented also.
+## Example
 
-As incrementation takes place AFTER the activation of the rule, it can be seen that the TTL Counter has not been
-incremented at the point the response is written out, as the count was TTL counts were fetched BEFORE the invocation of
-the TTL counter.
+The TTL Counter by the name of IP is to be incremented on the match of the Activation Rule Volume1DayUSDForIPOver100. In the TTL Counter group of that Activation Rule:
 
-Repeat the HTTP POST to
-endpoint [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc)
-for response as follows:
-<!-- TODO(docs): the menu path or synchronisation step above is Razor-era wording; confirm against the Vue Models story page, and whether synchronisation is still a manual step -->
+| Value | Example |
+|-------|---------|
+| Increment TTL counter | True |
+| Model | The same model |
+| TTL counter | IP |
 
-<!-- TODO(screenshot): file=model-abstraction-increment-after-ip.png route=/models state="Invocation response with the TTL Counter advanced after the activation rule matched" -->
-![Image](model-abstraction-increment-after-ip.png)
+Upon the change to the Activation Rule being approved, and taken up by the engine at its next cycle, the HTTP POST to the endpoint [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc) is repeated. The Activation Rule should of course be showing as activated, however, the TTL Counter will have been incremented also. Repeating the HTTP POST once more returns a response as follows:
 
-It can be seen that the TTL counter was incremented on the first post, and is now available for the subsequent
-transaction.
+```json
+"ttlCounter": {
+  "TtlCounterAll": 145,
+  "IP": 1
+}
+```
 
-As introduced elsewhere in this documentation, TTL Counters exist as a lightweight means to maintain state and history
-for a given key:
+It can be seen that the TTL counter was incremented on the first post, and is now available for the subsequent transaction.
 
-<!-- TODO(screenshot): file=model-abstraction-note-availability-for-rule-construction.png route=/models state="Rule builder palette showing the TTL Counter available as a field" -->
-![Image](model-abstraction-note-availability-for-rule-construction.png)
+The TTL Counter is thereafter available for rule construction, being offered among the fields of the Builder as `TTLCounter.IP`, and written in the same manner in the Coder.
 
-<!-- TODO(docs): the Activation Rule stores the Model Guid and the TTL Counter Guid it increments. Review finding: the increment writes the live counter under the evaluating Model's Guid while the decrement entry uses the rule's target Model Guid, so a rule that targets a counter on a different Model is not read back by that Model. Owner to decide whether cross-model increment is supported and document it either way -->
-<!-- TODO(docs): when Activation Rule Idempotency is enabled, a duplicate invocation of the same transaction is not counted twice; describe and confirm -->
+{% comment %}SHOT id=models-ttl-counter-incrementation-activation-rule
+     route=/models
+     steps=open-default-model, open-hub:Activation Rules, open-row:IncrementTtlCounterAll, scroll-to:TTL Counter
+     frame=record
+     state=an Activation Rule of the default model opened with the TTL Counter group expanded, Increment TTL counter switched on, and the Model and TTL counter selected
+     conveys=the incrementing of a TTL Counter is configured on the Activation Rule, naming the model and the counter
+     alt=The TTL Counter group of an Activation Rule, with Increment TTL counter switched on and a model and TTL Counter selected{% endcomment %}
+
+![The TTL Counter group of an Activation Rule, with Increment TTL counter switched on and a model and TTL Counter selected](models-ttl-counter-incrementation-activation-rule.png)
+
+## Permissions and security
+
+The incrementation is configured on the Activation Rule, henceforth it requires permission 17, Read Write Activation Rule, which also allows the TTL Counters of a model to be listed for the purposes of selection. Creating the TTL Counter itself requires permission 12, Read Write TTL Counter.

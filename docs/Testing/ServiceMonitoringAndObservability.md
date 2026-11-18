@@ -359,8 +359,7 @@ tests. Category: Service. Collection: Database.
 
 ### EntityAnalysisModelAsynchronousQueueBalanceServiceTests
 
-`Jube.Test.Service.EntityAnalysisModelAsynchronousQueueBalance.EntityAnalysisModelAsynchronousQueueBalanceServiceTests` —
-20 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.EntityAnalysisModelAsynchronousQueueBalance.EntityAnalysisModelAsynchronousQueueBalanceServiceTests` — 20 tests. Category: Service. Collection: Database.
 
 | Test                                                           | Kind   | Verifies                                                           |
 |----------------------------------------------------------------|--------|--------------------------------------------------------------------|
@@ -423,8 +422,7 @@ Category: Service. Collection: Database.
 
 ### EntityAnalysisModelResponseTimePipelineCounterServiceTests
 
-`Jube.Test.Service.EntityAnalysisModelResponseTimePipelineCounter.EntityAnalysisModelResponseTimePipelineCounterServiceTests` —
-20 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.EntityAnalysisModelResponseTimePipelineCounter.EntityAnalysisModelResponseTimePipelineCounterServiceTests` — 20 tests. Category: Service. Collection: Database.
 
 | Test                                                           | Kind   | Verifies                                                           |
 |----------------------------------------------------------------|--------|--------------------------------------------------------------------|
@@ -453,8 +451,7 @@ Category: Service. Collection: Database.
 
 ### EntityAnalysisModelStagePerformanceCounterServiceTests
 
-`Jube.Test.Service.EntityAnalysisModelStagePerformanceCounter.EntityAnalysisModelStagePerformanceCounterServiceTests` —
-20 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.EntityAnalysisModelStagePerformanceCounter.EntityAnalysisModelStagePerformanceCounterServiceTests` — 20 tests. Category: Service. Collection: Database.
 
 | Test                                                           | Kind   | Verifies                                                           |
 |----------------------------------------------------------------|--------|--------------------------------------------------------------------|

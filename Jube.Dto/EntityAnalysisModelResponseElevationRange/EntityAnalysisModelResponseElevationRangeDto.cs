@@ -191,14 +191,14 @@ namespace Jube.Dto.EntityAnalysisModelResponseElevationRange
         public string? NotificationDestination { get; set; }
 
         [Description("Notification subject line, for an Email notification.")]
-        [FormField(Group = "Notification", Order = 40, Placeholder = "Response elevated for [@AccountId]")]
+        [FormField(Group = "Notification", Order = 40, Placeholder = "Response elevated for [@Payload.AccountId@]")]
         [VisibleWhen(nameof(EnableNotification), true)]
         [Key(21)]
         public string? NotificationSubject { get; set; }
 
         [Description("Notification body. Tokens are replaced with values from the Payload.")]
         [FormField(Group = "Notification", Order = 50, Widget = "textarea",
-            Placeholder = "Account [@AccountId] reached this response elevation.")]
+            Placeholder = "Account [@Payload.AccountId@] reached this response elevation.")]
         [VisibleWhen(nameof(EnableNotification), true)]
         [Key(22)]
         public string? NotificationBody { get; set; }

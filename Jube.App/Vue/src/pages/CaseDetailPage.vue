@@ -36,6 +36,7 @@ import CaseHistorySection from '../cases/detail/CaseHistorySection.vue'
 import ChecklistHistoryList from '../cases/checklist/ChecklistHistoryList.vue'
 import {useCaseChecklistHistory} from '../cases/checklist/useCaseChecklist'
 import CaseLede from '../cases/detail/CaseLede.vue'
+import TallyGroup from '../components/TallyGroup.vue'
 import CaseNotesSection from '../cases/detail/CaseNotesSection.vue'
 import CaseResearchSection from '../cases/detail/CaseResearchSection.vue'
 import CaseDispatches from '../cases/detail/CaseDispatches.vue'
@@ -180,6 +181,16 @@ const research = useQuery({
   staleTime: 30_000,
   retry: false,
 })
+
+const nothingRecorded = computed(
+  () =>
+    !(notes.isPending.value && hasKey.value) &&
+    !(research.isPending.value && hasKey.value) &&
+    !notes.isError.value &&
+    !research.isError.value &&
+    (notes.data.value ?? []).length === 0 &&
+    (research.data.value ?? []).length === 0,
+)
 
 const statusName = computed(
   () =>
@@ -445,29 +456,6 @@ useJoobyPageContext(() => ({pageName: 'Case', state: 'edit', record: {id: caseId
           class="flex min-w-0 flex-col gap-3 lg:self-start"
           data-testid="case-left-pane"
         >
-          <aside
-            class="flex min-w-0 flex-col gap-3 rounded-box border border-base-300 p-4"
-            :aria-label="t('caseDetail.panel.label')"
-            data-testid="case-key-panel"
-          >
-            <dl class="flex flex-col gap-3 text-sm">
-              <div class="flex flex-col gap-0.5">
-                <dt class="text-xs text-base-content/70">{{ detail.data.value.caseKey }}</dt>
-                <dd class="break-all font-mono font-semibold" data-testid="case-key-value">
-                  {{ detail.data.value.caseKeyValue }}
-                </dd>
-              </div>
-              <div v-if="workflowName !== ''" key="workflow" class="flex flex-col gap-0.5">
-                <dt class="text-xs text-base-content/70">{{ t('caseDetail.panel.workflow') }}</dt>
-                <dd>{{ workflowName }}</dd>
-              </div>
-              <div class="flex flex-col gap-0.5">
-                <dt class="text-xs text-base-content/70">{{ t('caseDetail.panel.created') }}</dt>
-                <dd class="font-mono">{{ dateTime(detail.data.value.createdDate) }}</dd>
-              </div>
-            </dl>
-          </aside>
-
           <div class="hidden lg:block">
             <CanvasIndex :items="items" :label="t('caseDetail.section.label')" @pick="pick"/>
           </div>
@@ -480,6 +468,41 @@ useJoobyPageContext(() => ({pageName: 'Case', state: 'edit', record: {id: caseId
           :aria-label="t('caseDetail.story')"
           data-testid="case-story"
         >
+          <aside
+            class="rounded-box border border-base-300 bg-base-100 px-4 py-3"
+            :aria-label="t('caseDetail.panel.label')"
+            data-testid="case-key-panel"
+          >
+            <dl class="flex min-w-0 flex-wrap gap-x-8 gap-y-3 text-sm">
+              <div class="flex min-w-0 flex-col gap-0.5">
+                <dt class="text-xs text-base-content/70">{{ detail.data.value.caseKey }}</dt>
+                <dd class="break-all font-mono font-semibold" data-testid="case-key-value">
+                  {{ detail.data.value.caseKeyValue }}
+                </dd>
+              </div>
+              <div v-if="workflowName !== ''" key="workflow" class="flex min-w-0 flex-col gap-0.5">
+                <dt class="text-xs text-base-content/70">{{ t('caseDetail.panel.workflow') }}</dt>
+                <dd>{{ workflowName }}</dd>
+              </div>
+              <div class="flex min-w-0 flex-col gap-0.5">
+                <dt class="text-xs text-base-content/70">{{ t('caseDetail.panel.created') }}</dt>
+                <dd class="font-mono">{{ dateTime(detail.data.value.createdDate) }}</dd>
+              </div>
+            </dl>
+          </aside>
+
+          <CaseDecide
+            v-if="!panes.right.value"
+            key="decide-story"
+            layout="story"
+            :detail="detail.data.value"
+            :row="summary.data.value?.case ?? null"
+            :user-name="me.data.value?.userName ?? ''"
+            :can-suppress="canSuppress"
+            :can-force="canForce"
+            :can-override-checklist="canOverrideChecklist"
+          />
+
           <CanvasSection
             v-if="visualisationGuid"
             id="dashboard"
@@ -561,17 +584,21 @@ useJoobyPageContext(() => ({pageName: 'Case', state: 'edit', record: {id: caseId
             :hint="hintOf('notes')"
             :help="helpOf('notes')"
           >
-            <CaseNotesSection
-              :notes="notes.data.value ?? []"
-              :loading="notes.isPending.value && hasKey"
-              :failed="notes.isError.value"
-              :user-name="me.data.value?.userName"
-            />
-            <CaseResearchSection
-              :research="research.data.value ?? []"
-              :loading="research.isPending.value && hasKey"
-              :failed="research.isError.value"
-            />
+            <TallyGroup
+              testid="case-notes-tally"
+              :note="nothingRecorded ? t('caseDetail.notes.nothing') : undefined"
+            >
+              <CaseNotesSection
+                :notes="notes.data.value ?? []"
+                :loading="notes.isPending.value && hasKey"
+                :failed="notes.isError.value"
+              />
+              <CaseResearchSection
+                :research="research.data.value ?? []"
+                :loading="research.isPending.value && hasKey"
+                :failed="research.isError.value"
+              />
+            </TallyGroup>
           </CanvasSection>
 
           <CanvasSection
@@ -631,6 +658,8 @@ useJoobyPageContext(() => ({pageName: 'Case', state: 'edit', record: {id: caseId
           data-testid="case-right-pane"
         >
           <CaseDecide
+            v-if="panes.right.value"
+            key="decide-side"
             :detail="detail.data.value"
             :row="summary.data.value?.case ?? null"
             :user-name="me.data.value?.userName ?? ''"

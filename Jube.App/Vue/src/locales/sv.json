@@ -142,10 +142,8 @@
   "shell": {
     "resources": "Resurser",
     "documentation": "Dokumentation",
-    "copyright": "Upphovsrätt",
     "account": "Konto",
     "signedInAs": "Inloggad som",
-    "changePassword": "Ändra lösenord",
     "signOut": "Logga ut",
     "signedOut": "Du har loggat ut.",
     "signOutFailed": "Utloggningen misslyckades. Kontrollera anslutningen och försök igen.",
@@ -184,6 +182,7 @@
     "offline": "Jooby är inte påslagen för den här installationen. Du kan läsa om vad Jooby kan göra, men svar är avstängda tills en inferensbackend har konfigurerats.",
     "noPermission": "Jooby är sprudlande redo, men ditt konto har inte behörigheten Ask Jooby. Be en administratör lägga till den i en av dina roller.",
     "widgetTitle": "Jooby",
+    "viewing": "Visar: {page}",
     "closeChat": "Stäng chatten",
     "openChat": "Öppna chatten",
     "failed": "Det fungerade inte. Försök igen.",
@@ -233,7 +232,7 @@
       "3": "tid till lösning",
       "4": "tid i status"
     },
-    "empty": "Inget nytt. Aviseringar visas här när aviseringstjänsten har anslutits.",
+    "empty": "Inget nytt.",
     "unread": "Olästa",
     "severity": {
       "info": "Information",
@@ -452,7 +451,7 @@
     "closedStatus4": "Pausa förbigång",
     "priority1": "Mycket hög",
     "priority2": "Hög",
-    "priority3": "Normal",
+    "priority3": "Medel",
     "priority4": "Låg",
     "priority5": "Mycket låg",
     "addColumn": "Lägg till kolumn",
@@ -534,7 +533,7 @@
       "38": "Tillåt import och export av bevarande",
       "39": "Visa prestandaräknare",
       "40": "Visa stickprov av entitetsanalysmodeller",
-      "41": "Tillåt godkännande efter granskning",
+      "41": "Utgått - ingen effekt (granskningsstatus för aktiveringsregler har utgått)",
       "42": "Utgått - ingen effekt (OpenTelemetrys loggräknare är endast för hyresvärden)",
       "43": "Utgått - ingen effekt (OpenTelemetrys undantag är endast för hyresvärden)",
       "44": "Tillåt godkännande",
@@ -918,10 +917,7 @@
       "approvedValues": "Godkände {count} värde(n).",
       "approve": "Godkänn",
       "reject": "Avslå",
-      "review": "Granska",
       "approveValues": "Godkänn värden",
-      "closeReview": "Stäng granskningen",
-      "reviewTitle": "Granskning: {name}",
       "deletion": "Borttagning",
       "edit": "Redigering",
       "col": {
@@ -1391,7 +1387,9 @@
     "active": "{count} aktiva",
     "locked": "{count} låsta",
     "failed": "Kunde inte läsas in",
-    "awaiting": "{count} väntar"
+    "awaiting": "{count} väntar",
+    "find": "Hitta ett kort",
+    "noMatch": "Inget matchar"
   },
   "payloadGrid": {
     "from": "Från",
@@ -2508,7 +2506,9 @@
       "legalHoldPlaced": "Rättslig spärr lagd",
       "legalHoldLifted": "Rättslig spärr hävd",
       "assessmentRecorded": "Analytikerns bedömning sparad",
-      "assessmentWithdrawn": "Analytikerns bedömning tillbakadragen"
+      "assessmentWithdrawn": "Analytikerns bedömning tillbakadragen",
+      "caseLinked": "Ärende länkat",
+      "caseUnlinked": "Ärendelänk borttagen"
     },
     "headline": {
       "atRisk": "{n} i riskzonen",
@@ -2950,7 +2950,7 @@
       "noKey": "Ärendet saknar nyckel, så det finns ingen journal att visa."
     },
     "notes": {
-      "empty": "Inga anteckningar på den här nyckeln ännu.",
+      "nothing": "Inget har registrerats på den här nyckeln ännu. Anteckningar och undersökningar läggs till från Decide.",
       "failed": "Anteckningarna kunde inte läsas in.",
       "action": "Åtgärd: {name}",
       "priority": "Prioritet: {name}",
@@ -3038,6 +3038,7 @@
       "entriesFailed": "De inskickade formulären kunde inte läsas in.",
       "submittedBy": "{user} den {when}",
       "cannotDraw": "Det här formuläret kan inte längre ritas upp: {reason} Värdena det innehåller visas nedan.",
+      "drawFailed": "Det här formuläret kunde inte ritas upp.",
       "otherValues": "Värden som formuläret saknar fält för"
     },
     "hint": {
@@ -3062,6 +3063,10 @@
       "whyNone": "Inget utöver platsen i kön har flaggats ännu."
     },
     "decide": {
+      "group": {
+        "actions": "Åtgärder",
+        "record": "I det här ärendet"
+      },
       "title": "Besluta",
       "heldByYou": "Innehas av dig",
       "supervisor": "En arbetsledare kan bryta den här låsningen.",
@@ -3091,7 +3096,7 @@
       "saved": "Ärendet uppdaterat",
       "noteAdded": "Anteckning tillagd",
       "macroRan": "Makrot kördes",
-      "statusTitle": "Status och betyg",
+      "statusTitle": "Status",
       "diaryTitle": "Dagbok",
       "currentStatus": "Aktuell status",
       "escalate": "Eskalera",
@@ -3104,6 +3109,7 @@
       "attachHint": "Valfritt. Varje fil sparas tillsammans med anteckningen som bevis.",
       "researchAttachHint": "Valfritt. Varje fil sparas tillsammans med undersökningen som bevis.",
       "notAttached": "Anteckningen lades till, men {n} fil(er) kunde inte bifogas.",
+      "researchNotAttached": "Undersökningen lades till, men {n} fil(er) kunde inte bifogas.",
       "researchTitle": "Lägg till undersökning",
       "researchTopic": "Ämne",
       "researchFindings": "Resultat",
@@ -3136,7 +3142,7 @@
         },
         "status": {
           "label": "Status",
-          "tip": "Ändra arbetsflödesstatus eller eskalera ärendet och sätt dess betyg. Ett flyttförsök blockeras medan obligatoriska checklistepunkter är öppna."
+          "tip": "Ändra arbetsflödesstatus eller eskalera ärendet. Ett flyttförsök blockeras medan obligatoriska checklistepunkter är öppna."
         },
         "checklist": {
           "label": "Checklista",
@@ -3270,6 +3276,7 @@
       "hint": "Ärenden i det här arbetsflödet som delar fakta med det här: samma regler eller modeller, samma taggar, samma enhet eller motpart, samma slags och storlek av aktivitet. Fakta som bara ett fåtal ärenden delar väger tyngre än fakta som de flesta delar.\nDet här är sammanhang att läsa, inte en poäng: det ändrar aldrig hur ärendet rangordnas.",
       "failed": "Det gick inte att läsa in de liknande ärendena.",
       "pending": "Det här ärendet har inte jämförts ännu. Det sker inom kort.",
+      "off": "Liknande ärenden är avstängt i den här installationen, så det här ärendet kommer inte att jämföras.",
       "none": "Inga liknande ärenden hittades.",
       "headline": "{confirmed} av {closed} liknande avslutade ärenden bekräftades",
       "tooFew": "För få liknande ärenden är avslutade för att kunna bedöma",
@@ -3324,6 +3331,7 @@
       "empty": "Inga checklistepunkter visas för det här ärendet.",
       "gate": {
         "inPlace": "Ett åsidosättande gäller. {user} tillät att ärendet flyttas med punkter fortfarande öppna: {reason}",
+        "ownOverride": "Du beviljade åsidosättandet för ärendet, så en annan användare måste göra flytten: {reason}",
         "more": "+{n} till",
         "open": "inga checklistepunkter fortfarande öppna | 1 checklistepunkt fortfarande öppen | {n} checklistepunkter fortfarande öppna",
         "openChecklist": "Öppna checklistan",
@@ -3384,6 +3392,7 @@
     },
     "assessment": {
       "title": "Din bedömning",
+      "canvasTitle": "Analytikerns bedömning",
       "hint": "Spara din egen bedömning av hur sannolikt det är att ärendet bekräftas. Den sparas bredvid den beräknade sannolikheten, ersätter den aldrig och ändrar aldrig ärendets rangordning. Bara du kan dra tillbaka en bedömning du har sparat.",
       "none": "Ingen analytiker har sparat en bedömning av ärendet.",
       "low": "Låg",
@@ -3402,7 +3411,7 @@
       "lede": "Analytikerns bedömning: {view}"
     },
     "panes": {
-      "left": "nyckelpanelen och avsnitten",
+      "left": "avsnitten",
       "right": "beslutspanelen"
     },
     "help": {
@@ -3416,7 +3425,7 @@
       "decide": {
         "title": "Allt du kan göra med det här ärendet.\nAtt ta ett ärende låser det till dig, så ingen annan kan ändra det. En arbetsledare kan bryta låset. Släpp ärendet om du slutar arbeta med det så att det återgår till kön. Stäng och öppna igen finns längre ned."
       },
-      "dashboard": "En instrumentpanel byggd för den här typen av ärende av den som konfigurerade arbetsflödet. Den kan beskriva hela ärendet, inte bara dess transaktioner, och ritas enbart utifrån ärendenyckeln och dess värde: allt annat den visar räknas fram ur dessa två."
+      "dashboard": "En instrumentpanel byggd för den här typen av ärende av den som konfigurerade arbetsflödet. Den kan beskriva hela ärendet, inte bara dess transaktioner, och får enbart ärendets identifierare: allt annat den visar räknas fram ur den."
     },
     "hold": {
       "tileHint": "{n} spärrade",
@@ -3474,7 +3483,6 @@
     },
     "research": {
       "heading": "Undersökningar",
-      "empty": "Inga undersökningar på den här nyckeln ännu.",
       "failed": "Undersökningarna kunde inte läsas in.",
       "sources": "Källor",
       "retrieved": "hämtad {date}"
@@ -3716,7 +3724,7 @@
       "activationsOnly": "Visar endast de transaktioner som utlöste minst en aktivering.\nAnvänd den för att ta dig från en lång historik till de ögonblick då reglerna reagerade. Den begränsar också diagrammen, statistiken och Tagga alla träffar till dessa transaktioner.",
       "pinnedOnly": "Visar endast de transaktioner som är fästa på detta ärende, oavsett datum eller nyckel.\nFästningar gäller hela ärendet, så alla som arbetar med det ser samma. Fäst en transaktion med stjärnan i rutnätet. Fästa transaktioner ligger också alltid överst i journalen, i alla vyer, även utanför fönstret.\nEtt ärende kan ha upp till 50 fästningar, och ett ärende som är låst av en annan användare kan inte ändras.",
       "tags": "Taggar märker transaktioner, till exempel mule eller granskad, så att de kan hittas och räknas senare.\nMarkera rader i rutnätet och tryck sedan på Tag för att lägga till eller ta bort taggar på alla samtidigt, upp till 500. Ångra visas efteråt. Transaktioner vars ärende är låst av en annan användare lämnas orörda och räknas.\nTagga alla träffar taggar varje transaktion i den aktuella vyn, upp till 100 000, i bakgrunden. Du kan fortsätta arbeta, stoppa den och ångra den efteråt. Endast taggar som är uppsatta för detta arbetsflödes modell kan läggas till.",
-      "transactions": "Hur många transaktioner denna nyckel hade i fönstret, nyaste först, upp till 2 000.\nRemsan, listan över det som sticker ut och diagrammen beräknas alla utifrån dessa transaktioner. När nyckeln har fler anger remsan det och de äldre lämnas utanför statistiken men inte utanför rutnätet.",
+      "transactions": "Hur många transaktioner denna nyckel hade i fönstret, nyaste först, upp till 2 000.\nRemsan, listan över det som sticker ut och diagrammen beräknas alla utifrån dessa transaktioner. När nyckeln har fler anger remsan det och de äldre lämnas utanför statistiken. Rutnätet läser in de 1 000 nyaste.",
       "activeDays": "Antalet olika dagar, i UTC, då nyckeln hade minst en transaktion.\nLäs det tillsammans med antalet transaktioner: många transaktioner på få dagar betyder aktivitet i skurar, och få transaktioner spridda över många dagar betyder jämn, långsam användning.",
       "withActivations": "Hur många av transaktionerna som utlöste minst en aktivering, och hur många aktiveringar som utlöstes totalt.\nEn transaktion kan utlösa flera aktiveringar, så den andra siffran kan vara större än den första.",
       "elevation": "Den högsta svarsförhöjningen för någon transaktion i fönstret.\nFörhöjning är den vikt som reglerna gav en transaktion när den utlöstes: ju högre den är, desto mer brådskande är svaret.",
@@ -4034,14 +4042,12 @@
     "section": {
       "meta": "{expiry} · {user} · {origin}",
       "elsewhere": "Gäller också på värden i den här journalen",
-      "elsewhereEmpty": "Inget annat gäller på värdena i den här journalen.",
       "failed": "Undertryckningar kunde inte läsas in.",
       "fromCase": "Satt från ärende C-{id}",
       "fromOverridePage": "Satt på sidan Override eller någon annanstans",
       "hint": "Begäranden startas från Decide och behöver godkännande innan de träder i kraft.",
       "noExpiry": "Inget utgångsdatum",
       "own": "Satt från det här ärendet",
-      "ownEmpty": "Ingen undertryckning har begärts från det här ärendet.",
       "title": "Modellåsidosättningar"
     },
     "standing": {
@@ -4151,6 +4157,7 @@
       "expand": "Expandera (lägger till inga) | Expandera (lägger till {count}) | Expandera (lägger till {count})",
       "expanded": "Expanderad",
       "pivot": "Pivotera journal",
+      "reseed": "Utforska härifrån",
       "link": "Länka till ärende",
       "openCase": "Öppna ärende {id}",
       "capture": "Fånga",
@@ -4263,7 +4270,7 @@
       "members": "{count} medlemmar",
       "markSeen": "Markera som sett",
       "dismiss": "Avfärda",
-      "toCase": "Öppna som ärende",
+      "toCase": "Koppla till ett ärende",
       "casedAs": "Ärende {id}",
       "decideAsk": {
         "title": "Besluta om det här mönstret?",

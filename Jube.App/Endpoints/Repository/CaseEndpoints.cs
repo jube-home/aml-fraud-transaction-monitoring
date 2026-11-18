@@ -426,9 +426,9 @@ namespace Jube.App.Endpoints.Repository
 
                 return TypedResults.Conflict(new { code = ex.Code, message = ex.Message, openItems = ex.OpenItems });
             }
-            catch (ConflictException)
+            catch (ConflictException ex)
             {
-                return TypedResults.Conflict();
+                return TypedResults.Conflict(new { code = "CaseConflict", message = ex.Message });
             }
             catch (NotFoundException)
             {

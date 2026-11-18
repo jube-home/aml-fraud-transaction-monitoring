@@ -123,6 +123,11 @@
         <Exec Command="npm run build-only" WorkingDirectory="$(VueDirectory)"/>
     </Target>
 
+    <Target Name="RenderDocsShots" AfterTargets="BuildVue"
+            Condition="'$(DesignTimeBuild)' != 'true' And '$(DocsShots)' == 'true'">
+        <Exec Command="npm run docs:shots" WorkingDirectory="$(VueDirectory)"/>
+    </Target>
+
     <Target Name="PublishVue" AfterTargets="ComputeFilesToPublish">
         <ItemGroup>
             <VueDistribution Include="wwwroot\**" Exclude="wwwroot\css\**"/>

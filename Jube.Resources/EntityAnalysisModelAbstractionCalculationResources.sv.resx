@@ -55,7 +55,7 @@
     <value>Det här namnet finns redan.</value>
   </data>
     <data name="FunctionScriptRequired" xml:space="preserve">
-    <value>Ett funktionsskript krävs när beräkningstypen är Coder.</value>
+    <value>Ett funktionsskript krävs.</value>
   </data>
     <data name="FunctionScriptMaxLength" xml:space="preserve">
     <value>Funktionsskriptet får inte vara längre än {0} tecken.</value>

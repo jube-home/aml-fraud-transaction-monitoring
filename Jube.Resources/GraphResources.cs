@@ -51,6 +51,7 @@ namespace Jube.Resources
         public const string SentenceFlow = nameof(SentenceFlow);
         public const string SentencePattern = nameof(SentencePattern);
         public const string SentenceCommunityRate = nameof(SentenceCommunityRate);
+        public const string SentenceCommunityNoRate = nameof(SentenceCommunityNoRate);
         public const string SentencePatternMember = nameof(SentencePatternMember);
         public const string SentenceTag = nameof(SentenceTag);
         public const string ExpandedInvalid = nameof(ExpandedInvalid);

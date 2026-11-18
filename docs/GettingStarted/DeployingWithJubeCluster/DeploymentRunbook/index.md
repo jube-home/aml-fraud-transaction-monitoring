@@ -8,200 +8,108 @@ grand_parent: Getting Started
 
 # Deploying with Jube Cluster
 
-[Deploying with Docker](../../DeployingWithDocker/index.html) covers a single-node deployment, which is the right
-starting point for evaluation, proof of concept, and smaller production workloads. This page covers a load-balanced,
-highly available, clustered deployment on Docker Swarm - multiple Postgres nodes under Patroni, multiple Redis nodes
-under Sentinel, and multiple Jube application instances, all fronted by HAProxy - suitable for production workloads
-that need to keep running through the loss of a node.
+[Deploying with Docker](../../DeployingWithDocker/index.html) covers a single-node deployment, which is the right starting point for evaluation, proof of concept, and smaller production workloads. This page covers a load-balanced, highly available, clustered deployment on Docker Swarm - multiple Postgres nodes under Patroni, multiple Garnet nodes in a cluster kept by a cluster manager, and multiple Jube application instances, with Postgres and Jube fronted by HAProxy - suitable for production workloads that need to keep running through the loss of a node.
 
-This is a real, working runbook, not a conceptual overview - the commands here are what an operator actually runs,
-in order, to stand up and operate the cluster. Placeholders like `<node1-ip>`, `<hostname1>` and `<deploy-user>`
-stand in for values specific to your environment.
+This is a real, working runbook, not a conceptual overview - the commands here are what an operator actually runs, in order, to stand up and operate the cluster. Placeholders like `<node1-ip>`, `<hostname1>` and `<deploy-user>` stand in for values specific to your environment.
+
+The cache of the cluster is Garnet, as defined in `Jube.Cluster/docker-compose.yml`. The topology that preceded it, Redis master and replicas under Sentinel, is kept as `Jube.Cluster/docker-compose.redis.yml` for the purposes of a deployment that prefers Redis, and wherever this page refers to Redis or Sentinel it is that alternative file which is meant.
 
 ## Architecture Overview
 
-Five-node Docker Swarm (four plus a tiebreaker) cluster, quorum-based throughout so the cluster keeps making
-progress after losing any single node.
+Five-node Docker Swarm (four plus a tiebreaker) cluster, quorum-based throughout so the cluster keeps making progress after losing any single node.
 
-| Layer         | Components                                                         |
-|---------------|--------------------------------------------------------------------|
-| Consensus     | etcd1, etcd2, etcd3, etcd4, etcd5                                  |
-| Database      | patroni1, patroni2, patroni3, patroni4 (PostgreSQL, under Patroni) |
-| WAL Archive   | pgBackRest, writing to a NAS-backed named Docker volume            |
-| Cache         | redis-master, redis-replica1/2/3, sentinel1/2/3/4/5                |
-| Load Balancer | haproxy                                                            |
-| Application   | jube-jobs (singleton), jube-api (scaled), jube-ui (scaled)         |
+| Layer         | Components                                                               |
+|---------------|--------------------------------------------------------------------------|
+| Consensus     | etcd1, etcd2, etcd3, etcd4, etcd5                                        |
+| Database      | patroni1, patroni2, patroni3, patroni4 (PostgreSQL, under Patroni)       |
+| WAL Archive   | pgBackRest, writing to a NAS-backed named Docker volume                  |
+| Cache         | garnet1 (primary), garnet2/3/4 (replicas), garnet-cluster-manager        |
+| Load Balancer | haproxy                                                                  |
+| Application   | jube-jobs (singleton), jube-api (scaled), jube-ui (scaled), jube-r (two) |
+| Observability | jube-monitoring (one per host), jube-otel-listener                       |
 
-**Postgres traffic flows through HAProxy only** - application containers connect to `haproxy:5432` (read/write) or
-`haproxy:5433` (read-only, routed to a replica), never directly to a `patroniN` node. HAProxy makes that
-primary/replica routing decision by polling each Patroni node's own REST API (`GET /primary` / `GET /replica` on
-port 8008) rather than guessing from a raw TCP check - this is Patroni's own recommended integration pattern, since
-only Patroni itself reliably knows which node currently holds the lease.
+**Postgres traffic flows through HAProxy only** - application containers connect to `haproxy:5432` (read/write) or `haproxy:5433` (read-only, routed to a replica), never directly to a `patroniN` node. HAProxy makes that primary/replica routing decision by polling each Patroni node's own REST API (`GET /primary` / `GET /replica` on port 8008) rather than guessing from a raw TCP check - this is Patroni's own recommended integration pattern, since only Patroni itself reliably knows which node currently holds the lease.
 
-**Redis traffic bypasses HAProxy entirely.** Jube's `RespConnectionString` points directly at the five Sentinels
-(`sentinel1:26379,...,serviceName=redis-master,...`), using StackExchange.Redis's native Sentinel-aware connection
-mode: the client asks the Sentinel quorum who the current master is, connects there, and re-asks automatically on a
-failover. This is the standard client-side pattern for Redis Sentinel high availability, and is arguably a better
-fit than routing Redis through a TCP load balancer would be, since the client library's own failover detection is
-faster and more precise than a proxy re-running a periodic health check. The Redis nodes themselves also defer to
-Sentinel on their own startup, for the same reason - see [Data Layer Configuration](#data-layer-configuration) below.
+**Cache traffic bypasses HAProxy entirely.** Jube's `RespConnectionString` points directly at the four Garnet nodes (`garnet1:6379,garnet2:6379,garnet3:6379,garnet4:6379,...`), and the client library, StackExchange.Redis, takes from the cluster itself which node is at present the primary, following it upon a failover. This is arguably a better fit than routing the cache through a TCP load balancer would be, since the client library's own failover detection is faster and more precise than a proxy re-running a periodic health check. In the Redis alternative the same principle holds by a different means: `RespConnectionString` points at the five Sentinels (`sentinel1:26379,...,serviceName=redis-master,...`), using StackExchange.Redis's native Sentinel-aware connection mode, where the client asks the Sentinel quorum who the current master is, connects there, and re-asks automatically on a failover. See [Data Layer Configuration](#data-layer-configuration) below.
 
-Both the etcd (5) and Sentinel (5) counts are deliberately odd - both are quorum/majority-vote systems, and an odd
-node count avoids the tied vote a same-sized even count can produce during a partition. Patroni's replica count (4)
-has no such constraint, since Postgres replication itself isn't a voting system - Patroni's leader election is
-delegated entirely to etcd.
+The etcd count (5) is deliberately odd - it is a quorum/majority-vote system, and an odd node count avoids the tied vote a same-sized even count can produce during a partition. The same reasoning gives the Redis alternative its five Sentinels. Patroni's replica count (4) has no such constraint, since Postgres replication itself isn't a voting system - Patroni's leader election is delegated entirely to etcd. Garnet's node count (4) has no such constraint either, as there is no election among the Garnet nodes: the promotion of a replica is decided by the single `garnet-cluster-manager`, which is placed on the tiebreaker host.
 
 ## Data Layer Configuration
 
-The Patroni, pgBackRest and Redis configuration in this cluster isn't left at defaults - most of it is a deliberate
-tradeoff worth understanding rather than copying blind.
+The Patroni, pgBackRest and cache configuration in this cluster isn't left at defaults - most of it is a deliberate tradeoff worth understanding rather than copying blind.
 
 ### Postgres / Patroni
 
-`synchronous_mode: true` with `synchronous_mode_strict: false`, alongside Postgres's own `synchronous_commit: off`,
-is a specific and intentional combination, not a contradiction. `synchronous_mode` controls **failover safety**:
-Patroni always designates a synchronous standby, and will only promote a standby that Patroni knows had fully
-received what the old primary had committed - so automatic failover cannot silently lose a transaction. It does
-not, by itself, mean every commit *waits* for that standby. That's controlled separately by
-`synchronous_commit: off`, which lets a client's `COMMIT` return as soon as the local WAL write completes, without
-waiting for the standby's acknowledgement over the network. Together: failover promotion is safe, but everyday
-commit latency doesn't pay a synchronous-replication network round trip. The `strict: false` half of that first
-setting means the primary keeps accepting writes even if the synchronous standby is temporarily unreachable, rather
-than the whole cluster refusing writes because one designated standby is briefly down.
+`synchronous_mode: true` with `synchronous_mode_strict: false`, alongside Postgres's own `synchronous_commit: off`, is a specific and intentional combination, not a contradiction. `synchronous_mode` controls **failover safety**: Patroni always designates a synchronous standby, and will only promote a standby that Patroni knows had fully received what the old primary had committed - so automatic failover cannot silently lose a transaction. It does not, by itself, mean every commit *waits* for that standby. That's controlled separately by `synchronous_commit: off`, which lets a client's `COMMIT` return as soon as the local WAL write completes, without waiting for the standby's acknowledgement over the network. Together: failover promotion is safe, but everyday commit latency doesn't pay a synchronous-replication network round trip. The `strict: false` half of that first setting means the primary keeps accepting writes even if the synchronous standby is temporarily unreachable, rather than the whole cluster refusing writes because one designated standby is briefly down.
 
-`use_pg_rewind: true` lets a demoted former primary rejoin the cluster as a standby by rewinding just the diverged
-WAL, rather than requiring a full new basebackup - faster recovery after a failover. `use_slots: true` with
-`max_slot_wal_keep_size: 4GB` uses replication slots so a standby that briefly disconnects (a restart, a network
-blip) doesn't need a full resync - the primary retains the WAL it needs - while the cap stops a *permanently* dead
-standby's slot from filling the disk indefinitely. `maximum_lag_on_failover: 33554432` (32MB) excludes a standby
-that's fallen too far behind from being an automatic-failover candidate at all, favouring "wait" or "pick a better
-candidate" over promoting something meaningfully behind.
+`use_pg_rewind: true` lets a demoted former primary rejoin the cluster as a standby by rewinding just the diverged WAL, rather than requiring a full new basebackup - faster recovery after a failover. `use_slots: true` with `max_slot_wal_keep_size: 4GB` uses replication slots so a standby that briefly disconnects (a restart, a network blip) doesn't need a full resync - the primary retains the WAL it needs - while the cap stops a *permanently* dead standby's slot from filling the disk indefinitely. `maximum_lag_on_failover: 33554432` (32MB) excludes a standby that's fallen too far behind from being an automatic-failover candidate at all, favouring "wait" or "pick a better candidate" over promoting something meaningfully behind.
 
-`archive_mode`/`archive_command` continuously ship WAL to pgBackRest for point-in-time recovery, bounded by
-`archive_timeout: 60s` - the maximum window of committed-but-not-yet-archived data if archiving somehow stalled.
-`checkpoint_timeout: 15min` and `checkpoint_completion_target: 0.9` spread checkpoint I/O smoothly across most of
-that interval rather than bursting it; `wal_compression: lz4` trades a small amount of CPU for meaningfully less
-WAL volume to write and ship. `commit_delay: 1000` (microseconds) with `commit_siblings: 10` briefly batches
-concurrent commits so their WAL flushes can be amortised together under load - a classic high-throughput OLTP
-tuning, appropriate for a continuous stream of transaction-monitoring writes rather than occasional writes.
-Autovacuum is tuned meaningfully more aggressive than Postgres's defaults (`autovacuum_vacuum_scale_factor: 0.01`,
-`autovacuum_analyze_scale_factor: 0.005`, versus defaults an order of magnitude larger) for the same reason - a
-high-insert-rate workload accumulates dead tuples and stale statistics faster than the defaults assume, and letting
-either lag invites both bloat and poor query plans.
+`archive_mode`/`archive_command` continuously ship WAL to pgBackRest for point-in-time recovery, bounded by `archive_timeout: 60s` - the maximum window of committed-but-not-yet-archived data if archiving somehow stalled. `checkpoint_timeout: 15min` and `checkpoint_completion_target: 0.9` spread checkpoint I/O smoothly across most of that interval rather than bursting it; `wal_compression: lz4` trades a small amount of CPU for meaningfully less WAL volume to write and ship. `commit_delay: 1000` (microseconds) with `commit_siblings: 10` briefly batches concurrent commits so their WAL flushes can be amortised together under load - a classic high-throughput OLTP tuning, appropriate for a continuous stream of transaction-monitoring writes rather than occasional writes. Autovacuum is tuned meaningfully more aggressive than Postgres's defaults (`autovacuum_vacuum_scale_factor: 0.01`, `autovacuum_analyze_scale_factor: 0.005`, versus defaults an order of magnitude larger) for the same reason - a high-insert-rate workload accumulates dead tuples and stale statistics faster than the defaults assume, and letting either lag invites both bloat and poor query plans.
 
-`pg_hba` scopes replication, superuser-over-network, and application traffic all to the `10.0.1.0/24` overlay
-subnet specifically, rather than a broader range - defence in depth underneath "all traffic must flow through
-HAProxy," so even a misconfiguration elsewhere can't accept a Postgres connection from outside the cluster's own
-network. The one exception, `local all all trust`, only ever applies to the Unix socket inside a given container -
-unreachable without already having exec access to that specific container - which is exactly what makes the
-[Total Postgres Password Wipeout Recovery](#total-postgres-password-wipeout-recovery) procedure above both possible
-and safe: the trust boundary it relies on is equivalent to already having host/container access, not a network-open
-door.
+`pg_hba` scopes replication, superuser-over-network, and application traffic all to the `10.0.1.0/24` overlay subnet specifically, rather than a broader range - defence in depth underneath "all traffic must flow through HAProxy," so even a misconfiguration elsewhere can't accept a Postgres connection from outside the cluster's own network. The one exception, `local all all trust`, only ever applies to the Unix socket inside a given container - unreachable without already having exec access to that specific container - which is exactly what makes the [Total Postgres Password Wipeout Recovery](#total-postgres-password-wipeout-recovery) procedure below both possible and safe: the trust boundary it relies on is equivalent to already having host/container access, not a network-open door.
 
 ### pgBackRest and why the backup repository is on NAS
 
-`repo1-path` (the pgBackRest backup repository - WAL archive plus periodic full backups) is mounted from NAS
-(`/mnt/pgbackrest`), not host-local disk. The reason is durability independence: if backups lived on the same
-host's disk as the Patroni node producing them, losing that host would take out the live database *and* its own
-backup history in the same event. NAS decouples the two, and also means any node - not just the one that produced
-a given backup - can read the repository for a restore.
+`repo1-path` (the pgBackRest backup repository - WAL archive plus periodic full backups) is mounted from NAS (`/mnt/pgbackrest`), not host-local disk. The reason is durability independence: if backups lived on the same host's disk as the Patroni node producing them, losing that host would take out the live database *and* its own backup history in the same event. NAS decouples the two, and also means any node - not just the one that produced a given backup - can read the repository for a restore.
 
-Within that, `archive-async=y` plus `spool-path` (mounted as `tmpfs` in the compose file, so it's RAM-backed and
-non-persistent) decouples Postgres's `archive_command` from actual NAS write latency: Postgres hands a completed
-WAL segment to a fast local spool and moves on immediately, while a background pgBackRest process drains that spool
-to the NAS repository asynchronously. A slow or momentarily congested NAS write can never stall the primary's own
-WAL archiving as a result - the spool being non-durable is fine precisely because the durable copy of record is
-whatever has already landed in the NAS repository, not whatever's transiently sitting in the spool.
-`repo1-retention-full=2` (keep the last two full backups, with WAL retained to cover both) is a deliberate rollback
-safety margin - if the newest full backup turns out to be bad, there's still a second, older one to fall back to
-rather than only ever having exactly one.
+Within that, `archive-async=y` plus `spool-path` (mounted as `tmpfs` in the compose file, so it's RAM-backed and non-persistent) decouples Postgres's `archive_command` from actual NAS write latency: Postgres hands a completed WAL segment to a fast local spool and moves on immediately, while a background pgBackRest process drains that spool to the NAS repository asynchronously. A slow or momentarily congested NAS write can never stall the primary's own WAL archiving as a result - the spool being non-durable is fine precisely because the durable copy of record is whatever has already landed in the NAS repository, not whatever's transiently sitting in the spool. `repo1-retention-full=2` (keep the last two full backups, with WAL retained to cover both) is a deliberate rollback safety margin - if the newest full backup turns out to be bad, there's still a second, older one to fall back to rather than only ever having exactly one.
 
-### Redis
+### Garnet
 
-`appendonly yes` with `appendfsync everysec` accepts the same kind of throughput/durability tradeoff as Postgres's
-`synchronous_commit off` above: an fsync once per second, rather than per write, bounds the worst-case data loss on
-a hard crash to roughly one second of writes, in exchange for not paying an fsync's latency on every single
-command. `no-appendfsync-on-rewrite yes` avoids a further fsync stall while the AOF file is being compacted in the
-background. `io-threads 4` with `io-threads-do-reads yes` parallelises Redis's normally single-threaded network I/O
-across threads, worthwhile on the multi-core hosts this cluster runs on under concurrent load. `protected-mode no`
-is safe specifically *because* `requirepass`/`masterauth` are always set (via the wrapper command, from the
-`RESP_PASSWORD` secret) and the network is already confined to the private overlay - protected mode exists to stop
-an accidentally-unauthenticated instance being reachable from anywhere, which doesn't apply here since both of the
-conditions it guards against are independently already covered.
+The four Garnet nodes form a cluster of one shard: `garnet1` is the primary and owns all 16384 slots, and `garnet2`, `garnet3` and `garnet4` replicate it. Each node is started in cluster mode (`--cluster`, with `--cluster-timeout 5`), announces itself by hostname, and requires the password of the `RESP_PASSWORD` secret both from clients (`--auth Password`) and from the other nodes of the cluster (`--cluster-password`). There is no host-published port.
 
-**Every node defers to Sentinel on startup, rather than any one node hardcoding itself as master.** Each of
-`redis-master`, `redis-replica1`, `redis-replica2` and `redis-replica3` runs the same shape of startup logic: query
-each Sentinel in turn for who it currently considers the master (`SENTINEL get-master-addr-by-name redis-master`),
-and if one answers with a master that isn't itself, start as `--replicaof` that node - only falling back to the
-historical static topology (`redis-master` seeds as a plain master; the others target `redis-master` directly) if
-no Sentinel can be reached or none has an opinion yet, which is only ever true on a genuinely fresh cluster.
+`--aof` with `--aof-commit-freq 1000` accepts the same kind of throughput/durability tradeoff as Postgres's `synchronous_commit off` above: the append only file is committed once per second (the frequency is in milliseconds), rather than per write, which bounds the worst-case data loss on a hard crash to roughly one second of writes, in exchange for not paying the latency of a commit on every single command. `--recover`, with `--checkpointdir /data`, has a node that restarts recover its data from the checkpoint and the append only file held in its volume.
 
-This matters because Sentinel's failover promotion happens at the Redis protocol level, live, without restarting
-any container - but a container restart (a crash, a redeploy, `docker service update --force`) always re-runs
-whatever is written in `docker-compose.yml`. A static, unconditional `redis-master` command with no `--replicaof`
-at all would mean: after Sentinel has genuinely promoted a different node to master following a real failure, the
-*original* `redis-master` service could later restart and declare itself master all over again with its own old
-data - a second, independent master directly contradicting whatever Sentinel and the rest of the cluster now agree
-is authoritative. Querying Sentinel first closes that specific gap - every node's actual role after any restart
-reflects what the cluster currently believes, not what the compose file assumed when it was first written.
+**Membership and failure detection are Garnet's own gossip, but promotion is not.** Garnet's gossip, in the manner of Redis Cluster, detects that the primary has failed, yet it deliberately never promotes a replica itself, as there is no election. That, and the bootstrap of a fresh cluster, is the work of `garnet-cluster-manager`, a single-replica service running `Jube.Cluster/garnet/cluster-manager.sh` every five seconds against whichever nodes answer `PING`:
 
-**`redis-master`'s volume is NAS-backed (`/mnt/redis`) while the three replicas use local, Swarm-managed volumes**
-(`redis-replicaN-data`) - and this is purely a backup decision, not a role/failover one now that startup role
-resolution is Sentinel-driven for all four. Moving that one node's AOF file off the host and onto NAS gives a
-further, independent layer of backup for the data beyond in-cluster replica redundancy itself - the same
-durability-independence reasoning as pgBackRest's repository above, applied to Redis. The three replicas
-deliberately don't need this: their entire purpose is live redundancy, and any one of them can always fully
-re-sync from whichever node Sentinel currently considers master, so paying NAS latency for volumes that exist to be
-disposable and rebuildable would be pure overhead with no corresponding benefit.
+- **Bootstrap.** On a genuinely fresh cluster, where no live node holds slots and all four nodes are up, `garnet1` is assigned all of the slots, the other nodes are introduced to it (`CLUSTER MEET`), and each is then made a replica of it (`CLUSTER REPLICATE`).
+- **Failover.** Where no live node sees itself as the primary, but gossip still remembers a primary holding the slots, the primary is taken to have failed. Once that has persisted for three consecutive checks, the live replica with the highest replication offset, which is to say the most caught up, is promoted (`CLUSTER FAILOVER FORCE`).
+- **Membership.** The primary is kept aware of every live node at its current address, as a container rescheduled by Swarm returns at a different address.
+- **Reconcile.** Any live node that is not a replica of the current primary - a stale former primary rejoining, or a replica whose volume was wiped - is demoted and resynchronised from the current primary. Where two nodes each believe themselves the primary, the one with the highest config epoch stands.
+
+The last of these closes the same gap that Sentinel-driven startup closes in the Redis alternative below: the role of every node after any restart reflects what the cluster currently believes, not what the compose file assumed when it was first written.
+
+**`garnet1`'s volume is NAS-backed (`/mnt/garnet`) while the three replicas use local, Swarm-managed volumes** (`garnetN-data`) - and this is purely a backup decision, not a role/failover one. Moving that one node's append only file and checkpoints off the host and onto NAS gives a further, independent layer of backup for the data beyond in-cluster replica redundancy itself - the same durability-independence reasoning as pgBackRest's repository above, applied to the cache. The three replicas deliberately don't need this: their entire purpose is live redundancy, and any one of them can always fully re-sync from whichever node is currently the primary, so paying NAS latency for volumes that exist to be disposable and rebuildable would be pure overhead with no corresponding benefit.
+
+### Redis (the alternative, `docker-compose.redis.yml`)
+
+`appendonly yes` with `appendfsync everysec` accepts the same kind of throughput/durability tradeoff as Postgres's `synchronous_commit off` above: an fsync once per second, rather than per write, bounds the worst-case data loss on a hard crash to roughly one second of writes, in exchange for not paying an fsync's latency on every single command. `no-appendfsync-on-rewrite yes` avoids a further fsync stall while the AOF file is being compacted in the background. `io-threads 4` with `io-threads-do-reads yes` parallelises Redis's normally single-threaded network I/O across threads, worthwhile on the multi-core hosts this cluster runs on under concurrent load. `protected-mode no` is safe specifically *because* `requirepass`/`masterauth` are always set (via the wrapper command, from the `RESP_PASSWORD` secret) and the network is already confined to the private overlay - protected mode exists to stop an accidentally-unauthenticated instance being reachable from anywhere, which doesn't apply here since both of the conditions it guards against are independently already covered.
+
+**Every node defers to Sentinel on startup, rather than any one node hardcoding itself as master.** Each of `redis-master`, `redis-replica1`, `redis-replica2` and `redis-replica3` runs the same shape of startup logic: query each Sentinel in turn for who it currently considers the master (`SENTINEL get-master-addr-by-name redis-master`), and if one answers with a master that isn't itself, start as `--replicaof` that node - only falling back to the historical static topology (`redis-master` seeds as a plain master; the others target `redis-master` directly) if no Sentinel can be reached or none has an opinion yet, which is only ever true on a genuinely fresh cluster.
+
+This matters because Sentinel's failover promotion happens at the Redis protocol level, live, without restarting any container - but a container restart (a crash, a redeploy, `docker service update --force`) always re-runs whatever is written in the compose file. A static, unconditional `redis-master` command with no `--replicaof` at all would mean: after Sentinel has genuinely promoted a different node to master following a real failure, the *original* `redis-master` service could later restart and declare itself master all over again with its own old data - a second, independent master directly contradicting whatever Sentinel and the rest of the cluster now agree is authoritative. Querying Sentinel first closes that specific gap - every node's actual role after any restart reflects what the cluster currently believes, not what the compose file assumed when it was first written.
+
+**`redis-master`'s volume is NAS-backed (`/mnt/redis`) while the three replicas use local, Swarm-managed volumes** (`redis-replicaN-data`) - and this is purely a backup decision, not a role/failover one now that startup role resolution is Sentinel-driven for all four. Moving that one node's AOF file off the host and onto NAS gives a further, independent layer of backup for the data beyond in-cluster replica redundancy itself - the same durability-independence reasoning as pgBackRest's repository above, applied to Redis. The three replicas deliberately don't need this: their entire purpose is live redundancy, and any one of them can always fully re-sync from whichever node Sentinel currently considers master, so paying NAS latency for volumes that exist to be disposable and rebuildable would be pure overhead with no corresponding benefit.
 
 ## Why background processing runs on one instance
 
-`jube-jobs` is the only service with `EnableMigration`, `EnableReprocessing`, `EnableSanctionLoader`,
-`CachePruneServer`, `EnableTtlCounter`, `EnableSearchKeyCache`, `EnableCasesAutomation` and `EnableCallback` all set
-to `True`; `jube-api` and `jube-ui` have every one of those `False`. This isn't an oversight - several of these are
-documented as safe to run on only one instance at a time
-(see [Environment Variables](../../../Concepts/EnvironmentVariables/index.html)),
-and letting every scaled `jube-api`/`jube-ui` replica also run background processing would mean N copies of the same
-job racing each other. `jube-jobs` is deployed as a singleton for exactly this reason; `jube-api`/`jube-ui` are the
-stateless, horizontally-scaled request handlers.
+`jube-jobs` is the only service with `EnableMigration`, `EnableReprocessing`, `EnableSanctionLoader`, `CachePruneServer`, `EnableTtlCounter`, `EnableSearchKeyCache`, `EnableCasesAutomation` and `EnableCallback` all set to `True`; `jube-api` and `jube-ui` have every one of those `False`. This isn't an oversight - several of these are documented as safe to run on only one instance at a time (see [Environment Variables](../../../Concepts/EnvironmentVariables/index.html)), and letting every scaled `jube-api`/`jube-ui` replica also run background processing would mean N copies of the same job racing each other. `jube-jobs` is deployed as a singleton for exactly this reason; `jube-api`/`jube-ui` are the stateless, horizontally-scaled request handlers.
 
 ## Building and Distributing Images
 
-`Jube.Cluster/build-images.sh` automates the five builds below, tagging each image with the current git HEAD's
-short SHA automatically (rather than you filling in `<sha>` by hand) and writing the tags straight into
-`Jube.Cluster/.env` (if it already exists). Run it from anywhere - it locates the repo root itself:
+`Jube.Cluster/build-images.sh` automates the six builds below, tagging each image with the current git HEAD's short SHA automatically (rather than you filling in `<sha>` by hand) and writing the tags straight into `Jube.Cluster/.env` (if it already exists). Run it from anywhere - it locates the repo root itself:
 
 ```bash
 Jube.Cluster/build-images.sh
 ```
 
-Pass `--save` to also `docker save` each of the five images straight after building, collected under
-`Jube.Cluster/Images/` (gitignored - the tarballs are too large to push to git) as `<image>:<sha>.tar`, matching the
-tags just written to `.env`:
+Each of the six images is also saved with `docker save` straight after building, collected under `Jube.Cluster/Images/` (gitignored - the tarballs are too large to push to git) as `<image>:<sha>.tar`, matching the tags just written to `.env`. Pass `--no-save` to build without saving, or `--no-env` to leave `.env` alone:
 
 ```bash
-Jube.Cluster/build-images.sh --save
+Jube.Cluster/build-images.sh --no-save
 ```
 
-`jube-otel-listener` is one of the five despite being only a throwaway local OTLP receiver for manual testing,
-because `docker-compose.yml` deploys it unconditionally (`replicas: 1`, not gated behind any `EnableOpenTelemetry`
-flag) - without its image, that service has nothing to run and sits failing in `docker service ls`.
+`jube-otel-listener` is one of the six despite being only a throwaway local OTLP receiver for manual testing, because `docker-compose.yml` deploys it unconditionally (`replicas: 1`, not gated behind any `EnableOpenTelemetry` flag) - without its image, that service has nothing to run and sits failing in `docker service ls`.
 
-> If you don't need OpenTelemetry testing, the simpler fix is commenting out the `jube-otel-listener` service in
-> `docker-compose.yml` entirely rather than building and distributing an image you'll never point anything at - and
-> then dropping it from the manual commands below.
+> If you don't need OpenTelemetry testing, the simpler fix is commenting out the `jube-otel-listener` service in `docker-compose.yml` entirely rather than building and distributing an image you'll never point anything at - and then dropping it from the manual commands below.
 
-`jube.etcd` wraps the stock `quay.io/coreos/etcd` binaries with an entrypoint that bootstraps etcd's own
-username/password auth once, idempotently, on every node's own startup - see
-[Software Inventory](../SoftwareInventory/index.html#consensus--coordination). Its build context is
-`Jube.Cluster/etcd`, not the repo root, since it doesn't need to `COPY` any Jube project files.
+`jube.etcd` wraps the stock `quay.io/coreos/etcd` binaries with an entrypoint that bootstraps etcd's own username/password auth once, idempotently, on every node's own startup - see [Software Inventory](../SoftwareInventory/index.html#consensus--coordination). Its build context is `Jube.Cluster/etcd`, not the repo root, since it doesn't need to `COPY` any Jube project files.
 
-`jube.patroni` must be built from a Dockerfile pinning Patroni 4.0.11/4.1.1 or newer. Older Patroni cannot talk to an
-auth-enabled etcd at all, for the reason set out under
-[Database & backup](../SoftwareInventory/index.html#database--backup).
+`jube.patroni` must be built from a Dockerfile pinning Patroni 4.0.11/4.1.1 or newer. Older Patroni cannot talk to an auth-enabled etcd at all, for the reason set out under [Database & backup](../SoftwareInventory/index.html#database--backup).
 
-To build manually instead, from the root of the repository (`Jube.Cluster/patroni/Dockerfile` has no `-f`-implied
-default, so it needs one just like the others):
+`jube.r` is the sandboxed R server in which R scripts are executed, reached by Jube over `RServerUrl`. Like `jube.etcd`, its build context is its own directory, `Jube.R`, not the repo root.
+
+To build manually instead, from the root of the repository (`Jube.Cluster/patroni/Dockerfile` has no `-f`-implied default, so it needs one just like the others):
 
 ```bash
 docker build --no-cache -f Jube.Cluster/etcd/Dockerfile -t jube.etcd:<sha> Jube.Cluster/etcd
@@ -209,10 +117,10 @@ docker build --no-cache -f Jube.Cluster/patroni/Dockerfile -t jube.patroni:<sha>
 docker build --no-cache -f Jube.App/Dockerfile -t jube.app:<sha> .
 docker build --no-cache -f Jube.Monitoring/Dockerfile -t jube.monitoring:<sha> .
 docker build --no-cache -f Jube.OpenTelemetryListener/Dockerfile -t jube.opentelemetrylistener:<sha> .
+docker build --no-cache -f Jube.R/Dockerfile -t jube.r:<sha> Jube.R
 ```
 
-Save each image to a tar file, collected under `Jube.Cluster/Images/` (the same directory `build-images.sh --save`
-uses, and gitignored for the same reason - the tarballs are too large to push to git):
+Save each image to a tar file, collected under `Jube.Cluster/Images/` (the same directory `build-images.sh` uses, and gitignored for the same reason - the tarballs are too large to push to git):
 
 ```bash
 docker save -o Jube.Cluster/Images/jube.etcd:<sha>.tar jube.etcd:<sha>
@@ -220,44 +128,38 @@ docker save -o Jube.Cluster/Images/jube.patroni:<sha>.tar jube.patroni:<sha>
 docker save -o Jube.Cluster/Images/jube.app:<sha>.tar jube.app:<sha>
 docker save -o Jube.Cluster/Images/jube.monitoring:<sha>.tar jube.monitoring:<sha>
 docker save -o Jube.Cluster/Images/jube.opentelemetrylistener:<sha>.tar jube.opentelemetrylistener:<sha>
+docker save -o Jube.Cluster/Images/jube.r:<sha>.tar jube.r:<sha>
 docker save -o Jube.Cluster/Images/redis.tar redis:7-alpine
 docker save -o Jube.Cluster/Images/haproxy.tar haproxy:2.8
 ```
 
-`build-images.sh --save` covers the five images it builds; `redis` and `haproxy` are still pulled, not built, so
-they always need saving manually like this regardless of which path you took above.
+`build-images.sh` covers the six images it builds; `redis` and `haproxy` are still pulled, not built, so they always need saving manually like this regardless of which path you took above. `redis:7-alpine` is needed whichever cache is deployed, as `garnet-cluster-manager` runs on that image for the `redis-cli` it carries.
 
-Zip the whole `Jube.Cluster/Images/` directory (after resetting permissions - see [File System](#file-system) below,
-and removing any `.git`/IDE directories) with a date, name or version in the archive name, and distribute it to every
-node.
+The Garnet image, `ghcr.io/microsoft/garnet`, is likewise pulled and not built, and `docker-compose.yml` refers to it by digest.
 
-This tar-file distribution, rather than pushing to a private registry, is the standard approach where the cluster's
-network cannot reach an external registry (an air-gapped or tightly firewalled deployment, which is common for
-on-premises AML/fraud infrastructure at a regulated institution). The operational cost is real and worth
-understanding before choosing it: every image update is a manual build-save-copy-load cycle across every node,
-rather than a single `docker service update --image registry/jube.app:tag`, so version drift between nodes is a risk
-this process has to actively guard against (see the `docker images` verification step below). Where the network
-allows it, a private registry (Harbor, a cloud provider's container registry, or similar) removes this manual step
-entirely and should be preferred.
+{% comment %}TODO(verify): the manner of distributing the Garnet image to nodes that cannot reach ghcr.io is not settled by the repository. docker-compose.yml refers to it as ghcr.io/microsoft/garnet:latest@sha256:..., and an image loaded from a tar file does not carry its repository digest, so a reference by digest may not resolve on an air-gapped node. Confirm the docker save and docker load commands that work, and add them to the two lists on this page.{% endcomment %}
+
+Zip the whole `Jube.Cluster/Images/` directory (after resetting permissions - see [File System](#file-system) below, and removing any `.git`/IDE directories) with a date, name or version in the archive name, and distribute it to every node.
+
+This tar-file distribution, rather than pushing to a private registry, is the standard approach where the cluster's network cannot reach an external registry (an air-gapped or tightly firewalled deployment, which is common for on-premises AML/fraud infrastructure at a regulated institution). The operational cost is real and worth understanding before choosing it: every image update is a manual build-save-copy-load cycle across every node, rather than a single `docker service update --image registry/jube.app:tag`, so version drift between nodes is a risk this process has to actively guard against (see the `docker images` verification step below). Where the network allows it, a private registry (Harbor, a cloud provider's container registry, or similar) removes this manual step entirely and should be preferred.
 
 ## First Time Setup
 
 ### NAS Permissions
 
-The mount needs to be accessible to containers under SELinux enforcing, which means the share needs `container_file_t`
-context. For example:
+The mount needs to be accessible to containers under SELinux enforcing, which means the share needs `container_file_t` context. For example:
 
 | Share            | Mount path                 | Owner (uid:gid) | Mode   |
 |------------------|----------------------------|-----------------|--------|
 | pgBackRest repo  | `/var/lib/pgbackrest/repo` | `70:70`         | `0750` |
 | pgBackRest spool | `/var/spool/pgbackrest`    | `70:70`         | `0750` |
-| Redis data       | `/data`                    | `999:999`       | `0750` |
+| Garnet data      | `/data`                    | `999:999`       | `0750` |
 
 ```
 # pgBackRest
 <share_path>  (rw,all_squash,anonuid=70,anongid=70)
 
-# Redis
+# Garnet
 <share_path>  (rw,all_squash,anonuid=999,anongid=999)
 ```
 
@@ -272,21 +174,22 @@ container starts as root
   └─ su-exec postgres patroni ...
 ```
 
-Redis handles its own `/data` directory internally; no init script is required for it.
+Garnet handles its own `/data` directory internally; no init script is required for it. `garnet1` runs as uid 999, which is why that uid must own `/mnt/garnet`.
 
-The bind-mounted directory still needs to be owned/writable by the right user before the first container start -
-pre-create it on each host:
+The bind-mounted directory still needs to be owned/writable by the right user before the first container start - pre-create it on each host:
 
 ```bash
 sudo mkdir -p /mnt/pgbackrest
 sudo chown 70:70 /mnt/pgbackrest
 sudo chcon -Rt container_file_t /mnt/pgbackrest
 
-# Redis
+# Garnet
 sudo mkdir -p /mnt/garnet
 sudo chown 999:999 /mnt/garnet
 sudo chcon -Rt container_file_t /mnt/garnet
 ```
+
+For the Redis alternative the directory is `/mnt/redis`, with the same owner and context.
 
 ### SSL Offloading
 
@@ -301,76 +204,25 @@ referenced from the HAProxy config by a fixed naming convention:
 * Frontend `jube_api` expects **jube-api.pem** in that directory.
 * Frontend `jube_ui` expects **jube-ui.pem** in that directory.
 
-Treat the HAProxy configuration files as production configuration under version control alongside the rest of this
-deployment, rather than something edited ad hoc on a host.
+Treat the HAProxy configuration files as production configuration under version control alongside the rest of this deployment, rather than something edited ad hoc on a host.
 
 ### Creating Secrets
 
-Every credential the cluster needs - Postgres passwords, the Redis password, `JWTKey`, `PasswordHashingKey`,
-`ApiHmacKey`, `ElementSymmetricEncryptionKey`, the RSA keypair for `PasswordAsymmetricEncryption`,
-and etcd's own `ETCD_ROOT_PASSWORD`/`PATRONI_ETCD3_PASSWORD` - is generated locally and
-loaded into Docker Swarm's own secret store (`docker secret
-create`), never written into `docker-compose.yml` or an Environment Variable directly. For the Jube application
-services, Jube's own `[@Key@]` tokenisation
-(see [Environment Variables](../../../Concepts/EnvironmentVariables/index.html))
-resolves each Environment Variable's `[@SECRET_NAME@]` placeholder against the mounted secret file at container
-start, so the secret value itself is never visible in `docker service inspect`, container environment listings, or
-this compose file. This list is just what this particular cluster deployment happens to need, not a fixed or
-hardcoded set - Jube's tokenisation is entirely free-form (see [Environment
-Variables](../../../Concepts/EnvironmentVariables/index.html)), so wiring in an additional secret for a new Environment
-Variable is just adding it to the `secrets:` block below, mounting it on the relevant service, and referencing
-`[@ITS_NAME@]` from that variable's value - no code change involved.
+Every credential the cluster needs - Postgres passwords, the cache password (`RESP_PASSWORD`), `JWTKey`, `PasswordHashingKey`, `ApiHmacKey`, `ElementSymmetricEncryptionKey`, `CaseSimilarityHashingKey`, the RSA keypair for `PasswordAsymmetricEncryption`, and etcd's own `ETCD_ROOT_PASSWORD`/`PATRONI_ETCD3_PASSWORD` - is generated locally and loaded into Docker Swarm's own secret store (`docker secret create`), never written into `docker-compose.yml` or an Environment Variable directly. For the Jube application services, Jube's own `[@Key@]` tokenisation (see [Environment Variables](../../../Concepts/EnvironmentVariables/index.html)) resolves each Environment Variable's `[@SECRET_NAME@]` placeholder against the mounted secret file at container start, so the secret value itself is never visible in `docker service inspect`, container environment listings, or this compose file. This list is just what this particular cluster deployment happens to need, not a fixed or hardcoded set - Jube's tokenisation is entirely free-form (see [Environment Variables](../../../Concepts/EnvironmentVariables/index.html)), so wiring in an additional secret for a new Environment Variable is just adding it to the `secrets:` block below, mounting it on the relevant service, and referencing `[@ITS_NAME@]` from that variable's value - no code change involved.
 
-`haproxy.cfg` itself needs no secret at all - `jube_ui` and `jube_api` are both plain load-balanced backends with
-no session affinity, since the Watcher live feed (Server-Sent Events, fanned out to every node via Redis pub/sub)
-no longer needs a client pinned to one node the way its old SignalR hub connection did, so there is no
-`dynamic-cookie-key` or equivalent left to template a secret into.
+`haproxy.cfg` itself needs no secret at all - `jube_ui` and `jube_api` are both plain load-balanced backends with no session affinity, since the Watcher live feed (Server-Sent Events, fanned out to every node via the publish and subscribe of the cache) no longer needs a client pinned to one node the way its old SignalR hub connection did, so there is no `dynamic-cookie-key` or equivalent left to template a secret into.
 
-`ETCD_ROOT_PASSWORD` and `PATRONI_ETCD3_PASSWORD` are a second pattern again, since neither etcd nor Patroni is a
-Jube .NET process and so neither can use `[@Key@]` tokenisation either. Both the `jube.etcd` and `jube.patroni`
-images bake in their own small bash `load_secret` function in their Dockerfile-generated entrypoint scripts, which
-reads `/run/secrets/<NAME>` directly and `export`s it as a plain environment variable before handing off to the real
-process - Patroni auto-maps `PATRONI_ETCD3_PASSWORD` onto its own `etcd3.password` config the same way it already
-does for `PATRONI_ETCD3_HOSTS`, and etcd's entrypoint reads `ETCD_ROOT_PASSWORD`/`PATRONI_ETCD3_PASSWORD` directly to
-bootstrap its own auth (see [Software Inventory](../SoftwareInventory/index.html#consensus--coordination)).
+`ETCD_ROOT_PASSWORD` and `PATRONI_ETCD3_PASSWORD` are a second pattern again, since neither etcd nor Patroni is a Jube .NET process and so neither can use `[@Key@]` tokenisation either. Both the `jube.etcd` and `jube.patroni` images bake in their own small bash `load_secret` function in their Dockerfile-generated entrypoint scripts, which reads `/run/secrets/<NAME>` directly and `export`s it as a plain environment variable before handing off to the real process - Patroni auto-maps `PATRONI_ETCD3_PASSWORD` onto its own `etcd3.password` config the same way it already does for `PATRONI_ETCD3_HOSTS`, and etcd's entrypoint reads `ETCD_ROOT_PASSWORD`/`PATRONI_ETCD3_PASSWORD` directly to bootstrap its own auth (see [Software Inventory](../SoftwareInventory/index.html#consensus--coordination)). The Garnet services and `garnet-cluster-manager` are of this second pattern too, each reading `/run/secrets/RESP_PASSWORD` in its own entrypoint.
 
-That `export` only ever reaches the process the entrypoint hands off to, which is not where an operator works.
-`docker exec` gives a shell the container's *configured* environment - `PATRONI_ETCD3_USERNAME=patroni` from the
-compose file below - and nothing the entrypoint exported at runtime, so a `patronictl` command typed into such a shell
-ran with a username and no password: python-etcd warns `Username provided without password, both are required for
-authentication` and Patroni then fails every one of the five endpoints, which an auth-enabled etcd reports as
-`etcdserver: user name is empty`. `database.sh` failed the same way, its `patronictl list` returning nothing to read a
-leader out of. The `jube.patroni` image therefore ships `/usr/local/bin/patronictl`, a wrapper ahead of the real
-`/opt/patroni/bin/patronictl` on `PATH` that sources the image's single `load_secret` definition
-(`/usr/local/lib/patroni-secrets.sh`, shared with the entrypoint) and then hands off. Nothing you type changes -
-`patronictl` in a `docker exec` shell simply authenticates now, and so does every `patronictl` command in this runbook.
-Patroni patches its `PATRONI_*` environment variables over whatever the configuration file says, so the credential
-applies whether or not `-c /etc/patroni.yml` is passed; the image also sets `PATRONICTL_CONFIG_FILE=/etc/patroni.yml`,
-because `patronictl` reads that variable rather than the `PATRONI_CONFIG_FILE` the daemon is given, and without it a
-bare `patronictl list` looks for a `~/.config/patroni/patronictl.yaml` that no container has.
-`Jube.Tests/Cluster/ClusterPatroniImageTests.cs` asserts that contract against the Dockerfile: the wrapper ahead of the
-real binary on `PATH`, both entry paths loading their secrets from one definition, and the `patronictl` default
-configuration file matching the one the container is actually given.
+That `export` only ever reaches the process the entrypoint hands off to, which is not where an operator works. `docker exec` gives a shell the container's *configured* environment - `PATRONI_ETCD3_USERNAME=patroni` from the compose file below - and nothing the entrypoint exported at runtime, so a `patronictl` command typed into such a shell ran with a username and no password: python-etcd warns `Username provided without password, both are required for authentication` and Patroni then fails every one of the five endpoints, which an auth-enabled etcd reports as `etcdserver: user name is empty`. `database.sh` failed the same way, its `patronictl list` returning nothing to read a leader out of. The `jube.patroni` image therefore ships `/usr/local/bin/patronictl`, a wrapper ahead of the real `/opt/patroni/bin/patronictl` on `PATH` that sources the image's single `load_secret` definition (`/usr/local/lib/patroni-secrets.sh`, shared with the entrypoint) and then hands off. Nothing you type changes - `patronictl` in a `docker exec` shell simply authenticates now, and so does every `patronictl` command in this runbook. Patroni patches its `PATRONI_*` environment variables over whatever the configuration file says, so the credential applies whether or not `-c /etc/patroni.yml` is passed; the image also sets `PATRONICTL_CONFIG_FILE=/etc/patroni.yml`, because `patronictl` reads that variable rather than the `PATRONI_CONFIG_FILE` the daemon is given, and without it a bare `patronictl list` looks for a `~/.config/patroni/patronictl.yaml` that no container has. `Jube.Tests/Cluster/ClusterPatroniImageTests.cs` asserts that contract against the Dockerfile: the wrapper ahead of the real binary on `PATH`, both entry paths loading their secrets from one definition, and the `patronictl` default configuration file matching the one the container is actually given.
 
-`PATRONI_ETCD3_PASSWORD` is the one secret that spans both patterns, because Patroni is not the only etcd client here.
-Every Jube service running the engine (`EnableEngine=True` - `jube-api` and `jube-jobs`) polls etcd for member and
-health status and reads Patroni's DCS history key, for the Infrastructure Health Metrics pages. Those services
-therefore mount the same secret and reach it the ordinary `[@Key@]` way, through `EtcdClientUsername=patroni` and
-`EtcdClientPassword=[@PATRONI_ETCD3_PASSWORD@]`. Reusing Patroni's own scoped credential rather than issuing a second
-one keeps the etcd role list to what Patroni already needs; the samplers only read. Leave either variable off a
-service that runs the engine and its etcd samplers fall back to unauthenticated calls, which an auth-enabled etcd
-rejects - the pages then stay empty with nothing logged, which is why
-`Jube.Tests/Cluster/ClusterComposeSecretTests.cs` asserts the pairing directly against this compose file.
+`PATRONI_ETCD3_PASSWORD` is the one secret that spans both patterns, because Patroni is not the only etcd client here. Every Jube service running the engine (`EnableEngine=True` - `jube-api` and `jube-jobs`) polls etcd for member and health status and reads Patroni's DCS history key, for the Infrastructure Health Metrics pages. Those services therefore mount the same secret and reach it the ordinary `[@Key@]` way, through `EtcdClientUsername=patroni` and `EtcdClientPassword=[@PATRONI_ETCD3_PASSWORD@]`. Reusing Patroni's own scoped credential rather than issuing a second one keeps the etcd role list to what Patroni already needs; the samplers only read. Leave either variable off a service that runs the engine and its etcd samplers fall back to unauthenticated calls, which an auth-enabled etcd rejects - the pages then stay empty with nothing logged, which is why `Jube.Tests/Cluster/ClusterComposeSecretTests.cs` asserts the pairing directly against this compose file.
 
-Any secret created outside this process - for example, a client-provided key received over email or another channel
-that isn't end-to-end secure - should still be rotated into `docker secret create` rather than left as a plain
-Environment Variable, for the same reason: once it's a Swarm secret, it's no longer readable from the running
-service's inspected configuration.
+Any secret created outside this process - for example, a client-provided key received over email or another channel that isn't end-to-end secure - should still be rotated into `docker secret create` rather than left as a plain Environment Variable, for the same reason: once it's a Swarm secret, it's no longer readable from the running service's inspected configuration.
 
 ### On All Nodes
 
-From the cluster directory (`Jube.Cluster/`, where the distributed archive's `Images/` folder lands), load images **on
-every host**:
+From the cluster directory (`Jube.Cluster/`, where the distributed archive's `Images/` folder lands), load images **on every host**:
 
 ```bash
 docker load -i Images/jube.etcd:<sha>.tar
@@ -378,6 +230,7 @@ docker load -i Images/jube.patroni:<sha>.tar
 docker load -i Images/jube.app:<sha>.tar
 docker load -i Images/jube.monitoring:<sha>.tar
 docker load -i Images/jube.opentelemetrylistener:<sha>.tar
+docker load -i Images/jube.r:<sha>.tar
 docker load -i Images/redis.tar
 docker load -i Images/haproxy.tar
 ```
@@ -440,7 +293,7 @@ Verify all nodes have joined:
 docker node ls
 ```
 
-Add zone labels - these are what the placement constraints below pin each Patroni/etcd instance to a distinct host:
+Add zone labels - these are what the placement constraints below pin each Patroni/etcd/Garnet instance to a distinct host:
 
 ```bash
 docker node update --label-add zone=host1 <hostname1>
@@ -458,9 +311,7 @@ docker node ls -q | xargs docker node inspect -f '{{ .ID }} [{{ .Description.Hos
 
 {% endraw %}
 
-> If running on a single host for evaluation, comment out the placement constraints in the compose file's Jube
-> services first - otherwise Swarm has nowhere to schedule the tiebreaker role and scaling will simply fail to find
-> an eligible host.
+> If running on a single host for evaluation, comment out the placement constraints in the compose file's Jube services first - otherwise Swarm has nowhere to schedule the tiebreaker role and scaling will simply fail to find an eligible host.
 
 ```yaml
       # placement:
@@ -472,10 +323,12 @@ Create the `.env` file the compose file reads image tags and zone assignments fr
 
 ```bash
 cat <<EOF > .env
+ETCD_IMAGE=jube.etcd:<sha>
 JUBE_IMAGE=jube.app:<sha>
 PATRONI_IMAGE=jube.patroni:<sha>
 JUBE_MONITORING_IMAGE=jube.monitoring:<sha>
 JUBE_OTEL_LISTENER_IMAGE=jube.opentelemetrylistener:<sha>
+JUBE_R_IMAGE=jube.r:<sha>
 CRITICAL_HOST_1=host1
 CRITICAL_HOST_2=host1
 CRITICAL_HOST_3=host1
@@ -491,38 +344,11 @@ sudo chmod +x secrets-init.sh
 ./secrets-init.sh
 ```
 
-`secrets-init.sh` is destructive by design - it prompts for confirmation, then recreates every secret from scratch
-(random passwords, a random `ENCRYPTION_KEY` for `ElementSymmetricEncryptionKey`, plus a fresh 4096-bit RSA keypair
-for `PasswordAsymmetricEncryptionPrivateKey`/`PasswordAsymmetricEncryptionPublicKey`) and loads them into Docker
-Swarm.
-Nothing it generates is written to disk in plaintext - every credential goes straight into a Docker secret, and
-`database.sh` (below) reads back the handful it needs from a running container's `/run/secrets/` mount rather than
-from a bootstrap record on disk. Because a Docker secret can never be read back out of the Swarm store once created,
-`secrets-init.sh` prints every generated value to the console in one labelled block at the end of the run - this is
-the only opportunity to capture them into a password manager or vault, so do that now, then clear the terminal's
-scrollback so the values don't linger in shell history either.
+`secrets-init.sh` is destructive by design - it prompts for confirmation, then recreates every secret from scratch (random passwords, a random `ENCRYPTION_KEY` for `ElementSymmetricEncryptionKey`, plus a fresh 4096-bit RSA keypair for `PasswordAsymmetricEncryptionPrivateKey`/`PasswordAsymmetricEncryptionPublicKey`) and loads them into Docker Swarm. Nothing it generates is written to disk in plaintext - every credential goes straight into a Docker secret, and `database.sh` (below) reads back the handful it needs from a running container's `/run/secrets/` mount rather than from a bootstrap record on disk. Because a Docker secret can never be read back out of the Swarm store once created, `secrets-init.sh` prints every generated value to the console in one labelled block at the end of the run - this is the only opportunity to capture them into a password manager or vault, so do that now, then clear the terminal's scrollback so the values don't linger in shell history either.
 
-The public half of the RSA keypair is printed in that same block (it is not itself sensitive - only the private key
-needs to stay secret, and that travels through Swarm secrets/tokenisation automatically) and needs to be copied
-into the `PasswordAsymmetricEncryptionPublicKey` Environment Variable for
-`jube-api`/`jube-ui` in `docker-compose.yml` (the `CHANGE-ME-paste-public-key-printed-by-secrets-init.sh`
-placeholder) before the first deploy - this is the one manual step. Without it,
-`PasswordAsymmetricEncryption=True` (set by default in the compose file for `jube-api`/`jube-ui`) will fail to
-start, since [Jube refuses to start with RSA password encryption enabled and either key
-missing](../../../Concepts/EnvironmentVariables/index.html). `ENCRYPTION_KEY` and
-`PASSWORD_ASYMMETRIC_ENCRYPTION_PRIVATE_KEY`
-require no such manual step - both flow into `jube-api`/`jube-jobs`/`jube-ui` automatically via the `[@Key@]` Docker
-Secrets tokenisation pattern (see [Environment Variables](../../../Concepts/EnvironmentVariables/index.html)), the same
-as the passwords and `JWT_KEY`/`API_HMAC_KEY` above.
+The public half of the RSA keypair is printed in that same block (it is not itself sensitive - only the private key needs to stay secret, and that travels through Swarm secrets/tokenisation automatically) and needs to be copied into the `PasswordAsymmetricEncryptionPublicKey` Environment Variable for `jube-api`/`jube-ui` in `docker-compose.yml` (the `CHANGE-ME-paste-public-key-printed-by-secrets-init.sh` placeholder) before the first deploy - this is the one manual step. Without it, `PasswordAsymmetricEncryption=True` (set by default in the compose file for `jube-api`/`jube-ui`) will fail to start, since [Jube refuses to start with RSA password encryption enabled and either key missing](../../../Concepts/EnvironmentVariables/index.html). `ENCRYPTION_KEY` and `PASSWORD_ASYMMETRIC_ENCRYPTION_PRIVATE_KEY` require no such manual step - both flow into `jube-api`/`jube-jobs`/`jube-ui` automatically via the `[@Key@]` Docker Secrets tokenisation pattern (see [Environment Variables](../../../Concepts/EnvironmentVariables/index.html)), the same as the passwords and `JWT_KEY`/`API_HMAC_KEY` above.
 
-`secrets-init.sh` also prompts for the one credential it cannot generate, your inference provider's API key, and stores
-it as the `ASK_JOOBY_API_KEY` secret (set `AskJoobyApiKey` in the shell beforehand to skip the prompt; the answer is
-not echoed and is not printed in the closing block). A blank answer stores the placeholder `not-needed`, because Docker
-refuses empty secrets and that is what Jube sends to a keyless endpoint anyway. The secret reaches `jube-ui`,
-`jube-api` and `jube-jobs` as `AskJoobyApiKey=[@ASK_JOOBY_API_KEY@]`. Ask Jooby itself stays off until
-`EnableAskJooby` is exported as `True` before the stack deploy (`EnableAskJooby=${EnableAskJooby:-False}` in the
-compose file). The embedding, reranker, validation and AI analysis keys all inherit this one key when unset, so they
-are overrides for a role served by a different provider and need no entry here.
+`secrets-init.sh` also prompts for the one credential it cannot generate, your inference provider's API key, and stores it as the `ASK_JOOBY_API_KEY` secret (set `AskJoobyApiKey` in the shell beforehand to skip the prompt; the answer is not echoed and is not printed in the closing block). A blank answer stores the placeholder `not-needed`, because Docker refuses empty secrets and that is what Jube sends to a keyless endpoint anyway. The secret reaches `jube-ui`, `jube-api` and `jube-jobs` as `AskJoobyApiKey=[@ASK_JOOBY_API_KEY@]`. Ask Jooby itself stays off until `EnableAskJooby` is exported as `True` before the stack deploy (`EnableAskJooby=${EnableAskJooby}` in the compose file). The embedding, reranker, validation and AI analysis keys all inherit this one key when unset, so they are overrides for a role served by a different provider and need no entry here.
 
 ## Every Deploy (Fresh or After Full Reset)
 
@@ -538,6 +364,12 @@ Deploy the stack:
 ```bash
 sudo chmod +x deploy.sh
 ./deploy.sh
+```
+
+`deploy.sh` deploys `docker-compose.yml`, which is the Garnet topology. For the Redis alternative, the same stack is deployed from the other file, having loaded `.env` into the shell as `deploy.sh` does:
+
+```bash
+docker stack deploy -c docker-compose.redis.yml jube-cluster
 ```
 
 Check stability:
@@ -579,8 +411,7 @@ docker exec -u postgres $(docker ps -q -f name=patroni1) \
                check
 ```
 
-If a Patroni node shows shutdown purely due to startup timing, force it individually - **never force two Patroni
-nodes at once, or you risk losing quorum**:
+If a Patroni node shows shutdown purely due to startup timing, force it individually - **never force two Patroni nodes at once, or you risk losing quorum**:
 
 ```bash
 docker service update --force jube-cluster_patroni2
@@ -590,16 +421,13 @@ Verify HAProxy shows exactly **one** green server in `postgres_primary` at `http
 
 ### Getting patroni1 into the leader role
 
-The deployment expects `patroni1` specifically to hold the leader role. Check who currently holds it, and who the
-current Sync Standby is - you can only promote the current Sync Standby, so getting `patroni1` into the lead
-sometimes takes two switchovers rather than one:
+The deployment expects `patroni1` specifically to hold the leader role. Check who currently holds it, and who the current Sync Standby is - you can only promote the current Sync Standby, so getting `patroni1` into the lead sometimes takes two switchovers rather than one:
 
 ```bash
 docker exec -it $(docker ps -q -f name=patroni1) patronictl -c /etc/patroni.yml list
 ```
 
-If `patroni1` is not the current Sync Standby, switch leadership to whichever node is (this rotates `patroni1` into
-the Sync Standby slot):
+If `patroni1` is not the current Sync Standby, switch leadership to whichever node is (this rotates `patroni1` into the Sync Standby slot):
 
 ```bash
 docker exec -it $(docker ps -q -f name=patroni1) \
@@ -617,14 +445,7 @@ docker exec -it $(docker ps -q -f name=patroni1) \
 
 ### Creating the database users
 
-Run the least-privilege database user setup **before** scaling Jube up - `jube-api`/`jube-jobs`/`jube-ui` connect as
-`jube_app`/`jube_reporting`/`jube_migration`/`jube_purge` from the moment they start, and those users don't exist until
-this script creates them (mirroring the same `service`/`reporting` least-privilege split as the single-node
-[`CreateUsers.sql`](../../CreateUsers.sql) referenced
-from [Deploying with Docker](../../DeployingWithDocker/index.html) -
-`jube_migration` gets DDL rights, `jube_app` gets DML only (no `DELETE`), `jube_reporting` gets read-only, and
-`jube_purge` gets `SELECT`/`DELETE` on only the fixed list of tables `InfrastructureHealthMetricsPurgeStarter`
-chunk-deletes from, for `jube-jobs`'s `PurgeConnectionString`):
+Run the least-privilege database user setup **before** scaling Jube up - `jube-api`/`jube-jobs`/`jube-ui` connect as `jube_app`/`jube_reporting`/`jube_migration`/`jube_purge` from the moment they start, and those users don't exist until this script creates them (mirroring the same `service`/`reporting` least-privilege split as the single-node [`CreateUsers.sql`](../../CreateUsers.sql) referenced from [Deploying with Docker](../../DeployingWithDocker/index.html) - `jube_migration` gets DDL rights, `jube_app` gets DML only (no `DELETE`, save on the `TransactionInboundQueue` table), `jube_reporting` gets read-only, and `jube_purge` gets `SELECT`/`DELETE` on only the fixed list of tables `InfrastructureHealthMetricsPurgeStarter` chunk-deletes from, for `jube-jobs`'s `PurgeConnectionString`):
 
 ```bash
 sudo chmod +x database.sh
@@ -658,9 +479,7 @@ docker service logs -f jube-cluster_jube-ui
 
 Navigate to `http://<host-ip>:5001`.
 
-> `jube-api` and `jube-ui` are both defined with `replicas: 0` in the compose file, and scaled up manually only
-> after migration succeeds - deliberately, so a fresh deployment can never race the application tier against an
-> unmigrated schema.
+> `jube-jobs`, `jube-api` and `jube-ui` are all defined with `replicas: 0` in the compose file, and the application tier is scaled up manually only after migration succeeds - deliberately, so a fresh deployment can never race the application tier against an unmigrated schema.
 
 Run a full backup to validate the NAS mount is actually working end to end, not just mounted:
 
@@ -675,15 +494,13 @@ docker exec -it <container-id> pgbackrest --stanza=postgres-cluster --archive-ch
 docker exec -it <container-id> ps aux | grep pgbackrest
 ```
 
-Browse the NAS separately to confirm Redis AOF/RDB files are landing there too.
+Browse the NAS separately to confirm that the append only file and checkpoints of `garnet1` are landing there too, under `/mnt/garnet`.
 
-Nothing further to clean up here - `secrets-init.sh` never wrote credentials to disk, so there is no bootstrap
-record to shred.
+Nothing further to clean up here - `secrets-init.sh` never wrote credentials to disk, so there is no bootstrap record to shred.
 
 ## Forcing a Compose Change to Apply
 
-Swarm diffs the running service spec against the new compose file and only updates what changed - occasionally it
-decides nothing has changed when something has, and silently skips the update.
+Swarm diffs the running service spec against the new compose file and only updates what changed - occasionally it decides nothing has changed when something has, and silently skips the update.
 
 Check what the running service actually has:
 
@@ -706,17 +523,9 @@ docker service update --force --image <image>:latest jube-cluster_<service>
 
 ## Changing a Postgres Parameter on an Already-Bootstrapped Cluster
 
-Editing `bootstrap.dcs.postgresql.parameters` in `patroni/patroni{1,2,3,4}.yml` and redeploying the image does
-**nothing** on a cluster that already exists. Patroni's container entrypoint just execs
-`patroni /etc/patroni.yml` - there is no reconciliation step anywhere in this repo that pushes file changes into
-the DCS. Patroni only ever reads `bootstrap:` once, the very first time it initialises a brand-new cluster in
-etcd; every later container start reads the config already stored in etcd instead and ignores the file's
-`bootstrap` section entirely. Editing these files is still correct and worth keeping in sync - it is what a
-future from-scratch bootstrap (disaster recovery, a new environment) will use - it just isn't how you change a
-parameter on the cluster you're already running.
+Editing `bootstrap.dcs.postgresql.parameters` in `patroni/patroni{1,2,3,4}.yml` and redeploying the image does **nothing** on a cluster that already exists. Patroni's container entrypoint just execs `patroni /etc/patroni.yml` - there is no reconciliation step anywhere in this repo that pushes file changes into the DCS. Patroni only ever reads `bootstrap:` once, the very first time it initialises a brand-new cluster in etcd; every later container start reads the config already stored in etcd instead and ignores the file's `bootstrap` section entirely. Editing these files is still correct and worth keeping in sync - it is what a future from-scratch bootstrap (disaster recovery, a new environment) will use - it just isn't how you change a parameter on the cluster you're already running.
 
-For that, push the change into the DCS directly with `patronictl edit-config`, from any running Patroni
-container:
+For that, push the change into the DCS directly with `patronictl edit-config`, from any running Patroni container:
 
 ```bash
 # -p is shorthand for postgresql.parameters.<key>=<value>; repeat it per parameter.
@@ -735,9 +544,7 @@ Confirm it landed and see which members now need a restart to actually pick it u
 docker exec -it $(docker ps -q -f name=patroni1) patronictl -c /etc/patroni.yml list postgres-cluster
 ```
 
-`shared_preload_libraries` is postmaster-context - Patroni marks every member "pending restart" but keeps serving
-traffic on the old value until each is actually restarted. Restart replicas first, one at a time, and the current
-leader last and deliberately - restarting the leader forces a failover:
+`shared_preload_libraries` is postmaster-context - Patroni marks every member "pending restart" but keeps serving traffic on the old value until each is actually restarted. Restart replicas first, one at a time, and the current leader last and deliberately - restarting the leader forces a failover:
 
 ```bash
 docker exec -it $(docker ps -q -f name=patroni1) patronictl -c /etc/patroni.yml restart postgres-cluster <replica-member>
@@ -751,15 +558,7 @@ Verify the live value once every member is back:
 docker exec -it $(docker ps -q -f name=patroni1) su-exec postgres psql -U postgres -c "SHOW shared_preload_libraries;"
 ```
 
-Ordering trap: `CREATE EXTENSION IF NOT EXISTS pg_stat_statements;` alone would **not** catch a missed restart -
-it succeeds either way, since it only registers catalog objects; the underlying shared-memory hook it actually
-needs is only wired up at postmaster start via `shared_preload_libraries`, so without it you'd get a silently dead
-extension and a confusing failure later, the first time something queries the view. The migration
-(`AddImplicitAsyncRecallAndTimeoutFeatures`) guards against exactly this: its very first statement checks
-`current_setting('shared_preload_libraries')` and raises an explicit error if `pg_stat_statements` isn't in it,
-before anything else in that migration runs. So if `jube-jobs` reaches this migration before the rolling restart
-above has happened, the whole migration fails loudly and cleanly instead - do the `edit-config` + rolling restart
-first, and only then (re)deploy or let `jube-jobs` pick up the pending migration.
+Ordering trap: `CREATE EXTENSION IF NOT EXISTS pg_stat_statements;` alone would **not** catch a missed restart - it succeeds either way, since it only registers catalog objects; the underlying shared-memory hook it actually needs is only wired up at postmaster start via `shared_preload_libraries`, so without it you'd get a silently dead extension and a confusing failure later, the first time something queries the view. The migration (`AddImplicitAsyncRecallAndTimeoutFeatures`) guards against exactly this: its very first statement checks `current_setting('shared_preload_libraries')` and raises an explicit error if `pg_stat_statements` isn't in it, before anything else in that migration runs. So if `jube-jobs` reaches this migration before the rolling restart above has happened, the whole migration fails loudly and cleanly instead - do the `edit-config` + rolling restart first, and only then (re)deploy or let `jube-jobs` pick up the pending migration.
 
 ## Full Reset of Corrupted Swarm State
 
@@ -786,36 +585,26 @@ docker stack deploy -c docker-compose.yml jube-cluster
 | `5001` | Jube UI        | jube-ui                  | ✅ Always   | Web interface                        |
 | `5002` | Jube API       | jube-api                 | ✅ Always   | Public API (maps to 5001 internally) |
 
-> In production, remove the two dev-only Postgres entries from the compose file's `ports:` block entirely.
+> In production, remove the two dev-only Postgres entries from the compose file's `ports:` block entirely. Application services on the Swarm network reach Postgres via `haproxy:5432`/`haproxy:5433` regardless.
+
+Unlike Postgres, the cache has no host-published port and no HAProxy entry at all in this topology - clients (including Jube itself) reach the Garnet nodes exclusively on their own port, from inside the overlay network, matching the connection pattern described in [Architecture Overview](#architecture-overview). In the Redis alternative it is the Sentinel port through which clients enter.
+
+Port `7000` (HAProxy stats) is an ops/diagnostic dashboard with no authentication layer of its own. This deployment assumes it is reachable only from a private management network or VPN, never from the open internet. If that doesn't hold for your network, put a reverse proxy with authentication in front of HAProxy stats, or firewall it to known management IPs, before exposing the cluster more broadly.
 
 ### Production hardening: mock endpoints
 
-The compose files in `Jube.Cluster` set `EnableMockEndpoints=False` on jube-ui, jube-api and jube-jobs, so the
-anonymous HTTP Adaptation test doubles under `/api/MockHttpAdaptation/*` are not mapped. The mock RSA MFA verifier at
-`/api/Mfa` additionally needs `EnableMockMfaEndpoint=True`, which defaults to False and must stay False in production.
-The seeded example model's adaptation targets a mock endpoint, so on a cluster either repoint or disable it. See
-[Environment Variables](../../Concepts/EnvironmentVariables/index.html).
-> Application services on the Swarm network reach Postgres via `haproxy:5432`/`haproxy:5433` regardless.
-
-Unlike Postgres, Redis has no host-published port and no HAProxy entry at all in this topology - clients (including
-Jube itself) reach it exclusively via the Sentinel ports below, from inside the overlay network, matching the
-Sentinel-aware connection pattern described in [Architecture Overview](#architecture-overview).
-
-Port `7000` (HAProxy stats) is an ops/diagnostic dashboard with no authentication layer of its own. This deployment
-assumes it is reachable only from a private management network or VPN, never from the open internet. If that
-doesn't hold for your network, put a reverse proxy with authentication in front of HAProxy stats, or firewall it to
-known management IPs, before exposing the cluster more broadly.
+The compose files in `Jube.Cluster` set `EnableMockEndpoints=False` on jube-ui, jube-api and jube-jobs, so the anonymous HTTP Adaptation test doubles under `/api/MockHttpAdaptation/*` are not mapped. The mock RSA MFA verifier at `/api/Mfa` additionally needs `EnableMockMfaEndpoint=True`, which defaults to False and must stay False in production. The seeded example model's adaptation targets a mock endpoint, so on a cluster either repoint or disable it. See [Environment Variables](../../../Concepts/EnvironmentVariables/index.html).
 
 ### Internal-Only Ports
 
-| Port    | Service           | Reason                                                                                                |
-|---------|-------------------|-------------------------------------------------------------------------------------------------------|
-| `2379`  | etcd client API   | Cluster consensus - no external access needed; client auth is mandatory regardless (see above)        |
-| `2380`  | etcd peer traffic | etcd-to-etcd peering only                                                                             |
-| `5432`  | Patroni direct    | Application traffic must flow through HAProxy                                                         |
-| `8008`  | Patroni REST API  | HAProxy health checks only                                                                            |
-| `6379`  | Redis direct      | Not used - see Sentinel ports below                                                                   |
-| `26379` | Redis Sentinel    | Sentinel-to-Sentinel coordination, and the entry point Jube's Sentinel-aware Redis client connects to |
+| Port    | Service           | Reason                                                                                                                         |
+|---------|-------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| `2379`  | etcd client API   | Cluster consensus - no external access needed; client auth is mandatory regardless (see above)                                 |
+| `2380`  | etcd peer traffic | etcd-to-etcd peering only                                                                                                      |
+| `5432`  | Patroni direct    | Application traffic must flow through HAProxy                                                                                  |
+| `8008`  | Patroni REST API  | HAProxy health checks only                                                                                                     |
+| `6379`  | Garnet            | The port Jube's cache client and `garnet-cluster-manager` connect to on each Garnet node. In the Redis alternative, Redis direct, not used by clients |
+| `26379` | Redis Sentinel    | Redis alternative only: Sentinel-to-Sentinel coordination, and the entry point Jube's Sentinel-aware Redis client connects to  |
 
 ## Health Checks
 
@@ -823,19 +612,20 @@ known management IPs, before exposing the cluster more broadly.
 
 - `GET /primary` → 200 OK → eligible for the `postgres_primary` backend.
 - `GET /replica` → 200 OK → eligible for the `postgres_replicas` backend.
-- Anything else → marked down after 3 consecutive failures; existing sessions on that server are terminated
-  immediately on mark-down, rather than left to drain, since a demoted primary must stop taking writes at once.
+- Anything else → marked down after 3 consecutive failures; existing sessions on that server are terminated immediately on mark-down, rather than left to drain, since a demoted primary must stop taking writes at once.
 - 2 consecutive successes → marked back up.
 
-**Patroni container health** (Docker Swarm's own healthcheck) - polls `/liveness` on port 8008 every 10s, 10
-retries. `/liveness` returns 200 as long as the Patroni process itself is alive, regardless of replication state -
-it answers "is this container worth restarting", not "is this node the primary".
+**Patroni container health** (Docker Swarm's own healthcheck) - polls `/liveness` on port 8008 every 10s, 10 retries. `/liveness` returns 200 as long as the Patroni process itself is alive, regardless of replication state - it answers "is this container worth restarting", not "is this node the primary".
 
-**Redis** - Sentinel monitors `redis-master` directly (not via HAProxy, per the architecture above):
-`sentinel monitor redis-master redis-master 6379 3` (quorum of 3), `down-after-milliseconds 5000`,
-`failover-timeout 60000`.
+**Garnet** - `garnet-cluster-manager` checks each node directly (not via HAProxy, per the architecture above) with `PING` every five seconds, and promotes the most caught-up replica once the primary has been absent for three consecutive checks. Its decisions are written to its log, prefixed `bootstrap:`, `failover:` and `reconcile:`:
 
-## Diagnostics — General
+```bash
+docker service logs -f jube-cluster_garnet-cluster-manager
+```
+
+**Redis** (the alternative) - Sentinel monitors `redis-master` directly: `sentinel monitor redis-master redis-master 6379 3` (quorum of 3), `down-after-milliseconds 5000`, `failover-timeout 60000`.
+
+## Diagnostics: General
 
 ```bash
 # All services and replica counts
@@ -861,7 +651,7 @@ docker exec -it -u root <container-id> /bin/sh
 apk add --no-cache busybox-extras
 ```
 
-## Diagnostics — SELinux
+## Diagnostics: SELinux
 
 ```bash
 # Recent denials, optionally filtered to a service
@@ -876,11 +666,11 @@ sudo setenforce 0
 sudo setenforce 1
 ```
 
-> Always re-enable SELinux after testing. If disabling it fixes the issue, run the permissions script to apply the
-> correct labels rather than leaving SELinux disabled - the permissions script exists specifically so this is never
-> a live tradeoff.
+The two commands naming Sentinel are examples from the Redis alternative; for Garnet the file of interest is `<cluster-directory>/garnet/cluster-manager.sh`, which is mounted into `garnet-cluster-manager`.
 
-## Diagnostics — Volumes
+> Always re-enable SELinux after testing. If disabling it fixes the issue, run the permissions script to apply the correct labels rather than leaving SELinux disabled - the permissions script exists specifically so this is never a live tradeoff.
+
+## Diagnostics: Volumes
 
 ```bash
 docker volume ls
@@ -891,7 +681,7 @@ docker volume rm $(docker volume ls -f name=jube-cluster -q)
 docker volume prune
 ```
 
-## Diagnostics — Network
+## Diagnostics: Network
 
 {% raw %}
 
@@ -918,11 +708,9 @@ docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <co
 
 {% endraw %}
 
-> Containers are reachable via the published host IP and port. Internal `10.x.x.x` overlay addresses are not
-> routable from the host - always use the published host port, not the overlay IP, when connecting from outside a
-> container.
+> Containers are reachable via the published host IP and port. Internal `10.x.x.x` overlay addresses are not routable from the host - always use the published host port, not the overlay IP, when connecting from outside a container.
 
-## Diagnostics — Swarm Cluster Membership
+## Diagnostics: Swarm Cluster Membership
 
 ```bash
 docker node ls
@@ -934,7 +722,7 @@ docker node update --availability active <hostname>  # after maintenance
 docker node promote <hostname>
 ```
 
-## Diagnostics — Failover Testing
+## Diagnostics: Failover Testing
 
 ```bash
 docker ps | grep patroni
@@ -968,9 +756,7 @@ sudo find <cluster-directory> -name "*.sh" -exec chmod 755 {} \;
 
 ## Total Postgres Password Wipeout Recovery
 
-If every Postgres credential is genuinely lost (not merely rotated), the local Unix socket accepts `trust`
-authentication from the container's own `postgres` user - this is a last-resort local-access-only recovery path,
-not a routine operation:
+If every Postgres credential is genuinely lost (not merely rotated), the local Unix socket accepts `trust` authentication from the container's own `postgres` user - this is a last-resort local-access-only recovery path, not a routine operation:
 
 ```bash
 docker exec -it $(docker ps -q -f name=patroni1) su-exec postgres psql -U postgres
@@ -978,28 +764,15 @@ docker exec -it $(docker ps -q -f name=patroni1) su-exec postgres psql -U postgr
 
 ## Notes
 
-- Never pre-create Docker networks manually - always let the stack manage them, since Swarm's own network lifecycle
-  handling assumes it owns creation and teardown.
-- Patroni and Redis should be pinned to specific hosts via placement constraints - unpinned, Swarm is free to
-  reschedule a stateful service onto whichever host has capacity, which defeats the zone-per-node design this
-  cluster relies on for fault isolation.
+- Never pre-create Docker networks manually - always let the stack manage them, since Swarm's own network lifecycle handling assumes it owns creation and teardown.
+- Patroni and Garnet should be pinned to specific hosts via placement constraints - unpinned, Swarm is free to reschedule a stateful service onto whichever host has capacity, which defeats the zone-per-node design this cluster relies on for fault isolation.
 - Mount Postgres data to remote/redundant disks in production, not host-local storage.
-- Remember the pgBackRest stanza step on a fresh cluster - nothing else prompts for it, and backups silently have
-  nowhere to go without it.
-- `patronictl` inside a Patroni container is the image's wrapper, not Patroni's own binary - it loads `/run/secrets`
-  before handing off, which is what makes it work at all under etcd client authentication. It lives in the image, so
-  changing it means rebuilding (`build-images.sh`), reloading on every host, and rolling the containers one at a time,
-  standbys before the primary.
-- The Patroni entrypoint fixes pgBackRest volume ownership automatically on every container start - seeing the
-  volume start with the wrong ownership (Fedora maps UID 999 to `avahi`) is expected and self-corrects.
-- Sentinel conf files are rewritten by Redis Sentinel at runtime - reset them manually if they become corrupted.
-- `jube-api` is mapped `5002:5001` externally - the application always listens on `5001` internally; `5002` is only
-  the host-published port.
-- `EnableMigration=True` is set only on `jube-jobs` - explicitly `False` on `jube-api` and `jube-ui`, so migration
-  can never run from more than one place.
-- On Fedora with SELinux, MCS category mismatches (`c###,c###` labels) are resolved with `chcon -Rl s0`, which
-  strips the categories so any container can access the files.
-- The `/run/docker.sock` SELinux label resets on every Docker restart - the permissions script re-applies it, so
-  this is expected rather than a regression each time.
-- `jube-api`'s `ReportConnectionString` points at the read replica pool (`haproxy:5433`), matching `jube-ui` and
-  `jube-jobs` - all three route reporting queries away from the primary.
+- Remember the pgBackRest stanza step on a fresh cluster - nothing else prompts for it, and backups silently have nowhere to go without it.
+- `patronictl` inside a Patroni container is the image's wrapper, not Patroni's own binary - it loads `/run/secrets` before handing off, which is what makes it work at all under etcd client authentication. It lives in the image, so changing it means rebuilding (`build-images.sh`), reloading on every host, and rolling the containers one at a time, standbys before the primary.
+- The Patroni entrypoint fixes pgBackRest volume ownership automatically on every container start - seeing the volume start with the wrong ownership (Fedora maps UID 999 to `avahi`) is expected and self-corrects.
+- In the Redis alternative, Sentinel conf files are rewritten by Redis Sentinel at runtime - reset them manually if they become corrupted.
+- `jube-api` is mapped `5002:5001` externally - the application always listens on `5001` internally; `5002` is only the host-published port.
+- `EnableMigration=True` is set only on `jube-jobs` - explicitly `False` on `jube-api` and `jube-ui`, so migration can never run from more than one place.
+- On Fedora with SELinux, MCS category mismatches (`c###,c###` labels) are resolved with `chcon -Rl s0`, which strips the categories so any container can access the files.
+- The `/run/docker.sock` SELinux label resets on every Docker restart - the permissions script re-applies it, so this is expected rather than a regression each time.
+- `jube-api`'s `ReportConnectionString` points at the read replica pool (`haproxy:5433`), matching `jube-ui` and `jube-jobs` - all three route reporting queries away from the primary.

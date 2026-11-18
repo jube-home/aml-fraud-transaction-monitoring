@@ -657,8 +657,8 @@
         <comment>b9ea12e7</comment>
     </data>
     <data name="Message.TemplateNameUnknown" xml:space="preserve">
-        <value>Mallrad {0}, kolumn {1}: "{2}" är inte känt här. Använd rows, columns, rowCount, truncated eller en loopvariabel.</value>
-        <comment>78917f7e</comment>
+        <value>Mallrad {0}, kolumn {1}: "{2}" är inte känt här. De namn som är kända här är {3}.</value>
+        <comment>de987895</comment>
     </data>
     <data name="Message.TemplateFilterUnknown" xml:space="preserve">
         <value>Mallrad {0}, kolumn {1}: filtret "{2}" finns inte.</value>

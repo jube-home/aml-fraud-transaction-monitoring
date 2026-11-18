@@ -46,6 +46,9 @@ import {progressOf} from '../checklist/gate'
 import {handleChecklistRefusal} from '../checklist/refusal'
 import {useChecklistGate} from '../checklist/useCaseChecklist'
 import CaseAgentRecommendation from './CaseAgentRecommendation.vue'
+import DecideAssessment from './DecideAssessment.vue'
+import DecideFindings from './DecideFindings.vue'
+import DecideJournal from './DecideJournal.vue'
 import CaseLinks from './CaseLinks.vue'
 import CaseReports from './CaseReports.vue'
 import CaseLegalHold from './CaseLegalHold.vue'
@@ -73,8 +76,9 @@ const props = withDefaults(
     canSuppress?: boolean
     canForce?: boolean
     canOverrideChecklist?: boolean
+    layout?: 'side' | 'story'
   }>(),
-  {canSuppress: false, canForce: false, canOverrideChecklist: false},
+  {canSuppress: false, canForce: false, canOverrideChecklist: false, layout: 'side'},
 )
 
 const {t} = useI18n()
@@ -111,7 +115,12 @@ const closeNote = ref('')
 
 const {checklist, gate} = useChecklistGate(
   () => props.detail.id,
-  () => ({open: open.value, mine: mine.value, permitted: props.canOverrideChecklist}),
+  () => ({
+    open: open.value,
+    mine: mine.value,
+    permitted: props.canOverrideChecklist,
+    userName: props.userName,
+  }),
 )
 
 const progress = computed(() => progressOf(checklist.data.value))
@@ -292,14 +301,15 @@ function close(): void {
 }
 
 function reopen(): void {
-  change.mutate({closedStatusId: closedStatus.reopened})
+  change.mutate({closedStatusId: closedStatus.open})
 }
 </script>
 
 <template>
   <aside
-    class="flex min-w-0 flex-col gap-4 rounded-box border border-base-300 p-4"
+    class="flex min-w-0 flex-col gap-4 rounded-box border border-base-300 bg-base-100 p-4"
     :aria-label="t('caseDetail.decide.title')"
+    :data-layout="layout"
     data-testid="case-decide"
   >
     <div class="flex items-center gap-1">
@@ -353,7 +363,14 @@ function reopen(): void {
       </button>
     </section>
 
-    <div class="flex flex-col gap-2" data-testid="case-decide-actions">
+    <h4 class="text-xs font-semibold text-base-content/70">
+      {{ t('caseDetail.decide.group.actions') }}
+    </h4>
+    <div
+      class="-mt-2 grid min-w-0 gap-2"
+      :class="layout === 'story' ? 'sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4' : ''"
+      data-testid="case-decide-actions"
+    >
       <DecideTile
         :icon="NotebookPen"
         :label="t('caseDetail.decide.tile.note.label')"
@@ -442,13 +459,24 @@ function reopen(): void {
       />
     </div>
 
-    <CaseTags :case-id="detail.id"/>
-
-    <CaseAgentRecommendation :case-id="detail.id" @accepted="prefillClose"/>
-    <CaseQaReview :case-id="detail.id"/>
-    <CaseReports :case-id="detail.id"/>
-    <CaseLegalHold :case-id="detail.id"/>
-    <CaseLinks :case-id="detail.id"/>
+    <h4 class="text-xs font-semibold text-base-content/70">
+      {{ t('caseDetail.decide.group.record') }}
+    </h4>
+    <div
+      class="-mt-2 grid min-w-0 items-start gap-2"
+      :class="layout === 'story' ? 'md:grid-cols-2 2xl:grid-cols-3' : ''"
+      data-testid="case-decide-cards"
+    >
+      <CaseAgentRecommendation :case-id="detail.id" @accepted="prefillClose"/>
+      <DecideAssessment :case-id="detail.id"/>
+      <DecideFindings :detail="detail" :user-name="userName"/>
+      <DecideJournal/>
+      <CaseTags :case-id="detail.id"/>
+      <CaseLinks :case-id="detail.id"/>
+      <CaseQaReview :case-id="detail.id"/>
+      <CaseReports :case-id="detail.id"/>
+      <CaseLegalHold :case-id="detail.id"/>
+    </div>
 
     <div class="border-t border-base-300 pt-3">
       <DecideTile
@@ -576,6 +604,7 @@ function reopen(): void {
         :names="gate.names"
         :override="gate.override"
         :can-override="gate.canOverride"
+        :own="gate.own"
         testid="case-close-gate"
         @open-checklist="openChecklist()"
         @override="openOverride()"

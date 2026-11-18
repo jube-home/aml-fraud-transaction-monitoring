@@ -102,4 +102,7 @@
     <data name="EscalationTargetNotStronger" xml:space="preserve">
     <value>Target eskalasi harus berprioritas lebih kuat daripada status ini, yaitu nomor Prioritas yang lebih rendah.</value>
   </data>
+    <data name="MaxDwellMinutesOutOfRange" xml:space="preserve">
+    <value>Menit tinggal maksimum harus antara 1 dan 525600, atau dikosongkan bila tidak ada target.</value>
+  </data>
 </root>

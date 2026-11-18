@@ -134,7 +134,7 @@ namespace Jube.Test.Service.OpenTelemetryExclude
             });
 
             updated.Name.Should().Be(newName);
-            updated.Active.Should().Be(0);
+            updated.Active.Should().BeFalse();
             updated.Version.Should().Be(2);
             updated.UpdatedUser.Should().Be(fx.Seed.LandlordUser);
         }
@@ -271,12 +271,12 @@ namespace Jube.Test.Service.OpenTelemetryExclude
             createdIds.Add(b.Id);
 
             var keep = await service.UpdateAsync(new OpenTelemetryExcludeDto
-                { Id = a.Id, Name = a.Name, Active = true, Version = a.Version.GetValueOrDefault() });
+                { Id = a.Id, Name = a.Name, Active = true, Version = a.Version });
 
             keep.Version.Should().Be(2);
 
             var act = () => service.UpdateAsync(new OpenTelemetryExcludeDto
-                { Id = a.Id, Name = b.Name, Active = true, Version = keep.Version.GetValueOrDefault() });
+                { Id = a.Id, Name = b.Name, Active = true, Version = keep.Version });
 
             await act.Should().ThrowAsync<DtoValidationException>();
         }
@@ -357,7 +357,7 @@ namespace Jube.Test.Service.OpenTelemetryExclude
             createdIds.Add(saved.Id);
 
             var updated = await service.UpdateAsync(new OpenTelemetryExcludeDto
-                { Id = saved.Id, Name = saved.Name, Active = false, Version = saved.Version.GetValueOrDefault() });
+                { Id = saved.Id, Name = saved.Name, Active = false, Version = saved.Version });
 
             await service.DeleteAsync(updated.Id);
 

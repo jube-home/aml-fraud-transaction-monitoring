@@ -175,4 +175,7 @@
     <data name="DetailCollapsed" xml:space="preserve">
     <value>{0} नोड संक्षिप्त</value>
   </data>
+    <data name="SentenceCommunityNoRate" xml:space="preserve">
+    <value>समुदाय {0}, {1} नोड: {3} बंद मामलों में से {2} पुष्ट।</value>
+  </data>
 </root>

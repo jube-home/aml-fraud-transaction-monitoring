@@ -73,6 +73,9 @@
     <data name="KeyMaxLength" xml:space="preserve">
     <value>Kunci maksimal {0} karakter.</value>
   </data>
+    <data name="IconInvalid" xml:space="preserve">
+    <value>Ikon bukan salah satu ikon Lucide yang tersedia untuk grafik.</value>
+  </data>
     <data name="AmountKeyRequired" xml:space="preserve">
     <value>Kunci jumlah wajib diisi untuk aliran dana.</value>
   </data>

@@ -17,7 +17,7 @@ these thirty-one. The remaining twenty-two each have their own
 file in this section, listed in the menu grouped by kind. Every file follows the same shape: the R snippet using the closest common
 CRAN package, the real training service that replaces it, and a code audit of the actual implementation behind that
 service (not just its DTO) — what algorithm it really runs, its real defaults, and any divergence from the textbook
-method, cited to file and line in the reference worktree.
+method, cited to file and line.
 
 Every family shares the same submission shape: `SubmitTrainingAsync` on its training service queues a background run and
 returns a run id at once, the caller polls `GetRunAsync` for status, and every trained version is immutable and never

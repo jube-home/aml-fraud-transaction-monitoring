@@ -28,7 +28,8 @@ export interface PlottableRisk {
 export function plottedHistory<T extends PlottableRisk>(items: T[]): T[] {
   return items.filter(
     (item, index) =>
-      item.trigger !== scheduledSweepTrigger || (index > 0 && items[index - 1]!.lane !== item.lane),
+      item.trigger !== scheduledSweepTrigger ||
+      (index < items.length - 1 && items[index + 1]!.lane !== item.lane),
   )
 }
 
@@ -89,10 +90,10 @@ const monthApproxMs = 30 * dayMs
 const maxUnitsPerSpan = 40
 
 export const tickFormat: Record<TimelineUnit, Intl.DateTimeFormatOptions> = {
-  hour: {hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC'},
-  day: {day: 'numeric', month: 'short', timeZone: 'UTC'},
-  week: {day: 'numeric', month: 'short', timeZone: 'UTC'},
-  month: {month: 'short', year: 'numeric', timeZone: 'UTC'},
+  hour: {hour: '2-digit', minute: '2-digit', hour12: false},
+  day: {day: 'numeric', month: 'short'},
+  week: {day: 'numeric', month: 'short'},
+  month: {month: 'short', year: 'numeric'},
 }
 
 export function chooseUnit(spanMs: number): TimelineUnit {
@@ -108,26 +109,32 @@ function nominalMs(unit: TimelineUnit): number {
 }
 
 export function floorToUnit(at: number, unit: TimelineUnit): number {
-  if (unit === 'hour') return Math.floor(at / hourMs) * hourMs
-  if (unit === 'day') return Math.floor(at / dayMs) * dayMs
-  if (unit === 'week') {
-    const day = Math.floor(at / dayMs) * dayMs
-    const weekday = (new Date(day).getUTCDay() + 6) % 7
-
-    return day - weekday * dayMs
-  }
-
   const d = new Date(at)
 
-  return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1)
+  if (unit === 'hour') {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours()).getTime()
+  }
+
+  if (unit === 'day') return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()
+
+  if (unit === 'week') {
+    const weekday = (d.getDay() + 6) % 7
+
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate() - weekday).getTime()
+  }
+
+  return new Date(d.getFullYear(), d.getMonth(), 1).getTime()
 }
 
 export function nextTick(at: number, unit: TimelineUnit): number {
-  if (unit !== 'month') return at + unitMs[unit]
+  if (unit === 'hour') return at + hourMs
 
   const d = new Date(at)
 
-  return Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1)
+  if (unit === 'day') return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1).getTime()
+  if (unit === 'week') return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 7).getTime()
+
+  return new Date(d.getFullYear(), d.getMonth() + 1, 1).getTime()
 }
 
 export function tickTimes(start: number, end: number, unit: TimelineUnit): number[] {

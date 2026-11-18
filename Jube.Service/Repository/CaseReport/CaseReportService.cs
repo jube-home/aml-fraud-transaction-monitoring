@@ -546,7 +546,7 @@ namespace Jube.Service.Repository.CaseReport
 
                 await NotifyUserAsync(report.CreatedUser, report, NotificationKind.CaseReportFeedback,
                     $"case-report-feedback:{report.Guid:N}:{report.CurrentVersion}:{model.KindId}:{feedbackCount}",
-                    kind.ToString(), token).ConfigureAwait(false);
+                    (int)kind, token).ConfigureAwait(false);
             }, token).ConfigureAwait(false);
         }
 
@@ -682,25 +682,25 @@ namespace Jube.Service.Repository.CaseReport
             }, token).ConfigureAwait(false);
 
             await NotifyUserAsync(version.CreatedUser, report, NotificationKind.CaseReportDecided,
-                $"case-report-decided:{report.Guid:N}:{report.CurrentVersion}:{(int)decision}", decision.ToString(),
+                $"case-report-decided:{report.Guid:N}:{report.CurrentVersion}:{(int)decision}", (int)decision,
                 token).ConfigureAwait(false);
         }
 
         private async Task NotifyAsync(int permission, Data.Poco.CaseReport report, NotificationKind kind,
-            string dedupe, string? detail, CancellationToken token)
+            string dedupe, int? detailId, CancellationToken token)
         {
             foreach (var user in await new SanctionRescreenRepository(dbContext)
                          .ListPermissionHoldersAsync(tenantRegistryId, permission, token).ConfigureAwait(false))
             {
                 if (!string.Equals(user, userName, StringComparison.OrdinalIgnoreCase))
                 {
-                    await NotifyUserAsync(user, report, kind, dedupe, detail, token).ConfigureAwait(false);
+                    await NotifyUserAsync(user, report, kind, dedupe, detailId, token).ConfigureAwait(false);
                 }
             }
         }
 
         private async Task NotifyUserAsync(string recipient, Data.Poco.CaseReport report, NotificationKind kind,
-            string dedupe, string? detail, CancellationToken token)
+            string dedupe, int? detailId, CancellationToken token)
         {
             await new UserNotificationRepository(dbContext).InsertIfNewAsync(new UserNotification
             {
@@ -710,7 +710,7 @@ namespace Jube.Service.Repository.CaseReport
                 KindId = (short)kind,
                 PriorityId = (short)NotificationPriority.Normal,
                 CaseId = report.CaseId,
-                ArgumentsJson = JsonSerializer.Serialize(new { caseId = report.CaseId, detail }),
+                ArgumentsJson = JsonSerializer.Serialize(new { caseId = report.CaseId, detailId }),
                 DedupeKey = $"{dedupe}:{recipient}",
                 CreatedDate = DateTime.UtcNow
             }, token).ConfigureAwait(false);

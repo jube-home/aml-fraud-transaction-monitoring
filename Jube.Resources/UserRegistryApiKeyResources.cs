@@ -24,5 +24,6 @@ namespace Jube.Resources
         public const string NameMaxLength = nameof(NameMaxLength);
         public const string DescriptionMaxLength = nameof(DescriptionMaxLength);
         public const string KeyIntegrityFailure = nameof(KeyIntegrityFailure);
+        public const string ApiHmacKeyNotSet = nameof(ApiHmacKeyNotSet);
     }
 }

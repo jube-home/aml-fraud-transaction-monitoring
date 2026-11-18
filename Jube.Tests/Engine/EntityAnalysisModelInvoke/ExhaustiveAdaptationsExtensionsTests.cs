@@ -193,6 +193,45 @@ namespace Jube.Test.Engine.EntityAnalysisModelInvoke
         }
 
         [Fact]
+        public void AnAbstractionCalculationTrainedAsProcessingTypeSevenIsReadFromTheCalculationsNotTheMean()
+        {
+            var model = NewModel("Model1", IdentityWeightedSigmoidNetwork(),
+                NewVariable("AbstractionCalculation.Ratio", 7, 9.0));
+
+            var context = NewContext(model);
+            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation["Ratio"] = 3.0;
+
+            context.ExecuteExhaustiveAdaptation();
+
+            var expected = 1 / (1 + Math.Exp(-2 * 3.0));
+
+            context.EntityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptation["Model1"].Should()
+                .BeApproximately(expected, 1e-9);
+
+            context.EntityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptationDetail["Model1"]
+                .Contribution.Items.Single(i => i.Name == "AbstractionCalculation.Ratio").Source.Should()
+                .Be(ProtocolConstants.Source.AbstractionCalculation);
+        }
+
+        [Fact]
+        public void AnAbstractionRuleTrainedAsProcessingTypeSevenStillReadsTheAbstractionDictionary()
+        {
+            var model = NewModel("Model1", IdentityWeightedSigmoidNetwork(),
+                NewVariable("Abstraction.Ratio", 7, 9.0));
+
+            var context = NewContext(model);
+            context.EntityAnalysisModelInstanceEntryPayload.Abstraction["Ratio"] = 2.0;
+            context.EntityAnalysisModelInstanceEntryPayload.AbstractionCalculation["Ratio"] = 3.0;
+
+            context.ExecuteExhaustiveAdaptation();
+
+            var expected = 1 / (1 + Math.Exp(-2 * 2.0));
+
+            context.EntityAnalysisModelInstanceEntryPayload.ExhaustiveAdaptation["Model1"].Should()
+                .BeApproximately(expected, 1e-9);
+        }
+
+        [Fact]
         public void AMissingValueFallsBackToTheVariablesConfiguredMean()
         {
             var model = NewModel("Model1", IdentityWeightedSigmoidNetwork(),

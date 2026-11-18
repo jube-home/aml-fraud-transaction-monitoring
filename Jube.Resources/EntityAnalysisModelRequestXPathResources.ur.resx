@@ -82,24 +82,24 @@
     <value>سرچ کی کا ⁦TTL⁩ وقفہ ⁦Seconds⁩، ⁦Minutes⁩، ⁦Hours⁩ یا ⁦Days⁩ ہونا چاہیے۔</value>
   </data>
     <data name="SearchKeyTtlIntervalValueRange" xml:space="preserve">
-    <value>سرچ کی کے ⁦TTL⁩ وقفے کی قدر صفر یا اس سے زیادہ ہونی چاہیے۔</value>
+    <value>سرچ کی کے ⁦TTL⁩ وقفے کی قدر صفر یا اس سے زیادہ اور منتخب وقفے کی حد کے اندر ہونی چاہیے۔</value>
   </data>
     <data name="SearchKeyFetchLimitRange" xml:space="preserve">
-    <value>سرچ کی کی فیچ حد صفر یا اس سے زیادہ ہونی چاہیے۔</value>
+    <value>سرچ کی کی فیچ حد 0 اور ⁨1,000,000⁩ کے درمیان ہونی چاہیے۔</value>
   </data>
     <data name="SearchKeyCacheIntervalInvalid" xml:space="preserve">
     <value>سرچ کی کیش کا وقفہ ⁦Seconds⁩، ⁦Minutes⁩، ⁦Hours⁩ یا ⁦Days⁩ ہونا چاہیے۔</value>
   </data>
     <data name="SearchKeyCacheValueRange" xml:space="preserve">
-    <value>سرچ کی کے کیش وقفے کی قدر صفر یا اس سے زیادہ ہونی چاہیے۔</value>
+    <value>سرچ کی کے کیش وقفے کی قدر صفر یا اس سے زیادہ اور منتخب وقفے کی حد کے اندر ہونی چاہیے۔</value>
   </data>
     <data name="SearchKeyCacheFetchLimitRange" xml:space="preserve">
-    <value>سرچ کی کی کیش فیچ حد صفر یا اس سے زیادہ ہونی چاہیے۔</value>
+    <value>سرچ کی کی کیش فیچ حد 0 اور ⁨1,000,000⁩ کے درمیان ہونی چاہیے۔</value>
   </data>
     <data name="SearchKeyCacheTtlIntervalInvalid" xml:space="preserve">
     <value>سرچ کی کیش کا ⁦TTL⁩ وقفہ ⁦Seconds⁩، ⁦Minutes⁩، ⁦Hours⁩ یا ⁦Days⁩ ہونا چاہیے۔</value>
   </data>
     <data name="SearchKeyCacheTtlValueRange" xml:space="preserve">
-    <value>سرچ کی کے کیش ⁦TTL⁩ وقفے کی قدر صفر یا اس سے زیادہ ہونی چاہیے۔</value>
+    <value>سرچ کی کے کیش ⁦TTL⁩ وقفے کی قدر صفر یا اس سے زیادہ اور منتخب وقفے کی حد کے اندر ہونی چاہیے۔</value>
   </data>
 </root>

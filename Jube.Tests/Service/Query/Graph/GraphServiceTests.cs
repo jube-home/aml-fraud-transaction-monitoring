@@ -94,7 +94,7 @@ namespace Jube.Test.Service.Query.Graph
         }
 
         [Fact]
-        public async Task RenderingAKeyValueWithNoNetworkIsNotFoundRatherThanAServerErrorAsync()
+        public async Task RenderingAKeyValueWithNoNetworkReturnsAnEmptyPictureSayingWhyRatherThanAnErrorAsync()
         {
             await using var dbContext = fx.GetDbContext();
             await SeedRingAsync(dbContext);
@@ -102,9 +102,30 @@ namespace Jube.Test.Service.Query.Graph
             var unknown = Request(2);
             unknown.Value = "NO-SUCH-VALUE";
 
-            var render = () => service.RenderAsync(new GraphRenderRequestDto { Query = unknown, LayoutId = 1 });
+            var rendered = await service.RenderAsync(new GraphRenderRequestDto { Query = unknown, LayoutId = 1 });
 
-            await render.Should().ThrowAsync<NotFoundException>();
+            rendered.Svg.Should().BeEmpty();
+            rendered.Positions.Should().BeEmpty();
+            rendered.Graph.Seed.Should().BeNull();
+            rendered.Graph.Nodes.Should().BeEmpty();
+            rendered.Graph.NoDefinitions.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task AMinimumAmountLeavesOutSmallPaymentsAndKeepsIdentityLinksAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            await SeedRingAsync(dbContext);
+            var service = await BuildServiceAsync(dbContext, seed.Me);
+            var within = Request(1);
+            within.MinimumAmount = 300;
+            var above = Request(1);
+            above.MinimumAmount = 500;
+
+            (await service.GetNeighbourhoodAsync(within)).Nodes.Select(n => n.Value).Should()
+                .BeEquivalentTo(["A1", "B1", "D1"]);
+            (await service.GetNeighbourhoodAsync(above)).Nodes.Select(n => n.Value).Should()
+                .BeEquivalentTo(["A1", "D1"]);
         }
 
         [Fact]

@@ -28,7 +28,6 @@ using Jube.Service.Security;
 using Jube.Validations.Repository.EntityAnalysisModelSynchronisationSchedule;
 using log4net;
 using Microsoft.Extensions.Localization;
-using SchedulePoco = Jube.Data.Poco.EntityAnalysisModelSynchronisationSchedule;
 using ScheduleRepository = Jube.Data.Repository.EntityAnalysisModelSynchronisationScheduleRepository;
 
 namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
@@ -424,7 +423,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
                      "ScheduleDate is omitted, the server schedules it for the current time -- an immediate " +
                      "'Synchronise Now'. Not idempotent -- calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelSynchronisationScheduleCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<SchedulePoco> InsertAsync(
+        public async Task<EntityAnalysisModelSynchronisationScheduleDto> InsertAsync(
             [Description("The synchronisation schedule to create.")]
             EntityAnalysisModelSynchronisationScheduleDto? model,
             CancellationToken token = default)
@@ -479,7 +478,7 @@ namespace Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule
                         $"EntityAnalysisModelSynchronisationSchedule.Create: created Id={saved.Id} scheduleDate={saved.ScheduleDate} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelSynchronisationScheduleMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

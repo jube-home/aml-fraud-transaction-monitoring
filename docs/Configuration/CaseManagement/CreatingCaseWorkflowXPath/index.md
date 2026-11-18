@@ -8,393 +8,208 @@ grand_parent: Configuration
 
 # Case Workflow XPath
 
-Navigate to a case by Skim or Fetch:
+Upon navigating to a case, the Journal section of the case page is open by default, and it is the first thing an agent will see. The Case Key Journal is the retrieval of all events processed for the model where the Case Key Value matches that used in the creation of the case record, for example AccountId = Test1. The use of the Case Key Journal is covered in more detail in [Working Case Key Journal](../WorkingCaseKeyJournal/index.html), and for the purposes of this page it suffices to recognise that each row corresponds to an event \ transaction.
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-01.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era DefaultViewOfCasesPage.png" -->
-![Image](DefaultViewOfCasesPage.png)
+A picture of the event is captured and stored alongside the case record at creation also, and it is presented in the case page as Payload fields.
 
-In the default view it can be seen that the tab Case Key Journal has been set active by default (this is the first tab
-an agent will see):
+All data comes to rest in the case record and archive in JSON format, being exactly the same format as returned in the response (except it will include all elements, not only those specified as a response payload). There is an enormous amount of columns and granularity available in that JSON after model invocation, yet none of it is presented in the case page of its own accord. Cases Workflow XPath allows for the extraction of data from the JSON for presentation in the case page, which is to say that each Cases Workflow XPath is a column of the Payload lens of the Case Key Journal and an entry in the Payload fields of the case.
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-02.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era LocationOfCaseKeyJournal.png" -->
-![Image](LocationOfCaseKeyJournal.png)
+The default installation of Jube has a comprehensive list of columns, however this is as a result of the default installation having a Cases Workflow XPath for each element available in the payload JSON of the Detailed Financial Transaction model.
 
-The Case Key Journal is the retrieval of a grid of all events processed for the model where the Case Key Value matches
-that used in the creation of the case record, in this example AccountID = Test1.
+Beyond extraction, a Cases Workflow XPath carries the Bold Line Matching and Conditional Formatting that paint the rows and cells of the Case Key Journal, and it decides which fields can be drilled upon.
 
-The use of the Case Key Journal is covered in more detail in later documentation and for the purposes of this
-documentation section it is suffice to recognise that each row corresponds to an event \ transaction.
+## Where it lives
 
-Towards the left hand side of the case key journal is a column titled Activations:
+Navigate through the menu to Models, open the model, then the Cases Workflows hub card, open the Case Workflow, then the XPath hub card. Creating, changing and deleting a Cases Workflow XPath follows the common manner described in [Child Objects](../../../Navigation/ChildObjects/index.html), with the exception that the children of a Case Workflow are not subject to approval, and a change takes effect upon being saved.
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-03.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era ActivationsDisplay.png" -->
-![Image](ActivationsDisplay.png)
+{% comment %}SHOT id=case-workflow-xpath-record
+     route=/models
+     steps=open-default-model, open-hub:Cases Workflows, open-first-row, open-hub:XPath, fill:Search records=TxnId, open-row:TxnId, scroll-to:Bold Line Matching
+     frame=record
+     state=the TxnId Cases Workflow XPath of the default model opened, with the Identity, Extraction and Analytics groups, and the Bold Line Matching and Conditional Formatting groups expanded, Bold line matched switched on and its two colours showing
+     conveys=one record decides what is extracted, how it is treated by analytics and how it paints the journal
+     alt=A Cases Workflow XPath record showing the Source selection, the Role and Segment, and the Bold Line Matching and Conditional Formatting groups with their colour pickers{% endcomment %}
 
-The Activations column shows the highest priority rule having matched (in this example Test) prefixed with the number of
-other rules having matched (in this example 1, which would indicate 1 rule having matched). Notice however that no other
-columns have been returned, despite an enormous amount of columns and granularity being available in the payload after
-model invocation.
+![A Cases Workflow XPath record showing the Source selection, the Role and Segment, and the Bold Line Matching and Conditional Formatting groups with their colour pickers](case-workflow-xpath-record.png)
 
-A picture of the event is captured and stored alongside the case record at creation also, and loaded by default on
-navigation to the case:
+## Fields
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-04.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era CaseCreationPayload.png" -->
-![Image](CaseCreationPayload.png)
+The fields are arranged in the groups Identity, Extraction, Analytics, Bold Line Matching and Conditional Formatting, the latter two being collapsed at first, with a further Audit group, also collapsed, showing who created and last changed the entry, when, and its version. The fields of Bold Line Matching and of Conditional Formatting are presented only once the switch of the group is on. For a new entry every switch is off, Active included, the Role is Inferred from the values, and nothing else is completed, so that an entry must be switched to Active before it shows in the case page.
 
-The default installation of Jube has a comprehensive list of columns displayed alongside the Activations, however this
-is as a result of the default installation having a comprehensive list of Case Workflow Request XPath entries.
+### Identity and Extraction
 
-All data comes to rest in the case record and archive in JSON format, being exactly the same format as returned in the
-response (except it will include all elements, not only those specified as a response payload):
+| Value  | Description                                                                                                                                                                 | Example                      |
+|--------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|
+| Name   | The name to be allocated to this entry, shown as the heading of the column in the Case Key Journal. Required, limited to 256 characters, and unique within the Case Workflow without regard to case. | AmountUSD                    |
+| Active | Whether the entry takes part in the presentation of the case page and the Case Key Journal.                                                                                 | True                         |
+| Locked | Whether the entry is protected from change.                                                                                                                                 | False                        |
+| Source | The field of the model that is to be extracted for presentation. Required.                                                                                                  | AmountUSD (Request XPath)    |
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-05.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era TheResponsePayload.png" -->
-![Image](TheResponsePayload.png)
+The Source is chosen rather than typed. The fields offered are the Request XPath, Inline Functions, Abstraction Rules, Abstraction Calculations, TTL Counters, HTTP Adaptations and Activation Rules of the model to which the Case Workflow belongs, with the model itself standing for its entry key. Each is listed by its name and its kind, and where the field is not flagged as Archive Key this is stated alongside. The JSONPath used to extract the value (for example Payload.AmountUSD), the archive key and the data type are all derived from the field chosen, and it follows that the JSONPath is validated where it is written, on the [Request XPath](../../Models/RequestXPath/index.html) of the model, and not here.
 
-Cases Workflow XPath allows for the extraction of data from the JSON for presentation in the Case page.
+### Analytics
 
-Start by navigating to Models >> Cases Workflows >> Cases Workflow XPath:
+| Value   | Description                                                                                                                                                                                                                              | Example                  |
+|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------|
+| Role    | What kind of field this is to the statistics and charts of the Case Key Journal and to network mapping: Inferred from the values, Measure, Category, Counterparty, Identifier, Time or Geography. Anything other than Inferred from the values overrides the inference made from sampled values. | Inferred from the values |
+| Segment | Whether the field splits the distributions of peers, so that a value is compared with peers in the same segment, such as a customer tier.                                                                                               | False                    |
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-06.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era TopOfTreeForCasesWorkflowXPath.png" -->
-![Image](TopOfTreeForCasesWorkflowXPath.png)
+### Bold Line Matching
 
-Click on the case workflow in the tree node in the top left hand corner to add a new Case Workflow XPath:
+| Value                       | Description                                                                                                                                                              | Example |
+|-----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
+| Bold line matched           | A switch detailing if the row will be placed to bold based on this value matching that in the case creation entry.                                                       | True    |
+| Bold line format fore color | If the value extracted from the transaction or event that caused the case creation matches a row in the grid, then the colour will be allocated in the text.             | #0000FF |
+| Bold line format back color | If the value extracted from the transaction or event that caused the case creation matches a row in the grid, then the colour will be allocated in the background.       | #00FF00 |
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-07.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era EmptyCasesRequestXPath.png" -->
-![Image](EmptyCasesRequestXPath.png)
+### Conditional Formatting
 
-The Cases Workflow XPath page takes the following parameters:
-
-| Value                          | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                             | Example           |
-|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
-| Name                           | The name to be allocated to this entry.                                                                                                                                                                                                                                                                                                                                                                                                                                 | AmountUSD         |
-| Bold Line Matched              | A switch detailing if the row will be placed to bold based on this value matching that in the case creation entry.                                                                                                                                                                                                                                                                                                                                                      | True              |
-| Bold Line Format Fore Colour   | If the value extracted from the transaction or event that caused the case creation matches a row in the grid,  then the colour will be allocated in the text.                                                                                                                                                                                                                                                                                                           | #0000FF           |
-| Bold Line Format Back Colour   | If the value extracted from the transaction or event that caused the case creation matches a row in the grid,  then the colour will be allocated in the background.                                                                                                                                                                                                                                                                                                     | #00FF00           |
-| Drill                          | Fields can be specified as being of type Drill. When a field is specified as being Drill,  this allows the wider selection of a data by cell and value.  On clicking drill,  the Case Journal will be filled with all values matching that condition newly created condition. Drill is useful functionality for identifying links in data. It is of paramount important that a Drill field is indexed in the database (noting that Archive has a GIN index by default). | True              |
-| XPath                          | The JSONPath that is to be used to extract the value for presentation.                                                                                                                                                                                                                                                                                                                                                                                                  | Payload.AmountUSD |
-| Conditional Formatting         | A flag that indicates if further regular expression matching will be performed on the event for the purposes of specifying individual row or cell formatting based on the disposition of the record.                                                                                                                                                                                                                                                                    | True              |
-| Regular Expression             | The Regular Expression to search for a value in the extracted string.                                                                                                                                                                                                                                                                                                                                                                                                   | 1                 |
-| Conditional Format Fore Colour | Subject to the regular expression matching a value,  the text colour to be used. Furthermore,  the Row or Cell check-box indicates if the formatting should be applied to the entire row or just the cell.                                                                                                                                                                                                                                                              | #880808           |
-| Conditional Format Back Colour | Subject to the regular expression matching a value,  the background colour to be used. Furthermore,  the Row or Cell check-box indicates if the formatting should be applied to the entire row or just the cell.                                                                                                                                                                                                                                                        | #9F2B68           |
-
-## Validation
-
-* Name — required, 256 characters max, and must be unique (case-insensitive) among the entries belonging to the same
-  Case Workflow.
-* XPath — required, 1,024 characters max.
-* Bold Line Format Fore Colour and Bold Line Format Back Colour — required (32 characters max) when Bold Line Matched is
-  enabled.
-* Regular Expression, Conditional Format Fore Colour and Conditional Format Back Colour — required (Regular Expression
-  1,024 characters max, colours 32 characters max) when Conditional Formatting is enabled.
-* Every colour, when supplied, must be a hexadecimal value such as #FF0000, a colour name such as red, or an rgb ()/rgba
-  () value. Anything else (quotes, angle brackets, semicolons, url () and so on) is rejected, as colours are written
-  into the Case page markup.
-* The parent Case Workflow must exist within your tenant.
-
-## Basic Extraction
-
-Start an example by completing fields for just the extraction of a field available in the dropdown. Complete the page as
-above or as below for the XPath field only, using the Payload.IP, albeit with the name DemonstrationIP:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-08.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era RequestXPathWithIPBasic.png" -->
-![Image](RequestXPathWithIPBasic.png)
-
-Scroll down and click the Add button to create a version of the Cases Workflows Request XPath entry:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-09.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era VersionOfBasicCasesWorkflowRequestXPath.png" -->
-![Image](VersionOfBasicCasesWorkflowRequestXPath.png)
-
-Navigate to a case:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-10.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era NavigatedToCase.png" -->
-![Image](NavigatedToCase.png)
-
-Scroll using the top horizontal bar in the grid:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-11.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era TopHorizontalScrollBar.png" -->
-![Image](TopHorizontalScrollBar.png)
-
-Scroll all the way to the right. It can be observed that the AmountUSD has been extracted for each record:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-12.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era NewBasicCasesWorkflowsRequestXPathInGrid.png" -->
-![Image](NewBasicCasesWorkflowsRequestXPathInGrid.png)
-
-The new extracted value is also available in the default display of the event having caused the case entry:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-13.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era NewBasicValueInDefaultWindow.png" -->
-![Image](NewBasicValueInDefaultWindow.png)
-
-The default installation has a Cases Workflow Request XPath for each element available in the payload JSON for the
-Detailed Financial Transaction model.
+| Value                                     | Description                                                                                                                                                                                              | Example |
+|-------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
+| Conditional regular expression formatting | A flag that indicates if further regular expression matching will be performed on the event for the purposes of specifying individual row or cell formatting based on the disposition of the record.     | True    |
+| Regular expression                        | The Regular Expression to search for a value in the extracted string.                                                                                                                                    | 1       |
+| Conditional format fore color             | Subject to the regular expression matching a value, the text colour to be used.                                                                                                                          | #880808 |
+| Fore row color scope                      | Whether the text colour is applied to the entire row, rather than just the cell.                                                                                                                         | False   |
+| Conditional format back color             | Subject to the regular expression matching a value, the background colour to be used.                                                                                                                    | #9F2B68 |
+| Back row color scope                      | Whether the background colour is applied to the entire row, rather than just the cell.                                                                                                                   | False   |
 
 ## Bold Line Matching
 
-The bold line matching functionality will match the specified value between the event \ transaction stored on case
-creation and the same value in the Case Journal.
+The bold line matching functionality will match the specified value between the event \ transaction stored on case creation and the same value in the Case Key Journal.
 
-Most ideally bold line matching should be on a unique basis, as the intention is to show the exact record that caused
-the case to be created (keeping in mind that a case can be created only once for a Case Key and Case Key Value, for a
-case workflow, however it may well comprise of many problematic transactions \ events).
+Most ideally bold line matching should be on a unique basis, as the intention is to show the exact record that caused the case to be created (keeping in mind that a case can be created only once for a Case Key and Case Key Value, for a case workflow, however it may well comprise of many problematic transactions \ events). In the default installation the entry TxnId has Bold line matched switched on, with a white background and blue foreground, given that the TxnId should be unique on each transaction JSON post.
 
-In this example, the TxnID should be unique on each transaction JSON post.
+The bold line matching details are returned alongside the Cases Workflow XPath. When the journal is being prepared, for each entry where Bold line matched is on, a check is made to compare the value extracted for the row with that same value in the case creation payload, and upon a match, the text of that row only is emboldened and its fore and back colour set. The comparison is exact and has regard to case. Where more than one entry has Bold line matched on and matches the same row, the colours of the first to match are taken.
 
-Navigate to Models >> Cases Workflows >> Cases Workflow XPath, navigating the tree for the model and selecting the
-existing node titled TxnID:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-14.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era NavigateToTxnId.png" -->
-![Image](NavigateToTxnId.png)
-
-Note the white background and blue foreground, and the Bold Line Match switch toggled to true.
-
-Alter the Bold Line Fore Colour and Back Colour as desired (in this example a Red foreground and light green
-background):
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-15.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era ChangeColourOfBoldLineMatchedForTxnId.png" -->
-![Image](ChangeColourOfBoldLineMatchedForTxnId.png)
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-16.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era UpdatedColourForTxnIdBoldLineMatch.png" -->
-![Image](UpdatedColourForTxnIdBoldLineMatch.png)
-
-Scroll down and update the version of the Cases Workflow XPath by clicking the Add button:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-17.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era UpdatedTxnIdCasesWorkflowXPath.png" -->
-![Image](UpdatedTxnIdCasesWorkflowXPath.png)
-
-The bold line matching details are returned alongside Cases Request Xpath, in this case TxnId. When the Cases Request
-Xpath is being processed in the case page, if "Bold Line Matched" is enabled, a check to compare if the value extracted
-for the row matches that same value in the case creation payload, and upon a match, the fore and back colour will be set
-for that row only.
-
-Post
-to [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc)
-but pay special attention to changing the TxnId in the request as this will likely have been the same, so to assure that
-only a single bold line match is visible for that TxnId:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-18.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era UpdatedTxnIdInPayloadRequest.png" -->
-![Image](UpdatedTxnIdInPayloadRequest.png)
-
-Navigate to the case record:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-19.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era ObservationsOfNewBoldLineMatch.png" -->
-![Image](ObservationsOfNewBoldLineMatch.png)
-
-There are two observations. Firstly, the colour of the bold line match on TxnId has now changed. Secondarily, as the
-TxnID in the most recent request payload does not match the TxnId of the record having driven case, it is no longer bold
-line matched, thus it does not have corresponding highlighting.
+So that the highlighting need not be inferred from colour alone, the reason is written to the Highlighted because column of the journal, in the form Same TxnId as this case: 0987654321.
 
 ## Conditional Formatting
 
-In the above example, a straight forward match was done between the extracted field and the case creation field, whereby
-a match would apply the row formatting (fore colour and back colour specified and emboldening the text).
+In bold line matching, a straightforward match is done between the extracted field and the case creation field, whereby a match applies the row formatting (the fore colour and back colour specified, and emboldening the text).
 
-Conditional formatting is similar functionality that uses regular expressions to change either cell or row colour based
-on a regular expression matching when tested against the extracted value only (i.e. it does not compare to the case
-creation record).
+Conditional formatting is similar functionality that uses regular expressions to change either cell or row colour based on a regular expression matching when tested against the extracted value only (which is to say that it does not compare to the case creation record).
 
-The first of the examples for conditional formatting will be to check the DemonstrationIP address created beforehand for
-being of type localhost (i.e. 127.0.0.1), and colour just the cell if it happens to match that string.
+In the absence of Fore row color scope and Back row color scope being switched on, upon match, only the cell will have formatting applied. It is possible to mix and match fore colour and back colour, row and cell formatting, such that the background of a row is coloured, yet just the fore of the cell is coloured. Where a background is applied without a text colour to accompany it at the same scope, the text colour is chosen such that it remains legible against that background.
 
-Navigate to the entry DemonstrationIP in Cases Workflows XPath for editing:
+The formatting is applied to both the case creation record, in the Payload fields of the case page, and the records in the Case Key Journal. In the Payload fields the formatting is always of the value alone, there being no row to speak of. The reason is written to the Highlighted because column of the journal, in the form DemonstrationIP matches 127.0.0.1.
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-20.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era DemonstrationIPReadyForConditionalFormatting.png" -->
-![Image](DemonstrationIPReadyForConditionalFormatting.png)
-
-Scroll down to the Conditional Formatting switch:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-21.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era LocationOfConditionalFormattingSwitch.png" -->
-![Image](LocationOfConditionalFormattingSwitch.png)
-
-Toggle true the Conditional Formatting switch to expose options available:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-22.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era ExposedConditionalFormatting.png" -->
-![Image](ExposedConditionalFormatting.png)
-
-Use a very basic matching regular expression, simply applying the 127.0.0.1 string in the Regular Expression text box:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-23.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era LocalhostRegex.png" -->
-![Image](LocalhostRegex.png)
-
-Upon regular expression match, the cell will be coloured as per the colours having been picked as follows:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-24.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era CellColourForRegexMatch.png" -->
-![Image](CellColourForRegexMatch.png)
-
-In the absence of clicking the Row check box next to the colours, upon match, only the cell will have formatting
-applied. Update the entry for IP:
-
-Scroll down and update a version of the Cases Workflows XPath:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-25.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era UpdatedForConditionalFormatting.png" -->
-![Image](UpdatedForConditionalFormatting.png)
-
-Being sure to change the IP address in the request payload to 127.0.0.1 repeat the HTTP POST to
-endpoint [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc)
-for response as follows:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-26.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era ChangingIPInRequestPayload.png" -->
-![Image](ChangingIPInRequestPayload.png)
-
-Navigate to the case record and scroll to the right to present the DemonstrationIP column in the Case Key Journal:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-27.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era CellHighlightForLocalIpInGrid.png" -->
-![Image](CellHighlightForLocalIpInGrid.png)
-
-It can be seen from the above example that the cell for IP 127.0.0.1 has been coloured as per the specification, given a
-matching regular expression on that value.
-
-Navigate back to the DemonstrationIP Cases Workflows XPath entry:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-28.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era ReadyToUpdateForRowConditionalFormat.png" -->
-![Image](ReadyToUpdateForRowConditionalFormat.png)
-
-The Conditional Fore Colour and Back Colour has been specified as of cell type, given the absence of the Row having been
-selected (to the right of the colours).
-
-Update the check boxes to designate the colours as being of type row:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-29.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era ChangeForRowConditionalFormat.png" -->
-![Image](ChangeForRowConditionalFormat.png)
-
-Scroll down to update a version of the Cases Workflow XPath:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-30.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era UpdatedForRowConditionalFormat.png" -->
-![Image](UpdatedForRowConditionalFormat.png)
-
-Navigate to the case record:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-31.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era RowHighlightedForIPLocalhost.png" -->
-![Image](RowHighlightedForIPLocalhost.png)
-
-It can be observed that the same formatting has been applied to the row, rather than just the cell. It is possible to
-mix and match fore colour and back colour, row and cell formatting, such that the background of a row is coloured, just
-just the cell fore is coloured.
-
-The formatting is applied to both the case creation record and the records in the display, except for, in this instance,
-there exists no match on the IP for the record causing the creation of the case:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-32.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era NotMatchingInDisplayForConditionalFormat.png" -->
-![Image](NotMatchingInDisplayForConditionalFormat.png)
-
-In this example however, just a single record matched, and that record did not match at the point of case creation, for
-completeness, Navigate to Models >> Cases Workflows >> Cases Workflows XPath and select the entry ResponseCode:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-33.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era ResponseCodeCasesWorkflowXPath.png" -->
-![Image](ResponseCodeCasesWorkflowXPath.png)
-
-The response code has been the same throughout the posting of financial transaction messages, a value of 0 (commonly
-taken to be approved).
-
-Update the Conditional Regular Expression Formatting to target the value of 0, applying a colour of choosing, but being
-careful not to select row:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-34.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era UpdatedRegexForResponseCode.png" -->
-![Image](UpdatedRegexForResponseCode.png)
-
-Scroll down and click update to create a version of the Cases Workflow Request XPath:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-35.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era UpdatedVersionOfRequestXPathForResponsePayload.png" -->
-![Image](UpdatedVersionOfRequestXPathForResponsePayload.png)
-
-Navigate to the case record:
-
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-36.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era FieldHighlightedInDisplayToo.png" -->
-![Image](FieldHighlightedInDisplayToo.png)
-
-Notice how the cell formatting has been applied at both the grid journal level and on the case creation record.
+The regular expression is tested for each row of the journal, and a test that has not concluded within 100 milliseconds is taken as not matching. For the same reason, the regular expression must be valid for an engine that does not backtrack, hence back references and look-around are refused upon saving.
 
 ## Drilling
 
-When a case record is returned, the contents of the Case Key Journal grid is all records matching the case key value
-combination (i.e. AccountID = Test1), as is displayed as follows:
+When a case record is returned, the contents of the Case Key Journal is all records matching the case key value combination (for example AccountId = Test1). The Case Key Journal supports wider fetching via a concept called Drill, whereby a field and a value are taken as the criteria to fetch the journal afresh, which is useful functionality for identifying links in data and creates link analysis functionality directly in the case page.
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-37.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era FetchingAccountIdTest.png" -->
-![Image](FetchingAccountIdTest.png)
+Drilling can and must only exist on fields that are properly indexed. For the reason of thought about indexing, drilling is not available on each field by default, and it is no longer a switch of the Cases Workflow XPath: an entry can be drilled exactly when the field chosen as its Source is flagged as Archive Key, a switch in the Behaviour group of the [Request XPath](../../Models/RequestXPath/index.html) of the model. A Source that is not so flagged is marked as not an Archive Key in the selection.
 
-The Case Journal supports wider fetching via a concept called Drill.
+The drill fields of the Case Workflow are put to use in the Case Key Journal as follows, each being described in [Working Case Key Journal](../WorkingCaseKeyJournal/index.html):
 
-The Drill concept allows for the user selection of a cell, with the column name and the cell value then being taken as
-the filter criteria to repopulate the Case Journal grid (on clicking the Drill button).
+* Add key takes a drill field, the manner of match and a value, and adds it to the scope as a further lane alongside the case key.
+* In the detail of a transaction, under Identifiers, Pivot to this shows the journal for the value of a drill field instead of the case key, with a control to return, and Merge adds the value as a further lane.
+* Clear keys and filter restores the journal to the initial state, being the Case Key and Case Key Value alone.
 
-Drilling can and must only exist on columns that are properly indexed, although a GIN index is in place to facilitate.
+Where no entry of the Case Workflow can be drilled, the journal states that no drill fields are set on the workflow.
 
-For the reason of thought about indexing, Drilling is not available on each column by default, instead, it must be
-enabled at the Cases Request XPath Level.
+## Validation
 
-Navigate to Models >> Cases Workflows >> Cases XPath and open the entry ResponseCode:
+Validation takes place in the server, every problem being reported at once against the field to which it belongs, and nothing is saved while any remains. A Cases Workflow XPath is refused where:
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-38.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era ResponseCodeForDrill.png" -->
-![Image](ResponseCodeForDrill.png)
+* The Name is empty, longer than 256 characters, or already in use among the entries belonging to the same Case Workflow, without regard to case.
+* The Source is not chosen, or is not a field of the model of the Case Workflow.
+* The Role is not one of the seven values offered.
+* Bold line matched is on, and Bold line format fore color or Bold line format back color is empty or longer than 32 characters.
+* Conditional regular expression formatting is on, and the Regular expression is empty or longer than 1,024 characters, or Conditional format fore color or Conditional format back color is empty or longer than 32 characters.
+* Conditional regular expression formatting is on, and the Regular expression is not valid, or makes use of back references or look-around.
+* A colour, when supplied, is not a hexadecimal value of three to eight digits such as #FF0000, a colour name such as red, or an rgb() / rgba() value. Anything else (quotes, angle brackets, semicolons, url() and so on) is rejected, as colours are written into the markup of the case page.
+* The parent Case Workflow does not exist within the tenant.
 
-Scroll down and locate the Drill check box:
+The messages returned are as follows:
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-39.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era LocationOfResponseCodeDrill.png" -->
-![Image](LocationOfResponseCodeDrill.png)
+| Condition                                                              | Message                                                                                           |
+|------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| Name empty                                                             | The name is required.                                                                             |
+| Name longer than 256 characters                                        | The name cannot exceed 256 characters.                                                            |
+| Name already in use in the Case Workflow                               | This name already exists.                                                                         |
+| Source not chosen                                                      | A source field is required: choose the model field the extraction reads.                          |
+| Source not a field of the model                                        | The source field is not a field of the workflow's model.                                          |
+| Role outside the values offered                                        | The field role must be between 0 and 6.                                                           |
+| Bold line matched on, Bold line format fore color empty                | The bold line format fore colour is required when Bold Line Matched is enabled.                   |
+| Bold line matched on, Bold line format back color empty                | The bold line format back colour is required when Bold Line Matched is enabled.                   |
+| Conditional regular expression formatting on, Regular expression empty | The regular expression is required when Conditional Formatting is enabled.                        |
+| Regular expression longer than 1,024 characters                        | The regular expression cannot exceed 1024 characters.                                             |
+| Regular expression not valid, or using back references or look-around  | The regular expression is not valid. Back references and look-around are not supported.           |
+| Conditional formatting on, Conditional format fore color empty         | The conditional format fore colour is required when Conditional Formatting is enabled.            |
+| Conditional formatting on, Conditional format back color empty         | The conditional format back colour is required when Conditional Formatting is enabled.            |
+| A colour longer than 32 characters                                     | The colour cannot exceed 32 characters.                                                           |
+| A colour not in one of the three forms                                 | The colour must be a hexadecimal value such as #FF0000, a colour name or an rgb() value.          |
+| Parent Case Workflow missing                                           | The referenced case workflow was not found in your tenant.                                        |
 
-Set Drill to true:
+It follows from the colours being required once the switch of their group is on that both a fore colour and a back colour must be given, even where only one is wanted, and in that case the other is best set to the colour the journal already has.
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-40.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era SetResponseCodeToDrill.png" -->
-![Image](SetResponseCodeToDrill.png)
+## Example
 
-Scroll down to update a version of the Cases Workflow XPath:
+### Basic Extraction
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-41.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era UpdatedResponseCodeForDrill.png" -->
-![Image](UpdatedResponseCodeForDrill.png)
+Start with the extraction of a field only. Create a Cases Workflow XPath as follows, leaving all else as the default:
 
-The response code has been the same throughout the posting of financial transaction messages, a value of 0 (commonly
-taken to be approved). Changing the response code, repeat the HTTP POST to
-endpoint [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc)
-for response as follows
+| Value  | Example            |
+|--------|--------------------|
+| Name   | DemonstrationIP    |
+| Active | True               |
+| Source | IP (Request XPath) |
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-42.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era ResponseCodeDeclineInRequestJson.png" -->
-![Image](ResponseCodeDeclineInRequestJson.png)
+Upon navigating to a case, DemonstrationIP is a column of the Payload lens of the Case Key Journal, with the IP extracted for each record, and the new extracted value is also available in the Payload fields of the event having caused the case entry.
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-43.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era ChangedResponseCodeToDeclineInRequestPayload.png" -->
-![Image](ChangedResponseCodeToDeclineInRequestPayload.png)
+### Bold Line Matching
 
-Keeping in mind that there will be two IP addresses available from this documentation, at least, Navigate to the case
-record:
+Open the existing entry titled TxnId, and note in the Bold Line Matching group the white background and blue foreground, and Bold line matched switched on. Alter Bold line format fore color and Bold line format back color as desired, in this example to a red foreground and light green background, and save.
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-44.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era ReadyToDrillOnResponsePayload.png" -->
-![Image](ReadyToDrillOnResponsePayload.png)
+POST to [https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc](https://localhost:5001/api/invoke/EntityAnalysisModel/90c425fd-101a-420b-91d1-cb7a24a969cc), but pay special attention to changing the TxnId in the request, as this will likely have been the same, so as to assure that only a single bold line match is visible for that TxnId.
 
-Click the cell for ResponseCode for the topmost record:
+Upon navigating to the case record there are two observations. Firstly, the colour of the bold line match on TxnId has now changed. Secondarily, as the TxnId in the most recent request payload does not match the TxnId of the record having driven the case, it is not bold line matched, thus it does not have corresponding highlighting.
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-45.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era ClickHereToDrill.png" -->
-![Image](ClickHereToDrill.png)
+{% comment %}SHOT id=case-workflow-xpath-journal-highlighting
+     route=/cases
+     steps=open-demo-case, click:Hide the sections, click:Hide the decide panel, open-section:3 Journal, open-tab:Payload, scroll-to:Transactions
+     frame=section:3 Journal
+     state=the Payload lens of the journal of a demonstration case, with the row of the transaction that created the case emboldened in the bold line colours, one cell coloured by conditional formatting, another row coloured in full, and the Highlighted because column stating each reason
+     conveys=Bold Line Matching picks out the transaction that created the case, and Conditional Formatting colours a cell or a row on the value alone
+     alt=The Case Key Journal grid with one emboldened and coloured row for the transaction that created the case, a coloured cell where a regular expression matched, and the reasons listed in the Highlighted because column{% endcomment %}
 
-Upon click, the cell will appear highlighted, while also exposing (the otherwise disabled) Drill button to signify that
-the field can be drilled upon:
+![The Case Key Journal grid with one emboldened and coloured row for the transaction that created the case, a coloured cell where a regular expression matched, and the reasons listed in the Highlighted because column](case-workflow-xpath-journal-highlighting.png)
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-46.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era DrillHighlighted.png" -->
-![Image](DrillHighlighted.png)
+### Conditional Formatting of a cell, then of a row
 
-Clicking the Drill button to will set about populating the Case Key Journal grid, in this example, on the basis of
-ResponsePayload = 1, rather than the original predicate of AccountID = Test1:
+The first of the examples for conditional formatting checks the DemonstrationIP created beforehand for being localhost (which is to say 127.0.0.1), and colours just the cell if it happens to match that string. Open the entry DemonstrationIP and, in the Conditional Formatting group, complete as follows:
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-47.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era Drilled.png" -->
-![Image](Drilled.png)
+| Value                                     | Example   |
+|-------------------------------------------|-----------|
+| Conditional regular expression formatting | True      |
+| Regular expression                        | 127.0.0.1 |
+| Conditional format fore color             | #880808   |
+| Fore row color scope                      | False     |
+| Conditional format back color             | #9F2B68   |
+| Back row color scope                      | False     |
 
-Upon the conclusion of the fetch, all transactions available matching the drill filter (which is in this case spans one
-account) have been returned.
+Being sure to change the IP in the request payload to 127.0.0.1, repeat the HTTP POST to the endpoint above. Upon navigating to the case record, it can be seen in the DemonstrationIP column of the Case Key Journal that the cell for IP 127.0.0.1 has been coloured as per the specification, given a matching regular expression on that value.
 
-Drilling can then take place on other fields as required, creating link analysis functionality directly in the case
-page.
+Return to the DemonstrationIP entry, switch on Fore row color scope and Back row color scope to designate the colours as being of type row, and save. Upon navigating to the case record once more, it can be observed that the same formatting has been applied to the row, rather than just the cell.
 
-In the absence of a cell having been selected upon case presentation, the drill will be set to the CaseKey and Case Key
-Value (in this example AccountId = Test1). In the event that a cell is selected that is not enabled for drill, the drill
-button will be disabled.
+In this instance there exists no match on the IP for the record causing the creation of the case, henceforth nothing is coloured in the Payload fields.
 
-Refresh restores the Case Key Journal to the initial state:
+### Conditional Formatting in the Payload fields
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-48.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era RefreshResetDrill.png" -->
-![Image](RefreshResetDrill.png)
+For completeness, open the entry ResponseCode. The response code has been the same throughout the posting of financial transaction messages, a value of 0 (commonly taken to be approved). Switch on Conditional regular expression formatting, set the Regular expression to target the value of 0, applying colours of choosing, being careful to leave Fore row color scope and Back row color scope off, and save.
 
-Upon clicking setting the drill to CaseKey and CaseKeyValue and returning the data afresh:
+Upon navigating to the case record, notice how the cell formatting has been applied at both the journal level and on the case creation record in the Payload fields.
 
-<!-- TODO(screenshot): file=case-workflow-config-case-workflow-x-path-49.png route=/models state="Models page, Case Workflows tab, case-workflow-x-path screen replacing the Razor-era RefreshedFromDrill.png" -->
-![Image](RefreshedFromDrill.png)
+### Drilling
 
-<!-- TODO(docs): Document that the Regular Expression used for conditional formatting must be valid for a non-backtracking engine: back references and look-around are refused when saving (CaseWorkflowXPathDtoValidator, key RegularExpressionInvalid), and the maximum length is 1024 characters. -->
-<!-- TODO(docs): Document that the XPath source is chosen from the archive key fields of the workflow's model (SourceGuid), not typed; the JSONPath itself is validated on the model's Request XPath. -->
-<!-- TODO(docs): The 49 screenshots are Razor-era; consider consolidating into a handful for the Vue form. -->
-<!-- TODO(docs): Colours accept #RGB to #RRGGBBAA, a colour name or rgb()/rgba(); confirm against ColorPattern. -->
+ResponseCode can be drilled only where the Request XPath named ResponseCode is flagged as Archive Key, and transactions processed from that point onwards are those reached by a drill. Changing the response code in the request payload from 0 to 1, repeat the HTTP POST to the endpoint above, then navigate to the case record.
+
+In the Case Key Journal, use Add key, choosing ResponseCode as the key and 1 as the value. Upon the conclusion of the fetch, the transactions matching ResponseCode = 1 have been returned as a further lane, alongside those of the original predicate of AccountId = Test1, and the grid shows the lane each transaction arrived by. Drilling can then take place on other fields as required.
+
+## Permissions and security
+
+Creating, changing and deleting a Cases Workflow XPath, and the allocation of roles to it, requires permission 20, Read Write Case Workflow XPath. The active entries are also available to a user holding permission 1, Read Write Case, for the purposes of the case page.
+
+A Cases Workflow XPath is presented in the case page only to the roles allocated to it in the Roles panel. It follows that specific fields can be hidden from the Payload fields and the Case Key Journal for a given role, which is useful for hiding sensitive or otherwise encrypted data, as described in [Case Management Security Policy](../SecurityPolicy/index.html).

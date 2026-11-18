@@ -11,8 +11,8 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-import {describe, expect, it} from 'vitest'
-import {maximumExpanded} from '../address'
+import { describe, expect, it } from 'vitest'
+import { maximumExpanded } from '../address'
 import {
   addsOnExpand,
   byInterest,
@@ -58,6 +58,8 @@ import {
   setWindow,
   toggleEdge,
   windowFromDays,
+  legendKeys,
+  seedKeyChoices,
 } from '../state'
 import type {
   GraphCombo,
@@ -102,7 +104,7 @@ function node(id: number, seed = false): GraphNode {
     depth: seed ? 0 : 1,
     viaNodeId: seed ? null : 1,
     seed,
-    cases: {open: 0, closed: 0, confirmed: 0, latestCaseId: null, latestOpenCaseId: null},
+    cases: { open: 0, closed: 0, confirmed: 0, latestCaseId: null, latestOpenCaseId: null },
     nearestTag: null,
     nearestTagDistance: null,
     tags: [],
@@ -139,9 +141,42 @@ function edge(
 }
 
 const definitions: GraphEdgeDefinition[] = [
-  {guid: 'a', name: 'A', kindId: 1, restricted: false, visible: true},
-  {guid: 'b', name: 'B', kindId: 2, restricted: false, visible: true},
-  {guid: 'c', name: 'C', kindId: 1, restricted: true, visible: false},
+  {
+    guid: 'a',
+    name: 'A',
+    kindId: 1,
+    restricted: false,
+    visible: true,
+    iconName: null,
+    fromNodeKey: null,
+    toNodeKey: null,
+    fromNodeIcon: null,
+    toNodeIcon: null,
+  },
+  {
+    guid: 'b',
+    name: 'B',
+    kindId: 2,
+    restricted: false,
+    visible: true,
+    iconName: null,
+    fromNodeKey: null,
+    toNodeKey: null,
+    fromNodeIcon: null,
+    toNodeIcon: null,
+  },
+  {
+    guid: 'c',
+    name: 'C',
+    kindId: 1,
+    restricted: true,
+    visible: false,
+    iconName: null,
+    fromNodeKey: null,
+    toNodeKey: null,
+    fromNodeIcon: null,
+    toNodeIcon: null,
+  },
 ]
 
 describe('graph state reducers', () => {
@@ -163,14 +198,14 @@ describe('graph state reducers', () => {
     const withEdge = selectEdge(defaultGraphState, '9')
 
     expect(withEdge.selectedEdge).toBe('9')
-    expect(select(withEdge, '3')).toMatchObject({selectedEdge: null, address: {selected: '3'}})
+    expect(select(withEdge, '3')).toMatchObject({ selectedEdge: null, address: { selected: '3' } })
     expect(select(withEdge, null).address.selected).toBeNull()
   })
 
   it('bounds hops to one to three and switches the view to hops', () => {
     expect(
       setHops(
-        {...defaultGraphState, address: {...defaultGraphState.address, view: 'relevance'}},
+        { ...defaultGraphState, address: { ...defaultGraphState.address, view: 'relevance' } },
         7,
       ).address,
     ).toMatchObject({
@@ -202,7 +237,7 @@ describe('graph state reducers', () => {
     expect(setMinimumAmount(defaultGraphState, 1e12).minimumAmount).toBe(1_000_000_000)
 
     const cursor = setCursor(defaultGraphState, 1_700_000_000)
-    const moved = setWindow(cursor, {from: '2026-01-01T00:00:00Z', to: '2026-02-01T00:00:00Z'})
+    const moved = setWindow(cursor, { from: '2026-01-01T00:00:00Z', to: '2026-02-01T00:00:00Z' })
 
     expect(moved.address.cursor).toBeNull()
     expect(moved.window?.from).toBe('2026-01-01T00:00:00Z')
@@ -249,13 +284,13 @@ describe('time cursor hiding', () => {
 
   it('counts what an expansion adds from the degree less what is already drawn', () => {
     expect(addsOnExpand(node(1, true), graph)).toBe(3)
-    expect(addsOnExpand({...node(9), degree: 1}, graph)).toBe(1)
+    expect(addsOnExpand({ ...node(9), degree: 1 }, graph)).toBe(1)
   })
 })
 
 describe('combos', () => {
   const combos: GraphCombo[] = [
-    {id: '1:AccountId', viaNodeId: 1, key: 'AccountId', count: 40, nodeIds: []},
+    { id: '1:AccountId', viaNodeId: 1, key: 'AccountId', count: 40, nodeIds: [] },
   ]
 
   it('recognises the combo prefix and finds the combo behind a picked node id', () => {
@@ -289,13 +324,13 @@ describe('flow and paths reducers', () => {
     const selected = select(defaultGraphState, '5')
     const flow = setView(selected, 'flow')
 
-    expect(flow.address).toMatchObject({view: 'flow', flow: {seed: '5', direction: 'forward'}})
+    expect(flow.address).toMatchObject({ view: 'flow', flow: { seed: '5', direction: 'forward' } })
     expect(setFlowDirection(flow, 'backward').address.flow?.direction).toBe('backward')
     expect(setFlowWindowHours(flow, 72).address.flowWindowHours).toBeNull()
     expect(setFlowWindowHours(flow, 9000).address.flowWindowHours).toBe(720)
     expect(setFlowTolerance(flow, 0.2).address.flowTolerance).toBeNull()
     expect(setFlowTolerance(flow, 1.5).address.flowTolerance).toBe(0.9)
-    expect(leaveFlow(flow).address).toMatchObject({view: 'hops', flow: null})
+    expect(leaveFlow(flow).address).toMatchObject({ view: 'hops', flow: null })
   })
 
   it('follows the money from a node with the journal transaction as the anchor', () => {
@@ -304,7 +339,7 @@ describe('flow and paths reducers', () => {
     expect(followed.address).toMatchObject({
       view: 'flow',
       selected: '9',
-      flow: {seed: '9', direction: 'forward'},
+      flow: { seed: '9', direction: 'forward' },
       flowArchiveId: 4412,
     })
   })
@@ -331,8 +366,8 @@ describe('emphasis', () => {
     edges: [],
     sentences: [],
     paths: [
-      {hops: 2, weight: 1, nodeIds: [1, 5, 2], edgeIds: [11, 12], sentence: null},
-      {hops: 1, weight: 2, nodeIds: [1, 4], edgeIds: [13], sentence: null},
+      { hops: 2, weight: 1, nodeIds: [1, 5, 2], edgeIds: [11, 12], sentence: null },
+      { hops: 1, weight: 2, nodeIds: [1, 4], edgeIds: [13], sentence: null },
     ],
   }
 
@@ -356,7 +391,7 @@ describe('emphasis', () => {
       parameters: {},
       archiveIds: [203],
       memberCount: 2,
-      members: [{node: node(3), role: 'intermediary'}],
+      members: [{ node: node(3), role: 'intermediary' }],
       stateId: 1,
       caseId: null,
       firstDetectedDate: '2026-10-02T00:00:00Z',
@@ -442,27 +477,27 @@ describe('emphasis', () => {
     ])
 
     const ranked = [
-      {...node(1, true), interest: 1},
-      {...node(2), interest: 0.7},
-      {...node(3), interest: 0.2},
+      { ...node(1, true), interest: 1 },
+      { ...node(2), interest: 0.7 },
+      { ...node(3), interest: 0.2 },
       node(4),
     ]
 
     expect([...mergeEmphasis(emphasisForInterest(ranked))]).toEqual(['2'])
     expect(
-      byInterest(ranked.map((current) => ({node: current}))).map((row) => row.node.id),
+      byInterest(ranked.map((current) => ({ node: current }))).map((row) => row.node.id),
     ).toEqual([1, 2, 3, 4])
   })
 })
 
 describe('case nodes and tags', () => {
   it('recognises a Case node and reads its case id from the value', () => {
-    expect(isCaseNode({key: 'Case'})).toBe(true)
-    expect(isCaseNode({key: 'AccountId'})).toBe(false)
+    expect(isCaseNode({ key: 'Case' })).toBe(true)
+    expect(isCaseNode({ key: 'AccountId' })).toBe(false)
     expect(isCaseNode(null)).toBe(false)
-    expect(caseIdOf({key: 'Case', value: '12'})).toBe(12)
-    expect(caseIdOf({key: 'Case', value: 'x'})).toBeNull()
-    expect(caseIdOf({key: 'AccountId', value: '12'})).toBeNull()
+    expect(caseIdOf({ key: 'Case', value: '12' })).toBe(12)
+    expect(caseIdOf({ key: 'Case', value: 'x' })).toBeNull()
+    expect(caseIdOf({ key: 'AccountId', value: '12' })).toBeNull()
   })
 
   it('labels every edge kind, the synthetic case edge included', () => {
@@ -476,19 +511,73 @@ describe('case nodes and tags', () => {
     const tagged = {
       ...node(1),
       tags: [
-        {tag: 'Victim', distance: 3, within1: 0, within2: 0, within3: 1},
-        {tag: null, distance: 0, within1: 1, within2: 1, within3: 1},
-        {tag: 'Mule', distance: 1, within1: 1, within2: 1, within3: 1},
+        { tag: 'Victim', distance: 3, within1: 0, within2: 0, within3: 1 },
+        { tag: null, distance: 0, within1: 1, within2: 1, within3: 1 },
+        { tag: 'Mule', distance: 1, within1: 1, within2: 1, within3: 1 },
       ],
     }
 
     expect(tagChips(tagged).map((item) => item.tag)).toEqual(['Mule', 'Victim'])
-    expect(nearestTagOf(tagged)).toEqual({tag: 'Mule', distance: 1})
-    expect(nearestTagOf({...tagged, nearestTag: 'Victim', nearestTagDistance: 3})).toEqual({
+    expect(nearestTagOf(tagged)).toEqual({ tag: 'Mule', distance: 1 })
+    expect(nearestTagOf({ ...tagged, nearestTag: 'Victim', nearestTagDistance: 3 })).toEqual({
       tag: 'Victim',
       distance: 3,
     })
     expect(nearestTagOf(node(2))).toBeNull()
     expect(tagChips(null)).toEqual([])
+  })
+})
+
+describe('the legend against the shapes the server draws', () => {
+  it('puts the seed key first and the rest in ordinal order, whatever order they arrived in', () => {
+    expect(legendKeys(['DeviceId', 'AccountId', 'Case', 'DeviceId'], 'DeviceId')).toEqual([
+      { key: 'DeviceId', seed: true },
+      { key: 'AccountId', seed: false },
+      { key: 'Case', seed: false },
+    ])
+  })
+
+  it('takes the first key in ordinal order as the seed when the graph names none', () => {
+    expect(legendKeys(['b', 'B', 'a'], null)).toEqual([
+      { key: 'B', seed: true },
+      { key: 'a', seed: false },
+      { key: 'b', seed: false },
+    ])
+  })
+
+  it('marks no key as the seed when the seed key is not among the nodes', () => {
+    expect(legendKeys(['AccountId'], 'Elsewhere')).toEqual([{ key: 'AccountId', seed: false }])
+  })
+})
+
+describe('the keys a graph can be seeded from', () => {
+  const edge = (kindId: number, fromKey: string, toKey: string) => ({
+    kindId,
+    fromKey,
+    toKey,
+    fromNodeKey: null,
+    toNodeKey: null,
+  })
+
+  it('lists each node key once, sorted', () => {
+    expect(
+      seedKeyChoices([edge(1, 'DeviceId', 'AccountId'), edge(2, 'AccountId', 'AccountId')]),
+    ).toEqual(['AccountId', 'DeviceId'])
+  })
+
+  it('prefers the node key an edge end is stored under', () => {
+    expect(
+      seedKeyChoices([
+        { ...edge(2, 'DebtorId', 'CreditorId'), fromNodeKey: 'AccountId', toNodeKey: 'AccountId' },
+      ]),
+    ).toEqual(['AccountId'])
+  })
+
+  it('leaves out the from side of the case edge, which is never a node key', () => {
+    expect(seedKeyChoices([edge(1, 'DeviceId', 'AccountId'), edge(5, 'CaseKey', 'Case')])).toEqual([
+      'AccountId',
+      'Case',
+      'DeviceId',
+    ])
   })
 })

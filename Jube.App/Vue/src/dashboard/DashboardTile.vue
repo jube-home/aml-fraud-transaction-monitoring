@@ -68,7 +68,7 @@ const failure = computed(() => {
 
 <template>
   <section
-    class="flex min-h-(--tile-height) min-w-0 flex-col md:col-[span_var(--tile-columns)] md:row-[span_var(--tile-rows)] md:min-h-0"
+    class="flex min-h-(--tile-height) min-w-0 flex-col @2xl/dash:col-[span_var(--tile-columns-mid)] @2xl/dash:min-h-0 @5xl/dash:col-[span_var(--tile-columns)] @5xl/dash:row-[span_var(--tile-rows)]"
     :style="tileStyle(registry, tile)"
     :aria-label="tile.name ?? ''"
     :data-testid="`tile-${tile.id}`"

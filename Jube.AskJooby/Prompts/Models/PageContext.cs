@@ -23,5 +23,6 @@ namespace Jube.AskJooby.Prompts.Models
         string? State,
         string? Purpose,
         string? LikelyAsks,
-        string? RecordSummary);
+        string? RecordSummary,
+        string? Location = null);
 }

@@ -31,6 +31,14 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
             return name.Contains('.') ? name.Split(".")[1] : name;
         }
 
+        internal static int EffectiveProcessingTypeId(int processingTypeId, string name)
+        {
+            return processingTypeId == 7 && name != null &&
+                   name.StartsWith("AbstractionCalculation.", StringComparison.Ordinal)
+                ? 6
+                : processingTypeId;
+        }
+
         internal static string ProtocolSource(int processingTypeId)
         {
             return processingTypeId switch

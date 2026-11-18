@@ -183,7 +183,7 @@ namespace Jube.Data.Query.GetRuleParseEnvironmentQuery
                 foreach (var publicProperty in SyntaxTreeHelpers.GetPublicProperties(inlineScript.Code,
                              inlineScript.LanguageId == 2))
                 {
-                    values.Add(publicProperty.Key, publicProperty.Value.DataTypeId);
+                    values.TryAdd(publicProperty.Key, publicProperty.Value.DataTypeId);
                 }
             }
 

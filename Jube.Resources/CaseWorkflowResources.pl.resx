@@ -111,4 +111,7 @@
     <data name="GraphRegistryNotFound" xml:space="preserve">
     <value>Nie znaleziono rejestru grafów.</value>
   </data>
+    <data name="ServiceLevelTargetOutOfRange" xml:space="preserve">
+    <value>Cel poziomu usług musi mieścić się w przedziale od 1 do 525600 minut albo pozostać pusty, gdy celu nie ma.</value>
+  </data>
 </root>

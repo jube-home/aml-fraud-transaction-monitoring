@@ -82,24 +82,24 @@
     <value>L'intervalle TTL de la clé de recherche doit être Secondes, Minutes, Heures ou Jours.</value>
   </data>
     <data name="SearchKeyTtlIntervalValueRange" xml:space="preserve">
-    <value>La valeur de l'intervalle TTL de la clé de recherche doit être supérieure ou égale à zéro.</value>
+    <value>La valeur de l'intervalle TTL de la clé de recherche doit être supérieure ou égale à zéro et respecter la limite de l'intervalle choisi.</value>
   </data>
     <data name="SearchKeyFetchLimitRange" xml:space="preserve">
-    <value>La limite de récupération de la clé de recherche doit être supérieure ou égale à zéro.</value>
+    <value>La limite de récupération de la clé de recherche doit être comprise entre 0 et 1,000,000.</value>
   </data>
     <data name="SearchKeyCacheIntervalInvalid" xml:space="preserve">
     <value>L'intervalle de cache de la clé de recherche doit être Secondes, Minutes, Heures ou Jours.</value>
   </data>
     <data name="SearchKeyCacheValueRange" xml:space="preserve">
-    <value>La valeur de l'intervalle de cache de la clé de recherche doit être supérieure ou égale à zéro.</value>
+    <value>La valeur de l'intervalle de cache de la clé de recherche doit être supérieure ou égale à zéro et respecter la limite de l'intervalle choisi.</value>
   </data>
     <data name="SearchKeyCacheFetchLimitRange" xml:space="preserve">
-    <value>La limite de récupération du cache de la clé de recherche doit être supérieure ou égale à zéro.</value>
+    <value>La limite de récupération du cache de la clé de recherche doit être comprise entre 0 et 1,000,000.</value>
   </data>
     <data name="SearchKeyCacheTtlIntervalInvalid" xml:space="preserve">
     <value>L'intervalle TTL du cache de la clé de recherche doit être Secondes, Minutes, Heures ou Jours.</value>
   </data>
     <data name="SearchKeyCacheTtlValueRange" xml:space="preserve">
-    <value>La valeur de l'intervalle TTL du cache de la clé de recherche doit être supérieure ou égale à zéro.</value>
+    <value>La valeur de l'intervalle TTL du cache de la clé de recherche doit être supérieure ou égale à zéro et respecter la limite de l'intervalle choisi.</value>
   </data>
 </root>

@@ -73,6 +73,9 @@
     <data name="KeyMaxLength" xml:space="preserve">
     <value>A key must be at most {0} characters.</value>
   </data>
+    <data name="IconInvalid" xml:space="preserve">
+    <value>The icon is not one of the Lucide icons offered for the graph.</value>
+  </data>
     <data name="AmountKeyRequired" xml:space="preserve">
     <value>An amount key is required for money flow.</value>
   </data>

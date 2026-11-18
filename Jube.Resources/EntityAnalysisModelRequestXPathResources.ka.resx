@@ -82,24 +82,24 @@
     <value>ძიების გასაღების TTL ინტერვალი უნდა იყოს Seconds, Minutes, Hours ან Days.</value>
   </data>
     <data name="SearchKeyTtlIntervalValueRange" xml:space="preserve">
-    <value>ძიების გასაღების TTL ინტერვალის მნიშვნელობა უნდა იყოს ნული ან მეტი.</value>
+    <value>ძიების გასაღების TTL ინტერვალის მნიშვნელობა უნდა იყოს ნული ან მეტი და არჩეული ინტერვალის ლიმიტის ფარგლებში.</value>
   </data>
     <data name="SearchKeyFetchLimitRange" xml:space="preserve">
-    <value>ძიების გასაღების მოძიების ლიმიტი უნდა იყოს ნული ან მეტი.</value>
+    <value>ძიების გასაღების მოძიების ლიმიტი უნდა იყოს 0-დან 1 000 000-მდე.</value>
   </data>
     <data name="SearchKeyCacheIntervalInvalid" xml:space="preserve">
     <value>ძიების გასაღების ქეშის ინტერვალი უნდა იყოს Seconds, Minutes, Hours ან Days.</value>
   </data>
     <data name="SearchKeyCacheValueRange" xml:space="preserve">
-    <value>ძიების გასაღების ქეშის ინტერვალის მნიშვნელობა უნდა იყოს ნული ან მეტი.</value>
+    <value>ძიების გასაღების ქეშის ინტერვალის მნიშვნელობა უნდა იყოს ნული ან მეტი და არჩეული ინტერვალის ლიმიტის ფარგლებში.</value>
   </data>
     <data name="SearchKeyCacheFetchLimitRange" xml:space="preserve">
-    <value>ძიების გასაღების ქეშიდან მოძიების ლიმიტი უნდა იყოს ნული ან მეტი.</value>
+    <value>ძიების გასაღების ქეშიდან მოძიების ლიმიტი უნდა იყოს 0-დან 1 000 000-მდე.</value>
   </data>
     <data name="SearchKeyCacheTtlIntervalInvalid" xml:space="preserve">
     <value>ძიების გასაღების ქეშის TTL ინტერვალი უნდა იყოს Seconds, Minutes, Hours ან Days.</value>
   </data>
     <data name="SearchKeyCacheTtlValueRange" xml:space="preserve">
-    <value>ძიების გასაღების ქეშის TTL ინტერვალის მნიშვნელობა უნდა იყოს ნული ან მეტი.</value>
+    <value>ძიების გასაღების ქეშის TTL ინტერვალის მნიშვნელობა უნდა იყოს ნული ან მეტი და არჩეული ინტერვალის ლიმიტის ფარგლებში.</value>
   </data>
 </root>

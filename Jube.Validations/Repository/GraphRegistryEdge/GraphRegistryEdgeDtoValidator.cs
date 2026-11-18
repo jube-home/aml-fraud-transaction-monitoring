@@ -12,6 +12,7 @@
  */
 
 using FluentValidation;
+using Jube.Charting.Diagrams.Icons;
 using Jube.Data.Repository;
 using Jube.Dto.Repository.GraphRegistryEdge;
 using Jube.Resources;
@@ -23,6 +24,8 @@ namespace Jube.Validations.Repository.GraphRegistryEdge
     {
         private const int MaxNameLength = 256;
         private const int MaxKeyLength = 128;
+
+        private static bool IsKnownIcon(string? icon) => string.IsNullOrWhiteSpace(icon) || GraphIcons.Exists(icon.Trim());
 
         public GraphRegistryEdgeDtoValidator(GraphRegistryEdgeRepository repository, IStringLocalizer localiser)
         {
@@ -84,6 +87,21 @@ namespace Jube.Validations.Repository.GraphRegistryEdge
                 .MaximumLength(MaxKeyLength)
                 .WithMessage(_ => string.Format(localiser[GraphRegistryEdgeResources.KeyMaxLength], MaxKeyLength))
                 .WithErrorCode("ToNodeKeyMaximumLength");
+
+            RuleFor(p => p.IconName)
+                .Must(IsKnownIcon)
+                .WithMessage(_ => localiser[GraphRegistryEdgeResources.IconInvalid])
+                .WithErrorCode("IconInvalid");
+
+            RuleFor(p => p.FromNodeIcon)
+                .Must(IsKnownIcon)
+                .WithMessage(_ => localiser[GraphRegistryEdgeResources.IconInvalid])
+                .WithErrorCode("FromNodeIconInvalid");
+
+            RuleFor(p => p.ToNodeIcon)
+                .Must(IsKnownIcon)
+                .WithMessage(_ => localiser[GraphRegistryEdgeResources.IconInvalid])
+                .WithErrorCode("ToNodeIconInvalid");
 
             RuleFor(p => p.AmountKey)
                 .Cascade(CascadeMode.Stop)

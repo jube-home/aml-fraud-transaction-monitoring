@@ -28,7 +28,16 @@ const reprocessingRead = [
 
 type OperationPermissions = Partial<Record<FormOperation, readonly number[]>>
 
+function writtenBy(...permissions: number[]): OperationPermissions {
+  return {create: permissions, update: permissions, delete: permissions}
+}
+
 export const areaOperationPermissions: Record<string, OperationPermissions> = {
+  EntityAnalysisModel: writtenBy(6),
+  GraphRegistry: writtenBy(50),
+  GraphRegistryEdge: writtenBy(50),
+  RoleRegistry: writtenBy(34),
+  VisualisationRegistry: writtenBy(31),
   EntityAnalysisModelReprocessingRule: {
     list: reprocessingRead,
     read: reprocessingRead,

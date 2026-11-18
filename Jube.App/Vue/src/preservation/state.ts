@@ -32,7 +32,7 @@ export const optionKeys: OptionKey[] = [
   'lists',
   'dictionaries',
   'exhaustive',
-  'askJoobyAnalytics',
+  'advancedAnalytics',
 ]
 
 export const defaultMinimumPasswordLength = 12
@@ -51,7 +51,7 @@ export function defaultOptions(): MoveOptions {
     dictionaries: true,
     visualisations: true,
     roles: true,
-    askJoobyAnalytics: true,
+    advancedAnalytics: true,
   }
 }
 

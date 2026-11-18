@@ -35,6 +35,9 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(6)] public string ToKey { get; set; }
         [Column] [Nullable] [Key(27)] public string FromNodeKey { get; set; }
         [Column] [Nullable] [Key(28)] public string ToNodeKey { get; set; }
+        [Column] [Nullable] [Key(29)] public string IconName { get; set; }
+        [Column] [Nullable] [Key(30)] public string FromNodeIcon { get; set; }
+        [Column] [Nullable] [Key(31)] public string ToNodeIcon { get; set; }
         [Column] [Nullable] [Key(7)] public string AmountKey { get; set; }
         [Column] [Nullable] [Key(8)] public int? HalfLifeDays { get; set; }
         [Column] [Nullable] [Key(9)] public double? KindPrior { get; set; }

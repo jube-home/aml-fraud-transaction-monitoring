@@ -175,4 +175,7 @@
     <data name="DetailCollapsed" xml:space="preserve">
     <value>{0} კვანძი ჩაკეცილია</value>
   </data>
+    <data name="SentenceCommunityNoRate" xml:space="preserve">
+    <value>თემი {0}, {1} კვანძით: {2} დადასტურებული {3} დახურული საქმიდან.</value>
+  </data>
 </root>

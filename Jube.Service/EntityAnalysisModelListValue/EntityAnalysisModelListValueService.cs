@@ -584,7 +584,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
         [Description("Registers a new value under a List in the caller's tenant. Not idempotent -- calling " +
                      "twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelListValueCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<ListValuePoco> InsertAsync(
+        public async Task<EntityAnalysisModelListValueDto> InsertAsync(
             [Description("The List Value to create.")]
             EntityAnalysisModelListValueDto? model,
             CancellationToken token = default)
@@ -640,7 +640,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
                     log.Info($"EntityAnalysisModelListValue.Create: created Id={saved.Id} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelListValueMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -718,7 +718,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
         [Description("Updates an existing value in the caller's tenant, identified by its Id. Idempotent -- " +
                      "repeating the same update has no further effect beyond incrementing Version.")]
         [ServiceOperation("EntityAnalysisModelListValueUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<ListValuePoco> UpdateAsync(
+        public async Task<EntityAnalysisModelListValueDto> UpdateAsync(
             [Description("The List Value to update. Id selects the row; identity/tenant/audit fields are " +
                          "server-owned and ignored.")]
             EntityAnalysisModelListValueDto? model,
@@ -789,7 +789,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
                         $"EntityAnalysisModelListValue.Update: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelListValueMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1023,7 +1023,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
                      "cycle without requiring an edit. Use after a rejection was explained and the maker still " +
                      "wants the same change (including a delete) approved.")]
         [ServiceOperation("EntityAnalysisModelListValueResubmit", OperationKind.Write, Idempotent = false)]
-        public async Task<ListValuePoco> ResubmitAsync(
+        public async Task<EntityAnalysisModelListValueDto> ResubmitAsync(
             [Description("Numeric identifier of the List Value to resubmit.")]
             int id,
             [Description("Optional note explaining why this is being resubmitted.")]
@@ -1065,7 +1065,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
                         $"EntityAnalysisModelListValue.Resubmit: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelListValueMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1100,7 +1100,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
                      "undeleting it, if the rejected change was a delete) without opening a new approval cycle. " +
                      "Use when the maker agrees with the rejection and wants to abandon the change.")]
         [ServiceOperation("EntityAnalysisModelListValueRetract", OperationKind.Write, Idempotent = false)]
-        public async Task<ListValuePoco> RetractAsync(
+        public async Task<EntityAnalysisModelListValueDto> RetractAsync(
             [Description("Numeric identifier of the List Value to retract.")]
             int id,
             [Description("Optional note explaining why this is being retracted.")]
@@ -1142,7 +1142,7 @@ namespace Jube.Service.EntityAnalysisModelListValue
                         $"EntityAnalysisModelListValue.Retract: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelListValueMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1206,11 +1206,26 @@ namespace Jube.Service.EntityAnalysisModelListValue
                     continue;
                 }
 
+                var newExpiryDate = splits.Length > 1 ? ParseDeleteExpiryDate(splits[1]) : null;
+
+                if (splits.Length > 1 && !string.IsNullOrWhiteSpace(splits[1]) &&
+                    (newExpiryDate == null || newExpiryDate <= DateTime.UtcNow))
+                {
+                    errors++;
+
+                    if (log.IsWarnEnabled)
+                    {
+                        log.Warn($"EntityAnalysisModelListValue.UploadCsv: rejected unparseable or past Delete " +
+                                 $"Expiry Date entityAnalysisModelListId={entityAnalysisModelListId} user={userName}");
+                    }
+
+                    continue;
+                }
+
                 await dbContext.ExecuteAsync("SAVEPOINT csv_row", token).ConfigureAwait(false);
 
                 try
                 {
-                    var newExpiryDate = splits.Length > 1 ? ParseDeleteExpiryDate(splits[1]) : null;
 
                     var existing = await repository
                         .GetByListIdAndValueAsync(entityAnalysisModelListId, splits[0], token)

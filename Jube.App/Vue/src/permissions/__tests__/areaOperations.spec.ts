@@ -89,3 +89,23 @@ describe('the reprocessing permission split', () => {
     expect(areaOf(74)).toBe('models')
   })
 })
+
+describe('areas whose list is open to more permissions than their writes', () => {
+  const writes = ['create', 'update', 'delete'] as const
+
+  it.each([
+    ['EntityAnalysisModel', 6, 13],
+    ['GraphRegistry', 50, 49],
+    ['GraphRegistryEdge', 50, 49],
+    ['RoleRegistry', 34, 35],
+    ['VisualisationRegistry', 31, 32],
+  ])('lets %s be written only with permission %i', (area, writer, reader) => {
+    for (const operation of writes) {
+      expect(operationPermitted(area, operation, me([writer]))).toBe(true)
+      expect(operationPermitted(area, operation, me([reader]))).toBe(false)
+    }
+
+    expect(operationPermitted(area, 'list', me([reader]))).toBe(true)
+    expect(operationPermitted(area, 'read', me([reader]))).toBe(true)
+  })
+})

@@ -25,19 +25,18 @@ exploration, training against a historical extract, or demonstrating a model wit
 - HTTP surface: `Jube.App/Endpoints/ExhaustiveInstanceDatasetEndpoints.cs`, mounted at `/api/ExhaustiveInstanceDataset`
   plus the two format-specific routes `/api/ExhaustiveInstanceCsv` and `/api/ExhaustiveInstanceJson` that the upload
   button posts to directly.
-- The Exhaustive page's dataset panel: `Jube.App/Pages/Model/Frame/Exhaustive.cshtml` and
-  `Jube.App/wwwroot/js/Model/Frame/ExhaustiveDataset.js`, loaded before `Exhaustive.js` so the dataset picker is ready
-  before the rest of the page's script runs.
+- The Exhaustive page's dataset panel: `Jube.App/Vue/src/components/DatasetUpload.vue`, with its API calls and column
+  model in `Jube.App/Vue/src/dataset/`.
 
 ## Upload, map, confirm
 
-1. **Upload.** The panel's Kendo Upload widget posts the file (`.csv`, `.txt` or `.json`) to
+1. **Upload.** The panel posts the file (`.csv`, `.txt` or `.json`) to
    `/api/ExhaustiveInstanceCsv/Upload` or `/api/ExhaustiveInstanceJson/Upload`. `DatasetContentSniffer` and the relevant
    parser read it as a stream — `DatasetCountingStream` enforces the configured row and byte ceilings (`DatasetLimits`)
    without buffering the whole file — and return a profile: the column names, an inferred
    `DatasetProcessingTypes` guess per column, a handful of distinct sample values, and a `DatasetParseReport` of rows
    skipped or truncated.
-2. **Map.** The grid (`DatasetColumnsGrid`) lets the user confirm or override each column's processing type and, for
+2. **Map.** The columns grid lets the user confirm or override each column's processing type and, for
    categorical columns, see the distinct values `DatasetColumnAccumulator` collected while scanning. Nothing is written
    to the instance yet — the parsed rows and the proposed mapping sit behind an
    `ExhaustiveInstanceDatasetDto`/`ExhaustiveInstanceDatasetMappingDto` pair identified by the dataset's own id.
@@ -49,7 +48,7 @@ exploration, training against a historical extract, or demonstrating a model wit
 
 A dataset can be replaced (upload a new file, confirm it, and the instance's `ExhaustiveInstanceCsvId` /
 `ExhaustiveInstanceJsonId` moves to the new one) or removed (`DELETE /api/ExhaustiveInstanceDataset/{id}`, which the
-page's `DatasetDeleteButton` calls), returning the instance to whatever data source it had before.
+panel's delete button calls), returning the instance to whatever data source it had before.
 
 ## See also
 

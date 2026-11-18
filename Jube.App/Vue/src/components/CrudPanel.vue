@@ -28,7 +28,6 @@ import {
   Search,
   Sheet,
   ShieldCheck,
-  SlidersHorizontal,
   Trash2,
   Wrench,
   X,
@@ -48,8 +47,10 @@ import {useDirtyGuard} from '../composables/useDirtyGuard'
 import {areaName} from '../formModel/areaName'
 import {useBeatBack} from '../story/beatBack'
 import type {StoryStep} from '../story/path'
+import {viewStateFor} from '../story/viewState'
 import {formModelApi} from '../formModel/api'
 import {useRecordForm} from '../formModel/useRecordForm'
+import {useConfirmStore} from '../stores/confirm'
 import {useToasts} from '../stores/toasts'
 import {valueConfigOf} from '../valueGrid/model'
 import ApprovalPanel from './ApprovalPanel.vue'
@@ -92,6 +93,7 @@ const hosted = useBeatBack(() =>
 )
 const {dateTime} = useFormat()
 const toasts = useToasts()
+const confirm = useConfirmStore()
 
 const model = useQuery({
   queryKey: computed(() => queryKeys.formModel(props.area)),
@@ -116,6 +118,7 @@ const form = useRecordForm({
   onSaved: (record, created) => {
     toasts.success(created ? t('crud.created') : t('crud.saved'))
     emit('saved', record)
+    if (!created) announceOpened()
   },
   onDeleted: (id) => {
     toasts.success(t('crud.deleted'))
@@ -158,24 +161,29 @@ watch(
   {immediate: true},
 )
 
+function announceOpened(): boolean {
+  const model = modelValue.value
+  const id = form.id.value
+
+  if (form.mode.value !== 'edit' || id === undefined || !model) return false
+
+  const values = form.values.value
+  const guid = values.guid
+
+  emit('opened', {
+    id,
+    guid: typeof guid === 'string' ? guid : undefined,
+    name: recordName(model, values, id),
+    values,
+  })
+
+  return true
+}
+
 watch(
   () => [form.mode.value, form.id.value] as const,
-  ([mode, id]) => {
-    const model = modelValue.value
-
-    if (mode === 'edit' && id !== undefined && model) {
-      const values = form.values.value
-      const guid = values.guid
-
-      emit('opened', {
-        id,
-        guid: typeof guid === 'string' ? guid : undefined,
-        name: recordName(model, values, id),
-        values,
-      })
-    } else if (mode === 'idle') {
-      emit('closed')
-    }
+  ([mode]) => {
+    if (!announceOpened() && mode === 'idle') emit('closed')
   },
 )
 
@@ -255,7 +263,12 @@ const externalDetail = computed(() => {
 
 const dialog = ref<HTMLDialogElement>()
 const confirming = ref(false)
-const search = ref('')
+const viewState = viewStateFor(`crud:${props.area}:${props.parentId ?? ''}`)
+const search = ref(viewState.search)
+
+watch(search, (text) => {
+  viewState.search = text
+})
 const visible = ref<number>()
 
 const extra = computed(() => extraFor(props.area))
@@ -332,10 +345,25 @@ const heading = computed(() => {
 function onGlimpse(steps: StoryStep[]): void {
   const first = steps[0]
 
-  if (!first) return
+  if (first?.id === undefined) return
 
   emit('glimpse', steps.slice(1))
   void form.open(first.id)
+}
+
+async function closeForm(): Promise<void> {
+  if (form.dirty.value) {
+    const leave = await confirm.ask({
+      title: t('story.discard.title'),
+      body: t('crud.leave'),
+      confirmLabel: t('story.discard.confirm'),
+      cancelLabel: t('story.discard.cancel'),
+    })
+
+    if (!leave) return
+  }
+
+  form.close()
 }
 
 function confirmDelete(): void {
@@ -425,6 +453,7 @@ function confirmDelete(): void {
           :model="modelValue"
           :rows="records.data.value ?? []"
           :filter-text="search"
+          :state-key="`crud:${area}:${parentId ?? ''}`"
           @open="(id) => form.open(id)"
           @glimpse="onGlimpse"
           @visible="(count) => (visible = count)"
@@ -444,17 +473,12 @@ function confirmDelete(): void {
         data-testid="crud-form"
       >
         <header
+          v-if="!formOnly || form.mode.value === 'new' || form.locked.value"
           class="flex flex-wrap items-center gap-3 rounded-t-box border-b-2 border-b-accent bg-primary px-5 py-3 text-primary-content"
         >
           <FilePlus v-if="form.mode.value === 'new'" key="new" aria-hidden="true" class="size-5"/>
-          <SlidersHorizontal
-            v-else-if="formOnly"
-            key="properties"
-            aria-hidden="true"
-            class="size-5"
-          />
-          <FilePenLine v-else key="edit" aria-hidden="true" class="size-5"/>
-          <h3 class="text-base font-semibold">{{ heading }}</h3>
+          <FilePenLine v-else-if="!formOnly" key="edit" aria-hidden="true" class="size-5"/>
+          <h3 v-if="!formOnly || form.mode.value === 'new'" class="text-base font-semibold">{{ heading }}</h3>
           <span
             v-if="form.id.value !== undefined && !formOnly"
             class="badge badge-sm font-mono tabular-nums"
@@ -685,7 +709,7 @@ function confirmDelete(): void {
             {{ t('crud.incomplete') }}
           </span>
           <span
-            v-else-if="form.mode.value === 'edit'"
+            v-else-if="form.mode.value === 'edit' && !form.dirty.value"
             key="clean"
             class="flex items-center gap-2 text-sm text-secondary"
           >
@@ -709,7 +733,7 @@ function confirmDelete(): void {
               class="btn btn-sm btn-ghost"
               :disabled="form.saving.value"
               data-testid="crud-close"
-              @click="form.close()"
+              @click="closeForm()"
             >
               <X aria-hidden="true" class="size-4"/>
               {{ t('crud.close') }}

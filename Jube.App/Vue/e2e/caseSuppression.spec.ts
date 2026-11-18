@@ -363,6 +363,20 @@ test.describe('case suppression', () => {
     await expect(page.getByTestId('case-suppressions').getByRole('button')).toHaveCount(0)
   })
 
+  test('the canvas band shows two zero counts and no lists when nothing is set', async ({page}) => {
+    await stub(page, {items: []})
+    await page.route(/\/api\/CaseSuppressionCandidates\/InForce/, (route) =>
+      route.fulfill({json: []}),
+    )
+
+    await page.goto('/cases/9041?section=journal')
+
+    await expect(page.getByTestId('suppression-own-count')).toHaveText('0')
+    await expect(page.getByTestId('suppression-elsewhere-count')).toHaveText('0')
+    await expect(page.getByTestId('case-suppressions').getByRole('list')).toHaveCount(0)
+    await expect(page.getByTestId('case-suppressions')).toContainText('launched from Decide')
+  })
+
   for (const theme of ['light', 'dark'] as const) {
     test(`has no axe violations in the dialog and the band in the ${theme} theme`, async ({
                                                                                             page,

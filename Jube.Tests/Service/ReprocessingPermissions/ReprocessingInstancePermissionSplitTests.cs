@@ -130,7 +130,7 @@ public sealed class ReprocessingInstancePermissionSplitTests(DatabaseFixture fx)
         };
     }
 
-    private async Task<(int RuleId, Data.Poco.EntityAnalysisModelReprocessingRuleInstance Instance)> SeedRunAsync()
+    private async Task<(int RuleId, EntityAnalysisModelReprocessingRuleInstanceDto Instance)> SeedRunAsync()
     {
         await using var dbContext = fx.GetDbContext();
         var ruleId = await CreateRuleAsync(dbContext);

@@ -13,6 +13,8 @@
 
 <script setup vapor lang="ts">
 import {useI18n} from 'vue-i18n'
+import {Telescope} from 'lucide-vue-next'
+import TallySection from '../../components/TallySection.vue'
 import CaseResearchItem from './CaseResearchItem.vue'
 import type {CaseResearchEntry} from './types'
 
@@ -22,30 +24,19 @@ const {t} = useI18n()
 </script>
 
 <template>
-  <section
-    class="flex min-w-0 flex-col gap-2"
-    aria-labelledby="case-research-heading"
-    data-testid="case-research-section"
+  <TallySection
+    :label="t('caseDetail.research.heading')"
+    :count="research.length"
+    :loading="loading"
+    :failed="failed"
+    :failed-text="t('caseDetail.research.failed')"
+    testid="case-research-section"
   >
-    <h3 id="case-research-heading" class="text-sm font-semibold">
-      {{ t('caseDetail.research.heading') }}
-    </h3>
-    <div v-if="loading" key="loading" class="skeleton h-16 w-full" role="status">
-      <span class="sr-only">{{ t('cases.loading') }}</span>
-    </div>
-    <div v-else-if="failed" key="failed" role="alert" class="alert alert-error">
-      <span>{{ t('caseDetail.research.failed') }}</span>
-    </div>
-    <p
-      v-else-if="research.length === 0"
-      key="empty"
-      class="text-sm text-base-content/70"
-      role="status"
-    >
-      {{ t('caseDetail.research.empty') }}
-    </p>
-    <ul v-else key="list" class="list rounded-box border border-base-300 bg-base-100">
+    <template #icon>
+      <Telescope class="size-4"/>
+    </template>
+    <ul class="list rounded-box border border-base-300 bg-base-100">
       <CaseResearchItem v-for="entry in research" :key="entry.id" :research="entry"/>
     </ul>
-  </section>
+  </TallySection>
 </template>

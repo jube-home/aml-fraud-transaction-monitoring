@@ -252,3 +252,16 @@ describe('CaseDecide close gate', () => {
     )
   })
 })
+
+describe('CaseDecide reopen', () => {
+  it('reopens a closed case as Open, never as Suspended, closed', async () => {
+    harness = await mount(view([]), {detail: {closedStatusId: 3}})
+
+    harness.byTestId('case-reopen')!.click()
+    await settle()
+
+    const put = stub!.calls.find((call) => call.method === 'PUT' && call.path === '/api/Case')
+
+    expect((put?.body as {closedStatusId: number}).closedStatusId).toBe(0)
+  })
+})

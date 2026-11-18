@@ -175,4 +175,7 @@
     <data name="DetailCollapsed" xml:space="preserve">
     <value>{0} noder hopfällda</value>
   </data>
+    <data name="SentenceCommunityNoRate" xml:space="preserve">
+    <value>Gemenskap {0} med {1} noder: {2} bekräftade av {3} stängda ärenden.</value>
+  </data>
 </root>

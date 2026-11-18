@@ -568,7 +568,7 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstance
                      "status Awaiting Server, ready to be picked up for training by the background engine. Not " +
                      "idempotent -- calling twice creates two rows.")]
         [ServiceOperation("ExhaustiveSearchInstanceCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<ExhaustiveSearchInstancePoco> InsertAsync(
+        public async Task<ExhaustiveSearchInstanceDto> InsertAsync(
             [Description("The Exhaustive Adaptation to create.")]
             ExhaustiveSearchInstanceDto? model,
             CancellationToken token = default)
@@ -616,7 +616,7 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstance
                         $"user={userName}");
                 }
 
-                return saved;
+                return ExhaustiveSearchInstanceMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -701,7 +701,7 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstance
                      "up for training the row can no longer be updated. Idempotent -- repeating the same " +
                      "update has no further effect beyond incrementing Version.")]
         [ServiceOperation("ExhaustiveSearchInstanceUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<ExhaustiveSearchInstancePoco> UpdateAsync(
+        public async Task<ExhaustiveSearchInstanceDto> UpdateAsync(
             [Description("The Exhaustive Adaptation to update. Id selects the row; identity/tenant/audit/" +
                          "training-status fields are server-owned and ignored.")]
             ExhaustiveSearchInstanceDto? model,
@@ -764,7 +764,7 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstance
                         $"ExhaustiveSearchInstance.Update: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return ExhaustiveSearchInstanceMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -815,7 +815,7 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstance
                      "Active governs whether the instance's promoted model is live, independent of its " +
                      "training configuration.")]
         [ServiceOperation("ExhaustiveSearchInstanceSetActive", OperationKind.Write, Idempotent = true)]
-        public async Task<ExhaustiveSearchInstancePoco> SetActiveAsync(
+        public async Task<ExhaustiveSearchInstanceDto> SetActiveAsync(
             [Description("Id of the Exhaustive Adaptation.")]
             int id,
             [Description("The desired Active value.")]
@@ -861,7 +861,7 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstance
                         $"ExhaustiveSearchInstance.SetActive: Id={saved.Id} active={active} user={userName}");
                 }
 
-                return saved;
+                return ExhaustiveSearchInstanceMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1049,7 +1049,7 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstance
                      "fresh approval cycle without requiring an edit. Use after a rejection was explained and " +
                      "the maker still wants the same change (including a delete) approved.")]
         [ServiceOperation("ExhaustiveSearchInstanceResubmit", OperationKind.Write, Idempotent = false)]
-        public async Task<ExhaustiveSearchInstancePoco> ResubmitAsync(
+        public async Task<ExhaustiveSearchInstanceDto> ResubmitAsync(
             [Description("Numeric identifier of the Exhaustive Adaptation to resubmit.")]
             int id,
             [Description("Optional note explaining why this is being resubmitted.")]
@@ -1091,7 +1091,7 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstance
                         $"ExhaustiveSearchInstance.Resubmit: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return ExhaustiveSearchInstanceMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1127,7 +1127,7 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstance
                      "approval cycle. Use when the maker agrees with the rejection and wants to abandon the " +
                      "change.")]
         [ServiceOperation("ExhaustiveSearchInstanceRetract", OperationKind.Write, Idempotent = false)]
-        public async Task<ExhaustiveSearchInstancePoco> RetractAsync(
+        public async Task<ExhaustiveSearchInstanceDto> RetractAsync(
             [Description("Numeric identifier of the Exhaustive Adaptation to retract.")]
             int id,
             [Description("Optional note explaining why this is being retracted.")]
@@ -1169,7 +1169,7 @@ namespace Jube.Service.Repository.ExhaustiveSearchInstance
                         $"ExhaustiveSearchInstance.Retract: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return ExhaustiveSearchInstanceMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

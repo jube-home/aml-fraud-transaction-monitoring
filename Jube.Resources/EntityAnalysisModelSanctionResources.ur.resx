@@ -64,7 +64,7 @@
     <value>فاصلہ 0 اور 5 کے درمیان ہونا چاہیے۔</value>
   </data>
     <data name="CacheValueRange" xml:space="preserve">
-    <value>کیش وقفے کی قدر منفی نہیں ہو سکتی۔</value>
+    <value>کیش وقفے کی قدر صفر یا اس سے زیادہ اور منتخب وقفے کی حد کے اندر ہونی چاہیے۔</value>
   </data>
     <data name="CacheIntervalInvalid" xml:space="preserve">
     <value>کیش وقفے کی قسم سیکنڈ، منٹ، گھنٹے یا دن میں سے ہونی چاہیے۔</value>

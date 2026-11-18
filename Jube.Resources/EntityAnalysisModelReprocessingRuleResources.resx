@@ -82,7 +82,7 @@
     <value>The reprocessing sample must be between 0 and 100 percent.</value>
   </data>
     <data name="ReprocessingValueRange" xml:space="preserve">
-    <value>The reprocessing interval value cannot be negative.</value>
+    <value>The reprocessing interval value must be zero or more and within the limit for the chosen interval.</value>
   </data>
     <data name="ReprocessingIntervalInvalid" xml:space="preserve">
     <value>The reprocessing interval must be Minutes, Hours, Days or Months.</value>

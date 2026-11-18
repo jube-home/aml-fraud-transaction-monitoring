@@ -60,7 +60,11 @@ namespace Jube.App.Endpoints.Query
                 var service = await CaseSimilarityService.CreateAsync(dbContext, user, log, stringLocalizerFactory,
                     serviceChangeBus, token);
 
-                return TypedResults.Ok(await service.GetAsync(caseId, token));
+                var similarity = await service.GetAsync(caseId, token);
+
+                similarity.Enabled = CaseSimilarityHash.KeyOf(dynamicEnvironment) is not null;
+
+                return TypedResults.Ok(similarity);
             }
             catch (NotAuthenticatedException)
             {

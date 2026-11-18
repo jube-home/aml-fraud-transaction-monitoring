@@ -686,7 +686,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
                      "SQL Command is validated against the reporting connection before the row is persisted. " +
                      "Not idempotent -- calling twice creates two rows.")]
         [ServiceOperation("VisualisationRegistryDatasourceCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<DatasourcePoco> InsertAsync(
+        public async Task<VisualisationRegistryDatasourceDto> InsertAsync(
             [Description("The Datasource to create.")]
             VisualisationRegistryDatasourceDto? model,
             CancellationToken token = default)
@@ -757,7 +757,10 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
                         $"user={userName}");
                 }
 
-                return saved;
+                var dto = VisualisationRegistryDatasourceMapper.ToDto(saved);
+                await displayRules.AttachMappingAsync(dto, token).ConfigureAwait(false);
+
+                return dto;
             }
             catch (ForbiddenException)
             {
@@ -1219,7 +1222,7 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
                      "Command is re-validated against the reporting connection before the row is persisted. " +
                      "Idempotent -- repeating the same update has no further effect beyond incrementing Version.")]
         [ServiceOperation("VisualisationRegistryDatasourceUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<DatasourcePoco> UpdateAsync(
+        public async Task<VisualisationRegistryDatasourceDto> UpdateAsync(
             [Description("The Datasource to update. Id selects the row; identity/tenant/audit fields are " +
                          "server-owned and ignored.")]
             VisualisationRegistryDatasourceDto? model,
@@ -1301,7 +1304,10 @@ namespace Jube.Service.Repository.VisualisationRegistryDatasource
                         $"VisualisationRegistryDatasource.Update: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                var dto = VisualisationRegistryDatasourceMapper.ToDto(saved);
+                await displayRules.AttachMappingAsync(dto, token).ConfigureAwait(false);
+
+                return dto;
             }
             catch (ForbiddenException)
             {

@@ -16,7 +16,7 @@ import {computed, ref} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/vue-query'
 import {Bot} from 'lucide-vue-next'
-import FieldHelp from '../../components/FieldHelp.vue'
+import DecideCard from './DecideCard.vue'
 import {useToasts} from '../../stores/toasts'
 import {
   agentApi,
@@ -71,12 +71,14 @@ const decide = useMutation({
 </script>
 
 <template>
-  <fieldset v-if="run" class="fieldset" data-testid="case-agent">
-    <legend class="fieldset-legend">
-      <Bot class="size-3.5" aria-hidden="true"/>
-      {{ t('caseDetail.agent.title') }}
-      <FieldHelp :label="t('caseDetail.agent.title')" :text="t('caseDetail.agent.hint')"/>
-    </legend>
+  <DecideCard v-if="run"
+    :title="t('caseDetail.agent.title')"
+    :help="t('caseDetail.agent.hint')"
+    testid="case-agent"
+  >
+    <template #icon>
+      <Bot class="size-5"/>
+    </template>
 
     <p class="text-sm font-semibold" data-testid="case-agent-outcome">{{ outcomeText }}</p>
     <p class="text-sm whitespace-pre-line" data-testid="case-agent-rationale">
@@ -149,5 +151,5 @@ const decide = useMutation({
     </template>
 
     <p v-if="run.modelName" class="text-xs text-base-content/60">{{ run.modelName }}</p>
-  </fieldset>
+  </DecideCard>
 </template>

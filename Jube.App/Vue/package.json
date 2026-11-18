@@ -9,6 +9,8 @@
     "preview": "vite preview",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
+    "docs:shots": "playwright test -c playwright.config.docs.ts",
+    "docs:shots:check": "playwright test -c playwright.config.docs.ts check.spec.ts",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "run-s \"lint:*\"",

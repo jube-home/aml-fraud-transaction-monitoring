@@ -8,51 +8,34 @@ grand_parent: Concepts
 
 # Extensions and Helpers Agent Tools
 
-An agent should not work out a weekday, a percentage change, an IBAN checksum or a time zone offset by reasoning,
-because it will sometimes be wrong. The service layer therefore offers 178 small, exact, pure functions as agent tools,
-in 22 groups of 7 to 10. Each group is meant to be handed to one agent. Statistical, numerical and machine-learning
-tools are not here; they are the separate Advanced Analytics tool layer.
+An agent should not work out a weekday, a percentage change, an IBAN checksum or a time zone offset by reasoning, as it will on occasion be wrong, and it follows that the service layer offers 178 small, exact and pure functions as agent tools, arranged in 22 groups of between 7 and 10 tools, where each group is intended to be handed to a single agent. Statistical, numerical and machine learning tools are not found here, being instead the separate Advanced Analytics tool layer.
 
 ## Where the logic lives
 
-* **`Jube.Dictionary.Extensions`** holds the logic as extension methods, which are also the rule language's tokens (see
-  [Rule Compilation Algorithm](../../../Configuration/Models/RuleCompilationAlgorithm/index.html#reference-identifier-and-utility-extensions)).
-  A rule and an agent tool therefore run the same code and cannot disagree.
-* **`Jube.Service.Extensions.<Group>`** is a thin facade over those methods. Each tool adds an LLM-oriented description,
-  input limits and plain-English errors, and sometimes combines several extension calls into one small result record,
-  such as `ValidateIban`.
-* **`Jube.Service.Helpers.<Group>`** holds the few functions that are not extension methods: reading the clock, creating
-  UUIDs, and set operations over lists of text.
+The logic is held in three places, as follows:
+
+* `Jube.Dictionary.Extensions` holds the logic as extension methods, which are also the tokens of the rule language (see [Rule Compilation Algorithm](../../../Configuration/Models/RuleCompilationAlgorithm/index.html#reference-identifier-and-utility-extensions)), which is to say that a rule and an agent tool run the same code and cannot disagree.
+* `Jube.Service.Extensions.<Group>` is a thin facade over those methods, where each tool adds a description orientated towards the LLM, input limits and errors in plain English, and on occasion combines several extension calls into one small result record, as is the case for `ValidateIban`.
+* `Jube.Service.Helpers.<Group>` holds the few functions that are not extension methods, these being the reading of the clock, the creation of UUIDs and the set operations over lists of text.
 
 ## Contract
 
-* Tools are marked `[FunctionToolGroup(name, description)]` on the class and `[FunctionTool(name)]` with `[Description]`
-  on each method and parameter. Tests hold the decoration to a standard: descriptions of at least 30 characters (8 for
-  parameters), globally unique tool names, a group size of 7 to 20, and a namespace that ends in the group name.
-  Discovering the groups and binding them as agent functions is the agent host's job, beside the existing service tool
-  binder, and is not part of this layer.
-* **Errors are for the model.** Invalid input, and any result that would be undefined (division by zero, an unknown
-  currency, a skipped local time), throws `ArgumentException` with the reason and, where useful, the valid options. The
-  hosting middleware should return that message to the model as the tool result. Results never contain `NaN` or
-  infinity.
-* **Bounded input.** Text is limited to 100,000 characters (1,000 for names in fuzzy matching and 1,000,000 for JSON/XML
-  documents), and lists to 10,000 items. Regular expressions time out after 250 ms, and XML with a DTD is refused.
-* **Pure.** A unit test reads the compiled IL of every facade and rule-library type and fails on any reference to file,
-  network, process, environment, dynamic loading, `Activator`, `Reflection.Emit`, native interop or Win32, or on any
-  platform invoke. Extension facades are also barred from the clock and from random sources, so they always return the
-  same answer for the same input; only `Helpers.ClockAndIdentifiers` reads the clock, through an injectable
-  `TimeProvider`.
-* **Host.** Linux containers only. Time zones are IANA ids resolved from the image's tzdata, and Unicode normalisation
-  and international host names use ICU; the runtime image carries both.
-* Every tool is named by at least one test through `[Trait("Covers", "<ToolName>")]`, and a catalogue test fails when
-  one is not.
+The tools are held to a common contract, set out as follows:
+
+* Tools are marked with `[FunctionToolGroup(name, description)]` on the class and `[FunctionTool(name)]` with `[Description]` on each method and parameter, and tests hold that decoration to a standard, requiring descriptions of at least 30 characters (8 for parameters), tool names that are globally unique, a group size of between 7 and 20, and a namespace that ends in the group name. The discovery of the groups and the binding of them as agent functions is the responsibility of the agent host, beside the existing service tool binder, and is not part of this layer.
+* Errors are written for the model, such that invalid input, and any result that would be undefined (division by zero, an unknown currency, a skipped local time), throws `ArgumentException` carrying the reason and, where useful, the valid options. The hosting middleware should return that message to the model as the tool result, and results never contain `NaN` or infinity.
+* Input is bounded, with text limited to 100,000 characters (1,000 for names in fuzzy matching and 1,000,000 for JSON and XML documents) and lists limited to 10,000 items, while regular expressions time out after 250 ms and XML carrying a DTD is refused.
+* The functions are pure, which is enforced by unit tests that read the compiled IL of every facade and rule library type, failing on any reference to file, network, process, environment, dynamic loading, `Activator`, `Reflection.Emit`, native interop or Win32, or on any platform invoke. Extension facades are also barred from the clock and from random sources, henceforth they always return the same answer for the same input, and only `Helpers.ClockAndIdentifiers` reads the clock, doing so through an injectable `TimeProvider`.
+* The host is Linux containers only, keeping in mind that time zones are IANA ids resolved from the tzdata of the image, and that Unicode normalisation and international host names rely upon ICU, both of which are carried in the runtime image.
+* Every tool is named by at least one test through `[Trait("Covers", "<ToolName>")]`, and a catalogue test fails where a tool is not so named.
 
 ## Extension groups
 
+Each group is set out below under its namespace, followed by the description of the group exactly as it is given to the agent in `[FunctionToolGroup]`, and then a table of its tools carrying the description of each tool exactly as it is given in `[Description]`.
+
 ### CalendarFacts
 
-`Jube.Service.Extensions.CalendarFacts` — Calendar facts about a date: weekday, week number, quarter, fiscal period,
-month length, leap years, business hours and the start and end of its day, week, month, quarter or year.
+`Jube.Service.Extensions.CalendarFacts`: Calendar facts about a date: weekday, week number, quarter, fiscal period, month length, leap years, business hours and the start and end of its day, week, month, quarter or year.
 
 | Tool                    | What it does                                                                                                                                                                                                                                                                              |
 |-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -66,8 +49,7 @@ month length, leap years, business hours and the start and end of its day, week,
 
 ### CurrencyAndCountry
 
-`Jube.Service.Extensions.CurrencyAndCountry` — ISO 4217 currency and ISO 3166 country reference data with exact
-minor-unit money conversion, from tables embedded in the product.
+`Jube.Service.Extensions.CurrencyAndCountry`: ISO 4217 currency and ISO 3166 country reference data with exact minor-unit money conversion, from tables embedded in the product.
 
 | Tool                      | What it does                                                                                                                                                 |
 |---------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -82,8 +64,7 @@ minor-unit money conversion, from tables embedded in the product.
 
 ### DateArithmetic
 
-`Jube.Service.Extensions.DateArithmetic` — Adds time to dates and measures the time between them exactly, including
-business days, whole months and years, ages as of a date, and interval overlap.
+`Jube.Service.Extensions.DateArithmetic`: Adds time to dates and measures the time between them exactly, including business days, whole months and years, ages as of a date, and interval overlap.
 
 | Tool                  | What it does                                                                                                                                                                                                                 |
 |-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -97,8 +78,7 @@ business days, whole months and years, ages as of a date, and interval overlap.
 
 ### EncodingAndHashing
 
-`Jube.Service.Extensions.EncodingAndHashing` — Encodes and decodes text (Base64, Base64Url, hex, URL, HTML, XML,
-JavaScript) and computes digests, HMACs and checksums over UTF-8 text.
+`Jube.Service.Extensions.EncodingAndHashing`: Encodes and decodes text (Base64, Base64Url, hex, URL, HTML, XML, JavaScript) and computes digests, HMACs and checksums over UTF-8 text.
 
 | Tool            | What it does                                                                                                                                                                                                                                 |
 |-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -112,8 +92,7 @@ JavaScript) and computes digests, HMACs and checksums over UTF-8 text.
 
 ### FinancialIdentifiers
 
-`Jube.Service.Extensions.FinancialIdentifiers` — Validates and dissects payment and securities identifiers: IBAN,
-BIC/SWIFT, card numbers and expiry, Luhn check digits, ABA routing numbers, ISIN, LEI, CUSIP and SEDOL.
+`Jube.Service.Extensions.FinancialIdentifiers`: Validates and dissects payment and securities identifiers: IBAN, BIC/SWIFT, card numbers and expiry, Luhn check digits, ABA routing numbers, ISIN, LEI, CUSIP and SEDOL.
 
 | Tool                      | What it does                                                                                                                                                                                                                                       |
 |---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -130,8 +109,7 @@ BIC/SWIFT, card numbers and expiry, Luhn check digits, ABA routing numbers, ISIN
 
 ### Geospatial
 
-`Jube.Service.Extensions.Geospatial` — Great-circle geometry on latitude and longitude: distances, radius checks,
-implied travel speed for impossible-travel analysis, bearings and geohashes.
+`Jube.Service.Extensions.Geospatial`: Great-circle geometry on latitude and longitude: distances, radius checks, implied travel speed for impossible-travel analysis, bearings and geohashes.
 
 | Tool                    | What it does                                                                                                                                                                                                                      |
 |-------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -145,8 +123,7 @@ implied travel speed for impossible-travel analysis, bearings and geohashes.
 
 ### ListScreening
 
-`Jube.Service.Extensions.ListScreening` — Screens a name or text against a list, such as a watch list or allow list,
-with configurable fuzzy matching, and reports the best match, its score and how many entries matched.
+`Jube.Service.Extensions.ListScreening`: Screens a name or text against a list, such as a watch list or allow list, with configurable fuzzy matching, and reports the best match, its score and how many entries matched.
 
 | Tool                       | What it does                                                                                                                                                                                                                                                           |
 |----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -160,8 +137,7 @@ with configurable fuzzy matching, and reports the best match, its score and how 
 
 ### NameSimilarity
 
-`Jube.Service.Extensions.NameSimilarity` — Scores how alike two names or references are with edit-distance, phonetic and
-token algorithms, and normalises names for matching; for pairwise comparison rather than screening a list.
+`Jube.Service.Extensions.NameSimilarity`: Scores how alike two names or references are with edit-distance, phonetic and token algorithms, and normalises names for matching; for pairwise comparison rather than screening a list.
 
 | Tool                       | What it does                                                                                                                                                                                                                                                                                                  |
 |----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -177,9 +153,7 @@ token algorithms, and normalises names for matching; for pairwise comparison rat
 
 ### OnlineIdentifiers
 
-`Jube.Service.Extensions.OnlineIdentifiers` — Validates and dissects digital identifiers: email addresses and
-plus-aliases, phone numbers, domain names, URLs, IPv4 and IPv6 addresses and CIDR network ranges. Pure parsing; nothing
-is looked up on the network.
+`Jube.Service.Extensions.OnlineIdentifiers`: Validates and dissects digital identifiers: email addresses and plus-aliases, phone numbers, domain names, URLs, IPv4 and IPv6 addresses and CIDR network ranges. Pure parsing; nothing is looked up on the network.
 
 | Tool                                 | What it does                                                                                                                                                                                                                                                                                      |
 |--------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -195,8 +169,7 @@ is looked up on the network.
 
 ### PatternMatching
 
-`Jube.Service.Extensions.PatternMatching` — Regular-expression and wildcard matching with a hard time limit per call:
-test, find, capture, count, replace and escape.
+`Jube.Service.Extensions.PatternMatching`: Regular-expression and wildcard matching with a hard time limit per call: test, find, capture, count, replace and escape.
 
 | Tool                | What it does                                                                                                                                                                                                         |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -210,8 +183,7 @@ test, find, capture, count, replace and escape.
 
 ### PercentagesAndChanges
 
-`Jube.Service.Extensions.PercentagesAndChanges` — Percentages, ratios and growth between two figures, such as the change
-from last month or the share of a total, computed exactly.
+`Jube.Service.Extensions.PercentagesAndChanges`: Percentages, ratios and growth between two figures, such as the change from last month or the share of a total, computed exactly.
 
 | Tool                          | What it does                                                                                                                                                     |
 |-------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -228,8 +200,7 @@ from last month or the share of a total, computed exactly.
 
 ### RoundingAndPowers
 
-`Jube.Service.Extensions.RoundingAndPowers` — Exact rounding, clamping, powers, roots and logarithms of single numbers,
-so an answer never depends on mental arithmetic.
+`Jube.Service.Extensions.RoundingAndPowers`: Exact rounding, clamping, powers, roots and logarithms of single numbers, so an answer never depends on mental arithmetic.
 
 | Tool                      | What it does                                                                                                                                                                                                                                                  |
 |---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -245,8 +216,7 @@ so an answer never depends on mental arithmetic.
 
 ### StructuredData
 
-`Jube.Service.Extensions.StructuredData` — Reads values out of JSON and XML documents by path without loading them into
-the conversation, and checks that documents are well formed. DTDs and external entities are refused.
+`Jube.Service.Extensions.StructuredData`: Reads values out of JSON and XML documents by path without loading them into the conversation, and checks that documents are well formed. DTDs and external entities are refused.
 
 | Tool                    | What it does                                                                                                                                                                                                                                                                        |
 |-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -261,8 +231,7 @@ the conversation, and checks that documents are well formed. DTDs and external e
 
 ### TextCleaning
 
-`Jube.Service.Extensions.TextCleaning` — Cleans and normalises text before comparison or storage: accents, whitespace,
-control characters, Unicode forms, keeping or removing letters and digits, and URL slugs.
+`Jube.Service.Extensions.TextCleaning`: Cleans and normalises text before comparison or storage: accents, whitespace, control characters, Unicode forms, keeping or removing letters and digits, and URL slugs.
 
 | Tool                      | What it does                                                                                                                                                                                                                                                       |
 |---------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -278,8 +247,7 @@ control characters, Unicode forms, keeping or removing letters and digits, and U
 
 ### TextEditing
 
-`Jube.Service.Extensions.TextEditing` — Edits text exactly: case, reversing, repeating, truncating, taking the left or
-right characters, masking and replacing the first or last occurrence.
+`Jube.Service.Extensions.TextEditing`: Edits text exactly: case, reversing, repeating, truncating, taking the left or right characters, masking and replacing the first or last occurrence.
 
 | Tool                     | What it does                                                                                                                                                                           |
 |--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -295,8 +263,7 @@ right characters, masking and replacing the first or last occurrence.
 
 ### TextExtraction
 
-`Jube.Service.Extensions.TextExtraction` — Pulls pieces out of text: the part before, after or between markers, the n-th
-token, all tokens, and numbers written inside free text.
+`Jube.Service.Extensions.TextExtraction`: Pulls pieces out of text: the part before, after or between markers, the n-th token, all tokens, and numbers written inside free text.
 
 | Tool                  | What it does                                                                                                                                                                                                                |
 |-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -311,8 +278,7 @@ token, all tokens, and numbers written inside free text.
 
 ### TextInspection
 
-`Jube.Service.Extensions.TextInspection` — Counts and tests on text: words, lines, letters, digits, character variety,
-entropy, repeated or sequential characters, palindromes, anagrams and containment.
+`Jube.Service.Extensions.TextInspection`: Counts and tests on text: words, lines, letters, digits, character variety, entropy, repeated or sequential characters, palindromes, anagrams and containment.
 
 | Tool                  | What it does                                                                                                                                                                                                                                                                                                                            |
 |-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -327,8 +293,7 @@ entropy, repeated or sequential characters, palindromes, anagrams and containmen
 
 ### ThresholdsAndLimits
 
-`Jube.Service.Extensions.ThresholdsAndLimits` — Amount-against-limit arithmetic for structuring, smurfing and limit
-monitoring: distance and headroom to a threshold, excess and shortfall, round amounts and position in a range.
+`Jube.Service.Extensions.ThresholdsAndLimits`: Amount-against-limit arithmetic for structuring, smurfing and limit monitoring: distance and headroom to a threshold, excess and shortfall, round amounts and position in a range.
 
 | Tool                      | What it does                                                                                                                                                                                           |
 |---------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -344,8 +309,7 @@ monitoring: distance and headroom to a threshold, excess and shortfall, round am
 
 ### TimeZonesAndFormats
 
-`Jube.Service.Extensions.TimeZonesAndFormats` — Converts date-times between UTC and IANA time zones, reports offsets and
-daylight saving, and converts to and from Unix epoch and standard text formats.
+`Jube.Service.Extensions.TimeZonesAndFormats`: Converts date-times between UTC and IANA time zones, reports offsets and daylight saving, and converts to and from Unix epoch and standard text formats.
 
 | Tool                      | What it does                                                                                                                                                                                                       |
 |---------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -361,8 +325,7 @@ daylight saving, and converts to and from Unix epoch and standard text formats.
 
 ### UnitsAndNumerals
 
-`Jube.Service.Extensions.UnitsAndNumerals` — Converts measurements between units and whole numbers between Roman
-numerals and other bases, plus simple whole-number facts.
+`Jube.Service.Extensions.UnitsAndNumerals`: Converts measurements between units and whole numbers between Roman numerals and other bases, plus simple whole-number facts.
 
 | Tool                     | What it does                                                                                                                                                                                                                                                                                         |
 |--------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -376,11 +339,11 @@ numerals and other bases, plus simple whole-number facts.
 
 ## Helper groups
 
+The helper groups are set out in the same manner as the extension groups above.
+
 ### ClockAndIdentifiers
 
-`Jube.Service.Helpers.ClockAndIdentifiers` — The current date and time in UTC or any time zone, the list of time zone
-ids, and fresh random or time-ordered UUIDs; the only tools here that are not repeatable, because they read the clock or
-a random source.
+`Jube.Service.Helpers.ClockAndIdentifiers`: The current date and time in UTC or any time zone, the list of time zone ids, and fresh random or time-ordered UUIDs; the only tools here that are not repeatable, because they read the clock or a random source.
 
 | Tool                    | What it does                                                                                                                                                                                                         |
 |-------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -394,9 +357,7 @@ a random source.
 
 ### TextLists
 
-`Jube.Service.Helpers.TextLists` — Exact set operations on lists of text values: distinct values, union, intersection,
-difference, symmetric difference, joining and comparing lists, optionally ignoring case. Numeric sorting and frequency
-tables are analytics tools.
+`Jube.Service.Helpers.TextLists`: Exact set operations on lists of text values: distinct values, union, intersection, difference, symmetric difference, joining and comparing lists, optionally ignoring case. Numeric sorting and frequency tables are analytics tools.
 
 | Tool                  | What it does                                                                                                                                               |
 |-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|

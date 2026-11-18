@@ -79,7 +79,7 @@
     <value>ეს მნიშვნელობა შემოთავაზებულ არჩევანში არ შედის.</value>
   </data>
     <data name="FieldLength" xml:space="preserve">
-    <value>ეს მნიშვნელობა ველისთვის დასაშვებზე გრძელია.</value>
+    <value>ამ მნიშვნელობის სიგრძე ველისთვის დაუშვებელია.</value>
   </data>
     <data name="FieldRequired" xml:space="preserve">
     <value>მნიშვნელობა სავალდებულოა.</value>

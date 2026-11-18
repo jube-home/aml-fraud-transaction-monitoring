@@ -155,6 +155,7 @@ namespace Jube.Service.Query.CaseSuppressionCandidates
                 };
 
                 keys.AddRange(scope.EnabledKeys.Where(k => !string.Equals(k, caseKey, StringComparison.Ordinal))
+                    .Where(k => scope.Fields.Any(f => f.IsArchiveKey && string.Equals(f.Name, k, StringComparison.Ordinal)))
                     .Select(k => new CaseSuppressionKeyDto { Name = k, Enabled = true }));
 
                 op.Rows(keys.Count);

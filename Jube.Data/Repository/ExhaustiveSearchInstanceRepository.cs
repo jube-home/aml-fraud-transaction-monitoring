@@ -223,9 +223,24 @@ namespace Jube.Data.Repository
             return existing;
         }
 
-        public Task StopAsync(Guid exhaustiveSearchInstanceGuid, CancellationToken token = default)
+        public async Task StopAsync(Guid exhaustiveSearchInstanceGuid, CancellationToken token = default)
         {
-            return dbContext.ExhaustiveSearchInstance
+            var stoppedWhileAwaiting = await dbContext.ExhaustiveSearchInstance
+                .Where(d =>
+                    (d.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
+                    && d.Guid == exhaustiveSearchInstanceGuid
+                    && (d.Deleted == 0 || d.Deleted == null)
+                    && (d.StatusId == 0 || d.StatusId == null))
+                .Set(s => s.UpdatedDate, DateTime.UtcNow)
+                .Set(s => s.StatusId, (byte)19)
+                .UpdateAsync(token).ConfigureAwait(false);
+
+            if (stoppedWhileAwaiting > 0)
+            {
+                return;
+            }
+
+            await dbContext.ExhaustiveSearchInstance
                 .Where(d =>
                     (d.EntityAnalysisModel.TenantRegistryId == tenantRegistryId || !tenantRegistryId.HasValue)
                     && d.Guid == exhaustiveSearchInstanceGuid
@@ -233,7 +248,7 @@ namespace Jube.Data.Repository
                     && d.StatusId != 19)
                 .Set(s => s.UpdatedDate, DateTime.UtcNow)
                 .Set(s => s.StatusId, (byte)18)
-                .UpdateAsync(token);
+                .UpdateAsync(token).ConfigureAwait(false);
         }
 
         public async Task<bool> IsStoppingOrStoppedAsync(int id, CancellationToken token = default)

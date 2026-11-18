@@ -540,7 +540,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             var savedB = await service.InsertAsync(NewDto(dictionaryId, UniqueKey("ExistingB")));
             createdIds.Add(savedB.Id);
 
-            var dto = NewDto(dictionaryId, savedA.KvpKey);
+            var dto = NewDto(dictionaryId, savedA.KvpKey!);
             dto.Id = savedB.Id;
 
             var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.UpdateAsync(dto));
@@ -557,7 +557,7 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             var saved = await service.InsertAsync(NewDto(dictionaryId, UniqueKey("SelfUpdate")));
             createdIds.Add(saved.Id);
 
-            var dto = NewDto(dictionaryId, saved.KvpKey, 2000);
+            var dto = NewDto(dictionaryId, saved.KvpKey!, 2000);
             dto.Id = saved.Id;
 
             var updated = await service.UpdateAsync(dto);
@@ -788,7 +788,8 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             var resubmitted = await service.ResubmitAsync(saved.Id);
 
             resubmitted.Version.Should().Be(3);
-            resubmitted.Deleted.Should().Be(1,
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelDictionaryKvp>()
+                .Where(w => w.Id == resubmitted.Id).Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(1,
                 "resubmitting a rejected delete must re-open approval without un-deleting it");
         }
 
@@ -873,7 +874,8 @@ namespace Jube.Test.Service.EntityAnalysisModelDictionaryKvp
             var retracted = await service.RetractAsync(saved.Id);
 
             retracted.Version.Should().Be(3);
-            retracted.Deleted.GetValueOrDefault().Should().Be(0,
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelDictionaryKvp>()
+                .Where(w => w.Id == retracted.Id).Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(0,
                 "retracting a rejected delete undeletes the record");
         }
 

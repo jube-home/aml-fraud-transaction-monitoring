@@ -33,6 +33,7 @@ import type {
   GraphNodeTag,
   GraphPaths,
   GraphPattern,
+  GraphRegistryEdge,
   GraphWindow,
 } from './types'
 
@@ -86,6 +87,42 @@ const edgeKindKeys: Record<number, GraphEdgeKindKey> = {
 
 export function edgeKindKey(kindId: number): GraphEdgeKindKey | null {
   return edgeKindKeys[kindId] ?? null
+}
+
+const ordinal = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0)
+
+export function legendKeys(
+  keys: readonly string[],
+  seedKey: string | null | undefined,
+): { key: string; seed: boolean }[] {
+  const sorted = [...new Set(keys.filter((key) => key !== ''))].sort(ordinal)
+  const seed = seedKey ?? sorted[0]
+  const first = sorted.filter((key) => key === seed)
+  const others = sorted.filter((key) => key !== seed)
+
+  return [
+    ...first.map((key) => ({key, seed: true})),
+    ...others.map((key) => ({key, seed: false})),
+  ]
+}
+
+export function seedKeyChoices(
+  edges: readonly Pick<
+    GraphRegistryEdge,
+    'kindId' | 'fromKey' | 'toKey' | 'fromNodeKey' | 'toNodeKey'
+  >[],
+): string[] {
+  const seen: string[] = []
+
+  for (const edge of edges) {
+    const from = edge.kindId === caseEdgeKindId ? null : edge.fromNodeKey || edge.fromKey
+
+    for (const key of [from, edge.toNodeKey || edge.toKey]) {
+      if (key && !seen.includes(key)) seen.push(key)
+    }
+  }
+
+  return seen.sort((a, b) => a.localeCompare(b))
 }
 
 export function isCaseNode(node: Pick<GraphNode, 'key'> | null | undefined): boolean {

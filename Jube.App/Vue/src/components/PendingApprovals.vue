@@ -21,23 +21,17 @@ import {describeApiError} from '../api/problems'
 import {directionFor} from '../i18n'
 import {useGridExpandLabels} from '../composables/useGridExpandLabels'
 import {integrityApi} from '../integrity/api'
-import {
-  approvalHistoryRoute,
-  approvalKindOf,
-  pendingGroups,
-  type PendingEntity,
-} from '../integrity/model'
-import ApprovalPanel from './ApprovalPanel.vue'
+import {pendingGroups, type PendingEntity} from '../integrity/model'
+import type {StoryStep} from '../story/path'
 import {approvalKindLabel} from '../integrity/labels'
 import DataGrid from './DataGrid.vue'
 import type {GridColumn} from './dataGridTypes'
-import PanelCard from './PanelCard.vue'
 import PendingEntitiesDetail from './PendingEntitiesDetail.vue'
 import ProblemAlert from './ProblemAlert.vue'
 
 const props = defineProps<{ modelId: number }>()
 
-const emit = defineEmits<{ changed: [] }>()
+const emit = defineEmits<{ changed: []; open: [steps: StoryStep[]] }>()
 
 const {t, te, locale} = useI18n()
 const expandLabels = useGridExpandLabels()
@@ -46,7 +40,6 @@ const queryClient = useQueryClient()
 const direction = computed(() => directionFor(locale.value))
 const problems = ref<string[]>([])
 const note = ref('')
-const reviewing = ref<PendingEntity>()
 
 const pending = useQuery({
   queryKey: computed(() => queryKeys.integrityPending(props.modelId)),
@@ -64,10 +57,6 @@ const rows = computed(() =>
 )
 const forbidden = computed(
   () => pending.error.value instanceof ApiError && pending.error.value.kind === 'forbidden',
-)
-
-const reviewKind = computed(() =>
-  reviewing.value ? approvalKindOf(reviewing.value.kind) : undefined,
 )
 
 async function refresh(): Promise<void> {
@@ -110,7 +99,6 @@ const approveValues = useMutation({
   onSuccess: async (result) => {
     problems.value = result.refusals
     note.value = t('integrity.pending.approvedValues', {count: result.approved})
-    reviewing.value = undefined
     await refresh()
   },
   onError: (error) => failure(error, 'values'),
@@ -120,12 +108,6 @@ function onEntityAction(action: string, entity: PendingEntity): void {
   if (action === 'approve') decide.mutate({action: 'Approve', entity})
   else if (action === 'reject') decide.mutate({action: 'Reject', entity})
   else if (action === 'values') approveValues.mutate(entity)
-  else if (action === 'review') reviewing.value = entity
-}
-
-function reviewed(): void {
-  reviewing.value = undefined
-  void refresh()
 }
 
 const columns = computed<GridColumn[]>(() => [
@@ -187,35 +169,9 @@ const columns = computed<GridColumn[]>(() => [
           :entities="groups.find((group) => group.kind === kind)?.entities ?? []"
           :busy="decide.isPending.value || approveValues.isPending.value"
           @action="onEntityAction"
+          @open="(steps) => emit('open', steps)"
         />
       </template>
     </DataGrid>
-
-    <PanelCard
-      v-if="reviewing && reviewKind?.endpoint && reviewKind.historyRoute"
-      key="review"
-      :title="t('integrity.pending.reviewTitle', { name: reviewing.name })"
-      compact
-    >
-      <template #actions>
-        <button
-          type="button"
-          class="btn btn-sm btn-ghost ms-auto"
-          data-testid="pending-close-review"
-          @click="reviewing = undefined"
-        >
-          {{ t('integrity.pending.closeReview') }}
-        </button>
-      </template>
-      <ApprovalPanel
-        :endpoint="reviewKind.endpoint"
-        :approval="{
-          kind: reviewKind.kind,
-          historyRoute: approvalHistoryRoute(reviewKind.historyRoute),
-        }"
-        :entity-id="reviewing.entityId"
-        @changed="reviewed"
-      />
-    </PanelCard>
   </div>
 </template>

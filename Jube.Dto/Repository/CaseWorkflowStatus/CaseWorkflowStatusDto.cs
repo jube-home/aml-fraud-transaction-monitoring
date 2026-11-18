@@ -178,13 +178,13 @@ namespace Jube.Dto.Repository.CaseWorkflowStatus
         public string? NotificationDestination { get; set; }
 
         [Description("Notification subject line.")]
-        [FormField(Group = "Notification", Order = 40, Placeholder = "Case [@CaseKey] needs review")]
+        [FormField(Group = "Notification", Order = 40, Placeholder = "Case for [@Payload.AccountId@] needs review")]
         [VisibleWhen(nameof(EnableNotification), true)]
         [Key(19)]
         public string? NotificationSubject { get; set; }
 
         [Description("Notification body. Supports token substitution from the Case whose Status changed.")]
-        [FormField(Group = "Notification", Order = 50, Widget = "textarea", Placeholder = "Please review the case for [@AccountId].")]
+        [FormField(Group = "Notification", Order = 50, Widget = "textarea", Placeholder = "Please review the case for [@Payload.AccountId@].")]
         [VisibleWhen(nameof(EnableNotification), true)]
         [Key(20)]
         public string? NotificationBody { get; set; }

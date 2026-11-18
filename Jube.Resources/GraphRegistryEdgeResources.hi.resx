@@ -73,6 +73,9 @@
     <data name="KeyMaxLength" xml:space="preserve">
     <value>कुंजी अधिकतम {0} अक्षरों की होनी चाहिए।</value>
   </data>
+    <data name="IconInvalid" xml:space="preserve">
+    <value>यह आइकन ग्राफ़ के लिए उपलब्ध Lucide आइकनों में से नहीं है।</value>
+  </data>
     <data name="AmountKeyRequired" xml:space="preserve">
     <value>धन प्रवाह के लिए राशि कुंजी आवश्यक है।</value>
   </data>

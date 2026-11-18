@@ -64,7 +64,7 @@
     <value>Avståndet måste ligga mellan 0 och 5.</value>
   </data>
     <data name="CacheValueRange" xml:space="preserve">
-    <value>Värdet för cacheintervallet får inte vara negativt.</value>
+    <value>Värdet för cacheintervallet måste vara noll eller mer och inom gränsen för det valda intervallet.</value>
   </data>
     <data name="CacheIntervalInvalid" xml:space="preserve">
     <value>Cacheintervallets typ måste vara sekunder, minuter, timmar eller dagar.</value>

@@ -599,6 +599,9 @@ namespace Jube.Test.Service.Query.VisualisationRegistryDatasourceCommandExecutio
             var log = await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceExecutionLog>()
                 .SingleAsync(l => l.VisualisationRegistryDatasourceId == dsId);
             log.Error.Should().NotBeNullOrWhiteSpace();
+            log.Error.Should().Be("There is no table \"jube_table_that_does_not_exist_xyz\" that you may query.");
+            log.Error.Should().NotContain("   at ");
+            log.Error.Should().NotContain("Exception");
             log.Records.Should().Be(0);
 
             (await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasourceExecutionLogParameter>()

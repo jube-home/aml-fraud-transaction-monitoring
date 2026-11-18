@@ -130,6 +130,8 @@ namespace Jube.Data.Query.GetCaseEventByCaseKeyValueQuery
                         33 => "Legal Hold Lifted",
                         34 => "Analyst Assessment Recorded",
                         35 => "Analyst Assessment Withdrawn",
+                        36 => "Case Linked",
+                        37 => "Case Unlinked",
                         _ => "Unknown"
                     }
                 };

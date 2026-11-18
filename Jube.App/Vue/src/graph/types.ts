@@ -109,6 +109,11 @@ export interface GraphEdgeDefinition {
   kindId: number
   restricted: boolean
   visible: boolean
+  iconName: string | null
+  fromNodeKey: string | null
+  toNodeKey: string | null
+  fromNodeIcon: string | null
+  toNodeIcon: string | null
 }
 
 export interface GraphNeighbourhood {

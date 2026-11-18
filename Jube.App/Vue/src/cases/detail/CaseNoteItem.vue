@@ -15,22 +15,17 @@
 import {Flag} from 'lucide-vue-next'
 import {computed} from 'vue'
 import {useI18n} from 'vue-i18n'
-import {useMutation, useQueryClient} from '@tanstack/vue-query'
 import {useFormat} from '../../composables/useFormat'
-import {useToasts} from '../../stores/toasts'
 import CaseNoteFiles from './CaseNoteFiles.vue'
 import NoteAvatar from './NoteAvatar.vue'
 import {noteSource, sourceOf} from './noteGroups'
-import {operationsApi} from './operationsApi'
 import {plainText} from './text'
 import type {CaseNoteEntry} from './types'
 
-const props = defineProps<{ note: CaseNoteEntry; own: boolean }>()
+const props = defineProps<{ note: CaseNoteEntry }>()
 
 const {t} = useI18n()
 const {dateTime} = useFormat()
-const toasts = useToasts()
-const client = useQueryClient()
 
 const source = computed(() => sourceOf(props.note))
 
@@ -41,12 +36,6 @@ const sourceLabel = computed(() =>
       ? t('caseDetail.notes.source.system')
       : t('caseDetail.notes.source.user'),
 )
-
-const finding = useMutation({
-  mutationFn: () => operationsApi.setFinding(props.note.id, !props.note.isFinding),
-  onSuccess: () => client.invalidateQueries({queryKey: ['service', 'Case', 'notes']}),
-  onError: (error) => toasts.apiError(error),
-})
 </script>
 
 <template>
@@ -77,16 +66,5 @@ const finding = useMutation({
           }}</span>
       </span>
     </div>
-    <button
-      v-if="own"
-      type="button"
-      class="btn btn-ghost btn-xs"
-      :aria-pressed="note.isFinding === true"
-      :disabled="finding.isPending.value"
-      data-testid="case-note-finding-toggle"
-      @click="finding.mutate()"
-    >
-      {{ note.isFinding ? t('caseDetail.notes.unmarkFinding') : t('caseDetail.notes.markFinding') }}
-    </button>
   </li>
 </template>

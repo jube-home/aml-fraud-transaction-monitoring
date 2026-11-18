@@ -174,6 +174,13 @@ function write(next: GraphState): void {
 
 const result = computed(() => queries.render.data.value)
 const graph = computed(() => result.value?.graph)
+
+const shownHops = computed<GraphHops | null>(() => {
+  const served = graph.value?.hops
+
+  return address.value.hops ?? (served === 1 || served === 2 || served === 3 ? served : null)
+})
+
 const definitions = computed(() => graph.value?.definitions ?? [])
 const flowing = computed(() => address.value.view === 'flow' && address.value.flow !== null)
 const layout = computed<GraphLayoutId>(
@@ -509,7 +516,7 @@ watch(
     <template v-else>
       <GraphToolbar
         :view="address.view"
-        :hops="address.hops"
+        :hops="shownHops"
         :layout="layout"
         :edges="address.edges"
         :definitions="definitions"
@@ -624,6 +631,7 @@ watch(
             :pending="queries.flow.isPending.value"
             :failed="queries.flow.isError.value"
             :selected-depth="trancheDepth"
+            :journal="embedded"
             @tranche="trancheDepth = $event"
             @filter-journal="emit('filterJournal', $event)"
             @leave="onLeaveFlow"
@@ -654,7 +662,7 @@ watch(
             @reset="onReset"
           />
 
-          <GraphLegend :definitions="definitions" :keys="keys"/>
+          <GraphLegend :definitions="definitions" :keys="keys" :seed-key="graph?.seed?.key"/>
         </div>
 
         <GraphNodePanel
@@ -668,7 +676,7 @@ watch(
           :expanded="expanded"
           :adds="adds"
           :can-capture="caseId !== undefined"
-          :can-link="embedded && caseId !== undefined"
+          :reseeds="!embedded"
           :paths-picking="pathsPicking"
           :flowing="flowing && address.flow?.seed === address.selected"
           @expand="onExpand"

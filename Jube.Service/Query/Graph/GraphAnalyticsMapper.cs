@@ -66,9 +66,12 @@ namespace Jube.Service.Query.Graph
                 TenantRateRatio = community.TenantRateRatio,
                 Label = community.Label,
                 ComputedDate = Offset(community.ComputedDate),
-                Sentence = string.Format(CultureInfo.InvariantCulture, strings[GraphResources.SentenceCommunityRate],
-                    community.Id, community.Size, community.ConfirmedCount, community.ClosedCount,
-                    community.TenantRateRatio ?? 0)
+                Sentence = community.TenantRateRatio.HasValue
+                    ? string.Format(CultureInfo.InvariantCulture, strings[GraphResources.SentenceCommunityRate],
+                        community.Id, community.Size, community.ConfirmedCount, community.ClosedCount,
+                        community.TenantRateRatio.Value)
+                    : string.Format(CultureInfo.InvariantCulture, strings[GraphResources.SentenceCommunityNoRate],
+                        community.Id, community.Size, community.ConfirmedCount, community.ClosedCount)
             };
         }
 

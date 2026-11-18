@@ -38,7 +38,7 @@ const queryClient = useQueryClient()
 const id = useId()
 
 const direction = computed(() => directionFor(locale.value))
-const scope = ref<'tenant' | 'model'>('tenant')
+const scope = ref<'tenant' | 'model'>(props.modelId === undefined ? 'tenant' : 'model')
 const scopedId = computed(() => (scope.value === 'model' ? props.modelId : undefined))
 const picked = ref(toLocalInput(new Date()))
 const problems = ref<string[]>([])

@@ -21,7 +21,8 @@ import {queryKeys} from '../api/queryKeys'
 import {useGridExpandLabels} from '../composables/useGridExpandLabels'
 import {useFormat} from '../composables/useFormat'
 import {directionFor} from '../i18n'
-import {exhaustiveApi} from '../exhaustive/api'
+import {hasPermission, meQueryOptions} from '../auth/me'
+import {exhaustiveApi, promotedActivatePermission} from '../exhaustive/api'
 import {modelTypeLabel} from '../exhaustive/model'
 import type {PromotedModel} from '../exhaustive/types'
 import {ref} from 'vue'
@@ -47,6 +48,10 @@ const promoted = useQuery({
 })
 
 const rows = computed(() => promoted.data.value ?? [])
+const me = useQuery(meQueryOptions)
+const canActivate = computed(
+  () => props.allowed !== false && hasPermission(me.data.value, promotedActivatePermission),
+)
 
 const activate = useMutation({
   mutationFn: (input: { id: number; active: boolean }) =>
@@ -70,14 +75,14 @@ const activate = useMutation({
     queryClient.invalidateQueries({queryKey: ['exhaustive', props.instanceId, 'promoted']}),
 })
 
-function toggleFor(row: object): Element {
+function toggleFor(row: object, allowed: boolean): Element {
   const model = row as PromotedModel
   const box = document.createElement('input')
 
   box.type = 'checkbox'
   box.className = 'toggle toggle-sm'
   box.checked = model.active
-  box.disabled = props.allowed === false
+  box.disabled = !allowed
   box.setAttribute(
     'aria-label',
     t('exhaustive.promoted.activate', {score: fixed(model.score, 4)}),
@@ -88,38 +93,47 @@ function toggleFor(row: object): Element {
   return box
 }
 
-const columns = computed<GridColumn[]>(() => [
-  {field: 'active', title: t('exhaustive.promoted.active'), width: 100, draw: toggleFor},
-  {
-    field: 'kind',
-    title: t('exhaustive.promoted.type'),
-    minWidth: 220,
-    format: (value) => modelTypeLabel(value as string | null),
-  },
-  {
-    field: 'createdDate',
-    title: t('exhaustive.promoted.created'),
-    mono: true,
-    width: 190,
-    format: (value) => (value ? dateTime(new Date(value as string)) : ''),
-  },
-  {
-    field: 'score',
-    title: t('exhaustive.promoted.score'),
-    align: 'end',
-    mono: true,
-    width: 110,
-    format: (value) => fixed(Number(value), 4),
-  },
-  {
-    field: 'topologyComplexity',
-    title: t('exhaustive.promoted.complexity'),
-    align: 'end',
-    mono: true,
-    width: 130,
-  },
-  {field: 'calibrationMethod', title: t('exhaustive.promoted.calibration'), width: 150},
-])
+const columns = computed<GridColumn[]>(() => {
+  const allowed = canActivate.value
+
+  return [
+    {
+      field: 'active',
+      title: t('exhaustive.promoted.active'),
+      width: 100,
+      draw: (row) => toggleFor(row, allowed),
+    },
+    {
+      field: 'kind',
+      title: t('exhaustive.promoted.type'),
+      minWidth: 220,
+      format: (value) => modelTypeLabel(value as string | null),
+    },
+    {
+      field: 'createdDate',
+      title: t('exhaustive.promoted.created'),
+      mono: true,
+      width: 190,
+      format: (value) => (value ? dateTime(new Date(value as string)) : ''),
+    },
+    {
+      field: 'score',
+      title: t('exhaustive.promoted.score'),
+      align: 'end',
+      mono: true,
+      width: 110,
+      format: (value) => fixed(Number(value), 4),
+    },
+    {
+      field: 'topologyComplexity',
+      title: t('exhaustive.promoted.complexity'),
+      align: 'end',
+      mono: true,
+      width: 130,
+    },
+    {field: 'calibrationMethod', title: t('exhaustive.promoted.calibration'), width: 150},
+  ]
+})
 </script>
 
 <template>

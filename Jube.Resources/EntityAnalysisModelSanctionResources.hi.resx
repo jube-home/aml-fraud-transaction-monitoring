@@ -64,7 +64,7 @@
     <value>दूरी 0 और 5 के बीच होनी चाहिए।</value>
   </data>
     <data name="CacheValueRange" xml:space="preserve">
-    <value>कैश अंतराल का मान ऋणात्मक नहीं हो सकता।</value>
+    <value>कैश अंतराल का मान शून्य या अधिक होना चाहिए और चुने गए अंतराल की सीमा के भीतर होना चाहिए।</value>
   </data>
     <data name="CacheIntervalInvalid" xml:space="preserve">
     <value>कैश अंतराल का प्रकार सेकंड, मिनट, घंटे या दिन में से एक होना चाहिए।</value>

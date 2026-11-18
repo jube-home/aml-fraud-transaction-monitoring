@@ -97,6 +97,32 @@ namespace Jube.Service.Repository.CaseLink
             }
         }
 
+        private async Task WriteEventsAsync(int caseId, int otherCaseId, int caseEventTypeId, string? reason,
+            CancellationToken token)
+        {
+            var cases = await dbContext.Case.Where(c => c.Id == caseId || c.Id == otherCaseId)
+                .Select(c => new { c.Id, c.CaseKey, c.CaseKeyValue })
+                .ToListAsync(token).ConfigureAwait(false);
+
+            var events = new CaseEventRepository(dbContext, userName);
+
+            foreach (var linked in cases)
+            {
+                var other = linked.Id == caseId ? otherCaseId : caseId;
+                var detail = reason == null ? $"Case {other}" : $"Case {other}: {reason}";
+
+                await events.InsertAsync(new Data.Poco.CaseEvent
+                {
+                    CaseId = linked.Id,
+                    CaseKey = linked.CaseKey,
+                    CaseKeyValue = linked.CaseKeyValue,
+                    CaseEventTypeId = caseEventTypeId,
+                    Before = caseEventTypeId == CaseEventRepository.CaseUnlinkedEventTypeId ? detail : null,
+                    After = caseEventTypeId == CaseEventRepository.CaseLinkedEventTypeId ? detail : null
+                }, token).ConfigureAwait(false);
+            }
+        }
+
         public async Task<List<CaseLinkDto>> ListAsync(int caseId, CancellationToken token = default)
         {
             Ensure();
@@ -159,6 +185,9 @@ namespace Jube.Service.Repository.CaseLink
                     throw new CaseExceptions.ConflictException("The cases are already linked.");
                 }
 
+                await WriteEventsAsync(model.CaseId, model.OtherCaseId, CaseEventRepository.CaseLinkedEventTypeId,
+                    reason, token).ConfigureAwait(false);
+
                 op.Entity(model.CaseId);
                 op.Created();
             }
@@ -188,6 +217,9 @@ namespace Jube.Service.Repository.CaseLink
                 {
                     throw new CaseExceptions.NotFoundException("The link was not found.");
                 }
+
+                await WriteEventsAsync(model.CaseId, model.OtherCaseId, CaseEventRepository.CaseUnlinkedEventTypeId,
+                    null, token).ConfigureAwait(false);
 
                 op.Entity(model.CaseId);
                 op.Updated();

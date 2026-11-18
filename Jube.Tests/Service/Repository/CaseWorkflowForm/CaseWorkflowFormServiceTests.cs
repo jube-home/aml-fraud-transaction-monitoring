@@ -263,6 +263,28 @@ namespace Jube.Test.Service.Repository.CaseWorkflowForm
         }
 
         [Fact]
+        public async Task InsertWithATemplateThatDoesNotCompileIsRefusedWithTheCompilerMessageAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var workflowId = await CreateWorkflowAsync(dbContext, modelId, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = ValidDto(workflowId);
+            dto.Html = "<div><script>alert(1)</script></div>";
+
+            var failure = (await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto)))
+                .Result.Errors.Should().ContainSingle(e => e.ErrorCode == "TemplateInvalid").Subject;
+
+            failure.PropertyName.Should().Be("Html");
+            failure.ErrorMessage.Should().Contain("<script> is not allowed");
+
+            dto.Html = new string('a', 65537);
+
+            (await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto)))
+                .Result.Errors.Should().Contain(e => e.PropertyName == "Html");
+        }
+
+        [Fact]
         public async Task InsertWithBlankHtmlThrowsValidationFailedAsync()
         {
             await using var dbContext = fx.GetDbContext();

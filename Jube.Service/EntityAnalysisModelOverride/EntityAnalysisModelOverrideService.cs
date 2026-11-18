@@ -507,7 +507,7 @@ namespace Jube.Service.EntityAnalysisModelOverride
         [Description("Registers a new Override against a Model in the caller's tenant. Not idempotent -- " +
                      "calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelOverrideCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<OverridePoco> InsertAsync(
+        public async Task<EntityAnalysisModelOverrideDto> InsertAsync(
             [Description("The Override to create.")]
             EntityAnalysisModelOverrideDto? model,
             CancellationToken token = default)
@@ -552,7 +552,7 @@ namespace Jube.Service.EntityAnalysisModelOverride
                     log.Info($"EntityAnalysisModelOverride.Create: created Id={saved.Id} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelOverrideMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -634,7 +634,7 @@ namespace Jube.Service.EntityAnalysisModelOverride
                      "calling this twice in succession with the same arguments turns the override on then " +
                      "off. The DTO's own Active field is ignored; only row existence matters.")]
         [ServiceOperation("EntityAnalysisModelOverrideUpdate", OperationKind.Write, Idempotent = false)]
-        public async Task<OverridePoco> UpdateAsync(
+        public async Task<EntityAnalysisModelOverrideDto> UpdateAsync(
             [Description("The Override toggle request. If Id is non-zero it selects the row directly; " +
                          "otherwise EntityAnalysisModelGuid/OverrideKey/OverrideKeyValue select it. " +
                          "Identity/tenant/audit fields are server-owned and ignored.")]
@@ -697,7 +697,7 @@ namespace Jube.Service.EntityAnalysisModelOverride
                         $"EntityAnalysisModelOverride.Update: toggled Id={saved.Id} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelOverrideMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

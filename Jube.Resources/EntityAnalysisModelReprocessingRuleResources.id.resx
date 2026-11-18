@@ -82,7 +82,7 @@
     <value>Sampel pemrosesan ulang harus antara 0 dan 100 persen.</value>
   </data>
     <data name="ReprocessingValueRange" xml:space="preserve">
-    <value>Nilai interval pemrosesan ulang tidak boleh negatif.</value>
+    <value>Nilai interval pemrosesan ulang harus nol atau lebih dan dalam batas untuk interval yang dipilih.</value>
   </data>
     <data name="ReprocessingIntervalInvalid" xml:space="preserve">
     <value>Interval pemrosesan ulang harus Menit, Jam, Hari, atau Bulan.</value>

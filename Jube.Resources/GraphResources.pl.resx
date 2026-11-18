@@ -175,4 +175,7 @@
     <data name="DetailCollapsed" xml:space="preserve">
     <value>{0} węzłów zwiniętych</value>
   </data>
+    <data name="SentenceCommunityNoRate" xml:space="preserve">
+    <value>Społeczność {0} z {1} węzłów: {2} potwierdzonych z {3} zamkniętych spraw.</value>
+  </data>
 </root>

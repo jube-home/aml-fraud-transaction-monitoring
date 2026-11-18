@@ -12,7 +12,7 @@
  -->
 
 <script setup vapor lang="ts">
-import {computed, useSlots} from 'vue'
+import {computed, ref, useSlots} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/vue-query'
 import {ArrowLeft, LockOpen} from 'lucide-vue-next'
@@ -61,10 +61,13 @@ const canUnlock = computed(
     hasPermission(me.data.value, modelUnlockPermission),
 )
 
+const reloads = ref(0)
+
 const unlock = useMutation({
   mutationFn: () => storyApi.unlock(props.record.id),
   onSuccess: async () => {
     await queryClient.invalidateQueries({queryKey: queryKeys.formRecords(modelArea, undefined)})
+    reloads.value += 1
   },
 })
 
@@ -146,6 +149,7 @@ const awaitingByKind = computed(() => {
     <section data-testid="record-properties">
       <CrudPanel
         v-if="model"
+        :key="reloads"
         :area="model.area"
         :parent-id="parentId"
         :list-route="listRoute"

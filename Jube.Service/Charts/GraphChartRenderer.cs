@@ -15,6 +15,7 @@ using System.Globalization;
 using Jube.Charting;
 using Jube.Charting.Core.Models;
 using Jube.Charting.Diagrams;
+using Jube.Charting.Diagrams.Icons;
 using Jube.Charting.Diagrams.Models;
 using Jube.Dto.Query.Graph;
 using Jube.Resources;
@@ -26,8 +27,6 @@ namespace Jube.Service.Charts
     {
         public const int MaxLabel = 28;
         private const double MaxExtentPixels = 4000;
-        private static readonly GraphNodeShape[] shapes =
-            [GraphNodeShape.Square, GraphNodeShape.Diamond, GraphNodeShape.Triangle];
 
         public static (string Svg, IReadOnlyList<GraphAnchor> Positions) Render(GraphNeighbourhoodDto graph,
             GraphRenderRequestDto request, int layoutId, IStringLocalizer? strings = null)
@@ -41,6 +40,9 @@ namespace Jube.Service.Charts
                 .ToList();
             var seedKey = graph.Seed?.Key ?? keys.FirstOrDefault() ?? string.Empty;
             builder.GroupOrder(keys.OrderBy(k => k == seedKey ? 0 : 1).ThenBy(k => k, StringComparer.Ordinal).ToArray());
+            var nodeIcons = NodeIcons(graph.Definitions);
+            var edgeIcons = graph.Definitions.Where(d => GraphIcons.Exists(d.IconName))
+                .GroupBy(d => d.Guid).ToDictionary(g => g.Key, g => g.First().IconName);
             var nodeIds = graph.Nodes.Select(n => n.Id.ToString(CultureInfo.InvariantCulture)).ToHashSet();
 
             foreach (var node in graph.Nodes.OrderBy(n => n.Depth).ThenBy(n => n.Id))
@@ -63,8 +65,9 @@ namespace Jube.Service.Charts
                     badges.Add(new GraphBadge(GraphBadgeKind.Hub, node.Degree.ToString(CultureInfo.InvariantCulture)));
                 }
 
-                builder.Node(id, Label(node), node.Hub ? GraphNodeShape.Hexagon : ShapeOf(node.Key, seedKey, keys),
-                    SizeOf(node, request.MeasureId), node.Key, badges.Count == 0 ? null : badges, Detail(node, strings));
+                builder.Node(id, Label(node), node.Hub ? GraphNodeShape.Hexagon : GraphNodeShape.Circle,
+                    SizeOf(node, request.MeasureId), node.Key, badges.Count == 0 ? null : badges, Detail(node, strings),
+                    IconOf(node.Key, nodeIcons));
                 builder.Depth(id, node.Depth);
                 builder.Lane(id, node.Key ?? string.Empty);
                 builder.Time(id, node.FirstSeen);
@@ -80,7 +83,8 @@ namespace Jube.Service.Charts
                 var id = "c:" + combo.Id;
                 builder.Node(id, combo.Count.ToString(CultureInfo.InvariantCulture) + " " + combo.Key, GraphNodeShape.Stack,
                     null, combo.Key, [new GraphBadge(GraphBadgeKind.Cluster, combo.Count.ToString(CultureInfo.InvariantCulture))],
-                    Text(strings, GraphResources.DetailCollapsed, "{0} nodes collapsed", combo.Count));
+                    Text(strings, GraphResources.DetailCollapsed, "{0} nodes collapsed", combo.Count),
+                    IconOf(combo.Key, nodeIcons));
                 builder.Edge(combo.ViaNodeId.ToString(CultureInfo.InvariantCulture), id, dashed: true);
             }
 
@@ -103,7 +107,8 @@ namespace Jube.Service.Charts
                     First = edge.WindowFirst ?? edge.FirstSeen,
                     Last = edge.WindowLast ?? edge.LastSeen,
                     Directed = edge.KindId != 1,
-                    Count = edge.WindowCount > 0 ? edge.WindowCount : edge.Count
+                    Count = edge.WindowCount > 0 ? edge.WindowCount : edge.Count,
+                    Icon = edgeIcons.GetValueOrDefault(edge.DefinitionGuid)
                 });
             }
 
@@ -163,17 +168,29 @@ namespace Jube.Service.Charts
             };
         }
 
-        private static GraphNodeShape ShapeOf(string? key, string seedKey, IReadOnlyList<string> keys)
+        private static Dictionary<string, string> NodeIcons(IEnumerable<GraphEdgeDefinitionDto> definitions)
         {
-            if (string.Equals(key, seedKey, StringComparison.Ordinal))
+            var icons = new Dictionary<string, string>(StringComparer.Ordinal);
+
+            foreach (var definition in definitions)
             {
-                return GraphNodeShape.Circle;
+                if (!string.IsNullOrEmpty(definition.FromNodeKey) && GraphIcons.Exists(definition.FromNodeIcon))
+                {
+                    icons.TryAdd(definition.FromNodeKey, definition.FromNodeIcon!);
+                }
+
+                if (!string.IsNullOrEmpty(definition.ToNodeKey) && GraphIcons.Exists(definition.ToNodeIcon))
+                {
+                    icons.TryAdd(definition.ToNodeKey, definition.ToNodeIcon!);
+                }
             }
 
-            var others = keys.Where(k => k != seedKey).ToList();
-            var index = others.IndexOf(key ?? string.Empty);
+            return icons;
+        }
 
-            return shapes[Math.Max(0, index) % shapes.Length];
+        private static string IconOf(string? key, Dictionary<string, string> configured)
+        {
+            return key is not null && configured.TryGetValue(key, out var icon) ? icon : GraphIcons.ForNodeKey(key);
         }
 
         private static string Label(GraphNodeDto node)

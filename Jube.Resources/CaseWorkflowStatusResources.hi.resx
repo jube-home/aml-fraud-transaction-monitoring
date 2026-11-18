@@ -102,4 +102,7 @@
     <data name="EscalationTargetNotStronger" xml:space="preserve">
     <value>एस्केलेशन लक्ष्य की प्राथमिकता इस स्टेटस से अधिक मज़बूत होनी चाहिए, यानी कम प्राथमिकता संख्या।</value>
   </data>
+    <data name="MaxDwellMinutesOutOfRange" xml:space="preserve">
+    <value>स्टेटस में अधिकतम ठहराव 1 और 525600 मिनट के बीच होना चाहिए, या लक्ष्य न होने पर खाली छोड़ें।</value>
+  </data>
 </root>

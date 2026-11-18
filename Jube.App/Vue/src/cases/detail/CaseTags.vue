@@ -17,7 +17,7 @@ import {useI18n} from 'vue-i18n'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/vue-query'
 import {Plus, Tag, X} from 'lucide-vue-next'
 import {ApiError} from '../../api/useApi'
-import FieldHelp from '../../components/FieldHelp.vue'
+import DecideCard from './DecideCard.vue'
 import {useToasts} from '../../stores/toasts'
 import {caseDetailApi} from './api'
 import {remainingChoices, sameTags, tagNames, withTag, withoutTag} from './caseTags'
@@ -87,12 +87,14 @@ function remove(name: string): void {
 </script>
 
 <template>
-  <fieldset class="fieldset" data-testid="case-tags">
-    <legend class="fieldset-legend">
-      <Tag class="size-3.5" aria-hidden="true"/>
-      {{ t('caseDetail.tags.title') }}
-      <FieldHelp :label="t('caseDetail.tags.title')" :text="t('caseDetail.tags.hint')"/>
-    </legend>
+  <DecideCard
+    :title="t('caseDetail.tags.title')"
+    :help="t('caseDetail.tags.hint')"
+    testid="case-tags"
+  >
+    <template #icon>
+      <Tag class="size-5"/>
+    </template>
 
     <div
       v-if="tags.isPending.value"
@@ -183,5 +185,5 @@ function remove(name: string): void {
         {{ t('caseDetail.tags.save') }}
       </button>
     </template>
-  </fieldset>
+  </DecideCard>
 </template>

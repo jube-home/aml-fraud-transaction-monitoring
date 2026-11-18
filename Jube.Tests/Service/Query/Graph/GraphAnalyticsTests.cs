@@ -189,6 +189,9 @@ namespace Jube.Test.Service.Query.Graph
             (await analytics.GetHubsAsync()).Should().Contain(h => h.Id == a1.Id);
             (await analytics.OverrideHubAsync(new GraphHubOverrideRequestDto { NodeId = a1.Id, OverrideId = 0 })).Hub.Should().BeTrue();
             (await analytics.OverrideHubAsync(new GraphHubOverrideRequestDto { NodeId = a1.Id, OverrideId = 1 })).Hub.Should().BeFalse();
+            (await analytics.GetHubsAsync()).Should().Contain(h => h.Id == a1.Id && !h.Hub && h.HubOverrideId == 1);
+            (await analytics.OverrideHubAsync(new GraphHubOverrideRequestDto { NodeId = a1.Id, OverrideId = 0 })).Hub.Should().BeFalse();
+            (await analytics.GetHubsAsync()).Should().NotContain(h => h.Id == a1.Id);
 
             var other = await GraphAnalyticsService.CreateAsync(dbContext, fx.Seed.UserWithoutPermission, TestLog.NoOp,
                 localizers, new NullServiceChangeBus(), TestLog.NoOp);

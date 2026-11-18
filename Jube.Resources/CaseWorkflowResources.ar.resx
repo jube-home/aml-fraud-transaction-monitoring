@@ -111,4 +111,7 @@
     <data name="GraphRegistryNotFound" xml:space="preserve">
     <value>لم يتم العثور على سجل الرسم البياني.</value>
   </data>
+    <data name="ServiceLevelTargetOutOfRange" xml:space="preserve">
+    <value>يجب أن يكون هدف مستوى الخدمة بين 1 و525600 دقيقة، أو يُترك فارغًا إن لم يكن هناك هدف.</value>
+  </data>
 </root>

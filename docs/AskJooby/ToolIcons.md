@@ -24,7 +24,7 @@ Icons come from Lucide (version 1.52.0, ISC licence), drawn as inline SVG. Unkno
 The name-to-icon map is filled when each tool family is discovered, so every tool resolves before its first call. Each
 icon is an `AgentToolIcon` enum value, the single hardcoded list of icons with fixed numeric ids. The id travels on the
 streamed `Step` item as `IconId`, is stored as `AskJoobyMessage.IconId` so replayed steps keep their icon, and the
-browser draws it from `Jube.App/wwwroot/js/AskJooby/AskJoobyToolIcons.js`, which is keyed by the same ids. Never
+browser draws it from `Jube.App/Vue/src/askjooby/toolIcons.ts`, which is keyed by the same ids. Never
 renumber the enum: the stored ids depend on it. New icons are appended with the next free id.
 
 Replayed conversations show the same icons, because the id is stored with each step. A step with no stored icon id keeps

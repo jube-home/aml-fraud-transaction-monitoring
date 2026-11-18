@@ -27,7 +27,6 @@ import {parseNotification, useNotificationStore} from '../notifications/notifica
 import {visibleMenu} from '../layout/menu'
 import {useJoobyContextStore} from '../stores/joobyContext'
 import {noteSessionExpiry, sessionExpiresAt} from '../auth/sessionExpiry'
-import {legacyUrl} from '../layout/legacyUrl'
 import AccountMenu from './AccountMenu.vue'
 import SideMenuItem from './SideMenuItem.vue'
 import NotificationBell from './NotificationBell.vue'
@@ -69,9 +68,20 @@ watch(
 )
 
 watch(
-  () => route.name,
-  () => {
-    if (route.name !== 'askJooby') joobyContext.set({pageName: String(route.name ?? 'default')})
+  () => [route.fullPath, route.name] as const,
+  ([, name], previous) => {
+    if (route.name === 'askJooby') return
+
+    joobyContext.setRoute(
+      {
+        routeName: String(route.name ?? 'default'),
+        path: route.path,
+        title: pageLabel.value || undefined,
+        params: Object.keys(route.params).length > 0 ? {...route.params} : undefined,
+        query: Object.keys(route.query).length > 0 ? {...route.query} : undefined,
+      },
+      previous === undefined || previous[1] !== name,
+    )
   },
   {immediate: true},
 )
@@ -243,9 +253,6 @@ onBeforeUnmount(() => {
               <a href="https://www.jube.io" target="_blank" rel="noopener">{{
                   t('shell.documentation')
                 }}</a>
-            </li>
-            <li>
-              <a :href="legacyUrl('/Copyright')">{{ t('shell.copyright') }}</a>
             </li>
           </ul>
           <AccountMenu v-if="me" :me="me"/>

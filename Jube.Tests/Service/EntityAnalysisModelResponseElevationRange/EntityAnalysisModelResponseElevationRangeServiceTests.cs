@@ -218,14 +218,14 @@ namespace Jube.Test.Service.EntityAnalysisModelResponseElevationRange
             var saved = await service.InsertAsync(NewDto(modelId, UniqueName("Update")));
             createdIds.Add(saved.Id);
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             dto.Active = true;
 
             var updated = await service.UpdateAsync(dto);
 
             updated.Version.Should().Be(2);
-            updated.Active.Should().Be(1);
+            updated.Active.Should().BeTrue();
             updated.Guid.Should().Be(saved.Guid);
 
             var auditRows = await dbContext.GetTable<EntityAnalysisModelResponseElevationRangeVersion>()
@@ -260,7 +260,7 @@ namespace Jube.Test.Service.EntityAnalysisModelResponseElevationRange
             var saved = await service.InsertAsync(NewDto(modelAId, UniqueName("Anchored")));
             createdIds.Add(saved.Id);
 
-            var dto = NewDto(modelBId, saved.Name);
+            var dto = NewDto(modelBId, saved.Name!);
             dto.Id = saved.Id;
             await service.UpdateAsync(dto);
 
@@ -308,7 +308,7 @@ namespace Jube.Test.Service.EntityAnalysisModelResponseElevationRange
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetByIdAsync(seedRow.Id));
 
-            var updateDto = NewDto(modelId, seedRow.Name);
+            var updateDto = NewDto(modelId, seedRow.Name!);
             updateDto.Id = seedRow.Id;
             await Assert.ThrowsAsync<ForbiddenException>(() => service.UpdateAsync(updateDto));
             await Assert.ThrowsAsync<ForbiddenException>(() => service.DeleteAsync(seedRow.Id));
@@ -371,7 +371,7 @@ namespace Jube.Test.Service.EntityAnalysisModelResponseElevationRange
             var byId = await otherTenant.GetByIdAsync(saved.Id);
             byId.Should().BeNull();
 
-            var updateDto = NewDto(modelId, saved.Name);
+            var updateDto = NewDto(modelId, saved.Name!);
             updateDto.Id = saved.Id;
             await Assert.ThrowsAsync<DtoValidationException>(() => otherTenant.UpdateAsync(updateDto));
             await Assert.ThrowsAsync<NotFoundException>(() => otherTenant.DeleteAsync(saved.Id));
@@ -504,10 +504,10 @@ namespace Jube.Test.Service.EntityAnalysisModelResponseElevationRange
             var saved = await service.InsertAsync(NewDto(modelId, UniqueName("TamperUpdate")));
             createdIds.Add(saved.Id);
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
-            dto.Version = saved.Version.GetValueOrDefault();
+            dto.Version = saved.Version;
             dto.UpdatedUser = "also-tampered";
 
             var updated = await service.UpdateAsync(dto);
@@ -529,7 +529,7 @@ namespace Jube.Test.Service.EntityAnalysisModelResponseElevationRange
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelResponseElevationRange>()
                 .Where(w => w.Id == saved.Id).Set(s => s.Locked, (byte)1).UpdateAsync();
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateAsync(dto));
         }
@@ -545,7 +545,7 @@ namespace Jube.Test.Service.EntityAnalysisModelResponseElevationRange
 
             await service.DeleteAsync(saved.Id);
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             await service.UpdateAsync(dto);
 
@@ -636,7 +636,8 @@ namespace Jube.Test.Service.EntityAnalysisModelResponseElevationRange
             var resubmitted = await service.ResubmitAsync(saved.Id);
 
             resubmitted.Version.Should().Be(3);
-            resubmitted.Deleted.Should().Be(1,
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelResponseElevationRange>()
+                .Where(w => w.Id == resubmitted.Id).Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(1,
                 "resubmitting a rejected delete must re-open approval without un-deleting it");
         }
 
@@ -684,7 +685,7 @@ namespace Jube.Test.Service.EntityAnalysisModelResponseElevationRange
                 EntityApprovalKind.EntityAnalysisModelResponseElevationRange,
                 saved.Id, 1, tenantRegistryId);
 
-            var updateDto = NewDto(modelId, saved.Name);
+            var updateDto = NewDto(modelId, saved.Name!);
             updateDto.Id = saved.Id;
             updateDto.Active = true;
             await service.UpdateAsync(updateDto);
@@ -696,7 +697,7 @@ namespace Jube.Test.Service.EntityAnalysisModelResponseElevationRange
             var retracted = await service.RetractAsync(saved.Id);
 
             retracted.Version.Should().Be(3);
-            retracted.Active.Should().Be(0, "retracting abandons the rejected edit and restores the last " +
+            retracted.Active.Should().BeFalse("retracting abandons the rejected edit and restores the last " +
                                             "approved content");
             retracted.Name.Should().Be(saved.Name);
 
@@ -729,7 +730,8 @@ namespace Jube.Test.Service.EntityAnalysisModelResponseElevationRange
             var retracted = await service.RetractAsync(saved.Id);
 
             retracted.Version.Should().Be(3);
-            retracted.Deleted.GetValueOrDefault().Should().Be(0,
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelResponseElevationRange>()
+                .Where(w => w.Id == retracted.Id).Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(0,
                 "retracting a rejected delete undeletes the record");
         }
 
@@ -1006,7 +1008,7 @@ namespace Jube.Test.Service.EntityAnalysisModelResponseElevationRange
             createdIds.Add(saved.Id);
 
             dto.Id = saved.Id;
-            dto.Version = saved.Version.GetValueOrDefault();
+            dto.Version = saved.Version;
             dto.Maximum += 2;
 
             var updated = await service.UpdateAsync(dto);
@@ -1081,15 +1083,15 @@ namespace Jube.Test.Service.EntityAnalysisModelResponseElevationRange
             decline.Decline = true;
             var savedDecline = await service.InsertAsync(decline);
             createdIds.Add(savedDecline.Id);
-            savedDecline.Decline.Should().Be(1);
-            savedDecline.Hold.Should().Be(0);
+            savedDecline.Decline.Should().BeTrue();
+            savedDecline.Hold.Should().BeFalse();
 
             var hold = NewDto(modelId, UniqueName("Hold"));
             hold.Hold = true;
             var savedHold = await service.InsertAsync(hold);
             createdIds.Add(savedHold.Id);
-            savedHold.Hold.Should().Be(1);
-            savedHold.Decline.Should().Be(0);
+            savedHold.Hold.Should().BeTrue();
+            savedHold.Decline.Should().BeFalse();
         }
 
         [Fact]
@@ -1118,8 +1120,8 @@ namespace Jube.Test.Service.EntityAnalysisModelResponseElevationRange
             dto.HttpEndpoint = "https://example.com/hook";
             var saved = await service.InsertAsync(dto);
             createdIds.Add(saved.Id);
-            saved.EnableHttpEndpoint.Should().Be(1);
-            saved.EnableNotification.Should().Be(1);
+            saved.EnableHttpEndpoint.Should().BeTrue();
+            saved.EnableNotification.Should().BeTrue();
         }
 
         [Fact]

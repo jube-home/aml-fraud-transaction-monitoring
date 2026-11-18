@@ -57,8 +57,8 @@ namespace Jube.Engine.Exhaustive.Selection
                     " has finished the sensitivity analysis.  Will store in the database.");
             }
 
-            await StoreSensitivityForVariableSelectionAsync(sensitivityAnalysis, trialVariables, token)
-                .ConfigureAwait(false);
+            await StoreSensitivityForVariableSelectionAsync(exhaustiveSearchInstanceTrialInstanceId,
+                sensitivityAnalysis, trialVariables, token).ConfigureAwait(false);
 
             if (log.IsInfoEnabled)
             {
@@ -70,8 +70,9 @@ namespace Jube.Engine.Exhaustive.Selection
             return sensitivityAnalysis;
         }
 
-        private async Task StoreSensitivityForVariableSelectionAsync(Dictionary<int, double> sensitivityAnalysis,
-            Dictionary<int, TrialVariable> trialVariables, CancellationToken token = default)
+        private async Task StoreSensitivityForVariableSelectionAsync(int exhaustiveSearchInstanceTrialInstanceId,
+            Dictionary<int, double> sensitivityAnalysis, Dictionary<int, TrialVariable> trialVariables,
+            CancellationToken token = default)
         {
             foreach (var (key, value) in sensitivityAnalysis)
             {
@@ -79,7 +80,8 @@ namespace Jube.Engine.Exhaustive.Selection
                     new ExhaustiveSearchInstanceTrialInstanceSensitivity
                     {
                         Sensitivity = value,
-                        ExhaustiveSearchInstanceVariableId = trialVariables[key].ExhaustiveSearchInstanceVariableId
+                        ExhaustiveSearchInstanceVariableId = trialVariables[key].ExhaustiveSearchInstanceVariableId,
+                        ExhaustiveSearchInstanceTrialInstanceId = exhaustiveSearchInstanceTrialInstanceId
                     };
 
                 await recorder.InsertTrialSensitivityAsync(model, token).ConfigureAwait(false);

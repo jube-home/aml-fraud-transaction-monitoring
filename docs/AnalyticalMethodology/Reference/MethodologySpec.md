@@ -339,8 +339,10 @@ case 1 and never trained.) For each: fresh network with a single neuron output l
 `ActivationNetwork(fn, nInputs, annotations, 1)`), Nguyen-Widrow randomised once, then
 `for k = 1; k < ExhaustiveActivationFunctionExplorationEpochs (3)` LM epochs (so 2 epochs at default, Supervised.cs:1475)
 each followed by scoring on the cross-validation set at threshold 0.5 (Supervised.cs:1497-1506); the best-scoring
-(network, function) over all functions and epochs is kept (Supervised.cs:1514-1518). Note Threshold and Bernoulli are not
-differentiable or are stochastic, and Linear/Identity/ReLU are unbounded, which matters for 7.
+(network, function) over all functions and epochs is kept (Supervised.cs:1514-1518). Note Threshold is not
+differentiable and gives hard 0 or 1 outputs, and Linear/Identity/ReLU are unbounded, which matters for 7. Bernoulli is
+computed as the logistic curve (its random draw is used only by stochastic networks), so its output is continuous and
+is calibrated on the logit of the score exactly as Sigmoid is.
 
 ### 6.3 Topology evolution
 

@@ -102,4 +102,7 @@
     <data name="EscalationTargetNotStronger" xml:space="preserve">
     <value>ایسکلیشن ہدف کی ترجیح اس اسٹیٹس سے زیادہ مضبوط ہونی چاہیے، یعنی کم ترجیحی نمبر۔</value>
   </data>
+    <data name="MaxDwellMinutesOutOfRange" xml:space="preserve">
+    <value>اسٹیٹس میں زیادہ سے زیادہ قیام 1 اور 525600 منٹ کے درمیان ہونا چاہیے، یا ہدف نہ ہونے پر خالی چھوڑ دیں۔</value>
+  </data>
 </root>

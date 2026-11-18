@@ -175,4 +175,7 @@
     <data name="DetailCollapsed" xml:space="preserve">
     <value>{0} simpul diciutkan</value>
   </data>
+    <data name="SentenceCommunityNoRate" xml:space="preserve">
+    <value>Komunitas {0} dari {1} simpul: {2} terkonfirmasi dari {3} kasus tertutup.</value>
+  </data>
 </root>

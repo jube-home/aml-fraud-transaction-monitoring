@@ -472,7 +472,7 @@ namespace Jube.Test.Service.Repository.Case
                 Payload = "{}",
             });
 
-            updated.Locked.Should().Be(1);
+            updated.Locked.Should().BeTrue();
             updated.LockedDate.Should().NotBeNull();
 
             var events = await dbContext.CaseEvent.Where(w => w.CaseId == created.Id).ToListAsync();
@@ -985,11 +985,11 @@ namespace Jube.Test.Service.Repository.Case
                 ClosedStatusId = created.ClosedStatusId,
                 Locked = false,
                 LockedUser = locked.LockedUser,
-                Rating = locked.Rating.GetValueOrDefault(),
+                Rating = locked.Rating,
                 Payload = "{}",
             });
 
-            unlocked.Locked.Should().Be(0);
+            unlocked.Locked.Should().BeFalse();
             unlocked.LockedDate.Should().BeNull();
         }
 

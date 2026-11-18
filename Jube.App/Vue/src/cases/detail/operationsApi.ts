@@ -156,7 +156,7 @@ export interface FormSubmission {
   payload: Record<string, string>
 }
 
-export const closedStatus = {open: 0, suspended: 1, reopened: 2, closed: 3} as const
+export const closedStatus = {open: 0, suspendedOpen: 1, suspendedClosed: 2, closed: 3} as const
 
 export const operationsApi = {
   change: async (caseId: number, patch: Partial<CaseRecord>) => {

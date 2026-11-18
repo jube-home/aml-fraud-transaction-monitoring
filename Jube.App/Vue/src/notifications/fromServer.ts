@@ -52,6 +52,25 @@ function stringArgument(argumentsJson: string | null, name: string): string {
   }
 }
 
+const storedDecisionNames: Record<string, number> = {Approved: 1, Rejected: 2}
+const storedFeedbackNames: Record<string, number> = {
+  Acknowledged: 1,
+  Rejected: 2,
+  InformationRequested: 3,
+}
+
+function reportDetail(kindId: number, argumentsJson: string | null, t: Translate): string {
+  const stored = stringArgument(argumentsJson, 'detail')
+  const names = kindId === reportDecided ? storedDecisionNames : storedFeedbackNames
+  const id = numberArgument(argumentsJson, 'detailId') || (names[stored] ?? 0)
+
+  if (kindId === reportDecided && id === 1) return t('caseDetail.reports.approved')
+  if (kindId === reportDecided && id === 2) return t('caseDetail.reports.rejected')
+  if (kindId === reportFeedback && id >= 1 && id <= 3) return t(`caseDetail.reports.kinds.${id}`)
+
+  return stored
+}
+
 function dimensionOf(argumentsJson: string | null): number {
   return numberArgument(argumentsJson, 'dimension')
 }
@@ -66,15 +85,18 @@ export function fromServer(item: ServerNotification, t: Translate): AppNotificat
     item.kindId === reportDecided ||
     item.kindId === reportFeedback
   ) {
+    const reported = numberArgument(item.argumentsJson, 'caseId')
+
     return {
       id: item.guid,
       title: t(`notifications.kinds.${item.kindId}`, {
-        id: numberArgument(item.argumentsJson, 'caseId'),
-        detail: stringArgument(item.argumentsJson, 'detail'),
+        id: reported,
+        detail: reportDetail(item.kindId, item.argumentsJson, t),
       }),
       severity: 'info',
       at: item.createdDate,
       read: item.read,
+      caseId: item.caseId ?? (reported > 0 ? reported : undefined),
     }
   }
 

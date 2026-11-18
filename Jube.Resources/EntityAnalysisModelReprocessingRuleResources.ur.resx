@@ -82,7 +82,7 @@
     <value>دوبارہ پروسیسنگ کا نمونہ 0 اور 100 فیصد کے درمیان ہونا چاہیے۔</value>
   </data>
     <data name="ReprocessingValueRange" xml:space="preserve">
-    <value>دوبارہ پروسیسنگ کے وقفے کی قدر منفی نہیں ہو سکتی۔</value>
+    <value>دوبارہ پروسیسنگ کے وقفے کی قدر صفر یا اس سے زیادہ اور منتخب وقفے کی حد کے اندر ہونی چاہیے۔</value>
   </data>
     <data name="ReprocessingIntervalInvalid" xml:space="preserve">
     <value>دوبارہ پروسیسنگ کا وقفہ منٹ، گھنٹے، دن یا مہینے ہونا چاہیے۔</value>

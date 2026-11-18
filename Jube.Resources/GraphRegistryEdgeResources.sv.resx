@@ -73,6 +73,9 @@
     <data name="KeyMaxLength" xml:space="preserve">
     <value>En nyckel får vara högst {0} tecken.</value>
   </data>
+    <data name="IconInvalid" xml:space="preserve">
+    <value>Ikonen är inte en av de Lucide-ikoner som erbjuds för grafen.</value>
+  </data>
     <data name="AmountKeyRequired" xml:space="preserve">
     <value>En beloppsnyckel krävs för penningflöde.</value>
   </data>

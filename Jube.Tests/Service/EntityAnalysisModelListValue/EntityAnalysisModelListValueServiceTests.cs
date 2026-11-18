@@ -783,7 +783,8 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             var resubmitted = await service.ResubmitAsync(saved.Id);
 
             resubmitted.Version.Should().Be(3);
-            resubmitted.Deleted.Should().Be(1,
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelListValue>()
+                .Where(w => w.Id == resubmitted.Id).Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(1,
                 "resubmitting a rejected delete must re-open approval without un-deleting it");
         }
 
@@ -868,7 +869,8 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             var retracted = await service.RetractAsync(saved.Id);
 
             retracted.Version.Should().Be(3);
-            retracted.Deleted.GetValueOrDefault().Should().Be(0,
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelListValue>()
+                .Where(w => w.Id == retracted.Id).Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(0,
                 "retracting a rejected delete undeletes the record");
         }
 
@@ -898,7 +900,8 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             var retracted = await service.RetractAsync(saved.Id);
 
             retracted.Version.Should().Be(4);
-            retracted.Deleted.GetValueOrDefault().Should().Be(1,
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelListValue>()
+                .Where(w => w.Id == retracted.Id).Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(1,
                 "the last approved baseline was itself a delete, so retracting the rejected revive must restore " +
                 "that deleted state rather than refusing with 'no approved version to retract to'");
         }
@@ -1149,7 +1152,7 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             await using var dbContext = fx.GetDbContext();
             var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
             var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
-            var file = CsvFile("values.csv", "alpha\r\nbeta,\ngamma,not-a-date\n");
+            var file = CsvFile("values.csv", "alpha\r\nbeta,\ngamma, \n");
 
             var results = await service.UploadCsvAsync(listId, [file]);
 
@@ -1172,6 +1175,27 @@ namespace Jube.Test.Service.EntityAnalysisModelListValue
             upload.Errors.Should().Be(0);
             upload.Length.Should().Be(file.Length);
             upload.CreatedUser.Should().Be(fx.Seed.UserWithPermission);
+        }
+
+        [Fact]
+        public async Task UploadCsvCountsAnUnparseableOrPastExpiryDateAsAnErrorLineAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var listId = await CreateParentListAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var past = DateTime.UtcNow.AddDays(-1).ToString("O", System.Globalization.CultureInfo.InvariantCulture);
+            var future = DateTime.UtcNow.AddDays(1).ToString("O", System.Globalization.CultureInfo.InvariantCulture);
+
+            var results = await service.UploadCsvAsync(listId,
+                [CsvFile("dates.csv", $"baddate,not-a-date\nambiguous,01/02/2030\npastdate,{past}\ngood,{future}\n")]);
+
+            var result = results.Should().ContainSingle().Subject;
+            result.Records.Should().Be(1);
+            result.Errors.Should().Be(3);
+
+            var value = (await ValuesAsync(dbContext, listId)).Should().ContainSingle().Subject;
+            value.ListValue.Should().Be("good");
+            value.DeleteExpiryDate.Should().NotBeNull();
         }
 
         [Fact]

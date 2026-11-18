@@ -326,6 +326,8 @@ namespace Jube.Charting.Theme
             var r = new CssRules(k, '|');
             r.Rule(".nb", "fill:var(--jc-surface);stroke:var(--sc,var(--jc-axis));stroke-width:2");
             r.Rule(".nt", "fill:var(--sc,var(--jc-muted));fill-opacity:.2;stroke:none");
+            r.Rule(".ic","fill:none;stroke:var(--sc,var(--jc-text2));stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;pointer-events:none");
+            r.Rule(".ic *","vector-effect:non-scaling-stroke");
             r.Rule(".nb.dash", "stroke-dasharray:4 3");
             r.Rule(".nd|.eg|.pn", "transition:opacity .15s ease");
             r.Rule(".mk:hover .nb|.mk:focus-visible .nb", "stroke:var(--jc-text);stroke-width:3.5");

@@ -657,8 +657,8 @@
         <comment>b9ea12e7</comment>
     </data>
     <data name="Message.TemplateNameUnknown" xml:space="preserve">
-        <value>Modèle ligne {0}, colonne {1} : « {2} » n'est pas connu ici. Utilisez rows, columns, rowCount, truncated ou une variable de boucle.</value>
-        <comment>78917f7e</comment>
+        <value>Modèle ligne {0}, colonne {1} : « {2} » n'est pas connu ici. Les noms connus ici sont {3}.</value>
+        <comment>de987895</comment>
     </data>
     <data name="Message.TemplateFilterUnknown" xml:space="preserve">
         <value>Modèle ligne {0}, colonne {1} : le filtre « {2} » n'existe pas.</value>

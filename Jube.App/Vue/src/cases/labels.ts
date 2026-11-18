@@ -107,6 +107,8 @@ export const eventKeys: Record<number, string> = {
   33: 'cases.event.legalHoldLifted',
   34: 'cases.event.assessmentRecorded',
   35: 'cases.event.assessmentWithdrawn',
+  36: 'cases.event.caseLinked',
+  37: 'cases.event.caseUnlinked',
 }
 
 export const enterReasonKeys: Record<number, string> = {

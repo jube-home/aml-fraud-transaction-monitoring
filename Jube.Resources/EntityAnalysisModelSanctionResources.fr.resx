@@ -64,7 +64,7 @@
     <value>La distance doit être comprise entre 0 et 5.</value>
   </data>
     <data name="CacheValueRange" xml:space="preserve">
-    <value>La valeur de l'intervalle de cache ne peut pas être négative.</value>
+    <value>La valeur de l'intervalle de cache doit être supérieure ou égale à zéro et respecter la limite de l'intervalle choisi.</value>
   </data>
     <data name="CacheIntervalInvalid" xml:space="preserve">
     <value>Le type d'intervalle de cache doit être l'un des suivants : secondes, minutes, heures ou jours.</value>

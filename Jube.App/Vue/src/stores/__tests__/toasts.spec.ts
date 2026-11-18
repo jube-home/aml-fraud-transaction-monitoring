@@ -13,7 +13,8 @@
 
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
 import {createPinia, setActivePinia} from 'pinia'
-import {useToastStore} from '../toasts'
+import {ApiError} from '../../api/useApi'
+import {refusalMessage, useToastStore} from '../toasts'
 
 beforeEach(() => {
   setActivePinia(createPinia())
@@ -61,5 +62,43 @@ describe('the toast store', () => {
     store.dismiss(id)
 
     expect(store.items).toEqual([])
+  })
+})
+
+describe('the wording of a refusal', () => {
+  it('is the reason the server gave with a conflict', () => {
+    const error = new ApiError(409, ' This case is locked by another user. ')
+
+    expect(refusalMessage(error)).toBe('This case is locked by another user.')
+  })
+
+  it('is read from the message of a coded refusal such as a locked case', () => {
+    const error = new ApiError(409, {code: 'CaseLocked', message: 'The case is locked by another user.'})
+
+    expect(refusalMessage(error)).toBe('The case is locked by another user.')
+  })
+
+  it('is read from the message of a case update refused for its lock', () => {
+    const error = new ApiError(409, {code: 'CaseConflict', message: 'The case is locked by another user.'})
+
+    expect(refusalMessage(error)).toBe('The case is locked by another user.')
+  })
+
+  it('leaves a version conflict to the general wording', () => {
+    const error = new ApiError(409, {code: 'VersionConflict', message: 'Version 3 was supplied.'})
+
+    expect(refusalMessage(error)).toBeUndefined()
+  })
+
+  it('falls back to the status wording when the server gave no reason of its own', () => {
+    expect(refusalMessage(new ApiError(409, null))).toBeUndefined()
+    expect(refusalMessage(new ApiError(409, ''))).toBeUndefined()
+    expect(refusalMessage(new ApiError(409, {code: 'VersionConflict'}))).toBeUndefined()
+    expect(refusalMessage(new ApiError(409, 'x'.repeat(301)))).toBeUndefined()
+  })
+
+  it('is never taken from any other kind of failure', () => {
+    expect(refusalMessage(new ApiError(500, 'Something internal'))).toBeUndefined()
+    expect(refusalMessage(new ApiError(403, 'Refused'))).toBeUndefined()
   })
 })

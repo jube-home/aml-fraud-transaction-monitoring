@@ -102,4 +102,7 @@
     <data name="EscalationTargetNotStronger" xml:space="preserve">
     <value>The escalation target must be a stronger priority than this status, meaning a lower Priority number.</value>
   </data>
+    <data name="MaxDwellMinutesOutOfRange" xml:space="preserve">
+    <value>The max dwell minutes must be between 1 and 525600, or left empty for no target.</value>
+  </data>
 </root>

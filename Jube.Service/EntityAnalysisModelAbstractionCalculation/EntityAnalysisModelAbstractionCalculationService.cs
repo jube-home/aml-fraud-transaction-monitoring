@@ -605,7 +605,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
         [Description("Registers a new Abstraction Calculation under a Model in the caller's tenant. Not " +
                      "idempotent -- calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelAbstractionCalculationCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<AbstractionCalculationPoco> InsertAsync(
+        public async Task<EntityAnalysisModelAbstractionCalculationDto> InsertAsync(
             [Description("The Abstraction Calculation to create.")]
             EntityAnalysisModelAbstractionCalculationDto? model,
             CancellationToken token = default)
@@ -654,7 +654,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                         $"user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelAbstractionCalculationMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -849,7 +849,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
         [Description("Updates an existing Abstraction Calculation in the caller's tenant, identified by its Id. " +
                      "Idempotent -- repeating the same update has no further effect beyond incrementing Version.")]
         [ServiceOperation("EntityAnalysisModelAbstractionCalculationUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<AbstractionCalculationPoco> UpdateAsync(
+        public async Task<EntityAnalysisModelAbstractionCalculationDto> UpdateAsync(
             [Description("The Abstraction Calculation to update. Id selects the row; identity/tenant/audit " +
                          "fields are server-owned and ignored.")]
             EntityAnalysisModelAbstractionCalculationDto? model,
@@ -911,7 +911,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                         $"EntityAnalysisModelAbstractionCalculation.Update: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelAbstractionCalculationMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1063,7 +1063,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                      "the maker still wants the same change (including a delete) approved.")]
         [ServiceOperation("EntityAnalysisModelAbstractionCalculationResubmit", OperationKind.Write,
             Idempotent = false)]
-        public async Task<AbstractionCalculationPoco> ResubmitAsync(
+        public async Task<EntityAnalysisModelAbstractionCalculationDto> ResubmitAsync(
             [Description("Numeric identifier of the Abstraction Calculation to resubmit.")]
             int id,
             [Description("Optional note explaining why this is being resubmitted.")]
@@ -1105,7 +1105,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                         $"EntityAnalysisModelAbstractionCalculation.Resubmit: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelAbstractionCalculationMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1143,7 +1143,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                      "change.")]
         [ServiceOperation("EntityAnalysisModelAbstractionCalculationRetract", OperationKind.Write,
             Idempotent = false)]
-        public async Task<AbstractionCalculationPoco> RetractAsync(
+        public async Task<EntityAnalysisModelAbstractionCalculationDto> RetractAsync(
             [Description("Numeric identifier of the Abstraction Calculation to retract.")]
             int id,
             [Description("Optional note explaining why this is being retracted.")]
@@ -1185,7 +1185,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionCalculation
                         $"EntityAnalysisModelAbstractionCalculation.Retract: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelAbstractionCalculationMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

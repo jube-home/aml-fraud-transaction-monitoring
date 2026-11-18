@@ -12,7 +12,7 @@
  -->
 
 <script setup vapor lang="ts">
-import {computed, nextTick, onBeforeUnmount, ref, useTemplateRef, watch} from 'vue'
+import {computed, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch} from 'vue'
 import {sameLane, type LaneOperator} from './lanes'
 import type {Lane} from './state'
 import {useI18n} from 'vue-i18n'
@@ -25,6 +25,7 @@ import {useFormat} from '../../composables/useFormat'
 import {usePagerLabels} from '../../composables/usePagerLabels'
 import {useToasts} from '../../stores/toasts'
 import {journalApi, type JournalQuery} from './api'
+import {journalLive, journalTagsHost, journalViewsHost} from './decideHost'
 import {buildColumns, buildRows, type GridRow} from './columns'
 import {
   apply,
@@ -434,7 +435,12 @@ function columnShown(field: string, on: boolean): void {
   changeLayout(shown(defaultColumns.value, lensEntries.value, field, on))
 }
 
+onMounted(() => {
+  journalLive.value = true
+})
+
 onBeforeUnmount(() => {
+  journalLive.value = false
   if (unsaved) {
     clearTimeout(saveTimer)
     savingLayout.mutate(serialiseLayout(layout.value))
@@ -612,11 +618,13 @@ function excel(): void {
         :total="rows.data.value?.meta.total ?? 0"
         @change="change"
       >
-        <JournalSavedViews
-          :case-id="caseId"
-          :state="state"
-          @load="change({ ...state, ...$event })"
-        />
+        <Teleport v-if="journalViewsHost" key="views" :to="journalViewsHost">
+          <JournalSavedViews
+            :case-id="caseId"
+            :state="state"
+            @load="change({ ...state, ...$event })"
+          />
+        </Teleport>
       </JournalScope>
 
       <section class="flex min-w-0 flex-col gap-3" aria-labelledby="journal-transactions">
@@ -641,45 +649,49 @@ function excel(): void {
             @reset="changeLayout(undefined)"
           />
           <template #tags>
-            <JournalTagBar
-              :count="selected.size"
-              :total="everyRow.length"
-              :present="present"
-              :options="tagOptions.data.value?.tag ?? []"
-              :options-failed="tagOptions.isError.value"
-              :busy="tagging.isPending.value || restoring.isPending.value"
-              :undo-text="undo?.text ?? null"
-              @select-all="selectAll"
-              @clear="clearSelection"
-              @apply="tagging.mutate($event)"
-              @undo="undo && restoring.mutate(undo.sets)"
-              @dismiss="undo = null"
-            >
-              <JournalTagAll
-                :preview="preview.data.value ?? null"
-                :pending="preview.isPending.value && allOpen"
-                :failed="preview.isError.value"
+            <Teleport v-if="journalTagsHost" key="tags" :to="journalTagsHost">
+              <JournalTagBar
+                :count="selected.size"
+                :total="everyRow.length"
+                :present="present"
                 :options="tagOptions.data.value?.tag ?? []"
-                :busy="jobBusy || (job.data.value ? isActive(job.data.value) : false)"
-                :disabled="records.length === 0 || state.pinnedOnly"
-                :filtered="state.filter !== null"
-                @open="allOpen = true"
-                @close="allOpen = false"
-                @apply="submitting.mutate($event)"
-              />
-            </JournalTagBar>
+                :options-failed="tagOptions.isError.value"
+                :busy="tagging.isPending.value || restoring.isPending.value"
+                :undo-text="undo?.text ?? null"
+                @select-all="selectAll"
+                @clear="clearSelection"
+                @apply="tagging.mutate($event)"
+                @undo="undo && restoring.mutate(undo.sets)"
+                @dismiss="undo = null"
+              >
+                <JournalTagAll
+                  :preview="preview.data.value ?? null"
+                  :pending="preview.isPending.value && allOpen"
+                  :failed="preview.isError.value"
+                  :options="tagOptions.data.value?.tag ?? []"
+                  :busy="jobBusy || (job.data.value ? isActive(job.data.value) : false)"
+                  :disabled="records.length === 0 || state.pinnedOnly"
+                  :filtered="state.filter !== null"
+                  @open="allOpen = true"
+                  @close="allOpen = false"
+                  @apply="submitting.mutate($event)"
+                />
+              </JournalTagBar>
+            </Teleport>
           </template>
         </JournalControls>
 
-        <JournalTagJob
-          v-if="job.data.value"
-          key="job"
-          :job="job.data.value"
-          :busy="jobBusy"
-          @cancel="stopping.mutate(job.data.value.guid)"
-          @undo="reversing.mutate(job.data.value.guid)"
-          @dismiss="jobGuid = null"
-        />
+        <Teleport v-if="journalTagsHost && job.data.value" key="jobhost" :to="journalTagsHost">
+          <JournalTagJob
+            v-if="job.data.value"
+            key="job"
+            :job="job.data.value"
+            :busy="jobBusy"
+            @cancel="stopping.mutate(job.data.value.guid)"
+            @undo="reversing.mutate(job.data.value.guid)"
+            @dismiss="jobGuid = null"
+          />
+        </Teleport>
 
         <ActivationCards
           :workflow="workflow"

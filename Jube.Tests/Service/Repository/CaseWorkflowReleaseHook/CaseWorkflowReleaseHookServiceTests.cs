@@ -323,6 +323,23 @@ namespace Jube.Test.Service.Repository.CaseWorkflowReleaseHook
         }
 
         [Fact]
+        public async Task AnUnknownTokenInTheRefuseUrlIsReportedAgainstTheRefuseUrlAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var workflowId = await CreateWorkflowAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+
+            var bad = Hook(workflowId);
+            bad.RefuseUrl = "https://payments.example.com/refuse/[@Decision.Reason@]";
+
+            var errors = (await ((Func<Task>)(() => service.InsertAsync(bad))).Should()
+                .ThrowAsync<DtoValidationException>()).Which.Result.Errors;
+
+            errors.Should().Contain(e => e.PropertyName == "RefuseUrl" && e.ErrorMessage.Contains("Decision.Reason"));
+            errors.Should().NotContain(e => e.PropertyName == "ReleaseUrl");
+        }
+
+        [Fact]
         public async Task TheRefuseUrlFollowsTheSameRulesAndMayBeLeftOutAsync()
         {
             await using var dbContext = fx.GetDbContext();

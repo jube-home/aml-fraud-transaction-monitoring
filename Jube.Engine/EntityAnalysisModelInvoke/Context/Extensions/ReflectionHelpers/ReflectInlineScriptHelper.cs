@@ -117,7 +117,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
 
                             break;
 
-                        case byte b:
+                        case bool b:
                             context.EntityAnalysisModelInstanceEntryPayload.Payload.TryAdd(prop.Key, b);
 
                             if (prop.Value.ReportTable)
@@ -126,7 +126,7 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHel
                                 {
                                     ProcessingTypeId = 1,
                                     Key = prop.Key,
-                                    KeyValueBoolean = b,
+                                    KeyValueBoolean = (byte)(b ? 1 : 0),
                                     EntityAnalysisModelInstanceEntryGuid =
                                         context.EntityAnalysisModelInstanceEntryPayload
                                             .EntityAnalysisModelInstanceEntryGuid

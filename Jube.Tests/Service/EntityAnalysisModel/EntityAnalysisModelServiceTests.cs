@@ -168,7 +168,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
             var saved = await service.InsertAsync(NewDto(UniqueName("Update")));
             createdIds.Add(saved.Id);
 
-            var dto = NewDto(saved.Name);
+            var dto = NewDto(saved.Name!);
             dto.Id = saved.Id;
             dto.CacheFetchLimit = 250;
 
@@ -192,7 +192,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
             var saved = await service.InsertAsync(NewDto(UniqueName("AuditTrail")));
             createdIds.Add(saved.Id);
 
-            var dto = NewDto(saved.Name);
+            var dto = NewDto(saved.Name!);
             dto.Id = saved.Id;
             var updated = await service.UpdateAsync(dto);
 
@@ -238,7 +238,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
             await Assert.ThrowsAsync<ForbiddenException>(() => service.InsertAsync(NewDto(UniqueName("Denied"))));
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetByIdAsync(seedRow.Id));
 
-            var updateDto = NewDto(seedRow.Name);
+            var updateDto = NewDto(seedRow.Name!);
             updateDto.Id = seedRow.Id;
             await Assert.ThrowsAsync<ForbiddenException>(() => service.UpdateAsync(updateDto));
             await Assert.ThrowsAsync<ForbiddenException>(() => service.DeleteAsync(seedRow.Id));
@@ -334,7 +334,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
             var byId = await otherTenant.GetByIdAsync(saved.Id);
             byId.Should().BeNull();
 
-            var updateDto = NewDto(saved.Name);
+            var updateDto = NewDto(saved.Name!);
             updateDto.Id = saved.Id;
             await Assert.ThrowsAsync<NotFoundException>(() => otherTenant.UpdateAsync(updateDto));
             await Assert.ThrowsAsync<NotFoundException>(() => otherTenant.DeleteAsync(saved.Id));
@@ -465,7 +465,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
             var saved = await service.InsertAsync(NewDto(UniqueName("SelfName")));
             createdIds.Add(saved.Id);
 
-            var dto = NewDto(saved.Name);
+            var dto = NewDto(saved.Name!);
             dto.Id = saved.Id;
             var updated = await service.UpdateAsync(dto);
             updated.Id.Should().Be(saved.Id);
@@ -745,7 +745,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
             var saved = await service.InsertAsync(NewDto(UniqueName("TamperUpdate")));
             createdIds.Add(saved.Id);
 
-            var dto = NewDto(saved.Name);
+            var dto = NewDto(saved.Name!);
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
             dto.Guid = Guid.NewGuid();
@@ -769,7 +769,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
 
             await dbContext.EntityAnalysisModel.Where(w => w.Id == saved.Id).Set(s => s.Locked, (byte)1).UpdateAsync();
 
-            var dto = NewDto(saved.Name);
+            var dto = NewDto(saved.Name!);
             dto.Id = saved.Id;
             await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateAsync(dto));
         }
@@ -784,14 +784,14 @@ namespace Jube.Test.Service.EntityAnalysisModel
 
             await dbContext.EntityAnalysisModel.Where(w => w.Id == saved.Id).Set(s => s.Locked, (byte)1).UpdateAsync();
 
-            var dto = NewDto(saved.Name);
+            var dto = NewDto(saved.Name!);
             dto.Id = saved.Id;
             await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateAsync(dto));
             await Assert.ThrowsAsync<NotFoundException>(() => service.DeleteAsync(saved.Id));
 
             var unlocked = await service.UnlockAsync(saved.Id);
 
-            unlocked.Locked.Should().Be(0);
+            unlocked.Locked.Should().BeFalse();
             unlocked.Version.Should().Be(2);
             unlocked.UpdatedUser.Should().Be(fx.Seed.UserWithPermission);
 
@@ -852,7 +852,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
 
             await dbContext.EntityAnalysisModel.Where(w => w.Id == saved.Id).Set(s => s.ImportId, importId).UpdateAsync();
 
-            var dto = NewDto(saved.Name);
+            var dto = NewDto(saved.Name!);
             dto.Id = saved.Id;
             await service.UpdateAsync(dto);
 
@@ -869,10 +869,11 @@ namespace Jube.Test.Service.EntityAnalysisModel
 
             var tenantless = new Jube.Data.Repository.EntityAnalysisModelRepository(dbContext);
 
-            (await tenantless.GetByIdAsync(saved.Id)).Should().NotBeNull();
+            var stored = await tenantless.GetByIdAsync(saved.Id);
+            stored.Should().NotBeNull();
             (await tenantless.GetByGuidAsync(saved.Guid)).Should().NotBeNull();
 
-            await Assert.ThrowsAsync<KeyNotFoundException>(() => tenantless.UpdateAsync(saved));
+            await Assert.ThrowsAsync<KeyNotFoundException>(() => tenantless.UpdateAsync(stored!));
             await Assert.ThrowsAsync<KeyNotFoundException>(() => tenantless.DeleteAsync(saved.Id));
             await Assert.ThrowsAsync<KeyNotFoundException>(() => tenantless.UnlockAsync(saved.Id));
 
@@ -889,7 +890,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
 
             await service.DeleteAsync(saved.Id);
 
-            var dto = NewDto(saved.Name);
+            var dto = NewDto(saved.Name!);
             dto.Id = saved.Id;
             await service.UpdateAsync(dto);
 
@@ -973,7 +974,8 @@ namespace Jube.Test.Service.EntityAnalysisModel
             var resubmitted = await service.ResubmitAsync(saved.Id);
 
             resubmitted.Version.Should().Be(3);
-            resubmitted.Deleted.Should().Be(1,
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModel>()
+                .Where(w => w.Id == resubmitted.Id).Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(1,
                 "resubmitting a rejected delete must re-open approval without un-deleting it");
         }
 
@@ -1016,7 +1018,7 @@ namespace Jube.Test.Service.EntityAnalysisModel
             await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModel,
                 saved.Id, 1, tenantRegistryId);
 
-            var updateDto = NewDto(saved.Name);
+            var updateDto = NewDto(saved.Name!);
             updateDto.Id = saved.Id;
             updateDto.CacheFetchLimit = 250;
             await service.UpdateAsync(updateDto);
@@ -1057,7 +1059,8 @@ namespace Jube.Test.Service.EntityAnalysisModel
             var retracted = await service.RetractAsync(saved.Id);
 
             retracted.Version.Should().Be(3);
-            retracted.Deleted.GetValueOrDefault().Should().Be(0,
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModel>()
+                .Where(w => w.Id == retracted.Id).Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(0,
                 "retracting a rejected delete undeletes the record");
         }
 

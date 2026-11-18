@@ -32,7 +32,6 @@ namespace Jube.Dto.EntityAnalysisModelActivationRule
     [FormKeys(Id = nameof(Id), Parent = nameof(EntityAnalysisModelId), NaturalKey = nameof(Name))]
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
-    [FormGroup("Review", Order = 20)]
     [FormGroup("Rule", Order = 30)]
     [FormGroup("Override", Order = 40)]
     [FormGroup("Case Workflow", Order = 50)]

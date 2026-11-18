@@ -36,6 +36,8 @@ namespace Jube.Data.Repository
         public const int LegalHoldLiftedEventTypeId = 33;
         public const int AnalystAssessmentRecordedEventTypeId = 34;
         public const int AnalystAssessmentWithdrawnEventTypeId = 35;
+        public const int CaseLinkedEventTypeId = 36;
+        public const int CaseUnlinkedEventTypeId = 37;
 
         private readonly DbContext dbContext;
         private readonly int? tenantRegistryId;

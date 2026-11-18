@@ -324,7 +324,7 @@ namespace Jube.Service.Repository.Case
         [Description("Inserts a case row directly from a full CaseDto. Legacy, low-level entry point kept for " +
                      "HTTP-contract parity -- CreateFromCaseKeyValueAsync is the real, supported way to raise a " +
                      "case, and this action has no known caller. Not registered as an agent tool.")]
-        public async Task<RulePoco> InsertAsync(CaseDto? model, CancellationToken token = default)
+        public async Task<CaseDto> InsertAsync(CaseDto? model, CancellationToken token = default)
         {
             using var op = OperationScope.Start("Case", "Insert", userName, tenantRegistryId, auditLog, log,
                 serviceChangeBus);
@@ -406,7 +406,7 @@ namespace Jube.Service.Repository.Case
                     log.Info($"Case.Insert: created Id={saved.Id} user={userName}");
                 }
 
-                return saved;
+                return CaseMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -653,7 +653,7 @@ namespace Jube.Service.Repository.Case
                      "human-driven update would. Idempotent for an unchanged payload; a changed payload can send " +
                      "notifications/webhooks on every call.")]
         [ServiceOperation("CaseUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<RulePoco> UpdateAsync(
+        public async Task<CaseDto> UpdateAsync(
             [Description("The case's desired closed status, lock, diary, rating, workflow status and form payload.")]
             CaseDto? model, CancellationToken token = default)
         {
@@ -1106,7 +1106,7 @@ namespace Jube.Service.Repository.Case
                     log.Info($"Case.Update: updated Id={saved.Id} events={caseEvents.Count} user={userName}");
                 }
 
-                return saved;
+                return CaseMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

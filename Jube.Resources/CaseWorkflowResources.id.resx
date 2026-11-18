@@ -111,4 +111,7 @@
     <data name="GraphRegistryNotFound" xml:space="preserve">
     <value>Registri grafik tidak ditemukan.</value>
   </data>
+    <data name="ServiceLevelTargetOutOfRange" xml:space="preserve">
+    <value>Target tingkat layanan harus antara 1 dan 525600 menit, atau dikosongkan bila tidak ada target.</value>
+  </data>
 </root>

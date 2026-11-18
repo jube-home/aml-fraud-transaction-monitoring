@@ -82,7 +82,7 @@
     <value>पुनः प्रसंस्करण नमूना 0 और 100 प्रतिशत के बीच होना चाहिए।</value>
   </data>
     <data name="ReprocessingValueRange" xml:space="preserve">
-    <value>पुनः प्रसंस्करण अंतराल मान ऋणात्मक नहीं हो सकता।</value>
+    <value>पुनः प्रसंस्करण अंतराल मान शून्य या अधिक होना चाहिए और चुने गए अंतराल की सीमा के भीतर होना चाहिए।</value>
   </data>
     <data name="ReprocessingIntervalInvalid" xml:space="preserve">
     <value>पुनः प्रसंस्करण अंतराल मिनट, घंटे, दिन या महीने होना चाहिए।</value>

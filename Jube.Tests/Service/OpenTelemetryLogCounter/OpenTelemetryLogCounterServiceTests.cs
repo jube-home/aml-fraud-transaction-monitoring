@@ -142,7 +142,7 @@ namespace Jube.Test.Service.OpenTelemetryLogCounter
 
             updated.Name.Should().Be(newName);
             updated.Regex.Should().Be("timeout");
-            updated.Active.Should().Be(0);
+            updated.Active.Should().BeFalse();
             updated.Version.Should().Be(2);
             updated.UpdatedUser.Should().Be(fx.Seed.LandlordUser);
         }
@@ -292,16 +292,16 @@ namespace Jube.Test.Service.OpenTelemetryLogCounter
             createdIds.Add(a.Id);
             createdIds.Add(b.Id);
 
-            var keepDto = NewDto(a.Name, "changed");
+            var keepDto = NewDto(a.Name!, "changed");
             keepDto.Id = a.Id;
-            keepDto.Version = a.Version.GetValueOrDefault();
+            keepDto.Version = a.Version;
             var keep = await service.UpdateAsync(keepDto);
 
             keep.Version.Should().Be(2);
 
-            var renameDto = NewDto(b.Name, "changed");
+            var renameDto = NewDto(b.Name!, "changed");
             renameDto.Id = a.Id;
-            renameDto.Version = keep.Version.GetValueOrDefault();
+            renameDto.Version = keep.Version;
 
             var act = () => service.UpdateAsync(renameDto);
 
@@ -351,9 +351,9 @@ namespace Jube.Test.Service.OpenTelemetryLogCounter
             var saved = await service.InsertAsync(NewDto(UniqueName("Audit")));
             createdIds.Add(saved.Id);
 
-            var dto = NewDto(saved.Name, "changed");
+            var dto = NewDto(saved.Name!, "changed");
             dto.Id = saved.Id;
-            dto.Version = saved.Version.GetValueOrDefault();
+            dto.Version = saved.Version;
             var updated = await service.UpdateAsync(dto);
 
             await service.DeleteAsync(updated.Id);

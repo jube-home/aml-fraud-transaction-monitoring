@@ -968,6 +968,24 @@ namespace Jube.Test.Service.Repository.CaseWorkflowStatus
             ex.Result.Errors.Should().Contain(e => e.ErrorCode == expected);
         }
 
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-5)]
+        [InlineData(525601)]
+        public async Task AMaxDwellOutsideOneMinuteToOneYearIsRefusedAsync(int minutes)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var workflowId = await CreateWorkflowAsync(dbContext, modelId, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = ValidDto(workflowId);
+            dto.MaxDwellMinutes = minutes;
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
+            ex.Result.Errors.Should().Contain(e => e.ErrorCode == "MaxDwellMinutesOutOfRange");
+        }
+
         [Fact]
         public async Task EscalationNeedsBothATriggerAndATargetAndNeverAnUnusedThresholdProblemAsync()
         {

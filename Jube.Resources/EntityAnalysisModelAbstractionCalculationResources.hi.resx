@@ -55,7 +55,7 @@
     <value>यह नाम पहले से मौजूद है।</value>
   </data>
     <data name="FunctionScriptRequired" xml:space="preserve">
-    <value>जब गणना का प्रकार Coder हो तो फ़ंक्शन स्क्रिप्ट आवश्यक है।</value>
+    <value>फ़ंक्शन स्क्रिप्ट आवश्यक है।</value>
   </data>
     <data name="FunctionScriptMaxLength" xml:space="preserve">
     <value>फ़ंक्शन स्क्रिप्ट {0} वर्णों से अधिक नहीं हो सकती।</value>

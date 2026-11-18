@@ -65,7 +65,7 @@ watch(() => props.html, mount)
     ref="host"
     role="group"
     :aria-label="label"
-    class="min-w-0 overflow-auto"
+    class="@container min-w-0 overflow-auto [&_.badge]:me-1.5 @max-sm:[&_.stats]:[grid-auto-flow:row]"
     data-testid="datasource-markup"
   ></div>
 </template>

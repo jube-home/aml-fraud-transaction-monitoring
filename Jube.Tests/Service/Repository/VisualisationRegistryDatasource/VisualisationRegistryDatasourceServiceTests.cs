@@ -459,7 +459,8 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasource
                 updated.CreatedDate.Should().BeCloseTo(saved.CreatedDate.Required(), TimeSpan.FromMilliseconds(10));
                 updated.UpdatedUser.Should().Be(userName);
                 updated.UpdatedDate.Should().NotBeNull();
-                updated.ImportId.Should().Be(importId);
+                (await dbContext.GetTable<Data.Poco.VisualisationRegistryDatasource>().Where(w => w.Id == saved.Id)
+                    .Select(s => s.ImportId).FirstAsync()).Should().Be(importId);
 
                 var auditRows = await dbContext.GetTable<VisualisationRegistryDatasourceVersion>()
                     .Where(w => w.VisualisationRegistryDatasourceId == saved.Id).CountAsync();

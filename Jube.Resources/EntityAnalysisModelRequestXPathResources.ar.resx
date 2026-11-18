@@ -82,24 +82,24 @@
     <value>يجب أن تكون وحدة ⁦TTL⁩ لمفتاح البحث ⁦Seconds⁩ أو ⁦Minutes⁩ أو ⁦Hours⁩ أو ⁦Days⁩.</value>
   </data>
     <data name="SearchKeyTtlIntervalValueRange" xml:space="preserve">
-    <value>يجب أن تكون قيمة وحدة ⁦TTL⁩ لمفتاح البحث صفرًا أو أكبر.</value>
+    <value>يجب أن تكون قيمة وحدة ⁦TTL⁩ لمفتاح البحث صفرًا أو أكثر وضمن الحد المسموح للفاصل المختار.</value>
   </data>
     <data name="SearchKeyFetchLimitRange" xml:space="preserve">
-    <value>يجب أن يكون حد الجلب لمفتاح البحث صفرًا أو أكبر.</value>
+    <value>يجب أن يكون حد الجلب لمفتاح البحث بين 0 و ⁨1,000,000⁩.</value>
   </data>
     <data name="SearchKeyCacheIntervalInvalid" xml:space="preserve">
     <value>يجب أن تكون وحدة التخزين المؤقت لمفتاح البحث ⁦Seconds⁩ أو ⁦Minutes⁩ أو ⁦Hours⁩ أو ⁦Days⁩.</value>
   </data>
     <data name="SearchKeyCacheValueRange" xml:space="preserve">
-    <value>يجب أن تكون قيمة وحدة التخزين المؤقت لمفتاح البحث صفرًا أو أكبر.</value>
+    <value>يجب أن تكون قيمة وحدة التخزين المؤقت لمفتاح البحث صفرًا أو أكثر وضمن الحد المسموح للفاصل المختار.</value>
   </data>
     <data name="SearchKeyCacheFetchLimitRange" xml:space="preserve">
-    <value>يجب أن يكون حد الجلب من التخزين المؤقت لمفتاح البحث صفرًا أو أكبر.</value>
+    <value>يجب أن يكون حد الجلب من التخزين المؤقت لمفتاح البحث بين 0 و ⁨1,000,000⁩.</value>
   </data>
     <data name="SearchKeyCacheTtlIntervalInvalid" xml:space="preserve">
     <value>يجب أن تكون وحدة ⁦TTL⁩ للتخزين المؤقت لمفتاح البحث ⁦Seconds⁩ أو ⁦Minutes⁩ أو ⁦Hours⁩ أو ⁦Days⁩.</value>
   </data>
     <data name="SearchKeyCacheTtlValueRange" xml:space="preserve">
-    <value>يجب أن تكون قيمة وحدة ⁦TTL⁩ للتخزين المؤقت لمفتاح البحث صفرًا أو أكبر.</value>
+    <value>يجب أن تكون قيمة وحدة ⁦TTL⁩ للتخزين المؤقت لمفتاح البحث صفرًا أو أكثر وضمن الحد المسموح للفاصل المختار.</value>
   </data>
 </root>

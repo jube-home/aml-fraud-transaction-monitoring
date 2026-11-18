@@ -15,15 +15,22 @@
 import {computed} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {directionFor} from '../i18n'
+import {useGridExpandLabels} from '../composables/useGridExpandLabels'
 import {approvalKindOf, type PendingEntity} from '../integrity/model'
 import DataGrid from './DataGrid.vue'
 import type {GridAction, GridActionEvent, GridColumn} from './dataGridTypes'
+import PendingEntitySummary from './PendingEntitySummary.vue'
+import type {StoryStep} from '../story/path'
 
 const props = defineProps<{ entities: PendingEntity[]; busy?: boolean }>()
 
-const emit = defineEmits<{ action: [id: string, entity: PendingEntity] }>()
+const emit = defineEmits<{
+  action: [id: string, entity: PendingEntity]
+  open: [steps: StoryStep[]]
+}>()
 
 const {t, locale} = useI18n()
+const expandLabels = useGridExpandLabels()
 
 const direction = computed(() => directionFor(locale.value))
 const rows = computed(() =>
@@ -36,9 +43,6 @@ function actionsOf(row: object): GridAction[] {
     {id: 'approve', label: t('integrity.pending.approve'), tone: 'success', disabled: props.busy},
     {id: 'reject', label: t('integrity.pending.reject'), tone: 'error', disabled: props.busy},
   ]
-
-  if (approvalKindOf(entity.kind)?.endpoint)
-    actions.push({id: 'review', label: t('integrity.pending.review')})
 
   if (approvalKindOf(entity.kind)?.valueKind !== undefined && entity.valueCount > 0) {
     actions.push({
@@ -79,7 +83,7 @@ const columns = computed<GridColumn[]>(() => [
     field: 'actions',
     title: '',
     hiddenTitle: t('integrity.pending.col.actions'),
-    width: 360,
+    width: 300,
     actions: actionsOf,
   },
 ])
@@ -97,6 +101,14 @@ function onAction(event: GridActionEvent): void {
     :empty-text="t('integrity.pending.empty')"
     :label="t('integrity.pending.entities')"
     auto-height
+    :expand-labels="expandLabels"
     @action="onAction"
-  />
+  >
+    <template #summary="{ row }">
+      <PendingEntitySummary
+        :entity="row as unknown as PendingEntity"
+        @open="(steps) => emit('open', steps)"
+      />
+    </template>
+  </DataGrid>
 </template>

@@ -78,7 +78,7 @@ describe('defaultOptions', () => {
     expect(options.lists && options.dictionaries && options.visualisations && options.roles).toBe(
       true,
     )
-    expect(options.askJoobyAnalytics).toBe(true)
+    expect(options.advancedAnalytics).toBe(true)
     expect(options.password).toBe('')
   })
 })

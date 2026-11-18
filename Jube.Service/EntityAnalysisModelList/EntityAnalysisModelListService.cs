@@ -559,7 +559,7 @@ namespace Jube.Service.EntityAnalysisModelList
         [Description("Registers a new List under a Model in the caller's tenant. Not idempotent -- calling " +
                      "twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelListCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<ListPoco> InsertAsync(
+        public async Task<EntityAnalysisModelListDto> InsertAsync(
             [Description("The List to create.")] EntityAnalysisModelListDto? model,
             CancellationToken token = default)
         {
@@ -602,7 +602,7 @@ namespace Jube.Service.EntityAnalysisModelList
                         $"EntityAnalysisModelList.Create: created Id={saved.Id} name={saved.Name} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelListMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -682,7 +682,7 @@ namespace Jube.Service.EntityAnalysisModelList
         [Description("Updates an existing List in the caller's tenant, identified by its Id. Idempotent -- " +
                      "repeating the same update has no further effect beyond incrementing Version.")]
         [ServiceOperation("EntityAnalysisModelListUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<ListPoco> UpdateAsync(
+        public async Task<EntityAnalysisModelListDto> UpdateAsync(
             [Description("The List to update. Id selects the row; identity/tenant/audit fields are server-owned " +
                          "and ignored.")]
             EntityAnalysisModelListDto? model,
@@ -742,7 +742,7 @@ namespace Jube.Service.EntityAnalysisModelList
                         $"EntityAnalysisModelList.Update: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelListMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -882,7 +882,7 @@ namespace Jube.Service.EntityAnalysisModelList
                      "without requiring an edit. Use after a rejection was explained and the maker still wants " +
                      "the same change (including a delete) approved.")]
         [ServiceOperation("EntityAnalysisModelListResubmit", OperationKind.Write, Idempotent = false)]
-        public async Task<ListPoco> ResubmitAsync(
+        public async Task<EntityAnalysisModelListDto> ResubmitAsync(
             [Description("Numeric identifier of the List to resubmit.")]
             int id,
             [Description("Optional note explaining why this is being resubmitted.")]
@@ -924,7 +924,7 @@ namespace Jube.Service.EntityAnalysisModelList
                         $"EntityAnalysisModelList.Resubmit: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelListMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -958,7 +958,7 @@ namespace Jube.Service.EntityAnalysisModelList
                      "undeleting it, if the rejected change was a delete) without opening a new approval cycle. " +
                      "Use when the maker agrees with the rejection and wants to abandon the change.")]
         [ServiceOperation("EntityAnalysisModelListRetract", OperationKind.Write, Idempotent = false)]
-        public async Task<ListPoco> RetractAsync(
+        public async Task<EntityAnalysisModelListDto> RetractAsync(
             [Description("Numeric identifier of the List to retract.")]
             int id,
             [Description("Optional note explaining why this is being retracted.")]
@@ -1000,7 +1000,7 @@ namespace Jube.Service.EntityAnalysisModelList
                         $"EntityAnalysisModelList.Retract: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelListMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

@@ -583,7 +583,7 @@ namespace Jube.Service.EntityAnalysisModelResponseElevationRange
             "Registers a new Response Elevation Range under a Model in the caller's tenant. Not idempotent -- calling twice " +
             "creates two rows.")]
         [ServiceOperation("EntityAnalysisModelResponseElevationRangeCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<RangePoco> InsertAsync(
+        public async Task<EntityAnalysisModelResponseElevationRangeDto> InsertAsync(
             [Description("The Response Elevation Range to create.")]
             EntityAnalysisModelResponseElevationRangeDto? model,
             CancellationToken token = default)
@@ -630,7 +630,7 @@ namespace Jube.Service.EntityAnalysisModelResponseElevationRange
                         $"EntityAnalysisModelResponseElevationRange.Create: created Id={saved.Id} name={saved.Name} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelResponseElevationRangeMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -715,7 +715,7 @@ namespace Jube.Service.EntityAnalysisModelResponseElevationRange
             "Updates an existing Response Elevation Range in the caller's tenant, identified by its Id. Idempotent -- " +
             "repeating the same update has no further effect beyond incrementing Version.")]
         [ServiceOperation("EntityAnalysisModelResponseElevationRangeUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<RangePoco> UpdateAsync(
+        public async Task<EntityAnalysisModelResponseElevationRangeDto> UpdateAsync(
             [Description(
                 "The Response Elevation Range to update. Id selects the row; identity/tenant/audit fields are server-owned " +
                 "and ignored.")]
@@ -777,7 +777,7 @@ namespace Jube.Service.EntityAnalysisModelResponseElevationRange
                         $"EntityAnalysisModelResponseElevationRange.Update: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelResponseElevationRangeMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -904,7 +904,7 @@ namespace Jube.Service.EntityAnalysisModelResponseElevationRange
             "without requiring an edit. Use after a rejection was explained and the maker still wants " +
             "the same change (including a delete) approved.")]
         [ServiceOperation("EntityAnalysisModelResponseElevationRangeResubmit", OperationKind.Write, Idempotent = false)]
-        public async Task<RangePoco> ResubmitAsync(
+        public async Task<EntityAnalysisModelResponseElevationRangeDto> ResubmitAsync(
             [Description("Numeric identifier of the Response Elevation Range to resubmit.")]
             int id,
             [Description("Optional note explaining why this is being resubmitted.")]
@@ -946,7 +946,7 @@ namespace Jube.Service.EntityAnalysisModelResponseElevationRange
                         $"EntityAnalysisModelResponseElevationRange.Resubmit: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelResponseElevationRangeMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -983,7 +983,7 @@ namespace Jube.Service.EntityAnalysisModelResponseElevationRange
             "undeleting it, if the rejected change was a delete) without opening a new approval cycle. " +
             "Use when the maker agrees with the rejection and wants to abandon the change.")]
         [ServiceOperation("EntityAnalysisModelResponseElevationRangeRetract", OperationKind.Write, Idempotent = false)]
-        public async Task<RangePoco> RetractAsync(
+        public async Task<EntityAnalysisModelResponseElevationRangeDto> RetractAsync(
             [Description("Numeric identifier of the Response Elevation Range to retract.")]
             int id,
             [Description("Optional note explaining why this is being retracted.")]
@@ -1025,7 +1025,7 @@ namespace Jube.Service.EntityAnalysisModelResponseElevationRange
                         $"EntityAnalysisModelResponseElevationRange.Retract: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelResponseElevationRangeMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

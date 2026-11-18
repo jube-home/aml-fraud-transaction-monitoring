@@ -8,50 +8,29 @@ grand_parent: Concepts
 
 # Postgres Database Statistics
 
-[Infrastructure Health Metrics](../InfrastructureHealthMetrics/index.html) samples the database's overall health once a
-minute and stores the history. This is different: general DBA information -- table and index statistics -- queried live,
-on demand, directly from Postgres' own system catalogs (`pg_stat_user_tables`, `pg_stat_user_indexes`, `pg_index`).
-Nothing here is stored by Jube; these numbers are Postgres' own running totals, so there is nothing to accumulate. The
-two endpoints exist specifically to answer "am I missing an index, and am I carrying indexes nobody uses" without
-connecting to the database with a separate SQL client.
+Whereas [Infrastructure Health Metrics](../InfrastructureHealthMetrics/index.html) samples the overall health of the database once a minute and stores the history, Postgres Database Statistics is general DBA information, being table and index statistics, queried live and on demand directly from the system catalogs of Postgres itself (`pg_stat_user_tables`, `pg_stat_user_indexes`, `pg_index`). Nothing is stored by Jube, as these numbers are the running totals kept by Postgres, and there is henceforth nothing to accumulate. The two endpoints exist for the purposes of answering whether an index is missing, and whether indexes are being carried that nothing uses, without connecting to the database with a separate SQL client.
 
-Both are read live over the application's normal connection (not a dedicated diagnostic one, unlike the samplers above)
-via `LinqToDB`'s raw-SQL query support, following the same query pattern already used elsewhere for read-only,
-non-tenant-scoped data (`Jube.Data.Query`) rather than the repository-over-a-stored-table pattern the per-minute metrics
-use -- there's no Jube-owned table to repository over. Neither endpoint takes `take`/`from`/`to`/`search` parameters:
-the row count is naturally bounded by the number of tables or indexes in the schema (never an ever-growing log), so the
-full result set is returned every call and the UI grid's own filtering/sorting is enough to explore it.
+Both are read live over the normal connection of the application (not a dedicated diagnostic one, unlike the samplers of Infrastructure Health Metrics) via the raw SQL query support of `LinqToDB`, following the query pattern already used elsewhere for read-only data that is not tenant-scoped (`Jube.Data.Query`), rather than the pattern of a repository over a stored table that the per-minute metrics use, there being no table owned by Jube to place a repository over. Neither endpoint takes `take`, `from`, `to` or `search` parameters. The row count is naturally bounded by the number of tables or indexes in the schema, and is never an ever-growing log, so the full result set is returned upon every call, and the filtering and sorting of the grid in the user interface is sufficient to explore it.
 
-## Table statistics -- `GET /api/PostgresTableStatistics`
+## Table statistics
 
-One row per user table: sequential vs index scan counts, live/dead row estimates, table/index/total on-disk sizes, and
-vacuum/analyze history (`LastVacuum`, `LastAutoVacuum`, `LastAnalyze`, `LastAutoAnalyze`).
+`GET /api/PostgresTableStatistics` returns one row per user table, comprising the sequential and index scan counts, the live and dead row estimates, the table, index and total on-disk sizes, and the vacuum and analyze history (`LastVacuum`, `LastAutoVacuum`, `LastAnalyze`, `LastAutoAnalyze`).
 
-`LikelyMissingIndex` is a simple, transparent heuristic -- true when a table has more sequential scans than index scans
-and more than 1000 live rows. It is a signal to investigate, not a verdict: a small lookup table scanned sequentially is
-normal and expected; a large table scanned sequentially on every query usually means a `WHERE` clause has no index to
-use.
+`LikelyMissingIndex` is a transparent heuristic, being true when a table has more sequential scans than index scans and more than 1000 live rows. It is a signal to investigate, not a verdict, keeping in mind that a small lookup table scanned sequentially is normal and expected, whereas a large table scanned sequentially on every query usually means that a `WHERE` clause has no index to use.
 
-``` sql
+The source data is the same as that which the endpoint queries live:
+
+```sql
 select "SchemaName", "TableName", "SequentialScans", "IndexScans", "LiveTupleCount", "TotalSizeBytes"
-from pg_stat_user_tables -- (the same source data the endpoint queries live)
+from pg_stat_user_tables
 ```
 
-`DeadTupleCount` relative to `LiveTupleCount` is the other thing worth watching here: a table with many more dead than
-live tuples means autovacuum isn't keeping up with its write rate, which degrades both query performance and disk usage
-over time.
+`DeadTupleCount` relative to `LiveTupleCount` is the other value worth watching, as a table with many more dead than live tuples implies that autovacuum is not keeping up with its write rate, which degrades both query performance and disk usage over time.
 
-## Index statistics -- `GET /api/PostgresIndexStatistics`
+## Index statistics
 
-One row per user index: scan count, tuples read/fetched, on-disk size, and `IsUnique`/`IsPrimary`/`IsUnused` (`IsUnused`
-is true when `IndexScans` is zero). This is the direct complement to the table statistics' `LikelyMissingIndex` --
-together they answer both "where am I missing an index" and "where am I carrying one nobody uses." An unused index that
-isn't unique or a primary key is close to a free removal candidate (it costs write overhead and disk space for no read
-benefit); an unused unique or primary-key index still enforces a constraint even at zero scans, so check those two flags
-before treating "unused" as "safe to drop."
+`GET /api/PostgresIndexStatistics` returns one row per user index, comprising the scan count, the tuples read and fetched, the on-disk size, and `IsUnique`, `IsPrimary` and `IsUnused`, the last of which is true when `IndexScans` is zero. It is the direct complement to `LikelyMissingIndex` in the table statistics, and it can be seen that together they answer both where an index is missing and where one is carried that nothing uses. An unused index that is neither unique nor a primary key is close to a free candidate for removal, as it costs write overhead and disk space for no benefit in reading, whereas an unused unique or primary key index still enforces a constraint even at zero scans, henceforth those two flags are to be checked before taking unused to mean safe to drop.
 
-## Access
+## Permissions and security
 
-Both are restricted to the landlord tenant (any other caller receives 403) and are not scoped to a tenant or Model -- a
-database's tables and indexes are shared infrastructure, not tenant data. Each is also browsable via its own page under
-**Performance** in the UI: **Postgres Table Statistics** and **Postgres Index Statistics**.
+Both endpoints are restricted to the landlord tenant, with any other caller receiving 403, and neither is scoped to a tenant or Model, the tables and indexes of a database being shared infrastructure and not tenant data. Each is also presented in the user interface by navigating through the menu to Administration, then Performance, where Postgres table statistics and Postgres index statistics are found in the Postgres family.

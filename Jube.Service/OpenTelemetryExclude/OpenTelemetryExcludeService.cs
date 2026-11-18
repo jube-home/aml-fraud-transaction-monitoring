@@ -197,7 +197,7 @@ namespace Jube.Service.OpenTelemetryExclude
         [Description("Registers a new OpenTelemetryExclude row. Not idempotent -- calling twice creates two " +
                      "rows.")]
         [ServiceOperation("OpenTelemetryExcludeCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<ExcludePoco> InsertAsync(
+        public async Task<OpenTelemetryExcludeDto> InsertAsync(
             [Description("The row to create.")] OpenTelemetryExcludeDto? model,
             CancellationToken token = default)
         {
@@ -241,7 +241,7 @@ namespace Jube.Service.OpenTelemetryExclude
                     log.Info($"OpenTelemetryExclude.Create: created Id={saved.Id} name={saved.Name} active={saved.Active} user={userName}");
                 }
 
-                return saved;
+                return OpenTelemetryExcludeMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -313,7 +313,7 @@ namespace Jube.Service.OpenTelemetryExclude
 
         [Description("Updates an existing OpenTelemetryExclude row in place. Idempotent.")]
         [ServiceOperation("OpenTelemetryExcludeUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<ExcludePoco> UpdateAsync(
+        public async Task<OpenTelemetryExcludeDto> UpdateAsync(
             [Description("The row to update. Id selects the row; identity/audit fields are server-owned and " +
                          "ignored.")]
             OpenTelemetryExcludeDto? model,
@@ -372,7 +372,7 @@ namespace Jube.Service.OpenTelemetryExclude
                     log.Info($"OpenTelemetryExclude.Update: updated Id={saved.Id} name={saved.Name} active={saved.Active} user={userName}");
                 }
 
-                return saved;
+                return OpenTelemetryExcludeMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

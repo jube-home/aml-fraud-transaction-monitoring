@@ -376,6 +376,11 @@ namespace Jube.Test.Service.Repository.CaseReport
             rows.Where(r => r.KindId == (short)NotificationKind.CaseReportAwaitingApproval)
                 .Select(r => r.RecipientUser).Should().NotContain(Filer);
             rows.Should().Contain(r => r.KindId == (short)NotificationKind.CaseReportDecided && r.RecipientUser == Filer);
+
+            using var arguments = System.Text.Json.JsonDocument.Parse(rows
+                .Single(r => r.KindId == (short)NotificationKind.CaseReportDecided && r.RecipientUser == Filer).ArgumentsJson);
+            arguments.RootElement.GetProperty("detailId").GetInt32().Should().Be(1);
+            arguments.RootElement.TryGetProperty("detail", out _).Should().BeFalse();
         }
 
         [Fact]

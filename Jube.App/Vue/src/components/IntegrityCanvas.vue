@@ -30,10 +30,13 @@ import IntegrityStatusBand from './IntegrityStatusBand.vue'
 import ModelSynchronisation from './ModelSynchronisation.vue'
 import PendingApprovals from './PendingApprovals.vue'
 import {useJoobyPageContext} from '../composables/useJoobyPageContext'
+import type {StoryStep} from '../story/path'
 
 const props = withDefaults(defineProps<{ modelId: number; canSynchronise?: boolean }>(), {
   canSynchronise: false,
 })
+
+const emit = defineEmits<{ open: [steps: StoryStep[]] }>()
 
 const {t} = useI18n()
 const panes = usePanes('integrity')
@@ -155,7 +158,11 @@ useJoobyPageContext(() => ({
           :title="t('integrity.section.pending')"
           :hint="t('integrity.hint.pending')"
         >
-          <PendingApprovals :key="`p${modelId}`" :model-id="modelId"/>
+          <PendingApprovals
+            :key="`p${modelId}`"
+            :model-id="modelId"
+            @open="(steps) => emit('open', steps)"
+          />
         </CanvasSection>
       </div>
     </div>

@@ -12,16 +12,47 @@
  -->
 
 <script setup vapor lang="ts">
+import {useTemplateRef, watch} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {AlertCircle, CheckCircle2, Info, X} from 'lucide-vue-next'
 import {useToastStore} from '../stores/toasts'
 
 const {t} = useI18n()
 const toasts = useToastStore()
+const host = useTemplateRef<HTMLElement>('host')
+const topLayer = typeof HTMLElement !== 'undefined' && 'showPopover' in HTMLElement.prototype
+
+watch(
+  () => toasts.items.at(-1)?.id ?? 0,
+  (newest, previous) => {
+    const element = host.value
+
+    if (!topLayer || !element) return
+
+    const shown = element.matches(':popover-open')
+
+    if (newest === 0) {
+      if (shown) element.hidePopover()
+
+      return
+    }
+
+    if (newest <= previous && shown) return
+
+    if (shown) element.hidePopover()
+    element.showPopover()
+  },
+  {flush: 'post'},
+)
 </script>
 
 <template>
-  <div class="toast toast-start toast-bottom z-50" data-testid="toasts">
+  <div
+    ref="host"
+    :popover="topLayer ? 'manual' : undefined"
+    class="toast toast-start toast-bottom z-50 m-0 overflow-visible border-0 bg-transparent"
+    data-testid="toasts"
+  >
     <div
       v-for="toast in toasts.items"
       :key="toast.id"

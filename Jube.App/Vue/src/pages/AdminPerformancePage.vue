@@ -18,6 +18,7 @@ import {useRoute, useRouter} from 'vue-router'
 import {useQuery} from '@tanstack/vue-query'
 import {ShieldAlert} from 'lucide-vue-next'
 import {meQueryOptions} from '../auth/me'
+import HubDeck from '../components/HubDeck.vue'
 import PayloadGrid from '../components/PayloadGrid.vue'
 import PerformanceCard from '../components/PerformanceCard.vue'
 import StorySpine from '../components/StorySpine.vue'
@@ -150,9 +151,8 @@ useJoobyPageContext(() => ({pageName: 'Performance', state: 'readonly', record: 
 
     <StorySpine v-else key="story" :beats="beats" @reopen="onReopen">
       <template #default>
+        <HubDeck v-if="level === 'families'" key="families">
         <div
-          v-if="level === 'families'"
-          key="families"
           class="grid grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-2"
           data-testid="perf-families"
         >
@@ -168,10 +168,10 @@ useJoobyPageContext(() => ({pageName: 'Performance', state: 'readonly', record: 
             @open="openFamily(item.id)"
           />
         </div>
+        </HubDeck>
 
+        <HubDeck v-else-if="level === 'areas' && family" key="areas">
         <div
-          v-else-if="level === 'areas' && family"
-          key="areas"
           class="grid grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-2"
           data-testid="perf-areas"
         >
@@ -185,6 +185,7 @@ useJoobyPageContext(() => ({pageName: 'Performance', state: 'readonly', record: 
             @open="openArea(item.area)"
           />
         </div>
+        </HubDeck>
 
         <PayloadGrid v-else-if="area" :key="address.area" :area="address.area"/>
       </template>

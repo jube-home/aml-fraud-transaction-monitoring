@@ -40,6 +40,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
         private static readonly int[] activeOnlyPermissions = [23, 1];
         private readonly ILog auditLog;
         private readonly CaseSqlGuard sqlGuard;
+        private readonly CaseTemplateGuard templateGuard;
         private readonly ILog log;
         private readonly PermissionValidation permissionValidation;
         private readonly RuleRepository repository;
@@ -51,9 +52,10 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
 
         private CaseWorkflowDisplayService(DbContext dbContext, string userName, int tenantRegistryId,
             PermissionValidation permissionValidation, ILog log, ILog auditLog, IServiceChangeBus serviceChangeBus,
-            IStringLocalizer strings, IStringLocalizer sqlStrings)
+            IStringLocalizer strings, IStringLocalizer sqlStrings, IStringLocalizer chartStrings)
         {
             sqlGuard = new CaseSqlGuard(sqlStrings, permissionValidation, userName);
+            templateGuard = new CaseTemplateGuard(chartStrings);
             this.log = log;
             this.auditLog = auditLog;
             this.serviceChangeBus = serviceChangeBus;
@@ -82,6 +84,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
         {
             var strings = stringLocalizerFactory.Create(typeof(CaseWorkflowDisplayResources));
             var sqlStrings = stringLocalizerFactory.Create(typeof(CaseWorkflowSqlResources));
+            var chartStrings = stringLocalizerFactory.Create(typeof(DatasourceChartResources));
 
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -110,7 +113,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
                 .ConfigureAwait(false);
 
             return new CaseWorkflowDisplayService(dbContext, userName, resolvedTenantRegistryId.Value,
-                permissionValidation, log, auditLog, serviceChangeBus, strings, sqlStrings);
+                permissionValidation, log, auditLog, serviceChangeBus, strings, sqlStrings, chartStrings);
         }
 
         [Description("Lists every Case Workflow Display visible to the caller's tenant, across all parent Case " +
@@ -632,6 +635,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 sqlGuard.Append(results, model.Sql);
+                templateGuard.Append(results, model.Html, model.Sql);
 
                 if (!results.IsValid)
                 {
@@ -707,6 +711,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 sqlGuard.Append(results, model.Sql);
+                templateGuard.Append(results, model.Html, model.Sql);
                 op.Rows(results.Errors.Count);
 
                 return ValidationResultMapper.ToDto(results);
@@ -757,6 +762,7 @@ namespace Jube.Service.Repository.CaseWorkflowDisplay
 
                 var results = await validator.ValidateAsync(model, token).ConfigureAwait(false);
                 sqlGuard.Append(results, model.Sql);
+                templateGuard.Append(results, model.Html, model.Sql);
 
                 if (!results.IsValid)
                 {

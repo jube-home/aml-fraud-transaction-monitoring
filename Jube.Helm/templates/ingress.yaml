@@ -1,38 +1,38 @@
-{ { - if .Values.ingress.enabled } }
+{{- if .Values.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: { { include "jube.fullname" . } }
+  name: {{ include "jube.fullname" . }}
   labels:
-    { { - include "jube.labels" . | nindent 4 } }
-  { { - with .Values.ingress.annotations } }
+    {{- include "jube.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
   annotations:
-    { { - toYaml . | nindent 4 } }
-  { { - end } }
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
-  { { - if .Values.ingress.className } }
-  ingressClassName: { { .Values.ingress.className } }
-  { { - end } }
-  { { - with .Values.ingress.tls } }
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
+  {{- with .Values.ingress.tls }}
   tls:
-    { { - toYaml . | nindent 4 } }
-  { { - end } }
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   rules:
-    - host: { { .Values.ingress.host | quote } }
+    - host: {{ .Values.ingress.host | quote }}
       http:
         paths:
           - path: /api/invoke
             pathType: Prefix
             backend:
               service:
-                name: { { include "jube.fullname" . } }-api
+                name: {{ include "jube.fullname" . }}-api
                 port:
                   name: http
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: { { include "jube.fullname" . } }-ui
+                name: {{ include "jube.fullname" . }}-ui
                 port:
                   name: http
-  { { - end } }
+  {{- end }}

@@ -193,7 +193,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRule
             var saved = await service.InsertAsync(NewDto(modelId, UniqueName("Update")));
             createdIds.Add(saved.Id);
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             dto.Priority = 5;
 
@@ -248,7 +248,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRule
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetByIdAsync(seedRow.Id));
 
-            var updateDto = NewDto(modelId, seedRow.Name);
+            var updateDto = NewDto(modelId, seedRow.Name!);
             updateDto.Id = seedRow.Id;
             await Assert.ThrowsAsync<ForbiddenException>(() => service.UpdateAsync(updateDto));
             await Assert.ThrowsAsync<ForbiddenException>(() => service.DeleteAsync(seedRow.Id));
@@ -309,7 +309,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRule
             var byId = await otherTenant.GetByIdAsync(saved.Id);
             byId.Should().BeNull();
 
-            var updateDto = NewDto(modelId, saved.Name);
+            var updateDto = NewDto(modelId, saved.Name!);
             updateDto.Id = saved.Id;
             await Assert.ThrowsAsync<DtoValidationException>(() => otherTenant.UpdateAsync(updateDto));
             await Assert.ThrowsAsync<NotFoundException>(() => otherTenant.DeleteAsync(saved.Id));
@@ -598,7 +598,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRule
             var saved = await service.InsertAsync(NewDto(modelId, UniqueName("TamperUpdate")));
             createdIds.Add(saved.Id);
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
 
@@ -621,7 +621,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRule
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelReprocessingRule>()
                 .Where(w => w.Id == saved.Id).Set(s => s.Locked, (byte)1).UpdateAsync();
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateAsync(dto));
         }
@@ -637,7 +637,7 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRule
 
             await service.DeleteAsync(saved.Id);
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateAsync(dto));
         }
@@ -968,9 +968,9 @@ namespace Jube.Test.Service.EntityAnalysisModelReprocessingRule
                     await instanceTable.Where(w => w.Id == row.Id).Set(s => s.StatusId, status).UpdateAsync();
                 }
 
-                var dto = NewDto(modelId, saved.Name);
+                var dto = NewDto(modelId, saved.Name!);
                 dto.Id = saved.Id;
-                dto.Version = saved.Version.GetValueOrDefault();
+                dto.Version = saved.Version;
                 dto.Priority = 9;
                 var updated = await service.UpdateAsync(dto);
                 createdIds.Add(updated.Id);

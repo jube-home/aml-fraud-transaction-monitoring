@@ -143,6 +143,12 @@ namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
             };
         }
 
+        private static Task<Guid> GuidOfAsync(DbContext dbContext, int id)
+        {
+            return dbContext.GetTable<EntityAnalysisModelRequestXpath>().Where(w => w.Id == id).Select(s => s.Guid)
+                .FirstAsync();
+        }
+
         private static string UniqueName(string label)
         {
             return $"{DatabaseFixture.Prefix}{label}{Guid.NewGuid():N}"[..40];
@@ -161,7 +167,7 @@ namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
             saved.Id.Should().BeGreaterThan(0);
             saved.Version.Should().Be(1);
             saved.CreatedUser.Should().Be(fx.Seed.UserWithPermission);
-            saved.Guid.Should().NotBe(Guid.Empty);
+            (await GuidOfAsync(dbContext, saved.Id)).Should().NotBe(Guid.Empty);
             saved.CreatedDate.Should().NotBeNull();
             saved.CreatedDate!.Value.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
         }
@@ -256,8 +262,9 @@ namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
 
             var saved = await service.InsertAsync(NewDto(modelId, UniqueName("Update")));
             createdIds.Add(saved.Id);
+            var guid = await GuidOfAsync(dbContext, saved.Id);
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             dto.SearchKeyFetchLimit = 250;
 
@@ -265,7 +272,7 @@ namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
 
             updated.Version.Should().Be(2);
             updated.SearchKeyFetchLimit.Should().Be(250);
-            updated.Guid.Should().Be(saved.Guid);
+            (await GuidOfAsync(dbContext, updated.Id)).Should().Be(guid);
 
             var auditRows = await dbContext.GetTable<EntityAnalysisModelRequestXpathVersion>()
                 .Where(w => w.EntityAnalysisModelRequestXpathId == saved.Id).CountAsync();
@@ -311,7 +318,7 @@ namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetByIdAsync(seedRow.Id));
 
-            var updateDto = NewDto(modelId, seedRow.Name);
+            var updateDto = NewDto(modelId, seedRow.Name!);
             updateDto.Id = seedRow.Id;
             await Assert.ThrowsAsync<ForbiddenException>(() => service.UpdateAsync(updateDto));
             await Assert.ThrowsAsync<ForbiddenException>(() => service.DeleteAsync(seedRow.Id));
@@ -374,7 +381,7 @@ namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
             var byId = await otherTenant.GetByIdAsync(saved.Id);
             byId.Should().BeNull();
 
-            var updateDto = NewDto(modelId, saved.Name);
+            var updateDto = NewDto(modelId, saved.Name!);
             updateDto.Id = saved.Id;
             await Assert.ThrowsAsync<DtoValidationException>(() => otherTenant.UpdateAsync(updateDto));
             await Assert.ThrowsAsync<NotFoundException>(() => otherTenant.DeleteAsync(saved.Id));
@@ -631,15 +638,16 @@ namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
 
             var saved = await service.InsertAsync(NewDto(modelId, UniqueName("TamperUpdate")));
             createdIds.Add(saved.Id);
+            var guid = await GuidOfAsync(dbContext, saved.Id);
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
             dto.UpdatedUser = "also-tampered";
 
             var updated = await service.UpdateAsync(dto);
             updated.CreatedUser.Should().Be(fx.Seed.UserWithPermission);
-            updated.Guid.Should().Be(saved.Guid);
+            (await GuidOfAsync(dbContext, updated.Id)).Should().Be(guid);
             updated.Version.Should().Be(2);
             updated.UpdatedUser.Should().BeNull();
         }
@@ -656,7 +664,7 @@ namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
             await dbContext.EntityAnalysisModelRequestXpath.Where(w => w.Id == saved.Id)
                 .Set(s => s.Locked, (byte)1).UpdateAsync();
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateAsync(dto));
         }
@@ -672,7 +680,7 @@ namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
 
             await service.DeleteAsync(saved.Id);
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             await service.UpdateAsync(dto);
 
@@ -761,7 +769,8 @@ namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
             var resubmitted = await service.ResubmitAsync(saved.Id);
 
             resubmitted.Version.Should().Be(3);
-            resubmitted.Deleted.Should().Be(1,
+            (await dbContext.GetTable<EntityAnalysisModelRequestXpath>().Where(w => w.Id == resubmitted.Id)
+                .Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(1,
                 "resubmitting a rejected delete must re-open approval without un-deleting it");
         }
 
@@ -807,7 +816,7 @@ namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
             await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModelRequestXPath,
                 saved.Id, 1, tenantRegistryId);
 
-            var updateDto = NewDto(modelId, saved.Name);
+            var updateDto = NewDto(modelId, saved.Name!);
             updateDto.Id = saved.Id;
             updateDto.SearchKeyFetchLimit = 250;
             await service.UpdateAsync(updateDto);
@@ -849,7 +858,8 @@ namespace Jube.Test.Service.EntityAnalysisModelRequestXPath
             var retracted = await service.RetractAsync(saved.Id);
 
             retracted.Version.Should().Be(3);
-            retracted.Deleted.GetValueOrDefault().Should().Be(0,
+            (await dbContext.GetTable<EntityAnalysisModelRequestXpath>().Where(w => w.Id == retracted.Id)
+                .Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(0,
                 "retracting a rejected delete undeletes the record");
         }
 

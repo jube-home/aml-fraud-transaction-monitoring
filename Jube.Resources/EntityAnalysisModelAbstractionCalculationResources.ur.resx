@@ -55,7 +55,7 @@
     <value>یہ نام پہلے سے موجود ہے۔</value>
   </data>
     <data name="FunctionScriptRequired" xml:space="preserve">
-    <value>جب حساب کی قسم ⁨Coder⁩ ہو تو فنکشن اسکرپٹ درکار ہے۔</value>
+    <value>فنکشن اسکرپٹ درکار ہے۔</value>
   </data>
     <data name="FunctionScriptMaxLength" xml:space="preserve">
     <value>فنکشن اسکرپٹ {0} حروف سے زیادہ نہیں ہو سکتا۔</value>

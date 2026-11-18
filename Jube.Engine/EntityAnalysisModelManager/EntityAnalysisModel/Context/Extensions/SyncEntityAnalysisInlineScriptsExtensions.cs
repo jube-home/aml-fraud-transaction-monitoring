@@ -14,9 +14,6 @@
 using System;
 using System.Threading.Tasks;
 using Jube.Data.Repository;
-using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineScript;
-using Jube.Engine.EntityAnalysisModelManager.Helpers;
-using Jube.Engine.Models;
 
 namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Extensions
 {
@@ -30,185 +27,32 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
             }
 
             var repository = new EntityAnalysisInlineScriptRepository(context.Services.DbContext);
-
-            if (context.Services.Log.IsDebugEnabled)
-            {
-                context.Services.Log.Debug(
-                    "Entity Start: Executing EntityAnalysisInlineScriptRepository.Get.");
-            }
-
             var records = await repository.GetAsync();
 
             foreach (var record in records)
             {
                 try
                 {
-                    if (context.Services.Log.IsDebugEnabled)
-                    {
-                        context.Services.Log.Debug(
-                            $"Entity Start: Found an inline script with the id of {record.Id} and will proceed to check if already have this inline script available.");
-                    }
-
-                    var inlineScript =
-                        context.EntityAnalysisModels.EntityAnalysisModelInlineScripts.Find(x => x.Id == record.Id);
-
-                    if (inlineScript == null)
-                    {
-                        inlineScript = new EntityAnalysisModelInlineScript();
-
-                        if (context.Services.Log.IsDebugEnabled)
-                        {
-                            context.Services.Log.Debug(
-                                $"Entity Start: Have not found an inline script in the available inline scripts, with the id of {record.Id} hence a new one will be created.");
-                        }
-                    }
-                    else
-                    {
-                        if (context.Services.Log.IsDebugEnabled)
-                        {
-                            context.Services.Log.Debug(
-                                $"Entity Start: Found an inline script in the available inline scripts, with the id of {record.Id} and this will be used.");
-                        }
-                    }
+                    var result = InlineScriptCompilationExtensions.Load(
+                        context.EntityAnalysisModels.EntityAnalysisModelInlineScripts,
+                        context.Caching.HashCacheAssembly, context.Caching.HashCacheAssemblyMetadata, record,
+                        context.Paths.BinaryPath, context.Paths.FrameworkPath, context.Services.Log);
 
                     if (context.Services.Log.IsDebugEnabled)
                     {
                         context.Services.Log.Debug(
-                            $"Entity Start: Found an inline script {record.Id} has Created Date: {inlineScript.CreatedDate.HasValue} of {inlineScript.CreatedDate}. A check will be made to see if it has changed recently");
+                            $"Entity Start: Inline Script {record.Id} changed {result.Changed} compiled {result.Compiled}.");
                     }
 
-                    if ((!inlineScript.CreatedDate.HasValue ||
-                         !(DateTime.SpecifyKind(Convert.ToDateTime(record.CreatedDate), DateTimeKind.Utc) >
-                           inlineScript.CreatedDate)) &&
-                        inlineScript.CreatedDate.HasValue)
+                    if (!result.Changed)
                     {
                         continue;
                     }
 
-                    if (context.Services.Log.IsDebugEnabled)
-                    {
-                        context.Services.Log.Debug(
-                            $"Entity Start: Inline Script {record.Id} has changed recently or is new,  setting created date.");
-                    }
-
-                    inlineScript.CreatedDate = record.CreatedDate;
-                    inlineScript.Id = record.Id;
-                    inlineScript.InlineScriptCode = record.Code;
-                    inlineScript.LanguageId = record.LanguageId ?? 1;
-
-                    if (context.Services.Log.IsDebugEnabled)
-                    {
-                        context.Services.Log.Debug(
-                            $"Entity Start: Inline Script {record.Id} has rule script of {inlineScript.InlineScriptCode}.");
-                    }
-
-                    if (context.Services.Log.IsDebugEnabled)
-                    {
-                        context.Services.Log.Debug(
-                            $"Entity Start: Inline Script {record.Id} has method specification of {inlineScript.ClassName}.");
-                    }
-
-                    inlineScript.Name = record.Name;
-
-                    if (context.Services.Log.IsDebugEnabled)
-                    {
-                        context.Services.Log.Debug(
-                            $"Entity Start: Inline Script {record.Id} has name of {inlineScript.Name}.");
-                    }
-
-                    var dependencyArray = BuildDependencyArray(context, inlineScript.Dependencies);
-
-                    if (context.Services.Log.IsDebugEnabled)
-                    {
-                        context.Services.Log.Debug(
-                            $"Entity Start: Inline Script {record.Id} is being checked for dll dependencies.  Has created {dependencyArray.Length} dependencies.");
-                    }
-
-                    var inlineScriptHash = HashHelper.GetHash(inlineScript.InlineScriptCode);
-
-                    if (context.Services.Log.IsDebugEnabled)
-                    {
-                        context.Services.Log.Debug(
-                            $"Entity Start: Inline Script {record.Id} has been hashed to {inlineScriptHash} and the hash cache will now be checked.");
-                    }
-
-                    if (context.Caching.HashCacheAssembly.TryGetValue(inlineScriptHash, out var value))
-                    {
-                        if (context.Services.Log.IsDebugEnabled)
-                        {
-                            context.Services.Log.Debug(
-                                $"Entity Start: Inline Script {record.Id} has been hashed to {inlineScriptHash} and has been located in the hash cache,  this will be used.  Creating a delegate.");
-                        }
-
-                        inlineScript.InlineScriptCompile = value;
-                        InlineScriptCompilationExtensions.SetupInlineScriptDelegates(inlineScript);
-                        InlineScriptCompilationExtensions.SetupEvents(inlineScript);
-
-                        await repository.UpdateCompileStatusAsync(record.Id, true, null,
-                            context.Services.CancellationToken).ConfigureAwait(false);
-
-                        if (context.Services.Log.IsDebugEnabled)
-                        {
-                            context.Services.Log.Debug(
-                                $"Entity Start: Inline Script {record.Id} has been hashed to {inlineScriptHash} and has been located in the hash cache and allocated to a delegate.");
-                        }
-                    }
-                    else
-                    {
-                        if (context.Services.Log.IsDebugEnabled)
-                        {
-                            context.Services.Log.Debug(
-                                $"Entity Start: Inline Script {record.Id} has been hashed to {inlineScriptHash} but has not been located in the hash cache.  The inline script will now be compiled.");
-                        }
-
-                        var compile = inlineScript.CompileAndConfigure(dependencyArray, context.Services.Log);
-
-                        if (context.Services.Log.IsDebugEnabled)
-                        {
-                            context.Services.Log.Debug(
-                                $"Entity Start: Inline Script {record.Id} has been compiled with {compile.Errors} errors.");
-                        }
-
-                        if (compile.Errors != null)
-                        {
-                            foreach (var error in compile.Errors)
-                            {
-                                context.Services.Log.Error(
-                                    $"Entity Start: Could not compile inline script: {inlineScript.Id} with error: {error.ToString()}.");
-                            }
-
-                            await repository.UpdateCompileStatusAsync(record.Id, false, compile.ErrorsSummary,
-                                context.Services.CancellationToken).ConfigureAwait(false);
-
-                            continue;
-                        }
-
-                        if (inlineScript.InlineScriptType == null)
-                        {
-                            context.Services.Log.Error(
-                                $"Entity Start: Could not compile inline script: {inlineScript.Id} did not fine class entry point for {inlineScript.ClassName}.");
-
-                            continue;
-                        }
-
-                        if (context.Services.Log.IsDebugEnabled)
-                        {
-                            context.Services.Log.Debug(
-                                $"Entity Start: Inline Script {record.Id} has been compiled and allocated to a delegate.");
-                        }
-
-                        context.EntityAnalysisModels.EntityAnalysisModelInlineScripts.Add(inlineScript);
-                        context.Caching.HashCacheAssembly.TryAdd(inlineScriptHash, compile.CompiledAssembly);
-
-                        context.Caching.HashCacheAssemblyMetadata.TryAdd(inlineScriptHash,
-                            new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes, compile.CompiledAssemblyBinary,
-                                inlineScript.InlineScriptCode));
-
-                        await repository.UpdateCompileStatusAsync(record.Id, true, null,
-                            context.Services.CancellationToken).ConfigureAwait(false);
-                    }
+                    await repository.UpdateCompileStatusAsync(record.Id, result.Compiled, result.CompileError,
+                        context.Services.CancellationToken).ConfigureAwait(false);
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (ex is not OperationCanceledException)
                 {
                     context.Services.Log.Error(
                         $"Entity Start: Inline script with the id of {record.Id} has created an error {ex}.");
@@ -220,16 +64,10 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
             if (context.Services.Log.IsDebugEnabled)
             {
-                context.Services.Log.Debug("Entity Start:  Completed creating Inline Scripts and closed the reader.");
+                context.Services.Log.Debug("Entity Start: Completed creating Inline Scripts.");
             }
 
             return context;
-        }
-
-        private static string[] BuildDependencyArray(Context context, string dependencies)
-        {
-            return InlineScriptCompilationExtensions.BuildDependencyArray(context.Paths.BinaryPath,
-                context.Paths.FrameworkPath, dependencies);
         }
     }
 }

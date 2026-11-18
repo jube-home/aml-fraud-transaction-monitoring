@@ -1,21 +1,21 @@
-{ { - $root := . } }
-  { { - range $role := list "ui" "api" "jobs" } }
+{{- $root := . }}
+  {{- range $role := list "ui" "api" "jobs" }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: { { include "jube.fullname" $root } }-{{ $role }}
+  name: {{ include "jube.fullname" $root }}-{{ $role }}
   labels:
     {{- include "jube.labels" $root | nindent 4 }}
-    app.kubernetes.io/component: { { $role } }
+    app.kubernetes.io/component: {{ $role }}
 spec:
-  type: { { $root.Values.service.type } }
+  type: {{ $root.Values.service.type }}
   selector:
     app.kubernetes.io/name: jube
-    app.kubernetes.io/instance: { { $root.Release.Name } }
-    app.kubernetes.io/component: { { $role } }
+    app.kubernetes.io/instance: {{ $root.Release.Name }}
+    app.kubernetes.io/component: {{ $role }}
   ports:
     - name: http
-      port: { { $root.Values.service.port } }
+      port: {{ $root.Values.service.port }}
       targetPort: http
-  { { - end } }
+  {{- end }}

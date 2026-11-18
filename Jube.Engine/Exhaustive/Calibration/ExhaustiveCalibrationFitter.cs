@@ -43,8 +43,8 @@ namespace Jube.Engine.Exhaustive.Calibration
         {
             return function switch
             {
-                ThresholdFunction or BernoulliFunction => OutputFamily.Hard,
-                SigmoidFunction => OutputFamily.Logit,
+                ThresholdFunction => OutputFamily.Hard,
+                SigmoidFunction or BernoulliFunction => OutputFamily.Logit,
                 _ => OutputFamily.Raw
             };
         }

@@ -273,7 +273,7 @@ Category: Service. Collection: Database.
 
 ### EntityAnalysisModelActivationRuleServiceTests
 
-`Jube.Test.Service.EntityAnalysisModelActivationRule.EntityAnalysisModelActivationRuleServiceTests` — 73 tests.
+`Jube.Test.Service.EntityAnalysisModelActivationRule.EntityAnalysisModelActivationRuleServiceTests` — 75 tests.
 Category: Service. Collection: Database.
 
 | Test                                                                                  | Kind    | Verifies                                                                                                                                      |
@@ -370,7 +370,7 @@ Category: Service. Collection: Database.
 
 ### EntityAnalysisModelActivationRuleOverrideServiceTests
 
-`Jube.Test.Service.EntityAnalysisModelActivationRuleOverride.EntityAnalysisModelActivationRuleOverrideServiceTests` — 41
+`Jube.Test.Service.EntityAnalysisModelActivationRuleOverride.EntityAnalysisModelActivationRuleOverrideServiceTests` — 44
 tests. Category: Service. Collection: Database.
 
 | Test                                                                               | Kind   | Verifies                                                                                   |
@@ -864,7 +864,7 @@ Collection: Database.
 
 ### EntityAnalysisModelListValueServiceTests
 
-`Jube.Test.Service.EntityAnalysisModelListValue.EntityAnalysisModelListValueServiceTests` — 70 tests. Category: Service.
+`Jube.Test.Service.EntityAnalysisModelListValue.EntityAnalysisModelListValueServiceTests` — 71 tests. Category: Service.
 Collection: Database.
 
 | Test                                                                                  | Kind   | Verifies                                                                                    |
@@ -924,6 +924,7 @@ Collection: Database.
 | `ListAsyncClampsTakeAndPaginatesDeterministicallyAsync`                               | Fact   | List async clamps take and paginates deterministically.                                     |
 | `UploadCsvLoadsValidRowsAndRecordsUploadAsync`                                        | Fact   | Upload csv loads valid rows and records upload.                                             |
 | `UploadCsvParsesRoundTripExpiryDateAsUtcAsync`                                        | Fact   | Upload csv parses round trip expiry date as utc.                                            |
+| `UploadCsvCountsAnUnparseableOrPastExpiryDateAsAnErrorLineAsync` | Fact | Upload csv counts an unparseable or past expiry date as an error line. |
 | `UploadCsvIgnoresRowsThatFullyMatchAnExistingLiveValueAsync`                          | Fact   | Upload csv ignores rows that fully match an existing live value.                            |
 | `UploadCsvRejectsRowWhoseValueIsAwaitingDeletionApprovalAsAnErrorAsync`               | Fact   | Upload csv rejects row whose value is awaiting deletion approval as an error.               |
 | `UploadCsvRejectsSameValueWithADifferentExpiryDateAsAnErrorAsync`                     | Fact   | Upload csv rejects same value with a different expiry date as an error.                     |
@@ -1052,8 +1053,7 @@ Category: Service. Collection: Database.
 
 ### EntityAnalysisModelReprocessingRuleInstanceServiceTests
 
-`Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance.EntityAnalysisModelReprocessingRuleInstanceServiceTests` —
-39 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.EntityAnalysisModelReprocessingRuleInstance.EntityAnalysisModelReprocessingRuleInstanceServiceTests` — 39 tests. Category: Service. Collection: Database.
 
 | Test                                                                                | Kind   | Verifies                                                                                |
 |-------------------------------------------------------------------------------------|--------|-----------------------------------------------------------------------------------------|
@@ -1216,29 +1216,18 @@ Database.
 | `ReadsAndFailuresPublishNothingAsync`                                                 | Fact   | Reads and failures publish nothing.                                                         |
 | `CatalogueRegistersUniquePascalCaseNoUnderscoreNames`                                 | Fact   | Catalogue registers unique pascal case no underscore names.                                 |
 | `ListAsyncClampsTakeAndPaginatesDeterministicallyAsync`                               | Fact   | List async clamps take and paginates deterministically.                                     |
+| `OverlappingRangeWithinSameModelIsRejectedNamingTheClashingRangeAsync`                | Fact   | Overlapping range within same model is rejected naming the clashing range.                  |
+| `AdjacentRangesAndTheSameLevelsInAnotherModelAreAcceptedAsync`                        | Fact   | Adjacent ranges and the same levels in another model are accepted.                          |
+| `UpdatingARangeDoesNotClashWithItselfAsync`                                           | Fact   | Updating a range does not clash with itself.                                                |
+| `NegativeMinimumOrMaximumBelowMinimumIsRejectedAsync`                                 | Theory | Negative minimum or maximum below minimum is rejected.                                      |
+| `DeclineAndHoldTogetherIsRejectedButEitherAloneIsAcceptedAsync`                       | Fact   | Decline and hold together is rejected but either alone is accepted.                         |
+| `HookFieldsAreRequiredOnlyWhenTheirSwitchIsOnAsync`                                   | Fact   | Hook fields are required only when their switch is on.                                      |
+| `ColoursMustBeSixDigitHexAsync`                                                       | Fact   | Colours must be six digit hex.                                                              |
+| `GetByEntityAnalysisModelIdLabelsEachRangeWithItsNameAndLevelsAsync`                  | Fact   | Get by entity analysis model id labels each range with its name and levels.                 |
+| `RepositoryFindsTheActiveRangeContainingALevelAndNoneOutsideAsync`                    | Fact   | Repository finds the active range containing a level and none outside.                      |
+| `AWebHookOnAnInternalHostIsRefusedAtSaveTimeUnlessAllowListedAsync`                   | Theory | A web hook on an internal host is refused at save time unless allow listed.                 |
 
 ## Entity approval
-
-| `OverlappingRangeWithinSameModelIsRejectedNamingTheClashingRangeAsync`                | Fact | Overlapping range
-within same model is rejected naming the clashing range. |
-| `AdjacentRangesAndTheSameLevelsInAnotherModelAreAcceptedAsync`                        | Fact | Adjacent ranges and the
-same levels in another model are accepted. |
-| `UpdatingARangeDoesNotClashWithItselfAsync`                                           | Fact | Updating a range does
-not clash with itself. |
-| `NegativeMinimumOrMaximumBelowMinimumIsRejectedAsync`                                 | Theory | Negative minimum or
-maximum below minimum is rejected. |
-| `DeclineAndHoldTogetherIsRejectedButEitherAloneIsAcceptedAsync`                       | Fact | Decline and hold
-together is rejected but either alone is accepted. |
-| `HookFieldsAreRequiredOnlyWhenTheirSwitchIsOnAsync`                                   | Fact | Hook fields are
-required only when their switch is on. |
-| `ColoursMustBeSixDigitHexAsync`                                                       | Fact | Colours must be six
-digit hex. |
-| `GetByEntityAnalysisModelIdLabelsEachRangeWithItsNameAndLevelsAsync`                  | Fact | Get by entity analysis
-model id labels each range with its name and levels. |
-| `RepositoryFindsTheActiveRangeContainingALevelAndNoneOutsideAsync`                    | Fact | Repository finds the
-active range containing a level and none outside. |
-| `AWebHookOnAnInternalHostIsRefusedAtSaveTimeUnlessAllowListedAsync` | Theory | A web hook on an internal host is
-refused at save time unless allow listed. |
 
 ### EntityAnalysisModelSanctionServiceTests
 
@@ -1463,8 +1452,6 @@ Database.
 | `AnApprovedRemovalOfAForceOverrideNoLongerListsItAsPresentAsync`                                  | Fact | Once the removal is approved the override is no longer listed as present.                                                        |
 | `ARuleLevelForceOverrideWhoseRemovalIsPendingStaysListedWithItsPendingStateAsync`                 | Fact | The same for the rule grid query.                                                                                                |
 
-<!-- TODO(docs): Counts and descriptions in this table were written, not generated from a build; regenerate the catalogue row counts. -->
-
 ### MakerCheckerEngineTests
 
 `Jube.Test.Service.EntityApproval.MakerCheckerEngineTests` — 10 tests. Category: Service. Collection: Database.
@@ -1649,8 +1636,6 @@ Category: Service. Collection: Database.
 | `ARoleHoldingNoneOfTheThreeCannotReadTheRuleAsync`                                 | Fact   | A role holding none of the three cannot read the rule.                                         |
 | `TheServiceDeclaresTheEditPermissionAsTheOriginalNumberAndReadsAsAnyOfTheThree`    | Fact   | The service declares the edit permission as the original number and reads as any of the three. |
 
-<!-- TODO(docs): owner to confirm this catalogue entry after the first run of the new tests (they were written, not run). -->
-
 ### ReprocessingInstancePermissionSplitTests
 
 `Jube.Test.Service.ReprocessingPermissions.ReprocessingInstancePermissionSplitTests` — 9 tests.
@@ -1667,5 +1652,3 @@ Category: Service. Collection: Database.
 | `EachOfTheThreePermissionsCanReadTheRunsAsync`                                              | Theory | Each of the three permissions can read the runs.                                                      |
 | `ARoleHoldingNoneOfTheThreeCannotReadTheRunsAsync`                                          | Fact   | A role holding none of the three cannot read the runs.                                                |
 | `TheServiceDeclaresEachVerbWithItsOwnPermissionAndReadsAsAnyOfTheThree`                     | Fact   | The service declares each verb with its own permission and reads as any of the three.                 |
-
-<!-- TODO(docs): owner to confirm this catalogue entry after the first run of the new tests (they were written, not run). -->

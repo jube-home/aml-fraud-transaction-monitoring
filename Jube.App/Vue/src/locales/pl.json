@@ -142,10 +142,8 @@
   "shell": {
     "resources": "Zasoby",
     "documentation": "Dokumentacja",
-    "copyright": "Prawa autorskie",
     "account": "Konto",
     "signedInAs": "Zalogowano jako",
-    "changePassword": "Zmień hasło",
     "signOut": "Wyloguj się",
     "signedOut": "Wylogowano.",
     "signOutFailed": "Wylogowanie nie powiodło się. Sprawdź połączenie i spróbuj ponownie.",
@@ -184,6 +182,7 @@
     "offline": "Jooby nie jest włączony w tej instalacji. Możesz przeczytać, co potrafi, ale odpowiedzi są wyłączone, dopóki nie skonfigurujesz backendu wnioskowania.",
     "noPermission": "Jooby nie może się doczekać rozmowy, ale Twoje konto nie ma uprawnienia Ask Jooby. Poproś administratora o dodanie go do jednej z Twoich ról.",
     "widgetTitle": "Jooby",
+    "viewing": "Przeglądana strona: {page}",
     "closeChat": "Zamknij czat",
     "openChat": "Otwórz czat",
     "failed": "To się nie udało. Spróbuj ponownie.",
@@ -233,7 +232,7 @@
       "3": "czas do rozwiązania",
       "4": "czas w statusie"
     },
-    "empty": "Nic nowego. Powiadomienia pojawią się tutaj po podłączeniu usługi powiadomień.",
+    "empty": "Nic nowego.",
     "unread": "Nieprzeczytane",
     "severity": {
       "info": "Info",
@@ -452,7 +451,7 @@
     "closedStatus4": "Zawieszona z pominięciem",
     "priority1": "Najwyższy",
     "priority2": "Wysoki",
-    "priority3": "Normalny",
+    "priority3": "Średni",
     "priority4": "Niski",
     "priority5": "Najniższy",
     "addColumn": "Dodaj kolumnę",
@@ -534,7 +533,7 @@
       "38": "Zezwalaj na import i eksport archiwizacji",
       "39": "Podgląd liczników wydajności",
       "40": "Podgląd próbkowania modeli analizy jednostek",
-      "41": "Zezwalaj na zatwierdzenie po przeglądzie",
+      "41": "Wycofane - bez efektu (status przeglądu reguły aktywacji został wycofany)",
       "42": "Wycofane - bez efektu (licznik dziennika OpenTelemetry jest tylko dla landlorda)",
       "43": "Wycofane - bez efektu (wykluczenie OpenTelemetry jest tylko dla landlorda)",
       "44": "Zezwalaj na zatwierdzanie",
@@ -918,10 +917,7 @@
       "approvedValues": "Zatwierdzono wartości: {count}.",
       "approve": "Zatwierdź",
       "reject": "Odrzuć",
-      "review": "Przejrzyj",
       "approveValues": "Zatwierdź wartości",
-      "closeReview": "Zamknij przegląd",
-      "reviewTitle": "Przegląd: {name}",
       "deletion": "Usunięcie",
       "edit": "Edycja",
       "col": {
@@ -1391,7 +1387,9 @@
     "active": "{count} aktywnych",
     "locked": "{count} zablokowanych",
     "failed": "Nie udało się wczytać",
-    "awaiting": "{count} oczekuje"
+    "awaiting": "{count} oczekuje",
+    "find": "Znajdź kartę",
+    "noMatch": "Nic nie pasuje"
   },
   "payloadGrid": {
     "from": "Od",
@@ -2508,7 +2506,9 @@
       "legalHoldPlaced": "Nałożono blokadę prawną",
       "legalHoldLifted": "Zdjęto blokadę prawną",
       "assessmentRecorded": "Zapisano ocenę analityka",
-      "assessmentWithdrawn": "Wycofano ocenę analityka"
+      "assessmentWithdrawn": "Wycofano ocenę analityka",
+      "caseLinked": "Powiązano sprawę",
+      "caseUnlinked": "Usunięto powiązanie sprawy"
     },
     "headline": {
       "atRisk": "{n} zagrożonych",
@@ -2950,7 +2950,7 @@
       "noKey": "Ta sprawa nie ma klucza, więc nie ma dziennika."
     },
     "notes": {
-      "empty": "Brak notatek dla tego klucza.",
+      "nothing": "Dla tego klucza nic jeszcze nie zapisano. Notatki i badania dodaje się w panelu Decide.",
       "failed": "Nie udało się wczytać notatek.",
       "action": "Akcja: {name}",
       "priority": "Priorytet: {name}",
@@ -3038,6 +3038,7 @@
       "entriesFailed": "Nie udało się wczytać przesłanych formularzy.",
       "submittedBy": "{user}, {when}",
       "cannotDraw": "Tego formularza nie można już narysować: {reason} Zawarte w nim wartości są wymienione poniżej.",
+      "drawFailed": "Nie udało się narysować tego formularza.",
       "otherValues": "Wartości, dla których formularz nie ma pola"
     },
     "hint": {
@@ -3062,6 +3063,10 @@
       "whyNone": "Nic poza miejscem w kolejce nie zostało jeszcze oznaczone."
     },
     "decide": {
+      "group": {
+        "actions": "Działania",
+        "record": "W tej sprawie"
+      },
       "title": "Decyzja",
       "heldByYou": "Przypisana do Ciebie",
       "supervisor": "Przełożony może przełamać tę blokadę.",
@@ -3091,7 +3096,7 @@
       "saved": "Sprawa zaktualizowana",
       "noteAdded": "Dodano notatkę",
       "macroRan": "Makro wykonane",
-      "statusTitle": "Status i ocena",
+      "statusTitle": "Status",
       "diaryTitle": "Terminarz",
       "currentStatus": "Bieżący status",
       "escalate": "Eskaluj",
@@ -3104,6 +3109,7 @@
       "attachHint": "Opcjonalnie. Każdy plik jest przechowywany z tą notatką jako dowód.",
       "researchAttachHint": "Opcjonalnie. Każdy plik jest przechowywany z tym badaniem jako dowód.",
       "notAttached": "Notatkę dodano, ale nie udało się dołączyć plików: {n}.",
+      "researchNotAttached": "Badanie dodano, ale nie udało się dołączyć plików: {n}.",
       "researchTitle": "Dodaj badanie",
       "researchTopic": "Temat",
       "researchFindings": "Ustalenia",
@@ -3136,7 +3142,7 @@
         },
         "status": {
           "label": "Status",
-          "tip": "Zmień status przepływu lub eskaluj sprawę i ustaw ocenę. Przejście jest blokowane, gdy wymagane pozycje listy są otwarte."
+          "tip": "Zmień status przepływu lub eskaluj sprawę. Przejście jest blokowane, gdy wymagane pozycje listy są otwarte."
         },
         "checklist": {
           "label": "Lista kontrolna",
@@ -3270,6 +3276,7 @@
       "hint": "Sprawy w tym przepływie, które dzielą fakty z tą sprawą: te same reguły lub modele, te same tagi, to samo urządzenie lub ten sam kontrahent, ten sam rodzaj i skala aktywności. Fakty wspólne tylko dla kilku spraw liczą się bardziej niż fakty wspólne dla większości.\nTo kontekst do przeczytania, a nie wynik: nigdy nie zmienia pozycji sprawy w rankingu.",
       "failed": "Nie udało się wczytać podobnych spraw.",
       "pending": "Ta sprawa nie została jeszcze porównana. Nastąpi to wkrótce.",
+      "off": "Podobne sprawy są wyłączone w tej instalacji, więc ta sprawa nie zostanie porównana.",
       "none": "Nie znaleziono podobnych spraw.",
       "headline": "Potwierdzono {confirmed} z {closed} podobnych zamkniętych spraw",
       "tooFew": "Zbyt mało podobnych spraw jest zamkniętych, aby to ocenić",
@@ -3324,6 +3331,7 @@
       "empty": "Brak pozycji listy kontrolnej dla tej sprawy.",
       "gate": {
         "inPlace": "Obowiązuje wyjątek. {user} zezwolił(a) na przeniesienie sprawy mimo otwartych pozycji: {reason}",
+        "ownOverride": "Wyjątek dla tej sprawy został przyznany przez Ciebie, więc przeniesienia musi dokonać inny użytkownik: {reason}",
         "more": "+{n} więcej",
         "open": "brak otwartych pozycji listy kontrolnej | 1 otwarta pozycja listy kontrolnej | {n} otwarte pozycje listy kontrolnej | {n} otwartych pozycji listy kontrolnej | {n} otwartej pozycji listy kontrolnej",
         "openChecklist": "Otwórz listę kontrolną",
@@ -3384,6 +3392,7 @@
     },
     "assessment": {
       "title": "Twoja ocena",
+      "canvasTitle": "Ocena analityka",
       "hint": "Zapisz własną ocenę tego, jak prawdopodobne jest potwierdzenie tej sprawy. Jest przechowywana obok wyliczonego prawdopodobieństwa, nigdy go nie zastępuje i nigdy nie zmienia pozycji sprawy w rankingu. Tylko Ty możesz wycofać zapisaną przez siebie ocenę.",
       "none": "Żaden analityk nie zapisał oceny tej sprawy.",
       "low": "Niskie",
@@ -3402,7 +3411,7 @@
       "lede": "Ocena analityka: {view}"
     },
     "panes": {
-      "left": "panel klucza i sekcje",
+      "left": "sekcje",
       "right": "panel decyzji"
     },
     "help": {
@@ -3416,7 +3425,7 @@
       "decide": {
         "title": "Wszystko, co możesz zrobić ze sprawą.\nPrzejęcie sprawy blokuje ją dla Ciebie, więc nikt inny nie może jej zmienić. Przełożony może zdjąć blokadę. Zwolnij sprawę, gdy przestajesz nad nią pracować, aby wróciła do kolejki. Zamknięcie i ponowne otwarcie są niżej."
       },
-      "dashboard": "Pulpit zbudowany dla tego rodzaju spraw przez osobę, która skonfigurowała przepływ. Może opisywać całą sprawę, nie tylko jej transakcje, i powstaje wyłącznie z klucza sprawy i jego wartości: wszystko inne jest z nich wyliczane."
+      "dashboard": "Pulpit zbudowany dla tego rodzaju spraw przez osobę, która skonfigurowała przepływ. Może opisywać całą sprawę, nie tylko jej transakcje, i otrzymuje wyłącznie identyfikator sprawy: wszystko inne jest z niego wyliczane."
     },
     "hold": {
       "tileHint": "Wstrzymane: {n}",
@@ -3474,7 +3483,6 @@
     },
     "research": {
       "heading": "Badania",
-      "empty": "Brak badań dla tego klucza.",
       "failed": "Nie udało się wczytać badań.",
       "sources": "Źródła",
       "retrieved": "pobrano {date}"
@@ -3716,7 +3724,7 @@
       "activationsOnly": "Pokazuje tylko transakcje, które wywołały co najmniej jedną aktywację.\nPozwala przejść od długiej historii do chwil, w których reguły zareagowały. Zawęża też wykresy, statystyki i Oznacz wszystkie pasujące do tych transakcji.",
       "pinnedOnly": "Pokazuje tylko transakcje przypięte do tej sprawy, niezależnie od daty i klucza.\nPrzypięcia dotyczą całej sprawy, więc wszyscy, którzy nad nią pracują, widzą te same. Przypnij transakcję gwiazdką w tabeli. Przypięte transakcje są też zawsze na górze dziennika, w każdym widoku, nawet poza oknem.\nSprawa może mieć do 50 przypięć, a sprawy zablokowanej przez innego użytkownika nie można zmieniać.",
       "tags": "Tagi oznaczają transakcje, na przykład mule lub reviewed, aby można je było później znaleźć i policzyć.\nZaznacz wiersze w tabeli i naciśnij Oznacz, aby dodać lub usunąć tagi we wszystkich naraz, do 500. Potem pojawia się Cofnij. Transakcje, których sprawa jest zablokowana przez innego użytkownika, są pomijane i liczone.\nOznacz wszystkie pasujące oznacza każdą transakcję bieżącego widoku, do 100 000, w tle. Możesz pracować dalej, zatrzymać to i cofnąć. Można dodawać tylko tagi skonfigurowane dla modelu tego przepływu pracy.",
-      "transactions": "Ile transakcji miał ten klucz w oknie, od najnowszych, do 2000.\nPasek, lista wyróżnionych i wykresy są liczone z tych transakcji. Gdy klucz ma ich więcej, pasek to mówi, a starsze są pominięte w statystykach, ale nie w tabeli.",
+      "transactions": "Ile transakcji miał ten klucz w oknie, od najnowszych, do 2000.\nPasek, lista wyróżnionych i wykresy są liczone z tych transakcji. Gdy klucz ma ich więcej, pasek to mówi, a starsze są pominięte w statystykach. Tabela wczytuje 1000 najnowszych.",
       "activeDays": "Liczba różnych dni w UTC, w których klucz miał co najmniej jedną transakcję.\nCzytaj razem z liczbą transakcji: wiele transakcji w kilku dniach oznacza aktywność seriami, a mało transakcji rozłożonych na wiele dni oznacza stałe, powolne użycie.",
       "withActivations": "Ile transakcji wywołało co najmniej jedną aktywację i ile aktywacji wywołano łącznie.\nJedna transakcja może wywołać kilka aktywacji, więc druga liczba może być większa od pierwszej.",
       "elevation": "Najwyższa podwyżka odpowiedzi spośród transakcji w oknie.\nPodwyżka to waga, jaką reguły nadały transakcji, gdy zadziałały: im wyższa, tym pilniejsza odpowiedź.",
@@ -4034,14 +4042,12 @@
     "section": {
       "meta": "{expiry} · {user} · {origin}",
       "elsewhere": "Obowiązuje także dla wartości w tym dzienniku",
-      "elsewhereEmpty": "Nic innego nie obowiązuje dla wartości w tym dzienniku.",
       "failed": "Nie udało się wczytać zawieszeń.",
       "fromCase": "Ustawiono ze sprawy C-{id}",
       "fromOverridePage": "Ustawiono na stronie Override lub gdzie indziej",
       "hint": "Wnioski składa się w panelu Decide i wymagają zatwierdzenia, zanim zaczną działać.",
       "noExpiry": "Bez wygaśnięcia",
       "own": "Ustawione z tej sprawy",
-      "ownEmpty": "Z tej sprawy nie złożono wniosku o zawieszenie.",
       "title": "Nadpisania modelu"
     },
     "standing": {
@@ -4151,6 +4157,7 @@
       "expand": "Rozszerz (nic nie dodaje) | Rozszerz (dodaje {count}) | Rozszerz (dodaje {count}) | Rozszerz (dodaje {count}) | Rozszerz (dodaje {count})",
       "expanded": "Rozszerzono",
       "pivot": "Przestaw dziennik",
+      "reseed": "Eksploruj stąd",
       "link": "Powiąż ze sprawą",
       "openCase": "Otwórz sprawę {id}",
       "capture": "Zapisz widok",
@@ -4263,7 +4270,7 @@
       "members": "{count} członków",
       "markSeen": "Oznacz jako widziany",
       "dismiss": "Odrzuć",
-      "toCase": "Otwórz jako sprawę",
+      "toCase": "Dołącz do sprawy",
       "casedAs": "Sprawa {id}",
       "decideAsk": {
         "title": "Zdecydować o tym wzorcu?",

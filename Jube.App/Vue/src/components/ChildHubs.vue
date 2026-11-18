@@ -16,6 +16,7 @@ import {computed, useSlots} from 'vue'
 import {parentValueOf, type OpenedRecord} from '../formModel/hierarchy'
 import type {FormChild, FormModel} from '../formModel/types'
 import ChildHubCard from './ChildHubCard.vue'
+import HubDeck from './HubDeck.vue'
 
 const props = defineProps<{
   model: FormModel | undefined
@@ -46,11 +47,7 @@ function awaitingFor(child: FormChild): number | undefined {
 </script>
 
 <template>
-  <div
-    v-if="children.length > 0 || slots.extra || slots.operate"
-    class="flex flex-col gap-2"
-    data-testid="child-hubs"
-  >
+  <HubDeck v-if="children.length > 0 || slots.extra || slots.operate" data-testid="child-hubs">
     <template v-if="slots.operate">
       <div
         class="grid grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-2"
@@ -58,7 +55,6 @@ function awaitingFor(child: FormChild): number | undefined {
       >
         <slot name="operate"/>
       </div>
-      <div class="divider my-0"></div>
     </template>
     <div
       class="grid grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-2"
@@ -76,5 +72,5 @@ function awaitingFor(child: FormChild): number | undefined {
       />
       <slot name="extra"/>
     </div>
-  </div>
+  </HubDeck>
 </template>

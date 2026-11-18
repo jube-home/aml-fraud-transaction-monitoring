@@ -71,7 +71,7 @@ watch(
   <div
     ref="host"
     dir="ltr"
-    class="min-h-56 overflow-hidden rounded-field border border-base-300"
+    class="flex min-h-56 flex-col overflow-hidden rounded-field border border-base-300"
     data-testid="datasource-template"
   ></div>
 </template>

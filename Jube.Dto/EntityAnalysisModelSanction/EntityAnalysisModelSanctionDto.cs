@@ -71,7 +71,7 @@ namespace Jube.Dto.EntityAnalysisModelSanction
                      "6 = First, 7 = Last, 8 = Confidence. Leave unset to use the server default (Average).")]
         [FormField(Group = "Matching", Order = 30, Widget = "select")]
         [Options(typeof(SanctionAggregationType))]
-        [NewDefault((byte)1)]
+        [NewDefault((byte)2)]
         [Key(4)]
         public byte? AggregationTypeId { get; set; }
 

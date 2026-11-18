@@ -12,7 +12,7 @@
  -->
 
 <script setup vapor lang="ts">
-import {nextTick, onBeforeUnmount, onMounted, ref, watch} from 'vue'
+import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from 'vue'
 import {storeToRefs} from 'pinia'
 import {useI18n} from 'vue-i18n'
 import {Plus, X} from 'lucide-vue-next'
@@ -25,6 +25,7 @@ const {t} = useI18n()
 const context = useJoobyContextStore()
 const {controller, offline, landlord, guard} = useJooby(() => context.serialised())
 const state = controller.state
+const viewing = computed(() => context.context.location.title || context.context.pageName)
 
 const widget = useJoobyWidgetStore()
 const {open} = storeToRefs(widget)
@@ -134,6 +135,12 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
         </button>
       </div>
     </div>
+    <p
+      class="badge badge-ghost badge-sm max-w-full justify-start truncate"
+      data-testid="widget-viewing"
+    >
+      {{ t('askJooby.viewing', {page: viewing}) }}
+    </p>
     <div class="min-h-0 flex-1">
       <JoobyChat
         :controller="controller"

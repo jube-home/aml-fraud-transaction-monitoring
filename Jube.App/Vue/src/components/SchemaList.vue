@@ -19,6 +19,7 @@ import {useFormat} from '../composables/useFormat'
 import {useGridExpandLabels} from '../composables/useGridExpandLabels'
 import {usePagerLabels} from '../composables/usePagerLabels'
 import {areaName} from '../formModel/areaName'
+import {optionLabel} from '../formModel/recordFacts'
 import type {FormModel, RecordValues} from '../formModel/types'
 import type {StoryStep} from '../story/path'
 import DataGrid from './DataGrid.vue'
@@ -32,6 +33,7 @@ const props = defineProps<{
   filterText?: string
   expandable?: boolean
   autoHeight?: boolean
+  stateKey?: string
 }>()
 
 const emit = defineEmits<{
@@ -60,7 +62,8 @@ const columns = computed<GridColumn[]>(() => [
     .filter((column) => !column.hidden)
     .map((column): GridColumn => {
       const field = props.model.fields.find((candidate) => candidate.name === column.field)
-      const type = field?.type
+      const chosen = (field?.options.length ?? 0) > 0
+      const type = chosen ? 'string' : field?.type
 
       return {
         field: column.field,
@@ -81,7 +84,11 @@ const columns = computed<GridColumn[]>(() => [
                 ? {label: t('crud.yes'), tone: 'success'}
                 : {label: t('crud.no'), tone: 'neutral'}
             : undefined,
-        format: type === 'datetime' ? (value) => (value ? dateTime(String(value)) : '') : undefined,
+        format: chosen
+          ? (value) => optionLabel(field, value) ?? String(value ?? '')
+          : type === 'datetime'
+            ? (value) => (value ? dateTime(String(value)) : '')
+            : undefined,
       }
     }),
   ...(props.canOpen
@@ -116,6 +123,7 @@ function onAction(event: GridActionEvent): void {
     :empty-text="t('crud.empty')"
     :label="t('crud.list', { area: areaName(model.area) })"
     :expandable="expandable"
+    :state-key="stateKey"
     :auto-height="autoHeight"
     :expand-labels="expandLabels"
     :row-key="model.keys.id"

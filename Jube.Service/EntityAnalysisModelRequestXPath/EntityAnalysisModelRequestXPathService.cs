@@ -715,7 +715,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         [Description("Creates a new Request XPath under a Model in the caller's tenant. Not idempotent -- calling " +
                      "twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelRequestXPathCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<RequestXPathPoco> InsertAsync(
+        public async Task<EntityAnalysisModelRequestXPathDto> InsertAsync(
             [Description("The Request XPath to create.")]
             EntityAnalysisModelRequestXPathDto? model,
             CancellationToken token = default)
@@ -760,7 +760,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
                              $"user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelRequestXPathMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -841,7 +841,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
         [Description("Updates an existing Request XPath in the caller's tenant, identified by its Id. Idempotent " +
                      "-- repeating the same update has no further effect beyond incrementing Version.")]
         [ServiceOperation("EntityAnalysisModelRequestXPathUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<RequestXPathPoco> UpdateAsync(
+        public async Task<EntityAnalysisModelRequestXPathDto> UpdateAsync(
             [Description(
                 "The Request XPath to update. Id selects the row; identity/tenant/audit fields are server-owned " +
                 "and ignored.")]
@@ -902,7 +902,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
                         $"EntityAnalysisModelRequestXPath.Update: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelRequestXPathMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1045,7 +1045,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
                      "cycle without requiring an edit. Use after a rejection was explained and the maker still " +
                      "wants the same change (including a delete) approved.")]
         [ServiceOperation("EntityAnalysisModelRequestXPathResubmit", OperationKind.Write, Idempotent = false)]
-        public async Task<RequestXPathPoco> ResubmitAsync(
+        public async Task<EntityAnalysisModelRequestXPathDto> ResubmitAsync(
             [Description("Numeric identifier of the Request XPath to resubmit.")]
             int id,
             [Description("Optional note explaining why this is being resubmitted.")]
@@ -1087,7 +1087,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
                         $"EntityAnalysisModelRequestXPath.Resubmit: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelRequestXPathMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1122,7 +1122,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
                      "undeleting it, if the rejected change was a delete) without opening a new approval cycle. " +
                      "Use when the maker agrees with the rejection and wants to abandon the change.")]
         [ServiceOperation("EntityAnalysisModelRequestXPathRetract", OperationKind.Write, Idempotent = false)]
-        public async Task<RequestXPathPoco> RetractAsync(
+        public async Task<EntityAnalysisModelRequestXPathDto> RetractAsync(
             [Description("Numeric identifier of the Request XPath to retract.")]
             int id,
             [Description("Optional note explaining why this is being retracted.")]
@@ -1164,7 +1164,7 @@ namespace Jube.Service.EntityAnalysisModelRequestXPath
                         $"EntityAnalysisModelRequestXPath.Retract: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelRequestXPathMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

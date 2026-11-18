@@ -18,6 +18,9 @@ import {useQuery} from '@tanstack/vue-query'
 import {useRoute} from 'vue-router'
 import {parseJournalState} from '../cases/journal/state'
 import {useFormat} from '../composables/useFormat'
+import {FolderOpen, Layers} from 'lucide-vue-next'
+import TallySection from '../components/TallySection.vue'
+import TallyGroup from '../components/TallyGroup.vue'
 import {suppressionApi} from './api'
 import CaseSuppressionCard from './CaseSuppressionCard.vue'
 import {isolate, mergeParameter, targetName} from './state'
@@ -62,72 +65,72 @@ const elsewhere = computed(() =>
       <p class="text-xs text-base-content/70">{{ t('suppression.section.hint') }}</p>
     </div>
 
-    <div class="flex flex-col gap-2">
-      <h4 class="text-xs font-semibold">{{ t('suppression.section.own') }}</h4>
-      <div v-if="own.isPending.value" key="loading" class="skeleton h-16 w-full" role="status">
-        <span class="sr-only">{{ t('cases.loading') }}</span>
-      </div>
-      <p v-else-if="own.isError.value" key="failed" role="alert" class="text-sm text-error">
-        {{ t('suppression.section.failed') }}
-      </p>
-      <p v-else-if="(own.data.value ?? []).length === 0" key="empty" class="text-sm" role="status">
-        {{ t('suppression.section.ownEmpty') }}
-      </p>
-      <ul v-else key="cards" class="flex flex-col gap-2">
-        <CaseSuppressionCard
-          v-for="item in own.data.value ?? []"
-          :key="item.id"
-          :suppression="item"
-        />
-      </ul>
-    </div>
-
-    <div class="flex flex-col gap-2">
-      <h4 class="text-xs font-semibold">{{ t('suppression.section.elsewhere') }}</h4>
-      <p v-if="inForce.isError.value" key="failed" role="alert" class="text-sm text-error">
-        {{ t('suppression.section.failed') }}
-      </p>
-      <p v-else-if="elsewhere.length === 0" key="empty" class="text-sm" role="status">
-        {{ t('suppression.section.elsewhereEmpty') }}
-      </p>
-      <ul
-        v-else
-        key="list"
-        class="list rounded-box border border-base-300"
-        data-testid="suppression-in-force"
+    <TallyGroup testid="case-suppression-tally">
+      <TallySection
+        :label="t('suppression.section.own')"
+        :count="(own.data.value ?? []).length"
+        :loading="own.isPending.value"
+        :failed="own.isError.value"
+        :failed-text="t('suppression.section.failed')"
+        testid="suppression-own"
       >
-        <li v-for="row in elsewhere" :key="`${row.isRule}-${row.id}`" class="list-row">
-          <div class="list-col-grow flex flex-col gap-1 text-sm">
-            <span class="font-mono font-medium">{{
-                t('suppression.pair', {
-                  key: isolate(row.overrideKey),
-                  value: isolate(row.overrideKeyValue),
-                })
-              }}</span>
-            <span class="flex flex-wrap gap-2">
-              <span class="badge badge-ghost badge-sm">
+        <template #icon>
+          <FolderOpen class="size-4"/>
+        </template>
+        <ul class="flex flex-col gap-2">
+          <CaseSuppressionCard
+            v-for="item in own.data.value ?? []"
+            :key="item.id"
+            :suppression="item"
+          />
+        </ul>
+      </TallySection>
+
+      <TallySection
+        :label="t('suppression.section.elsewhere')"
+        :count="elsewhere.length"
+        :loading="inForce.isPending.value"
+        :failed="inForce.isError.value"
+        :failed-text="t('suppression.section.failed')"
+        testid="suppression-elsewhere"
+      >
+        <template #icon>
+          <Layers class="size-4"/>
+        </template>
+        <ul class="list rounded-box border border-base-300" data-testid="suppression-in-force">
+          <li v-for="row in elsewhere" :key="`${row.isRule}-${row.id}`" class="list-row">
+            <div class="list-col-grow flex flex-col gap-1 text-sm">
+              <span class="font-mono font-medium">{{
+                  t('suppression.pair', {
+                    key: isolate(row.overrideKey),
+                    value: isolate(row.overrideKeyValue),
+                  })
+                }}</span>
+              <span class="flex flex-wrap gap-2">
+                <span class="badge badge-ghost badge-sm">
+                  {{
+                    row.overrideKindId === 1 ? t('override.kind.force') : t('override.kind.suppress')
+                  }}
+                </span>
+                <span>{{ targetName(row.entityAnalysisModelName, row.ruleName) }}</span>
+              </span>
+              <span class="font-mono text-xs text-base-content/70">
                 {{
-                  row.overrideKindId === 1 ? t('override.kind.force') : t('override.kind.suppress')
+                  t('suppression.section.meta', {
+                    expiry: row.expiryDate
+                      ? t('suppression.card.until', {date: dateTime(row.expiryDate)})
+                      : t('suppression.section.noExpiry'),
+                    user: isolate(row.createdUser),
+                    origin: row.originCaseId
+                      ? t('suppression.section.fromCase', {id: row.originCaseId})
+                      : t('suppression.section.fromOverridePage'),
+                  })
                 }}
               </span>
-              <span>{{ targetName(row.entityAnalysisModelName, row.ruleName) }}</span>
-            </span>
-            <span class="font-mono text-xs text-base-content/70">
-              {{
-                t('suppression.section.meta', {
-                  expiry: row.expiryDate
-                    ? t('suppression.card.until', {date: dateTime(row.expiryDate)})
-                    : t('suppression.section.noExpiry'),
-                  user: isolate(row.createdUser),
-                  origin: row.originCaseId
-                    ? t('suppression.section.fromCase', {id: row.originCaseId})
-                    : t('suppression.section.fromOverridePage'),
-                })
-              }}
-            </span>
-          </div>
-        </li>
-      </ul>
-    </div>
+            </div>
+          </li>
+        </ul>
+      </TallySection>
+    </TallyGroup>
   </section>
 </template>

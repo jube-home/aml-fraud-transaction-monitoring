@@ -36,6 +36,8 @@ Failures not tied to a specific rule row (general synchronisation errors) are in
 `EntityAnalysisModelSynchronisationError` table (`SynchronisationStepId`, `ErrorMessage`, `CreatedDate`), also only
 queryable directly.
 
+Where a rule is refused on save, each error is returned with its position, in two forms. `Start` and `Length` are positions in the text of the rule after its translation to the internal form described below, whereas `Line`, `Column` and `EndColumn` are positions in the line as the author typed it. It follows that it is `Column` and `EndColumn` that the Coder uses to underline the error in the rule.
+
 ## Compiled Assembly Cache Observability
 
 Compiled rule assemblies (the .NET binaries produced by reflection-compiling rule scripts) are held in an in-memory
@@ -1280,6 +1282,5 @@ rule -- for example `Payload.TaxId.DigitCount() = 9` to enforce a fixed-length n
 `Payload.Amount.LeadingSignificantDigit()` to build a Benford's Law check against an expected first-digit frequency
 table held elsewhere in the rule.
 
-<!-- TODO(docs): this page is 1000 lines of token and extension reference. Re-verify the list of tokens against the RuleScriptToken seed before release. -->
-<!-- TODO(docs): the Compile Diagnostics section should say that ErrorSpan Start and Length are positions in the translated text while Column and EndColumn are positions in the line the author typed, and that the editor uses Column and EndColumn. -->
-<!-- TODO(docs): confirm the Rule Author Syntax section still describes the translation the parser performs. -->
+{% comment %}TODO(verify): the list of tokens and extension methods on this page has not been compared against the RuleScriptToken seed and Jube.Dictionary.Extensions on this branch. Compare before release, and add the Abstraction Rule words Cursor, Continue For, Exit For, Dim and Static, described in the Abstraction Rules page, which this page does not yet mention.{% endcomment %}
+{% comment %}TODO(verify): confirm that the Rule Author Syntax section still describes the translation the parser performs.{% endcomment %}

@@ -179,23 +179,6 @@ Database.
 | `LearningCurve_IsEmptyWithNoPromotionHistory`                                   | Fact   | Learning curve is empty with no promotion history.                                       |
 | `LearningCurve_SaysNothingAboutTrendWithFewerThanThreePromotions`               | Fact   | Learning curve says nothing about trend with fewer than three promotions.                |
 
-### ExhaustivePageChartWiringTests
-
-`Jube.Test.Service.ExhaustiveCharts.ExhaustivePageChartWiringTests` — 10 tests. Category: Service.
-
-| Test                                                                                   | Kind   | Verifies                                                                                             |
-|----------------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------------------|
-| `ExhaustivePageAndScriptsDoNotReferenceKendoChart`                                     | Theory | Exhaustive page and scripts do not reference kendo chart.                                            |
-| `ExhaustivePageLoadsTheChartScriptAndScriptUsesEveryChartEndpoint`                     | Fact   | Exhaustive page loads the chart script and script uses every chart endpoint.                         |
-| `PageNoLongerDrawsPredictedVersusActualTheErrorHistogramOrTheHtmlConfusionTable`       | Fact   | Page no longer draws predicted versus actual the error histogram or the html confusion table.        |
-| `EveryPerformanceContainerInThePageIsFilledByTheScriptOnce`                            | Fact   | Every performance container in the page is filled by the script once.                                |
-| `EveryChartHasAMatchingNarrativeDivAndGroup`                                           | Fact   | Every chart has a matching narrative div and group.                                                  |
-| `PerformanceEndpointsAreGatedLikeTheOtherChartEndpointsAndAnswerSvgWithTheSameHeaders` | Fact   | Performance endpoints are gated like the other chart endpoints and answer svg with the same headers. |
-| `ChartScriptCarriesNoInlineStyleSoAStrictStyleSrcWorks`                                | Fact   | Chart script carries no inline style so a strict style src works.                                    |
-| `TheSharedLayoutCarriesTheChartStylesheetSoInjectedMarkupIsStyledByTheSelfPolicy`      | Fact   | The shared layout carries the chart stylesheet so injected markup is styled by the self policy.      |
-| `ChartEndpointsNoLongerNeedInlineStylesInTheirContentSecurityPolicy`                   | Fact   | Chart endpoints no longer need inline styles in their content security policy.                       |
-| `ChartScriptInjectsMarkupAndCarriesNoScriptExecution`                                  | Fact   | Chart script injects markup and carries no script execution.                                         |
-
 ### ExhaustivePerformanceChartServiceTests
 
 `Jube.Test.Service.ExhaustiveCharts.ExhaustivePerformanceChartServiceTests` — 9 tests. Category: Service. Collection:
@@ -290,19 +273,6 @@ Database.
 | `EveryPathRefusesACallerWithoutThePermissionAsync`             | Fact | Every path refuses a caller without the permission.                |
 | `CreateWithoutAUserThrowsNotAuthenticatedAsync`                | Fact | Create without a user throws not authenticated.                    |
 
-### ExhaustiveStatisticsPageWiringTests
-
-`Jube.Test.Service.ExhaustiveCharts.ExhaustiveStatisticsPageWiringTests` — 6 tests. Category: Service.
-
-| Test                                                                  | Kind | Verifies                                                                         |
-|-----------------------------------------------------------------------|------|----------------------------------------------------------------------------------|
-| `PageIncludesTheStatisticsScriptAfterTheChartScript`                  | Fact | Page includes the statistics script after the chart script.                      |
-| `ScriptUsesTheGridClassesMonteCarloSummaryAndSingleVariableRoutes`    | Fact | Script uses the grid classes monte carlo summary and single variable routes.     |
-| `ScriptCarriesNoInlineStyleKendoChartOrComment`                       | Fact | Script carries no inline style kendo chart or comment.                           |
-| `TheStatisticsGridDelegatesToTheScriptAndKeepsTheSingleChartFallback` | Fact | The statistics grid delegates to the script and keeps the single chart fallback. |
-| `EndpointsAreRegisteredAdditivelyAndKeepTheHardenedSvgHeaders`        | Fact | Endpoints are registered additively and keep the hardened svg headers.           |
-| `NoNewSourceWordsRefertoTheExcludedLibraryName`                       | Fact | No new source words referto the excluded library name.                           |
-
 ### ExhaustiveTopologyChartServiceTests
 
 `Jube.Test.Service.ExhaustiveCharts.ExhaustiveTopologyChartServiceTests` — 7 tests. Category: Service. Collection:
@@ -342,23 +312,6 @@ Database.
 | `ATwoTwoOneNetworkIsDrawnInFull`                                               | Fact   | A two two one network is drawn in full.                                                        |
 
 ## Exhaustive instance dataset
-
-### ExhaustiveDatasetWiringTests
-
-`Jube.Test.Service.ExhaustiveInstanceDataset.ExhaustiveDatasetWiringTests` — 10 tests. Category: Service.
-
-| Test                                                                        | Kind | Verifies                                                                                |
-|-----------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------|
-| `Page_LoadsTheDatasetScriptBeforeThePageScriptAndHasEveryControl`           | Fact | Page loads the dataset script before the page script and has every control.             |
-| `PageScript_ReadsAndWritesTheDataSourceThroughTheDatasetScript`             | Fact | Page script reads and writes the data source through the dataset script.                |
-| `DatasetScript_UsesTheEndpointsKendoWidgetsAndNeverInjectsHtml`             | Fact | Dataset script uses the endpoints kendo widgets and never injects html.                 |
-| `TheDemoEnvironmentVariableIsGoneFromCodeAndDocs`                           | Fact | The demo environment variable is gone from code and docs.                               |
-| `EnvironmentDefaults_AreFiftyMegabytesAMillionRowsAndFiveHundredColumns`    | Fact | Environment defaults are fifty megabytes a million rows and five hundred columns.       |
-| `EnvironmentOverrides_AreHonoured_AndGarbageFallsBackToDefaults`            | Fact | Environment overrides are honoured and garbage falls back to defaults.                  |
-| `NewSourceFiles_CarryNoCodeComments`                                        | Fact | New source files carry no code comments.                                                |
-| `Endpoints_MapTheCombinedAndBothKindRoutesWithTheJsonBodyAndEncodingChecks` | Fact | Endpoints map the combined and both kind routes with the json body and encoding checks. |
-| `NoCodeOrDocsCarryTheRetiredDatasetNames`                                   | Fact | No code or docs carry the retired dataset names.                                        |
-| `NewFiles_NeverUseTheForbiddenLibraryWord`                                  | Fact | New files never use the forbidden library word.                                         |
 
 ### ExhaustiveInstanceDatasetServiceTests
 
@@ -440,7 +393,7 @@ Collection: Database.
 
 ### ExhaustiveSearchInstanceServiceTests
 
-`Jube.Test.Service.ExhaustiveSearchInstance.ExhaustiveSearchInstanceServiceTests` — 61 tests. Category: Service.
+`Jube.Test.Service.ExhaustiveSearchInstance.ExhaustiveSearchInstanceServiceTests` — 62 tests. Category: Service.
 Collection: Database.
 
 | Test                                                                                  | Kind   | Verifies                                                                                    |
@@ -455,6 +408,7 @@ Collection: Database.
 | `SetActiveOfUnknownIdThrowsNotFoundAsync`                                             | Fact   | Set active of unknown id throws not found.                                                  |
 | `DeleteKeepsRowReachableByIdAndHidesItFromListsAsync`                                 | Fact   | Delete keeps row reachable by id and hides it from lists.                                   |
 | `StopUpdatesStatusToStoppingAsync`                                                    | Fact   | Stop updates status to stopping.                                                            |
+| `StopWhileAwaitingAServerGoesStraightToStoppedAsNoThreadHoldsItAsync` | Fact | Stop while awaiting a server goes straight to stopped as no thread holds it. |
 | `StopOnUnknownGuidIsANoOpAndDoesNotThrowAsync`                                        | Fact   | Stop on unknown guid is a no op and does not throw.                                         |
 | `EveryMethodThrowsForbiddenWhenPermissionMissingAndWritesNoRowAsync`                  | Fact   | Every method throws forbidden when permission missing and writes no row.                    |
 | `NullOrBlankUserNameThrowsNotAuthenticatedBeforeAnyQueryAsync`                        | Theory | Null or blank user name throws not authenticated before any query.                          |
@@ -552,16 +506,15 @@ Collection: Database.
 ### ResponseHoldAmqpTests
 
 `Jube.Test.Service.ModelScaffolding.ResponseHoldAmqpTests` — 1 test. Category: Service. Collection: Database.
-| `TheWebHookAndTheNotificationOfARangeTravelThroughTheBrokerAndTheirOutcomesAreRecordedAsync` | Fact | The web hook and
-the notification of a range travel through the broker and their outcomes are recorded. |
 
 This class runs only when the environment variable `JubeTestRabbitMq` holds the uri of a broker, for example
 `amqp://guest:guest@localhost:5683`; without it the test is skipped. It starts the real engine over the broker and
 checks that the web hook and the notification of a response elevation range travel through the `jubeWebhooks` and
 `jubeNotifications` queues, each with one consumer, and that their outcomes are written into the hold.
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                                         | Kind | Verifies                                                                                                |
+|----------------------------------------------------------------------------------------------|------|---------------------------------------------------------------------------------------------------------|
+| `TheWebHookAndTheNotificationOfARangeTravelThroughTheBrokerAndTheirOutcomesAreRecordedAsync` | Fact | The web hook and the notification of a range travel through the broker and their outcomes are recorded. |
 
 ### ModelSyncTests
 

@@ -122,7 +122,7 @@ public sealed class ReprocessingRulePermissionSplitTests(DatabaseFixture fx) : I
         };
     }
 
-    private async Task<(int ModelId, Data.Poco.EntityAnalysisModelReprocessingRule Rule)> SeedRuleAsync()
+    private async Task<(int ModelId, EntityAnalysisModelReprocessingRuleDto Rule)> SeedRuleAsync()
     {
         await using var dbContext = fx.GetDbContext();
         var modelId = await CreateModelAsync(dbContext);
@@ -156,7 +156,7 @@ public sealed class ReprocessingRulePermissionSplitTests(DatabaseFixture fx) : I
 
         var update = NewDto(modelId, "Updated");
         update.Id = created.Id;
-        update.Version = created.Version ?? 1;
+        update.Version = created.Version;
         var updated = await service.UpdateAsync(update);
         createdIds.Add(updated.Id);
 
@@ -183,7 +183,7 @@ public sealed class ReprocessingRulePermissionSplitTests(DatabaseFixture fx) : I
 
         var update = NewDto(modelId, "Denied");
         update.Id = seeded.Id;
-        update.Version = seeded.Version ?? 1;
+        update.Version = seeded.Version;
         await Assert.ThrowsAsync<ForbiddenException>(() => service.UpdateAsync(update));
         await Assert.ThrowsAsync<ForbiddenException>(() => service.DeleteAsync(seeded.Id));
 

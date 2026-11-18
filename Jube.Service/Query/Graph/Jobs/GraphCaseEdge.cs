@@ -48,7 +48,8 @@ namespace Jube.Service.Query.Graph.Jobs
                     existing = await repository.InsertAsync(new GraphRegistryEdge
                     {
                         GraphRegistryId = registry.Id, Name = Name, KindId = KindId, FromKey = FromKey, ToKey = NodeKey,
-                        FromNodeKey = null, ToNodeKey = null, HalfLifeDays = HalfLifeDays, KindPrior = 1, MinimumAmount = 0,
+                        FromNodeKey = null, ToNodeKey = null, IconName = "briefcase", ToNodeIcon = "briefcase",
+                        HalfLifeDays = HalfLifeDays, KindPrior = 1, MinimumAmount = 0,
                         Hard = 0, Restricted = 0, Active = 1, Locked = 1, Deleted = 0
                     }, token).ConfigureAwait(false);
                 }

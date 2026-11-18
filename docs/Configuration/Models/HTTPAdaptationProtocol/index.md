@@ -8,32 +8,22 @@ grand_parent: Configuration
 
 # HTTP Adaptation Protocol
 
-This page is the wire specification for HTTP Adaptation endpoints - R Plumber, Python Flask, or anything else that can
-receive a POST and return JSON. It documents what Jube actually sends, what Jube actually accepts back, and how the
-response is used once it is inside Jube. It supersedes the payload description on
-the [HTTP Adaptation](../HTTPAdaptation/index.html) configuration page, which covers how to create an adaptation in the
-UI rather than the shape of the request and response.
+This page is the wire specification for HTTP Adaptation endpoints, be that R Plumber, Python Flask, or anything else that can receive a POST and return JSON. It documents that which Jube actually sends, that which Jube actually accepts back, and how the response is used once it is inside Jube. It supersedes the payload description on the [HTTP Adaptation](../HTTPAdaptation/index.html) configuration page, which covers how an adaptation is created in the user interface rather than the shape of the request and response.
 
-Version on the wire: `1.1`. There is no breaking change from the original bare-double contract: a bare JSON number
-remains a legal whole-body response, forever.
+The version on the wire is `1.1`. There is no breaking change from the original bare-double contract, which is to say that a bare JSON number remains a legal whole-body response, forever.
 
 ## 1. Non-negotiables
 
 1. A bare JSON number is a legal whole-body response, forever.
 2. `Value` is the only required member of an `Adaptation` object.
-3. Vocabularies (`Family`, `Method`, `Space`, and so on) are open strings on the wire, documented as constants in
-   `ProtocolConstants`, never enums. An unrecognised value is archived, not thrown on.
+3. Vocabularies (`Family`, `Method`, `Space`, and so on) are open strings on the wire, documented as constants in `ProtocolConstants`, never enums. An unrecognised value is archived, not thrown on.
 4. Unknown members are ignored on deserialisation.
 5. `Journey: null` is the correct answer for families with no journey, not a degradation.
 6. An error must never masquerade as a score: if `Error` is non-null, `Value` must be null.
 
 ## 2. Request: what Jube sends
 
-Jube POSTs the entire `EntityAnalysisModelInstanceEntryPayload` for the transaction - Payload, Abstraction, TTL
-Counters, Abstraction Calculations, Sanctions, any HTTP Adaptations already recalled earlier in the same invocation, and
-so on - as the JSON body, using the endpoint's configured URL. This is not a hand-picked subset: an adaptation can read
-anything already resolved about the transaction, including the `Value` of an adaptation with a lower Priority that has
-already run (see [§5.3](#53-execution-order-priority-and-boosting)).
+Jube POSTs the entire `EntityAnalysisModelInstanceEntryPayload` for the transaction as the JSON body, using the configured URL of the endpoint, which is to say Payload, Abstraction, TTL Counters, Abstraction Calculations, Sanctions, any HTTP Adaptations already recalled earlier in the same invocation, and so on. This is not a hand-picked subset: an adaptation can read anything already resolved about the transaction, including the `Value` of an adaptation with a lower Priority that has already run (see [§5.3](#53-execution-order-priority-and-boosting)).
 
 ```json
 {
@@ -59,8 +49,7 @@ already run (see [§5.3](#53-execution-order-priority-and-boosting)).
 
 ## 3. Response: the `Adaptation` object
 
-A response body is either a bare JSON number (§3.1) or a JSON object matching the shape below. Every member other than
-`Value` is optional; omit what a family has nothing to say about rather than sending nulls for it.
+A response body is either a bare JSON number (§3.1) or a JSON object matching the shape below. Every member other than `Value` is optional, and that which a family has nothing to say about is to be omitted rather than sent as nulls.
 
 ### 3.1 The bare-number floor
 
@@ -68,8 +57,7 @@ A response body is either a bare JSON number (§3.1) or a JSON object matching t
 0.91
 ```
 
-Also accepted, for compatibility with jsonlite's default vector serialisation: a single number wrapped in an array,
-`[0.91]`. Both forms are equivalent to `{"Value": 0.91}`.
+Also accepted, for compatibility with the default vector serialisation of jsonlite, is a single number wrapped in an array, `[0.91]`. Both forms are equivalent to `{"Value": 0.91}`.
 
 ### 3.2 `Adaptation`
 
@@ -77,7 +65,7 @@ Also accepted, for compatibility with jsonlite's default vector serialisation: a
 |-------------------|------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
 | `Value`           | number \| null                                       | The only required member. Null when suppressed (§4).                                                  |
 | `Error`           | string                                               | Non-null forces `Value` to null. A plain-language failure statement.                                  |
-| `Narrative`       | string                                               | Free text. Display-only - Jube never parses it.                                                       |
+| `Narrative`       | string                                               | Free text. Display-only, in that Jube never parses it.                                                |
 | `HumanLabel`      | string                                               | Free text. Display-only.                                                                              |
 | `ProtocolVersion` | string                                               | Emitted as `"1.1"` by a well-behaved endpoint. Absent is read as unversioned; nothing branches on it. |
 | `Model`           | [`ModelDescriptor`](#33-modeldescriptor)             |                                                                                                       |
@@ -105,8 +93,7 @@ Also accepted, for compatibility with jsonlite's default vector serialisation: a
 | `WhitelistedArcs`, `BlacklistedArcs`              | integer                   | Bayesian networks: counts of expert-constrained arcs.                                                                                                                                               |
 | `HiddenLayers`, `ProcessingElements`              | integer                   | Populated for `NeuralNetwork`, omitted otherwise.                                                                                                                                                   |
 
-Omit the topology/weights fields entirely, rather than duplicating `ArtifactHash` into them, where a family has no
-meaningful topology/weights split.
+Where a family has no meaningful split between topology and weights, the topology and weights fields are to be omitted entirely, rather than duplicating `ArtifactHash` into them.
 
 ### 3.4 `ResultDescriptor`
 
@@ -114,16 +101,15 @@ meaningful topology/weights split.
 |------------------------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `Threshold`            | number  |                                                                                                                                                                                                                                      |
 | `Activated`            | boolean |                                                                                                                                                                                                                                      |
-| `ExpectedPositiveRate` | number  | The thermostat's operational meaning: the expected outcome rate at or above `Threshold`, taken from the validation sample. Only legitimate - and Jube expects endpoints to only populate it - when `Calibration.Calibrated` is true. |
+| `ExpectedPositiveRate` | number  | The thermostat's operational meaning: the expected outcome rate at or above `Threshold`, taken from the validation sample. Only legitimate, and Jube expects endpoints to only populate it, when `Calibration.Calibrated` is true.   |
 
 ### 3.5 `CalibrationDescriptor`
 
-Whether `Value` is a score that merely ranks, or a score that has been validated to mean something. Probabilistic
-narration of `Value` - "one in five", operational capacity planning - is only legitimate when `Calibrated` is true.
+The `CalibrationDescriptor` states whether `Value` is a score that merely ranks, or a score that has been validated to mean something. Probabilistic narration of `Value`, such as "one in five" or operational capacity planning, is only legitimate when `Calibrated` is true.
 
 | Member               | Type                                           | Notes                                                                                                                                                                                                                                                                                |
 |----------------------|------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `Space`              | string                                         | What `Value` actually is. See [`ProtocolConstants.ValueSpace`](#38-protocolconstants-open-vocabularies). Deliberately distinct from `Contribution.Space`, which is the space of the weights - they frequently differ (e.g. XGBoost: `Value` in `Probability`, weights in `LogOdds`). |
+| `Space`              | string                                         | What `Value` actually is. See [`ProtocolConstants.ValueSpace`](#38-protocolconstants-open-vocabularies). Deliberately distinct from `Contribution.Space`, which is the space of the weights, as they frequently differ (e.g. XGBoost: `Value` in `Probability`, weights in `LogOdds`). |
 | `Calibrated`         | boolean                                        | True if and only if `Space` is `Probability` and a calibration/validation artifact was loaded and is in date. Never asserted on faith.                                                                                                                                               |
 | `Method`             | string                                         | Open vocabulary: `None`, `Native`, `Platt`, `Isotonic`, `Beta`. `Native` means the fitting library's own probability output with no post-hoc transform.                                                                                                                              |
 | `ValidatedDate`      | date-time                                      |                                                                                                                                                                                                                                                                                      |
@@ -134,12 +120,12 @@ narration of `Value` - "one in five", operational capacity planning - is only le
 
 #### `CalibrationBand`
 
-| Member           | Type                                            |
-|------------------|-------------------------------------------------|
-| `Lower`, `Upper` | number                                          |
-| `Expected`       | number - mean predicted probability in the band |
-| `Observed`       | number - realised rate on the validation sample |
-| `Count`          | integer                                         |
+| Member           | Type                                             |
+|------------------|--------------------------------------------------|
+| `Lower`, `Upper` | number                                           |
+| `Expected`       | number, the mean predicted probability in the band |
+| `Observed`       | number, the realised rate on the validation sample |
+| `Count`          | integer                                          |
 
 ### 3.6 `ContributionSet`
 
@@ -147,7 +133,7 @@ narration of `Value` - "one in five", operational capacity planning - is only le
 |-------------|-----------------------------|-------------------------------------------------------------------------------------------------------------------------|
 | `Space`     | string                      | The space of the `Items` weights. Open vocabulary, e.g. `Relative`.                                                     |
 | `Method`    | string                      | Open vocabulary: `Coefficient`, `BootstrapStrength`, `ArcStrength`, `ConnectionWeight`, and others as families require. |
-| `Exact`     | boolean                     | True only when `BaseValue + Σ Weight` reconstructs `Value` exactly - a verified property, not an asserted one.          |
+| `Exact`     | boolean                     | True only when `BaseValue + Σ Weight` reconstructs `Value` exactly, being a verified property, not an asserted one.     |
 | `BaseValue` | number                      |                                                                                                                         |
 | `Items`     | array of `ContributionItem` |                                                                                                                         |
 
@@ -164,9 +150,7 @@ narration of `Value` - "one in five", operational capacity planning - is only le
 
 ### 3.7 `JourneyDescriptor`
 
-The single fired path through a model that has one - a decision tree, a rule - structured sufficiently to transcribe
-into a Jube coder rule without ever touching HTTP serialisation again.
-`null` for families with no such path (a Bayesian network, an ensemble).
+The `JourneyDescriptor` is the single fired path through a model that has one, such as a decision tree or a rule, structured sufficiently to transcribe into a Jube coder rule without ever touching HTTP serialisation again. It is `null` for families with no such path (a Bayesian network, an ensemble).
 
 | Member | Type                   |
 |--------|------------------------|
@@ -180,13 +164,12 @@ into a Jube coder rule without ever touching HTTP serialisation again.
 | `Operator`          | string                                                                             |
 | `Threshold`         | number                                                                             |
 | `ThresholdCategory` | string                                                                             |
-| `Source`            | string - see [`ProtocolConstants.Source`](#38-protocolconstants-open-vocabularies) |
+| `Source`            | string, see [`ProtocolConstants.Source`](#38-protocolconstants-open-vocabularies)  |
 | `HumanLabel`        | string                                                                             |
 
 ### 3.8 `ProtocolConstants` (open vocabularies)
 
-These are documented values, not a closed set. An endpoint may emit a value not listed here; Jube archives it rather
-than rejecting the response.
+These are documented values, not a closed set. An endpoint may emit a value not listed here, in which case Jube archives it rather than rejecting the response.
 
 | Vocabulary           | Values                                                                                          |
 |----------------------|-------------------------------------------------------------------------------------------------|
@@ -200,82 +183,40 @@ than rejecting the response.
 
 ## 4. Suppression
 
-`Error` non-null forces `Value` to null, whatever the wire body literally says. The legacy shape
-`{"Value": 0.0, "Error": "..."}` is still parseable, but is now treated the same as
-`{"Value": null, "Error": "..."}`: suppressed. An endpoint author should send `Value` as `null` (or omit it) alongside a
-non-null `Error`; sending `0.0` alongside an `Error` is accepted for backward compatibility, not recommended.
+`Error` non-null forces `Value` to null, whatever the wire body literally says. The legacy shape `{"Value": 0.0, "Error": "..."}` is still parseable, but is now treated the same as `{"Value": null, "Error": "..."}`, which is to say suppressed. An endpoint author should send `Value` as `null` (or omit it) alongside a non-null `Error`; sending `0.0` alongside an `Error` is accepted for backward compatibility, and is not recommended.
 
-A response body that is neither a bare number nor a parseable `Adaptation` object - malformed JSON, an empty body, a
-non-JSON error page - is treated identically to an explicit `Error`: `Value` is null and the failure reason is recorded.
+A response body that is neither a bare number nor a parseable `Adaptation` object, be that malformed JSON, an empty body or a non-JSON error page, is treated identically to an explicit `Error`: `Value` is null and the failure reason is recorded.
 
 ## 5. Consumption inside Jube
 
 ### 5.1 Payload storage
 
-`EntityAnalysisModelInstanceEntryPayload.HttpAdaptation` is a dictionary of adaptation name to the full `Adaptation`
-object - not just the score. This is the single stored copy: Model, Result, Calibration, Contribution and Journey travel
-with it, so the Case UI can build a model journey visualisation, and it is what gets archived (`ArchiveJson`) for the
-case record. There is no separate flattened copy kept alongside it.
+`EntityAnalysisModelInstanceEntryPayload.HttpAdaptation` is a dictionary of adaptation name to the full `Adaptation` object, not just the score. This is the single stored copy: Model, Result, Calibration, Contribution and Journey travel with it, such that the case page can build a model journey visualisation, and it is what gets archived (`ArchiveJson`) for the case record. There is no separate flattened copy kept alongside it.
 
-Where `ReportTable` is enabled on the adaptation, `Value` is additionally written to a flat
-`ArchiveKey` row for SQL-level reporting, the same mechanism used for Abstraction, TTL Counters and every other
-reportable metric - a deliberate denormalisation for querying, not a second source of truth for `Value` itself.
+Where Archive Key (`ReportTable`) is enabled on the adaptation, `Value` is additionally written to a flat `ArchiveKey` row for SQL-level reporting, the same mechanism used for Abstraction, TTL Counters and every other reportable metric, being a deliberate denormalisation for querying, not a second source of truth for `Value` itself.
 
 ### 5.2 Rule script access
 
-A rule authored (Builder or Coder) as `HttpAdaptation.Example` is compiled through to
-`HTTPAdaptation("Example").Value` - the Parser rewrites the dot-notation path automatically, so existing rule text does
-not need to be rewritten by hand. The path stays recognisable; only the compiled output changed.
+A rule authored (Builder or Coder) as `HttpAdaptation.Example` is compiled through to `HTTPAdaptation("Example").Value`, the Parser rewriting the dot-notation path automatically, so existing rule text does not need to be rewritten by hand. The path stays recognisable, and only the compiled output changed.
 
-A suppressed adaptation's `Value` is `null`. A VB.NET expression that compares or does arithmetic on a null
-`Nullable(Of Double)` and assigns the (nullable) result to the rule's `Matched` boolean throws
-`InvalidOperationException` on that narrowing conversion; the exception is caught by the rule's own wrapper (every rule
-is compiled inside a `Try`/`Catch`), logged at Info level, and `Matched` defaults to `False`. In other words: a
-suppressed adaptation safely does not match, at the cost of a log line rather than a silent short-circuit.
+The `Value` of a suppressed adaptation is `null`. A VB.NET expression that compares or does arithmetic on a null `Nullable(Of Double)` and assigns the (nullable) result to the rule's `Matched` boolean throws `InvalidOperationException` on that narrowing conversion; the exception is caught by the rule's own wrapper (every rule is compiled inside a `Try`/`Catch`), logged at Info level, and `Matched` defaults to `False`. It follows that a suppressed adaptation safely does not match, at the cost of a log line rather than a silent short-circuit.
 
-`Value` is registered as an always-allowed token in the Parser (alongside `HttpAdaptation` itself), so it does not need
-to be added to the `RuleScriptToken` table for existing or new rules to compile.
+`Value` is registered as an always-allowed token in the Parser (alongside `HttpAdaptation` itself), so it does not need to be added to the `RuleScriptToken` table for existing or new rules to compile.
 
-To avoid the exception and the log line, read the value as a number with `HttpAdaptation.Example.Value.OrNaN()`, which
-is `NaN` for a suppressed adaptation, so
-the comparison fails and nothing is logged, or with `OrZero()` to read it as zero. `GetValueOrDefault` is not a
-permitted token.
-See [Rule Compilation Tokens and Extensions](../RuleCompilationAlgorithm/index.html).
+To avoid the exception and the log line, read the value as a number with `HttpAdaptation.Example.Value.OrNaN()`, which is `NaN` for a suppressed adaptation, such that the comparison fails and nothing is logged, or with `OrZero()` to read it as zero. `GetValueOrDefault` is not a permitted token. See [Rule Compilation Tokens and Extensions](../RuleCompilationAlgorithm/index.html).
 
 ### 5.3 Execution order: Priority and boosting
 
-Adaptations on a model run in ascending `Priority` order (a `double`, default `0`, editable on the HTTP Adaptation
-page). Because the POST body is the whole transaction payload (§2), a later adaptation can read an earlier one's result
-directly, e.g. as an input feature or as a
-`HttpAdaptation.EarlierModel.Value` term in the endpoint's own scoring logic - this is what makes boosting / model
-chaining possible. Ties, and the historic default of `0` for every adaptation, are broken by whatever order the database
-returns them in for that priority, which is not itself guaranteed - give adaptations distinct priorities if run order
-matters.
+Adaptations on a model run in ascending `Priority` order (a `double`, default `0`, set in the Priority field of the HTTP Adaptation). Because the POST body is the whole transaction payload (§2), a later adaptation can read the result of an earlier one directly, for example as an input feature or as a `HttpAdaptation.EarlierModel.Value` term in the endpoint's own scoring logic, which is what makes boosting and model chaining possible. Ties, and the historic default of `0` for every adaptation, are broken by whatever order the database returns them in for that priority, which is not itself guaranteed, henceforth adaptations are to be given distinct priorities if run order matters.
 
 ### 5.4 Reference and mock endpoints
 
-`Jube.App/Endpoints/Mocks/MockHttpAdaptationEndpoints.cs` exposes a series of unauthenticated endpoints under
-`/api/MockHttpAdaptation/*` - one per family and edge case (bare number, suppressed, the legacy error shape,
-malformed/empty bodies, a stale-calibration example, and so on) - so an
-`EntityAnalysisModelHttpAdaptation.HttpEndpoint` can be pointed at a worked example of the protocol without standing up
-an R/Python sandbox. `GET /api/MockHttpAdaptation` lists every scenario.
+`Jube.App/Endpoints/Mocks/MockHttpAdaptationEndpoints.cs` exposes a series of unauthenticated endpoints under `/api/MockHttpAdaptation/*`, one per family and edge case (bare number, suppressed, the legacy error shape, malformed and empty bodies, a stale-calibration example, and so on), such that the Http endpoint of an HTTP Adaptation can be pointed at a worked example of the protocol without standing up an R or Python sandbox. `GET /api/MockHttpAdaptation` lists every scenario.
 
-These endpoints are mapped only when the `EnableMockEndpoints` environment variable is not `False`. It defaults to
-True, so they are available unless a deployment opts out, and the seeded example model relies on that default. Set it
-to False on a deployment that does not need them: they are unauthenticated by design, and `ServerError` returns an
-HTTP 500 on purpose, which a security scanner will quite correctly report as a server error and an application error
-disclosure for as long as the route is mapped.
+These endpoints are mapped only when the `EnableMockEndpoints` environment variable is not `False`. It defaults to True, so they are available unless a deployment opts out, and the seeded example model relies on that default. It is to be set to False on a deployment that does not need them: they are unauthenticated by design, and `ServerError` returns an HTTP 500 on purpose, which a security scanner will quite correctly report as a server error and an application error disclosure for as long as the route is mapped.
 
-The quickstart compose file at the repository root leaves the default in place, so the seeded example model works out
-of the box. The production-shaped Jube Cluster compose files set `EnableMockEndpoints=False` on every Jube service, so
-on
-a cluster point the adaptation at a real endpoint. The mock RSA MFA verifier is not part of this family: it needs the
-separate `EnableMockMfaEndpoint` setting (default False) as well.
-
-<!-- TODO(docs): owner to read this page end to end, it has not been re-verified against the Vue UI -->
+The quickstart compose file at the repository root leaves the default in place, so the seeded example model works out of the box. The production-shaped Jube Cluster compose files set `EnableMockEndpoints=False` on every Jube service, so on a cluster the adaptation is to be pointed at a real endpoint. The mock RSA MFA verifier is not part of this family, needing the separate `EnableMockMfaEndpoint` setting (default False) as well.
 
 ## 6. Source of record
 
-The types in this document are a description of, not a substitute for, the C# records under
-`Jube.HttpAdaptationProtocol/`. Where this page and the code
-disagree, the code is correct and this page is stale.
+The types in this document are a description of, not a substitute for, the C# records under `Jube.HttpAdaptationProtocol/`. Where this page and the code disagree, the code is correct and this page is stale.

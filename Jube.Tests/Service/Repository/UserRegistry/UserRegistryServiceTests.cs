@@ -240,7 +240,7 @@ namespace Jube.Test.Service.Repository.UserRegistry
             var updated = await service.UpdateAsync(dto);
 
             updated.Version.Should().Be(2);
-            updated.Active.Should().Be(1);
+            updated.Active.Should().BeTrue();
             updated.Guid.Should().Be(saved.Guid);
 
             var auditRows = await dbContext.GetTable<UserRegistryVersion>()

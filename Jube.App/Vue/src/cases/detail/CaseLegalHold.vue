@@ -16,7 +16,7 @@ import {computed, ref} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/vue-query'
 import {Scale} from 'lucide-vue-next'
-import FieldHelp from '../../components/FieldHelp.vue'
+import DecideCard from './DecideCard.vue'
 import {meQueryOptions} from '../../auth/me'
 import {useToasts} from '../../stores/toasts'
 import {
@@ -64,17 +64,19 @@ const change = useMutation({
 </script>
 
 <template>
-  <fieldset v-if="allowed && state.data.value" class="fieldset" data-testid="case-legal-hold">
-    <legend class="fieldset-legend">
-      <Scale class="size-3.5" aria-hidden="true"/>
-      {{ t('caseDetail.legalHold.title') }}
-      <FieldHelp :label="t('caseDetail.legalHold.title')" :text="t('caseDetail.legalHold.hint')"/>
-    </legend>
+  <DecideCard v-if="allowed && state.data.value"
+    :title="t('caseDetail.legalHold.title')"
+    :help="t('caseDetail.legalHold.hint')"
+    testid="case-legal-hold"
+  >
+    <template #icon>
+      <Scale class="size-5"/>
+    </template>
 
     <p v-if="holding" class="text-sm" data-testid="case-legal-hold-state">
       <span class="badge badge-warning badge-sm">{{ t('caseDetail.legalHold.held') }}</span>
       {{ state.data.value.reason }}
-      <span class="text-base-content/70">{{
+      <span class="block text-base-content/70">{{
           t('caseDetail.legalHold.by', {user: state.data.value.user ?? ''})
         }}</span>
     </p>
@@ -112,5 +114,5 @@ const change = useMutation({
     >
       {{ t('caseDetail.legalHold.lift') }}
     </button>
-  </fieldset>
+  </DecideCard>
 </template>

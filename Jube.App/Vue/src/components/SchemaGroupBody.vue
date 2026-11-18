@@ -14,6 +14,7 @@
 <script setup vapor lang="ts">
 import {computed} from 'vue'
 import {useI18n} from 'vue-i18n'
+import {fieldState} from '../formModel/conditions'
 import {editorOf} from '../formModel/editors'
 import {bodyOf, featureBody, featureTitle, type GroupBody} from '../formModel/features'
 import type {FormEditor, FormField, FormModel, RecordValues} from '../formModel/types'
@@ -57,8 +58,13 @@ function spanOf(entry: Entry): string {
 
 const isFlag = (entry: Entry): boolean => entry.field.type === 'boolean' && !entry.editor
 
-const flagEntries = computed(() => entries.value.filter(isFlag))
-const plainEntries = computed(() => entries.value.filter((entry) => !isFlag(entry)))
+const flags = computed(() => entries.value.filter(isFlag))
+const loneFlag = computed(() => flags.value.length === 1 && entries.value.length > 1)
+
+const flagEntries = computed(() => (loneFlag.value ? [] : flags.value))
+const plainEntries = computed(() =>
+  loneFlag.value ? entries.value : entries.value.filter((entry) => !isFlag(entry)),
+)
 
 const inactive = computed(() => props.disabled === true || props.locked === true)
 </script>
@@ -78,6 +84,28 @@ const inactive = computed(() => props.disabled === true || props.locked === true
           :disabled="disabled"
           @change="(name, value) => emit('change', name, value)"
         />
+        <template v-else-if="isFlag(entry)">
+          <div
+            v-if="fieldState(entry.field, values).visible"
+            class="flex flex-col gap-1"
+            data-testid="flag"
+          >
+            <span class="px-1 text-xs font-medium text-secondary">{{ t('crud.options') }}</span>
+            <div
+              class="flex min-h-8 items-center rounded-box border border-base-300 bg-base-200 px-4"
+            >
+              <SchemaField
+                :field="entry.field"
+                :values="values"
+                :errors="errors[entry.field.name]"
+                :locked="locked"
+                :disabled="disabled"
+                :lock-field="isLockField(entry.field.name)"
+                @change="(name, value) => emit('change', name, value)"
+              />
+            </div>
+          </div>
+        </template>
         <SchemaField
           v-else
           :class="spanOf(entry)"

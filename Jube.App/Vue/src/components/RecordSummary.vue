@@ -23,6 +23,7 @@ import type {FormChild, FormModel, RecordValues} from '../formModel/types'
 import {withUnsetChoices} from '../formModel/values'
 import type {StoryStep} from '../story/path'
 import GridRowSummary from './GridRowSummary.vue'
+import HubDeck from './HubDeck.vue'
 import PanelCard from './PanelCard.vue'
 import RecordGlimpse from './RecordGlimpse.vue'
 
@@ -74,16 +75,17 @@ function parentOf(child: FormChild): number | string | undefined {
       :aria-label="t('crud.summaryBelow')"
       :data-testid="`crud-summary-${id}-children`"
     >
-      <h4 class="text-xs font-semibold text-secondary">{{ t('crud.summaryBelow') }}</h4>
-      <ul class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
-        <RecordGlimpse
-          v-for="child in children"
-          :key="child.area"
-          :child="child"
-          :parent-value="parentOf(child)"
-          @open="(below) => emit('open', [{area: model.area, id}, ...below])"
-        />
-      </ul>
+      <HubDeck>
+        <ul class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+          <RecordGlimpse
+            v-for="child in children"
+            :key="child.area"
+            :child="child"
+            :parent-value="parentOf(child)"
+            @open="(below) => emit('open', [{area: model.area, id}, ...below])"
+          />
+        </ul>
+      </HubDeck>
     </section>
     <section
       v-if="groups.length > 0"

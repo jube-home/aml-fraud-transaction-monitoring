@@ -13,8 +13,6 @@ nav_order: 11
 > a version listed below can lag the SBOM; where they disagree the SBOM is right. For example, at the time of writing it
 > lists linq2db 3.6.0 and MessagePack 3.1.7 where the solution uses 6.5.1 and 3.1.12.
 
-<!-- TODO(docs): regenerate the licence columns of this appendix from the SBOM (the CycloneDX output carries licences) instead of maintaining them by hand. -->
-
 **Solution:** Jube (38 .csproj projects, all targeting `net10.0`)
 **Scope:** All NuGet package references across the solution, plus all vendored/static third-party client-side assets
 under `Jube.App/wwwroot` (outside NuGet).

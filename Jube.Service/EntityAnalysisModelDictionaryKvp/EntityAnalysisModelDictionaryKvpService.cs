@@ -587,7 +587,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
         [Description("Registers a new Key Value Pair under a Dictionary in the caller's tenant. Not idempotent " +
                      "-- calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelDictionaryKvpCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<DictionaryKvpPoco> InsertAsync(
+        public async Task<EntityAnalysisModelDictionaryKvpDto> InsertAsync(
             [Description("The Key Value Pair to create.")]
             EntityAnalysisModelDictionaryKvpDto? model,
             CancellationToken token = default)
@@ -644,7 +644,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                     log.Info($"EntityAnalysisModelDictionaryKvp.Create: created Id={saved.Id} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelDictionaryKvpMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -722,7 +722,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
         [Description("Updates an existing Key Value Pair in the caller's tenant, identified by its Id. " +
                      "Idempotent -- repeating the same update has no further effect beyond incrementing Version.")]
         [ServiceOperation("EntityAnalysisModelDictionaryKvpUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<DictionaryKvpPoco> UpdateAsync(
+        public async Task<EntityAnalysisModelDictionaryKvpDto> UpdateAsync(
             [Description("The Key Value Pair to update. Id selects the row; identity/tenant/audit fields are " +
                          "server-owned and ignored.")]
             EntityAnalysisModelDictionaryKvpDto? model,
@@ -794,7 +794,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                         $"EntityAnalysisModelDictionaryKvp.Update: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelDictionaryKvpMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1019,7 +1019,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                      "approval cycle without requiring an edit. Use after a rejection was explained and the " +
                      "maker still wants the same change (including a delete) approved.")]
         [ServiceOperation("EntityAnalysisModelDictionaryKvpResubmit", OperationKind.Write, Idempotent = false)]
-        public async Task<DictionaryKvpPoco> ResubmitAsync(
+        public async Task<EntityAnalysisModelDictionaryKvpDto> ResubmitAsync(
             [Description("Numeric identifier of the Key Value Pair to resubmit.")]
             int id,
             [Description("Optional note explaining why this is being resubmitted.")]
@@ -1061,7 +1061,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                         $"EntityAnalysisModelDictionaryKvp.Resubmit: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelDictionaryKvpMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1096,7 +1096,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                      "undeleting it, if the rejected change was a delete) without opening a new approval cycle. " +
                      "Use when the maker agrees with the rejection and wants to abandon the change.")]
         [ServiceOperation("EntityAnalysisModelDictionaryKvpRetract", OperationKind.Write, Idempotent = false)]
-        public async Task<DictionaryKvpPoco> RetractAsync(
+        public async Task<EntityAnalysisModelDictionaryKvpDto> RetractAsync(
             [Description("Numeric identifier of the Key Value Pair to retract.")]
             int id,
             [Description("Optional note explaining why this is being retracted.")]
@@ -1138,7 +1138,7 @@ namespace Jube.Service.EntityAnalysisModelDictionaryKvp
                         $"EntityAnalysisModelDictionaryKvp.Retract: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelDictionaryKvpMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

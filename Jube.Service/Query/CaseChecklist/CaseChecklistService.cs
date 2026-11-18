@@ -660,7 +660,7 @@ namespace Jube.Service.Query.CaseChecklist
             {
                 log.Warn($"CaseChecklist.Check: validate SQL failed caseId={caseRow.Id}", e);
 
-                return (false, $"{userName} could not tick the item: the validation condition failed: {e.Message}");
+                return (false, $"{userName} could not tick the item: the validation condition failed to run.");
             }
         }
 

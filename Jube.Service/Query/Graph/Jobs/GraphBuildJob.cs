@@ -242,6 +242,12 @@ namespace Jube.Service.Query.Graph.Jobs
 
                     if (window.Count == 0)
                     {
+                        foreach (var state in group)
+                        {
+                            state.LastRunDate = DateTime.UtcNow;
+                            await states.UpdateAsync(state, token).ConfigureAwait(false);
+                        }
+
                         break;
                     }
 
@@ -303,13 +309,23 @@ namespace Jube.Service.Query.Graph.Jobs
 
             if (rows.Count > 0)
             {
-                var applied = (await new GraphEdgeEventRepository(dbContext)
+                var existing = (await new GraphEdgeEventRepository(dbContext)
                         .GetByEntryGuidsAsync(rows.Select(r => r.EntityAnalysisModelInstanceEntryGuid).Distinct().ToList(),
                             token).ConfigureAwait(false))
                     .Where(e => e.Retracted == 0)
-                    .Select(e => (e.EntityAnalysisModelInstanceEntryGuid, e.ArchiveKeyVersion ?? 1))
+                    .ToList();
+                var definitionByEdge = existing.Count == 0
+                    ? []
+                    : (await new GraphEdgeRepository(dbContext)
+                        .GetByIdsAsync(tenant, existing.Select(e => e.GraphEdgeId).Distinct().ToList(), token)
+                        .ConfigureAwait(false))
+                    .ToDictionary(e => e.Id, e => e.GraphRegistryEdgeGuid);
+                var applied = existing.Where(e => definitionByEdge.ContainsKey(e.GraphEdgeId))
+                    .Select(e => (definitionByEdge[e.GraphEdgeId], e.EntityAnalysisModelInstanceEntryGuid,
+                        e.ArchiveKeyVersion ?? 1))
                     .ToHashSet();
-                rows = rows.Where(r => !applied.Contains((r.EntityAnalysisModelInstanceEntryGuid, r.KeyVersion ?? 1))).ToList();
+                rows = rows.Where(r => !applied.Contains((r.Definition, r.EntityAnalysisModelInstanceEntryGuid,
+                    r.KeyVersion ?? 1))).ToList();
             }
 
             if (rows.Count == 0)

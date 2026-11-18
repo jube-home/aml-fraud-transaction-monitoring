@@ -23,6 +23,7 @@ const base: CaseSimilarity = {
   open: 1,
   enoughToJudge: true,
   neighbours: [],
+  enabled: true,
 }
 
 describe('similar cases', () => {
@@ -44,6 +45,8 @@ describe('similar cases', () => {
     expect(headlineOf(undefined, true)).toBe('failed')
     expect(headlineOf(undefined, false)).toBe('loading')
     expect(headlineOf({...base, built: false}, false)).toBe('pending')
+    expect(headlineOf({...base, built: false, enabled: false}, false)).toBe('off')
+    expect(headlineOf({...base, enabled: false}, false)).toBe('headline')
     expect(headlineOf({...base, similar: 0}, false)).toBe('none')
     expect(headlineOf({...base, enoughToJudge: false}, false)).toBe('tooFew')
     expect(headlineOf(base, false)).toBe('headline')

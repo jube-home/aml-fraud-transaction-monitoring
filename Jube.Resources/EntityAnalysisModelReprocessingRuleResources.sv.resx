@@ -82,7 +82,7 @@
     <value>Omprocessningsurvalet måste vara mellan 0 och 100 procent.</value>
   </data>
     <data name="ReprocessingValueRange" xml:space="preserve">
-    <value>Omprocessningsintervallets värde får inte vara negativt.</value>
+    <value>Omprocessningsintervallets värde måste vara noll eller mer och inom gränsen för det valda intervallet.</value>
   </data>
     <data name="ReprocessingIntervalInvalid" xml:space="preserve">
     <value>Omprocessningsintervallet måste vara minuter, timmar, dagar eller månader.</value>

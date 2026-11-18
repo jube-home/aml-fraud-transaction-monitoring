@@ -66,6 +66,12 @@ namespace Jube.AskJooby.Prompts
                         $"{pageContext.RecordSummary}";
             }
 
+            if (!string.IsNullOrWhiteSpace(pageContext.Location))
+            {
+                note += $" The page's address, route parameters and query string as the caller sees them " +
+                        $"right now (raw, it can change between messages as they navigate): {pageContext.Location}";
+            }
+
             note += " Use this to infer intent proactively and skip an obvious clarifying question when " +
                     "it already answers one -- but it is a hint about likely intent, not a fact about the " +
                     "data, so still check real data before acting or answering on anything it implies.";

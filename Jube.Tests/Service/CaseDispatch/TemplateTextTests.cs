@@ -91,6 +91,21 @@ namespace Jube.Test.Service.CaseDispatch
         }
 
         [Fact]
+        public void AnUnknownNameIsAnsweredWithTheNamesOfItsOwnDialect()
+        {
+            var form = () => DatasourceTemplate.CompileForm("<p>[@ Payment.Id @]</p><input name=\"a\">");
+
+            form.Should().Throw<DatasourceChartException>().Which.Message.Should()
+                .Contain("\"Payment\" is not known here. The names known here are Abstraction, Activation,")
+                .And.Contain("Payload").And.NotContain("rowCount");
+
+            var sql = () => DatasourceTemplate.CompileForm("<p>[@ Case.Id @]</p><input name=\"a\">", TemplateDialect.FormSql);
+
+            sql.Should().Throw<DatasourceChartException>().Which.Message.Should()
+                .Contain("The names known here are columns, Form, rowCount, rows, truncated.");
+        }
+
+        [Fact]
         public void DrawsAFormFromTheRowsInTheSqlDialect()
         {
             var render = DatasourceTemplate.RenderForm("<p>[@ rows[0].name @]</p><input name=\"a\" value=\"[@ rows[0].id @]\">", Roots,

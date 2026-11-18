@@ -3487,7 +3487,7 @@ test.describe('Case page', () => {
     await page.getByTestId('pane-toggle-left').click()
     await expect(page.getByTestId('case-left-pane')).toBeHidden()
     await expect(page.getByTestId('pane-toggle-left')).toHaveAttribute('aria-expanded', 'false')
-    await expect(page.getByTestId('pane-toggle-left')).toContainText('Show the key panel')
+    await expect(page.getByTestId('pane-toggle-left')).toContainText('Show the sections')
 
     const rightOnly = (await story.boundingBox())!.width
 
@@ -4017,7 +4017,10 @@ test.describe('Case page', () => {
     await expect(page.getByTestId('case-note-source')).toHaveText(['Analyst', 'System'])
     await expect(page.getByTestId('case-note-finding-toggle')).toHaveCount(1)
 
-    await notes
+    await expect(notes.getByTestId('case-note-finding-toggle')).toHaveCount(0)
+
+    await page
+      .getByTestId('case-decide-finding')
       .filter({hasText: 'Spoke to the branch'})
       .getByTestId('case-note-finding-toggle')
       .click()
@@ -4081,6 +4084,65 @@ test.describe('Case page', () => {
     ).toBeVisible()
     await expect(page.getByTestId('case-notes').getByTestId('case-research')).toHaveCount(0)
     await expect(page.getByTestId('case-research-section').getByTestId('case-note')).toHaveCount(0)
+  })
+
+  test('shows counts and one line when the key has no notes and no research', async ({page}) => {
+    await stub(page)
+    await page.route(/\/api\/GetCaseNoteByCaseKeyValueQuery/, (route) => route.fulfill({json: []}))
+
+    await page.goto('/cases/9041?section=notes')
+
+    await expect(page.getByTestId('case-notes-count')).toHaveText('0')
+    await expect(page.getByTestId('case-research-section-count')).toHaveText('0')
+    await expect(page.getByTestId('case-notes-tally-note')).toContainText('added from Decide')
+    await expect(page.getByTestId('case-notes').getByRole('list')).toHaveCount(0)
+    await expect(page.getByTestId('case-research-section').getByRole('list')).toHaveCount(0)
+  })
+
+  test('keeps the key facts in the story and moves Decide there when its pane is hidden', async ({
+    page,
+  }) => {
+    await stub(page)
+
+    await page.goto('/cases/9041')
+
+    const story = page.getByTestId('case-story')
+
+    await expect(story.getByTestId('case-key-panel')).toContainText('ACC-441')
+    await expect(page.getByTestId('case-right-pane').getByTestId('case-decide')).toBeVisible()
+    await expect(story.getByTestId('case-decide')).toHaveCount(0)
+
+    await page.getByTestId('pane-toggle-left').click()
+    await page.getByTestId('pane-toggle-right').click()
+
+    await expect(story.getByTestId('case-key-panel')).toBeVisible()
+    await expect(story.getByTestId('case-decide')).toBeVisible()
+    await expect(page.getByTestId('case-decide')).toHaveCount(1)
+    await expect(story.getByTestId('case-decide-tab-note')).toBeVisible()
+  })
+
+  test('records the analyst assessment from Decide and never from the canvas', async ({page}) => {
+    await stub(page)
+
+    await page.goto('/cases/9041')
+
+    await expect(page.getByTestId('case-assessment')).toBeVisible()
+    await expect(
+      page.getByTestId('case-assessment').locator('button, input, textarea, select'),
+    ).toHaveCount(0)
+    await expect(
+      page.getByTestId('case-decide-assessment').getByTestId('case-assessment-save'),
+    ).toBeVisible()
+  })
+
+  test('drops the one line once the key has notes', async ({page}) => {
+    await stub(page)
+
+    await page.goto('/cases/9041?section=notes')
+
+    await expect(page.getByTestId('case-notes').getByRole('list').first()).toBeVisible()
+    await expect(page.getByTestId('case-research-section-count')).toHaveText('0')
+    await expect(page.getByTestId('case-notes-tally-note')).toHaveCount(0)
   })
 
   test('shows research with its topic, findings, a sources table with safe links, hosts and files', async ({
@@ -5031,16 +5093,16 @@ test.describe('Case page', () => {
 
     await expect(journal.getByTestId('activation-map')).toHaveAttribute('data-points', '2')
 
-    await journal.getByTestId('journal-views-save').click()
-    await journal.getByTestId('journal-views-name').fill('Only the bad ones')
-    await journal.getByTestId('journal-views-apply').click()
+    await page.getByTestId('case-decide-journal').getByTestId('journal-views-save').click()
+    await page.getByTestId('case-decide-journal').getByTestId('journal-views-name').fill('Only the bad ones')
+    await page.getByTestId('case-decide-journal').getByTestId('journal-views-apply').click()
 
     await expect.poll(() => posts.length).toBe(1)
     expect(posts[0]).toMatchObject({impossibleOnly: true, limitKmh: 300})
 
     await page.goto('/cases/9041')
-    await journal.getByTestId('journal-views-open').click()
-    await journal.getByTestId('journal-views-load').click()
+    await page.getByTestId('case-decide-journal').getByTestId('journal-views-open').click()
+    await page.getByTestId('case-decide-journal').getByTestId('journal-views-load').click()
 
     await expect(journal.getByTestId('journal-map-only')).toBeChecked()
     await journal.getByTestId('journal-map-limits-open').click()
@@ -5098,11 +5160,11 @@ test.describe('Case page', () => {
     const journal = page.getByTestId('case-journal')
 
     await expect(journal.getByTestId('activation-map')).toBeVisible()
-    await expect(journal.getByTestId('journal-views-open')).toContainText('0')
+    await expect(page.getByTestId('case-decide-journal').getByTestId('journal-views-open')).toContainText('0')
 
-    await journal.getByTestId('journal-views-save').click()
-    await journal.getByTestId('journal-views-name').fill('Two countries')
-    await journal.getByTestId('journal-views-apply').click()
+    await page.getByTestId('case-decide-journal').getByTestId('journal-views-save').click()
+    await page.getByTestId('case-decide-journal').getByTestId('journal-views-name').fill('Two countries')
+    await page.getByTestId('case-decide-journal').getByTestId('journal-views-apply').click()
 
     await expect.poll(() => posts.length).toBe(1)
     expect(posts[0]).toMatchObject({
@@ -5114,22 +5176,22 @@ test.describe('Case page', () => {
     })
     expect(JSON.parse(String(posts[0]?.filter))).toEqual(filter)
     expect(posts[0]).not.toHaveProperty('points')
-    await expect(journal.getByTestId('journal-views-open')).toContainText('1')
+    await expect(page.getByTestId('case-decide-journal').getByTestId('journal-views-open')).toContainText('1')
 
     await page.goto('/cases/9041')
     await expect(journal.getByTestId('journal-lens-payload')).toBeVisible()
-    await journal.getByTestId('journal-views-open').click()
-    await journal.getByTestId('journal-views-load').click()
+    await page.getByTestId('case-decide-journal').getByTestId('journal-views-open').click()
+    await page.getByTestId('case-decide-journal').getByTestId('journal-views-load').click()
 
     await expect(page).toHaveURL(/jw=30/)
     await expect(page).toHaveURL(/jb=1/)
     await expect(journal.getByTestId('activation-map')).toHaveAttribute('data-points', '2')
 
-    await journal.getByTestId('journal-views-open').click()
-    await journal.getByTestId('journal-views-delete').click()
+    await page.getByTestId('case-decide-journal').getByTestId('journal-views-open').click()
+    await page.getByTestId('case-decide-journal').getByTestId('journal-views-delete').click()
 
     await expect.poll(() => deletes.length).toBe(1)
-    await expect(journal.getByTestId('journal-views-open')).toContainText('0')
+    await expect(page.getByTestId('case-decide-journal').getByTestId('journal-views-open')).toContainText('0')
   })
 
   test('offers no map action when the key cannot be located', async ({page}) => {

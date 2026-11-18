@@ -82,24 +82,24 @@
     <value>सर्च कुंजी का TTL अंतराल Seconds, Minutes, Hours या Days होना चाहिए।</value>
   </data>
     <data name="SearchKeyTtlIntervalValueRange" xml:space="preserve">
-    <value>सर्च कुंजी के TTL अंतराल का मान शून्य या उससे अधिक होना चाहिए।</value>
+    <value>सर्च कुंजी के TTL अंतराल का मान शून्य या अधिक होना चाहिए और चुने गए अंतराल की सीमा के भीतर होना चाहिए।</value>
   </data>
     <data name="SearchKeyFetchLimitRange" xml:space="preserve">
-    <value>सर्च कुंजी की फ़ेच सीमा शून्य या उससे अधिक होनी चाहिए।</value>
+    <value>सर्च कुंजी की फ़ेच सीमा 0 और 1,000,000 के बीच होनी चाहिए।</value>
   </data>
     <data name="SearchKeyCacheIntervalInvalid" xml:space="preserve">
     <value>सर्च कुंजी का कैश अंतराल Seconds, Minutes, Hours या Days होना चाहिए।</value>
   </data>
     <data name="SearchKeyCacheValueRange" xml:space="preserve">
-    <value>सर्च कुंजी के कैश अंतराल का मान शून्य या उससे अधिक होना चाहिए।</value>
+    <value>सर्च कुंजी के कैश अंतराल का मान शून्य या अधिक होना चाहिए और चुने गए अंतराल की सीमा के भीतर होना चाहिए।</value>
   </data>
     <data name="SearchKeyCacheFetchLimitRange" xml:space="preserve">
-    <value>सर्च कुंजी की कैश फ़ेच सीमा शून्य या उससे अधिक होनी चाहिए।</value>
+    <value>सर्च कुंजी की कैश फ़ेच सीमा 0 और 1,000,000 के बीच होनी चाहिए।</value>
   </data>
     <data name="SearchKeyCacheTtlIntervalInvalid" xml:space="preserve">
     <value>सर्च कुंजी के कैश का TTL अंतराल Seconds, Minutes, Hours या Days होना चाहिए।</value>
   </data>
     <data name="SearchKeyCacheTtlValueRange" xml:space="preserve">
-    <value>सर्च कुंजी के कैश TTL अंतराल का मान शून्य या उससे अधिक होना चाहिए।</value>
+    <value>सर्च कुंजी के कैश TTL अंतराल का मान शून्य या अधिक होना चाहिए और चुने गए अंतराल की सीमा के भीतर होना चाहिए।</value>
   </data>
 </root>

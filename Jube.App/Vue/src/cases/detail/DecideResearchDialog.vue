@@ -89,7 +89,7 @@ const save = useMutation({
   },
   onSuccess: (unattached) => {
     if (unattached > 0) {
-      toasts.error(t('caseDetail.decide.notAttached', {n: unattached}))
+      toasts.error(t('caseDetail.decide.researchNotAttached', {n: unattached}))
     } else {
       toasts.success(t('caseDetail.decide.researchAdded'))
     }

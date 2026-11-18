@@ -8,44 +8,30 @@ grand_parent: Getting Started
 
 # Jube Cluster Monitoring Reference
 
-Host-level CPU, RAM, and disk metrics are assumed to be collected at the node level and are not covered here. This
-document covers the checks you run inside the stack itself:
+Host-level CPU, RAM, and disk metrics are assumed to be collected at the node level and are not covered here. This document covers the checks you run inside the stack itself:
 
-1. **Per-container resource checks** — CPU and memory via `docker stats`.
-2. **Port availability** — TCP-level probes confirming services are bound and accepting connections.
-3. **Application health endpoints** — HTTP-level probes confirming services are operational.
-4. **HAProxy traffic monitoring** — frontend byte-rate and status checks.
-5. **PostgreSQL internals** — connections, replication lag, long-running queries.
-6. **Redis internals** — memory pressure, replication offset, keyspace hit rate.
-7. **Patroni internals** — cluster state, leader presence, timeline divergence.
-8. **Sentinel internals** — master reachability, quorum, address consistency.
-9. **Jube application monitors** — queue saturation, engine liveness, response time, elevation rate.
-10. **Container log monitoring** — STDERR for Jube, STDOUT for infrastructure, restart detection.
+1. **Per-container resource checks**: CPU and memory via `docker stats`.
+2. **Port availability**: TCP-level probes confirming services are bound and accepting connections.
+3. **Application health endpoints**: HTTP-level probes confirming services are operational.
+4. **HAProxy traffic monitoring**: frontend byte-rate and status checks.
+5. **PostgreSQL internals**: connections, replication lag, long-running queries.
+6. **Cache internals**: memory pressure, replication offset, keyspace hit rate.
+7. **Patroni internals**: cluster state, leader presence, timeline divergence.
+8. **Sentinel internals**: master reachability, quorum, address consistency.
+9. **Jube application monitors**: queue saturation, engine liveness, response time, elevation rate.
+10. **Container log monitoring**: STDERR for Jube, STDOUT for infrastructure, restart detection.
 
 All checks are bare shell commands. Wire them into whatever collection or alerting mechanism you use.
+
+The cache of the cluster is Garnet (`garnet1` to `garnet4`, kept by `garnet-cluster-manager`), as described in the [Deployment Runbook](../DeploymentRunbook/index.html#garnet). The cache checks of this page (sections 3.5, 7 and 9, and the Redis and Sentinel parts of sections 10, 12.2 and 13) were written against the topology that preceded it, Redis master and replicas under Sentinel, which is kept as `Jube.Cluster/docker-compose.redis.yml`. They remain correct for a cluster deployed from that file, and each such section states what takes its place under Garnet. There are no Sentinels in the Garnet topology, hence section 9 has no equivalent there.
 
 ---
 
 ## Superseded in Large Part by Jube's Own Observability Suite
 
-This page predates Jube's Infrastructure Health Metrics suite and the `Jube.Monitoring` sidecar, both of which now
-collect
-most of sections 2, 3.2, 6, 7, 8, 9, 11 and 12 automatically, once a minute, into queryable Postgres tables -- no `docker
-exec`, no manual `psql`/`redis-cli`/`etcdctl` invocation, no bespoke cron job. Every table is browsable via its own
-`GET /api/<Table>` endpoint
-(see [Infrastructure Health Metrics](../../../Concepts/API/InfrastructureHealthMetrics/index.html)
-and [HTTP Asynchronous Model Invocation](../../../Concepts/API/HTTPAsynchronousModelInvocation/index.html)), and the
-same
-signal is additionally exported as OpenTelemetry metrics (`jube.engine.stage.duration` and friends) whenever
-`EnableOpenTelemetry` is set, so it lands in whatever Grafana/Prometheus-compatible backend you already point the rest
-of
-your stack at rather than requiring a separate collection path just for Jube.
+This page predates Jube's Infrastructure Health Metrics suite and the `Jube.Monitoring` sidecar, both of which now collect most of sections 2, 3.2, 6, 7, 8, 9, 11 and 12 automatically, once a minute, into queryable Postgres tables -- no `docker exec`, no manual `psql`/`redis-cli`/`etcdctl` invocation, no bespoke cron job. Every table is browsable via its own `GET /api/<Table>` endpoint (see [Infrastructure Health Metrics](../../../Concepts/API/InfrastructureHealthMetrics/index.html) and [HTTP Asynchronous Model Invocation](../../../Concepts/API/HTTPAsynchronousModelInvocation/index.html)), and the same signal is additionally exported as OpenTelemetry metrics (`jube.engine.stage.duration` and friends) whenever `EnableOpenTelemetry` is set, so it lands in whatever Grafana/Prometheus-compatible backend you already point the rest of your stack at rather than requiring a separate collection path just for Jube.
 
-**This page is kept, deliberately, not deprecated.** The shell commands below remain the right tool in two cases this
-automation doesn't reach: a zero-dependency pre-flight check you can run before trusting Jube's own database-backed
-instrumentation is even up, and anything Jube's tables don't carry (table bloat, section 6.5, is the one gap of
-substance below). HAProxy's own frontend/traffic stats (section 5) and frontend port reachability (section 3.3) --
-previously the two gaps of substance here -- are now covered too, see the table below.
+**This page is kept, deliberately, not deprecated.** The shell commands below remain the right tool in two cases this automation doesn't reach: a zero-dependency pre-flight check you can run before trusting Jube's own database-backed instrumentation is even up, and anything Jube's tables don't carry (table bloat, section 6.5, is the one gap of substance below). HAProxy's own frontend/traffic stats (section 5) and frontend port reachability (section 3.3) -- previously the two gaps of substance here -- are now covered too, see the table below.
 
 | Section                                           | Now automated by                                                                                                                                                                                                                                                                             | Still worth running manually for                                                                                       |
 |---------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
@@ -54,44 +40,25 @@ previously the two gaps of substance here -- are now covered too, see the table 
 | §3.3 HAProxy frontend ports                       | `HAProxyReachabilityProbe` -- a real `GET /api/ready` through HAProxy for `jube_ui`/`jube_api`, a bare TCP connect for Postgres, against every individual HAProxy replica (`tasks.haproxy`, bypassing the VIP)                                                                               | An immediate point-in-time check without waiting a minute                                                              |
 | §5 HAProxy traffic monitoring                     | `HAProxyServerStatus` -- one row per backend server slot per minute (status, resolved address, check failures/down-transitions, sessions, HTTP response codes), scraped from HAProxy's own stats CSV                                                                                         | §5.5 the HAProxy Runtime API stats socket specifically -- not scraped, this sidecar only reads the stats CSV over HTTP |
 | §6 PostgreSQL internals                           | `PostgresMetric` (connections, cache hit ratio, WAL, longest-running query) + `PostgresReplicationStatus` (per-replica lag)                                                                                                                                                                  | §6.5 table bloat -- not collected anywhere, still a manual weekly job                                                  |
-| §7 Redis internals                                | `RespMetric` (memory, hit rate, evictions) + `RespConnectionMultiplexerMetric`/`RespConnectionEvent` (the application's own connection health)                                                                                                                                               | —                                                                                                                      |
+| §7 Cache internals                                | `RespMetric` (memory, hit rate, evictions) + `RespConnectionMultiplexerMetric`/`RespConnectionEvent` (the application's own connection health)                                                                                                                                               | —                                                                                                                      |
 | §8 Patroni internals                              | `PatroniMemberStatus` (topology, lag, timeline) + `PatroniClusterEvent` (role/state/timeline diffs, plus an authoritative Failover log read from Patroni's own DCS history -- something no polling script can reconstruct after the fact)                                                    | —                                                                                                                      |
-| §9 Sentinel internals                             | `RespSentinelStatus` (topology, per-replica lag) + `RespSentinelEvent` (every Sentinel pub/sub event captured the instant it happens, not just whatever state polling catches between samples)                                                                                               | —                                                                                                                      |
+| §9 Sentinel internals (Redis alternative)         | `RespSentinelStatus` (topology, per-replica lag) + `RespSentinelEvent` (every Sentinel pub/sub event captured the instant it happens, not just whatever state polling catches between samples)                                                                                               | —                                                                                                                      |
 | §11 Jube application monitors                     | Already Jube's own counters before this suite existed; now additionally exported as OpenTelemetry metrics, plus finer per-stage/per-task breakdowns (`EntityAnalysisModelStagePerformanceCounter`, `TaskPerformanceCounter`, `ResponseTimePipelineCounter`) than the five queries below show | —                                                                                                                      |
-| §12.1 STDERR — Jube containers                    | `ApplicationLogEntry` -- every WARN/ERROR/FATAL logged anywhere in the process, captured centrally and queryable, not grepped per-container                                                                                                                                                  | —                                                                                                                      |
+| §12.1 STDERR, Jube containers                     | `ApplicationLogEntry` -- every WARN/ERROR/FATAL logged anywhere in the process, captured centrally and queryable, not grepped per-container                                                                                                                                                  | —                                                                                                                      |
 | §12.3 Restart detection (Jube/Docker containers)  | `DockerContainerMetric.RestartCount`/`OomKilled`/`ExitCode`                                                                                                                                                                                                                                  | Non-Docker or non-Jube-monitored hosts                                                                                 |
 
-Sections **1, 3.1, 3.4 (as a live check; superseded as data), 3.5 (ports only), 4, 10, and 12.2 (HAProxy's own log lines
-specifically)** have no Jube-side equivalent and are unchanged by any of this -- keep running them as written.
+Sections **1, 3.1, 3.4 (as a live check; superseded as data), 3.5 (ports only), 4, 10, and 12.2 (HAProxy's own log lines specifically)** have no Jube-side equivalent and are unchanged by any of this -- keep running them as written.
 
-**New ground with no prior section to supersede:** `OverlayNetworkTaskDrift` checks something this page never covered
-at all -- whether Docker's embedded DNS (what `server-template`/`tasks.<service>` resolution actually returns) agrees
-with what the Swarm API says is really running, for every service in the topology. A non-empty
-`AddressesOnlyInDns`/`AddressesOnlyInSwarm` is a stale DNS answer or a not-yet-caught-up new task, decoupled entirely
-from whether any health check has noticed yet -- see
-[Infrastructure Health Metrics](../../../Concepts/API/InfrastructureHealthMetrics/index.html#overlaynetworktaskdrift).
+**New ground with no prior section to supersede:** `OverlayNetworkTaskDrift` checks something this page never covered at all -- whether Docker's embedded DNS (what `server-template`/`tasks.<service>` resolution actually returns) agrees with what the Swarm API says is really running, for every service in the topology. A non-empty `AddressesOnlyInDns`/`AddressesOnlyInSwarm` is a stale DNS answer or a not-yet-caught-up new task, decoupled entirely from whether any health check has noticed yet -- see [Infrastructure Health Metrics](../../../Concepts/API/InfrastructureHealthMetrics/index.html#overlaynetworktaskdrift).
 
 More new ground, added since, with no shell-probe equivalent below either:
 
-- **`PostgresStatementStatistics`** -- per- *query-shape* aggregate statistics (`pg_stat_statements`: calls, total/mean/
-  min/max/stddev execution time, cache-hit vs disk-read bytes, temp-file spill, WAL) accumulated across all history,
-  not just the currently-running queries §6 already covers -- answers "which query shape is worst overall" rather than
-  "what is running right now".
-  See [Infrastructure Health Metrics](../../../Concepts/API/InfrastructureHealthMetrics/index.html#per-query-aggregate-statistics-get-apipostgresstatementstatistics).
-- **`RespCallCounter`** -- per-minute call counts/timings by `Jube.Cache` repository method, pinpointing exactly which
-  area of the system is generating Redis load, rather than only Redis' own aggregate memory/hit-rate figures in §7.
-  See [Infrastructure Health Metrics](../../../Concepts/API/InfrastructureHealthMetrics/index.html#redis).
-- **`OtlpDispatchCounter`** -- per-minute success/failure/dropped counts for this instance's own outbound OTLP export
-  attempts, so a dead or overwhelmed OpenTelemetry backend is visible from a table rather than only from logs. See
-  [OTLP Dispatch Counter](../../../Concepts/API/OtlpDispatchCounter/index.html).
-- **`ArchiverStagePerformanceCounter`/`ArchiverWarning`, `CaseCreationStagePerformanceCounter`/`CaseCreationWarning`,
-  `ModelInvokeWarning`, `CaptureQueueHealth`** -- finer-grained stage breakdowns and a database-backed warn-threshold
-  record for the two background pipelines §11 only measures in aggregate (Archive/case-creation queue depth), plus a
-  health check on the bounded in-memory queues that capture those warnings. See
-  [Background Processing Performance](../../../Concepts/API/BackgroundProcessingPerformance/index.html).
+- **`PostgresStatementStatistics`** -- per- *query-shape* aggregate statistics (`pg_stat_statements`: calls, total/mean/min/max/stddev execution time, cache-hit vs disk-read bytes, temp-file spill, WAL) accumulated across all history, not just the currently-running queries §6 already covers -- answers "which query shape is worst overall" rather than "what is running right now". See [Infrastructure Health Metrics](../../../Concepts/API/InfrastructureHealthMetrics/index.html#per-query-aggregate-statistics-get-apipostgresstatementstatistics).
+- **`RespCallCounter`** -- per-minute call counts/timings by `Jube.Cache` repository method, pinpointing exactly which area of the system is generating load on the cache, rather than only the cache's own aggregate memory/hit-rate figures in §7. See [Infrastructure Health Metrics](../../../Concepts/API/InfrastructureHealthMetrics/index.html#redis).
+- **`OtlpDispatchCounter`** -- per-minute success/failure/dropped counts for this instance's own outbound OTLP export attempts, so a dead or overwhelmed OpenTelemetry backend is visible from a table rather than only from logs. See [OTLP Dispatch Counter](../../../Concepts/API/OtlpDispatchCounter/index.html).
+- **`ArchiverStagePerformanceCounter`/`ArchiverWarning`, `CaseCreationStagePerformanceCounter`/`CaseCreationWarning`, `ModelInvokeWarning`, `CaptureQueueHealth`** -- finer-grained stage breakdowns and a database-backed warn-threshold record for the two background pipelines §11 only measures in aggregate (Archive/case-creation queue depth), plus a health check on the bounded in-memory queues that capture those warnings. See [Background Processing Performance](../../../Concepts/API/BackgroundProcessingPerformance/index.html).
 
-All of the above are also summarised, with a brief purpose statement each, on
-[Performance Counter Balance](../../../Configuration/Administration/PerformanceCounterBalance/index.html#observability-tables).
+All of the above are also summarised, with a brief purpose statement each, on [Performance Counter Balance](../../../Configuration/Administration/PerformanceCounterBalance/index.html#observability-tables).
 
 ---
 
@@ -109,10 +76,7 @@ All of the above are also summarised, with a brief purpose statement each, on
 
 ## 2. Per-Container Resource Checks
 
-> Collected automatically, every minute, by `DockerContainerMetric`/`DockerHostMetric` (the `Jube.Monitoring` sidecar,
-> one instance per Docker host) -- see
-> [Superseded in Large Part by Jube's Own Observability Suite](#superseded-in-large-part-by-jubes-own-observability-suite)
-> above. `docker stats` remains useful for an immediate point-in-time number without waiting for the next sample.
+> Collected automatically, every minute, by `DockerContainerMetric`/`DockerHostMetric` (the `Jube.Monitoring` sidecar, one instance per Docker host) -- see [Superseded in Large Part by Jube's Own Observability Suite](#superseded-in-large-part-by-jubes-own-observability-suite) above. `docker stats` remains useful for an immediate point-in-time number without waiting for the next sample.
 
 Run from the Swarm manager:
 
@@ -133,21 +97,20 @@ docker stats --no-stream --format \
 
 Suggested thresholds:
 
-| Container type                | CPU alert       | Memory alert   |
-|-------------------------------|-----------------|----------------|
-| Database (Patroni/PostgreSQL) | > 75% sustained | > 85% of limit |
-| Cache (Redis master)          | > 60% sustained | > 80% of limit |
-| Consensus (etcd)              | > 50% sustained | > 70% of limit |
-| Application (API / engine)    | > 80% sustained | > 85% of limit |
-| Application (UI / frontend)   | > 60% sustained | > 75% of limit |
-| Background jobs / workers     | > 70% sustained | > 80% of limit |
+| Container type                         | CPU alert       | Memory alert   |
+|----------------------------------------|-----------------|----------------|
+| Database (Patroni/PostgreSQL)          | > 75% sustained | > 85% of limit |
+| Cache (Garnet primary or Redis master) | > 60% sustained | > 80% of limit |
+| Consensus (etcd)                       | > 50% sustained | > 70% of limit |
+| Application (API / engine)             | > 80% sustained | > 85% of limit |
+| Application (UI / frontend)            | > 60% sustained | > 75% of limit |
+| Background jobs / workers              | > 70% sustained | > 80% of limit |
 
 ---
 
 ## 3. Port Availability Checks
 
-TCP probes run from inside a container on the same overlay network. If nothing else, monitor port connectivity — it is
-the fastest indicator of a dead service.
+TCP probes run from inside a container on the same overlay network. If nothing else, monitor port connectivity, as it is the fastest indicator of a dead service.
 
 ### 3.1 Generic TCP Port Probe
 
@@ -167,18 +130,15 @@ docker exec $(docker ps -qf "name=etcd1") \
   sh -c 'nc -z -w 3 etcd1 2380 && echo "OK:etcd1:2380" || echo "FAIL:etcd1:2380"'
 ```
 
-> Collected automatically, every minute, by `EtcdMemberStatus` (raft/proposal/alarm detail `etcdctl endpoint health`
-> doesn't surface) and `EtcdClusterEvent` -- see
-> [Superseded in Large Part by Jube's Own Observability Suite](#superseded-in-large-part-by-jubes-own-observability-suite)
-> above. `etcdctl` remains the right pre-flight check before etcd is discoverable by Jube at all.
+> Collected automatically, every minute, by `EtcdMemberStatus` (raft/proposal/alarm detail `etcdctl endpoint health` doesn't surface) and `EtcdClusterEvent` -- see [Superseded in Large Part by Jube's Own Observability Suite](#superseded-in-large-part-by-jubes-own-observability-suite) above. `etcdctl` remains the right pre-flight check before etcd is discoverable by Jube at all.
 
-Deep cluster health (run from inside any etcd container):
+Deep cluster health (run from inside any etcd container). Client authentication is mandatory on this cluster, such that an unauthenticated `etcdctl endpoint health` is rejected like anything else, hence the command authenticates as `root` through `ETCDCTL_USER` from the secret mounted in the container, in the manner of the image's own entrypoint:
 
 ```bash
 docker exec $(docker ps -qf "name=etcd1") \
-  etcdctl \
+  sh -c 'ETCDCTL_USER="root:$(cat /run/secrets/ETCD_ROOT_PASSWORD)" etcdctl \
     --endpoints=http://etcd1:2379,http://etcd2:2379,http://etcd3:2379,http://etcd4:2379,http://etcd5:2379 \
-    endpoint health --write-out=table
+    endpoint health --write-out=table'
 ```
 
 Alert if any member reports `unhealthy` or if fewer than 3 members are reachable.
@@ -209,26 +169,44 @@ docker exec $(docker ps -qf "name=patroni1") \
   sh -c 'wget -qO- --timeout=5 http://patroni1:8008/health 2>/dev/null || echo "FAIL:patroni1:8008"'
 ```
 
-Expected: `{"state":"running","role":"master"}` for the primary; `{"state":"running","role":"replica"}` for standbys.
-Alert if no node reports `master`.
+Expected: `{"state":"running","role":"master"}` for the primary; `{"state":"running","role":"replica"}` for standbys. Alert if no node reports `master`.
 
-### 3.5 Redis and Sentinel Ports
+### 3.5 Cache Ports
+
+#### Garnet
+
+The Garnet nodes are probed from the `garnet-cluster-manager` container, which carries `redis-cli` and has the `RESP_PASSWORD` secret mounted. The commands are those the cluster manager itself issues every five seconds:
+
+```bash
+# Garnet PING, repeated for garnet1 to garnet4: confirms the node is serving commands, not just accepting TCP
+docker exec $(docker ps -qf "name=garnet-cluster-manager") \
+  sh -c 'redis-cli -h garnet1 -p 6379 -a "$(cat /run/secrets/RESP_PASSWORD)" --no-auth-warning PING'
+# Expected: PONG
+
+# Cluster membership and roles, as any one node sees them
+docker exec $(docker ps -qf "name=garnet-cluster-manager") \
+  sh -c 'redis-cli -h garnet1 -p 6379 -a "$(cat /run/secrets/RESP_PASSWORD)" --no-auth-warning CLUSTER NODES'
+```
+
+Alert if any node fails to answer `PONG`, or if `CLUSTER NODES` does not show exactly one `master` holding the slots with the remaining nodes as its replicas. The cluster manager's own log records each `bootstrap:`, `failover:` and `reconcile:` decision it takes (`docker service logs jube-cluster_garnet-cluster-manager`).
+
+#### Redis and Sentinel (the alternative)
 
 ```bash
 # Redis master
 docker exec $(docker ps -qf "name=redis-master") \
   sh -c 'nc -z -w 3 redis-master 6379 && echo "OK:redis-master:6379" || echo "FAIL:redis-master:6379"'
 
-# Redis replicas — repeat for each
+# Redis replicas, repeat for each
 docker exec $(docker ps -qf "name=redis-replica1") \
   sh -c 'nc -z -w 3 redis-replica1 6379 && echo "OK:redis-replica1:6379" || echo "FAIL:redis-replica1:6379"'
 
-# Redis PING — confirms the instance is serving commands, not just accepting TCP
+# Redis PING: confirms the instance is serving commands, not just accepting TCP
 docker exec $(docker ps -qf "name=redis-master") \
   sh -c 'redis-cli -a "$(cat /run/secrets/RESP_PASSWORD)" PING 2>/dev/null'
 # Expected: PONG
 
-# Sentinel ports — repeat for each
+# Sentinel ports, repeat for each
 docker exec $(docker ps -qf "name=sentinel1") \
   sh -c 'nc -z -w 3 sentinel1 26379 && echo "OK:sentinel1:26379" || echo "FAIL:sentinel1:26379"'
 
@@ -294,6 +272,8 @@ global
     stats socket /var/run/haproxy/admin.sock mode 660 level admin
 ```
 
+The `haproxy.cfg` shipped in `Jube.Cluster/haproxy` already enables the stats endpoint on port 7000, yet with `stats uri /` rather than `/stats`, and without the Unix socket. With the configuration as shipped, the CSV of the sections below is therefore at `http://localhost:7000/;csv` (which is the address the `Jube.Monitoring` sidecar itself scrapes), and section 5.5 does not apply until the socket has been added.
+
 ### 5.2 Pull Full Stats CSV
 
 HAProxy exposes machine-readable stats at `/stats;csv`:
@@ -349,8 +329,7 @@ docker exec $(docker ps -qf "name=haproxy") \
     | awk -F, "$2==\"FRONTEND\" && $8==\"0\" {print \"WARN:zero-sessions:\", $1}"'
 ```
 
-Cumulative counters that have not advanced between two scrapes indicate a frontend processing no traffic. Take two
-snapshots separated by your collection interval and compare.
+Cumulative counters that have not advanced between two scrapes indicate a frontend processing no traffic. Take two snapshots separated by your collection interval and compare.
 
 ### 5.5 Via Unix Socket
 
@@ -406,19 +385,15 @@ rm -f "$SNAP1" "$SNAP2"
 
 ## 6. PostgreSQL Internal Monitors
 
-> Collected automatically, every minute, by `PostgresMetric` and `PostgresReplicationStatus` -- see
-> [Superseded in Large Part by Jube's Own Observability Suite](#superseded-in-large-part-by-jubes-own-observability-suite)
-> above. Table bloat (§6.5) is the one query below with no automated equivalent.
+> Collected automatically, every minute, by `PostgresMetric` and `PostgresReplicationStatus` -- see [Superseded in Large Part by Jube's Own Observability Suite](#superseded-in-large-part-by-jubes-own-observability-suite) above. Table bloat (§6.5) is the one query below with no automated equivalent.
 
 Run from inside any Patroni container (which includes `psql`). All queries connect as the `postgres` superuser.
 
-The principle: connection saturation, replication lag (especially), and runaway queries cover the majority of production
-incidents.
+The principle: connection saturation, replication lag (especially), and runaway queries cover the majority of production incidents.
 
 ### 6.1 Connection Saturation
 
-Connection exhaustion causes all new connections to fail immediately — instant total outage from the application's
-perspective.
+Connection exhaustion causes all new connections to fail immediately, which is an instant total outage from the application's perspective.
 
 ```bash
 docker exec $(docker ps -qf "name=patroni1") \
@@ -435,7 +410,7 @@ docker exec $(docker ps -qf "name=patroni1") \
 
 Thresholds: warn at 75%, critical at 90%.
 
-Connections waiting on locks — non-zero over several minutes signals contention:
+Connections waiting on locks, where non-zero over several minutes signals contention:
 
 ```bash
 docker exec $(docker ps -qf "name=patroni1") \
@@ -463,8 +438,7 @@ docker exec $(docker ps -qf "name=patroni1") \
   "
 ```
 
-Alert if `lag_bytes` exceeds your RPO tolerance (e.g. warn > 64 MB, critical > 256 MB). Alert if the query returns zero
-rows — no standbys connected.
+Alert if `lag_bytes` exceeds your RPO tolerance (e.g. warn > 64 MB, critical > 256 MB). Alert if the query returns zero rows, which means that no standbys are connected.
 
 ### 6.3 Long-Running Queries
 
@@ -506,7 +480,7 @@ Alert if count > 0 sustained for more than 5 minutes.
 
 ### 6.5 Table Bloat (Weekly Check)
 
-Not a real-time alert — run as a scheduled job. High bloat means autovacuum is not keeping up.
+Not a real-time alert, and to be run as a scheduled job. High bloat means autovacuum is not keeping up.
 
 ```bash
 docker exec $(docker ps -qf "name=patroni1") \
@@ -529,17 +503,22 @@ Alert if any table exceeds 20% dead tuples and `last_autovacuum` is more than 24
 
 ---
 
-## 7. Redis Internal Monitors
+## 7. Cache Internal Monitors
 
-> Collected automatically, every minute, by `RespMetric` (plus `RespConnectionMultiplexerMetric`/`RespConnectionEvent`
-> for the application's own connection health) -- see
-> [Superseded in Large Part by Jube's Own Observability Suite](#superseded-in-large-part-by-jubes-own-observability-suite)
-> above.
+> Collected automatically, every minute, by `RespMetric` (plus `RespConnectionMultiplexerMetric`/`RespConnectionEvent` for the application's own connection health) -- see [Superseded in Large Part by Jube's Own Observability Suite](#superseded-in-large-part-by-jubes-own-observability-suite) above.
 
 All `redis-cli` commands require the password from the secret store.
 
-The key signals: memory headroom, replication offset divergence, and whether the eviction policy is silently discarding
-data.
+The key signals: memory headroom, replication offset divergence, and whether the eviction policy is silently discarding data.
+
+The commands of this section are written for the Redis alternative, where `redis-cli` is run inside the Redis container itself. Under Garnet the same `INFO` commands are issued from the `garnet-cluster-manager` container against a named node, in the form shown in section 3.5, for example `INFO replication`, from which the cluster manager itself reads `master_repl_offset` when choosing the replica to promote:
+
+```bash
+docker exec $(docker ps -qf "name=garnet-cluster-manager") \
+  sh -c 'redis-cli -h garnet2 -p 6379 -a "$(cat /run/secrets/RESP_PASSWORD)" --no-auth-warning INFO replication'
+```
+
+{% comment %}TODO(verify): confirm on a running Garnet cluster which of the INFO fields named in sections 7.1 to 7.4 (maxmemory, maxmemory_policy, mem_fragmentation_ratio, master_link_status, master_last_io_seconds_ago, keyspace_hits, evicted_keys, rejected_connections) Garnet reports, and state the Garnet equivalents of the alert conditions where they differ.{% endcomment %}
 
 ### 7.1 Memory Pressure
 
@@ -549,11 +528,11 @@ docker exec $(docker ps -qf "name=redis-master") \
     | grep -E "used_memory_human|used_memory_peak_human|maxmemory_human|mem_fragmentation_ratio|maxmemory_policy"'
 ```
 
-| Field                       | Alert condition                                                                                     |
-|-----------------------------|-----------------------------------------------------------------------------------------------------|
-| `used_memory` / `maxmemory` | Warn > 75%, critical > 90%                                                                          |
-| `mem_fragmentation_ratio`   | Warn if > 1.5 (fragmentation) or < 1.0 (swapping)                                                   |
-| `maxmemory_policy`          | Alert if `allkeys-lru` or `allkeys-random` on a persistence store — silent data loss under pressure |
+| Field                       | Alert condition                                                                                      |
+|-----------------------------|------------------------------------------------------------------------------------------------------|
+| `used_memory` / `maxmemory` | Warn > 75%, critical > 90%                                                                           |
+| `mem_fragmentation_ratio`   | Warn if > 1.5 (fragmentation) or < 1.0 (swapping)                                                    |
+| `maxmemory_policy`          | Alert if `allkeys-lru` or `allkeys-random` on a persistence store, as it is silent data loss under pressure |
 
 Numeric ratio for scripting:
 
@@ -578,8 +557,8 @@ docker exec $(docker ps -qf "name=redis-replica1") \
 
 Alert conditions:
 
-- `master_link_status: down` — replica has lost contact with master.
-- `master_last_io_seconds_ago` > 30 — replica has not heard from master recently.
+- `master_link_status: down`: replica has lost contact with master.
+- `master_last_io_seconds_ago` > 30: replica has not heard from master recently.
 - Offset delta exceeds your tolerance (e.g. > 1 MB).
 
 ### 7.3 Keyspace Hit Rate
@@ -596,8 +575,7 @@ docker exec $(docker ps -qf "name=redis-master") \
       }"'
 ```
 
-Alert if hit rate drops below 80% sustained over 10 minutes. Cold starts will always show low — establish a baseline
-first.
+Alert if hit rate drops below 80% sustained over 10 minutes. Cold starts will always show low, hence a baseline is to be established first.
 
 ### 7.4 Evictions and Rejected Connections
 
@@ -607,22 +585,16 @@ docker exec $(docker ps -qf "name=redis-master") \
     | grep -E "evicted_keys|rejected_connections|total_commands_processed"'
 ```
 
-- `evicted_keys` incrementing means memory is full and data is being silently discarded. Any non-zero rate warrants
-  investigation.
+- `evicted_keys` incrementing means memory is full and data is being silently discarded. Any non-zero rate warrants investigation.
 - `rejected_connections` > 0 means `maxclients` has been hit.
 
 ---
 
 ## 8. Patroni Internal Monitors
 
-> Collected automatically, every minute, by `PatroniMemberStatus` and `PatroniClusterEvent` -- the latter additionally
-> reads Patroni's own DCS `history` key for an authoritative failover log no polling script can reconstruct after the
-> fact. See
-> [Superseded in Large Part by Jube's Own Observability Suite](#superseded-in-large-part-by-jubes-own-observability-suite)
-> above.
+> Collected automatically, every minute, by `PatroniMemberStatus` and `PatroniClusterEvent` -- the latter additionally reads Patroni's own DCS `history` key for an authoritative failover log no polling script can reconstruct after the fact. See [Superseded in Large Part by Jube's Own Observability Suite](#superseded-in-large-part-by-jubes-own-observability-suite) above.
 
-Patroni's REST API requires no database credentials and works regardless of whether PostgreSQL itself is up — making it
-the most reliable interface for cluster state.
+Patroni's REST API requires no database credentials and works regardless of whether PostgreSQL itself is up, making it the most reliable interface for cluster state.
 
 All endpoints on port 8008 of each Patroni container.
 
@@ -637,9 +609,9 @@ docker exec $(docker ps -qf "name=patroni1") \
 
 Alert conditions:
 
-- No member has `"role":"leader"` — no primary.
+- No member has `"role":"leader"`: no primary.
 - Any member `"lag"` exceeds your RPO.
-- A known member is absent from the response — unreachable node.
+- A known member is absent from the response: unreachable node.
 
 Largest lag value for scripting:
 
@@ -652,11 +624,11 @@ docker exec $(docker ps -qf "name=patroni1") \
 ### 8.2 Per-Node Health and Leader Check
 
 ```bash
-# Health — returns 200 for any running member
+# Health: returns 200 for any running member
 docker exec $(docker ps -qf "name=patroni1") \
   sh -c 'wget -qO- --timeout=5 http://patroni1:8008/health 2>/dev/null'
 
-# Leader — returns 200 only from the primary, 503 from standbys
+# Leader: returns 200 only from the primary, 503 from standbys
 docker exec $(docker ps -qf "name=patroni1") \
   sh -c 'wget -S --timeout=5 http://patroni1:8008/leader 2>&1 | grep "HTTP/" | awk "{print \$2}"'
 ```
@@ -702,10 +674,9 @@ done
 
 ## 9. Sentinel Internal Monitors
 
-> Collected automatically by `RespSentinelStatus` (per-minute topology) and `RespSentinelEvent` (every Sentinel pub/sub
-> event captured the instant it fires, not just whatever state a one-minute poll happens to catch). See
-> [Superseded in Large Part by Jube's Own Observability Suite](#superseded-in-large-part-by-jubes-own-observability-suite)
-> above.
+> Collected automatically by `RespSentinelStatus` (per-minute topology) and `RespSentinelEvent` (every Sentinel pub/sub event captured the instant it fires, not just whatever state a one-minute poll happens to catch). See [Superseded in Large Part by Jube's Own Observability Suite](#superseded-in-large-part-by-jubes-own-observability-suite) above.
+
+This section applies to the Redis alternative only. The Garnet topology has no Sentinels, and it follows that neither the commands below nor the `RespSentinelStatus` and `RespSentinelEvent` tables have anything to report there; the state of a Garnet cluster is instead read with `CLUSTER NODES` and from the log of `garnet-cluster-manager`, as in section 3.5.
 
 Sentinel is healthy when all expected nodes are up, they agree on the same master, and that master is reachable.
 
@@ -718,13 +689,13 @@ docker exec $(docker ps -qf "name=sentinel1") \
 
 Key fields (returned as a flat key-value list):
 
-| Field                 | Alert condition                                                             |
-|-----------------------|-----------------------------------------------------------------------------|
-| `status`              | Alert if not `ok`                                                           |
-| `flags`               | Alert if contains `disconnected`, `o_down`, or `s_down`                     |
-| `num-slaves`          | Alert if below expected replica count                                       |
-| `num-other-sentinels` | Alert if below (expected sentinels − 1)                                     |
-| `quorum`              | Alert if `num-other-sentinels + 1` < quorum value — failover cannot proceed |
+| Field                 | Alert condition                                                                    |
+|-----------------------|------------------------------------------------------------------------------------|
+| `status`              | Alert if not `ok`                                                                  |
+| `flags`               | Alert if contains `disconnected`, `o_down`, or `s_down`                            |
+| `num-slaves`          | Alert if below expected replica count                                              |
+| `num-other-sentinels` | Alert if below (expected sentinels − 1)                                            |
+| `quorum`              | Alert if `num-other-sentinels + 1` < quorum value, as failover cannot then proceed |
 
 Extract master flags for scripting:
 
@@ -732,13 +703,13 @@ Extract master flags for scripting:
 docker exec $(docker ps -qf "name=sentinel1") \
   sh -c 'redis-cli -p 26379 SENTINEL masters 2>/dev/null \
     | awk "/^flags$/{getline; print}"'
-# Expected: "master" — anything else (s_down, o_down, disconnected) is an alert
+# Expected: "master". Anything else (s_down, o_down, disconnected) is an alert
 ```
 
 ### 9.2 Quorum Check
 
 ```bash
-# Run from every sentinel — if any returns NOQUORUM, failover is not possible from that node
+# Run from every sentinel. If any returns NOQUORUM, failover is not possible from that node
 docker exec $(docker ps -qf "name=sentinel1") \
   sh -c 'redis-cli -p 26379 SENTINEL ckquorum redis-master 2>/dev/null'
 # Expected: OK N usable Sentinels. Quorum and failover authorization can be reached
@@ -771,21 +742,20 @@ docker exec $(docker ps -qf "name=sentinel1") \
 docker exec $(docker ps -qf "name=sentinel1") \
   sh -c 'redis-cli -p 26379 SENTINEL masters 2>/dev/null \
     | awk "/^last-failover-attempt$/{getline; print \"last_failover_epoch=\"\$0}"'
-# Non-zero epoch means a failover was attempted — cross-check with cluster logs
+# Non-zero epoch means a failover was attempted, to be cross-checked with cluster logs
 ```
 
 ---
 
 ## 10. Composite Shell Script
 
-Wraps port and health endpoint checks into a single script. Wire the output into your collection mechanism. The
-internal monitors in sections 6–9 are best run as separate scheduled jobs given their heavier queries.
+Wraps port and health endpoint checks into a single script. Wire the output into your collection mechanism. The internal monitors in sections 6–9 are best run as separate scheduled jobs given their heavier queries.
 
 ```bash
 #!/usr/bin/env bash
 # stack_health_check.sh
 # Adjust container names, hostnames, ports, and service names for your stack.
-# Output: one line per check — OK or FAIL prefixed with a label.
+# Output: one line per check, OK or FAIL prefixed with a label.
 
 probe_tcp() {
   local label=$1 container=$2 host=$3 port=$4
@@ -857,6 +827,15 @@ docker exec "$(docker ps -qf "name=haproxy")" \
       }"'
 ```
 
+Under Garnet, the Redis and Sentinels blocks of the script are replaced by a single block probing each Garnet node from the cluster manager:
+
+```bash
+# --- Garnet ---
+for i in 1 2 3 4; do
+  probe_tcp "garnet${i}" "$(docker ps -qf "name=garnet-cluster-manager")" "garnet${i}" 6379
+done
+```
+
 Cron schedule (30-second approximate interval):
 
 ```cron
@@ -868,21 +847,15 @@ Cron schedule (30-second approximate interval):
 
 ## 11. Jube Application Monitors
 
-> These five queries were already Jube's own counters before the wider Infrastructure Health Metrics suite existed. The
-> same signal, plus a finer per-stage/per-task breakdown, is now also exported as OpenTelemetry metrics
-> (`jube.engine.stage.duration` and friends) whenever `EnableOpenTelemetry` is set -- see
-> [Superseded in Large Part by Jube's Own Observability Suite](#superseded-in-large-part-by-jubes-own-observability-suite)
-> above. The raw queries below remain valid either way.
+> These five queries were already Jube's own counters before the wider Infrastructure Health Metrics suite existed. The same signal, plus a finer per-stage/per-task breakdown, is now also exported as OpenTelemetry metrics (`jube.engine.stage.duration` and friends) whenever `EnableOpenTelemetry` is set -- see [Superseded in Large Part by Jube's Own Observability Suite](#superseded-in-large-part-by-jubes-own-observability-suite) above. The raw queries below remain valid either way.
 
-Five SQL queries run directly against the Jube application database. Poll on a short interval (30–60 seconds). Run from
-inside any Patroni container or any host with `psql` access to the primary via HAProxy port 5432.
+Five SQL queries run directly against the Jube application database. Poll on a short interval (30–60 seconds). Run from inside any Patroni container or any host with `psql` access to the primary via HAProxy port 5432.
 
-The queries read from Jube's own instrumentation tables — no schema changes or agents required.
+The queries read from Jube's own instrumentation tables, hence no schema changes or agents are required.
 
 ### 11.1 Archive Queue Saturation
 
-Measures the backlog of transaction records waiting to be written to the archive. A rising value means the asynchronous
-writer is falling behind, typically due to database I/O pressure or a crashed worker.
+Measures the backlog of transaction records waiting to be written to the archive. A rising value means the asynchronous writer is falling behind, typically due to database I/O pressure or a crashed worker.
 
 ```bash
 docker exec $(docker ps -qf "name=patroni1") \
@@ -898,8 +871,7 @@ Alert if value > 1000.
 
 ### 11.2 Case Creation Queue Saturation
 
-Measures the backlog of cases waiting to be created. Saturation here means compliance workflows are being delayed —
-alerts and cases are not reaching analysts in near-real-time.
+Measures the backlog of cases waiting to be created. Saturation here means compliance workflows are being delayed, which is to say that alerts and cases are not reaching analysts in near-real-time.
 
 ```bash
 docker exec $(docker ps -qf "name=patroni1") \
@@ -915,9 +887,7 @@ Alert if value > 100.
 
 ### 11.3 HTTP Processing Counter (Engine Liveness)
 
-Measures the volume of HTTP requests being processed by the engine. A value at or near zero means the engine is dead or
-not receiving traffic — the application-layer equivalent of the HAProxy frontend zero-byte check, and will typically
-fire together with it.
+Measures the volume of HTTP requests being processed by the engine. A value at or near zero means the engine is dead or not receiving traffic. It is the application-layer equivalent of the HAProxy frontend zero-byte check, and will typically fire together with it.
 
 ```bash
 docker exec $(docker ps -qf "name=patroni1") \
@@ -933,8 +903,7 @@ Alert if value is zero or not advancing between polls.
 
 ### 11.4 Model Response Time
 
-Average response time in milliseconds per model invocation. Degradation indicates infrastructure pressure (database
-latency, Redis latency, CPU saturation) or a model that has grown too complex for its invocation volume.
+Average response time in microseconds per model invocation. Degradation indicates infrastructure pressure (database latency, cache latency, CPU saturation) or a model that has grown too complex for its invocation volume.
 
 ```bash
 docker exec $(docker ps -qf "name=patroni1") \
@@ -950,9 +919,7 @@ Alert if value > 5000 (5 milliseconds).
 
 ### 11.5 Response Elevation Rate
 
-Average response elevation as a proportion of total invocations. A high elevation rate indicates the model is
-triggering alerts on an abnormally large fraction of transactions — usually a sign of a misconfigured or degraded model
-rather than a genuine fraud spike.
+Average response elevation as a proportion of total invocations. A high elevation rate indicates the model is triggering alerts on an abnormally large fraction of transactions, which is usually a sign of a misconfigured or degraded model rather than a genuine fraud spike.
 
 ```bash
 docker exec $(docker ps -qf "name=patroni1") \
@@ -970,17 +937,13 @@ Alert if value > 0.20 (20%).
 
 ## 12. Container Log Monitoring
 
-All containers write to STDOUT. Log4net (used by Jube) additionally writes errors and warnings to STDERR. Monitoring
-splits accordingly: STDERR for Jube containers, STDOUT patterns for infrastructure.
+All containers write to STDOUT. Log4net (used by Jube) additionally writes errors and warnings to STDERR. Monitoring splits accordingly: STDERR for Jube containers, STDOUT patterns for infrastructure.
 
 Pass `--since` to bound the scan to your collection interval and avoid re-reading the full log history on every run.
 
-### 12.1 STDERR — Jube Containers
+### 12.1 STDERR: Jube Containers
 
-> Collected automatically by `ApplicationLogEntry` -- every WARN/ERROR/FATAL logged anywhere in the process lands there
-> centrally and is queryable, rather than needing a per-container `docker logs` grep. See
-> [Superseded in Large Part by Jube's Own Observability Suite](#superseded-in-large-part-by-jubes-own-observability-suite)
-> above.
+> Collected automatically by `ApplicationLogEntry` -- every WARN/ERROR/FATAL logged anywhere in the process lands there centrally and is queryable, rather than needing a per-container `docker logs` grep. See [Superseded in Large Part by Jube's Own Observability Suite](#superseded-in-large-part-by-jubes-own-observability-suite) above.
 
 Under normal operation STDERR should be silent. Any output warrants inspection.
 
@@ -1004,44 +967,44 @@ done
 
 Alert if `stderr_errors` > 0.
 
-### 12.2 STDOUT — Infrastructure Containers
+### 12.2 STDOUT: Infrastructure Containers
 
-Infrastructure containers log cluster-state transitions to STDOUT. The signal here is state changes and crash markers,
-not a raw error count.
+Infrastructure containers log cluster-state transitions to STDOUT. The signal here is state changes and crash markers, not a raw error count.
 
 ```bash
-# etcd — leader elections and member failures
+# etcd: leader elections and member failures
 for CONTAINER in $(docker ps -qf "name=etcd"); do
   docker logs --since 60s "$CONTAINER" 2>/dev/null \
     | grep -iE "elected|lost|failed|compaction error" \
     | sed "s/^/$CONTAINER: /"
 done
 
-# Patroni — failovers, demotions, DCS errors
+# Patroni: failovers, demotions, DCS errors
 for CONTAINER in $(docker ps -qf "name=patroni"); do
   docker logs --since 60s "$CONTAINER" 2>/dev/null \
     | grep -iE "demoted|promoted|failover|etcd|cannot|timeout" \
     | sed "s/^/$CONTAINER: /"
 done
 
-# Redis — replica disconnections, AOF/RDB errors
+# Garnet: the cluster manager's bootstrap, failover and reconcile decisions
+docker logs --since 60s $(docker ps -qf "name=garnet-cluster-manager") 2>/dev/null \
+  | grep -E "bootstrap:|failover:|reconcile:"
+
+# Redis (the alternative): replica disconnections, AOF/RDB errors
 for CONTAINER in $(docker ps -qf "name=redis"); do
   docker logs --since 60s "$CONTAINER" 2>/dev/null \
     | grep -iE "replica|replication|error|warning|lost connection" \
     | sed "s/^/$CONTAINER: /"
 done
 
-# HAProxy — backend server state changes
+# HAProxy: backend server state changes
 docker logs --since 60s $(docker ps -qf "name=haproxy") 2>/dev/null \
   | grep -iE "DOWN|UP|no server|backend|timeout"
 ```
 
 ### 12.3 Restart Detection
 
-> For Docker-hosted containers, `DockerContainerMetric.RestartCount`/`OomKilled`/`ExitCode` (via the `Jube.Monitoring`
-> sidecar) already carries this per-minute -- see
-> [Superseded in Large Part by Jube's Own Observability Suite](#superseded-in-large-part-by-jubes-own-observability-suite)
-> above. The commands below remain the only option for non-Docker hosts.
+> For Docker-hosted containers, `DockerContainerMetric.RestartCount`/`OomKilled`/`ExitCode` (via the `Jube.Monitoring` sidecar) already carries this per-minute -- see [Superseded in Large Part by Jube's Own Observability Suite](#superseded-in-large-part-by-jubes-own-observability-suite) above. The commands below remain the only option for non-Docker hosts.
 
 A container that has restarted recently has likely crashed. Check restart counts across all containers:
 
@@ -1070,22 +1033,24 @@ Alert if `restarts` has increased since the last poll, or if `status` is anythin
 
 ## 13. Quick Reference
 
-| Component             | Container pattern  | Port(s)                | Probe                                 | Internal monitor                                     |
-|-----------------------|--------------------|------------------------|---------------------------------------|------------------------------------------------------|
-| etcd (×N)             | `etcd<N>`          | 2379 client, 2380 peer | TCP + `etcdctl endpoint health`       | —                                                    |
-| PostgreSQL primary    | `haproxy`          | 5432                   | TCP                                   | `pg_stat_activity`, `pg_stat_replication`            |
-| PostgreSQL replica    | `haproxy`          | 5433                   | TCP                                   | replication lag query                                |
-| HAProxy               | `haproxy`          | 7000                   | TCP + CSV byte counters               | frontend status, delta byte check                    |
-| Patroni (×N)          | `patroni<N>`       | 8008                   | HTTP `/health`, `/leader`, `/cluster` | `/config` for DCS, timeline check                    |
-| Redis master          | `redis-master`     | 6379                   | TCP + `PING`                          | `INFO memory`, `INFO stats`                          |
-| Redis replicas (×N)   | `redis-replica<N>` | 6379                   | TCP                                   | `INFO replication`                                   |
-| Redis Sentinel (×N)   | `sentinel<N>`      | 26379                  | TCP + `SENTINEL ckquorum`             | `SENTINEL masters` flags, address check              |
-| Application (HTTP)    | per service        | varies                 | `wget /api/ready`                     | —                                                    |
-| Application (no HTTP) | per service        | —                      | `pgrep`                               | —                                                    |
-| Jube archive queue    | `patroni<N>`       | 5432 (via HAProxy)     | SQL                                   | `EntityAnalysisModelAsynchronousQueueBalance` > 1000 |
-| Jube case queue       | `patroni<N>`       | 5432 (via HAProxy)     | SQL                                   | `EntityAnalysisAsynchronousQueueBalance` > 100       |
-| Jube engine liveness  | `patroni<N>`       | 5432 (via HAProxy)     | SQL                                   | `HttpProcessingCounter` at zero                      |
-| Jube response time    | `patroni<N>`       | 5432 (via HAProxy)     | SQL                                   | avg ms per invocation > 5000                         |
-| Jube elevation rate   | `patroni<N>`       | 5432 (via HAProxy)     | SQL                                   | avg elevation ratio > 20%                            |
-| Jube containers       | `jube*`            | —                      | STDERR line count                     | Log4net ERROR / FATAL / WARN                         |
-| All containers        | —                  | —                      | Restart count delta                   | `docker inspect` RestartCount                        |
+| Component                           | Container pattern        | Port(s)                | Probe                                 | Internal monitor                                     |
+|-------------------------------------|--------------------------|------------------------|---------------------------------------|------------------------------------------------------|
+| etcd (×N)                           | `etcd<N>`                | 2379 client, 2380 peer | TCP + `etcdctl endpoint health`       | —                                                    |
+| PostgreSQL primary                  | `haproxy`                | 5432                   | TCP                                   | `pg_stat_activity`, `pg_stat_replication`            |
+| PostgreSQL replica                  | `haproxy`                | 5433                   | TCP                                   | replication lag query                                |
+| HAProxy                             | `haproxy`                | 7000                   | TCP + CSV byte counters               | frontend status, delta byte check                    |
+| Patroni (×N)                        | `patroni<N>`             | 8008                   | HTTP `/health`, `/leader`, `/cluster` | `/config` for DCS, timeline check                    |
+| Garnet (×N)                         | `garnet<N>`              | 6379                   | TCP + `PING`                          | `CLUSTER NODES`, `INFO replication`                  |
+| Garnet cluster manager              | `garnet-cluster-manager` | —                      | Log lines                             | `bootstrap:`, `failover:`, `reconcile:`              |
+| Redis master (alternative)          | `redis-master`           | 6379                   | TCP + `PING`                          | `INFO memory`, `INFO stats`                          |
+| Redis replicas (×N) (alternative)   | `redis-replica<N>`       | 6379                   | TCP                                   | `INFO replication`                                   |
+| Redis Sentinel (×N) (alternative)   | `sentinel<N>`            | 26379                  | TCP + `SENTINEL ckquorum`             | `SENTINEL masters` flags, address check              |
+| Application (HTTP)                  | per service              | varies                 | `wget /api/ready`                     | —                                                    |
+| Application (no HTTP)               | per service              | —                      | `pgrep`                               | —                                                    |
+| Jube archive queue                  | `patroni<N>`             | 5432 (via HAProxy)     | SQL                                   | `EntityAnalysisModelAsynchronousQueueBalance` > 1000 |
+| Jube case queue                     | `patroni<N>`             | 5432 (via HAProxy)     | SQL                                   | `EntityAnalysisAsynchronousQueueBalance` > 100       |
+| Jube engine liveness                | `patroni<N>`             | 5432 (via HAProxy)     | SQL                                   | `HttpProcessingCounter` at zero                      |
+| Jube response time                  | `patroni<N>`             | 5432 (via HAProxy)     | SQL                                   | avg microseconds per invocation > 5000               |
+| Jube elevation rate                 | `patroni<N>`             | 5432 (via HAProxy)     | SQL                                   | avg elevation ratio > 20%                            |
+| Jube containers                     | `jube*`                  | —                      | STDERR line count                     | Log4net ERROR / FATAL / WARN                         |
+| All containers                      | —                        | —                      | Restart count delta                   | `docker inspect` RestartCount                        |

@@ -175,4 +175,7 @@
     <data name="DetailCollapsed" xml:space="preserve">
     <value>{0} nodes collapsed</value>
   </data>
+    <data name="SentenceCommunityNoRate" xml:space="preserve">
+    <value>Community {0} of {1} nodes: {2} confirmed of {3} closed cases.</value>
+  </data>
 </root>

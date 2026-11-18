@@ -910,7 +910,7 @@ Unit.
 
 ### DynamicSqlRoleFilteringTests
 
-`Jube.Test.AskJooby.DynamicSqlRoleFilteringTests` — 1 test. Category: AskJooby. Collection: Database.
+`Jube.Test.AskJooby.DynamicSqlRoleFilteringTests` — 2 tests. Category: AskJooby. Collection: Database.
 
 | Test                                                                                                 | Kind | Verifies                                                                                                           |
 |------------------------------------------------------------------------------------------------------|------|--------------------------------------------------------------------------------------------------------------------|
@@ -1132,16 +1132,6 @@ Unit.
 | `SearchBeneficialOwnersDoesNotSendWhenTheQueryMatchesPromptInjectionScreeningAsync`  | Fact | Search beneficial owners does not send when the query matches prompt injection screening.  |
 | `SearchBeneficialOwnersWithholdsAStatementWhoseControllingNameMatchesScreeningAsync` | Fact | Search beneficial owners withholds a statement whose controlling name matches screening.   |
 | `PassesTheRecorderAndRunIdThroughToTheClientAsync`                                   | Fact | Passes the recorder and run id through to the client.                                      |
-
-### PagePurposeCatalogueTests
-
-`Jube.Test.AskJooby.PagePurposeCatalogueTests` — 3 tests. Category: Unit.
-
-| Test                                                        | Kind | Verifies                                                              |
-|-------------------------------------------------------------|------|-----------------------------------------------------------------------|
-| `EveryPageNameSentByTheClientIsCatalogedOrExplicitlyExempt` | Fact | Every page name sent by the client is cataloged or explicitly exempt. |
-| `NoCataloguedPageNameIsAlsoListedAsExempt`                  | Fact | No catalogued page name is also listed as exempt.                     |
-| `NoCataloguedPageNameHasGoneStaleAgainstTheClient`          | Fact | No catalogued page name has gone stale against the client.            |
 
 ### PlanToolTests
 
@@ -1858,8 +1848,6 @@ Category: Unit.
 | `EveryInstanceReadToolDemandsAnyOfTheThreePermissions`                                | Fact | Every instance read tool demands any of the three permissions.                                        |
 | `TheTreeNodeAndBothSqlTablesAdmitEveryHolderOfAnyOfTheThreePermissions`               | Fact | The tree node and both sql tables admit every holder of any of the three permissions.                 |
 | `EveryHubOnThePathToReprocessingIsReachableWithOnlyTheTriggerOrOnlyTheStopPermission` | Fact | Every hub on the path to reprocessing is reachable with only the trigger or only the stop permission. |
-
-<!-- TODO(docs): owner to confirm this catalogue entry after the first run of the new tests (they were written, not run). -->
 
 ### ValidateFirstPromptTests
 

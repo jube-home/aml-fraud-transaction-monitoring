@@ -55,7 +55,7 @@
     <value>Nama ini sudah ada.</value>
   </data>
     <data name="FunctionScriptRequired" xml:space="preserve">
-    <value>Skrip fungsi diperlukan saat jenis perhitungan adalah Coder.</value>
+    <value>Skrip fungsi diperlukan.</value>
   </data>
     <data name="FunctionScriptMaxLength" xml:space="preserve">
     <value>Skrip fungsi tidak boleh melebihi {0} karakter.</value>

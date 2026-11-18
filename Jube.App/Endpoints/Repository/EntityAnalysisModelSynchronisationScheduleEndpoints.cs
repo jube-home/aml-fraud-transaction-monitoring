@@ -17,7 +17,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation.Results;
 using Jube.Data.Context;
-using Jube.Data.Poco;
 using Jube.Dto.Repository.EntityAnalysisModelSynchronisationSchedule;
 using Jube.Service.Repository.EntityAnalysisModelSynchronisationSchedule;
 using Jube.Service.Exceptions.Repository.EntityAnalysisModelSynchronisationSchedule;
@@ -47,7 +46,7 @@ namespace Jube.App.Endpoints.Repository
                 .WithName("EntityAnalysisModelSynchronisationScheduleGetCurrent");
 
             group.MapPost("", InsertAsync)
-                .Produces<EntityAnalysisModelSynchronisationSchedule>()
+                .Produces<EntityAnalysisModelSynchronisationScheduleDto>()
                 .Produces<ValidationResult>((int)HttpStatusCode.BadRequest)
                 .WithName("EntityAnalysisModelSynchronisationScheduleCreate");
         }

@@ -128,7 +128,7 @@ namespace Jube.Data.Reporting
             ["TemplateDirectiveInvalid"] = "Template line {0}, column {1}: the directive \"{2}\" is not valid here.",
             ["TemplateLoopInvalid"] = "Template line {0}, column {1}: the v-for \"{2}\" must look like \"row in rows\" or \"(row, index) in rows\".",
             ["TemplateExpressionInvalid"] = "Template line {0}, column {1}: the expression \"{2}\" is not valid near \"{3}\".",
-            ["TemplateNameUnknown"] = "Template line {0}, column {1}: \"{2}\" is not known here. Use rows, columns, rowCount, truncated or a loop variable.",
+            ["TemplateNameUnknown"] = "Template line {0}, column {1}: \"{2}\" is not known here. The names known here are {3}.",
             ["TemplateFilterUnknown"] = "Template line {0}, column {1}: the filter \"{2}\" does not exist.",
             ["TemplateFilterArguments"] = "Template line {0}, column {1}: the filter \"{2}\" does not take that many arguments.",
             ["TemplateInterpolationOpen"] = "Template line {0}, column {1}: an opening [@ is never closed with @].",

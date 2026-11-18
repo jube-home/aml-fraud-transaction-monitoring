@@ -205,7 +205,12 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
                 catch (Exception ex)
                 {
                     sw.Stop();
-                    error = ex.ToString();
+
+                    log.Warn(
+                        $"VisualisationRegistryDatasourceCommandExecution.Execute: command failed user={userName} id={id}",
+                        ex);
+
+                    error = chartText.Describe(ex);
                 }
 
                 await StoreAuditAsync(id, values, error, sw, parametersByParsedId, token).ConfigureAwait(false);
@@ -342,10 +347,12 @@ namespace Jube.Service.Query.VisualisationRegistryDatasourceCommandExecution
                         $"VisualisationRegistryDatasourceCommandExecution.Card: SQL failed user={userName} id={id}",
                         ex);
 
-                    card = DatasourceCardAssembler.Build(identity, null, 0, chartText.Describe(ex), kind, overrides,
+                    var described = chartText.Describe(ex);
+
+                    card = DatasourceCardAssembler.Build(identity, null, 0, described, kind, overrides,
                         includeGrid, request, chartText, datasource.TemplateText);
 
-                    await StoreAuditAsync(id, 0, ex.ToString(), 0,
+                    await StoreAuditAsync(id, 0, described, 0,
                         supplied.Select(p => new KeyValuePair<int, string?>(p.Key, p.Value)), token)
                         .ConfigureAwait(false);
                 }

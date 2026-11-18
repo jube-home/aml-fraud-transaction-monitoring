@@ -21,7 +21,7 @@ export const diffKind = {
 } as const
 
 export type OptionKey =
-  'exhaustive' | 'lists' | 'dictionaries' | 'visualisations' | 'roles' | 'askJoobyAnalytics'
+  'exhaustive' | 'lists' | 'dictionaries' | 'visualisations' | 'roles' | 'advancedAnalytics'
 
 export interface MoveOptions {
   password: string
@@ -30,7 +30,7 @@ export interface MoveOptions {
   dictionaries: boolean
   visualisations: boolean
   roles: boolean
-  askJoobyAnalytics: boolean
+  advancedAnalytics: boolean
 }
 
 export interface SummarySection {

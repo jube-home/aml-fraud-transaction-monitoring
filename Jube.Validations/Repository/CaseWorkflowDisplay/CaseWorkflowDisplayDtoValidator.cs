@@ -23,7 +23,7 @@ namespace Jube.Validations.Repository.CaseWorkflowDisplay
     {
         private const int MaxNameLength = 256;
         private const int MaxDescriptionLength = 1024;
-        private const int MaxBlobLength = 1000000;
+        private const int MaxBlobLength = 65536;
 
         public CaseWorkflowDisplayDtoValidator(CaseWorkflowDisplayRepository repository, IStringLocalizer localiser)
         {

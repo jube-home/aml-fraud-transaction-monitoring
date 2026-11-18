@@ -111,4 +111,7 @@
     <data name="GraphRegistryNotFound" xml:space="preserve">
     <value>გრაფის რეესტრი ვერ მოიძებნა.</value>
   </data>
+    <data name="ServiceLevelTargetOutOfRange" xml:space="preserve">
+    <value>მომსახურების დონის მიზანი უნდა იყოს 1-დან 525600 წუთამდე, ან ცარიელი დარჩეს, თუ მიზანი არ არის.</value>
+  </data>
 </root>

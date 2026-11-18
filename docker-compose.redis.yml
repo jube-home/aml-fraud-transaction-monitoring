@@ -26,7 +26,7 @@
       - default
 
   redis:
-    image: "redis/redis-stack:latest"
+    image: "redis/redis-stack:7.4.0-v8@sha256:5d5154123426693540ea6c1d9e638eae2bf2024879c839db6fcfdd7717e817c7"
     container_name: "redis"
     volumes:
       - redis:/data
@@ -65,7 +65,7 @@
       - PasswordHashingKey=$DockerComposePasswordHashingKey
       - Log4NetLogLevel=ERROR
       - ElementSymmetricEncryptionKey=$DockerComposeElementSymmetricEncryptionKey
-      - CaseSimilarityHashingKey=${DockerComposeCaseSimilarityHashingKey:-}
+      - CaseSimilarityHashingKey=$DockerComposeCaseSimilarityHashingKey
       - DOTNET_gcServer=1
       - DOTNET_gcConcurrent=1
       - DOTNET_GCConserveMemory=4

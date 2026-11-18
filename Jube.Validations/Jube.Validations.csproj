@@ -21,6 +21,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Jube.Analytics\Jube.Analytics.csproj"/>
+        <ProjectReference Include="..\Jube.Charting\Jube.Charting.csproj"/>
         <ProjectReference Include="..\Jube.Case\Jube.Case.csproj"/>
         <ProjectReference Include="..\Jube.CaseRisk\Jube.CaseRisk.csproj"/>
         <ProjectReference Include="..\Jube.Data\Jube.Data.csproj"/>

@@ -14,10 +14,9 @@
 <script setup vapor lang="ts">
 import {computed} from 'vue'
 import {useI18n} from 'vue-i18n'
-import {KeyRound, LogOut} from 'lucide-vue-next'
+import {LogOut} from 'lucide-vue-next'
 import type {Me} from '../auth/me'
 import {useSessionActions} from '../auth/session'
-import {legacyUrl} from '../layout/legacyUrl'
 import ThemeSwitcher from './ThemeSwitcher.vue'
 import LocaleSwitcher from './LocaleSwitcher.vue'
 
@@ -59,14 +58,6 @@ const initials = computed(() => props.me.userName.slice(0, 2).toUpperCase())
         <ThemeSwitcher/>
         <LocaleSwitcher/>
       </div>
-      <a
-        v-if="props.me.canChangePassword"
-        class="btn btn-sm justify-start"
-        :href="legacyUrl('/Account/ChangePassword')"
-      >
-        <KeyRound aria-hidden="true" class="size-4"/>
-        {{ t('shell.changePassword') }}
-      </a>
       <button type="button" class="btn btn-sm justify-start" @click="signOut">
         <LogOut aria-hidden="true" class="size-4"/>
         {{ t('shell.signOut') }}

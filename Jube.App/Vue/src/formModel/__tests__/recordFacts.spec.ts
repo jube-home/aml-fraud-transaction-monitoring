@@ -12,7 +12,7 @@
  */
 
 import {describe, expect, it} from 'vitest'
-import {recordFactGroups} from '../recordFacts'
+import {optionLabel, recordFactGroups} from '../recordFacts'
 import type {FormField, FormModel, RecordValues} from '../types'
 
 const format = {yes: 'Yes', no: 'No', dateTime: (value: string) => `at ${value}`}
@@ -226,5 +226,20 @@ describe('recordFacts', () => {
 
     expect(groups[0]?.feature).toBeUndefined()
     expect(groups[0]?.sections[0]?.facts).toHaveLength(2)
+  })
+})
+
+describe('optionLabel', () => {
+  const kind = {options: [{value: 1, label: ' Identity link '}, {value: 2, label: 'Money flow'}]}
+
+  it('names the option a stored value stands for', () => {
+    expect(optionLabel(kind as never, 1)).toBe('Identity link')
+    expect(optionLabel(kind as never, 2)).toBe('Money flow')
+  })
+
+  it('has nothing to say for a value outside the options or with no field', () => {
+    expect(optionLabel(kind as never, 9)).toBeUndefined()
+    expect(optionLabel(kind as never, null)).toBeUndefined()
+    expect(optionLabel(undefined, 1)).toBeUndefined()
   })
 })

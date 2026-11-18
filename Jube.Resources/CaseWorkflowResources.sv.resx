@@ -111,4 +111,7 @@
     <data name="GraphRegistryNotFound" xml:space="preserve">
     <value>Grafregistret hittades inte.</value>
   </data>
+    <data name="ServiceLevelTargetOutOfRange" xml:space="preserve">
+    <value>Ett servicenivåmål måste vara mellan 1 och 525600 minuter, eller lämnas tomt om inget mål finns.</value>
+  </data>
 </root>

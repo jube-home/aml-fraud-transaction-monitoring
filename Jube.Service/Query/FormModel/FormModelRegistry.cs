@@ -376,7 +376,7 @@ namespace Jube.Service.Query.FormModel
             };
         }
 
-        private const int MaxRadioOptions = 3;
+        private const int MaxRadioOptions = 4;
 
         private static FormFieldDto DescribeField(PropertyInfo property, FormFieldAttribute field,
             NullabilityInfoContext nullability, MemberRules? rules, List<string> failures)

@@ -35,6 +35,7 @@ namespace Jube.Resources
         public const string EscalationTriggerRequired = nameof(EscalationTriggerRequired);
         public const string EscalationTargetRequired = nameof(EscalationTargetRequired);
         public const string EscalationThresholdInvalid = nameof(EscalationThresholdInvalid);
+        public const string MaxDwellMinutesOutOfRange = nameof(MaxDwellMinutesOutOfRange);
         public const string EscalationTargetNotFound = nameof(EscalationTargetNotFound);
         public const string EscalationTargetNotStronger = nameof(EscalationTargetNotStronger);
     }

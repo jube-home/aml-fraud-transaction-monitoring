@@ -29,7 +29,7 @@ namespace Jube.Service.Query.Graph
     {
         public const int MaximumList = 500;
         public const int MaximumNote = 500;
-        private static readonly int[] readPermissions = [49, 1];
+        private static readonly int[] readPermissions = [49, 1, 51];
         private static readonly int[] decidePermissions = [51];
 
         private readonly DbContext dbContext;

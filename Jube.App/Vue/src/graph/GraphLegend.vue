@@ -12,33 +12,29 @@
  -->
 
 <script setup vapor lang="ts">
-import {computed} from 'vue'
-import {useI18n} from 'vue-i18n'
-import {
-  Circle,
-  CircleDashed,
-  Diamond,
-  Ellipsis,
-  Hexagon,
-  Layers,
-  MoveRight,
-  Square,
-  Star,
-  Tag,
-  Triangle,
-} from 'lucide-vue-next'
-import {edgeKindKey, type GraphEdgeKindKey} from './state'
-import type {GraphEdgeDefinition} from './types'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { CircleDashed, Ellipsis, Hexagon, Layers, MoveRight, Star, Tag } from 'lucide-vue-next'
+import { edgeKindKey, legendKeys, type GraphEdgeKindKey } from './state'
+import { iconComponent, nodeIcon, nodeIconMap } from './icons'
+import type { GraphEdgeDefinition } from './types'
 
-const props = defineProps<{ definitions: GraphEdgeDefinition[]; keys: string[] }>()
+const props = defineProps<{
+  definitions: GraphEdgeDefinition[]
+  keys: string[]
+  seedKey?: string | null
+}>()
 
-const {t} = useI18n()
+const { t } = useI18n()
 
-const shapes = [Circle, Square, Diamond, Triangle]
+const configuredIcons = computed(() => nodeIconMap(props.definitions))
 
-const keyed = computed(() =>
-  props.keys.slice(0, shapes.length).map((key, index) => ({key, icon: shapes[index]!})),
-)
+const keyed = computed(() => {
+  return legendKeys(props.keys, props.seedKey).map((entry) => ({
+    key: entry.key,
+    icon: nodeIcon(entry.key, configuredIcons.value),
+  }))
+})
 
 const kindLabels = computed<Record<GraphEdgeKindKey, string>>(() => ({
   identity: t('graph.kind.identity'),
@@ -62,49 +58,49 @@ function kindLabel(kindId: number): string {
     </div>
     <div v-for="entry in keyed" :key="entry.key" class="flex items-center gap-1">
       <dt>
-        <component :is="entry.icon" class="size-3.5" aria-hidden="true"/>
+        <component :is="entry.icon" class="size-3.5" aria-hidden="true" />
       </dt>
       <dd class="font-mono">{{ entry.key }}</dd>
     </div>
     <div class="flex items-center gap-1">
       <dt>
-        <Hexagon class="size-3.5" aria-hidden="true"/>
+        <Hexagon class="size-3.5" aria-hidden="true" />
       </dt>
       <dd>{{ t('graph.legend.hub') }}</dd>
     </div>
     <div class="flex items-center gap-1">
       <dt>
-        <Layers class="size-3.5" aria-hidden="true"/>
+        <Layers class="size-3.5" aria-hidden="true" />
       </dt>
       <dd>{{ t('graph.legend.cluster') }}</dd>
     </div>
     <div class="flex items-center gap-1">
       <dt>
-        <Star class="size-3.5 text-error" aria-hidden="true"/>
+        <Star class="size-3.5 text-error" aria-hidden="true" />
       </dt>
       <dd>{{ t('graph.legend.confirmed') }}</dd>
     </div>
     <div class="flex items-center gap-1">
       <dt>
-        <CircleDashed class="size-3.5" aria-hidden="true"/>
+        <CircleDashed class="size-3.5" aria-hidden="true" />
       </dt>
       <dd>{{ t('graph.legend.openCase') }}</dd>
     </div>
     <div class="flex items-center gap-1">
       <dt>
-        <Ellipsis class="size-3.5" aria-hidden="true"/>
+        <Ellipsis class="size-3.5" aria-hidden="true" />
       </dt>
       <dd>{{ t('graph.legend.soft') }}</dd>
     </div>
     <div class="flex items-center gap-1">
       <dt>
-        <MoveRight class="size-3.5 rtl:rotate-180" aria-hidden="true"/>
+        <MoveRight class="size-3.5 rtl:rotate-180" aria-hidden="true" />
       </dt>
       <dd>{{ t('graph.legend.directed') }}</dd>
     </div>
     <div class="flex items-center gap-1" data-testid="graph-legend-tags">
       <dt>
-        <Tag class="size-3.5" aria-hidden="true"/>
+        <Tag class="size-3.5" aria-hidden="true" />
       </dt>
       <dd>{{ t('graph.legend.tags') }}</dd>
     </div>
@@ -114,7 +110,15 @@ function kindLabel(kindId: number): string {
       class="flex items-center gap-1"
       :data-testid="`graph-legend-edge-${definition.guid}`"
     >
-      <dt dir="auto" class="badge badge-ghost badge-xs font-mono">{{ definition.name }}</dt>
+      <dt dir="auto" class="badge badge-ghost badge-xs gap-1 font-mono">
+        <component
+          :is="iconComponent(definition.iconName)"
+          v-if="iconComponent(definition.iconName)"
+          class="size-3"
+          aria-hidden="true"
+        />
+        {{ definition.name }}
+      </dt>
       <dd v-if="kindLabel(definition.kindId) !== ''" key="kind" class="text-secondary">
         {{ kindLabel(definition.kindId) }}
       </dd>

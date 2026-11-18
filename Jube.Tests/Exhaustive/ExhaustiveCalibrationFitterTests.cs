@@ -61,6 +61,16 @@ namespace Jube.Test.Exhaustive
                 baseRate ?? new BaseRateResolution(0.02, BaseRateResolution.SourceOverride), requestedMethod);
         }
 
+        private static double[][] LogitInputs(double[] scores)
+        {
+            return [.. scores.Select(s => new[] { Math.Log(s / (1 - s)) })];
+        }
+
+        private static double[][] Rows(double[] values)
+        {
+            return [.. values.Select(v => new[] { v })];
+        }
+
         [Fact]
         public void Fit_SigmoidOutput_UsesTheLogitInputAndMatchesTheIndependentReference()
         {
@@ -165,9 +175,46 @@ namespace Jube.Test.Exhaustive
             outcome.Quality.TestAtBaseRate.Should().BeNull();
         }
 
+        [Fact]
+        public void Fit_BernoulliOutput_IsTheLogisticCurveAndUsesTheLogitInputAsSigmoidDoes()
+        {
+            var bernoulli = FitReference(new BernoulliFunction());
+            var sigmoid = FitReference(new SigmoidFunction(1));
+
+            bernoulli.Method.Should().Be("platt");
+            bernoulli.Input.Should().Be("logit");
+            bernoulli.Status.Should().Be("Calibrated");
+            bernoulli.Reason.Should().BeNull();
+            bernoulli.Slope.Should().Be(sigmoid.Slope);
+            bernoulli.Intercept.Should().Be(sigmoid.Intercept);
+        }
+
+        [Fact]
+        public void Fit_ANetworkWhoseOutputActivationIsBernoulli_GetsACalibrationFitted()
+        {
+            var network = new ActivationNetwork(new BernoulliFunction(), 1, null, 1);
+            var neuron = (ActivationNeuron)network.Layers[0].Neurons[0];
+            neuron.Weights[0] = 1;
+            neuron.Threshold = 0;
+
+            var (vs, vy) = Generate(4242, 400);
+            var (ts, ty) = Generate(4243, 400);
+
+            ExhaustiveCalibrationFitter.Scores(network, LogitInputs(vs)).Distinct().Count().Should().BeGreaterThan(2);
+
+            var outcome = ExhaustiveCalibrationFitter.Fit(network, LogitInputs(vs), Rows(vy), LogitInputs(ts),
+                Rows(ty), Rows(vy), new BaseRateResolution(0.02, BaseRateResolution.SourceOverride));
+
+            outcome.Method.Should().Be("platt");
+            outcome.Input.Should().Be("logit");
+            outcome.Status.Should().Be("Calibrated");
+            outcome.Slope.Should().NotBeNull();
+            outcome.Intercept.Should().NotBeNull();
+            outcome.Quality.Should().NotBeNull();
+        }
+
         [Theory]
         [InlineData(typeof(ThresholdFunction))]
-        [InlineData(typeof(BernoulliFunction))]
         public void Fit_HardOutputFamilies_AreSkippedWithARecordedReason(Type type)
         {
             var function = (IActivationFunction)Activator.CreateInstance(type)!;

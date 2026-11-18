@@ -266,6 +266,32 @@ export function useRecordForm(options: RecordFormOptions) {
     options.onFailure(error)
   }
 
+  async function reread(model: FormModel, written: RecordValues): Promise<RecordValues> {
+    const recordId = written[model.keys.id]
+
+    if (typeof recordId !== 'number') return written
+
+    try {
+      return await formModelApi.record(model, recordId)
+    } catch {
+      return written
+    }
+  }
+
+  async function invalidateAfterWrite(): Promise<void> {
+    const model = options.model.value!
+
+    await Promise.all([
+      queryClient.invalidateQueries({queryKey: ['service', model.area]}),
+      ...(model.approval
+        ? [
+            queryClient.invalidateQueries({queryKey: ['approval']}),
+            queryClient.invalidateQueries({queryKey: ['integrity']}),
+          ]
+        : []),
+    ])
+  }
+
   const save = useMutation({
     mutationFn: async () => {
       const model = options.model.value!
@@ -281,13 +307,16 @@ export function useRecordForm(options: RecordFormOptions) {
 
       const body = payloadOf(model, values.value, stored.value, options.parentId.value)
 
-      return mode.value === 'new'
-        ? {saved: await formModelApi.create(model, body), created: true}
-        : {saved: await formModelApi.update(model, body), created: false}
+      const created = mode.value === 'new'
+      const written = created
+        ? await formModelApi.create(model, body)
+        : await formModelApi.update(model, body)
+
+      return {saved: await reread(model, written), created}
     },
     onSuccess: async ({saved, created}) => {
       load(saved, 'edit')
-      await queryClient.invalidateQueries({queryKey: ['service', options.model.value!.area]})
+      await invalidateAfterWrite()
       options.onSaved(saved, created)
     },
     onError: (error) => {
@@ -312,7 +341,7 @@ export function useRecordForm(options: RecordFormOptions) {
     },
     onSuccess: async (recordId) => {
       close()
-      await queryClient.invalidateQueries({queryKey: ['service', options.model.value!.area]})
+      await invalidateAfterWrite()
       options.onDeleted(recordId)
     },
     onError: handle,

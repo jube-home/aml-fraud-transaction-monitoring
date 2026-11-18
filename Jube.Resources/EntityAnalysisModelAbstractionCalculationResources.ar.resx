@@ -55,7 +55,7 @@
     <value>هذا الاسم موجود بالفعل.</value>
   </data>
     <data name="FunctionScriptRequired" xml:space="preserve">
-    <value>نص الدالة مطلوب عندما يكون نوع الحساب ⁨Coder⁩.</value>
+    <value>نص الدالة مطلوب.</value>
   </data>
     <data name="FunctionScriptMaxLength" xml:space="preserve">
     <value>لا يمكن أن يتجاوز نص الدالة {0} حرفًا.</value>

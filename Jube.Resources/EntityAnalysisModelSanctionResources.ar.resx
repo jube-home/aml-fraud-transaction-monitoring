@@ -64,7 +64,7 @@
     <value>يجب أن تكون المسافة بين 0 و5.</value>
   </data>
     <data name="CacheValueRange" xml:space="preserve">
-    <value>لا يمكن أن تكون قيمة وحدة التخزين المؤقت سالبة.</value>
+    <value>يجب أن تكون قيمة وحدة التخزين المؤقت صفرًا أو أكثر وضمن الحد المسموح للفاصل المختار.</value>
   </data>
     <data name="CacheIntervalInvalid" xml:space="preserve">
     <value>يجب أن يكون نوع وحدة التخزين المؤقت أحد: ثوانٍ أو دقائق أو ساعات أو أيام.</value>

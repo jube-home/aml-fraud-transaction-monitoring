@@ -12,6 +12,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,7 +25,9 @@ using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineScript;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineScript.
     EntityAnalysisModelInlineScriptPropertyAttribute;
+using Jube.Engine.EntityAnalysisModelManager.Helpers;
 using Jube.Engine.Interfaces;
+using Jube.Engine.Models;
 using Jube.Parser.Compiler;
 using log4net;
 
@@ -32,6 +35,8 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 {
     public static class InlineScriptCompilationExtensions
     {
+        public const string NoImplementation = "No public class implementing IInlineScript was found.";
+
         public static string[] BuildDependencyArray(string binaryPath, string frameworkPath, string dependencies)
         {
             var baseArray = AppDomain.CurrentDomain.GetAssemblies()
@@ -45,12 +50,13 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 ResolveDependencyPath(binaryPath, frameworkPath, "Jube.Cryptography.dll")
             };
 
-            if (string.IsNullOrEmpty(dependencies))
+            if (string.IsNullOrWhiteSpace(dependencies))
             {
                 return [.. baseArray, .. alwaysInclude];
             }
 
-            var additionalDeps = dependencies.Split(",".ToCharArray())
+            var additionalDeps = dependencies
+                .Split([';', ','], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                 .Select(file => ResolveDependencyPath(binaryPath, frameworkPath, file))
                 .ToArray();
 
@@ -79,7 +85,16 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                 return compile;
             }
 
-            inlineScript.InlineScriptCompile = compile.CompiledAssembly;
+            inlineScript.ConfigureFromAssembly(compile.CompiledAssembly);
+
+            return compile;
+        }
+
+        public static void ConfigureFromAssembly(this EntityAnalysisModelInlineScript inlineScript, Assembly assembly)
+        {
+            inlineScript.InlineScriptCompile = assembly;
+            inlineScript.ClassName = null;
+            inlineScript.InlineScriptType = null;
 
             var interfaceType = typeof(IInlineScript);
 
@@ -99,18 +114,102 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
 
             if (inlineScript.InlineScriptType == null)
             {
-                return compile;
+                return;
             }
 
             SetupInlineScriptDelegates(inlineScript);
             SetupEvents(inlineScript);
             SetupPropertyAttributes(inlineScript);
+        }
 
-            return compile;
+        public static bool HasChanged(this EntityAnalysisModelInlineScript inlineScript, string code,
+            string dependencies, byte languageId)
+        {
+            return !string.Equals(inlineScript.InlineScriptCode, code, StringComparison.Ordinal)
+                   || !string.Equals(inlineScript.Dependencies ?? string.Empty, dependencies ?? string.Empty,
+                       StringComparison.Ordinal)
+                   || inlineScript.LanguageId != languageId;
+        }
+
+        public static InlineScriptLoadResult Load(List<EntityAnalysisModelInlineScript> inlineScripts,
+            ConcurrentDictionary<string, Assembly> hashCacheAssembly,
+            ConcurrentDictionary<string, HashCacheAssemblyPayload> hashCacheAssemblyMetadata,
+            Data.Poco.EntityAnalysisInlineScript record, string binaryPath, string frameworkPath, ILog log)
+        {
+            var languageId = record.LanguageId ?? 1;
+            var index = inlineScripts.FindIndex(x => x.Id == record.Id);
+
+            if (index >= 0 && !inlineScripts[index].HasChanged(record.Code, record.Dependency, languageId))
+            {
+                inlineScripts[index].Name = record.Name;
+                inlineScripts[index].CreatedDate = record.CreatedDate;
+
+                return new InlineScriptLoadResult(false, true, null);
+            }
+
+            var inlineScript = new EntityAnalysisModelInlineScript
+            {
+                Id = record.Id,
+                Name = record.Name,
+                CreatedDate = record.CreatedDate,
+                InlineScriptCode = record.Code,
+                Dependencies = record.Dependency,
+                LanguageId = languageId
+            };
+
+            var hash = HashHelper.GetHash(inlineScript.InlineScriptCode);
+
+            if (hashCacheAssembly.TryGetValue(hash, out var assembly))
+            {
+                inlineScript.ConfigureFromAssembly(assembly);
+            }
+            else
+            {
+                var compile = inlineScript.CompileAndConfigure(
+                    BuildDependencyArray(binaryPath, frameworkPath, inlineScript.Dependencies), log);
+
+                if (compile.Errors != null)
+                {
+                    foreach (var error in compile.Errors)
+                    {
+                        log.Error(
+                            $"Entity Start: Could not compile inline script: {inlineScript.Id} with error: {error}.");
+                    }
+
+                    return new InlineScriptLoadResult(true, false, compile.ErrorsSummary);
+                }
+
+                hashCacheAssembly.TryAdd(hash, compile.CompiledAssembly);
+                hashCacheAssemblyMetadata.TryAdd(hash,
+                    new HashCacheAssemblyPayload(compile.CompiledAssemblyBytes, compile.CompiledAssemblyBinary,
+                        inlineScript.InlineScriptCode));
+            }
+
+            if (inlineScript.InlineScriptType == null)
+            {
+                log.Error(
+                    $"Entity Start: Could not load inline script: {inlineScript.Id} as it has no public class implementing IInlineScript.");
+
+                return new InlineScriptLoadResult(true, false, NoImplementation);
+            }
+
+            if (index >= 0)
+            {
+                inlineScripts[index] = inlineScript;
+            }
+            else
+            {
+                inlineScripts.Add(inlineScript);
+            }
+
+            return new InlineScriptLoadResult(true, true, null);
         }
 
         private static void SetupPropertyAttributes(EntityAnalysisModelInlineScript inlineScript)
         {
+            inlineScript.EntityAnalysisModelInlineScriptPropertyAttributes.Clear();
+            inlineScript.GroupingKeys.Clear();
+
             foreach (var p in inlineScript.InlineScriptType.GetProperties(BindingFlags.Instance | BindingFlags.Public))
             {
                 var entityAnalysisModelInlineScriptProperty = new EntityAnalysisModelInlineScriptPropertyAttribute
@@ -139,7 +238,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
                         SearchKeyCacheInterval = searchKeyAttribute.SearchKeyCacheInterval,
                         SearchKeyCacheValue = searchKeyAttribute.SearchKeyCacheValue,
                         SearchKeyCacheSample = searchKeyAttribute.SearchKeyCacheSample,
-                        SearchKeyCacheFetchLimit = searchKeyAttribute.SearchKeyFetchLimit,
+                        SearchKeyCacheFetchLimit = searchKeyAttribute.SearchKeyCacheFetchLimit,
                         SearchKeyCacheTtlInterval = searchKeyAttribute.SearchKeyCacheTtlInterval,
                         SearchKeyCacheTtlValue = searchKeyAttribute.SearchKeyCacheTtlValue
                     };
@@ -153,7 +252,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
             }
         }
 
-        internal static void SetupEvents(EntityAnalysisModelInlineScript inlineScript)
+        private static void SetupEvents(EntityAnalysisModelInlineScript inlineScript)
         {
             var shadowEntityAnalysisModelInlineScriptEventsToBeSorted =
                 new List<EntityAnalysisModelInlineScriptEvent>();
@@ -241,7 +340,7 @@ namespace Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Ext
             return Expression.Lambda<Func<object, object>>(castResult, instParam).Compile();
         }
 
-        internal static void SetupInlineScriptDelegates(EntityAnalysisModelInlineScript inlineScript)
+        private static void SetupInlineScriptDelegates(EntityAnalysisModelInlineScript inlineScript)
         {
             inlineScript.InlineScriptType =
                 inlineScript.InlineScriptCompile.GetType(inlineScript.ClassName);

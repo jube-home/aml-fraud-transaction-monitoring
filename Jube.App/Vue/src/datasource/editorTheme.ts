@@ -37,11 +37,20 @@ export function editorLook() {
       '&': {
         backgroundColor: 'var(--color-base-100)',
         color: 'var(--color-base-content)',
-        height: '100%',
+        flex: '1 1 auto',
+        minHeight: '0',
       },
       '&.cm-focused': {outline: '2px solid var(--color-primary)'},
-      '.cm-scroller': {fontFamily: 'var(--font-mono, monospace)', overflow: 'auto'},
+      '.cm-scroller': {
+        fontFamily: 'var(--font-mono, monospace)',
+        overflow: 'auto',
+        flex: '1 1 auto',
+        minHeight: '0',
+      },
+      '.cm-content': {alignSelf: 'stretch'},
       '.cm-gutters': {
+        height: 'auto',
+        alignSelf: 'stretch',
         backgroundColor: 'var(--color-base-200)',
         color: 'var(--color-secondary)',
         borderRight: '1px solid var(--color-base-300)',

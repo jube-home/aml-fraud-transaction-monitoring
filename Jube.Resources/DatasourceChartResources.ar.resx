@@ -657,8 +657,8 @@
         <comment>b9ea12e7</comment>
     </data>
     <data name="Message.TemplateNameUnknown" xml:space="preserve">
-        <value>القالب، السطر {0}، العمود {1}: "{2}" غير معروف هنا. استخدم rows أو columns أو rowCount أو truncated أو متغير حلقة.</value>
-        <comment>78917f7e</comment>
+        <value>القالب، السطر {0}، العمود {1}: "{2}" غير معروف هنا. الأسماء المعروفة هنا هي {3}.</value>
+        <comment>de987895</comment>
     </data>
     <data name="Message.TemplateFilterUnknown" xml:space="preserve">
         <value>القالب، السطر {0}، العمود {1}: المرشّح "{2}" غير موجود.</value>

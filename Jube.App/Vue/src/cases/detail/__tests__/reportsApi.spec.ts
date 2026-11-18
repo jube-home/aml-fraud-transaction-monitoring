@@ -17,6 +17,9 @@ import {
   canWithdraw,
   isEditable,
   isValidJsonObject,
+  mayDownload,
+  mayWithdraw,
+  reportPermission,
   reportState,
   reportsApi,
   type CaseReport,
@@ -84,5 +87,25 @@ describe('isValidJsonObject', () => {
     expect(isValidJsonObject('null')).toBe(false)
     expect(isValidJsonObject('{broken')).toBe(false)
     expect(isValidJsonObject('')).toBe(false)
+  })
+})
+
+describe('report buttons against what the server allows', () => {
+  const approved = report(reportState.approved)
+  const draft = report(reportState.draft)
+
+  it('offers the download to a filer or an approver, never to a viewer', () => {
+    expect(mayDownload(approved, [reportPermission.file])).toBe(true)
+    expect(mayDownload(approved, [reportPermission.approve])).toBe(true)
+    expect(mayDownload(approved, [reportPermission.view])).toBe(false)
+    expect(mayDownload(draft, [reportPermission.file])).toBe(false)
+  })
+
+  it('offers withdrawal to the user who started the report or to an approver', () => {
+    expect(mayWithdraw(draft, [reportPermission.view], 'U')).toBe(true)
+    expect(mayWithdraw(draft, [reportPermission.approve], 'someone')).toBe(true)
+    expect(mayWithdraw(draft, [reportPermission.view], 'someone')).toBe(false)
+    expect(mayWithdraw(draft, [reportPermission.file], undefined)).toBe(false)
+    expect(mayWithdraw(approved, [reportPermission.approve], 'u')).toBe(false)
   })
 })

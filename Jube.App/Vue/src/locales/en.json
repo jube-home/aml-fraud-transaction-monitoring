@@ -142,10 +142,8 @@
   "shell": {
     "resources": "Resources",
     "documentation": "Documentation",
-    "copyright": "Copyright",
     "account": "Account",
     "signedInAs": "Signed in as",
-    "changePassword": "Change password",
     "signOut": "Sign out",
     "signedOut": "You have signed out.",
     "signOutFailed": "Sign-out failed. Check your connection and try again.",
@@ -184,6 +182,7 @@
     "offline": "Jooby is not switched on for this installation. You can read about what Jooby can do, but replies are off until an inference backend is configured.",
     "noPermission": "Jooby is raring to go, but your account does not hold the Ask Jooby permission. Ask an administrator to add it to one of your roles.",
     "widgetTitle": "Jooby",
+    "viewing": "Viewing: {page}",
     "closeChat": "Close chat",
     "openChat": "Open chat",
     "failed": "That did not work. Try again.",
@@ -233,7 +232,7 @@
       "3": "time to resolution",
       "4": "time in status"
     },
-    "empty": "Nothing new. Notifications will appear here once the notification service is connected.",
+    "empty": "Nothing new.",
     "unread": "Unread",
     "severity": {
       "info": "Info",
@@ -452,7 +451,7 @@
     "closedStatus4": "Suspend bypass",
     "priority1": "Ultra high",
     "priority2": "High",
-    "priority3": "Normal",
+    "priority3": "Medium",
     "priority4": "Low",
     "priority5": "Ultra low",
     "addColumn": "Add column",
@@ -534,7 +533,7 @@
       "38": "Allow Preservation Import and Export",
       "39": "View Performance Counters",
       "40": "View Entity Analysis Model Sampling",
-      "41": "Allow Approved By Review",
+      "41": "Retired - no effect (the Activation Rule Review Status is retired)",
       "42": "Retired - no effect (OpenTelemetry Log Counter is landlord only)",
       "43": "Retired - no effect (OpenTelemetry Exclude is landlord only)",
       "44": "Allow Approval",
@@ -918,10 +917,7 @@
       "approvedValues": "Approved {count} value(s).",
       "approve": "Approve",
       "reject": "Reject",
-      "review": "Review",
       "approveValues": "Approve values",
-      "closeReview": "Close review",
-      "reviewTitle": "Review: {name}",
       "deletion": "Deletion",
       "edit": "Edit",
       "col": {
@@ -1391,7 +1387,9 @@
     "active": "{count} active",
     "locked": "{count} locked",
     "failed": "Could not load",
-    "awaiting": "{count} awaiting"
+    "awaiting": "{count} awaiting",
+    "find": "Find a card",
+    "noMatch": "Nothing matches"
   },
   "payloadGrid": {
     "from": "From",
@@ -2508,7 +2506,9 @@
       "legalHoldPlaced": "Legal hold placed",
       "legalHoldLifted": "Legal hold lifted",
       "assessmentRecorded": "Analyst assessment recorded",
-      "assessmentWithdrawn": "Analyst assessment withdrawn"
+      "assessmentWithdrawn": "Analyst assessment withdrawn",
+      "caseLinked": "Case linked",
+      "caseUnlinked": "Case unlinked"
     },
     "headline": {
       "atRisk": "{n} at risk",
@@ -2950,7 +2950,7 @@
       "noKey": "This case has no key, so there is no journal to show."
     },
     "notes": {
-      "empty": "No notes on this key yet.",
+      "nothing": "Nothing is recorded on this key yet. Notes and research are added from Decide.",
       "failed": "The notes could not be loaded.",
       "action": "Action: {name}",
       "priority": "Priority: {name}",
@@ -3038,6 +3038,7 @@
       "entriesFailed": "The submitted forms could not be loaded.",
       "submittedBy": "{user} on {when}",
       "cannotDraw": "This form can no longer be drawn: {reason} The values it holds are listed below.",
+      "drawFailed": "This form could not be drawn.",
       "otherValues": "Values the form has no field for"
     },
     "hint": {
@@ -3062,6 +3063,10 @@
       "whyNone": "Nothing beyond its place in the queue has been flagged yet."
     },
     "decide": {
+      "group": {
+        "actions": "Actions",
+        "record": "On this case"
+      },
       "title": "Decide",
       "heldByYou": "Held by you",
       "supervisor": "A supervisor can break this lock.",
@@ -3091,7 +3096,7 @@
       "saved": "Case updated",
       "noteAdded": "Note added",
       "macroRan": "Macro ran",
-      "statusTitle": "Status and rating",
+      "statusTitle": "Status",
       "diaryTitle": "Diary",
       "currentStatus": "Current status",
       "escalate": "Escalate",
@@ -3104,6 +3109,7 @@
       "attachHint": "Optional. Each file is kept with this note as evidence.",
       "researchAttachHint": "Optional. Each file is kept with this research as evidence.",
       "notAttached": "Note added, but {n} file(s) could not be attached.",
+      "researchNotAttached": "Research added, but {n} file(s) could not be attached.",
       "researchTitle": "Add research",
       "researchTopic": "Topic",
       "researchFindings": "Findings",
@@ -3136,7 +3142,7 @@
         },
         "status": {
           "label": "Status",
-          "tip": "Change the workflow status or escalate the case, and set its rating. A move is blocked while required checklist items are open."
+          "tip": "Change the workflow status or escalate the case. A move is blocked while required checklist items are open."
         },
         "checklist": {
           "label": "Checklist",
@@ -3270,6 +3276,7 @@
       "hint": "Cases in this workflow that share facts with this one: the same rules or models, the same tags, the same device or counterparty, the same kind and size of activity. Facts only a few cases share count for more than facts most cases share.\nThis is context to read, not a score: it never changes how the case is ranked.",
       "failed": "Could not load the similar cases.",
       "pending": "This case has not been compared yet. It will be shortly.",
+      "off": "Similar cases are switched off on this installation, so this case will not be compared.",
       "none": "No similar cases were found.",
       "headline": "{confirmed} of {closed} similar closed cases were confirmed",
       "tooFew": "Too few similar cases are closed to judge by",
@@ -3324,6 +3331,7 @@
       "empty": "No checklist items are showing for this case.",
       "gate": {
         "inPlace": "An override is in place. {user} allowed this case to move with items still open: {reason}",
+        "ownOverride": "You granted the override on this case, so another user must make the move: {reason}",
         "more": "+{n} more",
         "open": "no checklist items still open | 1 checklist item still open | {n} checklist items still open",
         "openChecklist": "Open checklist",
@@ -3384,6 +3392,7 @@
     },
     "assessment": {
       "title": "Your assessment",
+      "canvasTitle": "Analyst assessment",
       "hint": "Record your own view of how likely this case is to be confirmed. It is kept beside the computed likelihood, never replaces it and never changes where the case is ranked. Only you can withdraw a view you recorded.",
       "none": "No analyst has recorded a view on this case.",
       "low": "Low",
@@ -3402,7 +3411,7 @@
       "lede": "Analyst view: {view}"
     },
     "panes": {
-      "left": "the key panel and sections",
+      "left": "the sections",
       "right": "the decide panel"
     },
     "help": {
@@ -3416,7 +3425,7 @@
       "decide": {
         "title": "Everything you can do to this case.\nTaking a case locks it to you, so nobody else can change it. A supervisor can break the lock. Release the case if you stop working on it so it returns to the queue. Close and reopen sit lower down."
       },
-      "dashboard": "A dashboard built for this kind of case by whoever configured the workflow. It can describe the whole case, not only its transactions, and it is drawn from the case key and its value alone: anything else it shows is worked out from those two."
+      "dashboard": "A dashboard built for this kind of case by whoever configured the workflow. It can describe the whole case, not only its transactions, and it is given the case identifier alone: anything else it shows is worked out from that."
     },
     "hold": {
       "tileHint": "{n} held",
@@ -3474,7 +3483,6 @@
     },
     "research": {
       "heading": "Research",
-      "empty": "No research on this key yet.",
       "failed": "The research could not be loaded.",
       "sources": "Sources",
       "retrieved": "retrieved {date}"
@@ -3716,7 +3724,7 @@
       "activationsOnly": "Shows only the transactions that raised at least one activation.\nUse it to get from a long history to the moments the rules reacted. It also narrows the charts, the statistics and Tag all matching to those transactions.",
       "pinnedOnly": "Shows only the transactions pinned on this case, whatever their date or key.\nPins are for the whole case, so everyone working it sees the same ones. Pin a transaction with the star in the grid. Pinned transactions are also always at the top of the journal, in every lens, even outside the window.\nA case can hold up to 50 pins, and a case locked to another user cannot be changed.",
       "tags": "Tags label transactions, for example mule or reviewed, so they can be found and counted later.\nTick rows in the grid, then press Tag to add or remove tags on all of them at once, up to 500. Undo appears afterwards. Transactions whose case is locked to another user are left alone and counted.\nTag all matching tags every transaction of the current view, up to 100,000, in the background. You can keep working, stop it, and undo it afterwards. Only tags set up for this workflow's model can be added.",
-      "transactions": "How many transactions this key had in the window, newest first, up to 2,000.\nThe strip, the stands-out list and the charts are all worked out from these transactions. When the key has more, the strip says so and the older ones are left out of the statistics but not of the grid.",
+      "transactions": "How many transactions this key had in the window, newest first, up to 2,000.\nThe strip, the stands-out list and the charts are all worked out from these transactions. When the key has more, the strip says so and the older ones are left out of the statistics. The grid loads the newest 1,000.",
       "activeDays": "The number of different days, in UTC, on which the key had at least one transaction.\nRead it with the transaction count: many transactions on few days means activity in bursts, and few transactions spread over many days means steady, slow use.",
       "withActivations": "How many of the transactions raised at least one activation, and how many activations were raised in total.\nOne transaction can raise several activations, so the second figure can be larger than the first.",
       "elevation": "The highest response elevation of any transaction in the window.\nElevation is the weight the rules gave a transaction when it fired: the higher it is, the more urgent the response.",
@@ -4034,14 +4042,12 @@
     "section": {
       "meta": "{expiry} · {user} · {origin}",
       "elsewhere": "Also in force on values in this journal",
-      "elsewhereEmpty": "Nothing else is in force on the values in this journal.",
       "failed": "Suppressions could not be loaded.",
       "fromCase": "Set from case C-{id}",
       "fromOverridePage": "Set on the Override page or elsewhere",
       "hint": "Requests are launched from Decide and need approval before they take effect.",
       "noExpiry": "No expiry",
       "own": "Set from this case",
-      "ownEmpty": "No suppression has been requested from this case.",
       "title": "Model overrides"
     },
     "standing": {
@@ -4151,6 +4157,7 @@
       "expand": "Expand (adds none) | Expand (adds {count}) | Expand (adds {count})",
       "expanded": "Expanded",
       "pivot": "Pivot journal",
+      "reseed": "Explore from here",
       "link": "Link to case",
       "openCase": "Open case {id}",
       "capture": "Capture",
@@ -4263,7 +4270,7 @@
       "members": "{count} members",
       "markSeen": "Mark seen",
       "dismiss": "Dismiss",
-      "toCase": "Open as case",
+      "toCase": "Attach to case",
       "casedAs": "Case {id}",
       "decideAsk": {
         "title": "Decide this pattern?",

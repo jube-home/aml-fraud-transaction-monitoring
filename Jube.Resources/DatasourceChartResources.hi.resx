@@ -657,8 +657,8 @@
         <comment>b9ea12e7</comment>
     </data>
     <data name="Message.TemplateNameUnknown" xml:space="preserve">
-        <value>टेम्पलेट पंक्ति {0}, कॉलम {1}: "{2}" यहाँ ज्ञात नहीं है। rows, columns, rowCount, truncated या लूप चर का उपयोग करें।</value>
-        <comment>78917f7e</comment>
+        <value>टेम्पलेट पंक्ति {0}, कॉलम {1}: "{2}" यहाँ ज्ञात नहीं है। यहाँ ज्ञात नाम ये हैं: {3}।</value>
+        <comment>de987895</comment>
     </data>
     <data name="Message.TemplateFilterUnknown" xml:space="preserve">
         <value>टेम्पलेट पंक्ति {0}, कॉलम {1}: फ़िल्टर "{2}" मौजूद नहीं है।</value>

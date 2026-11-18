@@ -63,4 +63,7 @@
     <data name="InsufficientPrivilege" xml:space="preserve">
     <value>ليست لديك صلاحيات كافية لتنفيذ هذا الإجراء.</value>
   </data>
+    <data name="ApiHmacKeyNotSet" xml:space="preserve">
+    <value>لا يمكن إصدار مفاتيح API لأن متغير البيئة ApiHmacKey غير معيّن في هذا التثبيت.</value>
+  </data>
 </root>

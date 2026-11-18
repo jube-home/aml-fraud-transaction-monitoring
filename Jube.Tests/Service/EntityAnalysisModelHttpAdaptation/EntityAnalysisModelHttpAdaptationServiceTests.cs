@@ -203,7 +203,7 @@ namespace Jube.Test.Service.EntityAnalysisModelHttpAdaptation
             var saved = await service.InsertAsync(NewDto(modelId, UniqueName("Update")));
             createdIds.Add(saved.Id);
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             dto.HttpEndpoint = "/api/invoke/ChangedEndpoint";
 
@@ -257,7 +257,7 @@ namespace Jube.Test.Service.EntityAnalysisModelHttpAdaptation
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetByIdAsync(seedRow.Id));
 
-            var updateDto = NewDto(modelId, seedRow.Name);
+            var updateDto = NewDto(modelId, seedRow.Name!);
             updateDto.Id = seedRow.Id;
             await Assert.ThrowsAsync<ForbiddenException>(() => service.UpdateAsync(updateDto));
             await Assert.ThrowsAsync<ForbiddenException>(() => service.DeleteAsync(seedRow.Id));
@@ -320,7 +320,7 @@ namespace Jube.Test.Service.EntityAnalysisModelHttpAdaptation
             var byId = await otherTenant.GetByIdAsync(saved.Id);
             byId.Should().BeNull();
 
-            var updateDto = NewDto(modelId, saved.Name);
+            var updateDto = NewDto(modelId, saved.Name!);
             updateDto.Id = saved.Id;
             await Assert.ThrowsAsync<NotFoundException>(() => otherTenant.UpdateAsync(updateDto));
             await Assert.ThrowsAsync<NotFoundException>(() => otherTenant.DeleteAsync(saved.Id));
@@ -508,7 +508,7 @@ namespace Jube.Test.Service.EntityAnalysisModelHttpAdaptation
             var saved = await service.InsertAsync(NewDto(modelId, UniqueName("TamperUpdate")));
             createdIds.Add(saved.Id);
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
             dto.UpdatedUser = "also-tampered";
@@ -532,7 +532,7 @@ namespace Jube.Test.Service.EntityAnalysisModelHttpAdaptation
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelHttpAdaptation>()
                 .Where(w => w.Id == saved.Id).Set(s => s.Locked, (byte)1).UpdateAsync();
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateAsync(dto));
         }
@@ -548,7 +548,7 @@ namespace Jube.Test.Service.EntityAnalysisModelHttpAdaptation
 
             await service.DeleteAsync(saved.Id);
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             await service.UpdateAsync(dto);
 
@@ -637,7 +637,8 @@ namespace Jube.Test.Service.EntityAnalysisModelHttpAdaptation
             var resubmitted = await service.ResubmitAsync(saved.Id);
 
             resubmitted.Version.Should().Be(3);
-            resubmitted.Deleted.Should().Be(1,
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelHttpAdaptation>()
+                .Where(w => w.Id == resubmitted.Id).Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(1,
                 "resubmitting a rejected delete must re-open approval without un-deleting it");
         }
 
@@ -682,7 +683,7 @@ namespace Jube.Test.Service.EntityAnalysisModelHttpAdaptation
             await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModelHttpAdaptation,
                 saved.Id, 1, tenantRegistryId);
 
-            var updateDto = NewDto(modelId, saved.Name);
+            var updateDto = NewDto(modelId, saved.Name!);
             updateDto.Id = saved.Id;
             updateDto.HttpEndpoint = "/api/invoke/ChangedEndpoint";
             await service.UpdateAsync(updateDto);
@@ -724,7 +725,8 @@ namespace Jube.Test.Service.EntityAnalysisModelHttpAdaptation
             var retracted = await service.RetractAsync(saved.Id);
 
             retracted.Version.Should().Be(3);
-            retracted.Deleted.GetValueOrDefault().Should().Be(0,
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelHttpAdaptation>()
+                .Where(w => w.Id == retracted.Id).Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(0,
                 "retracting a rejected delete undeletes the record");
         }
 

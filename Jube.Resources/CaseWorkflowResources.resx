@@ -111,4 +111,7 @@
     <data name="GraphRegistryNotFound" xml:space="preserve">
     <value>The graph registry could not be found.</value>
   </data>
+    <data name="ServiceLevelTargetOutOfRange" xml:space="preserve">
+    <value>A service level target must be between 1 and 525600 minutes, or left empty for no target.</value>
+  </data>
 </root>

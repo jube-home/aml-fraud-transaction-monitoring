@@ -142,10 +142,8 @@
   "shell": {
     "resources": "Ressources",
     "documentation": "Documentation",
-    "copyright": "Droit d'auteur",
     "account": "Compte",
     "signedInAs": "Connecté en tant que",
-    "changePassword": "Changer le mot de passe",
     "signOut": "Se déconnecter",
     "signedOut": "Vous êtes déconnecté.",
     "signOutFailed": "La déconnexion a échoué. Vérifiez votre connexion et réessayez.",
@@ -184,6 +182,7 @@
     "offline": "Jooby n'est pas activé pour cette installation. Vous pouvez lire ce que Jooby sait faire, mais les réponses sont désactivées tant qu'un moteur d'inférence n'est pas configuré.",
     "noPermission": "Jooby est impatient de commencer, mais votre compte n'a pas l'autorisation Ask Jooby. Demandez à un administrateur de l'ajouter à l'un de vos rôles.",
     "widgetTitle": "Jooby",
+    "viewing": "Page consultée : {page}",
     "closeChat": "Fermer la discussion",
     "openChat": "Ouvrir la discussion",
     "failed": "Cela n'a pas fonctionné. Réessayez.",
@@ -233,7 +232,7 @@
       "3": "délai de résolution",
       "4": "durée dans le statut"
     },
-    "empty": "Rien de nouveau. Les notifications apparaîtront ici lorsque le service de notification sera connecté.",
+    "empty": "Rien de nouveau.",
     "unread": "Non lu",
     "severity": {
       "info": "Information",
@@ -452,7 +451,7 @@
     "closedStatus4": "Suspension contournée",
     "priority1": "Très élevée",
     "priority2": "Élevée",
-    "priority3": "Normale",
+    "priority3": "Moyenne",
     "priority4": "Faible",
     "priority5": "Très faible",
     "addColumn": "Ajouter une colonne",
@@ -534,7 +533,7 @@
       "38": "Autoriser l'import et l'export de préservation",
       "39": "Consulter les compteurs de performance",
       "40": "Consulter l'échantillonnage des modèles d'analyse d'entité",
-      "41": "Autoriser l'approbation par revue",
+      "41": "Retiré - sans effet (le statut de revue des règles d'activation est retiré)",
       "42": "Retiré - sans effet (le compteur de journaux OpenTelemetry est réservé au propriétaire)",
       "43": "Retiré - sans effet (l'exclusion OpenTelemetry est réservée au propriétaire)",
       "44": "Autoriser l'approbation",
@@ -918,10 +917,7 @@
       "approvedValues": "{count} valeur(s) approuvée(s).",
       "approve": "Approuver",
       "reject": "Rejeter",
-      "review": "Examiner",
       "approveValues": "Approuver les valeurs",
-      "closeReview": "Fermer l'examen",
-      "reviewTitle": "Examen : {name}",
       "deletion": "Suppression",
       "edit": "Modifier",
       "col": {
@@ -1391,7 +1387,9 @@
     "active": "{count} actifs",
     "locked": "{count} verrouillés",
     "failed": "Chargement impossible",
-    "awaiting": "{count} en attente"
+    "awaiting": "{count} en attente",
+    "find": "Trouver une carte",
+    "noMatch": "Aucun résultat"
   },
   "payloadGrid": {
     "from": "Du",
@@ -2508,7 +2506,9 @@
       "legalHoldPlaced": "Conservation légale posée",
       "legalHoldLifted": "Conservation légale levée",
       "assessmentRecorded": "Évaluation de l'analyste consignée",
-      "assessmentWithdrawn": "Évaluation de l'analyste retirée"
+      "assessmentWithdrawn": "Évaluation de l'analyste retirée",
+      "caseLinked": "Dossier lié",
+      "caseUnlinked": "Dossier délié"
     },
     "headline": {
       "atRisk": "{n} à risque",
@@ -2950,7 +2950,7 @@
       "noKey": "Ce dossier n'a pas de clé ; il n'y a donc aucun journal à afficher."
     },
     "notes": {
-      "empty": "Aucune note sur cette clé pour le moment.",
+      "nothing": "Rien n'est encore enregistré sur cette clé. Les notes et les recherches s'ajoutent depuis Décider.",
       "failed": "Les notes n'ont pas pu être chargées.",
       "action": "Action : {name}",
       "priority": "Priorité : {name}",
@@ -3038,6 +3038,7 @@
       "entriesFailed": "Les formulaires soumis n'ont pas pu être chargés.",
       "submittedBy": "{user} le {when}",
       "cannotDraw": "Ce formulaire ne peut plus être affiché : {reason} Les valeurs qu'il contient sont listées ci-dessous.",
+      "drawFailed": "Ce formulaire n'a pas pu être affiché.",
       "otherValues": "Valeurs pour lesquelles le formulaire n'a pas de champ"
     },
     "hint": {
@@ -3062,6 +3063,10 @@
       "whyNone": "Rien au-delà de sa place dans la file n'a encore été signalé."
     },
     "decide": {
+      "group": {
+        "actions": "Actions",
+        "record": "Sur ce dossier"
+      },
       "title": "Trancher",
       "heldByYou": "Détenu par vous",
       "supervisor": "Un superviseur peut briser ce verrou.",
@@ -3091,7 +3096,7 @@
       "saved": "Dossier mis à jour",
       "noteAdded": "Note ajoutée",
       "macroRan": "Macro exécutée",
-      "statusTitle": "Statut et évaluation",
+      "statusTitle": "Statut",
       "diaryTitle": "Échéancier",
       "currentStatus": "Statut actuel",
       "escalate": "Escalader",
@@ -3104,6 +3109,7 @@
       "attachHint": "Facultatif. Chaque fichier est conservé avec cette note comme preuve.",
       "researchAttachHint": "Facultatif. Chaque fichier est conservé avec cette recherche comme preuve.",
       "notAttached": "Note ajoutée, mais {n} fichier(s) n'ont pas pu être joints.",
+      "researchNotAttached": "Recherche ajoutée, mais {n} fichier(s) n'ont pas pu être joints.",
       "researchTitle": "Ajouter une recherche",
       "researchTopic": "Sujet",
       "researchFindings": "Constatations",
@@ -3136,7 +3142,7 @@
         },
         "status": {
           "label": "Statut",
-          "tip": "Modifier le statut du flux de travail ou escalader le dossier, et définir son évaluation. Un passage est bloqué tant que des éléments obligatoires de la liste de contrôle sont ouverts."
+          "tip": "Modifier le statut du flux de travail ou escalader le dossier. Un passage est bloqué tant que des éléments obligatoires de la liste de contrôle sont ouverts."
         },
         "checklist": {
           "label": "Liste de contrôle",
@@ -3270,6 +3276,7 @@
       "hint": "Les dossiers de ce flux qui partagent des faits avec celui-ci : les mêmes règles ou modèles, les mêmes étiquettes, le même appareil ou la même contrepartie, le même type et la même ampleur d'activité. Les faits que peu de dossiers partagent comptent davantage que ceux que la plupart partagent.\nC'est un contexte à lire, pas un score : il ne modifie jamais le classement du dossier.",
       "failed": "Impossible de charger les dossiers similaires.",
       "pending": "Ce dossier n'a pas encore été comparé. Il le sera sous peu.",
+      "off": "Les dossiers similaires sont désactivés sur cette installation, ce dossier ne sera donc pas comparé.",
       "none": "Aucun dossier similaire n'a été trouvé.",
       "headline": "{confirmed} des {closed} dossiers similaires clôturés ont été confirmés",
       "tooFew": "Trop peu de dossiers similaires sont clôturés pour en juger",
@@ -3324,6 +3331,7 @@
       "empty": "Aucun élément de liste de contrôle n'est affiché pour ce dossier.",
       "gate": {
         "inPlace": "Une dérogation est en place. {user} a autorisé ce dossier à changer de statut avec des éléments encore ouverts : {reason}",
+        "ownOverride": "Vous avez accordé la dérogation sur ce dossier, un autre utilisateur doit donc effectuer le changement de statut : {reason}",
         "more": "+{n} de plus",
         "open": "aucun élément de liste de contrôle encore ouvert | 1 élément de liste de contrôle encore ouvert | {n} d'éléments de liste de contrôle encore ouverts | {n} éléments de liste de contrôle encore ouverts",
         "openChecklist": "Ouvrir la liste de contrôle",
@@ -3384,6 +3392,7 @@
     },
     "assessment": {
       "title": "Votre évaluation",
+      "canvasTitle": "Évaluation de l'analyste",
       "hint": "Consignez votre propre appréciation de la probabilité que ce dossier soit confirmé. Elle est conservée à côté de la probabilité calculée, ne la remplace jamais et ne change jamais le classement du dossier. Vous seul pouvez retirer une appréciation que vous avez consignée.",
       "none": "Aucun analyste n'a consigné d'appréciation sur ce dossier.",
       "low": "Faible",
@@ -3402,7 +3411,7 @@
       "lede": "Avis de l'analyste : {view}"
     },
     "panes": {
-      "left": "le panneau de clé et les sections",
+      "left": "les sections",
       "right": "le panneau de décision"
     },
     "help": {
@@ -3416,7 +3425,7 @@
       "decide": {
         "title": "Tout ce que vous pouvez faire sur ce dossier.\nPrendre un dossier le verrouille à votre nom, de sorte que personne d'autre ne peut le modifier. Un superviseur peut briser le verrou. Libérez le dossier si vous cessez de travailler dessus afin qu'il retourne dans la file. Clore et rouvrir se trouvent plus bas."
       },
-      "dashboard": "Un tableau de bord conçu pour ce type de dossier par la personne qui a configuré le flux de travail. Il peut décrire le dossier dans son ensemble, pas seulement ses transactions, et il est construit uniquement à partir de la clé du dossier et de sa valeur : tout le reste qu'il affiche en est déduit."
+      "dashboard": "Un tableau de bord conçu pour ce type de dossier par la personne qui a configuré le flux de travail. Il peut décrire le dossier dans son ensemble, pas seulement ses transactions, et il ne reçoit que l'identifiant du dossier : tout le reste qu'il affiche en est déduit."
     },
     "hold": {
       "tileHint": "{n} bloqués",
@@ -3474,7 +3483,6 @@
     },
     "research": {
       "heading": "Recherche",
-      "empty": "Aucune recherche sur cette clé pour l'instant.",
       "failed": "La recherche n'a pas pu être chargée.",
       "sources": "Sources",
       "retrieved": "récupéré le {date}"
@@ -3716,7 +3724,7 @@
       "activationsOnly": "Montre uniquement les transactions qui ont généré au moins une activation.\nUtilisez-le pour passer d'un long historique aux moments où les règles ont réagi. Il restreint aussi les graphiques, les statistiques et Étiqueter toutes les correspondances à ces transactions.",
       "pinnedOnly": "Montre uniquement les transactions épinglées sur ce dossier, quelle que soit leur date ou leur clé.\nLes épingles valent pour tout le dossier, de sorte que tous ceux qui le traitent voient les mêmes. Épinglez une transaction avec l'étoile dans la grille. Les transactions épinglées sont aussi toujours en haut du journal, dans chaque angle, même hors de la fenêtre.\nUn dossier peut contenir jusqu'à 50 épingles, et un dossier verrouillé par un autre utilisateur ne peut pas être modifié.",
       "tags": "Les étiquettes marquent les transactions, par exemple mule ou vérifiée, afin de pouvoir les retrouver et les compter plus tard.\nCochez des lignes dans la grille, puis appuyez sur Étiqueter pour ajouter ou retirer des étiquettes sur toutes à la fois, jusqu'à 500. Annuler apparaît ensuite. Les transactions dont le dossier est verrouillé par un autre utilisateur sont laissées de côté et comptées.\nÉtiqueter toutes les correspondances étiquette chaque transaction de la vue actuelle, jusqu'à 100 000, en arrière-plan. Vous pouvez continuer à travailler, l'arrêter et l'annuler ensuite. Seules les étiquettes configurées pour le modèle de ce flux de travail peuvent être ajoutées.",
-      "transactions": "Combien de transactions cette clé a eues dans la fenêtre, les plus récentes d'abord, jusqu'à 2 000.\nLe bandeau, la liste des éléments qui se démarquent et les graphiques sont tous calculés à partir de ces transactions. Lorsque la clé en a davantage, le bandeau l'indique et les plus anciennes sont exclues des statistiques mais pas de la grille.",
+      "transactions": "Combien de transactions cette clé a eues dans la fenêtre, les plus récentes d'abord, jusqu'à 2 000.\nLe bandeau, la liste des éléments qui se démarquent et les graphiques sont tous calculés à partir de ces transactions. Lorsque la clé en a davantage, le bandeau l'indique et les plus anciennes sont exclues des statistiques. La grille charge les 1 000 plus récentes.",
       "activeDays": "Le nombre de jours différents, en UTC, où la clé a eu au moins une transaction.\nLisez-le avec le nombre de transactions : beaucoup de transactions sur peu de jours signifie une activité par rafales, et peu de transactions étalées sur beaucoup de jours signifie un usage régulier et lent.",
       "withActivations": "Combien de transactions ont généré au moins une activation, et combien d'activations ont été générées au total.\nUne transaction peut générer plusieurs activations, de sorte que le second chiffre peut être supérieur au premier.",
       "elevation": "L'élévation de réponse la plus haute de toutes les transactions de la fenêtre.\nL'élévation est le poids que les règles ont donné à une transaction lorsqu'elle s'est déclenchée : plus elle est élevée, plus la réponse est urgente.",
@@ -4034,14 +4042,12 @@
     "section": {
       "meta": "{expiry} · {user} · {origin}",
       "elsewhere": "Également en vigueur sur les valeurs de ce journal",
-      "elsewhereEmpty": "Rien d'autre n'est en vigueur sur les valeurs de ce journal.",
       "failed": "Les suppressions n'ont pas pu être chargées.",
       "fromCase": "Défini depuis le dossier C-{id}",
       "fromOverridePage": "Défini sur la page Dérogation ou ailleurs",
       "hint": "Les demandes sont lancées depuis Décider et doivent être approuvées avant de prendre effet.",
       "noExpiry": "Sans expiration",
       "own": "Défini depuis ce dossier",
-      "ownEmpty": "Aucune suppression n'a été demandée depuis ce dossier.",
       "title": "Dérogations de modèle"
     },
     "standing": {
@@ -4151,6 +4157,7 @@
       "expand": "Développer (n'en ajoute aucun) | Développer (en ajoute {count}) | Développer (en ajoute {count}) | Développer (en ajoute {count})",
       "expanded": "Développé",
       "pivot": "Pivoter le journal",
+      "reseed": "Explorer à partir d'ici",
       "link": "Lier au dossier",
       "openCase": "Ouvrir le dossier {id}",
       "capture": "Capturer",
@@ -4263,7 +4270,7 @@
       "members": "{count} membres",
       "markSeen": "Marquer comme vu",
       "dismiss": "Écarter",
-      "toCase": "Ouvrir comme dossier",
+      "toCase": "Rattacher à un dossier",
       "casedAs": "Dossier {id}",
       "decideAsk": {
         "title": "Statuer sur cette typologie ?",

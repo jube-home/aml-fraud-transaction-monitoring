@@ -657,8 +657,8 @@
         <comment>b9ea12e7</comment>
     </data>
     <data name="Message.TemplateNameUnknown" xml:space="preserve">
-        <value>შაბლონის სტრიქონი {0}, სვეტი {1}: "{2}" აქ ცნობილი არ არის. გამოიყენეთ rows, columns, rowCount, truncated ან ციკლის ცვლადი.</value>
-        <comment>78917f7e</comment>
+        <value>შაბლონის სტრიქონი {0}, სვეტი {1}: "{2}" აქ ცნობილი არ არის. აქ ცნობილი სახელებია {3}.</value>
+        <comment>de987895</comment>
     </data>
     <data name="Message.TemplateFilterUnknown" xml:space="preserve">
         <value>შაბლონის სტრიქონი {0}, სვეტი {1}: ფილტრი "{2}" არ არსებობს.</value>

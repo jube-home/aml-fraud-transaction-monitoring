@@ -143,6 +143,8 @@ namespace Jube.Test.Service.Query.CaseChecklist
                 var audit = await dbContext.CaseChecklistEvent.FirstAsync(w => w.CaseId == caseId
                     && w.ActionId == (byte)CaseChecklistAction.ValidationFailed);
                 audit.Detail.Should().Contain("failed");
+                audit.Detail.Should().EndWith("the validation condition failed to run.");
+                audit.Detail.Should().NotContainEquivalentOf("division");
             }
             finally
             {

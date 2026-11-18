@@ -172,11 +172,7 @@ namespace Jube.Service.Query.Graph
                 var result = new GraphNeighbourhoodDto
                 {
                     From = Offset(from), To = Offset(to), Hops = hops,
-                    Definitions = registry.Definitions.Select(d => new GraphEdgeDefinitionDto
-                    {
-                        Guid = d.Guid, Name = d.Name, KindId = d.KindId ?? 1, Restricted = d.Restricted == 1,
-                        Visible = d.Restricted != 1 || registry.Granted
-                    }).ToList(),
+                    Definitions = registry.Definitions.Select(d => ToDefinition(d, registry)).ToList(),
                     NoDefinitions = registry.Definitions.Count == 0,
                     BuiltDate = await BuiltDateAsync(registry, token).ConfigureAwait(false)
                 };
@@ -523,11 +519,7 @@ namespace Jube.Service.Query.Graph
                 result.Graph = new GraphNeighbourhoodDto
                 {
                     From = Offset(windowFrom), To = Offset(windowTo), Hops = depth,
-                    Definitions = registry.Definitions.Select(d => new GraphEdgeDefinitionDto
-                    {
-                        Guid = d.Guid, Name = d.Name, KindId = d.KindId ?? 1, Restricted = d.Restricted == 1,
-                        Visible = d.Restricted != 1 || registry.Granted
-                    }).ToList(),
+                    Definitions = registry.Definitions.Select(d => ToDefinition(d, registry)).ToList(),
                     NoDefinitions = selected.Length == 0,
                     BuiltDate = await BuiltDateAsync(registry, token).ConfigureAwait(false),
                     Nodes = nodeRows.OrderBy(n => depthOf[n.Id]).ThenBy(n => n.Id)
@@ -912,9 +904,17 @@ namespace Jube.Service.Query.Graph
                 var graph = request.Flow != null
                     ? (await GetFlowAsync(request.Flow, token).ConfigureAwait(false)).Graph
                     : await GetNeighbourhoodAsync(request.Query, token).ConfigureAwait(false);
+
                 if (request.Flow == null && graph.Nodes.Count == 0)
                 {
-                    throw new NotFoundException(strings[GraphResources.NodeNotFound]);
+                    op.Rows(0);
+
+                    return new GraphRenderResultDto
+                    {
+                        Svg = string.Empty,
+                        Graph = graph,
+                        LayoutId = request.LayoutId ?? (int)GraphLayout.Force
+                    };
                 }
 
                 var registry = await ResolveRegistryAsync(request.Flow?.RegistryGuid ?? request.Query.RegistryGuid, token)
@@ -1648,6 +1648,21 @@ namespace Jube.Service.Query.Graph
                         Open = found.Open, Closed = found.Closed, Confirmed = found.Confirmed,
                         LatestCaseId = found.LatestCaseId, LatestOpenCaseId = found.LatestOpenCaseId
                     }
+            };
+        }
+
+        private static GraphEdgeDefinitionDto ToDefinition(GraphRegistryEdge definition, ResolvedRegistry registry)
+        {
+            return new GraphEdgeDefinitionDto
+            {
+                Guid = definition.Guid, Name = definition.Name, KindId = definition.KindId ?? 1,
+                Restricted = definition.Restricted == 1,
+                Visible = definition.Restricted != 1 || registry.Granted,
+                IconName = definition.IconName,
+                FromNodeKey = definition.FromNodeKey ?? definition.FromKey,
+                ToNodeKey = definition.ToNodeKey ?? definition.ToKey,
+                FromNodeIcon = definition.FromNodeIcon,
+                ToNodeIcon = definition.ToNodeIcon
             };
         }
 

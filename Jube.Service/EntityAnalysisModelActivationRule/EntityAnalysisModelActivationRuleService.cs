@@ -590,7 +590,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
                      "calling twice creates two rows. The rule is not loaded by the engine until a checker " +
                      "approves the version this creates.")]
         [ServiceOperation("EntityAnalysisModelActivationRuleCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<ActivationRulePoco> InsertAsync(
+        public async Task<EntityAnalysisModelActivationRuleDto> InsertAsync(
             [Description("The Activation Rule to create.")]
             EntityAnalysisModelActivationRuleDto? model,
             CancellationToken token = default)
@@ -641,7 +641,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
                         $"user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelActivationRuleMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -927,7 +927,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
                      "Idempotent -- repeating the same update has no further effect beyond incrementing Version. " +
                      "The engine keeps running the last approved version until a checker approves the new one.")]
         [ServiceOperation("EntityAnalysisModelActivationRuleUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<ActivationRulePoco> UpdateAsync(
+        public async Task<EntityAnalysisModelActivationRuleDto> UpdateAsync(
             [Description("The Activation Rule to update. Id selects the row; identity/tenant/audit fields are " +
                          "server-owned and ignored.")]
             EntityAnalysisModelActivationRuleDto? model,
@@ -988,7 +988,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
                         $"EntityAnalysisModelActivationRule.Update: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelActivationRuleMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1214,7 +1214,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
                      "approval cycle without requiring an edit. Use after a rejection was explained and the " +
                      "maker still wants the same change (including a delete) approved.")]
         [ServiceOperation("EntityAnalysisModelActivationRuleResubmit", OperationKind.Write, Idempotent = false)]
-        public async Task<ActivationRulePoco> ResubmitAsync(
+        public async Task<EntityAnalysisModelActivationRuleDto> ResubmitAsync(
             [Description("Numeric identifier of the Activation Rule to resubmit.")]
             int id,
             [Description("Optional note explaining why this is being resubmitted.")]
@@ -1256,7 +1256,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
                         $"EntityAnalysisModelActivationRule.Resubmit: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelActivationRuleMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1291,7 +1291,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
                      "undeleting it, if the rejected change was a delete) without opening a new approval cycle. " +
                      "Use when the maker agrees with the rejection and wants to abandon the change.")]
         [ServiceOperation("EntityAnalysisModelActivationRuleRetract", OperationKind.Write, Idempotent = false)]
-        public async Task<ActivationRulePoco> RetractAsync(
+        public async Task<EntityAnalysisModelActivationRuleDto> RetractAsync(
             [Description("Numeric identifier of the Activation Rule to retract.")]
             int id,
             [Description("Optional note explaining why this is being retracted.")]
@@ -1333,7 +1333,7 @@ namespace Jube.Service.EntityAnalysisModelActivationRule
                         $"EntityAnalysisModelActivationRule.Retract: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelActivationRuleMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

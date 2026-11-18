@@ -111,13 +111,16 @@ namespace Jube.Validations.Repository.CaseWorkflowReleaseHook
             RuleFor(p => p)
                 .Custom((dto, context) =>
                 {
-                    foreach (var url in new[] { dto.ReleaseUrl, dto.RefuseUrl })
+                    foreach (var token in Unknown(dto.ReleaseUrl, urlTokens))
                     {
-                        foreach (var token in Unknown(url, urlTokens))
-                        {
-                            context.AddFailure(nameof(dto.ReleaseUrl),
-                                string.Format(localiser[CaseWorkflowReleaseHookResources.TokenUnknown], token));
-                        }
+                        context.AddFailure(nameof(dto.ReleaseUrl),
+                            string.Format(localiser[CaseWorkflowReleaseHookResources.TokenUnknown], token));
+                    }
+
+                    foreach (var token in Unknown(dto.RefuseUrl, urlTokens))
+                    {
+                        context.AddFailure(nameof(dto.RefuseUrl),
+                            string.Format(localiser[CaseWorkflowReleaseHookResources.TokenUnknown], token));
                     }
 
                     foreach (var token in Unknown(dto.Body, [.. urlTokens, .. bodyTokens]))

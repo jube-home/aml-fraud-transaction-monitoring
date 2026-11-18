@@ -954,7 +954,7 @@ namespace Jube.Cache.Resp
 
                                                 AddToLruCacheConcurrentSizedDictionaryForLocalCacheInstanceKey(
                                                     localCacheForPayloadKey,
-                                                    journalEntry.ToString(), hashEntry
+                                                    journalEntry.Element.ToString(), hashEntry
                                                 );
 
                                                 bytes += hashEntry.Length();

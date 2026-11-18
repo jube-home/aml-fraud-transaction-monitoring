@@ -18,7 +18,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/vue-query'
 import {Link2, X} from 'lucide-vue-next'
 import {RouterLink} from 'vue-router'
 import {ApiError} from '../../api/useApi'
-import FieldHelp from '../../components/FieldHelp.vue'
+import DecideCard from './DecideCard.vue'
 import {useToasts} from '../../stores/toasts'
 import {caseLabel} from '../labels'
 import {linksApi, linksKey, maximumReason, parseCaseNumber} from './linksApi'
@@ -74,12 +74,14 @@ const unlink = useMutation({
 </script>
 
 <template>
-  <fieldset class="fieldset" data-testid="case-links">
-    <legend class="fieldset-legend">
-      <Link2 class="size-3.5" aria-hidden="true"/>
-      {{ t('caseDetail.links.title') }}
-      <FieldHelp :label="t('caseDetail.links.title')" :text="t('caseDetail.links.hint')"/>
-    </legend>
+  <DecideCard
+    :title="t('caseDetail.links.title')"
+    :help="t('caseDetail.links.hint')"
+    testid="case-links"
+  >
+    <template #icon>
+      <Link2 class="size-5"/>
+    </template>
 
     <div v-if="links.isPending.value" key="loading" class="skeleton h-6 w-2/3" role="status"></div>
     <p v-else-if="links.isError.value" key="failed" role="alert" class="text-sm">
@@ -125,7 +127,7 @@ const unlink = useMutation({
         </li>
       </ul>
 
-      <div class="flex flex-col gap-1 pt-2">
+      <div class="flex flex-col gap-2">
         <div class="join w-full">
           <input
             v-model="number"
@@ -157,5 +159,5 @@ const unlink = useMutation({
         </div>
       </div>
     </template>
-  </fieldset>
+  </DecideCard>
 </template>

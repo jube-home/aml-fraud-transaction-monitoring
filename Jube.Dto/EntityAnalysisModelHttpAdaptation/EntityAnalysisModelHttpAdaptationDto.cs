@@ -47,8 +47,8 @@ namespace Jube.Dto.EntityAnalysisModelHttpAdaptation
 
         [Description("The remainder of the URL to POST the transaction payload to, appended to the " +
                      "HttpAdaptationUrl environment variable's value (which carries no trailing slash) -- so " +
-                     "this value must begin with '/', e.g. '/api/invoke/ExampleFraudScoreLocalEndpoint'.")]
-        [FormField(Group = "Endpoint", Order = 10, Placeholder = "/api/invoke/ExampleFraudScoreLocalEndpoint")]
+                     "this value must begin with '/', e.g. '/api/MockHttpAdaptation/BayesianNetworkBootstrapStrength'.")]
+        [FormField(Group = "Endpoint", Order = 10, Placeholder = "/api/MockHttpAdaptation/BayesianNetworkBootstrapStrength")]
         [ListColumn(Order = 20, Title = "HTTP Endpoint")]
         [Key(2)]
         public string? HttpEndpoint { get; set; }

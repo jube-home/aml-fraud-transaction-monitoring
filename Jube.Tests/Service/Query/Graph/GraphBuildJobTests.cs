@@ -75,6 +75,56 @@ namespace Jube.Test.Service.Query.Graph
         }
 
         [Fact]
+        public async Task AnEdgeDefinitionAddedLaterIsBuiltFromTheTransactionsAlreadyTakenUpByAnotherAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            await seed.SetupAsync(dbContext);
+            var now = DateTime.UtcNow;
+            await seed.TransactionAsync(dbContext, now.AddDays(-5), "A1", "B1", 100, "D1");
+            await seed.TransactionAsync(dbContext, now.AddDays(-4), "A1", "B1", 300, "D1");
+            var job = Job();
+            var definitions = await DefinitionsAsync(dbContext);
+            var deviceOnly = definitions.Where(d => d.Guid == seed.DeviceDefinition).ToList();
+
+            var first = await job.BuildTenantAsync(dbContext, seed.TenantRegistryId, deviceOnly);
+            first.Events.Should().Be(2);
+            (await dbContext.GraphEdge.CountAsync(e => e.GraphRegistryEdgeGuid == seed.PaysDefinition)).Should().Be(0);
+
+            var second = await job.BuildTenantAsync(dbContext, seed.TenantRegistryId, definitions);
+            second.Events.Should().Be(2);
+
+            var pays = await dbContext.GraphEdge.SingleAsync(e => e.GraphRegistryEdgeGuid == seed.PaysDefinition);
+            pays.Count.Should().Be(2);
+            pays.AmountSum.Should().Be(400);
+            (await dbContext.GraphEdge.SingleAsync(e => e.GraphRegistryEdgeGuid == seed.DeviceDefinition)).Count.Should().Be(2);
+
+            var third = await job.BuildTenantAsync(dbContext, seed.TenantRegistryId, definitions);
+            third.Events.Should().Be(0);
+        }
+
+        [Fact]
+        public async Task ABuildThatFindsNothingNewStillRecordsWhenItRanAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            await seed.SetupAsync(dbContext);
+            await seed.TransactionAsync(dbContext, DateTime.UtcNow.AddDays(-5), "A1", "B1", 100, "D1");
+            var job = Job();
+            var definitions = await DefinitionsAsync(dbContext);
+            var guids = definitions.Select(d => d.Guid).ToList();
+            await job.BuildTenantAsync(dbContext, seed.TenantRegistryId, definitions);
+            var longAgo = DateTime.UtcNow.AddDays(-3);
+            await dbContext.GraphBuildState.Where(s => guids.Contains(s.GraphRegistryEdgeGuid))
+                .Set(s => s.LastRunDate, longAgo).UpdateAsync();
+
+            var idle = await job.BuildTenantAsync(dbContext, seed.TenantRegistryId, definitions);
+
+            idle.Events.Should().Be(0);
+            var states = await dbContext.GraphBuildState.Where(s => guids.Contains(s.GraphRegistryEdgeGuid)).ToListAsync();
+            states.Should().HaveCount(definitions.Count);
+            states.Should().OnlyContain(s => s.LastRunDate > DateTime.UtcNow.AddMinutes(-5));
+        }
+
+        [Fact]
         public async Task RetractsAndRebuildsAReprocessedTransactionAsync()
         {
             await using var dbContext = fx.GetDbContext();

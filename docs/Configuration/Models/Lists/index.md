@@ -8,195 +8,149 @@ grand_parent: Configuration
 
 # Lists
 
-The Lists Page facilitates the creation of lists of data that can be referenced as an operator in all rules in the
-models. For example, the Lists page can be used to maintain a list of bad customer account identifiers that can be
-referenced using the Builder or Coder.
+Lists facilitate the creation of lists of data that can be referenced as an operator in all rules in the models. For example, a List can be used to maintain bad customer account identifiers that can be referenced using the Builder or Coder.
 
-Lists might for example be used to maintain large Deny and Accept lists, without having to embed large amounts of
-complexity into rules, instead embedding only the list reference.
+Lists might for example be used to maintain large Deny and Accept lists, without having to embed large amounts of complexity into rules, instead embedding only the list reference.
 
-Lists are synchronised by the engine in the background constantly, and they do not require an explicit synchronisation.
-It follows that any new list value is available more of less straight away.
+## Where it lives
 
-The page is available by navigating to the menu item Lists, in the main page. The positioning of the List navigation is
-in the main section, even though it is in fact part of models, for the purposes of delegating this otherwise
-administrative function to customer service orientated roles:
+Navigate through the menu to Models, open the model, then the Lists hub card. Creating, changing, approving and deleting a List follows the common manner described in [Child Objects](../../../Navigation/ChildObjects/index.html).
 
-<!-- TODO(screenshot): file=model-references-menu-item-list.png route=/models/references/lists state="replace the Razor-era image MenuItemList.png with the Vue UI showing the same step" -->
-![Image](MenuItemList.png)
+Lists are no longer an item in the main menu. The purpose that positioning served, the delegating of this otherwise administrative function to customer service orientated roles, is retained by permission instead: a role granted only permission 3, Read Write List, is presented with the Models menu item and can maintain Lists.
 
-Click as customary to expose a model tree which takes a similar form as other model administration objects:
+## Fields
 
-<!-- TODO(screenshot): file=model-references-lists-top-of-tree.png route=/models/references/lists state="replace the Razor-era image ListsTopOfTree.png with the Vue UI showing the same step" -->
-![Image](ListsTopOfTree.png)
+| Value  | Description                                                                                                                                                                     | Example      |
+|--------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|
+| Name   | The name of the List, by which rules refer to it. Required, limited to 256 characters, and unique within the Model without regard to case.                                      | BadCustomers |
+| Active | Whether the List is taken up by the engine and offered to rules. Active is off for a new List and must be switched on.                                                          | True         |
+| Locked | Whether the List is protected from change.                                                                                                                                      | False        |
 
-To create a list, click on the Model in the tree towards the left hand side:
+As rules refer to a List as `List.Name`, a name without spaces is advised.
 
-<!-- TODO(screenshot): file=model-references-empty-list-ready-for-add.png route=/models/references/lists state="replace the Razor-era image EmptyListReadyForAdd.png with the Vue UI showing the same step" -->
-![Image](EmptyListReadyForAdd.png)
+## List Values
 
-There are no parameters beyond the common parameters, the List is taken to be the Name. The name is required and limited
-to 256 characters, and must be unique within the Model.
+The values of a List are maintained in the Values panel, which is presented once the List has been created and is open.
 
-Creating a List by the name Bad Customers:
+{% comment %}SHOT id=models-lists-values
+     route=/models
+     steps=open-default-model, open-hub:Lists, open-row:IPDenyList, scroll-to:Values
+     frame=record
+     state=the IPDenyList of the default model opened, with the Values panel showing several values in differing states: approved, awaiting approval, one with a Delete expiry, and one deletion awaiting approval
+     conveys=values are maintained in a grid beneath the List, and each value carries its own approval state
+     alt=A List opened beneath its model with the Values panel listing each value alongside its delete expiry, state, approvals and actions{% endcomment %}
 
-<!-- TODO(screenshot): file=model-references-example-list-bad-customers.png route=/models/references/lists state="replace the Razor-era image ExampleListBadCustomers.png with the Vue UI showing the same step" -->
-![Image](ExampleListBadCustomers.png)
+![A List opened beneath its model with the Values panel listing each value alongside its delete expiry, state, approvals and actions](models-lists-values.png)
 
-Click the Add button to confirm creation of the List:
+The panel has a box to find a value, matching any part of the value without regard to case, an Add value button, and Approve all pending. Values are shown 25 to a page, with the following columns:
 
-<!-- TODO(screenshot): file=model-references-added-list-of-bad-customers.png route=/models/references/lists state="replace the Razor-era image AddedListOfBadCustomers.png with the Vue UI showing the same step" -->
-![Image](AddedListOfBadCustomers.png)
+| Column              | Description                                                                                               |
+|---------------------|-----------------------------------------------------------------------------------------------------------|
+| List value          | The value, limited to 512 characters.                                                                     |
+| Delete expiry (UTC) | The date and time at which the value expires, if any.                                                     |
+| State               | Approved, Awaiting approval, Deletion awaiting approval, Rejected or Deletion rejected.                   |
+| Approvals           | The approvals recorded against the number required.                                                       |
+| Made by             | The user having made the change.                                                                          |
+| Checker note        | The note given by the checker upon approving or rejecting.                                                |
+| Return note         | The note given by the maker upon resubmitting or retracting.                                              |
+| Actions             | Edit and Delete, and for the purposes of approval, Approve, Reject, Resubmit and Retract.                 |
 
-The List values are maintained using a grid facilitating the addition, updating and removal of List Values:
+Values are added and edited in the row itself, committing with Save or abandoning with Cancel. Deleting a value seeks confirmation under the heading Delete this value?, and the value thereafter stays listed as a pending deletion until a checker approves it.
 
-<!-- TODO(screenshot): file=model-references-children-values.png route=/models/references/lists state="replace the Razor-era image ChildrenValues.png with the Vue UI showing the same step" -->
-![Image](ChildrenValues.png)
+The clean installation carries three Lists in the default model, of which two are those by which the panel may be followed, the third being HighRiskCountries, which holds the country codes IR, KP and MM as Approved and is read by the Abstraction Rule HighRiskCountry. IPDenyList holds five values: 192.0.2.10, 192.0.2.44 and 198.51.100.23 are Approved and never expire, 198.51.100.90 is Approved with a Delete expiry ninety days after installation, and 203.0.113.77 is Awaiting approval and so plays no part in processing. WatchedAccounts likewise holds ACC-441, ACC-02 and ACC-77 as Approved, ACC-88 as Approved with a Delete expiry thirty days after installation, and ACC-300 as Awaiting approval. It follows that a rule testing `List.IPDenyList.contains(Payload.IP)` matches a transaction from 192.0.2.10 and does not match one from 203.0.113.77 until that value has been approved by a second user.
 
-To add a value to the list, a button is implemented titled 'Add Value':
+The controls of the panel behave as follows:
 
-<!-- TODO(screenshot): file=model-references-add-value-button.png route=/models/references/lists state="replace the Razor-era image AddValueButton.png with the Vue UI showing the same step" -->
-![Image](AddValueButton.png)
+| Control             | Behaviour                                                                                                                                                                                             |
+|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Find a value        | Filters the values as it is typed. Where nothing matches the grid reads No values match the current filter., which is also what an empty List reads.                                                  |
+| Add value           | Places a blank row for the new value. It is not available while a row is being added or edited, one row being worked upon at a time.                                                                  |
+| Save                | Stores the row and returns the notice Value saved. The value is then Awaiting approval, with the approvals shown as 0 of 1 where one approval is required.                                            |
+| Cancel              | Abandons the row without storing anything.                                                                                                                                                            |
+| Edit                | Opens the row for the value and its Delete expiry to be altered. An edit to an Approved value returns it to Awaiting approval, the engine continuing with the version before until it is approved.    |
+| Delete              | Upon confirmation, returns the notice Value deleted, pending approval. and the State reads Deletion awaiting approval.                                                                                |
+| Approve, Reject     | Offered against a value awaiting a decision, to a user holding permission 44, Allow Approval, who did not make the change. A note may be entered under Checker note beforehand, and the notice reads Approved. or Rejected. |
+| Resubmit, Retract   | Offered against a rejected value. Retract is offered only where an earlier version was approved. A note may be entered under Return note, and the notice reads Resubmitted. or Retracted.            |
+| Approve all pending | Approves every value the user is able to approve. It is not available where there is nothing awaiting that the user may approve. Any value that could not be approved is reported above the grid with its reason. |
 
-Clicking the Add button will overlay a form and create a new entry in the grid:
+The State is a badge, and where the approval state of the values cannot be fetched, which is the case for a user holding neither permission 44, Allow Approval, nor permission 45, View Pending Approvals, each State reads Status unavailable and the panel states Approval status is unavailable. Reload to check. Should the values themselves not be fetched, the panel reads The values could not be loaded. Refresh the page to try again.
 
-<!-- TODO(screenshot): file=model-references-template-for-add-value-to-list.png route=/models/references/lists state="replace the Razor-era image TemplateForAddValueToList.png with the Vue UI showing the same step" -->
-![Image](TemplateForAddValueToList.png)
+### Delete Expiry Date
 
-To commit the new value, click on the tick icon:
+A value may optionally be given a Delete Expiry Date. It is entered in the local time of the browser and stored as UTC.
 
-<!-- TODO(screenshot): file=model-references-tick-confirm-button.png route=/models/references/lists state="replace the Razor-era image TickConfirmButton.png with the Vue UI showing the same step" -->
-![Image](TickConfirmButton.png)
+Delete Expiry Date has the same effect as deleting the List Value: once the date and time entered is reached, the value is automatically excluded from processing, without an explicit delete ever being actioned. Leaving Delete Expiry Date blank, which is the default, means the value never expires and will need to be removed manually if it is to stop being available. The date and time entered must be in the future.
 
-Or to cancel the creation of the Value click the opposing icon:
+### Validation
 
-<!-- TODO(screenshot): file=model-references-circle-cancel-button.png route=/models/references/lists state="replace the Razor-era image CircleCancelButton.png with the Vue UI showing the same step" -->
-![Image](CircleCancelButton.png)
+A List Value is validated in the server, and is rejected where:
 
-Include the value as follows in the input box:
+* The value is empty.
+* The value is longer than 512 characters.
+* The Delete Expiry Date is not in the future.
+* The value already exists in the List.
 
-<!-- TODO(screenshot): file=model-references-example-value-for-list-value.png route=/models/references/lists state="replace the Razor-era image ExampleValueForListValue.png with the Vue UI showing the same step" -->
-![Image](ExampleValueForListValue.png)
+On rejection the reason is displayed above the grid, and the entry remains open for editing so that it can be corrected. The reasons given are, in the order of the rules above: Please enter a value for this list., The value must be 512 characters or fewer., Delete Expiry Date must be greater than the current date and time., and This value already exists in the list.
 
-The Add/Update Value form also exposes an optional Delete Expiry Date field, alongside the List Value, using a date and
-time picker.
+A List itself is validated upon Create and Save changes, the Name being refused with A name is required., The name must be 256 characters or fewer. or This name already exists. A List named in the text of a rule cannot be deleted while it is so used, the refusal naming each rule, as described under Deleting an entity that is in use in [Child Objects](../../../Navigation/ChildObjects/index.html).
 
-Delete Expiry Date has the same effect as deleting the List Value: once the date and time entered is reached, the value
-is automatically excluded from processing and from the grid, without an explicit delete ever being actioned. Leaving
-Delete Expiry Date blank, which is the default, means the value never expires and will need to be removed manually if it
-is to stop being available. The date and time entered must be in the future; an attempt to set a value in the past is
-rejected by the server, with the reason displayed above the grid.
+A List Value must be unique within its List. Matching is case-sensitive and exact, consistent with how rules compare against the List at run time. A value is still considered to exist, and so still blocks a duplicate, for as long as its own deletion is sitting with a checker awaiting approval, or was rejected and has not yet been retracted or resubmitted by the maker: in both cases the rule engine continues to treat the value as live until the deletion is actually approved, so the same text cannot be re-added in the meantime. Once a deletion is approved, the same value may be added again like any other new entry.
 
-This applies to any field on the List Value entry, not only Delete Expiry Date: an empty List Value is likewise rejected
-server-side, as is a List Value longer than 512 characters. On rejection the entry is automatically re-opened for
-editing and highlighted in red, in addition to the message shown above the grid, making it clear exactly which entry
-needs correcting.
+## Approval and synchronisation
 
-A List Value must be unique within its List: the server rejects an attempt to add a value that already exists,
-exactly as above. Matching is case-sensitive and exact, consistent with how rules compare against the List at
-run time. A value is still considered to exist, and so still blocks a duplicate, for as long as its own deletion is
-sitting with a checker awaiting approval, or was rejected and has not yet been retracted or resubmitted by the maker:
-in both cases the rule engine continues to treat the value as live until the deletion is actually approved, so the
-same text cannot be re-added in the meantime. Once a deletion is approved, the same value may be added again like
-any other new entry.
+Lists are synchronised by the engine in the background constantly, on every pass of model synchronisation (every ten seconds by default, as set by the ModelSynchronisationWait Environment Variable), and they do not require an explicit synchronisation.
 
-To update a List Value, click on the pen icon for the list value to be updated. Upon clicking the Pen icon:
+The engine takes up only what has been approved, as described in [Maker Checker](../../../Concepts/MakerChecker/index.html). It follows that:
 
-<!-- TODO(screenshot): file=model-references-edit-button-existing-list-value.png route=/models/references/lists state="replace the Razor-era image EditButtonExistingListValue.png with the Vue UI showing the same step" -->
-![Image](EditButtonExistingListValue.png)
+* A new value is available to rules more or less straight away upon being approved, and not before.
+* A value whose deletion is awaiting approval continues to be available to rules until the deletion is approved.
+* Only the values of an active List, that have not expired, are loaded.
 
-A form with a text box will be overlay:
+Approve all pending approves every value awaiting approval in the List in one action, for a checker having many values to pass.
 
-<!-- TODO(screenshot): file=model-references-overlay-list-item-for-edit.png route=/models/references/lists state="replace the Razor-era image OverlayListItemForEdit.png with the Vue UI showing the same step" -->
-![Image](OverlayListItemForEdit.png)
+## Uploading values
 
-Update the text box with the new value:
+Values can be loaded in bulk from a CSV file through the API, by a multipart POST of the file to `/api/EntityAnalysisModelListCsvFileUpload/{listId}`.
 
-<!-- TODO(screenshot): file=model-references-updated-existing-list-value.png route=/models/references/lists state="replace the Razor-era image UpdatedExistingListValue.png with the Vue UI showing the same step" -->
-![Image](UpdatedExistingListValue.png)
+{% comment %}TODO(verify): the Vue user interface has no control to upload a CSV file to a List, and the downloadable template was removed with the Razor pages. Owner to decide whether the upload control is to be restored; this section then needs the name of the control.{% endcomment %}
 
-Commit by clicking on the Tick icon:
+There is no column header in the file. Each line is a List Value, optionally followed by a comma and a Delete Expiry Date in .NET's round-trip ("O") format, which avoids the day/month ambiguity inherent in free-form date parsing of a text file. Where the Delete Expiry Date is omitted or left blank, the List Value never expires. For example, a List Value with no expiry and one with a Delete Expiry Date:
 
-<!-- TODO(screenshot): file=model-references-tick-confirm-button.png route=/models/references/lists state="replace the Razor-era image TickConfirmButton.png with the Vue UI showing the same step" -->
-![Image](TickConfirmButton.png)
+```
+ExampleListValue1
+ExampleListValue2,2027-01-01T00:00:00.0000000Z
+```
 
-Or to cancel the edit of the Value click the opposing icon:
+A blank value, one longer than 512 characters, a Delete Expiry Date that is not in the round-trip format or is not in the future, or a line the database rejects is skipped and counted as an error, and the remaining lines are still imported. The format is enforced strictly, such that a date written in any other form is never taken to mean that the value does not expire.
 
-<!-- TODO(screenshot): file=model-references-circle-cancel-button.png route=/models/references/lists state="replace the Razor-era image CircleCancelButton.png with the Vue UI showing the same step" -->
-![Image](CircleCancelButton.png)
+The same uniqueness rule applies to an uploaded line as to a value added by hand. If a line's value and Delete Expiry Date both already match an existing entry exactly, the line is left alone: it is counted as imported, but nothing is written and no new approval cycle is opened, so repeatedly uploading the same file is harmless. If the value matches an existing entry but the Delete Expiry Date differs, or the value matches one still awaiting approval of its own deletion (or rejected and not yet retracted or resubmitted), the line is rejected as a duplicate and skipped, the same way a blank or over-long value is. List CSV upload only ever adds new values; unlike Dictionary, it never updates an existing entry.
 
-Upon the successful commit of the Value, it will appear updated in the List control:
+The number of lines imported and the number in error are recorded for each upload in the EntityAnalysisModelListCsvFileUpload table.
 
-<!-- TODO(screenshot): file=model-references-updated-list-value.png route=/models/references/lists state="replace the Razor-era image UpdatedListValue.png with the Vue UI showing the same step" -->
-![Image](UpdatedListValue.png)
+## Example
 
-To delete a List value entry, it is a simple matter of clicking on the Disk Icon next to the List Value targeted for
-deletion:
+A List is referred to in a rule as `List.Name`. In the Builder, the List is offered among the fields under Reference, with the operator has, in the Lists group of operators. In the Coder, the same is written with contains, as in the Activation Rule of the default model that matches an IP address against the IPDenyList:
 
-<!-- TODO(screenshot): file=model-references-delete-button.png route=/models/references/lists state="replace the Razor-era image DeleteButton.png with the Vue UI showing the same step" -->
-![Image](DeleteButton.png)
+```vb
+If (( List.IPDenyList.contains(Payload.IP))) Then
+  Return True
+End If
+```
 
-A confirmation of the delete will be sought:
+The rule returns True where the IP of the transaction is an approved, unexpired value of the IPDenyList.
 
-<!-- TODO(screenshot): file=model-references-confirm-delete-of-list-value.png route=/models/references/lists state="replace the Razor-era image ConfirmDeleteOfListValue.png with the Vue UI showing the same step" -->
-![Image](ConfirmDeleteOfListValue.png)
+{% comment %}SHOT id=models-lists-in-rule-builder
+     route=/models
+     steps=open-default-model, open-hub:Activation Rules, open-row:AllIPDenyList, scroll-to:Rule
+     frame=record
+     state=an Activation Rule of the default model in the Builder with a condition on List.IPDenyList using the has operator against Payload.IP
+     conveys=a List is embedded in a rule as a single reference, whatever the number of values
+     alt=The rule Builder showing a condition that tests whether the IPDenyList has the IP of the transaction{% endcomment %}
 
-Upon confirming the delete, it will be removed from the list of values:
-
-<!-- TODO(screenshot): file=model-references-value-deleted.png route=/models/references/lists state="replace the Razor-era image ValueDeleted.png with the Vue UI showing the same step" -->
-![Image](ValueDeleted.png)
-
-It is also possible to upload a list of values by uploading a CSV file given the downloadable template in the page.
-
-Note there is no column header in the above file and structure. Each line is a List Value, optionally followed by a
-comma and a Delete Expiry Date. The Delete Expiry Date must be in .NET's round-trip ("O") format, for example
-`2027-01-01T00:00:00.0000000Z` - this is enforced strictly, with no other date format accepted, to avoid the day/month
-ambiguity inherent in free-form date parsing of a text file. Where the Delete Expiry Date is omitted or left blank, the
-List Value never expires. A template CSV file, illustrating both a List Value with no expiry and one with a Delete
-Expiry Date, can be downloaded directly from the List page using the Download CSV Template link found next to the Select
-Files control. A blank value, one longer than 512 characters, or a line the database rejects is logged and skipped, and
-the remaining lines are still imported.
-
-The same uniqueness rule applies to an uploaded line as to a value added by hand. If a line's value and Delete Expiry
-Date both already match an existing entry exactly, the line is left alone: it is counted as imported, but nothing is
-written and no new approval cycle is opened, so repeatedly uploading the same file is harmless. If the value matches
-an existing entry but the Delete Expiry Date differs, or the value matches one still awaiting approval of its own
-deletion (or rejected and not yet retracted or resubmitted), the line is rejected as a duplicate and skipped, the same
-way a blank or over-long value is. List CSV upload only ever adds new values; unlike Dictionary, it never updates an
-existing entry.
-
-The control to upload a file is the button Select Files:
-
-<!-- TODO(screenshot): file=model-references-select-files-button.png route=/models/references/lists state="replace the Razor-era image SelectFilesButton.png with the Vue UI showing the same step" -->
-![Image](SelectFilesButton.png)
-
-Either drag the file to the area shown above, or click the button titled Select files, navigating to the file:
-
-<!-- TODO(screenshot): file=model-references-select-file.png route=/models/references/lists state="replace the Razor-era image SelectFile.png with the Vue UI showing the same step" -->
-![Image](SelectFile.png)
-
-Clicking Open, which will happen implicitly if the file has been dragged and dropped, will both upload the file and
-process, adding each row as a new list entry:
-
-<!-- TODO(screenshot): file=model-references-uploaded-list-values.png route=/models/references/lists state="replace the Razor-era image UploadedListValues.png with the Vue UI showing the same step" -->
-![Image](UploadedListValues.png)
-
-The list and its values will now be available to rules, for example:
-
-<!-- TODO(screenshot): file=model-references-list-available-in-gateway-rule.png route=/models/references/lists state="replace the Razor-era image ListAvailableInGatewayRule.png with the Vue UI showing the same step" -->
-![Image](ListAvailableInGatewayRule.png)
+![The rule Builder showing a condition that tests whether the IPDenyList has the IP of the transaction](models-lists-in-rule-builder.png)
 
 ## Permissions and security
 
-<!-- TODO(docs): confirm the permission number and wording against the running menu and the Roles page -->
-Reading and writing this area requires permission 3. A user without it receives 403, and an unauthenticated request
-receives 401. Every mutation also needs the antiforgery token for cookie sessions.
+Reading and writing Lists and List Values, including the upload of a CSV file, requires permission 3, Read Write List. A user without it receives 403, and an unauthenticated request receives 401. Every mutation also needs the antiforgery token for cookie sessions.
 
-<!-- TODO(docs): owner to review this security paragraph, it was written from code, not from a running system -->
-Lists and List Values are scoped to the caller's tenant through the parent Model; a foreign List id behaves like a
-missing one. A list value is limited to 512 characters and must be unique in the List. CSV rows are loaded as data,
-never executed; a blank or over-long first cell counts as a row error.
-
-<!-- TODO(docs): changes are subject to maker-checker approval when ApprovalsRequired is on; describe the Approvals tab, Resubmit and Retract for Lists from the real UI -->
-<!-- TODO(docs): every statement above about the Razor-era page layout (tree on the left, Add button, version pane) may be stale after the Vue port; re-read the whole page against the new UI -->
-<!-- TODO(docs): add the Arabic and Urdu right-to-left note: identifiers, paths and code stay left-to-right inside right-to-left text -->
+Lists and List Values are scoped to the caller's tenant through the parent Model; a foreign List id behaves like a missing one. CSV rows are loaded as data, never executed.

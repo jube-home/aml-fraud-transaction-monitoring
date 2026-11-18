@@ -8,69 +8,52 @@ grand_parent: Configuration
 
 # Login and Logout Audit
 
-<!-- TODO(docs): owner to confirm the page title and nav_order 6 (Users is 4, Outbound Host Policy is 5); slices.json lists no docs path for login-audit so one must be added -->
+Jube keeps two permanent, read only audit trails of authentication. The Login trail records every attempt to sign in, successful or not, and the Logout trail records every session that was cut. Both are presented as a grid in the Security page, and both are available in the database for the purposes of monitoring, in the `UserLogin` and `UserLogout` tables respectively.
 
-Jube keeps two permanent, read-only audit trails of authentication. The Login trail records every sign-in attempt,
-successful or not, and the Logout trail records every session that was cut. Both are shown as a grid in
-Administration >> Security.
+## Where it lives
 
-<!-- TODO(docs): the Razor-era statements in Users/index.md ("An authentication journal is available in the database ... UserLogin table", with LoginJournal.png) describe a SQL query, not the page; decide whether to keep them or point at this page -->
+Navigate through the menu to Administration, then Security, then the Sign-ins card or the Sign-outs card. Each opens as a step of the Security story, presenting a grid with a toolbar of filters above it.
 
-<!-- TODO(screenshot): file=login-audit-security-hub.png route=/administration/security state="Security hub with the Users, Roles, Permissions, Sign-ins and Sign-outs cards, signed in as an administrator holding permissions 34, 35 and 36" -->
-![Image](login-audit-security-hub.png)
+{% comment %}SHOT id=administration-login-audit-sign-ins
+     route=/administration/security
+     steps=open-hub:Sign-ins
+     frame=page
+     state=the Sign-ins step of the Security page showing the toolbar with From and To at the default of the last hour, and a grid holding a mixture of successful and failed attempts with differing failure reasons
+     conveys=every attempt to sign in is listed with its outcome, its scheme and where it came from
+     alt=The Sign-ins grid on the Security page, with a toolbar of From, To and search above rows showing the user, whether the attempt failed, the scheme, the failure reason and the IP addresses{% endcomment %}
 
-## Who can see them
-
-Both grids require permission 35, the same permission that governs Users. A person without it is not offered the
-Sign-ins or Sign-outs cards. The server refuses the read with a 403 independently of the screen, and an unauthenticated
-call is a 401.
-
-<!-- TODO(docs): confirm permission 35 is named "Users" in the permission list shown to administrators; the slice inventory claims 34, which is Roles, and the code (UserLoginService, UserLogoutService, security/roots.ts) says 35 -->
-
-A tenant administrator sees the rows of the users in their own tenant only. A landlord sees every tenant. Sign-in
-attempts against a user name that does not exist belong to no tenant, so they are visible to a landlord only. The same
-applies to sign-outs that belong to no tenant.
-
-<!-- TODO(docs): verify the sentence about sign-outs belonging to no tenant against a real unauthenticated logout in a running instance -->
+![The Sign-ins grid on the Security page, with a toolbar of From, To and search above rows showing the user, whether the attempt failed, the scheme, the failure reason and the IP addresses](administration-login-audit-sign-ins.png)
 
 ## Using the grid
 
-Open Administration >> Security and choose Sign-ins or Sign-outs.
+The grids are read only. Nothing can be added, changed or deleted through the page or the API, and the trails are not purged, hence they grow without limit.
 
-<!-- TODO(screenshot): file=login-audit-signins-grid.png route=/administration/security state="Sign-ins grid, a mix of successful and failed attempts, time range at its default" -->
-![Image](login-audit-signins-grid.png)
+| Control        | Description                                                                                                                                                                                     |
+|----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| From and To    | Restrict the rows by the time of the event. Where omitted, each defaults independently to the last hour, which is why a page newly opened is short.                                             |
+| Search         | A match on any part of the text, without regard to case. For Sign-ins: user, IP, user agent and failure message. For Sign-outs: user, cut by, IP, user agent and message.                       |
+| Apply, Clear   | Run the filters, or return them to their defaults.                                                                                                                                              |
+| Refresh        | Reload with the current filters.                                                                                                                                                                |
+| CSV, Excel     | Export the rows currently loaded in the grid.                                                                                                                                                   |
+| Column headers | Sort the grid, the default being the most recent first. The sorting takes place on the server side, henceforth it holds across all of the rows matching and not only those loaded.            |
 
-| Control        | What it does                                                                                                                          |
-|----------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| From and To    | Restrict rows by the time of the event. When omitted, each defaults independently to the last hour, which is why a new page is short. |
-| Search         | Case-insensitive substring match. Sign-ins: user, IP, user agent, failure message. Sign-outs: user, cut by, IP, user agent, message.  |
-| Apply, Clear   | Run the filters, or reset them.                                                                                                       |
-| Refresh        | Reload with the current filters.                                                                                                      |
-| CSV, Excel     | Export the rows currently loaded in the grid.                                                                                         |
-| Column headers | Sort the grid. The default is the most recent first.                                                                                  |
-
-<!-- TODO(docs): verify in the running UI that column header sorting is server-side (sortField/sortDirection) rather than in the browser, which matters for results capped by take -->
-<!-- TODO(docs): state the row cap shown in the UI; the server clamps take to 100000 and defaults to 100000, and the grid shows a total count -->
-<!-- TODO(docs): the statistics strip is empty for both trails by design (no continuous columns); confirm nothing is shown in the UI -->
-
-The grids are read-only. Nothing can be added, changed or deleted through the screen or the API, and the trails are not
-purged.
+At most 100000 rows are returned for a request, and the grid states the number of rows shown against the total matching, asking for a narrower window or filter where the total is the larger.
 
 ## Sign-ins
 
-Source table `UserLogin`, API `GET /api/UserLogin`.
+The source is the `UserLogin` table, served by `GET /api/UserLogin`.
 
-| Column                          | Meaning                                                                                       |
-|---------------------------------|-----------------------------------------------------------------------------------------------|
-| Created Date                    | UTC time of the attempt, shown in local time.                                                 |
-| User                            | The user name the attempt was for. It is the raw supplied name even when no such user exists. |
-| Failed                          | 1 for a failed attempt, 0 for a success.                                                      |
-| Scheme                          | Username and Password, Negotiate (Windows/Kerberos), OAuth / OpenID Connect.                  |
-| Failure Reason                  | Empty on success. Otherwise one of the ten reasons below.                                     |
-| Failure Message                 | OAuth failures only: the identity provider's error or the token validation message.           |
-| Remote IP, Local IP, User Agent | Recorded for the attempt when available.                                                      |
+| Column                          | Description                                                                                                   |
+|---------------------------------|---------------------------------------------------------------------------------------------------------------|
+| Created date                    | The time of the attempt, stored as UTC and shown in local time.                                               |
+| User                            | The user name the attempt was for. It is the raw name as supplied, even where no such user exists.            |
+| Failed                          | 1 for a failed attempt, 0 for a success.                                                                      |
+| Scheme                          | Username and Password, Negotiate (Windows / Kerberos), or OAuth / OpenID Connect.                             |
+| Failure reason                  | Empty on success, otherwise one of the ten reasons below.                                                     |
+| Failure message                 | For OAuth failures only: the error of the identity provider, or the message from the validation of the token. |
+| Remote ip, Local ip, User agent | Recorded for the attempt where available.                                                                     |
 
-Failure reasons, from `UserLoginService.DescribeFailureReason`:
+The failure reasons are as follows:
 
 | Id | Reason                                                |
 |----|-------------------------------------------------------|
@@ -85,51 +68,50 @@ Failure reasons, from `UserLoginService.DescribeFailureReason`:
 | 9  | OAuth: local token validation failed                  |
 | 10 | OAuth: internal error during processing               |
 
-<!-- TODO(docs): the Authentication concepts page documents the same legend; keep one as the source of truth and link the other -->
-<!-- TODO(docs): the DTO column order puts Scheme, Failure Reason, Failure Message, Remote IP, Local IP, User Agent after User and Failed; verify the order and visible titles in the running UI, including whether the Id columns are hidden -->
+The same legend, and the lockout that gives rise to reason 3, are described in [Authentication Concepts](../../../Concepts/Authentication/index.html).
 
 ## Sign-outs
 
-Source table `UserLogout`, API `GET /api/UserLogout`.
+The source is the `UserLogout` table, served by `GET /api/UserLogout`.
 
-<!-- TODO(screenshot): file=login-audit-signouts-grid.png route=/administration/security state="Sign-outs grid showing a user logout, an administrator revoke and a password change, with Session length populated" -->
-![Image](login-audit-signouts-grid.png)
+| Column                          | Description                                                                          |
+|---------------------------------|--------------------------------------------------------------------------------------|
+| Logged Out                      | The time the session was cut, stored as UTC and shown in local time.                 |
+| User                            | The user whose session ended.                                                        |
+| Reason                          | Why it ended, as below.                                                              |
+| Outcome                         | How the cutting of the session went, as below.                                       |
+| Session Started                 | When the session began, where known.                                                 |
+| Session                         | How long the session lived, in seconds. Empty where the start is not known.          |
+| Cut By                          | The user having cut the session, where it was not the user themselves.               |
+| Message                         | Free text detail.                                                                    |
+| Remote ip, Local ip, User agent | Recorded where available.                                                            |
 
-| Column                          | Meaning                                                                         |
-|---------------------------------|---------------------------------------------------------------------------------|
-| Logged Out                      | UTC time the session was cut, shown in local time.                              |
-| User                            | The user whose session ended.                                                   |
-| Reason                          | Why it ended (the user, an administrator revoking sessions, a password change). |
-| Outcome                         | How the cut went.                                                               |
-| Session Started                 | When the session began, when known.                                             |
-| Session                         | How long the session lived, in seconds. Empty when the start is unknown.        |
-| Cut By                          | The user who cut the session, when it was not the user.                         |
-| Message                         | Free text detail.                                                               |
-| Remote IP, Local IP, User Agent | Recorded when available.                                                        |
+The reasons are as follows:
 
-Reasons and outcomes as asserted by `ListDescribesEveryReasonAndOutcomeAsync` in `UserLogoutServiceTests`:
+| Id | Reason                             | Recorded when                                                                                             |
+|----|------------------------------------|-----------------------------------------------------------------------------------------------------------|
+| 1  | User logout                        | A user signs out.                                                                                         |
+| 2  | Tokens revoked by an administrator | An administrator uses Revoke sessions on a [User](../Users/index.html), with Cut By naming the administrator. |
+| 3  | Password change                    | A user changes their password, which revokes every session issued beforehand, a fresh session being issued to the browser having made the change. |
 
-| Id | Reason                             | Outcome                             |
-|----|------------------------------------|-------------------------------------|
-| 1  | User logout                        | Revoked                             |
-| 2  | Tokens revoked by an administrator | No session (cookies cleared only)   |
-| 3  | Password change                    | Revocation failed (cookies cleared) |
+The outcomes are as follows:
 
-<!-- TODO(docs): the test pairs reason and outcome by id only to exercise the describers; confirm which reason and outcome combinations occur in practice -->
-<!-- TODO(docs): confirm which reasons are written by which flows (logout page, Revoke Sessions, change password, expiry) before describing them -->
+| Id | Outcome                             | Description                                                                                                   |
+|----|-------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| 1  | Revoked                             | The sessions of the user were revoked in the database.                                                        |
+| 2  | No session (cookies cleared only)   | A sign out arrived with no session behind it, hence there was nothing to revoke and no user to record.        |
+| 3  | Revocation failed (cookies cleared) | A user signed out, yet the revocation in the database did not succeed, the cookies having been cleared still. |
+
+A revocation by an administrator and a change of password are recorded with the outcome Revoked, whereas a sign out by the user may carry any of the three outcomes.
 
 ## Reading the trail
 
-Repeated failures with reason 1 from one remote IP across many user names suggest user name enumeration. Repeated
-failures with reason 5 against one user name, followed by reason 3, show the lockout described in the Authentication
-concepts page.
+Repeated failures with reason 1 from one remote IP across many user names suggest the enumeration of user names. Repeated failures with reason 5 against one user name, followed by reason 3, show the lockout described in [Authentication Concepts](../../../Concepts/Authentication/index.html).
 
-<!-- TODO(docs): owner to confirm the investigative guidance above is wanted in the product docs and that reason 3 follows reason 5 per the lockout threshold -->
+A user name is not hidden from the trail: the raw name as typed is stored, including a password mistakenly entered into the user name field. It follows that the trail should be treated as sensitive.
 
-## Behaviour to know
+## Permissions and security
 
-- A user name is not hidden from the trail: the raw name typed is stored, including a mistyped password pasted into the
-  user name field. Treat the trail as sensitive.
-- The trails are not purged, so they grow without limit.
+Both grids require permission 35, Read Write Security User, being the same permission that governs [Users](../Users/index.html). A user without it is not presented with the Sign-ins or Sign-outs cards. The server refuses the read with a 403 independently of the page, and an unauthenticated call receives a 401.
 
-<!-- TODO(docs): confirm no retention or archival guidance exists elsewhere (Preservation?) that should be linked here -->
+A tenant administrator sees the rows of the users in their own tenant only, whereas a landlord sees every tenant. Attempts to sign in against a user name that does not exist belong to no tenant, so they are visible to a landlord only, and the same applies to sign outs that belong to no tenant, such as a sign out with no session.

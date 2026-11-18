@@ -36,7 +36,7 @@ export const linksApi = {
 }
 
 export function parseCaseNumber(text: string): number | null {
-  const cleaned = text.trim().replace(/^#/, '')
+  const cleaned = text.trim().replace(/^(#|c-)/i, '')
 
   if (!/^\d{1,9}$/.test(cleaned)) return null
 

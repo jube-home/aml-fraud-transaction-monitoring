@@ -64,7 +64,7 @@
     <value>Odległość musi mieścić się w przedziale od 0 do 5.</value>
   </data>
     <data name="CacheValueRange" xml:space="preserve">
-    <value>Wartość interwału pamięci podręcznej nie może być ujemna.</value>
+    <value>Wartość interwału pamięci podręcznej musi wynosić zero lub więcej i mieścić się w limicie dla wybranego interwału.</value>
   </data>
     <data name="CacheIntervalInvalid" xml:space="preserve">
     <value>Typ interwału pamięci podręcznej musi być jednym z: sekundy, minuty, godziny lub dni.</value>

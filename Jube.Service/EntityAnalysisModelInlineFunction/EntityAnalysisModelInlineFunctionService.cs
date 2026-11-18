@@ -587,7 +587,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         [Description("Creates a new Inline Function under a Model in the caller's tenant. Not idempotent -- " +
                      "calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelInlineFunctionCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<InlineFunctionPoco> InsertAsync(
+        public async Task<EntityAnalysisModelInlineFunctionDto> InsertAsync(
             [Description("The Inline Function to create.")]
             EntityAnalysisModelInlineFunctionDto? model,
             CancellationToken token = default)
@@ -631,7 +631,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
                              $"user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelInlineFunctionMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -818,7 +818,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
         [Description("Updates an existing Inline Function in the caller's tenant, identified by its Id. " +
                      "Idempotent -- repeating the same update has no further effect beyond incrementing Version.")]
         [ServiceOperation("EntityAnalysisModelInlineFunctionUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<InlineFunctionPoco> UpdateAsync(
+        public async Task<EntityAnalysisModelInlineFunctionDto> UpdateAsync(
             [Description(
                 "The Inline Function to update. Id selects the row; identity/tenant/audit fields are " +
                 "server-owned and ignored.")]
@@ -879,7 +879,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
                         $"EntityAnalysisModelInlineFunction.Update: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelInlineFunctionMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1024,7 +1024,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
                      "approval cycle without requiring an edit. Use after a rejection was explained and the " +
                      "maker still wants the same change (including a delete) approved.")]
         [ServiceOperation("EntityAnalysisModelInlineFunctionResubmit", OperationKind.Write, Idempotent = false)]
-        public async Task<InlineFunctionPoco> ResubmitAsync(
+        public async Task<EntityAnalysisModelInlineFunctionDto> ResubmitAsync(
             [Description("Numeric identifier of the Inline Function to resubmit.")]
             int id,
             [Description("Optional note explaining why this is being resubmitted.")]
@@ -1066,7 +1066,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
                         $"EntityAnalysisModelInlineFunction.Resubmit: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelInlineFunctionMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1101,7 +1101,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
                      "undeleting it, if the rejected change was a delete) without opening a new approval cycle. " +
                      "Use when the maker agrees with the rejection and wants to abandon the change.")]
         [ServiceOperation("EntityAnalysisModelInlineFunctionRetract", OperationKind.Write, Idempotent = false)]
-        public async Task<InlineFunctionPoco> RetractAsync(
+        public async Task<EntityAnalysisModelInlineFunctionDto> RetractAsync(
             [Description("Numeric identifier of the Inline Function to retract.")]
             int id,
             [Description("Optional note explaining why this is being retracted.")]
@@ -1143,7 +1143,7 @@ namespace Jube.Service.EntityAnalysisModelInlineFunction
                         $"EntityAnalysisModelInlineFunction.Retract: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelInlineFunctionMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

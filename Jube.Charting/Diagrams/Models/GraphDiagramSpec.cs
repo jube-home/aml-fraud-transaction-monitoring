@@ -29,6 +29,7 @@ namespace Jube.Charting.Diagrams.Models
         public string? Group { get; init; }
         public bool Dashed { get; init; }
         public GraphNodeShape? Shape { get; init; }
+        public string? Icon { get; init; }
         public double? Size { get; init; }
         public IReadOnlyList<GraphBadge>? Badges { get; init; }
         public GraphEmphasis Emphasis { get; init; }
@@ -45,6 +46,7 @@ namespace Jube.Charting.Diagrams.Models
         public DateTimeOffset? Last { get; init; }
         public bool? Directed { get; init; }
         public int? Count { get; init; }
+        public string? Icon { get; init; }
     }
 
     public sealed record GraphDiagramSpec

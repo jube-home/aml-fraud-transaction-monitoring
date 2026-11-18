@@ -1616,7 +1616,7 @@ namespace Jube.DynamicEnvironment
 
             try
             {
-                appSettings.TryGetValue("Log4NetConfigFileLocation", out var path);
+                appSettings.TryGetValue("Log4NetConfigFileLocationName", out var path);
 
                 if (path != null)
                 {

@@ -82,24 +82,24 @@
     <value>Interval TTL kunci pencarian harus Seconds, Minutes, Hours, atau Days.</value>
   </data>
     <data name="SearchKeyTtlIntervalValueRange" xml:space="preserve">
-    <value>Nilai interval TTL kunci pencarian harus nol atau lebih besar.</value>
+    <value>Nilai interval TTL kunci pencarian harus nol atau lebih dan dalam batas untuk interval yang dipilih.</value>
   </data>
     <data name="SearchKeyFetchLimitRange" xml:space="preserve">
-    <value>Batas pengambilan kunci pencarian harus nol atau lebih besar.</value>
+    <value>Batas pengambilan kunci pencarian harus antara 0 dan 1.000.000.</value>
   </data>
     <data name="SearchKeyCacheIntervalInvalid" xml:space="preserve">
     <value>Interval cache kunci pencarian harus Seconds, Minutes, Hours, atau Days.</value>
   </data>
     <data name="SearchKeyCacheValueRange" xml:space="preserve">
-    <value>Nilai interval cache kunci pencarian harus nol atau lebih besar.</value>
+    <value>Nilai interval cache kunci pencarian harus nol atau lebih dan dalam batas untuk interval yang dipilih.</value>
   </data>
     <data name="SearchKeyCacheFetchLimitRange" xml:space="preserve">
-    <value>Batas pengambilan cache kunci pencarian harus nol atau lebih besar.</value>
+    <value>Batas pengambilan cache kunci pencarian harus antara 0 dan 1.000.000.</value>
   </data>
     <data name="SearchKeyCacheTtlIntervalInvalid" xml:space="preserve">
     <value>Interval TTL cache kunci pencarian harus Seconds, Minutes, Hours, atau Days.</value>
   </data>
     <data name="SearchKeyCacheTtlValueRange" xml:space="preserve">
-    <value>Nilai interval TTL cache kunci pencarian harus nol atau lebih besar.</value>
+    <value>Nilai interval TTL cache kunci pencarian harus nol atau lebih dan dalam batas untuk interval yang dipilih.</value>
   </data>
 </root>

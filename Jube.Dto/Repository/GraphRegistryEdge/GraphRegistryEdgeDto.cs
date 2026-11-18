@@ -28,6 +28,7 @@ namespace Jube.Dto.Repository.GraphRegistryEdge
     [LockField(nameof(Locked))]
     [FormGroup("Identity", Order = 10)]
     [FormGroup("Keys", Order = 20)]
+    [FormGroup("Icons", Order = 25)]
     [FormGroup("Weight", Order = 30, Collapsed = true)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
     [MessagePackObject]
@@ -103,6 +104,28 @@ namespace Jube.Dto.Repository.GraphRegistryEdge
         [Lookup("/api/GraphRegistryEdge/Keys", TextField = "label", ValueField = "key")]
         [Key(9)]
         public string? ToNodeKey { get; set; }
+
+        [Description("Icon drawn on the from node and in the legend for its node type, chosen from the Lucide set. " +
+                     "Leave empty to let the graph pick one from the key name. When two edge definitions give the " +
+                     "same node type different icons, the first by identifier wins.")]
+        [FormField(Group = "Icons", Order = 10, Widget = "select")]
+        [Lookup("/api/GraphRegistryEdge/Icons", TextField = "label", ValueField = "name")]
+        [Key(26)]
+        public string? FromNodeIcon { get; set; }
+
+        [Description("Icon drawn on the to node and in the legend for its node type, chosen from the Lucide set. " +
+                     "Leave empty to let the graph pick one from the key name.")]
+        [FormField(Group = "Icons", Order = 20, Widget = "select")]
+        [Lookup("/api/GraphRegistryEdge/Icons", TextField = "label", ValueField = "name")]
+        [Key(27)]
+        public string? ToNodeIcon { get; set; }
+
+        [Description("Icon shown on the link itself in the graph and in the legend, chosen from the Lucide set. " +
+                     "Leave empty to show the link as a plain line.")]
+        [FormField(Group = "Icons", Order = 30, Widget = "select")]
+        [Lookup("/api/GraphRegistryEdge/Icons", TextField = "label", ValueField = "name")]
+        [Key(25)]
+        public string? IconName { get; set; }
 
         [Description("For money flow, the report key holding the amount of the transaction. The field must itself be " +
                      "flagged Archive Key on each model that should feed the graph.")]

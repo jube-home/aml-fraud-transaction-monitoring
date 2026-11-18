@@ -71,6 +71,14 @@ describe('visibleMenu', () => {
     expect(keys(me({permissions: [4]}))).toEqual(['models'])
   })
 
+  it('lets the Sample permission reach Models, where the sample is a card', () => {
+    expect(keys(me({permissions: [40]}))).toEqual(['models'])
+  })
+
+  it('opens Administration for Author Graph alone, showing the page it grants', () => {
+    expect(keysUnder(me({permissions: [50]}), 'admin')).toEqual(['admin-graphs'])
+  })
+
   it('has no Advanced Analytics entry of its own, because it lives under a model', () => {
     expect(keys(me({permissions: [47]}))).toEqual(['models'])
   })

@@ -265,7 +265,7 @@ namespace Jube.Service.Charts.Datasource.Template
                     if (!names.Contains(token.Text))
                     {
                         throw new DatasourceChartException(DatasourceMessages.TemplateNameUnknown, line, column,
-                            token.Text);
+                            token.Text, string.Join(", ", names.Order(StringComparer.OrdinalIgnoreCase)));
                     }
 
                     return new TemplateName(token.Text);

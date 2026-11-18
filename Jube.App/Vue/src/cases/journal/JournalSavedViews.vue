@@ -104,7 +104,7 @@ function submitSave(): void {
 </script>
 
 <template>
-  <div class="flex items-center gap-1" data-testid="journal-views-bar">
+  <div class="flex min-w-0 flex-wrap items-center gap-1" data-testid="journal-views-bar">
     <button type="button" class="btn btn-sm" data-testid="journal-views-save" @click="openSave">
       <Save class="size-4" aria-hidden="true"/>
       {{ t('journal.views.save') }}

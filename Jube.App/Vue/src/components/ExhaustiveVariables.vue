@@ -18,6 +18,7 @@ import {useQuery} from '@tanstack/vue-query'
 import {queryKeys} from '../api/queryKeys'
 import {useGridExpandLabels} from '../composables/useGridExpandLabels'
 import {useFormat} from '../composables/useFormat'
+import {usePagerLabels} from '../composables/usePagerLabels'
 import {directionFor} from '../i18n'
 import {exhaustiveApi} from '../exhaustive/api'
 import {correlationTone, variableLabel} from '../exhaustive/model'
@@ -29,6 +30,7 @@ import ProblemAlert from './ProblemAlert.vue'
 const props = defineProps<{ instanceId: number; version: string }>()
 
 const {t, locale} = useI18n()
+const pagerLabels = usePagerLabels()
 const {fixed, number} = useFormat()
 const expandLabels = useGridExpandLabels()
 
@@ -166,6 +168,7 @@ const columns = computed<GridColumn[]>(() => [
       filter-field="label"
       :filter-text="search"
       :page-size="25"
+      :pager-labels="pagerLabels"
       auto-height
       :expand-labels="expandLabels"
     >

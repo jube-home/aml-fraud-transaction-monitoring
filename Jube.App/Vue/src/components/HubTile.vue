@@ -12,11 +12,12 @@
  -->
 
 <script setup vapor lang="ts">
-import type {Component} from 'vue'
+import {computed, inject, onBeforeUnmount, watchEffect, type Component} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {ChevronRight, Plus} from 'lucide-vue-next'
+import {hubDeckKey, hubMatches} from './hubDeck'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     id: string
     label: string
@@ -38,6 +39,14 @@ const emit = defineEmits<{ open: []; add: [] }>()
 
 const {t} = useI18n()
 
+const deck = inject(hubDeckKey, undefined)
+const deckKey = Symbol('hubTile')
+
+const shown = computed(() => deck === undefined || hubMatches(deck.query.value, props.label, props.meta))
+
+watchEffect(() => deck?.report(deckKey, shown.value))
+onBeforeUnmount(() => deck?.forget(deckKey))
+
 const tones = {
   neutral: 'badge-neutral',
   success: 'badge-success',
@@ -48,6 +57,7 @@ const tones = {
 
 <template>
   <div
+    v-show="shown"
     class="relative flex min-w-0 items-center gap-2.5 rounded-field border border-base-300 bg-base-100 py-2 ps-3 pe-2 hover:border-base-content/40"
     :style="order === undefined ? undefined : { order }"
     :data-testid="`hub-${id}`"

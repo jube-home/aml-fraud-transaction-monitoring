@@ -98,7 +98,8 @@ namespace Jube.Data.Repository
 
         public Task<List<GraphNode>> GetHubsAsync(int tenantRegistryId, int limit, CancellationToken token = default)
         {
-            return dbContext.GraphNode.Where(n => n.TenantRegistryId == tenantRegistryId && n.Hub == 1)
+            return dbContext.GraphNode
+                .Where(n => n.TenantRegistryId == tenantRegistryId && (n.Hub == 1 || n.HubOverrideId != 0))
                 .OrderByDescending(n => n.Degree).ThenBy(n => n.Id).Take(limit).ToListAsync(token);
         }
     }

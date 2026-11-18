@@ -62,7 +62,7 @@ const remove = (id: number): Promise<void> => guard(() => controller.removeConve
     <p v-else-if="offline" role="note" class="alert alert-info alert-soft" data-testid="offline">
       {{ t('askJooby.offline') }}
     </p>
-    <div class="grid min-h-0 flex-1 gap-3 lg:grid-cols-[15rem_minmax(0,60rem)]">
+    <div class="grid min-h-0 flex-1 gap-3 lg:grid-cols-[15rem_minmax(0,1fr)]">
       <ConversationList
         :selected-id="state.conversationId"
         :can-create="state.conversationId !== null && !state.empty"

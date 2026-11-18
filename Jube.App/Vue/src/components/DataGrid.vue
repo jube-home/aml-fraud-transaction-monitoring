@@ -22,6 +22,7 @@ import {
 } from 'tabulator-tables'
 import {toTabulatorColumns} from './dataGridColumns'
 import {useExpandHosts} from '../composables/useExpandHosts'
+import {viewStateFor} from '../story/viewState'
 import {buildWorkbook, exportableColumns, saveBuffer} from '../export/xlsx'
 import type {
   GridActionEvent,
@@ -75,6 +76,7 @@ const props = defineProps<{
   fill?: boolean
   expandLabels?: GridExpandLabels
   expandedKeys?: unknown[]
+  stateKey?: string
   rowKey?: string
   movable?: boolean
   rowPaint?: (row: object) => GridRowPaint | null
@@ -133,7 +135,9 @@ let built = false
 let seeded: object[] = []
 let seededColumns: GridColumn[] = []
 
-const expanded = new Set<unknown>(props.expandedKeys ?? [])
+const saved = props.stateKey ? viewStateFor(props.stateKey) : undefined
+const expanded = new Set<unknown>(saved ? saved.expanded : (props.expandedKeys ?? []))
+let restoring = saved !== undefined && saved.page > 1
 const detailObservers = new Map<HTMLElement, ResizeObserver>()
 
 function keyOf(row: RowComponent): unknown {
@@ -298,6 +302,8 @@ function expanderColumn(): ColumnDefinition {
         if (now) expanded.add(key)
         else expanded.delete(key)
 
+        if (saved) saved.expanded = [...expanded]
+
         button.setAttribute('aria-expanded', String(now))
         button.setAttribute(
           'aria-label',
@@ -386,6 +392,8 @@ function resetExpansion(): void {
 
   expanded.clear()
 
+  if (saved) saved.expanded = []
+
   for (const row of open) row.reformat()
 }
 
@@ -410,6 +418,7 @@ function syncPager(): void {
   if (!table || !built || !props.pageSize) return
 
   page.value = table.getPage() || 1
+  if (saved && !restoring) saved.page = page.value
   pages.value = table.getPageMax() || 1
   size.value = table.getPageSize() as number
   total.value = table.getDataCount('active')
@@ -516,6 +525,14 @@ function build(): void {
 
     if (props.rows !== seeded) void table?.replaceData(props.rows)?.then(syncPager)
     syncPager()
+
+    if (saved && restoring) {
+      void Promise.resolve(table?.setPage(Math.min(saved.page, table.getPageMax() || 1))).finally(() => {
+        restoring = false
+        syncPager()
+      })
+    }
+
     repairAccessibilityTree()
     emit('ready')
     emit('visibleRows', table?.getDataCount('active') ?? 0)

@@ -170,6 +170,23 @@ namespace Jube.Test.Service.Repository.UserRegistryApiKey
         }
 
         [Fact]
+        public async Task InsertWithoutAnApiHmacKeyIsRefusedWithItsReasonAndStoresNothingAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var userRegistryId = await GetOwnUserRegistryIdAsync(dbContext, fx.Seed.UserWithPermission);
+            var name = $"{DatabaseFixture.Prefix}Key{Guid.NewGuid():N}"[..40];
+            var service = await UserRegistryApiKeyService.CreateAsync(dbContext, fx.Seed.UserWithPermission, TestLog.NoOp,
+                localizers, new NullServiceChangeBus(), TestDynamicEnvironment.Create(new Dictionary<string, string> { ["ApiHmacKey"] = "" }),
+                NullUserRegistryApiKeyCacheInvalidator.Instance, TestLog.NoOp);
+
+            var ex = await Assert.ThrowsAsync<KeyIntegrityException>(() => service.InsertAsync(new UserRegistryApiKeyDto
+                { UserRegistryId = userRegistryId, Name = name }));
+
+            ex.Message.Should().Contain("ApiHmacKey");
+            (await dbContext.UserRegistryApiKey.CountAsync(w => w.Name == name)).Should().Be(0);
+        }
+
+        [Fact]
         public async Task InsertPersistsOnlyTheHashAndAnEightCharacterDisplayPrefixAsync()
         {
             await using var dbContext = fx.GetDbContext();

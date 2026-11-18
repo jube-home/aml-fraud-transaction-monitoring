@@ -120,11 +120,6 @@ namespace Jube.Service.Repository.UserRegistry
                 log, auditLog, serviceChangeBus, strings, dynamicEnvironment);
         }
 
-        public static UserRegistryDto ToDto(RulePoco userRegistry)
-        {
-            return UserRegistryMapper.ToDto(userRegistry);
-        }
-
         [Description("Lists every user account visible to the calling user's tenant. Unbounded -- intended for " +
                      "the administrative page, not for agent tooling (use the bounded list operation instead).")]
         public async Task<List<UserRegistryDto>> GetAsync(CancellationToken token = default)
@@ -561,7 +556,7 @@ namespace Jube.Service.Repository.UserRegistry
                      "-- calling twice creates two rows. The account has no usable password until a password " +
                      "reset is performed.")]
         [ServiceOperation("UserRegistryCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<RulePoco> InsertAsync(
+        public async Task<UserRegistryDto> InsertAsync(
             [Description("The user account to create.")]
             UserRegistryDto? model,
             CancellationToken token = default)
@@ -613,7 +608,7 @@ namespace Jube.Service.Repository.UserRegistry
                     log.Info($"UserRegistry.Create: created Id={saved.Id} name={saved.Name} user={userName}");
                 }
 
-                return saved;
+                return UserRegistryMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -693,7 +688,7 @@ namespace Jube.Service.Repository.UserRegistry
                      "existing password and its expiry are always preserved; use the password reset operation to " +
                      "change them.")]
         [ServiceOperation("UserRegistryUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<RulePoco> UpdateAsync(
+        public async Task<UserRegistryDto> UpdateAsync(
             [Description("The user account to update. Id selects the row; identity/tenant/audit fields are " +
                          "server-owned and ignored.")]
             UserRegistryDto? model,
@@ -777,7 +772,7 @@ namespace Jube.Service.Repository.UserRegistry
                     log.Info($"UserRegistry.Update: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return UserRegistryMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

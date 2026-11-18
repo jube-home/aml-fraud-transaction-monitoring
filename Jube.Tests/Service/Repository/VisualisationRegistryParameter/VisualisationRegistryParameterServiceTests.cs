@@ -879,7 +879,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
             var dto = NewDto(visualisationRegistryId, saved.Name.Required());
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
-            dto.Version = saved.Version.GetValueOrDefault();
+            dto.Version = saved.Version;
             dto.UpdatedUser = "also-tampered";
 
             var updated = await service.UpdateAsync(dto);
@@ -911,7 +911,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryParameter
 
             var dto = NewDto(otherRegistryId, saved.Name.Required());
             dto.Id = saved.Id;
-            dto.Version = saved.Version.GetValueOrDefault();
+            dto.Version = saved.Version;
 
             await service.UpdateAsync(dto);
 

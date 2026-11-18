@@ -657,8 +657,8 @@
         <comment>b9ea12e7</comment>
     </data>
     <data name="Message.TemplateNameUnknown" xml:space="preserve">
-        <value>Szablon, wiersz {0}, kolumna {1}: „{2}” nie jest tutaj znane. Użyj rows, columns, rowCount, truncated lub zmiennej pętli.</value>
-        <comment>78917f7e</comment>
+        <value>Szablon, wiersz {0}, kolumna {1}: „{2}” nie jest tutaj znane. Znane tutaj nazwy to {3}.</value>
+        <comment>de987895</comment>
     </data>
     <data name="Message.TemplateFilterUnknown" xml:space="preserve">
         <value>Szablon, wiersz {0}, kolumna {1}: filtr „{2}” nie istnieje.</value>

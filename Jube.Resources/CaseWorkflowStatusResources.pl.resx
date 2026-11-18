@@ -102,4 +102,7 @@
     <data name="EscalationTargetNotStronger" xml:space="preserve">
     <value>Cel eskalacji musi mieć wyższy priorytet niż ten status, czyli niższy numer priorytetu.</value>
   </data>
+    <data name="MaxDwellMinutesOutOfRange" xml:space="preserve">
+    <value>Maksymalny czas w statusie musi mieścić się w przedziale od 1 do 525600 minut albo pozostać pusty, gdy celu nie ma.</value>
+  </data>
 </root>

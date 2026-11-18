@@ -142,10 +142,8 @@
   "shell": {
     "resources": "Sumber daya",
     "documentation": "Dokumentasi",
-    "copyright": "Hak cipta",
     "account": "Akun",
     "signedInAs": "Masuk sebagai",
-    "changePassword": "Ganti kata sandi",
     "signOut": "Keluar",
     "signedOut": "Anda telah keluar.",
     "signOutFailed": "Gagal keluar. Periksa koneksi Anda dan coba lagi.",
@@ -184,6 +182,7 @@
     "offline": "Jooby tidak diaktifkan untuk instalasi ini. Anda dapat membaca apa yang bisa dilakukan Jooby, tetapi balasan dimatikan sampai backend inferensi dikonfigurasi.",
     "noPermission": "Jooby sudah tidak sabar, tetapi akun Anda tidak memiliki izin Ask Jooby. Minta administrator menambahkannya ke salah satu peran Anda.",
     "widgetTitle": "Jooby",
+    "viewing": "Sedang dilihat: {page}",
     "closeChat": "Tutup obrolan",
     "openChat": "Buka obrolan",
     "failed": "Itu tidak berhasil. Coba lagi.",
@@ -233,7 +232,7 @@
       "3": "waktu hingga selesai",
       "4": "waktu dalam status"
     },
-    "empty": "Tidak ada yang baru. Notifikasi akan muncul di sini setelah layanan notifikasi terhubung.",
+    "empty": "Tidak ada yang baru.",
     "unread": "Belum dibaca",
     "severity": {
       "info": "Info",
@@ -452,7 +451,7 @@
     "closedStatus4": "Tangguhkan lewati",
     "priority1": "Sangat tinggi",
     "priority2": "Tinggi",
-    "priority3": "Normal",
+    "priority3": "Sedang",
     "priority4": "Rendah",
     "priority5": "Sangat rendah",
     "addColumn": "Tambah kolom",
@@ -534,7 +533,7 @@
       "38": "Izinkan Impor dan Ekspor Pelestarian",
       "39": "Lihat Penghitung Kinerja",
       "40": "Lihat Pengambilan Sampel Model Analisis Entitas",
-      "41": "Izinkan Persetujuan Setelah Tinjauan",
+      "41": "Dihentikan - tanpa efek (Status Tinjauan Aturan Aktivasi sudah dihentikan)",
       "42": "Dihentikan - tanpa efek (Penghitung Log OpenTelemetry hanya untuk landlord)",
       "43": "Dihentikan - tanpa efek (Pengecualian OpenTelemetry hanya untuk landlord)",
       "44": "Izinkan Persetujuan",
@@ -918,10 +917,7 @@
       "approvedValues": "Menyetujui {count} nilai.",
       "approve": "Setujui",
       "reject": "Tolak",
-      "review": "Tinjau",
       "approveValues": "Setujui nilai",
-      "closeReview": "Tutup tinjauan",
-      "reviewTitle": "Tinjauan: {name}",
       "deletion": "Penghapusan",
       "edit": "Ubah",
       "col": {
@@ -1391,7 +1387,9 @@
     "active": "{count} aktif",
     "locked": "{count} terkunci",
     "failed": "Tidak dapat dimuat",
-    "awaiting": "{count} menunggu"
+    "awaiting": "{count} menunggu",
+    "find": "Cari kartu",
+    "noMatch": "Tidak ada yang cocok"
   },
   "payloadGrid": {
     "from": "Dari",
@@ -2508,7 +2506,9 @@
       "legalHoldPlaced": "Penahanan hukum diberlakukan",
       "legalHoldLifted": "Penahanan hukum dicabut",
       "assessmentRecorded": "Penilaian analis dicatat",
-      "assessmentWithdrawn": "Penilaian analis ditarik"
+      "assessmentWithdrawn": "Penilaian analis ditarik",
+      "caseLinked": "Kasus ditautkan",
+      "caseUnlinked": "Tautan kasus dilepas"
     },
     "headline": {
       "atRisk": "{n} berisiko",
@@ -2950,7 +2950,7 @@
       "noKey": "Kasus ini tidak memiliki kunci, jadi tidak ada jurnal untuk ditampilkan."
     },
     "notes": {
-      "empty": "Belum ada catatan pada kunci ini.",
+      "nothing": "Belum ada yang dicatat pada kunci ini. Catatan dan riset ditambahkan dari Decide.",
       "failed": "Catatan tidak dapat dimuat.",
       "action": "Aksi: {name}",
       "priority": "Prioritas: {name}",
@@ -3038,6 +3038,7 @@
       "entriesFailed": "Formulir yang dikirim tidak dapat dimuat.",
       "submittedBy": "{user} pada {when}",
       "cannotDraw": "Formulir ini tidak dapat lagi ditampilkan: {reason} Nilai yang dimilikinya tercantum di bawah.",
+      "drawFailed": "Formulir ini tidak dapat ditampilkan.",
       "otherValues": "Nilai yang tidak memiliki bidang pada formulir"
     },
     "hint": {
@@ -3062,6 +3063,10 @@
       "whyNone": "Belum ada yang ditandai selain posisinya dalam antrean."
     },
     "decide": {
+      "group": {
+        "actions": "Tindakan",
+        "record": "Pada kasus ini"
+      },
       "title": "Putuskan",
       "heldByYou": "Dipegang oleh Anda",
       "supervisor": "Seorang supervisor dapat membuka kunci ini.",
@@ -3091,7 +3096,7 @@
       "saved": "Kasus diperbarui",
       "noteAdded": "Catatan ditambahkan",
       "macroRan": "Makro dijalankan",
-      "statusTitle": "Status dan penilaian",
+      "statusTitle": "Status",
       "diaryTitle": "Agenda",
       "currentStatus": "Status saat ini",
       "escalate": "Eskalasi",
@@ -3104,6 +3109,7 @@
       "attachHint": "Opsional. Setiap file disimpan bersama catatan ini sebagai bukti.",
       "researchAttachHint": "Opsional. Setiap file disimpan bersama riset ini sebagai bukti.",
       "notAttached": "Catatan ditambahkan, tetapi {n} file tidak dapat dilampirkan.",
+      "researchNotAttached": "Riset ditambahkan, tetapi {n} file tidak dapat dilampirkan.",
       "researchTitle": "Tambah riset",
       "researchTopic": "Topik",
       "researchFindings": "Temuan",
@@ -3136,7 +3142,7 @@
         },
         "status": {
           "label": "Status",
-          "tip": "Ubah status alur kerja atau eskalasi kasus, dan tetapkan penilaiannya. Perpindahan diblokir selama item daftar periksa wajib masih terbuka."
+          "tip": "Ubah status alur kerja atau eskalasi kasus. Perpindahan diblokir selama item daftar periksa wajib masih terbuka."
         },
         "checklist": {
           "label": "Daftar periksa",
@@ -3270,6 +3276,7 @@
       "hint": "Kasus dalam alur kerja ini yang memiliki fakta yang sama dengan kasus ini: aturan atau model yang sama, tag yang sama, perangkat atau pihak lawan yang sama, jenis dan besaran aktivitas yang sama. Fakta yang hanya dimiliki sedikit kasus lebih diperhitungkan daripada fakta yang dimiliki kebanyakan kasus.\nIni adalah konteks untuk dibaca, bukan skor: tidak pernah mengubah peringkat kasus.",
       "failed": "Tidak dapat memuat kasus serupa.",
       "pending": "Kasus ini belum dibandingkan. Akan segera dilakukan.",
+      "off": "Kasus serupa dimatikan pada instalasi ini, sehingga kasus ini tidak akan dibandingkan.",
       "none": "Tidak ditemukan kasus serupa.",
       "headline": "{confirmed} dari {closed} kasus serupa yang ditutup terkonfirmasi",
       "tooFew": "Terlalu sedikit kasus serupa yang ditutup untuk dinilai",
@@ -3324,6 +3331,7 @@
       "empty": "Tidak ada item daftar periksa yang ditampilkan untuk kasus ini.",
       "gate": {
         "inPlace": "Pengesampingan berlaku. {user} mengizinkan kasus ini berpindah dengan item yang masih terbuka: {reason}",
+        "ownOverride": "Anda yang memberikan pengesampingan pada kasus ini, jadi pengguna lain harus melakukan perpindahannya: {reason}",
         "more": "+{n} lagi",
         "open": "tidak ada item daftar periksa yang masih terbuka | {n} item daftar periksa masih terbuka",
         "openChecklist": "Buka daftar periksa",
@@ -3384,6 +3392,7 @@
     },
     "assessment": {
       "title": "Penilaian Anda",
+      "canvasTitle": "Penilaian analis",
       "hint": "Catat pandangan Anda sendiri tentang seberapa mungkin kasus ini terkonfirmasi. Pandangan itu disimpan di samping kemungkinan hasil perhitungan, tidak pernah menggantikannya, dan tidak pernah mengubah peringkat kasus. Hanya Anda yang dapat menarik pandangan yang Anda catat.",
       "none": "Belum ada analis yang mencatat pandangan atas kasus ini.",
       "low": "Rendah",
@@ -3402,7 +3411,7 @@
       "lede": "Pandangan analis: {view}"
     },
     "panes": {
-      "left": "panel kunci dan bagian",
+      "left": "bagian",
       "right": "panel keputusan"
     },
     "help": {
@@ -3416,7 +3425,7 @@
       "decide": {
         "title": "Semua yang dapat Anda lakukan pada kasus ini.\nMengambil kasus mengunci kasus itu untuk Anda, sehingga tidak ada orang lain yang dapat mengubahnya. Supervisor dapat membuka kunci. Lepaskan kasus jika Anda berhenti mengerjakannya agar kembali ke antrean. Tutup dan buka kembali ada di bagian bawah."
       },
-      "dashboard": "Dasbor yang dibuat untuk jenis kasus ini oleh pihak yang mengonfigurasi alur kerja. Dasbor dapat menggambarkan seluruh kasus, bukan hanya transaksinya, dan digambar hanya dari kunci kasus dan nilainya: semua yang lain yang ditampilkan dihitung dari keduanya."
+      "dashboard": "Dasbor yang dibuat untuk jenis kasus ini oleh pihak yang mengonfigurasi alur kerja. Dasbor dapat menggambarkan seluruh kasus, bukan hanya transaksinya, dan hanya diberi pengenal kasus: semua yang lain yang ditampilkan dihitung darinya."
     },
     "hold": {
       "tileHint": "{n} ditahan",
@@ -3474,7 +3483,6 @@
     },
     "research": {
       "heading": "Riset",
-      "empty": "Belum ada riset pada kunci ini.",
       "failed": "Riset tidak dapat dimuat.",
       "sources": "Sumber",
       "retrieved": "diambil {date}"
@@ -3716,7 +3724,7 @@
       "activationsOnly": "Hanya menampilkan transaksi yang memicu sedikitnya satu aktivasi.\nGunakan untuk beralih dari riwayat panjang ke saat-saat aturan bereaksi. Ini juga mempersempit grafik, statistik, dan Beri Tag semua yang cocok pada transaksi tersebut.",
       "pinnedOnly": "Hanya menampilkan transaksi yang disematkan pada kasus ini, apa pun tanggal atau key-nya.\nSematan berlaku untuk seluruh kasus, sehingga semua orang yang menanganinya melihat hal yang sama. Sematkan transaksi dengan bintang di tabel. Transaksi yang disematkan juga selalu berada di bagian atas jurnal, di setiap lensa, bahkan di luar jendela waktu.\nSatu kasus dapat memiliki hingga 50 sematan, dan kasus yang dikunci oleh pengguna lain tidak dapat diubah.",
       "tags": "Tag memberi label pada transaksi, misalnya mule atau reviewed, sehingga dapat ditemukan dan dihitung kemudian.\nCentang baris di tabel, lalu tekan Tag untuk menambah atau menghapus tag pada semuanya sekaligus, hingga 500. Urungkan muncul setelahnya. Transaksi yang kasusnya dikunci oleh pengguna lain dibiarkan dan dihitung.\nBeri Tag semua yang cocok memberi tag pada setiap transaksi dalam tampilan saat ini, hingga 100.000, di latar belakang. Anda dapat terus bekerja, menghentikannya, dan mengurungkannya setelahnya. Hanya tag yang disiapkan untuk model alur kerja ini yang dapat ditambahkan.",
-      "transactions": "Berapa banyak transaksi key ini dalam jendela waktu, dari yang terbaru, hingga 2.000.\nStrip, daftar yang menonjol, dan grafik semuanya dihitung dari transaksi ini. Bila key memiliki lebih banyak, strip menyatakannya dan yang lebih lama dikecualikan dari statistik tetapi tidak dari tabel.",
+      "transactions": "Berapa banyak transaksi key ini dalam jendela waktu, dari yang terbaru, hingga 2.000.\nStrip, daftar yang menonjol, dan grafik semuanya dihitung dari transaksi ini. Bila key memiliki lebih banyak, strip menyatakannya dan yang lebih lama dikecualikan dari statistik. Tabel memuat 1.000 transaksi terbaru.",
       "activeDays": "Jumlah hari berbeda, dalam UTC, ketika key memiliki sedikitnya satu transaksi.\nBaca bersama jumlah transaksi: banyak transaksi pada sedikit hari berarti aktivitas dalam rentetan, dan sedikit transaksi yang tersebar pada banyak hari berarti penggunaan yang stabil dan lambat.",
       "withActivations": "Berapa banyak transaksi yang memicu sedikitnya satu aktivasi, dan berapa banyak aktivasi yang terpicu secara total.\nSatu transaksi dapat memicu beberapa aktivasi, sehingga angka kedua bisa lebih besar dari yang pertama.",
       "elevation": "Eskalasi respons tertinggi dari transaksi mana pun dalam jendela waktu.\nEskalasi adalah bobot yang diberikan aturan pada transaksi saat terpicu: semakin tinggi, semakin mendesak responsnya.",
@@ -4034,14 +4042,12 @@
     "section": {
       "meta": "{expiry} · {user} · {origin}",
       "elsewhere": "Juga berlaku pada nilai di jurnal ini",
-      "elsewhereEmpty": "Tidak ada yang lain berlaku pada nilai di jurnal ini.",
       "failed": "Penekanan tidak dapat dimuat.",
       "fromCase": "Diatur dari kasus C-{id}",
       "fromOverridePage": "Diatur di halaman Override atau tempat lain",
       "hint": "Permintaan diluncurkan dari Decide dan perlu persetujuan sebelum berlaku.",
       "noExpiry": "Tanpa kedaluwarsa",
       "own": "Diatur dari kasus ini",
-      "ownEmpty": "Belum ada penekanan yang diminta dari kasus ini.",
       "title": "Override model"
     },
     "standing": {
@@ -4151,6 +4157,7 @@
       "expand": "Perluas (menambah tidak ada) | Perluas (menambah {count})",
       "expanded": "Diperluas",
       "pivot": "Pivot jurnal",
+      "reseed": "Jelajahi dari sini",
       "link": "Tautkan ke kasus",
       "openCase": "Buka kasus {id}",
       "capture": "Tangkap",
@@ -4263,7 +4270,7 @@
       "members": "{count} anggota",
       "markSeen": "Tandai dilihat",
       "dismiss": "Tolak",
-      "toCase": "Buka sebagai kasus",
+      "toCase": "Lampirkan ke kasus",
       "casedAs": "Kasus {id}",
       "decideAsk": {
         "title": "Putuskan pola ini?",

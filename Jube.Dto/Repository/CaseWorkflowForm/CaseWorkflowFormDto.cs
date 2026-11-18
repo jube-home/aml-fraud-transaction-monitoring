@@ -113,13 +113,13 @@ namespace Jube.Dto.Repository.CaseWorkflowForm
         public string? NotificationDestination { get; set; }
 
         [Description("Notification subject line.")]
-        [FormField(Group = "Notification", Order = 40, Placeholder = "Case [@CaseKey] needs review")]
+        [FormField(Group = "Notification", Order = 40, Placeholder = "Case for [@Payload.AccountId@] needs review")]
         [VisibleWhen(nameof(EnableNotification), true)]
         [Key(12)]
         public string? NotificationSubject { get; set; }
 
         [Description("Notification body. Supports token substitution from the Form's Case.")]
-        [FormField(Group = "Notification", Order = 50, Widget = "textarea", Placeholder = "Please review the case for [@AccountId].")]
+        [FormField(Group = "Notification", Order = 50, Widget = "textarea", Placeholder = "Please review the case for [@Payload.AccountId@].")]
         [VisibleWhen(nameof(EnableNotification), true)]
         [Key(13)]
         public string? NotificationBody { get; set; }

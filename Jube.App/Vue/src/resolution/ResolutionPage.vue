@@ -12,14 +12,16 @@
  -->
 
 <script setup vapor lang="ts">
-import {ref} from 'vue'
+import {computed, ref} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/vue-query'
 import {GitMerge} from 'lucide-vue-next'
 import FieldHelp from '../components/FieldHelp.vue'
+import {hasPermission, meQueryOptions} from '../auth/me'
 import {useToasts} from '../stores/toasts'
 import {
   canDecide,
+  decidePermission,
   matchDecision,
   maximumNote,
   percent,
@@ -30,6 +32,8 @@ import {
 const {t} = useI18n()
 const toasts = useToasts()
 const client = useQueryClient()
+const me = useQuery(meQueryOptions)
+const mayDecide = computed(() => hasPermission(me.data.value, decidePermission))
 
 const filter = ref<number>(matchDecision.pending)
 const notes = ref<Record<number, string>>({})
@@ -95,7 +99,7 @@ const decide = useMutation({
           }}</span>
       </div>
       <p v-if="match.evidence" class="text-base-content/70">{{ match.evidence }}</p>
-      <div v-if="canDecide(match)" class="join w-full">
+      <div v-if="mayDecide && canDecide(match)" class="join w-full">
         <input
           v-model="notes[match.id]"
           type="text"

@@ -640,7 +640,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
         [Description("Registers a new Parameter under a Visualisation Registry in the caller's tenant. Not " +
                      "idempotent -- calling twice creates two rows.")]
         [ServiceOperation("VisualisationRegistryParameterCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<VisualisationRegistryParameterPoco> InsertAsync(
+        public async Task<VisualisationRegistryParameterDto> InsertAsync(
             [Description("The Parameter to create.")]
             VisualisationRegistryParameterDto? model,
             CancellationToken token = default)
@@ -691,7 +691,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
                     log.Info($"VisualisationRegistryParameter.Create: created Id={saved.Id} user={userName}");
                 }
 
-                return saved;
+                return VisualisationRegistryParameterMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -771,7 +771,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
                      "repeating the same update has no further effect beyond incrementing Version. Fails when " +
                      "the Parameter is locked.")]
         [ServiceOperation("VisualisationRegistryParameterUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<VisualisationRegistryParameterPoco> UpdateAsync(
+        public async Task<VisualisationRegistryParameterDto> UpdateAsync(
             [Description("The Parameter to update. Id selects the row; identity/tenant/audit fields are " +
                          "server-owned and ignored.")]
             VisualisationRegistryParameterDto? model,
@@ -839,7 +839,7 @@ namespace Jube.Service.Repository.VisualisationRegistryParameter
                         $"VisualisationRegistryParameter.Update: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return VisualisationRegistryParameterMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

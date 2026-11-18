@@ -1,32 +1,32 @@
-{ { - if .Values.r.enabled } }
+{{- if .Values.r.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: { { include "jube.fullname" . } }-r
+  name: {{ include "jube.fullname" . }}-r
   labels:
     {{- include "jube.labels" . | nindent 4 }}
     app.kubernetes.io/component: r
 spec:
-  replicas: { { .Values.r.replicas } }
+  replicas: {{ .Values.r.replicas }}
   selector:
     matchLabels:
       app.kubernetes.io/name: jube
-      app.kubernetes.io/instance: { { .Release.Name } }
+      app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/component: r
   template:
     metadata:
       labels:
-        { { - include "jube.labels" . | nindent 8 } }
+        {{- include "jube.labels" . | nindent 8 }}
         app.kubernetes.io/component: r
     spec:
       automountServiceAccountToken: false
-      { { - with .Values.imagePullSecrets } }
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        { { - toYaml . | nindent 8 } }
-      { { - end } }
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: r
-          image: { { .Values.r.image } }
+          image: {{ .Values.r.image }}
           ports:
             - name: http
               containerPort: 8080
@@ -40,10 +40,10 @@ spec:
           volumeMounts:
             - name: tmp
               mountPath: /tmp
-          { { - with .Values.r.resources } }
+          {{- with .Values.r.resources }}
           resources:
-            { { - toYaml . | nindent 12 } }
-          { { - end } }
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
       volumes:
         - name: tmp
           emptyDir: { }
@@ -53,12 +53,12 @@ kind: Service
 metadata:
   name: jube-r
   labels:
-    { { - include "jube.labels" . | nindent 4 } }
+    {{- include "jube.labels" . | nindent 4 }}
     app.kubernetes.io/component: r
 spec:
   selector:
     app.kubernetes.io/name: jube
-    app.kubernetes.io/instance: { { .Release.Name } }
+    app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: r
   ports:
     - name: http
@@ -68,14 +68,14 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: { { include "jube.fullname" . } }-r
+  name: {{ include "jube.fullname" . }}-r
   labels:
     {{- include "jube.labels" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:
       app.kubernetes.io/name: jube
-      app.kubernetes.io/instance: { { .Release.Name } }
+      app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/component: r
   policyTypes:
     - Ingress
@@ -85,6 +85,6 @@ spec:
         - podSelector:
             matchLabels:
               app.kubernetes.io/name: jube
-              app.kubernetes.io/instance: { { .Release.Name } }
+              app.kubernetes.io/instance: {{ .Release.Name }}
   egress: [ ]
-  { { - end } }
+  {{- end }}

@@ -24,8 +24,9 @@ const props = withDefaults(
     pending?: boolean
     failed?: boolean
     selectedDepth: number | null
+    journal?: boolean
   }>(),
-  {pending: false, failed: false},
+  {pending: false, failed: false, journal: false},
 )
 
 const emit = defineEmits<{
@@ -129,6 +130,7 @@ function valueOf(nodeId: number): string {
             {{ t('graph.flow.transactions', {count: number(tranche.archiveIds.length)}) }}
           </span>
           <button
+            v-if="journal"
             type="button"
             class="btn btn-xs ms-auto"
             :disabled="tranche.archiveIds.length === 0"

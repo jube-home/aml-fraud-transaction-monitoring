@@ -83,28 +83,19 @@ validations and the web application firewall.
 ### WireGeneratedDecodersTests
 
 `Jube.Test.App.Wire.WireGeneratedDecodersTests` — 10 tests. Category: Unit.
-| `TheTypesHashIgnoresTypesFromOutsideTheDtoAssemblyButTheFullHashDoesNot` | Fact | The types hash ignores types from
-outside the dto assembly but the full hash does not. |
-| `TheSchemaAllowsGeneratedDecodersByDefaultAndNamesTheSwitchWhenItIsOff` | Fact | The schema allows generated decoders
-by default and names the switch when it is off. |
-| `TheGeneratedDecodersCommittedWithTheUserInterfaceAreExactlyWhatTheServerWouldGenerateNow` | Fact | The generated
-decoders committed with the user interface are exactly what the server would generate now. |
-| `WritingThenCheckingLeavesNothingStaleAndAnEditIsDetected` | Fact | Writing then checking leaves nothing stale and an
-edit is detected. |
-| `AShapeThatNamesATypeOutsideTheDtoAssemblyStopsTheBuildInsteadOfSkippingAConversion` | Fact | A shape that names a
-type outside the dto assembly stops the build instead of skipping a conversion. |
-| `ATypesFileCarriesTheHashAndTheTypesInTheShapeTheBrowserSchemaHas` | Fact | A types file carries the hash and the
-types in the shape the browser schema has. |
-| `TheSameSchemaAlwaysGeneratesTheSameBytes` | Fact | The same schema always generates the same bytes. |
-| `OnlyTypesFromTheDtoAssemblyAreGeneratedAndTheMapNamesThemByTheirFullNames` | Fact | Only types from the dto assembly
-are generated and the map names them by their full names. |
-| `ListsMapsRowGridsAndNestedListsAreComposedAndPlainMembersAreReadDirectly` | Fact | Lists maps row grids and nested
-lists are composed and plain members are read directly. |
-| `EachDtoBecomesOneFunctionThatReadsItsMembersByPositionInSchemaOrder` | Fact | Each dto becomes one function that
-reads its members by position in schema order. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                                       | Kind | Verifies                                                                                                 |
+|--------------------------------------------------------------------------------------------|------|----------------------------------------------------------------------------------------------------------|
+| `TheTypesHashIgnoresTypesFromOutsideTheDtoAssemblyButTheFullHashDoesNot`                   | Fact | The types hash ignores types from outside the dto assembly but the full hash does not.                   |
+| `TheSchemaAllowsGeneratedDecodersByDefaultAndNamesTheSwitchWhenItIsOff`                    | Fact | The schema allows generated decoders by default and names the switch when it is off.                     |
+| `TheGeneratedDecodersCommittedWithTheUserInterfaceAreExactlyWhatTheServerWouldGenerateNow` | Fact | The generated decoders committed with the user interface are exactly what the server would generate now. |
+| `WritingThenCheckingLeavesNothingStaleAndAnEditIsDetected`                                 | Fact | Writing then checking leaves nothing stale and an edit is detected.                                      |
+| `AShapeThatNamesATypeOutsideTheDtoAssemblyStopsTheBuildInsteadOfSkippingAConversion`       | Fact | A shape that names a type outside the dto assembly stops the build instead of skipping a conversion.     |
+| `ATypesFileCarriesTheHashAndTheTypesInTheShapeTheBrowserSchemaHas`                         | Fact | A types file carries the hash and the types in the shape the browser schema has.                         |
+| `TheSameSchemaAlwaysGeneratesTheSameBytes`                                                 | Fact | The same schema always generates the same bytes.                                                         |
+| `OnlyTypesFromTheDtoAssemblyAreGeneratedAndTheMapNamesThemByTheirFullNames`                | Fact | Only types from the dto assembly are generated and the map names them by their full names.               |
+| `ListsMapsRowGridsAndNestedListsAreComposedAndPlainMembersAreReadDirectly`                 | Fact | Lists maps row grids and nested lists are composed and plain members are read directly.                  |
+| `EachDtoBecomesOneFunctionThatReadsItsMembersByPositionInSchemaOrder`                      | Fact | Each dto becomes one function that reads its members by position in schema order.                        |
 
 ### WireGenerationTests
 
@@ -1094,6 +1085,34 @@ Collection: Database.
 |------------------------------|--------|---------------------------------|
 | `ALocalPathIsKept`           | Theory | A local path is kept.           |
 | `AnythingElseBecomesTheRoot` | Theory | Anything else becomes the root. |
+
+### ClientAssetStoreTests
+
+`Jube.Test.Code.ClientAssetStoreTests` — 8 tests. Category: Unit.
+
+| Test                                                                        | Kind   | Verifies                                                                                                                                                                         |
+|-----------------------------------------------------------------------------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `EveryStaticFileOfABuildIsServedFromTheStoreByThatBuildsKey`                | Fact   | Every static file a replica publishes for its build can be read back by another replica from the shared cache under that build's identifier.                                     |
+| `TheIndexPageAndTheBuildIdFileAreNotPublished`                              | Fact   | The index page and the build identifier file are left out of the published set, so neither can be fetched from the store.                                                        |
+| `AnUnhashedFileThatChangedBetweenBuildsIsServedAsEachBuildHadIt`            | Fact   | A file whose name carries no content hash and whose content changed between two builds is returned with each build's own content.                                                |
+| `AnUnchangedFileIsStoredOnceAcrossBuilds`                                   | Fact   | Publishing a second build adds a stored blob only for the file that changed, so identical content is held once across builds.                                                    |
+| `TheTargetIsOnlyAdvertisedOncePublishingFinishesAndTheLastBuildToStartWins` | Fact   | The target build is the caller's fallback until a publish completes, and when two builds publish in turn the one that published last is the advertised target.                   |
+| `ABadOrUnknownRequestIsNeverServed`                                         | Theory | A path with traversal or illegal characters, a malformed or empty build identifier, and a build that was never published all return nothing.                                     |
+| `AMissingBuildIdPublishesNothingAndDoesNotThrow`                            | Fact   | Publishing from a web root with no build identifier file writes nothing to the cache and raises no error.                                                                        |
+| `OnlyContentHashedNamesAreTreatedAsImmutable`                               | Theory | Only file names carrying a content hash are recognised as immutable; plain names such as an image or the favicon are not.                                                        |
+
+### ClientBuildAssetMiddlewareTests
+
+`Jube.Test.Code.ClientBuildAssetMiddlewareTests` — 6 tests. Category: Unit.
+
+| Test                                                     | Kind   | Verifies                                                                                                                                                                                      |
+|----------------------------------------------------------|--------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ATabOnAnOlderBuildGetsThatBuildsFileFromTheStore`       | Fact   | A request whose build cookie names an older build is answered from the store with that build's file, the right content type and a no-cache header, without reaching the rest of the pipeline. |
+| `ATabOnThisReplicasOwnBuildIsLeftToTheNormalStaticFiles` | Fact   | A request whose build cookie matches the replica's own build is passed on to the normal static file handling.                                                                                 |
+| `ARequestWithNoBuildCookieIsLeftToTheNormalStaticFiles`  | Fact   | A request carrying no build cookie is passed on to the normal static file handling.                                                                                                           |
+| `AFileTheOlderBuildNeverHadFallsThroughToThisReplica`    | Fact   | A request from an older build for a file that build never published is passed on to the replica rather than refused.                                                                          |
+| `ApiCallsAndWritesAreNeverServedFromTheStore`            | Theory | API paths and non-read methods are always passed on, even when the build cookie names an older build.                                                                                         |
+| `ABadCookieIsIgnored`                                    | Fact   | A build cookie that is not a valid build identifier is ignored and the request is passed on.                                                                                                  |
 
 ## Svirfd
 

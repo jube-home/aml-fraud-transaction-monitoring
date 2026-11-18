@@ -112,3 +112,31 @@ describe('the store after a server load', () => {
     expect(store.items.map((n) => n.id)).toEqual(['g-3'])
   })
 })
+
+describe('report notifications', () => {
+  it.each([6, 7, 8])('kind %i opens the case the report belongs to', (kindId) => {
+    const shown = fromServer(
+      item({kindId, caseId: null, argumentsJson: '{"caseId":77,"detail":"approved"}'}),
+      t,
+    )
+
+    expect(shown.caseId).toBe(77)
+  })
+
+  it.each([
+    [7, '{"caseId":77,"detailId":1}', 'caseDetail.reports.approved'],
+    [7, '{"caseId":77,"detailId":2}', 'caseDetail.reports.rejected'],
+    [8, '{"caseId":77,"detailId":3}', 'caseDetail.reports.kinds.3'],
+    [7, '{"caseId":77,"detail":"Approved"}', 'caseDetail.reports.approved'],
+    [8, '{"caseId":77,"detail":"InformationRequested"}', 'caseDetail.reports.kinds.3'],
+    [8, '{"caseId":77,"detail":"Rejected"}', 'caseDetail.reports.kinds.2'],
+  ])('kind %i words the detail %s from the locale', (kindId, argumentsJson, key) => {
+    const shown = fromServer(item({kindId, caseId: null, argumentsJson}), t)
+
+    expect(shown.title).toContain(`"detail":"${key}"`)
+  })
+
+  it('opens nothing when the report names no case', () => {
+    expect(fromServer(item({kindId: 6, caseId: null, argumentsJson: '{}'}), t).caseId).toBeUndefined()
+  })
+})

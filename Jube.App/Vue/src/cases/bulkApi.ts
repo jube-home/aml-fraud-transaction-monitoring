@@ -26,6 +26,7 @@ export interface BulkResult {
 }
 
 export const bulkLimit = 500
+export const bulkReassignPermission = 18
 
 export const bulkApi = {
   close: (caseIds: number[], closedReasonId: number, closedReasonNote: string | null) =>

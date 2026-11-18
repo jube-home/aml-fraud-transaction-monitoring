@@ -82,24 +82,24 @@
     <value>TTL-intervallet för söknyckeln måste vara Seconds, Minutes, Hours eller Days.</value>
   </data>
     <data name="SearchKeyTtlIntervalValueRange" xml:space="preserve">
-    <value>Värdet för söknyckelns TTL-intervall måste vara noll eller större.</value>
+    <value>Värdet för söknyckelns TTL-intervall måste vara noll eller mer och inom gränsen för det valda intervallet.</value>
   </data>
     <data name="SearchKeyFetchLimitRange" xml:space="preserve">
-    <value>Hämtningsgränsen för söknyckeln måste vara noll eller större.</value>
+    <value>Hämtningsgränsen för söknyckeln måste vara mellan 0 och 1 000 000.</value>
   </data>
     <data name="SearchKeyCacheIntervalInvalid" xml:space="preserve">
     <value>Cacheintervallet för söknyckeln måste vara Seconds, Minutes, Hours eller Days.</value>
   </data>
     <data name="SearchKeyCacheValueRange" xml:space="preserve">
-    <value>Värdet för söknyckelns cacheintervall måste vara noll eller större.</value>
+    <value>Värdet för söknyckelns cacheintervall måste vara noll eller mer och inom gränsen för det valda intervallet.</value>
   </data>
     <data name="SearchKeyCacheFetchLimitRange" xml:space="preserve">
-    <value>Hämtningsgränsen för söknyckelns cache måste vara noll eller större.</value>
+    <value>Hämtningsgränsen för söknyckelns cache måste vara mellan 0 och 1 000 000.</value>
   </data>
     <data name="SearchKeyCacheTtlIntervalInvalid" xml:space="preserve">
     <value>TTL-intervallet för söknyckelns cache måste vara Seconds, Minutes, Hours eller Days.</value>
   </data>
     <data name="SearchKeyCacheTtlValueRange" xml:space="preserve">
-    <value>Värdet för TTL-intervallet för söknyckelns cache måste vara noll eller större.</value>
+    <value>Värdet för TTL-intervallet för söknyckelns cache måste vara noll eller mer och inom gränsen för det valda intervallet.</value>
   </data>
 </root>

@@ -36,7 +36,7 @@ const summary = {
     {key: 'lists', count: 1, rows: 20, bytes: 1500},
     {key: 'dictionaries', count: 1, rows: 5, bytes: 400},
     {key: 'exhaustive', count: 1, rows: 3000, bytes: 250000},
-    {key: 'askJoobyAnalytics', count: 0, rows: 0, bytes: 0},
+    {key: 'advancedAnalytics', count: 0, rows: 0, bytes: 0},
   ],
 }
 

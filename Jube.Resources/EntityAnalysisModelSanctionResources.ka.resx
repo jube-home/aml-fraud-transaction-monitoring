@@ -64,7 +64,7 @@
     <value>მანძილი უნდა იყოს 0-სა და 5-ს შორის.</value>
   </data>
     <data name="CacheValueRange" xml:space="preserve">
-    <value>ქეშის ინტერვალის მნიშვნელობა არ შეიძლება იყოს უარყოფითი.</value>
+    <value>ქეშის ინტერვალის მნიშვნელობა უნდა იყოს ნული ან მეტი და არჩეული ინტერვალის ლიმიტის ფარგლებში.</value>
   </data>
     <data name="CacheIntervalInvalid" xml:space="preserve">
     <value>ქეშის ინტერვალის ტიპი უნდა იყოს წამები, წუთები, საათები ან დღეები.</value>

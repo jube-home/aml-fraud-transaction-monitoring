@@ -657,8 +657,8 @@
         <comment>b9ea12e7</comment>
     </data>
     <data name="Message.TemplateNameUnknown" xml:space="preserve">
-        <value>Baris templat {0}, kolom {1}: "{2}" tidak dikenal di sini. Gunakan rows, columns, rowCount, truncated, atau variabel perulangan.</value>
-        <comment>78917f7e</comment>
+        <value>Baris templat {0}, kolom {1}: "{2}" tidak dikenal di sini. Nama yang dikenal di sini adalah {3}.</value>
+        <comment>de987895</comment>
     </data>
     <data name="Message.TemplateFilterUnknown" xml:space="preserve">
         <value>Baris templat {0}, kolom {1}: filter "{2}" tidak ada.</value>

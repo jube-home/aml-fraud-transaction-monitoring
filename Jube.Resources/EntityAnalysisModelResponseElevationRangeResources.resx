@@ -85,7 +85,7 @@
     <value>The web hook URL must be {0} characters or fewer.</value>
   </data>
     <data name="HttpEndpointHostBlocked" xml:space="preserve">
-    <value>The web hook the address is blocked by the outbound host policy: it names a loopback, link-local, metadata, private, shared, unique-local or reserved address, localhost, or a scheme other than http or https. List a trusted internal receiver in JUBE_HOOK_ALLOWED_HOSTS or JUBE_HOOK_ALLOWED_CIDRS.</value>
+    <value>The web hook address is blocked by the outbound host policy: it names a loopback, link-local, metadata, private, shared, unique-local or reserved address, localhost, or a scheme other than http or https. List a trusted internal receiver in JUBE_HOOK_ALLOWED_HOSTS or JUBE_HOOK_ALLOWED_CIDRS.</value>
   </data>
     <data name="HttpEndpointTypeIdInvalid" xml:space="preserve">
     <value>The web hook method must be POST or GET.</value>

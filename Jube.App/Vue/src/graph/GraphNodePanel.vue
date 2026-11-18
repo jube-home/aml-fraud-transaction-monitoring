@@ -43,6 +43,7 @@ const props = withDefaults(
     adds?: number
     canCapture?: boolean
     canLink?: boolean
+    reseeds?: boolean
     pathsPicking?: boolean
     flowing?: boolean
   }>(),
@@ -53,6 +54,7 @@ const props = withDefaults(
     adds: 0,
     canCapture: false,
     canLink: false,
+    reseeds: false,
     pathsPicking: false,
     flowing: false,
   },
@@ -355,7 +357,7 @@ function pivot(): void {
           @click="pivot"
         >
           <Rows3 class="size-4" aria-hidden="true"/>
-          {{ t('graph.panel.pivot') }}
+          {{ reseeds ? t('graph.panel.reseed') : t('graph.panel.pivot') }}
         </button>
         <button
           v-if="canLink"

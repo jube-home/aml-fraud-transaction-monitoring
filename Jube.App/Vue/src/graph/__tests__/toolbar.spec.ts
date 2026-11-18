@@ -11,16 +11,38 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-import {afterEach, describe, expect, it} from 'vitest'
-import {nextTick} from 'vue'
-import {createI18nInstance, loadLocale} from '../../i18n'
-import {mountVapor, type MountedVapor} from '../../test-support/mountVapor'
+import { afterEach, describe, expect, it } from 'vitest'
+import { nextTick } from 'vue'
+import { createI18nInstance, loadLocale } from '../../i18n'
+import { mountVapor, type MountedVapor } from '../../test-support/mountVapor'
 import GraphToolbar from '../GraphToolbar.vue'
-import type {GraphEdgeDefinition} from '../types'
+import type { GraphEdgeDefinition } from '../types'
 
 const definitions: GraphEdgeDefinition[] = [
-  {guid: 'def-device', name: 'Shares device', kindId: 1, restricted: false, visible: true},
-  {guid: 'def-address', name: 'Shares address', kindId: 1, restricted: true, visible: false},
+  {
+    guid: 'def-device',
+    name: 'Shares device',
+    kindId: 1,
+    restricted: false,
+    visible: true,
+    iconName: null,
+    fromNodeKey: null,
+    toNodeKey: null,
+    fromNodeIcon: null,
+    toNodeIcon: null,
+  },
+  {
+    guid: 'def-address',
+    name: 'Shares address',
+    kindId: 1,
+    restricted: true,
+    visible: false,
+    iconName: null,
+    fromNodeKey: null,
+    toNodeKey: null,
+    fromNodeIcon: null,
+    toNodeIcon: null,
+  },
 ]
 
 let mounted: MountedVapor | undefined
@@ -131,7 +153,7 @@ describe('GraphToolbar', () => {
   })
 
   it('offers Capture only with a case and emits it', async () => {
-    const toolbar = await mount({canCapture: true})
+    const toolbar = await mount({ canCapture: true })
 
     byTestId('graph-capture').click()
 
@@ -139,7 +161,7 @@ describe('GraphToolbar', () => {
   })
 
   it('shows the flow controls in the flow view and emits direction and bounds', async () => {
-    const toolbar = await mount({view: 'flow', flowDirection: 'forward', flowAvailable: true})
+    const toolbar = await mount({ view: 'flow', flowDirection: 'forward', flowAvailable: true })
 
     expect(mounted!.root.querySelector('[data-testid="graph-layout-1"]')).toBeNull()
     expect(byTestId('graph-flow-forward').getAttribute('aria-pressed')).toBe('true')

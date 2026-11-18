@@ -15,6 +15,7 @@ import {afterEach, describe, expect, it, vi} from 'vitest'
 import {mountWith, type Harness} from '../../cases/checklist/__tests__/support'
 import type {FormChild, FormModel, RecordValues} from '../../formModel/types'
 import RecordGlimpse from '../RecordGlimpse.vue'
+import {forgetViewStates} from '../../story/viewState'
 
 const modelOf = vi.fn<(area: string) => Promise<FormModel>>()
 const recordsOf =
@@ -60,6 +61,7 @@ function click(testid: string): void {
 }
 
 afterEach(() => {
+  forgetViewStates()
   harness?.unmount()
   harness = undefined
   vi.clearAllMocks()
@@ -76,10 +78,55 @@ describe('RecordGlimpse', () => {
     await harness.settle()
 
     expect(recordsOf).toHaveBeenCalledWith(expect.objectContaining({area: 'Rule'}), 7)
-    expect(harness.byTestId('glimpse-Rule-count')?.textContent).toBe('2')
-    expect(harness.byTestId('glimpse-Rule-meta')?.textContent).toBe('1 active, 1 locked')
-    expect(harness.byTestId('glimpse-Rule')?.querySelector('svg')).not.toBeNull()
+    expect(harness.byTestId('hub-total-Rule')?.textContent).toBe('2')
+    expect(harness.byTestId('hub-open-Rule')?.textContent).toContain('1 active, 1 locked')
+    expect(harness.byTestId('hub-Rule')?.querySelector('svg')).not.toBeNull()
     expect(harness.byTestId('glimpse-Rule-records')).toBeNull()
+  })
+
+  it('opens the level below on a click of the card, like the hubs do', async () => {
+    modelOf.mockResolvedValue(formModel('Rule'))
+    recordsOf.mockResolvedValue([{id: 1, name: 'Velocity'}])
+    harness = await mountWith(RecordGlimpse, {child: child('Rule'), parentValue: 7}, ['open'])
+    await harness.settle()
+
+    click('hub-open-Rule')
+
+    expect(harness.mounted.emitted.open).toEqual([[[{area: 'Rule'}]]])
+  })
+
+  it('offers add on a kind that can be created and starts a new record', async () => {
+    modelOf.mockResolvedValue({...formModel('Rule'), operations: ['list', 'create']} as FormModel)
+    recordsOf.mockResolvedValue([])
+    harness = await mountWith(RecordGlimpse, {child: child('Rule'), parentValue: 7}, ['open'])
+    await harness.settle()
+
+    click('hub-add-Rule')
+
+    expect(harness.mounted.emitted.open).toEqual([[[{area: 'Rule', startNew: true}]]])
+  })
+
+  it('is found open again, with the rows below it, after the story has been left and returned to', async () => {
+    modelOf.mockImplementation((area) =>
+      Promise.resolve(area === 'Rule' ? formModel('Rule', [child('Tag')]) : formModel('Tag')),
+    )
+    recordsOf.mockImplementation((model) =>
+      Promise.resolve(model.area === 'Rule' ? [{id: 4, name: 'Velocity'}] : [{id: 9, name: 'Urgent'}]),
+    )
+    harness = await mountWith(RecordGlimpse, {child: child('Rule'), parentValue: 7})
+    await harness.settle()
+    click('glimpse-Rule-toggle')
+    await harness.settle()
+    click('glimpse-Rule-below-4')
+    await harness.settle()
+    harness.unmount()
+
+    harness = await mountWith(RecordGlimpse, {child: child('Rule'), parentValue: 7})
+    await harness.settle()
+
+    expect(harness.byTestId('glimpse-Rule-toggle')?.getAttribute('aria-expanded')).toBe('true')
+    expect(harness.byTestId('glimpse-Rule-below-4')?.getAttribute('aria-expanded')).toBe('true')
+    expect(harness.byTestId('glimpse-Tag')).not.toBeNull()
   })
 
   it('names the records with their state once the kind is shown', async () => {
@@ -108,8 +155,8 @@ describe('RecordGlimpse', () => {
     harness = await mountWith(RecordGlimpse, {child: child('Rule'), parentValue: 7})
     await harness.settle()
 
-    expect(harness.byTestId('glimpse-Rule-count')?.textContent).toBe('0')
-    expect(harness.byTestId('glimpse-Rule-meta')?.textContent).toBe('None yet')
+    expect(harness.byTestId('hub-total-Rule')?.textContent).toBe('0')
+    expect(harness.byTestId('hub-open-Rule')?.textContent).toContain('None yet')
     expect((harness.byTestId('glimpse-Rule-toggle') as HTMLButtonElement).disabled).toBe(true)
   })
 
@@ -119,7 +166,7 @@ describe('RecordGlimpse', () => {
     harness = await mountWith(RecordGlimpse, {child: child('Rule'), parentValue: 7})
     await harness.settle()
 
-    expect(harness.byTestId('glimpse-Rule-count')).toBeNull()
+    expect(harness.byTestId('hub-total-Rule')).toBeNull()
     expect(harness.root.textContent).toContain('Could not load')
   })
 
@@ -173,7 +220,7 @@ describe('RecordGlimpse', () => {
     await harness.settle()
 
     expect(recordsOf).toHaveBeenLastCalledWith(expect.objectContaining({area: 'Tag'}), 4)
-    expect(harness.byTestId('glimpse-Tag-count')?.textContent).toBe('1')
+    expect(harness.byTestId('hub-total-Tag')?.textContent).toBe('1')
 
     click('glimpse-Tag-toggle')
     await harness.settle()

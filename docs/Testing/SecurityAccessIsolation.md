@@ -238,182 +238,123 @@ Database.
 ### PenTestCaseWorkflowAction
 
 `Jube.Test.Security.Case.PenTestCaseWorkflowAction` — 12 tests. Category: PenTest. Collection: Database.
-| `Verbs_AndOverrides_AreNotAcceptedAsync`                            | Fact | Verbs and overrides are not accepted. |
-| `ConcurrentCreates_OfTheSameName_ProduceOneRowAsync`                | Fact | Concurrent creates of the same name
-produce one row. |
-| `SoftDelete_Replay_LockedRows_AndConcurrentDuplicatesAsync`         | Fact | Soft delete replay locked rows and
-concurrent duplicates. |
-| `RouteParameters_Injection_AndTypeConfusion_NeverErrorAsync`        | Fact | Route parameters injection and type
-confusion never error. |
-| `Boundaries_TypeConfusion_AndMalformedBodies_FailSafelyAsync`       | Fact | Boundaries type confusion and malformed
-bodies fail safely. |
-| `TextFields_Limits_AndOversizeBodies_AreEnforcedWithoutErrorsAsync` | Fact | Text fields limits and oversize bodies
-are enforced without errors. |
-| `TextFields_Injection_IsStoredAsDataOrRefusedAsync`                 | Fact | Text fields injection is stored as data
-or refused. |
-| `MassAssignment_ServerOwnedFieldsAreNeverHonouredAsync`             | Fact | Mass assignment server owned fields are
-never honoured. |
-| `Writes_ToForeignRowsAndParents_AreRefused_AndChangeNothingAsync`   | Fact | Writes to foreign rows and parents are
-refused and change nothing. |
-| `ForeignAndGatedIds_BehaveLikeMissing_OnEveryReadRouteAsync`        | Fact | Foreign and gated ids behave like missing
-on every read route. |
-| `Matrix_WriteRoutes_EveryPrincipalAsync`                            | Fact | Matrix write routes every principal. |
-| `Matrix_ReadRoutes_EveryPrincipalAsync`                             | Fact | Matrix read routes every principal. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                | Kind | Verifies                                                            |
+|---------------------------------------------------------------------|------|---------------------------------------------------------------------|
+| `Verbs_AndOverrides_AreNotAcceptedAsync`                            | Fact | Verbs and overrides are not accepted.                               |
+| `ConcurrentCreates_OfTheSameName_ProduceOneRowAsync`                | Fact | Concurrent creates of the same name produce one row.                |
+| `SoftDelete_Replay_LockedRows_AndConcurrentDuplicatesAsync`         | Fact | Soft delete replay locked rows and concurrent duplicates.           |
+| `RouteParameters_Injection_AndTypeConfusion_NeverErrorAsync`        | Fact | Route parameters injection and type confusion never error.          |
+| `Boundaries_TypeConfusion_AndMalformedBodies_FailSafelyAsync`       | Fact | Boundaries type confusion and malformed bodies fail safely.         |
+| `TextFields_Limits_AndOversizeBodies_AreEnforcedWithoutErrorsAsync` | Fact | Text fields limits and oversize bodies are enforced without errors. |
+| `TextFields_Injection_IsStoredAsDataOrRefusedAsync`                 | Fact | Text fields injection is stored as data or refused.                 |
+| `MassAssignment_ServerOwnedFieldsAreNeverHonouredAsync`             | Fact | Mass assignment server owned fields are never honoured.             |
+| `Writes_ToForeignRowsAndParents_AreRefused_AndChangeNothingAsync`   | Fact | Writes to foreign rows and parents are refused and change nothing.  |
+| `ForeignAndGatedIds_BehaveLikeMissing_OnEveryReadRouteAsync`        | Fact | Foreign and gated ids behave like missing on every read route.      |
+| `Matrix_WriteRoutes_EveryPrincipalAsync`                            | Fact | Matrix write routes every principal.                                |
+| `Matrix_ReadRoutes_EveryPrincipalAsync`                             | Fact | Matrix read routes every principal.                                 |
 
 ### PenTestCaseWorkflowActionRole
 
 `Jube.Test.Security.Case.PenTestCaseWorkflowActionRole` — 9 tests. Category: PenTest. Collection: Database.
-| `Verbs_AndOverrides_AreNotAcceptedAsync`                           | Fact | Verbs and overrides are not accepted. |
-| `RouteParameters_Injection_AndTypeConfusion_NeverErrorAsync`       | Fact | Route parameters injection and type
-confusion never error. |
-| `Boundaries_TypeConfusion_AndInjection_FailSafelyAsync`            | Fact | Boundaries type confusion and injection
-fail safely. |
-| `MassAssignment_ServerOwnedFieldsAreNeverHonouredAsync`            | Fact | Mass assignment server owned fields are
-never honoured. |
-| `DuplicateAndConcurrentGrants_DoNotMultiplyAsync`                  | Fact | Duplicate and concurrent grants do not
-multiply. |
-| `Delete_ForeignIds_AreRefused_ReplayIsRefused_AndRowsSurviveAsync` | Fact | Delete foreign ids are refused replay is
-refused and rows survive. |
-| `List_ForForeignAndMissingParents_IsIndistinguishableAsync`        | Fact | List for foreign and missing parents is
-indistinguishable. |
-| `Create_WithForeignReferences_IsRefused_AndChangesNothingAsync`    | Fact | Create with foreign references is refused
-and changes nothing. |
-| `Matrix_EveryPrincipal_OnEveryRouteAsync`                          | Fact | Matrix every principal on every route. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                               | Kind | Verifies                                                           |
+|--------------------------------------------------------------------|------|--------------------------------------------------------------------|
+| `Verbs_AndOverrides_AreNotAcceptedAsync`                           | Fact | Verbs and overrides are not accepted.                              |
+| `RouteParameters_Injection_AndTypeConfusion_NeverErrorAsync`       | Fact | Route parameters injection and type confusion never error.         |
+| `Boundaries_TypeConfusion_AndInjection_FailSafelyAsync`            | Fact | Boundaries type confusion and injection fail safely.               |
+| `MassAssignment_ServerOwnedFieldsAreNeverHonouredAsync`            | Fact | Mass assignment server owned fields are never honoured.            |
+| `DuplicateAndConcurrentGrants_DoNotMultiplyAsync`                  | Fact | Duplicate and concurrent grants do not multiply.                   |
+| `Delete_ForeignIds_AreRefused_ReplayIsRefused_AndRowsSurviveAsync` | Fact | Delete foreign ids are refused replay is refused and rows survive. |
+| `List_ForForeignAndMissingParents_IsIndistinguishableAsync`        | Fact | List for foreign and missing parents is indistinguishable.         |
+| `Create_WithForeignReferences_IsRefused_AndChangesNothingAsync`    | Fact | Create with foreign references is refused and changes nothing.     |
+| `Matrix_EveryPrincipal_OnEveryRouteAsync`                          | Fact | Matrix every principal on every route.                             |
 
 ### PenTestCaseWorkflowDisplay
 
 `Jube.Test.Security.Case.PenTestCaseWorkflowDisplay` — 12 tests. Category: PenTest. Collection: Database.
-| `Verbs_AndOverrides_AreNotAcceptedAsync`                            | Fact | Verbs and overrides are not accepted. |
-| `ConcurrentCreates_OfTheSameName_ProduceOneRowAsync`                | Fact | Concurrent creates of the same name
-produce one row. |
-| `SoftDelete_Replay_LockedRows_AndConcurrentDuplicatesAsync`         | Fact | Soft delete replay locked rows and
-concurrent duplicates. |
-| `RouteParameters_Injection_AndTypeConfusion_NeverErrorAsync`        | Fact | Route parameters injection and type
-confusion never error. |
-| `Boundaries_TypeConfusion_AndMalformedBodies_FailSafelyAsync`       | Fact | Boundaries type confusion and malformed
-bodies fail safely. |
-| `TextFields_Limits_AndOversizeBodies_AreEnforcedWithoutErrorsAsync` | Fact | Text fields limits and oversize bodies
-are enforced without errors. |
-| `TextFields_Injection_IsStoredAsDataOrRefusedAsync`                 | Fact | Text fields injection is stored as data
-or refused. |
-| `MassAssignment_ServerOwnedFieldsAreNeverHonouredAsync`             | Fact | Mass assignment server owned fields are
-never honoured. |
-| `Writes_ToForeignRowsAndParents_AreRefused_AndChangeNothingAsync`   | Fact | Writes to foreign rows and parents are
-refused and change nothing. |
-| `ForeignAndGatedIds_BehaveLikeMissing_OnEveryReadRouteAsync`        | Fact | Foreign and gated ids behave like missing
-on every read route. |
-| `Matrix_WriteRoutes_EveryPrincipalAsync`                            | Fact | Matrix write routes every principal. |
-| `Matrix_ReadRoutes_EveryPrincipalAsync`                             | Fact | Matrix read routes every principal. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                | Kind | Verifies                                                            |
+|---------------------------------------------------------------------|------|---------------------------------------------------------------------|
+| `Verbs_AndOverrides_AreNotAcceptedAsync`                            | Fact | Verbs and overrides are not accepted.                               |
+| `ConcurrentCreates_OfTheSameName_ProduceOneRowAsync`                | Fact | Concurrent creates of the same name produce one row.                |
+| `SoftDelete_Replay_LockedRows_AndConcurrentDuplicatesAsync`         | Fact | Soft delete replay locked rows and concurrent duplicates.           |
+| `RouteParameters_Injection_AndTypeConfusion_NeverErrorAsync`        | Fact | Route parameters injection and type confusion never error.          |
+| `Boundaries_TypeConfusion_AndMalformedBodies_FailSafelyAsync`       | Fact | Boundaries type confusion and malformed bodies fail safely.         |
+| `TextFields_Limits_AndOversizeBodies_AreEnforcedWithoutErrorsAsync` | Fact | Text fields limits and oversize bodies are enforced without errors. |
+| `TextFields_Injection_IsStoredAsDataOrRefusedAsync`                 | Fact | Text fields injection is stored as data or refused.                 |
+| `MassAssignment_ServerOwnedFieldsAreNeverHonouredAsync`             | Fact | Mass assignment server owned fields are never honoured.             |
+| `Writes_ToForeignRowsAndParents_AreRefused_AndChangeNothingAsync`   | Fact | Writes to foreign rows and parents are refused and change nothing.  |
+| `ForeignAndGatedIds_BehaveLikeMissing_OnEveryReadRouteAsync`        | Fact | Foreign and gated ids behave like missing on every read route.      |
+| `Matrix_WriteRoutes_EveryPrincipalAsync`                            | Fact | Matrix write routes every principal.                                |
+| `Matrix_ReadRoutes_EveryPrincipalAsync`                             | Fact | Matrix read routes every principal.                                 |
 
 ### PenTestCaseWorkflowDisplayRole
 
 `Jube.Test.Security.Case.PenTestCaseWorkflowDisplayRole` — 9 tests. Category: PenTest. Collection: Database.
-| `Verbs_AndOverrides_AreNotAcceptedAsync`                           | Fact | Verbs and overrides are not accepted. |
-| `RouteParameters_Injection_AndTypeConfusion_NeverErrorAsync`       | Fact | Route parameters injection and type
-confusion never error. |
-| `Boundaries_TypeConfusion_AndInjection_FailSafelyAsync`            | Fact | Boundaries type confusion and injection
-fail safely. |
-| `MassAssignment_ServerOwnedFieldsAreNeverHonouredAsync`            | Fact | Mass assignment server owned fields are
-never honoured. |
-| `DuplicateAndConcurrentGrants_DoNotMultiplyAsync`                  | Fact | Duplicate and concurrent grants do not
-multiply. |
-| `Delete_ForeignIds_AreRefused_ReplayIsRefused_AndRowsSurviveAsync` | Fact | Delete foreign ids are refused replay is
-refused and rows survive. |
-| `List_ForForeignAndMissingParents_IsIndistinguishableAsync`        | Fact | List for foreign and missing parents is
-indistinguishable. |
-| `Create_WithForeignReferences_IsRefused_AndChangesNothingAsync`    | Fact | Create with foreign references is refused
-and changes nothing. |
-| `Matrix_EveryPrincipal_OnEveryRouteAsync`                          | Fact | Matrix every principal on every route. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                               | Kind | Verifies                                                           |
+|--------------------------------------------------------------------|------|--------------------------------------------------------------------|
+| `Verbs_AndOverrides_AreNotAcceptedAsync`                           | Fact | Verbs and overrides are not accepted.                              |
+| `RouteParameters_Injection_AndTypeConfusion_NeverErrorAsync`       | Fact | Route parameters injection and type confusion never error.         |
+| `Boundaries_TypeConfusion_AndInjection_FailSafelyAsync`            | Fact | Boundaries type confusion and injection fail safely.               |
+| `MassAssignment_ServerOwnedFieldsAreNeverHonouredAsync`            | Fact | Mass assignment server owned fields are never honoured.            |
+| `DuplicateAndConcurrentGrants_DoNotMultiplyAsync`                  | Fact | Duplicate and concurrent grants do not multiply.                   |
+| `Delete_ForeignIds_AreRefused_ReplayIsRefused_AndRowsSurviveAsync` | Fact | Delete foreign ids are refused replay is refused and rows survive. |
+| `List_ForForeignAndMissingParents_IsIndistinguishableAsync`        | Fact | List for foreign and missing parents is indistinguishable.         |
+| `Create_WithForeignReferences_IsRefused_AndChangesNothingAsync`    | Fact | Create with foreign references is refused and changes nothing.     |
+| `Matrix_EveryPrincipal_OnEveryRouteAsync`                          | Fact | Matrix every principal on every route.                             |
 
 ### PenTestCaseWorkflowFilter
 
 `Jube.Test.Security.Case.PenTestCaseWorkflowFilter` — 12 tests. Category: PenTest. Collection: Database.
-| `Verbs_AndOverrides_AreNotAcceptedAsync`                            | Fact | Verbs and overrides are not accepted. |
-| `ConcurrentCreates_OfTheSameName_ProduceOneRowAsync`                | Fact | Concurrent creates of the same name
-produce one row. |
-| `SoftDelete_Replay_LockedRows_AndConcurrentDuplicatesAsync`         | Fact | Soft delete replay locked rows and
-concurrent duplicates. |
-| `RouteParameters_Injection_AndTypeConfusion_NeverErrorAsync`        | Fact | Route parameters injection and type
-confusion never error. |
-| `Boundaries_TypeConfusion_AndMalformedBodies_FailSafelyAsync`       | Fact | Boundaries type confusion and malformed
-bodies fail safely. |
-| `TextFields_Limits_AndOversizeBodies_AreEnforcedWithoutErrorsAsync` | Fact | Text fields limits and oversize bodies
-are enforced without errors. |
-| `TextFields_Injection_IsStoredAsDataOrRefusedAsync`                 | Fact | Text fields injection is stored as data
-or refused. |
-| `MassAssignment_ServerOwnedFieldsAreNeverHonouredAsync`             | Fact | Mass assignment server owned fields are
-never honoured. |
-| `Writes_ToForeignRowsAndParents_AreRefused_AndChangeNothingAsync`   | Fact | Writes to foreign rows and parents are
-refused and change nothing. |
-| `ForeignAndGatedIds_BehaveLikeMissing_OnEveryReadRouteAsync`        | Fact | Foreign and gated ids behave like missing
-on every read route. |
-| `Matrix_WriteRoutes_EveryPrincipalAsync`                            | Fact | Matrix write routes every principal. |
-| `Matrix_ReadRoutes_EveryPrincipalAsync`                             | Fact | Matrix read routes every principal. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                | Kind | Verifies                                                            |
+|---------------------------------------------------------------------|------|---------------------------------------------------------------------|
+| `Verbs_AndOverrides_AreNotAcceptedAsync`                            | Fact | Verbs and overrides are not accepted.                               |
+| `ConcurrentCreates_OfTheSameName_ProduceOneRowAsync`                | Fact | Concurrent creates of the same name produce one row.                |
+| `SoftDelete_Replay_LockedRows_AndConcurrentDuplicatesAsync`         | Fact | Soft delete replay locked rows and concurrent duplicates.           |
+| `RouteParameters_Injection_AndTypeConfusion_NeverErrorAsync`        | Fact | Route parameters injection and type confusion never error.          |
+| `Boundaries_TypeConfusion_AndMalformedBodies_FailSafelyAsync`       | Fact | Boundaries type confusion and malformed bodies fail safely.         |
+| `TextFields_Limits_AndOversizeBodies_AreEnforcedWithoutErrorsAsync` | Fact | Text fields limits and oversize bodies are enforced without errors. |
+| `TextFields_Injection_IsStoredAsDataOrRefusedAsync`                 | Fact | Text fields injection is stored as data or refused.                 |
+| `MassAssignment_ServerOwnedFieldsAreNeverHonouredAsync`             | Fact | Mass assignment server owned fields are never honoured.             |
+| `Writes_ToForeignRowsAndParents_AreRefused_AndChangeNothingAsync`   | Fact | Writes to foreign rows and parents are refused and change nothing.  |
+| `ForeignAndGatedIds_BehaveLikeMissing_OnEveryReadRouteAsync`        | Fact | Foreign and gated ids behave like missing on every read route.      |
+| `Matrix_WriteRoutes_EveryPrincipalAsync`                            | Fact | Matrix write routes every principal.                                |
+| `Matrix_ReadRoutes_EveryPrincipalAsync`                             | Fact | Matrix read routes every principal.                                 |
 
 ### PenTestCaseWorkflowFilterRole
 
 `Jube.Test.Security.Case.PenTestCaseWorkflowFilterRole` — 6 tests. Category: PenTest. Collection: Database.
-| `Delete_IsPermissionedAndObjectLevelAuthorisedAsync`                     | Fact | Delete is permissioned and object
-level authorised. |
-| `Post_TypeConfusionAndStructure_FailSafelyAsync`                         | Fact | Post type confusion and structure
-fail safely. |
-| `Post_DuplicateGrants_DoNotCreateDuplicateRowsAsync`                     | Fact | Post duplicate grants do not create
-duplicate rows. |
-| `Post_HappyPathAndMassAssignment_PersistOnlyServerControlledFieldsAsync` | Fact | Post happy path and mass assignment
-persist only server controlled fields. |
-| `Post_IsPermissionedAndRefusesForeignParentsAndRolesAsync`               | Fact | Post is permissioned and refuses
-foreign parents and roles. |
-| `Get_ByParentGuid_IsPermissionedAndTenantIsolatedAsync`                  | Fact | Get by parent guid is permissioned
-and tenant isolated. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                     | Kind | Verifies                                                                   |
+|--------------------------------------------------------------------------|------|----------------------------------------------------------------------------|
+| `Delete_IsPermissionedAndObjectLevelAuthorisedAsync`                     | Fact | Delete is permissioned and object level authorised.                        |
+| `Post_TypeConfusionAndStructure_FailSafelyAsync`                         | Fact | Post type confusion and structure fail safely.                             |
+| `Post_DuplicateGrants_DoNotCreateDuplicateRowsAsync`                     | Fact | Post duplicate grants do not create duplicate rows.                        |
+| `Post_HappyPathAndMassAssignment_PersistOnlyServerControlledFieldsAsync` | Fact | Post happy path and mass assignment persist only server controlled fields. |
+| `Post_IsPermissionedAndRefusesForeignParentsAndRolesAsync`               | Fact | Post is permissioned and refuses foreign parents and roles.                |
+| `Get_ByParentGuid_IsPermissionedAndTenantIsolatedAsync`                  | Fact | Get by parent guid is permissioned and tenant isolated.                    |
 
 ### PenTestCaseWorkflowForm
 
 `Jube.Test.Security.Case.PenTestCaseWorkflowForm` — 12 tests. Category: PenTest. Collection: Database.
-| `Delete_IsPermissionedAndObjectLevelAuthorisedAsync`            | Fact | Delete is permissioned and object level
-authorised. |
-| `Put_TypeConfusionAndInjection_FailSafelyAsync`                 | Fact | Put type confusion and injection fail
-safely. |
-| `Put_MassAssignment_LockingAndSoftDelete_BehaveSafelyAsync`     | Fact | Put mass assignment locking and soft delete
-behave safely. |
-| `Put_IsPermissionedAndObjectLevelAuthorisedAsync`               | Fact | Put is permissioned and object level
-authorised. |
-| `Post_LengthLimitsAndDuplicateNames_AreEnforcedAsync`           | Fact | Post length limits and duplicate names are
-enforced. |
-| `Post_TypeConfusionAndBoundaries_FailSafelyAsync`               | Fact | Post type confusion and boundaries fail
-safely. |
-| `Post_StoredHostilePayloads_AreDataAndRoundTripFaithfullyAsync` | Fact | Post stored hostile payloads are data and
-round trip faithfully. |
-| `Post_MassAssignment_ForbiddenFieldsAreNotHonouredAsync`        | Fact | Post mass assignment forbidden fields are not
-honoured. |
-| `Post_IsPermissionedAndRefusesForeignParentsAsync`              | Fact | Post is permissioned and refuses foreign
-parents. |
-| `Get_ByWorkflowRoutes_ArePermissionedAndTenantIsolatedAsync`    | Fact | Get by workflow routes are permissioned and
-tenant isolated. |
-| `Get_ById_IsPermissionedAndObjectLevelAuthorisedAsync`          | Fact | Get by id is permissioned and object level
-authorised. |
-| `Get_List_IsPermissionedAndTenantIsolatedAsync`                 | Fact | Get list is permissioned and tenant
-isolated. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                            | Kind | Verifies                                                         |
+|-----------------------------------------------------------------|------|------------------------------------------------------------------|
+| `Delete_IsPermissionedAndObjectLevelAuthorisedAsync`            | Fact | Delete is permissioned and object level authorised.              |
+| `Put_TypeConfusionAndInjection_FailSafelyAsync`                 | Fact | Put type confusion and injection fail safely.                    |
+| `Put_MassAssignment_LockingAndSoftDelete_BehaveSafelyAsync`     | Fact | Put mass assignment locking and soft delete behave safely.       |
+| `Put_IsPermissionedAndObjectLevelAuthorisedAsync`               | Fact | Put is permissioned and object level authorised.                 |
+| `Post_LengthLimitsAndDuplicateNames_AreEnforcedAsync`           | Fact | Post length limits and duplicate names are enforced.             |
+| `Post_TypeConfusionAndBoundaries_FailSafelyAsync`               | Fact | Post type confusion and boundaries fail safely.                  |
+| `Post_StoredHostilePayloads_AreDataAndRoundTripFaithfullyAsync` | Fact | Post stored hostile payloads are data and round trip faithfully. |
+| `Post_MassAssignment_ForbiddenFieldsAreNotHonouredAsync`        | Fact | Post mass assignment forbidden fields are not honoured.          |
+| `Post_IsPermissionedAndRefusesForeignParentsAsync`              | Fact | Post is permissioned and refuses foreign parents.                |
+| `Get_ByWorkflowRoutes_ArePermissionedAndTenantIsolatedAsync`    | Fact | Get by workflow routes are permissioned and tenant isolated.     |
+| `Get_ById_IsPermissionedAndObjectLevelAuthorisedAsync`          | Fact | Get by id is permissioned and object level authorised.           |
+| `Get_List_IsPermissionedAndTenantIsolatedAsync`                 | Fact | Get list is permissioned and tenant isolated.                    |
 
 ### PenTestCaseWorkflowFormEntry
 
@@ -438,25 +379,19 @@ isolated. |
 ### PenTestCaseWorkflowFormRole
 
 `Jube.Test.Security.Case.PenTestCaseWorkflowFormRole` — 6 tests. Category: PenTest. Collection: Database.
-| `Delete_IsPermissionedAndObjectLevelAuthorisedAsync`                     | Fact | Delete is permissioned and object
-level authorised. |
-| `Post_TypeConfusionAndStructure_FailSafelyAsync`                         | Fact | Post type confusion and structure
-fail safely. |
-| `Post_DuplicateGrants_DoNotCreateDuplicateRowsAsync`                     | Fact | Post duplicate grants do not create
-duplicate rows. |
-| `Post_HappyPathAndMassAssignment_PersistOnlyServerControlledFieldsAsync` | Fact | Post happy path and mass assignment
-persist only server controlled fields. |
-| `Post_IsPermissionedAndRefusesForeignParentsAndRolesAsync`               | Fact | Post is permissioned and refuses
-foreign parents and roles. |
-| `Get_ByParentGuid_IsPermissionedAndTenantIsolatedAsync`                  | Fact | Get by parent guid is permissioned
-and tenant isolated. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                     | Kind | Verifies                                                                   |
+|--------------------------------------------------------------------------|------|----------------------------------------------------------------------------|
+| `Delete_IsPermissionedAndObjectLevelAuthorisedAsync`                     | Fact | Delete is permissioned and object level authorised.                        |
+| `Post_TypeConfusionAndStructure_FailSafelyAsync`                         | Fact | Post type confusion and structure fail safely.                             |
+| `Post_DuplicateGrants_DoNotCreateDuplicateRowsAsync`                     | Fact | Post duplicate grants do not create duplicate rows.                        |
+| `Post_HappyPathAndMassAssignment_PersistOnlyServerControlledFieldsAsync` | Fact | Post happy path and mass assignment persist only server controlled fields. |
+| `Post_IsPermissionedAndRefusesForeignParentsAndRolesAsync`               | Fact | Post is permissioned and refuses foreign parents and roles.                |
+| `Get_ByParentGuid_IsPermissionedAndTenantIsolatedAsync`                  | Fact | Get by parent guid is permissioned and tenant isolated.                    |
 
 ### PenTestCaseWorkflowMacro
 
-`Jube.Test.Security.Case.PenTestCaseWorkflowMacro` — 1 test. Category: PenTest. Collection: Database.
+`Jube.Test.Security.Case.PenTestCaseWorkflowMacro` — 13 tests. Category: PenTest. Collection: Database.
 
 | Test                                                            | Kind | Verifies                                                         |
 |-----------------------------------------------------------------|------|------------------------------------------------------------------|
@@ -539,91 +474,61 @@ and tenant isolated. |
 
 ### PenTestCaseWorkflowChecklist
 
-`Jube.Test.Security.Case.PenTestCaseWorkflowChecklist` — 8 tests (inherited from `PenTestCaseWorkflowGuidChildBase`).
-Category: PenTest. Collection: PenTest. Route `/api/CaseWorkflowChecklist`.
-| `EveryMutation_WithoutAntiforgeryOrOriginEvidence_IsRefusedAndChangesNothingAsync` | Fact | Every mutation without
-antiforgery or origin evidence is refused and changes nothing. |
-| `HostileText_TypeConfusionAndOversizeBodies_FailSafelyAsync` | Fact | Hostile text type confusion and oversize bodies
-fail safely. |
-| `SoftDelete_RemovesTheRowFromEveryRouteAndReplayIsNotFoundAsync` | Fact | Soft delete removes the row from every route
-and replay is not found. |
-| `Put_CannotMoveARowToAnotherParentAsync` | Fact | Put cannot move a row to another parent. |
-| `MassAssignment_OnCreateAndUpdate_IsIgnoredAndStaleVersionsConflictAsync` | Fact | Mass assignment on create and
-update is ignored and stale versions conflict. |
-| `Post_RefusesForeignAndInvalidParentGuidsAndCreatesNothingAsync` | Fact | Post refuses foreign and invalid parent
-guids and creates nothing. |
-| `ForeignTenantRows_AreInvisibleAndImmutable_ByIdAsync` | Fact | Foreign tenant rows are invisible and immutable by
-id. |
-| `EveryVerb_RefusesAnonymousGarbageAndUnpermissionedCallersAsync` | Fact | Every verb refuses anonymous garbage and
-unpermissioned callers. |
+`Jube.Test.Security.Case.PenTestCaseWorkflowChecklist` — 8 tests (inherited from `PenTestCaseWorkflowGuidChildBase`). Category: PenTest. Collection: PenTest. Route `/api/CaseWorkflowChecklist`.
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                               | Kind | Verifies                                                                              |
+|------------------------------------------------------------------------------------|------|---------------------------------------------------------------------------------------|
+| `EveryMutation_WithoutAntiforgeryOrOriginEvidence_IsRefusedAndChangesNothingAsync` | Fact | Every mutation without antiforgery or origin evidence is refused and changes nothing. |
+| `HostileText_TypeConfusionAndOversizeBodies_FailSafelyAsync`                       | Fact | Hostile text type confusion and oversize bodies fail safely.                          |
+| `SoftDelete_RemovesTheRowFromEveryRouteAndReplayIsNotFoundAsync`                   | Fact | Soft delete removes the row from every route and replay is not found.                 |
+| `Put_CannotMoveARowToAnotherParentAsync`                                           | Fact | Put cannot move a row to another parent.                                              |
+| `MassAssignment_OnCreateAndUpdate_IsIgnoredAndStaleVersionsConflictAsync`          | Fact | Mass assignment on create and update is ignored and stale versions conflict.          |
+| `Post_RefusesForeignAndInvalidParentGuidsAndCreatesNothingAsync`                   | Fact | Post refuses foreign and invalid parent guids and creates nothing.                    |
+| `ForeignTenantRows_AreInvisibleAndImmutable_ByIdAsync`                             | Fact | Foreign tenant rows are invisible and immutable by id.                                |
+| `EveryVerb_RefusesAnonymousGarbageAndUnpermissionedCallersAsync`                   | Fact | Every verb refuses anonymous garbage and unpermissioned callers.                      |
 
 ### PenTestCaseWorkflowChecklistItem
 
-`Jube.Test.Security.Case.PenTestCaseWorkflowChecklistItem` — 8 tests (inherited from
-`PenTestCaseWorkflowGuidChildBase`). Category: PenTest. Collection: PenTest. Route `/api/CaseWorkflowChecklistItem`.
-| `EveryMutation_WithoutAntiforgeryOrOriginEvidence_IsRefusedAndChangesNothingAsync` | Fact | Every mutation without
-antiforgery or origin evidence is refused and changes nothing. |
-| `HostileText_TypeConfusionAndOversizeBodies_FailSafelyAsync` | Fact | Hostile text type confusion and oversize bodies
-fail safely. |
-| `SoftDelete_RemovesTheRowFromEveryRouteAndReplayIsNotFoundAsync` | Fact | Soft delete removes the row from every route
-and replay is not found. |
-| `Put_CannotMoveARowToAnotherParentAsync` | Fact | Put cannot move a row to another parent. |
-| `MassAssignment_OnCreateAndUpdate_IsIgnoredAndStaleVersionsConflictAsync` | Fact | Mass assignment on create and
-update is ignored and stale versions conflict. |
-| `Post_RefusesForeignAndInvalidParentGuidsAndCreatesNothingAsync` | Fact | Post refuses foreign and invalid parent
-guids and creates nothing. |
-| `ForeignTenantRows_AreInvisibleAndImmutable_ByIdAsync` | Fact | Foreign tenant rows are invisible and immutable by
-id. |
-| `EveryVerb_RefusesAnonymousGarbageAndUnpermissionedCallersAsync` | Fact | Every verb refuses anonymous garbage and
-unpermissioned callers. |
+`Jube.Test.Security.Case.PenTestCaseWorkflowChecklistItem` — 8 tests (inherited from `PenTestCaseWorkflowGuidChildBase`). Category: PenTest. Collection: PenTest. Route `/api/CaseWorkflowChecklistItem`.
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                               | Kind | Verifies                                                                              |
+|------------------------------------------------------------------------------------|------|---------------------------------------------------------------------------------------|
+| `EveryMutation_WithoutAntiforgeryOrOriginEvidence_IsRefusedAndChangesNothingAsync` | Fact | Every mutation without antiforgery or origin evidence is refused and changes nothing. |
+| `HostileText_TypeConfusionAndOversizeBodies_FailSafelyAsync`                       | Fact | Hostile text type confusion and oversize bodies fail safely.                          |
+| `SoftDelete_RemovesTheRowFromEveryRouteAndReplayIsNotFoundAsync`                   | Fact | Soft delete removes the row from every route and replay is not found.                 |
+| `Put_CannotMoveARowToAnotherParentAsync`                                           | Fact | Put cannot move a row to another parent.                                              |
+| `MassAssignment_OnCreateAndUpdate_IsIgnoredAndStaleVersionsConflictAsync`          | Fact | Mass assignment on create and update is ignored and stale versions conflict.          |
+| `Post_RefusesForeignAndInvalidParentGuidsAndCreatesNothingAsync`                   | Fact | Post refuses foreign and invalid parent guids and creates nothing.                    |
+| `ForeignTenantRows_AreInvisibleAndImmutable_ByIdAsync`                             | Fact | Foreign tenant rows are invisible and immutable by id.                                |
+| `EveryVerb_RefusesAnonymousGarbageAndUnpermissionedCallersAsync`                   | Fact | Every verb refuses anonymous garbage and unpermissioned callers.                      |
 
 ### PenTestCaseWorkflowFormValidator
 
-`Jube.Test.Security.Case.PenTestCaseWorkflowFormValidator` — 8 tests (inherited from
-`PenTestCaseWorkflowGuidChildBase`). Category: PenTest. Collection: PenTest. Route `/api/CaseWorkflowFormValidator`.
-| `EveryMutation_WithoutAntiforgeryOrOriginEvidence_IsRefusedAndChangesNothingAsync` | Fact | Every mutation without
-antiforgery or origin evidence is refused and changes nothing. |
-| `HostileText_TypeConfusionAndOversizeBodies_FailSafelyAsync` | Fact | Hostile text type confusion and oversize bodies
-fail safely. |
-| `SoftDelete_RemovesTheRowFromEveryRouteAndReplayIsNotFoundAsync` | Fact | Soft delete removes the row from every route
-and replay is not found. |
-| `Put_CannotMoveARowToAnotherParentAsync` | Fact | Put cannot move a row to another parent. |
-| `MassAssignment_OnCreateAndUpdate_IsIgnoredAndStaleVersionsConflictAsync` | Fact | Mass assignment on create and
-update is ignored and stale versions conflict. |
-| `Post_RefusesForeignAndInvalidParentGuidsAndCreatesNothingAsync` | Fact | Post refuses foreign and invalid parent
-guids and creates nothing. |
-| `ForeignTenantRows_AreInvisibleAndImmutable_ByIdAsync` | Fact | Foreign tenant rows are invisible and immutable by
-id. |
-| `EveryVerb_RefusesAnonymousGarbageAndUnpermissionedCallersAsync` | Fact | Every verb refuses anonymous garbage and
-unpermissioned callers. |
+`Jube.Test.Security.Case.PenTestCaseWorkflowFormValidator` — 8 tests (inherited from `PenTestCaseWorkflowGuidChildBase`). Category: PenTest. Collection: PenTest. Route `/api/CaseWorkflowFormValidator`.
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                               | Kind | Verifies                                                                              |
+|------------------------------------------------------------------------------------|------|---------------------------------------------------------------------------------------|
+| `EveryMutation_WithoutAntiforgeryOrOriginEvidence_IsRefusedAndChangesNothingAsync` | Fact | Every mutation without antiforgery or origin evidence is refused and changes nothing. |
+| `HostileText_TypeConfusionAndOversizeBodies_FailSafelyAsync`                       | Fact | Hostile text type confusion and oversize bodies fail safely.                          |
+| `SoftDelete_RemovesTheRowFromEveryRouteAndReplayIsNotFoundAsync`                   | Fact | Soft delete removes the row from every route and replay is not found.                 |
+| `Put_CannotMoveARowToAnotherParentAsync`                                           | Fact | Put cannot move a row to another parent.                                              |
+| `MassAssignment_OnCreateAndUpdate_IsIgnoredAndStaleVersionsConflictAsync`          | Fact | Mass assignment on create and update is ignored and stale versions conflict.          |
+| `Post_RefusesForeignAndInvalidParentGuidsAndCreatesNothingAsync`                   | Fact | Post refuses foreign and invalid parent guids and creates nothing.                    |
+| `ForeignTenantRows_AreInvisibleAndImmutable_ByIdAsync`                             | Fact | Foreign tenant rows are invisible and immutable by id.                                |
+| `EveryVerb_RefusesAnonymousGarbageAndUnpermissionedCallersAsync`                   | Fact | Every verb refuses anonymous garbage and unpermissioned callers.                      |
 
 ### PenTestCaseWorkflowMacroRole
 
 `Jube.Test.Security.Case.PenTestCaseWorkflowMacroRole` — 6 tests. Category: PenTest. Collection: Database.
-| `Delete_IsPermissionedAndObjectLevelAuthorisedAsync`                     | Fact | Delete is permissioned and object
-level authorised. |
-| `Post_TypeConfusionAndStructure_FailSafelyAsync`                         | Fact | Post type confusion and structure
-fail safely. |
-| `Post_DuplicateGrants_DoNotCreateDuplicateRowsAsync`                     | Fact | Post duplicate grants do not create
-duplicate rows. |
-| `Post_HappyPathAndMassAssignment_PersistOnlyServerControlledFieldsAsync` | Fact | Post happy path and mass assignment
-persist only server controlled fields. |
-| `Post_IsPermissionedAndRefusesForeignParentsAndRolesAsync`               | Fact | Post is permissioned and refuses
-foreign parents and roles. |
-| `Get_ByParentGuid_IsPermissionedAndTenantIsolatedAsync`                  | Fact | Get by parent guid is permissioned
-and tenant isolated. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                     | Kind | Verifies                                                                   |
+|--------------------------------------------------------------------------|------|----------------------------------------------------------------------------|
+| `Delete_IsPermissionedAndObjectLevelAuthorisedAsync`                     | Fact | Delete is permissioned and object level authorised.                        |
+| `Post_TypeConfusionAndStructure_FailSafelyAsync`                         | Fact | Post type confusion and structure fail safely.                             |
+| `Post_DuplicateGrants_DoNotCreateDuplicateRowsAsync`                     | Fact | Post duplicate grants do not create duplicate rows.                        |
+| `Post_HappyPathAndMassAssignment_PersistOnlyServerControlledFieldsAsync` | Fact | Post happy path and mass assignment persist only server controlled fields. |
+| `Post_IsPermissionedAndRefusesForeignParentsAndRolesAsync`               | Fact | Post is permissioned and refuses foreign parents and roles.                |
+| `Get_ByParentGuid_IsPermissionedAndTenantIsolatedAsync`                  | Fact | Get by parent guid is permissioned and tenant isolated.                    |
 
 ### PenTestCaseWorkflowPriority
 
@@ -636,25 +541,19 @@ and tenant isolated. |
 ### PenTestCaseWorkflowRole
 
 `Jube.Test.Security.Case.PenTestCaseWorkflowRole` — 6 tests. Category: PenTest. Collection: Database.
-| `Delete_IsPermissionedAndObjectLevelAuthorisedAsync`                     | Fact | Delete is permissioned and object
-level authorised. |
-| `Post_TypeConfusionAndStructure_FailSafelyAsync`                         | Fact | Post type confusion and structure
-fail safely. |
-| `Post_DuplicateGrants_DoNotCreateDuplicateRowsAsync`                     | Fact | Post duplicate grants do not create
-duplicate rows. |
-| `Post_HappyPathAndMassAssignment_PersistOnlyServerControlledFieldsAsync` | Fact | Post happy path and mass assignment
-persist only server controlled fields. |
-| `Post_IsPermissionedAndRefusesForeignParentsAndRolesAsync`               | Fact | Post is permissioned and refuses
-foreign parents and roles. |
-| `Get_ByParentGuid_IsPermissionedAndTenantIsolatedAsync`                  | Fact | Get by parent guid is permissioned
-and tenant isolated. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                     | Kind | Verifies                                                                   |
+|--------------------------------------------------------------------------|------|----------------------------------------------------------------------------|
+| `Delete_IsPermissionedAndObjectLevelAuthorisedAsync`                     | Fact | Delete is permissioned and object level authorised.                        |
+| `Post_TypeConfusionAndStructure_FailSafelyAsync`                         | Fact | Post type confusion and structure fail safely.                             |
+| `Post_DuplicateGrants_DoNotCreateDuplicateRowsAsync`                     | Fact | Post duplicate grants do not create duplicate rows.                        |
+| `Post_HappyPathAndMassAssignment_PersistOnlyServerControlledFieldsAsync` | Fact | Post happy path and mass assignment persist only server controlled fields. |
+| `Post_IsPermissionedAndRefusesForeignParentsAndRolesAsync`               | Fact | Post is permissioned and refuses foreign parents and roles.                |
+| `Get_ByParentGuid_IsPermissionedAndTenantIsolatedAsync`                  | Fact | Get by parent guid is permissioned and tenant isolated.                    |
 
 ### PenTestCaseWorkflowStatus
 
-`Jube.Test.Security.Case.PenTestCaseWorkflowStatus` — 1 test. Category: PenTest. Collection: Database.
+`Jube.Test.Security.Case.PenTestCaseWorkflowStatus` — 13 tests. Category: PenTest. Collection: Database.
 
 | Test                                                            | Kind | Verifies                                                         |
 |-----------------------------------------------------------------|------|------------------------------------------------------------------|
@@ -675,25 +574,19 @@ and tenant isolated. |
 ### PenTestCaseWorkflowStatusRole
 
 `Jube.Test.Security.Case.PenTestCaseWorkflowStatusRole` — 6 tests. Category: PenTest. Collection: Database.
-| `Delete_IsPermissionedAndObjectLevelAuthorisedAsync`                     | Fact | Delete is permissioned and object
-level authorised. |
-| `Post_TypeConfusionAndStructure_FailSafelyAsync`                         | Fact | Post type confusion and structure
-fail safely. |
-| `Post_DuplicateGrants_DoNotCreateDuplicateRowsAsync`                     | Fact | Post duplicate grants do not create
-duplicate rows. |
-| `Post_HappyPathAndMassAssignment_PersistOnlyServerControlledFieldsAsync` | Fact | Post happy path and mass assignment
-persist only server controlled fields. |
-| `Post_IsPermissionedAndRefusesForeignParentsAndRolesAsync`               | Fact | Post is permissioned and refuses
-foreign parents and roles. |
-| `Get_ByParentGuid_IsPermissionedAndTenantIsolatedAsync`                  | Fact | Get by parent guid is permissioned
-and tenant isolated. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                     | Kind | Verifies                                                                   |
+|--------------------------------------------------------------------------|------|----------------------------------------------------------------------------|
+| `Delete_IsPermissionedAndObjectLevelAuthorisedAsync`                     | Fact | Delete is permissioned and object level authorised.                        |
+| `Post_TypeConfusionAndStructure_FailSafelyAsync`                         | Fact | Post type confusion and structure fail safely.                             |
+| `Post_DuplicateGrants_DoNotCreateDuplicateRowsAsync`                     | Fact | Post duplicate grants do not create duplicate rows.                        |
+| `Post_HappyPathAndMassAssignment_PersistOnlyServerControlledFieldsAsync` | Fact | Post happy path and mass assignment persist only server controlled fields. |
+| `Post_IsPermissionedAndRefusesForeignParentsAndRolesAsync`               | Fact | Post is permissioned and refuses foreign parents and roles.                |
+| `Get_ByParentGuid_IsPermissionedAndTenantIsolatedAsync`                  | Fact | Get by parent guid is permissioned and tenant isolated.                    |
 
 ### PenTestCaseWorkflowXPath
 
-`Jube.Test.Security.Case.PenTestCaseWorkflowXPath` — 1 test. Category: PenTest. Collection: Database.
+`Jube.Test.Security.Case.PenTestCaseWorkflowXPath` — 13 tests. Category: PenTest. Collection: Database.
 
 | Test                                                            | Kind | Verifies                                                         |
 |-----------------------------------------------------------------|------|------------------------------------------------------------------|
@@ -714,21 +607,15 @@ and tenant isolated. |
 ### PenTestCaseWorkflowXPathRole
 
 `Jube.Test.Security.Case.PenTestCaseWorkflowXPathRole` — 6 tests. Category: PenTest. Collection: Database.
-| `Delete_IsPermissionedAndObjectLevelAuthorisedAsync`                     | Fact | Delete is permissioned and object
-level authorised. |
-| `Post_TypeConfusionAndStructure_FailSafelyAsync`                         | Fact | Post type confusion and structure
-fail safely. |
-| `Post_DuplicateGrants_DoNotCreateDuplicateRowsAsync`                     | Fact | Post duplicate grants do not create
-duplicate rows. |
-| `Post_HappyPathAndMassAssignment_PersistOnlyServerControlledFieldsAsync` | Fact | Post happy path and mass assignment
-persist only server controlled fields. |
-| `Post_IsPermissionedAndRefusesForeignParentsAndRolesAsync`               | Fact | Post is permissioned and refuses
-foreign parents and roles. |
-| `Get_ByParentGuid_IsPermissionedAndTenantIsolatedAsync`                  | Fact | Get by parent guid is permissioned
-and tenant isolated. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                     | Kind | Verifies                                                                   |
+|--------------------------------------------------------------------------|------|----------------------------------------------------------------------------|
+| `Delete_IsPermissionedAndObjectLevelAuthorisedAsync`                     | Fact | Delete is permissioned and object level authorised.                        |
+| `Post_TypeConfusionAndStructure_FailSafelyAsync`                         | Fact | Post type confusion and structure fail safely.                             |
+| `Post_DuplicateGrants_DoNotCreateDuplicateRowsAsync`                     | Fact | Post duplicate grants do not create duplicate rows.                        |
+| `Post_HappyPathAndMassAssignment_PersistOnlyServerControlledFieldsAsync` | Fact | Post happy path and mass assignment persist only server controlled fields. |
+| `Post_IsPermissionedAndRefusesForeignParentsAndRolesAsync`               | Fact | Post is permissioned and refuses foreign parents and roles.                |
+| `Get_ByParentGuid_IsPermissionedAndTenantIsolatedAsync`                  | Fact | Get by parent guid is permissioned and tenant isolated.                    |
 
 ## Dynamic sql
 
@@ -987,180 +874,107 @@ and tenant isolated. |
 ### PenTestEntityAnalysisModel
 
 `Jube.Test.Security.Model.PenTestEntityAnalysisModel` — 14 tests. Category: PenTest. Collection: Database.
-| `OversizedBodies_AreRefusedQuicklyAsync`                                            | Fact | Oversized bodies are
-refused quickly. |
-| `ConcurrentUpdatesAndDoubleSubmit_NeverServerError_AndStayConsistentAsync`          | Fact | Concurrent updates and
-double submit never server error and stay consistent. |
-| `LockedRows_CannotBeUpdatedOrDeletedAsync`                                          | Fact | Locked rows cannot be
-updated or deleted. |
-| `RouteAndQueryParameterAbuse_NeverServerErrors_OrTouchesRowsAsync`                  | Fact | Route and query parameter
-abuse never server errors or touches rows. |
-| `MalformedBodiesAndContentTypes_AreRejectedWithoutServerErrorsAsync`                | Fact | Malformed bodies and
-content types are rejected without server errors. |
-| `TypeConfusionAndBoundaries_NeverProduceServerErrors_OrSideEffectsAsync`            | Fact | Type confusion and
-boundaries never produce server errors or side effects. |
-| `LengthBoundaries_AcceptTheMaximum_AndRefuseOneMoreAsync`                           | Fact | Length boundaries accept
-the maximum and refuse one more. |
-| `JsonColumns_RefuseInvalidJson_InsteadOfFailingInTheDatabaseAsync`                  | Fact | Json columns refuse
-invalid json instead of failing in the database. |
-| `Injection_EveryTextField_IsStoredOrRejectedAsDataAsync`                            | Fact | Injection every text
-field is stored or rejected as data. |
-| `MassAssignment_ServerOwnedFields_AreNotHonouredAsync`                              | Fact | Mass assignment server
-owned fields are not honoured. |
-| `CrossTenantParent_CreateUnderForeignParent_AndMoveToForeignParent_AreRefusedAsync` | Fact | Cross tenant parent
-create under foreign parent and move to foreign parent are refused. |
-| `CrossTenant_ReadUpdateDeleteReset_BehaveLikeNotFoundAsync`                         | Fact | Cross tenant read update
-delete reset behave like not found. |
-| `Lifecycle_CreateReadUpdateDelete_HasSoftDeleteAndVersionSemanticsAsync`            | Fact | Lifecycle create read
-update delete has soft delete and version semantics. |
-| `AuthenticationAndAuthorisationMatrix_RefusesEveryone_ButThePermittedUserAsync`     | Fact | Authentication and
-authorisation matrix refuses everyone but the permitted user. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                                | Kind | Verifies                                                                                |
+|-------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------|
+| `OversizedBodies_AreRefusedQuicklyAsync`                                            | Fact | Oversized bodies are refused quickly.                                                   |
+| `ConcurrentUpdatesAndDoubleSubmit_NeverServerError_AndStayConsistentAsync`          | Fact | Concurrent updates and double submit never server error and stay consistent.            |
+| `LockedRows_CannotBeUpdatedOrDeletedAsync`                                          | Fact | Locked rows cannot be updated or deleted.                                               |
+| `RouteAndQueryParameterAbuse_NeverServerErrors_OrTouchesRowsAsync`                  | Fact | Route and query parameter abuse never server errors or touches rows.                    |
+| `MalformedBodiesAndContentTypes_AreRejectedWithoutServerErrorsAsync`                | Fact | Malformed bodies and content types are rejected without server errors.                  |
+| `TypeConfusionAndBoundaries_NeverProduceServerErrors_OrSideEffectsAsync`            | Fact | Type confusion and boundaries never produce server errors or side effects.              |
+| `LengthBoundaries_AcceptTheMaximum_AndRefuseOneMoreAsync`                           | Fact | Length boundaries accept the maximum and refuse one more.                               |
+| `JsonColumns_RefuseInvalidJson_InsteadOfFailingInTheDatabaseAsync`                  | Fact | Json columns refuse invalid json instead of failing in the database.                    |
+| `Injection_EveryTextField_IsStoredOrRejectedAsDataAsync`                            | Fact | Injection every text field is stored or rejected as data.                               |
+| `MassAssignment_ServerOwnedFields_AreNotHonouredAsync`                              | Fact | Mass assignment server owned fields are not honoured.                                   |
+| `CrossTenantParent_CreateUnderForeignParent_AndMoveToForeignParent_AreRefusedAsync` | Fact | Cross tenant parent create under foreign parent and move to foreign parent are refused. |
+| `CrossTenant_ReadUpdateDeleteReset_BehaveLikeNotFoundAsync`                         | Fact | Cross tenant read update delete reset behave like not found.                            |
+| `Lifecycle_CreateReadUpdateDelete_HasSoftDeleteAndVersionSemanticsAsync`            | Fact | Lifecycle create read update delete has soft delete and version semantics.              |
+| `AuthenticationAndAuthorisationMatrix_RefusesEveryone_ButThePermittedUserAsync`     | Fact | Authentication and authorisation matrix refuses everyone but the permitted user.        |
 
 ### PenTestEntityAnalysisModelAbstractionCalculation
 
-`Jube.Test.Security.Model.PenTestEntityAnalysisModelAbstractionCalculation` — 14 tests. Category: PenTest. Collection:
-| `OversizedBodies_AreRefusedQuicklyAsync`                                            | Fact | Oversized bodies are
-refused quickly. |
-| `ConcurrentUpdatesAndDoubleSubmit_NeverServerError_AndStayConsistentAsync`          | Fact | Concurrent updates and
-double submit never server error and stay consistent. |
-| `LockedRows_CannotBeUpdatedOrDeletedAsync`                                          | Fact | Locked rows cannot be
-updated or deleted. |
-| `RouteAndQueryParameterAbuse_NeverServerErrors_OrTouchesRowsAsync`                  | Fact | Route and query parameter
-abuse never server errors or touches rows. |
-| `MalformedBodiesAndContentTypes_AreRejectedWithoutServerErrorsAsync`                | Fact | Malformed bodies and
-content types are rejected without server errors. |
-| `TypeConfusionAndBoundaries_NeverProduceServerErrors_OrSideEffectsAsync`            | Fact | Type confusion and
-boundaries never produce server errors or side effects. |
-| `LengthBoundaries_AcceptTheMaximum_AndRefuseOneMoreAsync`                           | Fact | Length boundaries accept
-the maximum and refuse one more. |
-| `JsonColumns_RefuseInvalidJson_InsteadOfFailingInTheDatabaseAsync`                  | Fact | Json columns refuse
-invalid json instead of failing in the database. |
-| `Injection_EveryTextField_IsStoredOrRejectedAsDataAsync`                            | Fact | Injection every text
-field is stored or rejected as data. |
-| `MassAssignment_ServerOwnedFields_AreNotHonouredAsync`                              | Fact | Mass assignment server
-owned fields are not honoured. |
-| `CrossTenantParent_CreateUnderForeignParent_AndMoveToForeignParent_AreRefusedAsync` | Fact | Cross tenant parent
-create under foreign parent and move to foreign parent are refused. |
-| `CrossTenant_ReadUpdateDeleteReset_BehaveLikeNotFoundAsync`                         | Fact | Cross tenant read update
-delete reset behave like not found. |
-| `Lifecycle_CreateReadUpdateDelete_HasSoftDeleteAndVersionSemanticsAsync`            | Fact | Lifecycle create read
-update delete has soft delete and version semantics. |
-| `AuthenticationAndAuthorisationMatrix_RefusesEveryone_ButThePermittedUserAsync`     | Fact | Authentication and
-authorisation matrix refuses everyone but the permitted user. |
-Database.
+`Jube.Test.Security.Model.PenTestEntityAnalysisModelAbstractionCalculation` — 14 tests. Category: PenTest. Collection: Database.
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                                | Kind | Verifies                                                                                |
+|-------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------|
+| `OversizedBodies_AreRefusedQuicklyAsync`                                            | Fact | Oversized bodies are refused quickly.                                                   |
+| `ConcurrentUpdatesAndDoubleSubmit_NeverServerError_AndStayConsistentAsync`          | Fact | Concurrent updates and double submit never server error and stay consistent.            |
+| `LockedRows_CannotBeUpdatedOrDeletedAsync`                                          | Fact | Locked rows cannot be updated or deleted.                                               |
+| `RouteAndQueryParameterAbuse_NeverServerErrors_OrTouchesRowsAsync`                  | Fact | Route and query parameter abuse never server errors or touches rows.                    |
+| `MalformedBodiesAndContentTypes_AreRejectedWithoutServerErrorsAsync`                | Fact | Malformed bodies and content types are rejected without server errors.                  |
+| `TypeConfusionAndBoundaries_NeverProduceServerErrors_OrSideEffectsAsync`            | Fact | Type confusion and boundaries never produce server errors or side effects.              |
+| `LengthBoundaries_AcceptTheMaximum_AndRefuseOneMoreAsync`                           | Fact | Length boundaries accept the maximum and refuse one more.                               |
+| `JsonColumns_RefuseInvalidJson_InsteadOfFailingInTheDatabaseAsync`                  | Fact | Json columns refuse invalid json instead of failing in the database.                    |
+| `Injection_EveryTextField_IsStoredOrRejectedAsDataAsync`                            | Fact | Injection every text field is stored or rejected as data.                               |
+| `MassAssignment_ServerOwnedFields_AreNotHonouredAsync`                              | Fact | Mass assignment server owned fields are not honoured.                                   |
+| `CrossTenantParent_CreateUnderForeignParent_AndMoveToForeignParent_AreRefusedAsync` | Fact | Cross tenant parent create under foreign parent and move to foreign parent are refused. |
+| `CrossTenant_ReadUpdateDeleteReset_BehaveLikeNotFoundAsync`                         | Fact | Cross tenant read update delete reset behave like not found.                            |
+| `Lifecycle_CreateReadUpdateDelete_HasSoftDeleteAndVersionSemanticsAsync`            | Fact | Lifecycle create read update delete has soft delete and version semantics.              |
+| `AuthenticationAndAuthorisationMatrix_RefusesEveryone_ButThePermittedUserAsync`     | Fact | Authentication and authorisation matrix refuses everyone but the permitted user.        |
 
 ### PenTestEntityAnalysisModelAbstractionRule
 
-`Jube.Test.Security.Model.PenTestEntityAnalysisModelAbstractionRule` — 14 tests. Category: PenTest. Collection:
-| `OversizedBodies_AreRefusedQuicklyAsync`                                            | Fact | Oversized bodies are
-refused quickly. |
-| `ConcurrentUpdatesAndDoubleSubmit_NeverServerError_AndStayConsistentAsync`          | Fact | Concurrent updates and
-double submit never server error and stay consistent. |
-| `LockedRows_CannotBeUpdatedOrDeletedAsync`                                          | Fact | Locked rows cannot be
-updated or deleted. |
-| `RouteAndQueryParameterAbuse_NeverServerErrors_OrTouchesRowsAsync`                  | Fact | Route and query parameter
-abuse never server errors or touches rows. |
-| `MalformedBodiesAndContentTypes_AreRejectedWithoutServerErrorsAsync`                | Fact | Malformed bodies and
-content types are rejected without server errors. |
-| `TypeConfusionAndBoundaries_NeverProduceServerErrors_OrSideEffectsAsync`            | Fact | Type confusion and
-boundaries never produce server errors or side effects. |
-| `LengthBoundaries_AcceptTheMaximum_AndRefuseOneMoreAsync`                           | Fact | Length boundaries accept
-the maximum and refuse one more. |
-| `JsonColumns_RefuseInvalidJson_InsteadOfFailingInTheDatabaseAsync`                  | Fact | Json columns refuse
-invalid json instead of failing in the database. |
-| `Injection_EveryTextField_IsStoredOrRejectedAsDataAsync`                            | Fact | Injection every text
-field is stored or rejected as data. |
-| `MassAssignment_ServerOwnedFields_AreNotHonouredAsync`                              | Fact | Mass assignment server
-owned fields are not honoured. |
-| `CrossTenantParent_CreateUnderForeignParent_AndMoveToForeignParent_AreRefusedAsync` | Fact | Cross tenant parent
-create under foreign parent and move to foreign parent are refused. |
-| `CrossTenant_ReadUpdateDeleteReset_BehaveLikeNotFoundAsync`                         | Fact | Cross tenant read update
-delete reset behave like not found. |
-| `Lifecycle_CreateReadUpdateDelete_HasSoftDeleteAndVersionSemanticsAsync`            | Fact | Lifecycle create read
-update delete has soft delete and version semantics. |
-| `AuthenticationAndAuthorisationMatrix_RefusesEveryone_ButThePermittedUserAsync`     | Fact | Authentication and
-authorisation matrix refuses everyone but the permitted user. |
-Database.
+`Jube.Test.Security.Model.PenTestEntityAnalysisModelAbstractionRule` — 14 tests. Category: PenTest. Collection: Database.
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                                | Kind | Verifies                                                                                |
+|-------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------|
+| `OversizedBodies_AreRefusedQuicklyAsync`                                            | Fact | Oversized bodies are refused quickly.                                                   |
+| `ConcurrentUpdatesAndDoubleSubmit_NeverServerError_AndStayConsistentAsync`          | Fact | Concurrent updates and double submit never server error and stay consistent.            |
+| `LockedRows_CannotBeUpdatedOrDeletedAsync`                                          | Fact | Locked rows cannot be updated or deleted.                                               |
+| `RouteAndQueryParameterAbuse_NeverServerErrors_OrTouchesRowsAsync`                  | Fact | Route and query parameter abuse never server errors or touches rows.                    |
+| `MalformedBodiesAndContentTypes_AreRejectedWithoutServerErrorsAsync`                | Fact | Malformed bodies and content types are rejected without server errors.                  |
+| `TypeConfusionAndBoundaries_NeverProduceServerErrors_OrSideEffectsAsync`            | Fact | Type confusion and boundaries never produce server errors or side effects.              |
+| `LengthBoundaries_AcceptTheMaximum_AndRefuseOneMoreAsync`                           | Fact | Length boundaries accept the maximum and refuse one more.                               |
+| `JsonColumns_RefuseInvalidJson_InsteadOfFailingInTheDatabaseAsync`                  | Fact | Json columns refuse invalid json instead of failing in the database.                    |
+| `Injection_EveryTextField_IsStoredOrRejectedAsDataAsync`                            | Fact | Injection every text field is stored or rejected as data.                               |
+| `MassAssignment_ServerOwnedFields_AreNotHonouredAsync`                              | Fact | Mass assignment server owned fields are not honoured.                                   |
+| `CrossTenantParent_CreateUnderForeignParent_AndMoveToForeignParent_AreRefusedAsync` | Fact | Cross tenant parent create under foreign parent and move to foreign parent are refused. |
+| `CrossTenant_ReadUpdateDeleteReset_BehaveLikeNotFoundAsync`                         | Fact | Cross tenant read update delete reset behave like not found.                            |
+| `Lifecycle_CreateReadUpdateDelete_HasSoftDeleteAndVersionSemanticsAsync`            | Fact | Lifecycle create read update delete has soft delete and version semantics.              |
+| `AuthenticationAndAuthorisationMatrix_RefusesEveryone_ButThePermittedUserAsync`     | Fact | Authentication and authorisation matrix refuses everyone but the permitted user.        |
 
 ### PenTestEntityAnalysisModelActivationRule
 
 `Jube.Test.Security.Model.PenTestEntityAnalysisModelActivationRule` — 14 tests. Category: PenTest. Collection: Database.
-| `OversizedBodies_AreRefusedQuicklyAsync`                                            | Fact | Oversized bodies are
-refused quickly. |
-| `ConcurrentUpdatesAndDoubleSubmit_NeverServerError_AndStayConsistentAsync`          | Fact | Concurrent updates and
-double submit never server error and stay consistent. |
-| `LockedRows_CannotBeUpdatedOrDeletedAsync`                                          | Fact | Locked rows cannot be
-updated or deleted. |
-| `RouteAndQueryParameterAbuse_NeverServerErrors_OrTouchesRowsAsync`                  | Fact | Route and query parameter
-abuse never server errors or touches rows. |
-| `MalformedBodiesAndContentTypes_AreRejectedWithoutServerErrorsAsync`                | Fact | Malformed bodies and
-content types are rejected without server errors. |
-| `TypeConfusionAndBoundaries_NeverProduceServerErrors_OrSideEffectsAsync`            | Fact | Type confusion and
-boundaries never produce server errors or side effects. |
-| `LengthBoundaries_AcceptTheMaximum_AndRefuseOneMoreAsync`                           | Fact | Length boundaries accept
-the maximum and refuse one more. |
-| `JsonColumns_RefuseInvalidJson_InsteadOfFailingInTheDatabaseAsync`                  | Fact | Json columns refuse
-invalid json instead of failing in the database. |
-| `Injection_EveryTextField_IsStoredOrRejectedAsDataAsync`                            | Fact | Injection every text
-field is stored or rejected as data. |
-| `MassAssignment_ServerOwnedFields_AreNotHonouredAsync`                              | Fact | Mass assignment server
-owned fields are not honoured. |
-| `CrossTenantParent_CreateUnderForeignParent_AndMoveToForeignParent_AreRefusedAsync` | Fact | Cross tenant parent
-create under foreign parent and move to foreign parent are refused. |
-| `CrossTenant_ReadUpdateDeleteReset_BehaveLikeNotFoundAsync`                         | Fact | Cross tenant read update
-delete reset behave like not found. |
-| `Lifecycle_CreateReadUpdateDelete_HasSoftDeleteAndVersionSemanticsAsync`            | Fact | Lifecycle create read
-update delete has soft delete and version semantics. |
-| `AuthenticationAndAuthorisationMatrix_RefusesEveryone_ButThePermittedUserAsync`     | Fact | Authentication and
-authorisation matrix refuses everyone but the permitted user. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                                | Kind | Verifies                                                                                |
+|-------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------|
+| `OversizedBodies_AreRefusedQuicklyAsync`                                            | Fact | Oversized bodies are refused quickly.                                                   |
+| `ConcurrentUpdatesAndDoubleSubmit_NeverServerError_AndStayConsistentAsync`          | Fact | Concurrent updates and double submit never server error and stay consistent.            |
+| `LockedRows_CannotBeUpdatedOrDeletedAsync`                                          | Fact | Locked rows cannot be updated or deleted.                                               |
+| `RouteAndQueryParameterAbuse_NeverServerErrors_OrTouchesRowsAsync`                  | Fact | Route and query parameter abuse never server errors or touches rows.                    |
+| `MalformedBodiesAndContentTypes_AreRejectedWithoutServerErrorsAsync`                | Fact | Malformed bodies and content types are rejected without server errors.                  |
+| `TypeConfusionAndBoundaries_NeverProduceServerErrors_OrSideEffectsAsync`            | Fact | Type confusion and boundaries never produce server errors or side effects.              |
+| `LengthBoundaries_AcceptTheMaximum_AndRefuseOneMoreAsync`                           | Fact | Length boundaries accept the maximum and refuse one more.                               |
+| `JsonColumns_RefuseInvalidJson_InsteadOfFailingInTheDatabaseAsync`                  | Fact | Json columns refuse invalid json instead of failing in the database.                    |
+| `Injection_EveryTextField_IsStoredOrRejectedAsDataAsync`                            | Fact | Injection every text field is stored or rejected as data.                               |
+| `MassAssignment_ServerOwnedFields_AreNotHonouredAsync`                              | Fact | Mass assignment server owned fields are not honoured.                                   |
+| `CrossTenantParent_CreateUnderForeignParent_AndMoveToForeignParent_AreRefusedAsync` | Fact | Cross tenant parent create under foreign parent and move to foreign parent are refused. |
+| `CrossTenant_ReadUpdateDeleteReset_BehaveLikeNotFoundAsync`                         | Fact | Cross tenant read update delete reset behave like not found.                            |
+| `Lifecycle_CreateReadUpdateDelete_HasSoftDeleteAndVersionSemanticsAsync`            | Fact | Lifecycle create read update delete has soft delete and version semantics.              |
+| `AuthenticationAndAuthorisationMatrix_RefusesEveryone_ButThePermittedUserAsync`     | Fact | Authentication and authorisation matrix refuses everyone but the permitted user.        |
 
 ### PenTestEntityAnalysisModelActivationRuleOverride
 
-`Jube.Test.Security.Model.PenTestEntityAnalysisModelActivationRuleOverride` — 14 tests. Category: PenTest. Collection:
-| `OversizedBodies_AreRefusedQuicklyAsync`                                            | Fact | Oversized bodies are
-refused quickly. |
-| `ConcurrentUpdatesAndDoubleSubmit_NeverServerError_AndStayConsistentAsync`          | Fact | Concurrent updates and
-double submit never server error and stay consistent. |
-| `LockedRows_CannotBeUpdatedOrDeletedAsync`                                          | Fact | Locked rows cannot be
-updated or deleted. |
-| `RouteAndQueryParameterAbuse_NeverServerErrors_OrTouchesRowsAsync`                  | Fact | Route and query parameter
-abuse never server errors or touches rows. |
-| `MalformedBodiesAndContentTypes_AreRejectedWithoutServerErrorsAsync`                | Fact | Malformed bodies and
-content types are rejected without server errors. |
-| `TypeConfusionAndBoundaries_NeverProduceServerErrors_OrSideEffectsAsync`            | Fact | Type confusion and
-boundaries never produce server errors or side effects. |
-| `LengthBoundaries_AcceptTheMaximum_AndRefuseOneMoreAsync`                           | Fact | Length boundaries accept
-the maximum and refuse one more. |
-| `JsonColumns_RefuseInvalidJson_InsteadOfFailingInTheDatabaseAsync`                  | Fact | Json columns refuse
-invalid json instead of failing in the database. |
-| `Injection_EveryTextField_IsStoredOrRejectedAsDataAsync`                            | Fact | Injection every text
-field is stored or rejected as data. |
-| `MassAssignment_ServerOwnedFields_AreNotHonouredAsync`                              | Fact | Mass assignment server
-owned fields are not honoured. |
-| `CrossTenantParent_CreateUnderForeignParent_AndMoveToForeignParent_AreRefusedAsync` | Fact | Cross tenant parent
-create under foreign parent and move to foreign parent are refused. |
-| `CrossTenant_ReadUpdateDeleteReset_BehaveLikeNotFoundAsync`                         | Fact | Cross tenant read update
-delete reset behave like not found. |
-| `Lifecycle_CreateReadUpdateDelete_HasSoftDeleteAndVersionSemanticsAsync`            | Fact | Lifecycle create read
-update delete has soft delete and version semantics. |
-| `AuthenticationAndAuthorisationMatrix_RefusesEveryone_ButThePermittedUserAsync`     | Fact | Authentication and
-authorisation matrix refuses everyone but the permitted user. |
-Database.
+`Jube.Test.Security.Model.PenTestEntityAnalysisModelActivationRuleOverride` — 14 tests. Category: PenTest. Collection: Database.
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                                | Kind | Verifies                                                                                |
+|-------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------|
+| `OversizedBodies_AreRefusedQuicklyAsync`                                            | Fact | Oversized bodies are refused quickly.                                                   |
+| `ConcurrentUpdatesAndDoubleSubmit_NeverServerError_AndStayConsistentAsync`          | Fact | Concurrent updates and double submit never server error and stay consistent.            |
+| `LockedRows_CannotBeUpdatedOrDeletedAsync`                                          | Fact | Locked rows cannot be updated or deleted.                                               |
+| `RouteAndQueryParameterAbuse_NeverServerErrors_OrTouchesRowsAsync`                  | Fact | Route and query parameter abuse never server errors or touches rows.                    |
+| `MalformedBodiesAndContentTypes_AreRejectedWithoutServerErrorsAsync`                | Fact | Malformed bodies and content types are rejected without server errors.                  |
+| `TypeConfusionAndBoundaries_NeverProduceServerErrors_OrSideEffectsAsync`            | Fact | Type confusion and boundaries never produce server errors or side effects.              |
+| `LengthBoundaries_AcceptTheMaximum_AndRefuseOneMoreAsync`                           | Fact | Length boundaries accept the maximum and refuse one more.                               |
+| `JsonColumns_RefuseInvalidJson_InsteadOfFailingInTheDatabaseAsync`                  | Fact | Json columns refuse invalid json instead of failing in the database.                    |
+| `Injection_EveryTextField_IsStoredOrRejectedAsDataAsync`                            | Fact | Injection every text field is stored or rejected as data.                               |
+| `MassAssignment_ServerOwnedFields_AreNotHonouredAsync`                              | Fact | Mass assignment server owned fields are not honoured.                                   |
+| `CrossTenantParent_CreateUnderForeignParent_AndMoveToForeignParent_AreRefusedAsync` | Fact | Cross tenant parent create under foreign parent and move to foreign parent are refused. |
+| `CrossTenant_ReadUpdateDeleteReset_BehaveLikeNotFoundAsync`                         | Fact | Cross tenant read update delete reset behave like not found.                            |
+| `Lifecycle_CreateReadUpdateDelete_HasSoftDeleteAndVersionSemanticsAsync`            | Fact | Lifecycle create read update delete has soft delete and version semantics.              |
+| `AuthenticationAndAuthorisationMatrix_RefusesEveryone_ButThePermittedUserAsync`     | Fact | Authentication and authorisation matrix refuses everyone but the permitted user.        |
 
 ### PenTestEntityAnalysisModelBacktest
 
@@ -1178,37 +992,23 @@ Database.
 ### PenTestEntityAnalysisModelDictionary
 
 `Jube.Test.Security.Model.PenTestEntityAnalysisModelDictionary` — 14 tests. Category: PenTest. Collection: Database.
-| `OversizedBodies_AreRefusedQuicklyAsync`                                            | Fact | Oversized bodies are
-refused quickly. |
-| `ConcurrentUpdatesAndDoubleSubmit_NeverServerError_AndStayConsistentAsync`          | Fact | Concurrent updates and
-double submit never server error and stay consistent. |
-| `LockedRows_CannotBeUpdatedOrDeletedAsync`                                          | Fact | Locked rows cannot be
-updated or deleted. |
-| `RouteAndQueryParameterAbuse_NeverServerErrors_OrTouchesRowsAsync`                  | Fact | Route and query parameter
-abuse never server errors or touches rows. |
-| `MalformedBodiesAndContentTypes_AreRejectedWithoutServerErrorsAsync`                | Fact | Malformed bodies and
-content types are rejected without server errors. |
-| `TypeConfusionAndBoundaries_NeverProduceServerErrors_OrSideEffectsAsync`            | Fact | Type confusion and
-boundaries never produce server errors or side effects. |
-| `LengthBoundaries_AcceptTheMaximum_AndRefuseOneMoreAsync`                           | Fact | Length boundaries accept
-the maximum and refuse one more. |
-| `JsonColumns_RefuseInvalidJson_InsteadOfFailingInTheDatabaseAsync`                  | Fact | Json columns refuse
-invalid json instead of failing in the database. |
-| `Injection_EveryTextField_IsStoredOrRejectedAsDataAsync`                            | Fact | Injection every text
-field is stored or rejected as data. |
-| `MassAssignment_ServerOwnedFields_AreNotHonouredAsync`                              | Fact | Mass assignment server
-owned fields are not honoured. |
-| `CrossTenantParent_CreateUnderForeignParent_AndMoveToForeignParent_AreRefusedAsync` | Fact | Cross tenant parent
-create under foreign parent and move to foreign parent are refused. |
-| `CrossTenant_ReadUpdateDeleteReset_BehaveLikeNotFoundAsync`                         | Fact | Cross tenant read update
-delete reset behave like not found. |
-| `Lifecycle_CreateReadUpdateDelete_HasSoftDeleteAndVersionSemanticsAsync`            | Fact | Lifecycle create read
-update delete has soft delete and version semantics. |
-| `AuthenticationAndAuthorisationMatrix_RefusesEveryone_ButThePermittedUserAsync`     | Fact | Authentication and
-authorisation matrix refuses everyone but the permitted user. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                                | Kind | Verifies                                                                                |
+|-------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------|
+| `OversizedBodies_AreRefusedQuicklyAsync`                                            | Fact | Oversized bodies are refused quickly.                                                   |
+| `ConcurrentUpdatesAndDoubleSubmit_NeverServerError_AndStayConsistentAsync`          | Fact | Concurrent updates and double submit never server error and stay consistent.            |
+| `LockedRows_CannotBeUpdatedOrDeletedAsync`                                          | Fact | Locked rows cannot be updated or deleted.                                               |
+| `RouteAndQueryParameterAbuse_NeverServerErrors_OrTouchesRowsAsync`                  | Fact | Route and query parameter abuse never server errors or touches rows.                    |
+| `MalformedBodiesAndContentTypes_AreRejectedWithoutServerErrorsAsync`                | Fact | Malformed bodies and content types are rejected without server errors.                  |
+| `TypeConfusionAndBoundaries_NeverProduceServerErrors_OrSideEffectsAsync`            | Fact | Type confusion and boundaries never produce server errors or side effects.              |
+| `LengthBoundaries_AcceptTheMaximum_AndRefuseOneMoreAsync`                           | Fact | Length boundaries accept the maximum and refuse one more.                               |
+| `JsonColumns_RefuseInvalidJson_InsteadOfFailingInTheDatabaseAsync`                  | Fact | Json columns refuse invalid json instead of failing in the database.                    |
+| `Injection_EveryTextField_IsStoredOrRejectedAsDataAsync`                            | Fact | Injection every text field is stored or rejected as data.                               |
+| `MassAssignment_ServerOwnedFields_AreNotHonouredAsync`                              | Fact | Mass assignment server owned fields are not honoured.                                   |
+| `CrossTenantParent_CreateUnderForeignParent_AndMoveToForeignParent_AreRefusedAsync` | Fact | Cross tenant parent create under foreign parent and move to foreign parent are refused. |
+| `CrossTenant_ReadUpdateDeleteReset_BehaveLikeNotFoundAsync`                         | Fact | Cross tenant read update delete reset behave like not found.                            |
+| `Lifecycle_CreateReadUpdateDelete_HasSoftDeleteAndVersionSemanticsAsync`            | Fact | Lifecycle create read update delete has soft delete and version semantics.              |
+| `AuthenticationAndAuthorisationMatrix_RefusesEveryone_ButThePermittedUserAsync`     | Fact | Authentication and authorisation matrix refuses everyone but the permitted user.        |
 
 ### PenTestEntityAnalysisModelDictionaryKvp
 
@@ -1240,37 +1040,23 @@ authorisation matrix refuses everyone but the permitted user. |
 ### PenTestEntityAnalysisModelGatewayRule
 
 `Jube.Test.Security.Model.PenTestEntityAnalysisModelGatewayRule` — 14 tests. Category: PenTest. Collection: Database.
-| `OversizedBodies_AreRefusedQuicklyAsync`                                            | Fact | Oversized bodies are
-refused quickly. |
-| `ConcurrentUpdatesAndDoubleSubmit_NeverServerError_AndStayConsistentAsync`          | Fact | Concurrent updates and
-double submit never server error and stay consistent. |
-| `LockedRows_CannotBeUpdatedOrDeletedAsync`                                          | Fact | Locked rows cannot be
-updated or deleted. |
-| `RouteAndQueryParameterAbuse_NeverServerErrors_OrTouchesRowsAsync`                  | Fact | Route and query parameter
-abuse never server errors or touches rows. |
-| `MalformedBodiesAndContentTypes_AreRejectedWithoutServerErrorsAsync`                | Fact | Malformed bodies and
-content types are rejected without server errors. |
-| `TypeConfusionAndBoundaries_NeverProduceServerErrors_OrSideEffectsAsync`            | Fact | Type confusion and
-boundaries never produce server errors or side effects. |
-| `LengthBoundaries_AcceptTheMaximum_AndRefuseOneMoreAsync`                           | Fact | Length boundaries accept
-the maximum and refuse one more. |
-| `JsonColumns_RefuseInvalidJson_InsteadOfFailingInTheDatabaseAsync`                  | Fact | Json columns refuse
-invalid json instead of failing in the database. |
-| `Injection_EveryTextField_IsStoredOrRejectedAsDataAsync`                            | Fact | Injection every text
-field is stored or rejected as data. |
-| `MassAssignment_ServerOwnedFields_AreNotHonouredAsync`                              | Fact | Mass assignment server
-owned fields are not honoured. |
-| `CrossTenantParent_CreateUnderForeignParent_AndMoveToForeignParent_AreRefusedAsync` | Fact | Cross tenant parent
-create under foreign parent and move to foreign parent are refused. |
-| `CrossTenant_ReadUpdateDeleteReset_BehaveLikeNotFoundAsync`                         | Fact | Cross tenant read update
-delete reset behave like not found. |
-| `Lifecycle_CreateReadUpdateDelete_HasSoftDeleteAndVersionSemanticsAsync`            | Fact | Lifecycle create read
-update delete has soft delete and version semantics. |
-| `AuthenticationAndAuthorisationMatrix_RefusesEveryone_ButThePermittedUserAsync`     | Fact | Authentication and
-authorisation matrix refuses everyone but the permitted user. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                                | Kind | Verifies                                                                                |
+|-------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------|
+| `OversizedBodies_AreRefusedQuicklyAsync`                                            | Fact | Oversized bodies are refused quickly.                                                   |
+| `ConcurrentUpdatesAndDoubleSubmit_NeverServerError_AndStayConsistentAsync`          | Fact | Concurrent updates and double submit never server error and stay consistent.            |
+| `LockedRows_CannotBeUpdatedOrDeletedAsync`                                          | Fact | Locked rows cannot be updated or deleted.                                               |
+| `RouteAndQueryParameterAbuse_NeverServerErrors_OrTouchesRowsAsync`                  | Fact | Route and query parameter abuse never server errors or touches rows.                    |
+| `MalformedBodiesAndContentTypes_AreRejectedWithoutServerErrorsAsync`                | Fact | Malformed bodies and content types are rejected without server errors.                  |
+| `TypeConfusionAndBoundaries_NeverProduceServerErrors_OrSideEffectsAsync`            | Fact | Type confusion and boundaries never produce server errors or side effects.              |
+| `LengthBoundaries_AcceptTheMaximum_AndRefuseOneMoreAsync`                           | Fact | Length boundaries accept the maximum and refuse one more.                               |
+| `JsonColumns_RefuseInvalidJson_InsteadOfFailingInTheDatabaseAsync`                  | Fact | Json columns refuse invalid json instead of failing in the database.                    |
+| `Injection_EveryTextField_IsStoredOrRejectedAsDataAsync`                            | Fact | Injection every text field is stored or rejected as data.                               |
+| `MassAssignment_ServerOwnedFields_AreNotHonouredAsync`                              | Fact | Mass assignment server owned fields are not honoured.                                   |
+| `CrossTenantParent_CreateUnderForeignParent_AndMoveToForeignParent_AreRefusedAsync` | Fact | Cross tenant parent create under foreign parent and move to foreign parent are refused. |
+| `CrossTenant_ReadUpdateDeleteReset_BehaveLikeNotFoundAsync`                         | Fact | Cross tenant read update delete reset behave like not found.                            |
+| `Lifecycle_CreateReadUpdateDelete_HasSoftDeleteAndVersionSemanticsAsync`            | Fact | Lifecycle create read update delete has soft delete and version semantics.              |
+| `AuthenticationAndAuthorisationMatrix_RefusesEveryone_ButThePermittedUserAsync`     | Fact | Authentication and authorisation matrix refuses everyone but the permitted user.        |
 
 ### PenTestSvirfdLookup
 
@@ -1285,7 +1071,7 @@ authorisation matrix refuses everyone but the permitted user. |
 
 ### PenTestEntityAnalysisModelSvirfd
 
-`Jube.Test.Security.Model.PenTestEntityAnalysisModelSvirfd` — 1 test. Category: PenTest. Collection: Database.
+`Jube.Test.Security.Model.PenTestEntityAnalysisModelSvirfd` — 15 tests. Category: PenTest. Collection: Database.
 
 | Test                                                                                | Kind | Verifies                                                                                   |
 |-------------------------------------------------------------------------------------|------|--------------------------------------------------------------------------------------------|
@@ -1307,7 +1093,7 @@ authorisation matrix refuses everyone but the permitted user. |
 
 ### PenTestEntityAnalysisModelGraphRecall
 
-`Jube.Test.Security.Model.PenTestEntityAnalysisModelGraphRecall` — 1 test. Category: PenTest. Collection: Database.
+`Jube.Test.Security.Model.PenTestEntityAnalysisModelGraphRecall` — 15 tests. Category: PenTest. Collection: Database.
 
 | Test                                                                                | Kind | Verifies                                                                                |
 |-------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------|
@@ -1329,7 +1115,7 @@ authorisation matrix refuses everyone but the permitted user. |
 
 ### PenTestEntityAnalysisModelHttpAdaptation
 
-`Jube.Test.Security.Model.PenTestEntityAnalysisModelHttpAdaptation` — 1 test. Category: PenTest. Collection: Database.
+`Jube.Test.Security.Model.PenTestEntityAnalysisModelHttpAdaptation` — 15 tests. Category: PenTest. Collection: Database.
 
 | Test                                                                                | Kind | Verifies                                                                                |
 |-------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------|
@@ -1377,25 +1163,20 @@ authorisation matrix refuses everyone but the permitted user. |
 ### PenTestModelInlineFunction
 
 `Jube.Test.Security.Model.PenTestModelInlineFunction` — 11 tests. Category: PenTest. Collection: Database.
-| `Consumption_ListsAndParametersAreBoundedAsync`            | Fact | Consumption lists and parameters are bounded. |
-| `Limits_MaxLengthOversizeAndHostileExpressionsAsync`       | Fact | Limits max length oversize and hostile
-expressions. |
-| `BusinessFlow_DeleteReplayAndSoftDeleteAreConsistentAsync` | Fact | Business flow delete replay and soft delete are
-consistent. |
-| `RequestStructure_MalformedBodiesAndContentTypesAsync`     | Fact | Request structure malformed bodies and content
-types. |
-| `TypeConfusion_EveryFieldEveryRawValueAsync`               | Fact | Type confusion every field every raw value. |
-| `Injection_RouteAndQueryParametersAsync`                   | Fact | Injection route and query parameters. |
-| `Injection_StringFieldsStayDataAndRoundTripAsync`          | Fact | Injection string fields stay data and round
-trip. |
-| `MassAssignment_ServerOwnedFieldsAreNotHonouredAsync`      | Fact | Mass assignment server owned fields are not
-honoured. |
-| `Bola_ForeignParentReferencesAreRefusedAsync`              | Fact | Bola foreign parent references are refused. |
-| `Bola_ForeignTenantIdsBehaveLikeAbsentIdsAsync`            | Fact | Bola foreign tenant ids behave like absent ids. |
-| `Matrix_EveryRouteEveryRoleAsync`                          | Fact | Matrix every route every role. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                       | Kind | Verifies                                                    |
+|------------------------------------------------------------|------|-------------------------------------------------------------|
+| `Consumption_ListsAndParametersAreBoundedAsync`            | Fact | Consumption lists and parameters are bounded.               |
+| `Limits_MaxLengthOversizeAndHostileExpressionsAsync`       | Fact | Limits max length oversize and hostile expressions.         |
+| `BusinessFlow_DeleteReplayAndSoftDeleteAreConsistentAsync` | Fact | Business flow delete replay and soft delete are consistent. |
+| `RequestStructure_MalformedBodiesAndContentTypesAsync`     | Fact | Request structure malformed bodies and content types.       |
+| `TypeConfusion_EveryFieldEveryRawValueAsync`               | Fact | Type confusion every field every raw value.                 |
+| `Injection_RouteAndQueryParametersAsync`                   | Fact | Injection route and query parameters.                       |
+| `Injection_StringFieldsStayDataAndRoundTripAsync`          | Fact | Injection string fields stay data and round trip.           |
+| `MassAssignment_ServerOwnedFieldsAreNotHonouredAsync`      | Fact | Mass assignment server owned fields are not honoured.       |
+| `Bola_ForeignParentReferencesAreRefusedAsync`              | Fact | Bola foreign parent references are refused.                 |
+| `Bola_ForeignTenantIdsBehaveLikeAbsentIdsAsync`            | Fact | Bola foreign tenant ids behave like absent ids.             |
+| `Matrix_EveryRouteEveryRoleAsync`                          | Fact | Matrix every route every role.                              |
 
 ### PenTestModelInlineScript
 
@@ -1431,25 +1212,20 @@ honoured. |
 ### PenTestModelList
 
 `Jube.Test.Security.Model.PenTestModelList` — 11 tests. Category: PenTest. Collection: Database.
-| `Consumption_ListsAndParametersAreBoundedAsync`            | Fact | Consumption lists and parameters are bounded. |
-| `Limits_MaxLengthOversizeAndHostileExpressionsAsync`       | Fact | Limits max length oversize and hostile
-expressions. |
-| `BusinessFlow_DeleteReplayAndSoftDeleteAreConsistentAsync` | Fact | Business flow delete replay and soft delete are
-consistent. |
-| `RequestStructure_MalformedBodiesAndContentTypesAsync`     | Fact | Request structure malformed bodies and content
-types. |
-| `TypeConfusion_EveryFieldEveryRawValueAsync`               | Fact | Type confusion every field every raw value. |
-| `Injection_RouteAndQueryParametersAsync`                   | Fact | Injection route and query parameters. |
-| `Injection_StringFieldsStayDataAndRoundTripAsync`          | Fact | Injection string fields stay data and round
-trip. |
-| `MassAssignment_ServerOwnedFieldsAreNotHonouredAsync`      | Fact | Mass assignment server owned fields are not
-honoured. |
-| `Bola_ForeignParentReferencesAreRefusedAsync`              | Fact | Bola foreign parent references are refused. |
-| `Bola_ForeignTenantIdsBehaveLikeAbsentIdsAsync`            | Fact | Bola foreign tenant ids behave like absent ids. |
-| `Matrix_EveryRouteEveryRoleAsync`                          | Fact | Matrix every route every role. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                       | Kind | Verifies                                                    |
+|------------------------------------------------------------|------|-------------------------------------------------------------|
+| `Consumption_ListsAndParametersAreBoundedAsync`            | Fact | Consumption lists and parameters are bounded.               |
+| `Limits_MaxLengthOversizeAndHostileExpressionsAsync`       | Fact | Limits max length oversize and hostile expressions.         |
+| `BusinessFlow_DeleteReplayAndSoftDeleteAreConsistentAsync` | Fact | Business flow delete replay and soft delete are consistent. |
+| `RequestStructure_MalformedBodiesAndContentTypesAsync`     | Fact | Request structure malformed bodies and content types.       |
+| `TypeConfusion_EveryFieldEveryRawValueAsync`               | Fact | Type confusion every field every raw value.                 |
+| `Injection_RouteAndQueryParametersAsync`                   | Fact | Injection route and query parameters.                       |
+| `Injection_StringFieldsStayDataAndRoundTripAsync`          | Fact | Injection string fields stay data and round trip.           |
+| `MassAssignment_ServerOwnedFieldsAreNotHonouredAsync`      | Fact | Mass assignment server owned fields are not honoured.       |
+| `Bola_ForeignParentReferencesAreRefusedAsync`              | Fact | Bola foreign parent references are refused.                 |
+| `Bola_ForeignTenantIdsBehaveLikeAbsentIdsAsync`            | Fact | Bola foreign tenant ids behave like absent ids.             |
+| `Matrix_EveryRouteEveryRoleAsync`                          | Fact | Matrix every route every role.                              |
 
 ### PenTestModelListValue
 
@@ -1499,7 +1275,7 @@ honoured. |
 
 ### PenTestModelReprocessingRule
 
-`Jube.Test.Security.Model.PenTestModelReprocessingRule` — 1 test. Category: PenTest. Collection: Database.
+`Jube.Test.Security.Model.PenTestModelReprocessingRule` — 12 tests. Category: PenTest. Collection: Database.
 
 | Test                                                            | Kind | Verifies                                                         |
 |-----------------------------------------------------------------|------|------------------------------------------------------------------|
@@ -1561,29 +1337,24 @@ honoured. |
 ### PenTestModelResponseElevationRange
 
 `Jube.Test.Security.Model.PenTestModelResponseElevationRange` — 11 tests. Category: PenTest. Collection: Database.
-| `Consumption_ListsAndParametersAreBoundedAsync`            | Fact | Consumption lists and parameters are bounded. |
-| `Limits_MaxLengthOversizeAndHostileExpressionsAsync`       | Fact | Limits max length oversize and hostile
-expressions. |
-| `BusinessFlow_DeleteReplayAndSoftDeleteAreConsistentAsync` | Fact | Business flow delete replay and soft delete are
-consistent. |
-| `RequestStructure_MalformedBodiesAndContentTypesAsync`     | Fact | Request structure malformed bodies and content
-types. |
-| `TypeConfusion_EveryFieldEveryRawValueAsync`               | Fact | Type confusion every field every raw value. |
-| `Injection_RouteAndQueryParametersAsync`                   | Fact | Injection route and query parameters. |
-| `Injection_StringFieldsStayDataAndRoundTripAsync`          | Fact | Injection string fields stay data and round
-trip. |
-| `MassAssignment_ServerOwnedFieldsAreNotHonouredAsync`      | Fact | Mass assignment server owned fields are not
-honoured. |
-| `Bola_ForeignParentReferencesAreRefusedAsync`              | Fact | Bola foreign parent references are refused. |
-| `Bola_ForeignTenantIdsBehaveLikeAbsentIdsAsync`            | Fact | Bola foreign tenant ids behave like absent ids. |
-| `Matrix_EveryRouteEveryRoleAsync`                          | Fact | Matrix every route every role. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                       | Kind | Verifies                                                    |
+|------------------------------------------------------------|------|-------------------------------------------------------------|
+| `Consumption_ListsAndParametersAreBoundedAsync`            | Fact | Consumption lists and parameters are bounded.               |
+| `Limits_MaxLengthOversizeAndHostileExpressionsAsync`       | Fact | Limits max length oversize and hostile expressions.         |
+| `BusinessFlow_DeleteReplayAndSoftDeleteAreConsistentAsync` | Fact | Business flow delete replay and soft delete are consistent. |
+| `RequestStructure_MalformedBodiesAndContentTypesAsync`     | Fact | Request structure malformed bodies and content types.       |
+| `TypeConfusion_EveryFieldEveryRawValueAsync`               | Fact | Type confusion every field every raw value.                 |
+| `Injection_RouteAndQueryParametersAsync`                   | Fact | Injection route and query parameters.                       |
+| `Injection_StringFieldsStayDataAndRoundTripAsync`          | Fact | Injection string fields stay data and round trip.           |
+| `MassAssignment_ServerOwnedFieldsAreNotHonouredAsync`      | Fact | Mass assignment server owned fields are not honoured.       |
+| `Bola_ForeignParentReferencesAreRefusedAsync`              | Fact | Bola foreign parent references are refused.                 |
+| `Bola_ForeignTenantIdsBehaveLikeAbsentIdsAsync`            | Fact | Bola foreign tenant ids behave like absent ids.             |
+| `Matrix_EveryRouteEveryRoleAsync`                          | Fact | Matrix every route every role.                              |
 
 ### PenTestModelSanction
 
-`Jube.Test.Security.Model.PenTestModelSanction` — 1 test. Category: PenTest. Collection: Database.
+`Jube.Test.Security.Model.PenTestModelSanction` — 12 tests. Category: PenTest. Collection: Database.
 
 | Test                                                       | Kind | Verifies                                                    |
 |------------------------------------------------------------|------|-------------------------------------------------------------|
@@ -1603,25 +1374,20 @@ honoured. |
 ### PenTestModelTag
 
 `Jube.Test.Security.Model.PenTestModelTag` — 11 tests. Category: PenTest. Collection: Database.
-| `Consumption_ListsAndParametersAreBoundedAsync`            | Fact | Consumption lists and parameters are bounded. |
-| `Limits_MaxLengthOversizeAndHostileExpressionsAsync`       | Fact | Limits max length oversize and hostile
-expressions. |
-| `BusinessFlow_DeleteReplayAndSoftDeleteAreConsistentAsync` | Fact | Business flow delete replay and soft delete are
-consistent. |
-| `RequestStructure_MalformedBodiesAndContentTypesAsync`     | Fact | Request structure malformed bodies and content
-types. |
-| `TypeConfusion_EveryFieldEveryRawValueAsync`               | Fact | Type confusion every field every raw value. |
-| `Injection_RouteAndQueryParametersAsync`                   | Fact | Injection route and query parameters. |
-| `Injection_StringFieldsStayDataAndRoundTripAsync`          | Fact | Injection string fields stay data and round
-trip. |
-| `MassAssignment_ServerOwnedFieldsAreNotHonouredAsync`      | Fact | Mass assignment server owned fields are not
-honoured. |
-| `Bola_ForeignParentReferencesAreRefusedAsync`              | Fact | Bola foreign parent references are refused. |
-| `Bola_ForeignTenantIdsBehaveLikeAbsentIdsAsync`            | Fact | Bola foreign tenant ids behave like absent ids. |
-| `Matrix_EveryRouteEveryRoleAsync`                          | Fact | Matrix every route every role. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                       | Kind | Verifies                                                    |
+|------------------------------------------------------------|------|-------------------------------------------------------------|
+| `Consumption_ListsAndParametersAreBoundedAsync`            | Fact | Consumption lists and parameters are bounded.               |
+| `Limits_MaxLengthOversizeAndHostileExpressionsAsync`       | Fact | Limits max length oversize and hostile expressions.         |
+| `BusinessFlow_DeleteReplayAndSoftDeleteAreConsistentAsync` | Fact | Business flow delete replay and soft delete are consistent. |
+| `RequestStructure_MalformedBodiesAndContentTypesAsync`     | Fact | Request structure malformed bodies and content types.       |
+| `TypeConfusion_EveryFieldEveryRawValueAsync`               | Fact | Type confusion every field every raw value.                 |
+| `Injection_RouteAndQueryParametersAsync`                   | Fact | Injection route and query parameters.                       |
+| `Injection_StringFieldsStayDataAndRoundTripAsync`          | Fact | Injection string fields stay data and round trip.           |
+| `MassAssignment_ServerOwnedFieldsAreNotHonouredAsync`      | Fact | Mass assignment server owned fields are not honoured.       |
+| `Bola_ForeignParentReferencesAreRefusedAsync`              | Fact | Bola foreign parent references are refused.                 |
+| `Bola_ForeignTenantIdsBehaveLikeAbsentIdsAsync`            | Fact | Bola foreign tenant ids behave like absent ids.             |
+| `Matrix_EveryRouteEveryRoleAsync`                          | Fact | Matrix every route every role.                              |
 
 ### PenTestModelTtlCounter
 
@@ -1769,25 +1535,17 @@ honoured. |
 ### PenTestCaseByCaseKeyValue
 
 `Jube.Test.Security.QueryCase.PenTestCaseByCaseKeyValue` — 8 tests. Category: PenTest. Collection: Database.
-| `ReplayAndConcurrentRequestsAreConsistentAsync`                      | Fact | Replay and concurrent requests are
-consistent. |
-| `OtherVerbsNeverSucceedAndDoNotChangeTheRowSetAsync`                 | Fact | Other verbs never succeed and do not
-change the row set. |
-| `ResponseExposesOnlyTheDocumentedPropertiesAsync`                    | Fact | Response exposes only the documented
-properties. |
-| `ParameterTypeConfusionAndBoundariesAsync`                           | Fact | Parameter type confusion and
-boundaries. |
-| `InjectionInKeyAndValueNeverMatchesLeaksOrDelaysAsync`               | Fact | Injection in key and value never matches
-leaks or delays. |
-| `CaseVisibilityRequiresWorkflowRoleAndStatusRoleAndLiveParentsAsync` | Fact | Case visibility requires workflow role
-and status role and live parents. |
-| `ExactMatchOnlyAndTenantIsolationForIdenticalKeyValueAsync`          | Fact | Exact match only and tenant isolation
-for identical key value. |
-| `AuthenticationAndAuthorisationMatrixAsync`                          | Fact | Authentication and authorisation
-matrix. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                 | Kind | Verifies                                                                 |
+|----------------------------------------------------------------------|------|--------------------------------------------------------------------------|
+| `ReplayAndConcurrentRequestsAreConsistentAsync`                      | Fact | Replay and concurrent requests are consistent.                           |
+| `OtherVerbsNeverSucceedAndDoNotChangeTheRowSetAsync`                 | Fact | Other verbs never succeed and do not change the row set.                 |
+| `ResponseExposesOnlyTheDocumentedPropertiesAsync`                    | Fact | Response exposes only the documented properties.                         |
+| `ParameterTypeConfusionAndBoundariesAsync`                           | Fact | Parameter type confusion and boundaries.                                 |
+| `InjectionInKeyAndValueNeverMatchesLeaksOrDelaysAsync`               | Fact | Injection in key and value never matches leaks or delays.                |
+| `CaseVisibilityRequiresWorkflowRoleAndStatusRoleAndLiveParentsAsync` | Fact | Case visibility requires workflow role and status role and live parents. |
+| `ExactMatchOnlyAndTenantIsolationForIdenticalKeyValueAsync`          | Fact | Exact match only and tenant isolation for identical key value.           |
+| `AuthenticationAndAuthorisationMatrixAsync`                          | Fact | Authentication and authorisation matrix.                                 |
 
 ### PenTestCaseById
 
@@ -1806,48 +1564,32 @@ matrix. |
 ### PenTestCaseEventByCaseKeyValue
 
 `Jube.Test.Security.QueryCase.PenTestCaseEventByCaseKeyValue` — 8 tests. Category: PenTest. Collection: Database.
-| `ReplayAndConcurrentRequestsAreConsistentAsync`                      | Fact | Replay and concurrent requests are
-consistent. |
-| `OtherVerbsNeverSucceedAndDoNotChangeTheRowSetAsync`                 | Fact | Other verbs never succeed and do not
-change the row set. |
-| `ResponseExposesOnlyTheDocumentedPropertiesAsync`                    | Fact | Response exposes only the documented
-properties. |
-| `ParameterTypeConfusionAndBoundariesAsync`                           | Fact | Parameter type confusion and
-boundaries. |
-| `InjectionInKeyAndValueNeverMatchesLeaksOrDelaysAsync`               | Fact | Injection in key and value never matches
-leaks or delays. |
-| `CaseVisibilityRequiresWorkflowRoleAndStatusRoleAndLiveParentsAsync` | Fact | Case visibility requires workflow role
-and status role and live parents. |
-| `ExactMatchOnlyAndTenantIsolationForIdenticalKeyValueAsync`          | Fact | Exact match only and tenant isolation
-for identical key value. |
-| `AuthenticationAndAuthorisationMatrixAsync`                          | Fact | Authentication and authorisation
-matrix. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                 | Kind | Verifies                                                                 |
+|----------------------------------------------------------------------|------|--------------------------------------------------------------------------|
+| `ReplayAndConcurrentRequestsAreConsistentAsync`                      | Fact | Replay and concurrent requests are consistent.                           |
+| `OtherVerbsNeverSucceedAndDoNotChangeTheRowSetAsync`                 | Fact | Other verbs never succeed and do not change the row set.                 |
+| `ResponseExposesOnlyTheDocumentedPropertiesAsync`                    | Fact | Response exposes only the documented properties.                         |
+| `ParameterTypeConfusionAndBoundariesAsync`                           | Fact | Parameter type confusion and boundaries.                                 |
+| `InjectionInKeyAndValueNeverMatchesLeaksOrDelaysAsync`               | Fact | Injection in key and value never matches leaks or delays.                |
+| `CaseVisibilityRequiresWorkflowRoleAndStatusRoleAndLiveParentsAsync` | Fact | Case visibility requires workflow role and status role and live parents. |
+| `ExactMatchOnlyAndTenantIsolationForIdenticalKeyValueAsync`          | Fact | Exact match only and tenant isolation for identical key value.           |
+| `AuthenticationAndAuthorisationMatrixAsync`                          | Fact | Authentication and authorisation matrix.                                 |
 
 ### PenTestCaseNoteByCaseKeyValue
 
 `Jube.Test.Security.QueryCase.PenTestCaseNoteByCaseKeyValue` — 8 tests. Category: PenTest. Collection: Database.
-| `ReplayAndConcurrentRequestsAreConsistentAsync`                      | Fact | Replay and concurrent requests are
-consistent. |
-| `OtherVerbsNeverSucceedAndDoNotChangeTheRowSetAsync`                 | Fact | Other verbs never succeed and do not
-change the row set. |
-| `ResponseExposesOnlyTheDocumentedPropertiesAsync`                    | Fact | Response exposes only the documented
-properties. |
-| `ParameterTypeConfusionAndBoundariesAsync`                           | Fact | Parameter type confusion and
-boundaries. |
-| `InjectionInKeyAndValueNeverMatchesLeaksOrDelaysAsync`               | Fact | Injection in key and value never matches
-leaks or delays. |
-| `CaseVisibilityRequiresWorkflowRoleAndStatusRoleAndLiveParentsAsync` | Fact | Case visibility requires workflow role
-and status role and live parents. |
-| `ExactMatchOnlyAndTenantIsolationForIdenticalKeyValueAsync`          | Fact | Exact match only and tenant isolation
-for identical key value. |
-| `AuthenticationAndAuthorisationMatrixAsync`                          | Fact | Authentication and authorisation
-matrix. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                 | Kind | Verifies                                                                 |
+|----------------------------------------------------------------------|------|--------------------------------------------------------------------------|
+| `ReplayAndConcurrentRequestsAreConsistentAsync`                      | Fact | Replay and concurrent requests are consistent.                           |
+| `OtherVerbsNeverSucceedAndDoNotChangeTheRowSetAsync`                 | Fact | Other verbs never succeed and do not change the row set.                 |
+| `ResponseExposesOnlyTheDocumentedPropertiesAsync`                    | Fact | Response exposes only the documented properties.                         |
+| `ParameterTypeConfusionAndBoundariesAsync`                           | Fact | Parameter type confusion and boundaries.                                 |
+| `InjectionInKeyAndValueNeverMatchesLeaksOrDelaysAsync`               | Fact | Injection in key and value never matches leaks or delays.                |
+| `CaseVisibilityRequiresWorkflowRoleAndStatusRoleAndLiveParentsAsync` | Fact | Case visibility requires workflow role and status role and live parents. |
+| `ExactMatchOnlyAndTenantIsolationForIdenticalKeyValueAsync`          | Fact | Exact match only and tenant isolation for identical key value.           |
+| `AuthenticationAndAuthorisationMatrixAsync`                          | Fact | Authentication and authorisation matrix.                                 |
 
 ### PenTestCaseWorkflowDisplayExecution
 
@@ -1864,27 +1606,18 @@ matrix. |
 
 ### PenTestCaseWorkflowFormEntryByCaseKeyValue
 
-`Jube.Test.Security.QueryCase.PenTestCaseWorkflowFormEntryByCaseKeyValue` — 8 tests. Category: PenTest. Collection:
-| `ReplayAndConcurrentRequestsAreConsistentAsync`                      | Fact | Replay and concurrent requests are
-consistent. |
-| `OtherVerbsNeverSucceedAndDoNotChangeTheRowSetAsync`                 | Fact | Other verbs never succeed and do not
-change the row set. |
-| `ResponseExposesOnlyTheDocumentedPropertiesAsync`                    | Fact | Response exposes only the documented
-properties. |
-| `ParameterTypeConfusionAndBoundariesAsync`                           | Fact | Parameter type confusion and
-boundaries. |
-| `InjectionInKeyAndValueNeverMatchesLeaksOrDelaysAsync`               | Fact | Injection in key and value never matches
-leaks or delays. |
-| `CaseVisibilityRequiresWorkflowRoleAndStatusRoleAndLiveParentsAsync` | Fact | Case visibility requires workflow role
-and status role and live parents. |
-| `ExactMatchOnlyAndTenantIsolationForIdenticalKeyValueAsync`          | Fact | Exact match only and tenant isolation
-for identical key value. |
-| `AuthenticationAndAuthorisationMatrixAsync`                          | Fact | Authentication and authorisation
-matrix. |
-Database.
+`Jube.Test.Security.QueryCase.PenTestCaseWorkflowFormEntryByCaseKeyValue` — 8 tests. Category: PenTest. Collection: Database.
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                 | Kind | Verifies                                                                 |
+|----------------------------------------------------------------------|------|--------------------------------------------------------------------------|
+| `ReplayAndConcurrentRequestsAreConsistentAsync`                      | Fact | Replay and concurrent requests are consistent.                           |
+| `OtherVerbsNeverSucceedAndDoNotChangeTheRowSetAsync`                 | Fact | Other verbs never succeed and do not change the row set.                 |
+| `ResponseExposesOnlyTheDocumentedPropertiesAsync`                    | Fact | Response exposes only the documented properties.                         |
+| `ParameterTypeConfusionAndBoundariesAsync`                           | Fact | Parameter type confusion and boundaries.                                 |
+| `InjectionInKeyAndValueNeverMatchesLeaksOrDelaysAsync`               | Fact | Injection in key and value never matches leaks or delays.                |
+| `CaseVisibilityRequiresWorkflowRoleAndStatusRoleAndLiveParentsAsync` | Fact | Case visibility requires workflow role and status role and live parents. |
+| `ExactMatchOnlyAndTenantIsolationForIdenticalKeyValueAsync`          | Fact | Exact match only and tenant isolation for identical key value.           |
+| `AuthenticationAndAuthorisationMatrixAsync`                          | Fact | Authentication and authorisation matrix.                                 |
 
 ### PenTestCaseWorkflowMacroExecution
 
@@ -1903,35 +1636,29 @@ Database.
 
 ### PenTestEntityAnalysisModelActivationRuleOverrideQuery
 
-`Jube.Test.Security.QueryCase.PenTestEntityAnalysisModelActivationRuleOverrideQuery` — 6 tests. Category: PenTest.
-| `ResponseShapeVerbsAndReplayAsync`                         | Fact | Response shape verbs and replay. |
-| `ParameterBoundariesAndTypeConfusionAsync`                 | Fact | Parameter boundaries and type confusion. |
-| `InjectionInKeyAndValueNeverMatchesLeaksOrDelaysAsync`     | Fact | Injection in key and value never matches leaks or
-delays. |
-| `OverrideStateRulesAreExactAndLiveOnlyAsync`               | Fact | Override state rules are exact and live only. |
-| `TenantIsolationForIdenticalKeysAndForeignModelGuidsAsync` | Fact | Tenant isolation for identical keys and foreign
-model guids. |
-| `AuthenticationAndAuthorisationMatrixAsync`                | Fact | Authentication and authorisation matrix. |
-Collection: Database.
+`Jube.Test.Security.QueryCase.PenTestEntityAnalysisModelActivationRuleOverrideQuery` — 6 tests. Category: PenTest. Collection: Database.
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                       | Kind | Verifies                                                     |
+|------------------------------------------------------------|------|--------------------------------------------------------------|
+| `ResponseShapeVerbsAndReplayAsync`                         | Fact | Response shape verbs and replay.                             |
+| `ParameterBoundariesAndTypeConfusionAsync`                 | Fact | Parameter boundaries and type confusion.                     |
+| `InjectionInKeyAndValueNeverMatchesLeaksOrDelaysAsync`     | Fact | Injection in key and value never matches leaks or delays.    |
+| `OverrideStateRulesAreExactAndLiveOnlyAsync`               | Fact | Override state rules are exact and live only.                |
+| `TenantIsolationForIdenticalKeysAndForeignModelGuidsAsync` | Fact | Tenant isolation for identical keys and foreign model guids. |
+| `AuthenticationAndAuthorisationMatrixAsync`                | Fact | Authentication and authorisation matrix.                     |
 
 ### PenTestEntityAnalysisModelOverrideQuery
 
-`Jube.Test.Security.QueryCase.PenTestEntityAnalysisModelOverrideQuery` — 6 tests. Category: PenTest. Collection:
-| `ResponseShapeVerbsAndReplayAsync`                         | Fact | Response shape verbs and replay. |
-| `ParameterBoundariesAndTypeConfusionAsync`                 | Fact | Parameter boundaries and type confusion. |
-| `InjectionInKeyAndValueNeverMatchesLeaksOrDelaysAsync`     | Fact | Injection in key and value never matches leaks or
-delays. |
-| `OverrideStateRulesAreExactAndLiveOnlyAsync`               | Fact | Override state rules are exact and live only. |
-| `TenantIsolationForIdenticalKeysAndForeignModelGuidsAsync` | Fact | Tenant isolation for identical keys and foreign
-model guids. |
-| `AuthenticationAndAuthorisationMatrixAsync`                | Fact | Authentication and authorisation matrix. |
-Database.
+`Jube.Test.Security.QueryCase.PenTestEntityAnalysisModelOverrideQuery` — 6 tests. Category: PenTest. Collection: Database.
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                       | Kind | Verifies                                                     |
+|------------------------------------------------------------|------|--------------------------------------------------------------|
+| `ResponseShapeVerbsAndReplayAsync`                         | Fact | Response shape verbs and replay.                             |
+| `ParameterBoundariesAndTypeConfusionAsync`                 | Fact | Parameter boundaries and type confusion.                     |
+| `InjectionInKeyAndValueNeverMatchesLeaksOrDelaysAsync`     | Fact | Injection in key and value never matches leaks or delays.    |
+| `OverrideStateRulesAreExactAndLiveOnlyAsync`               | Fact | Override state rules are exact and live only.                |
+| `TenantIsolationForIdenticalKeysAndForeignModelGuidsAsync` | Fact | Tenant isolation for identical keys and foreign model guids. |
+| `AuthenticationAndAuthorisationMatrixAsync`                | Fact | Authentication and authorisation matrix.                     |
 
 ### PenTestEntityAnalysisModelOverrideValuesQuery
 
@@ -1987,263 +1714,164 @@ Category: PenTest. Collection: Database.
 ### PenTestExhaustiveChartConfusion
 
 `Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartConfusion` — 11 tests. Category: PenTest.
-| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped
-and never become markup. |
-| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is
-served. |
-| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers
-never change the chart. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion
-are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic
-and bounded. |
-| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity
-and overflow never break the svg. |
-| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and
-soft deleted are byte for byte equal. |
-| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids
-are own data or the empty state never foreign. |
-| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown
-ids answer indistinguishably. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as
-safe svg. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                       | Kind | Verifies                                                                       |
+|----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
+| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped and never become markup.                    |
+| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is served.                                             |
+| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers never change the chart.                       |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion are rejected or empty never server errors.    |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic and bounded.                                |
+| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity and overflow never break the svg.             |
+| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and soft deleted are byte for byte equal.           |
+| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids are own data or the empty state never foreign. |
+| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown ids answer indistinguishably.                 |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission matrix refuses everyone but authorised users.    |
+| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as safe svg.                                    |
 
 ### PenTestExhaustiveChartErrorHistogram
 
 `Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartErrorHistogram` — 11 tests. Category: PenTest.
-| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped
-and never become markup. |
-| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is
-served. |
-| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers
-never change the chart. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion
-are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic
-and bounded. |
-| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity
-and overflow never break the svg. |
-| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and
-soft deleted are byte for byte equal. |
-| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids
-are own data or the empty state never foreign. |
-| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown
-ids answer indistinguishably. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as
-safe svg. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                       | Kind | Verifies                                                                       |
+|----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
+| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped and never become markup.                    |
+| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is served.                                             |
+| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers never change the chart.                       |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion are rejected or empty never server errors.    |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic and bounded.                                |
+| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity and overflow never break the svg.             |
+| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and soft deleted are byte for byte equal.           |
+| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids are own data or the empty state never foreign. |
+| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown ids answer indistinguishably.                 |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission matrix refuses everyone but authorised users.    |
+| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as safe svg.                                    |
 
 ### PenTestExhaustiveChartLearningCurve
 
 `Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartLearningCurve` — 11 tests. Category: PenTest.
-| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped
-and never become markup. |
-| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is
-served. |
-| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers
-never change the chart. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion
-are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic
-and bounded. |
-| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity
-and overflow never break the svg. |
-| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and
-soft deleted are byte for byte equal. |
-| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids
-are own data or the empty state never foreign. |
-| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown
-ids answer indistinguishably. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as
-safe svg. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                       | Kind | Verifies                                                                       |
+|----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
+| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped and never become markup.                    |
+| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is served.                                             |
+| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers never change the chart.                       |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion are rejected or empty never server errors.    |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic and bounded.                                |
+| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity and overflow never break the svg.             |
+| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and soft deleted are byte for byte equal.           |
+| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids are own data or the empty state never foreign. |
+| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown ids answer indistinguishably.                 |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission matrix refuses everyone but authorised users.    |
+| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as safe svg.                                    |
 
 ### PenTestExhaustiveChartPerformanceCalibration
 
 `Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartPerformanceCalibration` — 11 tests. Category: PenTest.
-| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped
-and never become markup. |
-| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is
-served. |
-| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers
-never change the chart. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion
-are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic
-and bounded. |
-| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity
-and overflow never break the svg. |
-| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and
-soft deleted are byte for byte equal. |
-| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids
-are own data or the empty state never foreign. |
-| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown
-ids answer indistinguishably. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as
-safe svg. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                       | Kind | Verifies                                                                       |
+|----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
+| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped and never become markup.                    |
+| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is served.                                             |
+| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers never change the chart.                       |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion are rejected or empty never server errors.    |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic and bounded.                                |
+| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity and overflow never break the svg.             |
+| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and soft deleted are byte for byte equal.           |
+| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids are own data or the empty state never foreign. |
+| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown ids answer indistinguishably.                 |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission matrix refuses everyone but authorised users.    |
+| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as safe svg.                                    |
 
 ### PenTestExhaustiveChartPerformanceConfusion
 
 `Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartPerformanceConfusion` — 11 tests. Category: PenTest.
-| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped
-and never become markup. |
-| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is
-served. |
-| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers
-never change the chart. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion
-are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic
-and bounded. |
-| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity
-and overflow never break the svg. |
-| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and
-soft deleted are byte for byte equal. |
-| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids
-are own data or the empty state never foreign. |
-| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown
-ids answer indistinguishably. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as
-safe svg. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                       | Kind | Verifies                                                                       |
+|----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
+| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped and never become markup.                    |
+| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is served.                                             |
+| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers never change the chart.                       |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion are rejected or empty never server errors.    |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic and bounded.                                |
+| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity and overflow never break the svg.             |
+| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and soft deleted are byte for byte equal.           |
+| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids are own data or the empty state never foreign. |
+| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown ids answer indistinguishably.                 |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission matrix refuses everyone but authorised users.    |
+| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as safe svg.                                    |
 
 ### PenTestExhaustiveChartPerformanceGains
 
 `Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartPerformanceGains` — 11 tests. Category: PenTest.
-| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped
-and never become markup. |
-| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is
-served. |
-| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers
-never change the chart. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion
-are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic
-and bounded. |
-| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity
-and overflow never break the svg. |
-| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and
-soft deleted are byte for byte equal. |
-| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids
-are own data or the empty state never foreign. |
-| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown
-ids answer indistinguishably. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as
-safe svg. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                       | Kind | Verifies                                                                       |
+|----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
+| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped and never become markup.                    |
+| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is served.                                             |
+| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers never change the chart.                       |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion are rejected or empty never server errors.    |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic and bounded.                                |
+| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity and overflow never break the svg.             |
+| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and soft deleted are byte for byte equal.           |
+| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids are own data or the empty state never foreign. |
+| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown ids answer indistinguishably.                 |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission matrix refuses everyone but authorised users.    |
+| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as safe svg.                                    |
 
 ### PenTestExhaustiveChartPerformanceKs
 
 `Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartPerformanceKs` — 11 tests. Category: PenTest.
-| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped
-and never become markup. |
-| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is
-served. |
-| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers
-never change the chart. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion
-are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic
-and bounded. |
-| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity
-and overflow never break the svg. |
-| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and
-soft deleted are byte for byte equal. |
-| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids
-are own data or the empty state never foreign. |
-| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown
-ids answer indistinguishably. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as
-safe svg. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                       | Kind | Verifies                                                                       |
+|----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
+| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped and never become markup.                    |
+| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is served.                                             |
+| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers never change the chart.                       |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion are rejected or empty never server errors.    |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic and bounded.                                |
+| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity and overflow never break the svg.             |
+| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and soft deleted are byte for byte equal.           |
+| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids are own data or the empty state never foreign. |
+| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown ids answer indistinguishably.                 |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission matrix refuses everyone but authorised users.    |
+| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as safe svg.                                    |
 
 ### PenTestExhaustiveChartPerformanceLift
 
 `Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartPerformanceLift` — 11 tests. Category: PenTest.
-| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped
-and never become markup. |
-| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is
-served. |
-| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers
-never change the chart. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion
-are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic
-and bounded. |
-| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity
-and overflow never break the svg. |
-| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and
-soft deleted are byte for byte equal. |
-| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids
-are own data or the empty state never foreign. |
-| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown
-ids answer indistinguishably. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as
-safe svg. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                       | Kind | Verifies                                                                       |
+|----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
+| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped and never become markup.                    |
+| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is served.                                             |
+| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers never change the chart.                       |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion are rejected or empty never server errors.    |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic and bounded.                                |
+| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity and overflow never break the svg.             |
+| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and soft deleted are byte for byte equal.           |
+| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids are own data or the empty state never foreign. |
+| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown ids answer indistinguishably.                 |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission matrix refuses everyone but authorised users.    |
+| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as safe svg.                                    |
 
 ### PenTestExhaustiveChartPerformanceMeasures
 
 `Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartPerformanceMeasures` — 11 tests. Category: PenTest.
-| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped
-and never become markup. |
-| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is
-served. |
-| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers
-never change the chart. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion
-are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic
-and bounded. |
-| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity
-and overflow never break the svg. |
-| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and
-soft deleted are byte for byte equal. |
-| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids
-are own data or the empty state never foreign. |
-| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown
-ids answer indistinguishably. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as
-safe svg. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                       | Kind | Verifies                                                                       |
+|----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
+| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped and never become markup.                    |
+| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is served.                                             |
+| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers never change the chart.                       |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion are rejected or empty never server errors.    |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic and bounded.                                |
+| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity and overflow never break the svg.             |
+| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and soft deleted are byte for byte equal.           |
+| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids are own data or the empty state never foreign. |
+| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown ids answer indistinguishably.                 |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission matrix refuses everyone but authorised users.    |
+| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as safe svg.                                    |
 
 ### PenTestExhaustiveChartPerformanceParameters
 
@@ -2268,263 +1896,164 @@ safe svg. |
 ### PenTestExhaustiveChartPerformancePrecisionRecall
 
 `Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartPerformancePrecisionRecall` — 11 tests. Category: PenTest.
-| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped
-and never become markup. |
-| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is
-served. |
-| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers
-never change the chart. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion
-are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic
-and bounded. |
-| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity
-and overflow never break the svg. |
-| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and
-soft deleted are byte for byte equal. |
-| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids
-are own data or the empty state never foreign. |
-| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown
-ids answer indistinguishably. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as
-safe svg. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                       | Kind | Verifies                                                                       |
+|----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
+| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped and never become markup.                    |
+| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is served.                                             |
+| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers never change the chart.                       |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion are rejected or empty never server errors.    |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic and bounded.                                |
+| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity and overflow never break the svg.             |
+| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and soft deleted are byte for byte equal.           |
+| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids are own data or the empty state never foreign. |
+| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown ids answer indistinguishably.                 |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission matrix refuses everyone but authorised users.    |
+| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as safe svg.                                    |
 
 ### PenTestExhaustiveChartPerformancePromotionHistory
 
 `Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartPerformancePromotionHistory` — 11 tests. Category: PenTest.
-| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped
-and never become markup. |
-| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is
-served. |
-| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers
-never change the chart. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion
-are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic
-and bounded. |
-| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity
-and overflow never break the svg. |
-| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and
-soft deleted are byte for byte equal. |
-| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids
-are own data or the empty state never foreign. |
-| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown
-ids answer indistinguishably. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as
-safe svg. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                       | Kind | Verifies                                                                       |
+|----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
+| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped and never become markup.                    |
+| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is served.                                             |
+| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers never change the chart.                       |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion are rejected or empty never server errors.    |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic and bounded.                                |
+| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity and overflow never break the svg.             |
+| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and soft deleted are byte for byte equal.           |
+| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids are own data or the empty state never foreign. |
+| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown ids answer indistinguishably.                 |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission matrix refuses everyone but authorised users.    |
+| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as safe svg.                                    |
 
 ### PenTestExhaustiveChartPerformanceRoc
 
 `Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartPerformanceRoc` — 11 tests. Category: PenTest.
-| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped
-and never become markup. |
-| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is
-served. |
-| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers
-never change the chart. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion
-are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic
-and bounded. |
-| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity
-and overflow never break the svg. |
-| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and
-soft deleted are byte for byte equal. |
-| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids
-are own data or the empty state never foreign. |
-| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown
-ids answer indistinguishably. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as
-safe svg. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                       | Kind | Verifies                                                                       |
+|----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
+| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped and never become markup.                    |
+| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is served.                                             |
+| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers never change the chart.                       |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion are rejected or empty never server errors.    |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic and bounded.                                |
+| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity and overflow never break the svg.             |
+| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and soft deleted are byte for byte equal.           |
+| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids are own data or the empty state never foreign. |
+| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown ids answer indistinguishably.                 |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission matrix refuses everyone but authorised users.    |
+| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as safe svg.                                    |
 
 ### PenTestExhaustiveChartPerformanceScoreDistribution
 
 `Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartPerformanceScoreDistribution` — 11 tests. Category: PenTest.
-| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped
-and never become markup. |
-| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is
-served. |
-| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers
-never change the chart. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion
-are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic
-and bounded. |
-| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity
-and overflow never break the svg. |
-| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and
-soft deleted are byte for byte equal. |
-| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids
-are own data or the empty state never foreign. |
-| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown
-ids answer indistinguishably. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as
-safe svg. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                       | Kind | Verifies                                                                       |
+|----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
+| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped and never become markup.                    |
+| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is served.                                             |
+| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers never change the chart.                       |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion are rejected or empty never server errors.    |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic and bounded.                                |
+| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity and overflow never break the svg.             |
+| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and soft deleted are byte for byte equal.           |
+| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids are own data or the empty state never foreign. |
+| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown ids answer indistinguishably.                 |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission matrix refuses everyone but authorised users.    |
+| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as safe svg.                                    |
 
 ### PenTestExhaustiveChartPerformanceThresholdSweep
 
 `Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartPerformanceThresholdSweep` — 11 tests. Category: PenTest.
-| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped
-and never become markup. |
-| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is
-served. |
-| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers
-never change the chart. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion
-are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic
-and bounded. |
-| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity
-and overflow never break the svg. |
-| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and
-soft deleted are byte for byte equal. |
-| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids
-are own data or the empty state never foreign. |
-| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown
-ids answer indistinguishably. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as
-safe svg. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                       | Kind | Verifies                                                                       |
+|----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
+| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped and never become markup.                    |
+| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is served.                                             |
+| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers never change the chart.                       |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion are rejected or empty never server errors.    |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic and bounded.                                |
+| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity and overflow never break the svg.             |
+| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and soft deleted are byte for byte equal.           |
+| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids are own data or the empty state never foreign. |
+| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown ids answer indistinguishably.                 |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission matrix refuses everyone but authorised users.    |
+| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as safe svg.                                    |
 
 ### PenTestExhaustiveChartPerformanceTopology
 
 `Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartPerformanceTopology` — 11 tests. Category: PenTest.
-| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped
-and never become markup. |
-| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is
-served. |
-| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers
-never change the chart. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion
-are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic
-and bounded. |
-| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity
-and overflow never break the svg. |
-| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and
-soft deleted are byte for byte equal. |
-| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids
-are own data or the empty state never foreign. |
-| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown
-ids answer indistinguishably. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as
-safe svg. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                       | Kind | Verifies                                                                       |
+|----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
+| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped and never become markup.                    |
+| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is served.                                             |
+| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers never change the chart.                       |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion are rejected or empty never server errors.    |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic and bounded.                                |
+| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity and overflow never break the svg.             |
+| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and soft deleted are byte for byte equal.           |
+| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids are own data or the empty state never foreign. |
+| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown ids answer indistinguishably.                 |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission matrix refuses everyone but authorised users.    |
+| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as safe svg.                                    |
 
 ### PenTestExhaustiveChartPredictedActual
 
 `Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartPredictedActual` — 11 tests. Category: PenTest.
-| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped
-and never become markup. |
-| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is
-served. |
-| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers
-never change the chart. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion
-are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic
-and bounded. |
-| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity
-and overflow never break the svg. |
-| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and
-soft deleted are byte for byte equal. |
-| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids
-are own data or the empty state never foreign. |
-| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown
-ids answer indistinguishably. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as
-safe svg. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                       | Kind | Verifies                                                                       |
+|----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
+| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped and never become markup.                    |
+| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is served.                                             |
+| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers never change the chart.                       |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion are rejected or empty never server errors.    |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic and bounded.                                |
+| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity and overflow never break the svg.             |
+| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and soft deleted are byte for byte equal.           |
+| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids are own data or the empty state never foreign. |
+| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown ids answer indistinguishably.                 |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission matrix refuses everyone but authorised users.    |
+| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as safe svg.                                    |
 
 ### PenTestExhaustiveChartRoc
 
 `Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartRoc` — 11 tests. Category: PenTest.
-| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped
-and never become markup. |
-| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is
-served. |
-| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers
-never change the chart. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion
-are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic
-and bounded. |
-| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity
-and overflow never break the svg. |
-| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and
-soft deleted are byte for byte equal. |
-| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids
-are own data or the empty state never foreign. |
-| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown
-ids answer indistinguishably. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as
-safe svg. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                       | Kind | Verifies                                                                       |
+|----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
+| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped and never become markup.                    |
+| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is served.                                             |
+| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers never change the chart.                       |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion are rejected or empty never server errors.    |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic and bounded.                                |
+| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity and overflow never break the svg.             |
+| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and soft deleted are byte for byte equal.           |
+| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids are own data or the empty state never foreign. |
+| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown ids answer indistinguishably.                 |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission matrix refuses everyone but authorised users.    |
+| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as safe svg.                                    |
 
 ### PenTestExhaustiveChartSensitivity
 
 `Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartSensitivity` — 11 tests. Category: PenTest.
-| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped
-and never become markup. |
-| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is
-served. |
-| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers
-never change the chart. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion
-are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic
-and bounded. |
-| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity
-and overflow never break the svg. |
-| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and
-soft deleted are byte for byte equal. |
-| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids
-are own data or the empty state never foreign. |
-| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown
-ids answer indistinguishably. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as
-safe svg. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                       | Kind | Verifies                                                                       |
+|----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
+| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped and never become markup.                    |
+| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is served.                                             |
+| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers never change the chart.                       |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion are rejected or empty never server errors.    |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic and bounded.                                |
+| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity and overflow never break the svg.             |
+| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and soft deleted are byte for byte equal.           |
+| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids are own data or the empty state never foreign. |
+| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown ids answer indistinguishably.                 |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission matrix refuses everyone but authorised users.    |
+| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as safe svg.                                    |
 
 ### PenTestExhaustiveChartStylesheet
 
@@ -2538,7 +2067,7 @@ safe svg. |
 
 ### PenTestExhaustiveChartVariableHistogram
 
-`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartVariableHistogram` — 1 test. Category: PenTest.
+`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveChartVariableHistogram` — 12 tests. Category: PenTest.
 
 | Test                                                                       | Kind | Verifies                                                                       |
 |----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
@@ -2557,7 +2086,7 @@ safe svg. |
 
 ### PenTestExhaustiveSearchInstancePromotedTrialInstanceConfusion
 
-`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstancePromotedTrialInstanceConfusion` — 1 test. Category:
+`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstancePromotedTrialInstanceConfusion` — 12 tests. Category:
 PenTest.
 
 | Test                                                                          | Kind | Verifies                                                                          |
@@ -2577,7 +2106,7 @@ PenTest.
 
 ### PenTestExhaustiveSearchInstancePromotedTrialInstanceErrorHistogram
 
-`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstancePromotedTrialInstanceErrorHistogram` — 1 test.
+`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstancePromotedTrialInstanceErrorHistogram` — 12 tests.
 Category: PenTest.
 
 | Test                                                                          | Kind | Verifies                                                                          |
@@ -2597,37 +2126,25 @@ Category: PenTest.
 
 ### PenTestExhaustiveSearchInstancePromotedTrialInstanceLearningCurve
 
-`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstancePromotedTrialInstanceLearningCurve` — 11 tests.
-| `VerbTampering_OnlyGetIsServedAndNothingIsModifiedAsync`                      | Fact | Verb tampering only get is
-served and nothing is modified. |
-| `HostileQueryStringAndHeaders_NeverChangeTheResultAsync`                      | Fact | Hostile query string and
-headers never change the result. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`       | Fact | Id boundaries and type
-confusion are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                             | Fact | Concurrent reads are
-deterministic and bounded. |
-| `NumericEdgeCases_NaNInfinityZeroDenominatorAndOverflowSerialiseValidlyAsync` | Fact | Numeric edge cases na n
-infinity zero denominator and overflow serialise validly. |
-| `EmptyResult_IsAWellFormedEmptyDocumentAsync`                                 | Fact | Empty result is a well formed
-empty document. |
-| `SoftDeleted_RowsAndInstancesAreNeverReturnedAsync`                           | Fact | Soft deleted rows and instances
-are never returned. |
-| `IdEnumeration_NeighbouringIdsNeverLeakAcrossTenantsAndStayUniformAsync`      | Fact | Id enumeration neighbouring ids
-never leak across tenants and stay uniform. |
-| `CrossTenant_ForeignIdLooksExactlyLikeANonExistentIdAsync`                    | Fact | Cross tenant foreign id looks
-exactly like a non existent id. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync`    | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsWellFormedJsonAsync`                            | Fact | Authorised user reads own data
-as well formed json. |
-Category: PenTest.
+`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstancePromotedTrialInstanceLearningCurve` — 11 tests. Category: PenTest.
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                          | Kind | Verifies                                                                          |
+|-------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------|
+| `VerbTampering_OnlyGetIsServedAndNothingIsModifiedAsync`                      | Fact | Verb tampering only get is served and nothing is modified.                        |
+| `HostileQueryStringAndHeaders_NeverChangeTheResultAsync`                      | Fact | Hostile query string and headers never change the result.                         |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`       | Fact | Id boundaries and type confusion are rejected or empty never server errors.       |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                             | Fact | Concurrent reads are deterministic and bounded.                                   |
+| `NumericEdgeCases_NaNInfinityZeroDenominatorAndOverflowSerialiseValidlyAsync` | Fact | Numeric edge cases na n infinity zero denominator and overflow serialise validly. |
+| `EmptyResult_IsAWellFormedEmptyDocumentAsync`                                 | Fact | Empty result is a well formed empty document.                                     |
+| `SoftDeleted_RowsAndInstancesAreNeverReturnedAsync`                           | Fact | Soft deleted rows and instances are never returned.                               |
+| `IdEnumeration_NeighbouringIdsNeverLeakAcrossTenantsAndStayUniformAsync`      | Fact | Id enumeration neighbouring ids never leak across tenants and stay uniform.       |
+| `CrossTenant_ForeignIdLooksExactlyLikeANonExistentIdAsync`                    | Fact | Cross tenant foreign id looks exactly like a non existent id.                     |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync`    | Fact | Authentication and permission matrix refuses everyone but authorised users.       |
+| `AuthorisedUser_ReadsOwnDataAsWellFormedJsonAsync`                            | Fact | Authorised user reads own data as well formed json.                               |
 
 ### PenTestExhaustiveSearchInstancePromotedTrialInstancePredictedActual
 
-`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstancePromotedTrialInstancePredictedActual` — 1 test.
+`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstancePromotedTrialInstancePredictedActual` — 12 tests.
 Category: PenTest.
 
 | Test                                                                          | Kind | Verifies                                                                          |
@@ -2647,7 +2164,7 @@ Category: PenTest.
 
 ### PenTestExhaustiveSearchInstancePromotedTrialInstanceQuery
 
-`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstancePromotedTrialInstanceQuery` — 1 test. Category:
+`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstancePromotedTrialInstanceQuery` — 12 tests. Category:
 PenTest.
 
 | Test                                                                          | Kind | Verifies                                                                          |
@@ -2667,7 +2184,7 @@ PenTest.
 
 ### PenTestExhaustiveSearchInstancePromotedTrialInstanceRoc
 
-`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstancePromotedTrialInstanceRoc` — 1 test. Category:
+`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstancePromotedTrialInstanceRoc` — 12 tests. Category:
 PenTest.
 
 | Test                                                                          | Kind | Verifies                                                                          |
@@ -2687,37 +2204,25 @@ PenTest.
 
 ### PenTestExhaustiveSearchInstancePromotedTrialInstanceVariablePrescription
 
-`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstancePromotedTrialInstanceVariablePrescription` — 11
-| `VerbTampering_OnlyGetIsServedAndNothingIsModifiedAsync`                      | Fact | Verb tampering only get is
-served and nothing is modified. |
-| `HostileQueryStringAndHeaders_NeverChangeTheResultAsync`                      | Fact | Hostile query string and
-headers never change the result. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`       | Fact | Id boundaries and type
-confusion are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                             | Fact | Concurrent reads are
-deterministic and bounded. |
-| `NumericEdgeCases_NaNInfinityZeroDenominatorAndOverflowSerialiseValidlyAsync` | Fact | Numeric edge cases na n
-infinity zero denominator and overflow serialise validly. |
-| `EmptyResult_IsAWellFormedEmptyDocumentAsync`                                 | Fact | Empty result is a well formed
-empty document. |
-| `SoftDeleted_RowsAndInstancesAreNeverReturnedAsync`                           | Fact | Soft deleted rows and instances
-are never returned. |
-| `IdEnumeration_NeighbouringIdsNeverLeakAcrossTenantsAndStayUniformAsync`      | Fact | Id enumeration neighbouring ids
-never leak across tenants and stay uniform. |
-| `CrossTenant_ForeignIdLooksExactlyLikeANonExistentIdAsync`                    | Fact | Cross tenant foreign id looks
-exactly like a non existent id. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync`    | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsWellFormedJsonAsync`                            | Fact | Authorised user reads own data
-as well formed json. |
-tests. Category: PenTest.
+`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstancePromotedTrialInstanceVariablePrescription` — 11 tests. Category: PenTest.
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                          | Kind | Verifies                                                                          |
+|-------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------|
+| `VerbTampering_OnlyGetIsServedAndNothingIsModifiedAsync`                      | Fact | Verb tampering only get is served and nothing is modified.                        |
+| `HostileQueryStringAndHeaders_NeverChangeTheResultAsync`                      | Fact | Hostile query string and headers never change the result.                         |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`       | Fact | Id boundaries and type confusion are rejected or empty never server errors.       |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                             | Fact | Concurrent reads are deterministic and bounded.                                   |
+| `NumericEdgeCases_NaNInfinityZeroDenominatorAndOverflowSerialiseValidlyAsync` | Fact | Numeric edge cases na n infinity zero denominator and overflow serialise validly. |
+| `EmptyResult_IsAWellFormedEmptyDocumentAsync`                                 | Fact | Empty result is a well formed empty document.                                     |
+| `SoftDeleted_RowsAndInstancesAreNeverReturnedAsync`                           | Fact | Soft deleted rows and instances are never returned.                               |
+| `IdEnumeration_NeighbouringIdsNeverLeakAcrossTenantsAndStayUniformAsync`      | Fact | Id enumeration neighbouring ids never leak across tenants and stay uniform.       |
+| `CrossTenant_ForeignIdLooksExactlyLikeANonExistentIdAsync`                    | Fact | Cross tenant foreign id looks exactly like a non existent id.                     |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync`    | Fact | Authentication and permission matrix refuses everyone but authorised users.       |
+| `AuthorisedUser_ReadsOwnDataAsWellFormedJsonAsync`                            | Fact | Authorised user reads own data as well formed json.                               |
 
 ### PenTestExhaustiveSearchInstancePromotionHistory
 
-`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstancePromotionHistory` — 1 test. Category: PenTest.
+`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstancePromotionHistory` — 12 tests. Category: PenTest.
 
 | Test                                                                          | Kind | Verifies                                                                          |
 |-------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------|
@@ -2736,7 +2241,7 @@ tests. Category: PenTest.
 
 ### PenTestExhaustiveSearchInstanceTrialInstanceListQuery
 
-`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstanceTrialInstanceListQuery` — 1 test. Category:
+`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstanceTrialInstanceListQuery` — 12 tests. Category:
 PenTest.
 
 | Test                                                                          | Kind | Verifies                                                                          |
@@ -2756,7 +2261,7 @@ PenTest.
 
 ### PenTestExhaustiveSearchInstanceTrialInstanceVariable
 
-`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstanceTrialInstanceVariable` — 1 test. Category: PenTest.
+`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstanceTrialInstanceVariable` — 12 tests. Category: PenTest.
 
 | Test                                                                          | Kind | Verifies                                                                          |
 |-------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------|
@@ -2775,37 +2280,25 @@ PenTest.
 
 ### PenTestExhaustiveSearchInstanceTrialInstanceVariableVariance
 
-`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstanceTrialInstanceVariableVariance` — 11 tests. Category:
-| `VerbTampering_OnlyGetIsServedAndNothingIsModifiedAsync`                      | Fact | Verb tampering only get is
-served and nothing is modified. |
-| `HostileQueryStringAndHeaders_NeverChangeTheResultAsync`                      | Fact | Hostile query string and
-headers never change the result. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`       | Fact | Id boundaries and type
-confusion are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                             | Fact | Concurrent reads are
-deterministic and bounded. |
-| `NumericEdgeCases_NaNInfinityZeroDenominatorAndOverflowSerialiseValidlyAsync` | Fact | Numeric edge cases na n
-infinity zero denominator and overflow serialise validly. |
-| `EmptyResult_IsAWellFormedEmptyDocumentAsync`                                 | Fact | Empty result is a well formed
-empty document. |
-| `SoftDeleted_RowsAndInstancesAreNeverReturnedAsync`                           | Fact | Soft deleted rows and instances
-are never returned. |
-| `IdEnumeration_NeighbouringIdsNeverLeakAcrossTenantsAndStayUniformAsync`      | Fact | Id enumeration neighbouring ids
-never leak across tenants and stay uniform. |
-| `CrossTenant_ForeignIdLooksExactlyLikeANonExistentIdAsync`                    | Fact | Cross tenant foreign id looks
-exactly like a non existent id. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync`    | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsWellFormedJsonAsync`                            | Fact | Authorised user reads own data
-as well formed json. |
-PenTest.
+`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstanceTrialInstanceVariableVariance` — 11 tests. Category: PenTest.
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                          | Kind | Verifies                                                                          |
+|-------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------|
+| `VerbTampering_OnlyGetIsServedAndNothingIsModifiedAsync`                      | Fact | Verb tampering only get is served and nothing is modified.                        |
+| `HostileQueryStringAndHeaders_NeverChangeTheResultAsync`                      | Fact | Hostile query string and headers never change the result.                         |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`       | Fact | Id boundaries and type confusion are rejected or empty never server errors.       |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                             | Fact | Concurrent reads are deterministic and bounded.                                   |
+| `NumericEdgeCases_NaNInfinityZeroDenominatorAndOverflowSerialiseValidlyAsync` | Fact | Numeric edge cases na n infinity zero denominator and overflow serialise validly. |
+| `EmptyResult_IsAWellFormedEmptyDocumentAsync`                                 | Fact | Empty result is a well formed empty document.                                     |
+| `SoftDeleted_RowsAndInstancesAreNeverReturnedAsync`                           | Fact | Soft deleted rows and instances are never returned.                               |
+| `IdEnumeration_NeighbouringIdsNeverLeakAcrossTenantsAndStayUniformAsync`      | Fact | Id enumeration neighbouring ids never leak across tenants and stay uniform.       |
+| `CrossTenant_ForeignIdLooksExactlyLikeANonExistentIdAsync`                    | Fact | Cross tenant foreign id looks exactly like a non existent id.                     |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync`    | Fact | Authentication and permission matrix refuses everyone but authorised users.       |
+| `AuthorisedUser_ReadsOwnDataAsWellFormedJsonAsync`                            | Fact | Authorised user reads own data as well formed json.                               |
 
 ### PenTestExhaustiveSearchInstanceVariable
 
-`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstanceVariable` — 1 test. Category: PenTest.
+`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveSearchInstanceVariable` — 12 tests. Category: PenTest.
 
 | Test                                                                          | Kind | Verifies                                                                          |
 |-------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------|
@@ -2825,35 +2318,24 @@ PenTest.
 ### PenTestExhaustiveStatisticsChartGrid
 
 `Jube.Test.Security.QueryExhaustive.PenTestExhaustiveStatisticsChartGrid` — 11 tests. Category: PenTest.
-| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped
-and never become markup. |
-| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is
-served. |
-| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers
-never change the chart. |
-| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion
-are rejected or empty never server errors. |
-| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic
-and bounded. |
-| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity
-and overflow never break the svg. |
-| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and
-soft deleted are byte for byte equal. |
-| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids
-are own data or the empty state never foreign. |
-| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown
-ids answer indistinguishably. |
-| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission
-matrix refuses everyone but authorised users. |
-| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as
-safe svg. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                       | Kind | Verifies                                                                       |
+|----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
+| `HostileVariableNames_AreEscapedAndNeverBecomeMarkupAsync`                 | Fact | Hostile variable names are escaped and never become markup.                    |
+| `VerbTampering_OnlyGetIsServedAsync`                                       | Fact | Verb tampering only get is served.                                             |
+| `HostileQueryStringAndHeaders_NeverChangeTheChartAsync`                    | Fact | Hostile query string and headers never change the chart.                       |
+| `IdBoundariesAndTypeConfusion_AreRejectedOrEmptyNeverServerErrorsAsync`    | Fact | Id boundaries and type confusion are rejected or empty never server errors.    |
+| `ConcurrentReads_AreDeterministicAndBoundedAsync`                          | Fact | Concurrent reads are deterministic and bounded.                                |
+| `NumericEdgeCases_NaNInfinityAndOverflowNeverBreakTheSvgAsync`             | Fact | Numeric edge cases na n infinity and overflow never break the svg.             |
+| `EmptyStates_UnknownEmptyAndSoftDeletedAreByteForByteEqualAsync`           | Fact | Empty states unknown empty and soft deleted are byte for byte equal.           |
+| `IdEnumeration_NeighbouringIdsAreOwnDataOrTheEmptyStateNeverForeignAsync`  | Fact | Id enumeration neighbouring ids are own data or the empty state never foreign. |
+| `CrossTenant_ForeignAndUnknownIdsAnswerIndistinguishablyAsync`             | Fact | Cross tenant foreign and unknown ids answer indistinguishably.                 |
+| `AuthenticationAndPermissionMatrix_RefusesEveryoneButAuthorisedUsersAsync` | Fact | Authentication and permission matrix refuses everyone but authorised users.    |
+| `AuthorisedUser_ReadsOwnDataAsSafeSvgAsync`                                | Fact | Authorised user reads own data as safe svg.                                    |
 
 ### PenTestExhaustiveStatisticsChartMonteCarlo
 
-`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveStatisticsChartMonteCarlo` — 1 test. Category: PenTest.
+`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveStatisticsChartMonteCarlo` — 12 tests. Category: PenTest.
 
 | Test                                                                       | Kind | Verifies                                                                       |
 |----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
@@ -2872,7 +2354,7 @@ safe svg. |
 
 ### PenTestExhaustiveStatisticsChartMonteCarloSummary
 
-`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveStatisticsChartMonteCarloSummary` — 1 test. Category: PenTest.
+`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveStatisticsChartMonteCarloSummary` — 12 tests. Category: PenTest.
 
 | Test                                                                       | Kind | Verifies                                                                       |
 |----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
@@ -2891,7 +2373,7 @@ safe svg. |
 
 ### PenTestExhaustiveStatisticsChartVariableClasses
 
-`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveStatisticsChartVariableClasses` — 1 test. Category: PenTest.
+`Jube.Test.Security.QueryExhaustive.PenTestExhaustiveStatisticsChartVariableClasses` — 12 tests. Category: PenTest.
 
 | Test                                                                       | Kind | Verifies                                                                       |
 |----------------------------------------------------------------------------|------|--------------------------------------------------------------------------------|
@@ -2990,27 +2472,18 @@ Database.
 
 ### PenTestVisualisationRegistryDatasourceRole
 
-`Jube.Test.Security.Visualisation.PenTestVisualisationRegistryDatasourceRole` — 8 tests. Category: PenTest. Collection:
-| `ResourceConsumption_OversizedBodiesAreRejectedAsync`                               | Fact | Resource consumption
-oversized bodies are rejected. |
-| `DuplicateGrants_AreIdempotent_NeverAServerError_AndOneRevokeRemovesTheAccessAsync` | Fact | Duplicate grants are
-idempotent never a server error and one revoke removes the access. |
-| `ReplayAndConcurrency_NeverServerErrorAsync`                                        | Fact | Replay and concurrency
-never server error. |
-| `InjectionAndTypeConfusion_NeverServerErrorAndCreateNothingAsync`                   | Fact | Injection and type
-confusion never server error and create nothing. |
-| `MassAssignment_ForbiddenFieldsAreNotHonouredAsync`                                 | Fact | Mass assignment forbidden
-fields are not honoured. |
-| `ListAndDelete_AreScopedToTheCallersTenantAsync`                                    | Fact | List and delete are
-scoped to the callers tenant. |
-| `GrantingAForeignTenantsRoleOrParent_IsRefusedAndCreatesNothingAsync`               | Fact | Granting a foreign
-tenants role or parent is refused and creates nothing. |
-| `AuthenticationMatrix_EveryRoute_RefusesUnauthorisedCallersAsync`                   | Fact | Authentication matrix
-every route refuses unauthorised callers. |
-Database.
+`Jube.Test.Security.Visualisation.PenTestVisualisationRegistryDatasourceRole` — 8 tests. Category: PenTest. Collection: Database.
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                                | Kind | Verifies                                                                                |
+|-------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------|
+| `ResourceConsumption_OversizedBodiesAreRejectedAsync`                               | Fact | Resource consumption oversized bodies are rejected.                                     |
+| `DuplicateGrants_AreIdempotent_NeverAServerError_AndOneRevokeRemovesTheAccessAsync` | Fact | Duplicate grants are idempotent never a server error and one revoke removes the access. |
+| `ReplayAndConcurrency_NeverServerErrorAsync`                                        | Fact | Replay and concurrency never server error.                                              |
+| `InjectionAndTypeConfusion_NeverServerErrorAndCreateNothingAsync`                   | Fact | Injection and type confusion never server error and create nothing.                     |
+| `MassAssignment_ForbiddenFieldsAreNotHonouredAsync`                                 | Fact | Mass assignment forbidden fields are not honoured.                                      |
+| `ListAndDelete_AreScopedToTheCallersTenantAsync`                                    | Fact | List and delete are scoped to the callers tenant.                                       |
+| `GrantingAForeignTenantsRoleOrParent_IsRefusedAndCreatesNothingAsync`               | Fact | Granting a foreign tenants role or parent is refused and creates nothing.               |
+| `AuthenticationMatrix_EveryRoute_RefusesUnauthorisedCallersAsync`                   | Fact | Authentication matrix every route refuses unauthorised callers.                         |
 
 ### PenTestVisualisationRegistryDatasourceSeries
 
@@ -3042,50 +2515,33 @@ Database.
 
 ### PenTestVisualisationRegistryParameterRole
 
-`Jube.Test.Security.Visualisation.PenTestVisualisationRegistryParameterRole` — 8 tests. Category: PenTest. Collection:
-| `ResourceConsumption_OversizedBodiesAreRejectedAsync`                               | Fact | Resource consumption
-oversized bodies are rejected. |
-| `DuplicateGrants_AreIdempotent_NeverAServerError_AndOneRevokeRemovesTheAccessAsync` | Fact | Duplicate grants are
-idempotent never a server error and one revoke removes the access. |
-| `ReplayAndConcurrency_NeverServerErrorAsync`                                        | Fact | Replay and concurrency
-never server error. |
-| `InjectionAndTypeConfusion_NeverServerErrorAndCreateNothingAsync`                   | Fact | Injection and type
-confusion never server error and create nothing. |
-| `MassAssignment_ForbiddenFieldsAreNotHonouredAsync`                                 | Fact | Mass assignment forbidden
-fields are not honoured. |
-| `ListAndDelete_AreScopedToTheCallersTenantAsync`                                    | Fact | List and delete are
-scoped to the callers tenant. |
-| `GrantingAForeignTenantsRoleOrParent_IsRefusedAndCreatesNothingAsync`               | Fact | Granting a foreign
-tenants role or parent is refused and creates nothing. |
-| `AuthenticationMatrix_EveryRoute_RefusesUnauthorisedCallersAsync`                   | Fact | Authentication matrix
-every route refuses unauthorised callers. |
-Database.
+`Jube.Test.Security.Visualisation.PenTestVisualisationRegistryParameterRole` — 8 tests. Category: PenTest. Collection: Database.
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                                | Kind | Verifies                                                                                |
+|-------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------|
+| `ResourceConsumption_OversizedBodiesAreRejectedAsync`                               | Fact | Resource consumption oversized bodies are rejected.                                     |
+| `DuplicateGrants_AreIdempotent_NeverAServerError_AndOneRevokeRemovesTheAccessAsync` | Fact | Duplicate grants are idempotent never a server error and one revoke removes the access. |
+| `ReplayAndConcurrency_NeverServerErrorAsync`                                        | Fact | Replay and concurrency never server error.                                              |
+| `InjectionAndTypeConfusion_NeverServerErrorAndCreateNothingAsync`                   | Fact | Injection and type confusion never server error and create nothing.                     |
+| `MassAssignment_ForbiddenFieldsAreNotHonouredAsync`                                 | Fact | Mass assignment forbidden fields are not honoured.                                      |
+| `ListAndDelete_AreScopedToTheCallersTenantAsync`                                    | Fact | List and delete are scoped to the callers tenant.                                       |
+| `GrantingAForeignTenantsRoleOrParent_IsRefusedAndCreatesNothingAsync`               | Fact | Granting a foreign tenants role or parent is refused and creates nothing.               |
+| `AuthenticationMatrix_EveryRoute_RefusesUnauthorisedCallersAsync`                   | Fact | Authentication matrix every route refuses unauthorised callers.                         |
 
 ### PenTestVisualisationRegistryRole
 
 `Jube.Test.Security.Visualisation.PenTestVisualisationRegistryRole` — 8 tests. Category: PenTest. Collection: Database.
-| `ResourceConsumption_OversizedBodiesAreRejectedAsync`                               | Fact | Resource consumption
-oversized bodies are rejected. |
-| `DuplicateGrants_AreIdempotent_NeverAServerError_AndOneRevokeRemovesTheAccessAsync` | Fact | Duplicate grants are
-idempotent never a server error and one revoke removes the access. |
-| `ReplayAndConcurrency_NeverServerErrorAsync`                                        | Fact | Replay and concurrency
-never server error. |
-| `InjectionAndTypeConfusion_NeverServerErrorAndCreateNothingAsync`                   | Fact | Injection and type
-confusion never server error and create nothing. |
-| `MassAssignment_ForbiddenFieldsAreNotHonouredAsync`                                 | Fact | Mass assignment forbidden
-fields are not honoured. |
-| `ListAndDelete_AreScopedToTheCallersTenantAsync`                                    | Fact | List and delete are
-scoped to the callers tenant. |
-| `GrantingAForeignTenantsRoleOrParent_IsRefusedAndCreatesNothingAsync`               | Fact | Granting a foreign
-tenants role or parent is refused and creates nothing. |
-| `AuthenticationMatrix_EveryRoute_RefusesUnauthorisedCallersAsync`                   | Fact | Authentication matrix
-every route refuses unauthorised callers. |
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                                | Kind | Verifies                                                                                |
+|-------------------------------------------------------------------------------------|------|-----------------------------------------------------------------------------------------|
+| `ResourceConsumption_OversizedBodiesAreRejectedAsync`                               | Fact | Resource consumption oversized bodies are rejected.                                     |
+| `DuplicateGrants_AreIdempotent_NeverAServerError_AndOneRevokeRemovesTheAccessAsync` | Fact | Duplicate grants are idempotent never a server error and one revoke removes the access. |
+| `ReplayAndConcurrency_NeverServerErrorAsync`                                        | Fact | Replay and concurrency never server error.                                              |
+| `InjectionAndTypeConfusion_NeverServerErrorAndCreateNothingAsync`                   | Fact | Injection and type confusion never server error and create nothing.                     |
+| `MassAssignment_ForbiddenFieldsAreNotHonouredAsync`                                 | Fact | Mass assignment forbidden fields are not honoured.                                      |
+| `ListAndDelete_AreScopedToTheCallersTenantAsync`                                    | Fact | List and delete are scoped to the callers tenant.                                       |
+| `GrantingAForeignTenantsRoleOrParent_IsRefusedAndCreatesNothingAsync`               | Fact | Granting a foreign tenants role or parent is refused and creates nothing.               |
+| `AuthenticationMatrix_EveryRoute_RefusesUnauthorisedCallersAsync`                   | Fact | Authentication matrix every route refuses unauthorised callers.                         |
 
 ### PenTestCaseKeyJournal
 

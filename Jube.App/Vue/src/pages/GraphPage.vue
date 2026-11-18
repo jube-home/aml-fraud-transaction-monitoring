@@ -30,7 +30,7 @@ import {
 import {graphApi} from '../graph/api'
 import GraphExplorer from '../graph/GraphExplorer.vue'
 import GraphRail from '../graph/GraphRail.vue'
-import {resolvePermission} from '../graph/state'
+import {resolvePermission, seedKeyChoices} from '../graph/state'
 import type {GraphCommunity, GraphExploration, GraphNode, GraphPattern} from '../graph/types'
 import {useGraphDiscoveryQueries} from '../graph/useGraphQueries'
 import {useToasts} from '../stores/toasts'
@@ -66,17 +66,7 @@ const edges = useQuery({
   retry: false,
 })
 
-const keyChoices = computed(() => {
-  const seen: string[] = []
-
-  for (const edge of edges.data.value ?? []) {
-    for (const key of [edge.fromNodeKey || edge.fromKey, edge.toNodeKey || edge.toKey]) {
-      if (key && !seen.includes(key)) seen.push(key)
-    }
-  }
-
-  return seen.sort((a, b) => a.localeCompare(b))
-})
+const keyChoices = computed(() => seedKeyChoices(edges.data.value ?? []))
 
 const keyDraft = ref('')
 const valueDraft = ref('')

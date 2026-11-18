@@ -63,4 +63,7 @@
     <data name="InsufficientPrivilege" xml:space="preserve">
     <value>Du har inte tillräcklig behörighet för att utföra den här åtgärden.</value>
   </data>
+    <data name="ApiHmacKeyNotSet" xml:space="preserve">
+    <value>API-nycklar kan inte utfärdas eftersom miljövariabeln ApiHmacKey inte är satt i den här installationen.</value>
+  </data>
 </root>

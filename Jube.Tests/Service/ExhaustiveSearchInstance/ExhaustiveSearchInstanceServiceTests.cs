@@ -235,7 +235,7 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
             var updated = await service.UpdateAsync(dto);
 
             updated.Version.Should().Be(2);
-            updated.ReportTable.Should().Be(1);
+            updated.ReportTable.Should().BeTrue();
             updated.Guid.Should().Be(saved.Guid);
 
             var auditRows = await dbContext.GetTable<ExhaustiveSearchInstanceVersion>()
@@ -273,10 +273,10 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
                 .Where(w => w.Id == saved.Id).Set(s => s.StatusId, (byte)16).UpdateAsync();
 
             var activated = await service.SetActiveAsync(saved.Id, true);
-            activated.Active.Should().Be(1);
+            activated.Active.Should().BeTrue();
 
             var deactivated = await service.SetActiveAsync(saved.Id, false);
-            deactivated.Active.Should().Be(0);
+            deactivated.Active.Should().BeFalse();
 
             var fetched = await service.GetByIdAsync(saved.Id);
             fetched!.Active.Should().BeFalse();
@@ -320,11 +320,30 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
             var saved = await service.InsertAsync(NewDto(modelId, UniqueName("Stop")));
             createdIds.Add(saved.Id);
 
+            await dbContext.GetTable<Data.Poco.ExhaustiveSearchInstance>().Where(w => w.Id == saved.Id)
+                .Set(s => s.StatusId, (byte)1).UpdateAsync();
+
             await service.StopAsync(saved.Guid);
 
             var row = await dbContext.GetTable<Data.Poco.ExhaustiveSearchInstance>()
                 .FirstAsync(w => w.Id == saved.Id);
             row.StatusId.Should().Be(18);
+        }
+
+        [Fact]
+        public async Task StopWhileAwaitingAServerGoesStraightToStoppedAsNoThreadHoldsItAsync()
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateParentModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var saved = await service.InsertAsync(NewDto(modelId, UniqueName("StopAwaiting")));
+            createdIds.Add(saved.Id);
+
+            await service.StopAsync(saved.Guid);
+
+            var row = await dbContext.GetTable<Data.Poco.ExhaustiveSearchInstance>()
+                .FirstAsync(w => w.Id == saved.Id);
+            row.StatusId.Should().Be(19);
         }
 
         [Fact]
@@ -806,7 +825,8 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
             var resubmitted = await service.ResubmitAsync(saved.Id);
 
             resubmitted.Version.Should().Be(3);
-            resubmitted.Deleted.Should().Be(1,
+            (await dbContext.GetTable<Data.Poco.ExhaustiveSearchInstance>()
+                .Where(w => w.Id == resubmitted.Id).Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(1,
                 "resubmitting a rejected delete must re-open approval without un-deleting it");
         }
 
@@ -863,7 +883,7 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
             var retracted = await service.RetractAsync(saved.Id);
 
             retracted.Version.Should().Be(3);
-            retracted.ReportTable.Should().Be(0, "retracting abandons the rejected edit and restores the last " +
+            retracted.ReportTable.Should().BeFalse("retracting abandons the rejected edit and restores the last " +
                                                  "approved content");
             retracted.Name.Should().Be(saved.Name);
 
@@ -894,7 +914,8 @@ namespace Jube.Test.Service.ExhaustiveSearchInstance
             var retracted = await service.RetractAsync(saved.Id);
 
             retracted.Version.Should().Be(3);
-            retracted.Deleted.GetValueOrDefault().Should().Be(0,
+            (await dbContext.GetTable<Data.Poco.ExhaustiveSearchInstance>()
+                .Where(w => w.Id == retracted.Id).Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(0,
                 "retracting a rejected delete undeletes the record");
         }
 

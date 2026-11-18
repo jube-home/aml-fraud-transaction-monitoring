@@ -102,4 +102,7 @@
     <data name="EscalationTargetNotStronger" xml:space="preserve">
     <value>يجب أن يكون هدف التصعيد ذا أولوية أقوى من هذه الحالة، أي رقم أولوية أقل.</value>
   </data>
+    <data name="MaxDwellMinutesOutOfRange" xml:space="preserve">
+    <value>يجب أن تكون أقصى مدة للبقاء في الحالة بين 1 و525600 دقيقة، أو تُترك فارغة إن لم يكن هناك هدف.</value>
+  </data>
 </root>

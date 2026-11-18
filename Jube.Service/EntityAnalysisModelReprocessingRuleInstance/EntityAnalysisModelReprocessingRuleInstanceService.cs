@@ -538,7 +538,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                      "uncompleted instance refuses a second one (conflict). Not idempotent.")]
         [ServiceOperation("EntityAnalysisModelReprocessingRuleInstanceCreate", OperationKind.Write,
             Idempotent = false)]
-        public async Task<ReprocessingRuleInstancePoco> InsertAsync(
+        public async Task<EntityAnalysisModelReprocessingRuleInstanceDto> InsertAsync(
             [Description("The Reprocessing Rule instance to create.")]
             EntityAnalysisModelReprocessingRuleInstanceDto? model,
             CancellationToken token = default)
@@ -603,7 +603,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                         $"entityAnalysisModelReprocessingRuleId={saved.EntityAnalysisModelReprocessingRuleId} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelReprocessingRuleInstanceMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -696,7 +696,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                      "uncompleted instance (StatusId not 4 Completed or 5 Failed).")]
         [ServiceOperation("EntityAnalysisModelReprocessingRuleInstanceInsertByExistingUpdateUncompleted",
             OperationKind.Write, Idempotent = false)]
-        public async Task<ReprocessingRuleInstancePoco> InsertByExistingUpdateUncompletedAsync(
+        public async Task<EntityAnalysisModelReprocessingRuleInstanceDto> InsertByExistingUpdateUncompletedAsync(
             [Description("The Reprocessing Rule instance to create; only EntityAnalysisModelReprocessingRuleId " +
                          "is meaningful, every other field is server-assigned.")]
             EntityAnalysisModelReprocessingRuleInstanceDto? model,
@@ -762,7 +762,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                         $"entityAnalysisModelReprocessingRuleId={saved.EntityAnalysisModelReprocessingRuleId} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelReprocessingRuleInstanceMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -809,7 +809,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                      "reset to the caller/now. See the migration report.")]
         [ServiceOperation("EntityAnalysisModelReprocessingRuleInstanceUpdate", OperationKind.Write,
             Idempotent = false)]
-        public async Task<ReprocessingRuleInstancePoco> UpdateAsync(
+        public async Task<EntityAnalysisModelReprocessingRuleInstanceDto> UpdateAsync(
             [Description("The Reprocessing Rule instance to update. Id selects the row; identity/tenant/audit " +
                          "fields are server-owned and ignored.")]
             EntityAnalysisModelReprocessingRuleInstanceDto? model,
@@ -872,7 +872,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRuleInstance
                         $"EntityAnalysisModelReprocessingRuleInstance.Update: superseded Id={model.Id} with new Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelReprocessingRuleInstanceMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

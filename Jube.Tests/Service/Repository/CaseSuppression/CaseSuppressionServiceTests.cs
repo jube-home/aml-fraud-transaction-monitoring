@@ -260,12 +260,27 @@ namespace Jube.Test.Service.Repository.CaseSuppression
                 .ThrowAsync<RefusedException>();
 
             await using var db = fx.GetDbContext();
-            var keys = await (await CandidatesAsync(db, makerB)).KeysAsync(caseKeyOff.Case.CaseId);
 
-            keys.First().IsCaseKey.Should().BeTrue();
-            keys.First().Enabled.Should().BeFalse();
-            keys.First().Reason.Should().Be("KeyNotOverrideEnabled");
-            keys.Skip(1).Should().ContainSingle().Which.Name.Should().Be(caseKeyOff.IpKey);
+            var notArchived = await db.InsertWithInt32IdentityAsync(new Data.Poco.EntityAnalysisModelRequestXpath
+            {
+                EntityAnalysisModelId = caseKeyOff.Case.ModelId, Name = $"na{Guid.NewGuid():N}"[..14], XPath = "$.NotArchived",
+                DataTypeId = 1, Active = 1, Locked = 0, Deleted = 0, EnableOverride = 1, ReportTable = 0, Guid = Guid.NewGuid(),
+                CreatedDate = DateTime.UtcNow, CreatedUser = DatabaseFixture.Prefix, Version = 1
+            });
+
+            try
+            {
+                var keys = await (await CandidatesAsync(db, makerB)).KeysAsync(caseKeyOff.Case.CaseId);
+
+                keys.First().IsCaseKey.Should().BeTrue();
+                keys.First().Enabled.Should().BeFalse();
+                keys.First().Reason.Should().Be("KeyNotOverrideEnabled");
+                keys.Skip(1).Should().ContainSingle().Which.Name.Should().Be(caseKeyOff.IpKey);
+            }
+            finally
+            {
+                await db.GetTable<Data.Poco.EntityAnalysisModelRequestXpath>().Where(w => w.Id == notArchived).DeleteAsync();
+            }
         }
 
         [Fact]

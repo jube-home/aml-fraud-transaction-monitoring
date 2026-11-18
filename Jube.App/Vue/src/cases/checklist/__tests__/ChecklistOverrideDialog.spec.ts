@@ -13,6 +13,7 @@
 
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
 import {ApiError} from '../../../api/useApi'
+import {useConfirmStore} from '../../../stores/confirm'
 import ChecklistOverrideDialog from '../ChecklistOverrideDialog.vue'
 import {installDialogStubs, mountWith, settle, type Harness} from './support'
 
@@ -82,5 +83,53 @@ describe('ChecklistOverrideDialog', () => {
       'The holder of the case cannot override it.',
     )
     expect(harness.mounted.emitted.close).toBeUndefined()
+  })
+})
+
+describe('dismissing a lightbox that holds typed text', () => {
+  function pressEscape(): void {
+    harness!
+      .byTestId('checklist-override-dialog')!
+      .dispatchEvent(new Event('cancel', {cancelable: true}))
+  }
+
+  it('closes at once when nothing has been typed', async () => {
+    harness = await mountWith(ChecklistOverrideDialog, {open: true, caseId: 9041}, ['close'])
+
+    pressEscape()
+    await settle()
+
+    expect(harness.mounted.emitted.close).toHaveLength(1)
+  })
+
+  it('asks before discarding, and stays open when the user keeps editing', async () => {
+    harness = await mountWith(ChecklistOverrideDialog, {open: true, caseId: 9041}, ['close'])
+
+    const confirm = useConfirmStore(harness.pinia)
+
+    type('Verified by phone.')
+    pressEscape()
+    await settle()
+
+    expect(confirm.request?.title).toBe('Discard unsaved changes?')
+
+    confirm.answer(false)
+    await settle()
+
+    expect(harness.mounted.emitted.close).toBeUndefined()
+  })
+
+  it('closes once the user chooses to discard', async () => {
+    harness = await mountWith(ChecklistOverrideDialog, {open: true, caseId: 9041}, ['close'])
+
+    const confirm = useConfirmStore(harness.pinia)
+
+    type('Verified by phone.')
+    pressEscape()
+    await settle()
+    confirm.answer(true)
+    await settle()
+
+    expect(harness.mounted.emitted.close).toHaveLength(1)
   })
 })

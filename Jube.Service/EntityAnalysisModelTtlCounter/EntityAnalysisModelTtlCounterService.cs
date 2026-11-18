@@ -641,7 +641,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
         [Description("Registers a new TTL Counter under a Model in the caller's tenant. Not idempotent -- calling " +
                      "twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelTtlCounterCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<TtlCounterPoco> InsertAsync(
+        public async Task<EntityAnalysisModelTtlCounterDto> InsertAsync(
             [Description("The TTL Counter to create.")]
             EntityAnalysisModelTtlCounterDto? model,
             CancellationToken token = default)
@@ -685,7 +685,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
                              $"user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelTtlCounterMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -766,7 +766,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
         [Description("Updates an existing TTL Counter in the caller's tenant, identified by its Id. Idempotent -- " +
                      "repeating the same update has no further effect beyond incrementing Version.")]
         [ServiceOperation("EntityAnalysisModelTtlCounterUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<TtlCounterPoco> UpdateAsync(
+        public async Task<EntityAnalysisModelTtlCounterDto> UpdateAsync(
             [Description("The TTL Counter to update. Id selects the row; identity/tenant/audit fields are " +
                          "server-owned and ignored.")]
             EntityAnalysisModelTtlCounterDto? model,
@@ -826,7 +826,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
                         $"EntityAnalysisModelTtlCounter.Update: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelTtlCounterMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -971,7 +971,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
                      "cycle without requiring an edit. Use after a rejection was explained and the maker still " +
                      "wants the same change (including a delete) approved.")]
         [ServiceOperation("EntityAnalysisModelTtlCounterResubmit", OperationKind.Write, Idempotent = false)]
-        public async Task<TtlCounterPoco> ResubmitAsync(
+        public async Task<EntityAnalysisModelTtlCounterDto> ResubmitAsync(
             [Description("Numeric identifier of the TTL Counter to resubmit.")]
             int id,
             [Description("Optional note explaining why this is being resubmitted.")]
@@ -1013,7 +1013,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
                         $"EntityAnalysisModelTtlCounter.Resubmit: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelTtlCounterMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1048,7 +1048,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
                      "undeleting it, if the rejected change was a delete) without opening a new approval cycle. " +
                      "Use when the maker agrees with the rejection and wants to abandon the change.")]
         [ServiceOperation("EntityAnalysisModelTtlCounterRetract", OperationKind.Write, Idempotent = false)]
-        public async Task<TtlCounterPoco> RetractAsync(
+        public async Task<EntityAnalysisModelTtlCounterDto> RetractAsync(
             [Description("Numeric identifier of the TTL Counter to retract.")]
             int id,
             [Description("Optional note explaining why this is being retracted.")]
@@ -1090,7 +1090,7 @@ namespace Jube.Service.EntityAnalysisModelTtlCounter
                         $"EntityAnalysisModelTtlCounter.Retract: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelTtlCounterMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

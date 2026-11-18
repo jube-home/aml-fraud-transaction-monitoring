@@ -210,7 +210,7 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
             var saved = await service.InsertAsync(NewDto(modelId, UniqueName("Update")));
             createdIds.Add(saved.Id);
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             dto.Priority = 5;
 
@@ -264,7 +264,7 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
 
             await Assert.ThrowsAsync<ForbiddenException>(() => service.GetByIdAsync(seedRow.Id));
 
-            var updateDto = NewDto(modelId, seedRow.Name);
+            var updateDto = NewDto(modelId, seedRow.Name!);
             updateDto.Id = seedRow.Id;
             await Assert.ThrowsAsync<ForbiddenException>(() => service.UpdateAsync(updateDto));
             await Assert.ThrowsAsync<ForbiddenException>(() => service.DeleteAsync(seedRow.Id));
@@ -328,7 +328,7 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
             var byId = await otherTenant.GetByIdAsync(saved.Id);
             byId.Should().BeNull();
 
-            var updateDto = NewDto(modelId, saved.Name);
+            var updateDto = NewDto(modelId, saved.Name!);
             updateDto.Id = saved.Id;
             await Assert.ThrowsAsync<NotFoundException>(() => otherTenant.UpdateAsync(updateDto));
             await Assert.ThrowsAsync<NotFoundException>(() => otherTenant.DeleteAsync(saved.Id));
@@ -585,7 +585,7 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
             var saved = await service.InsertAsync(NewDto(modelId, UniqueName("TamperUpdate")));
             createdIds.Add(saved.Id);
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             dto.CreatedUser = "someone-else";
             dto.UpdatedUser = "also-tampered";
@@ -609,7 +609,7 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
             await dbContext.GetTable<Data.Poco.EntityAnalysisModelGatewayRule>()
                 .Where(w => w.Id == saved.Id).Set(s => s.Locked, (byte)1).UpdateAsync();
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateAsync(dto));
         }
@@ -625,7 +625,7 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
 
             await service.DeleteAsync(saved.Id);
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             await service.UpdateAsync(dto);
 
@@ -724,7 +724,8 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
             var resubmitted = await service.ResubmitAsync(saved.Id);
 
             resubmitted.Version.Should().Be(3);
-            resubmitted.Deleted.Should().Be(1,
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelGatewayRule>()
+                .Where(w => w.Id == resubmitted.Id).Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(1,
                 "resubmitting a rejected delete must re-open approval without un-deleting it");
         }
 
@@ -770,7 +771,7 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
             await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModelGatewayRule,
                 saved.Id, 1, tenantRegistryId);
 
-            var updateDto = NewDto(modelId, saved.Name);
+            var updateDto = NewDto(modelId, saved.Name!);
             updateDto.Id = saved.Id;
             updateDto.Priority = 5;
             await service.UpdateAsync(updateDto);
@@ -793,7 +794,7 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
             rejectionRow.ReturnedUser.Should().Be(fx.Seed.UserWithPermission);
             rejectionRow.ReturnKindId.Should().Be((int)EntityApprovalReturnKind.Retracted);
 
-            await AssertRetractedVersionIsNotPendingAsync(dbContext, saved.Id, retracted.Version.GetValueOrDefault(),
+            await AssertRetractedVersionIsNotPendingAsync(dbContext, saved.Id, retracted.Version,
                 1);
         }
 
@@ -816,10 +817,11 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
             var retracted = await service.RetractAsync(saved.Id);
 
             retracted.Version.Should().Be(3);
-            retracted.Deleted.GetValueOrDefault().Should().Be(0,
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelGatewayRule>()
+                .Where(w => w.Id == retracted.Id).Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(0,
                 "retracting a rejected delete undeletes the record");
 
-            await AssertRetractedVersionIsNotPendingAsync(dbContext, saved.Id, retracted.Version.GetValueOrDefault(),
+            await AssertRetractedVersionIsNotPendingAsync(dbContext, saved.Id, retracted.Version,
                 1);
         }
 
@@ -839,7 +841,7 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
             await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModelGatewayRule,
                 saved.Id, 2, tenantRegistryId);
 
-            var reviveDto = NewDto(modelId, saved.Name);
+            var reviveDto = NewDto(modelId, saved.Name!);
             reviveDto.Id = saved.Id;
             await service.UpdateAsync(reviveDto);
 
@@ -849,11 +851,12 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
             var retracted = await service.RetractAsync(saved.Id);
 
             retracted.Version.Should().Be(4);
-            retracted.Deleted.GetValueOrDefault().Should().Be(1,
+            (await dbContext.GetTable<Data.Poco.EntityAnalysisModelGatewayRule>()
+                .Where(w => w.Id == retracted.Id).Select(s => s.Deleted).FirstAsync()).GetValueOrDefault().Should().Be(1,
                 "the last approved baseline was itself a delete, so retracting the rejected revive must restore " +
                 "that deleted state rather than refusing with 'no approved version to retract to'");
 
-            await AssertRetractedVersionIsNotPendingAsync(dbContext, saved.Id, retracted.Version.GetValueOrDefault(),
+            await AssertRetractedVersionIsNotPendingAsync(dbContext, saved.Id, retracted.Version,
                 2);
         }
 
@@ -923,7 +926,7 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
             await EntityApprovalSeed.ApproveAsync(dbContext, EntityApprovalKind.EntityAnalysisModelGatewayRule,
                 saved.Id, 1, tenantRegistryId);
 
-            var updateDto = NewDto(modelId, saved.Name);
+            var updateDto = NewDto(modelId, saved.Name!);
             updateDto.Id = saved.Id;
             updateDto.Priority = 5;
             await service.UpdateAsync(updateDto);
@@ -994,7 +997,7 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
             var saved = await service.InsertAsync(insertDto);
             createdIds.Add(saved.Id);
 
-            var updateDto = NewDto(modelId, saved.Name);
+            var updateDto = NewDto(modelId, saved.Name!);
             updateDto.Id = saved.Id;
 
             var updated = await service.UpdateAsync(updateDto);
@@ -1273,7 +1276,7 @@ namespace Jube.Test.Service.EntityAnalysisModelGatewayRule
             var saved = await service.InsertAsync(NewDto(modelId, UniqueName("HostileUpdate")));
             createdIds.Add(saved.Id);
 
-            var dto = NewDto(modelId, saved.Name);
+            var dto = NewDto(modelId, saved.Name!);
             dto.Id = saved.Id;
             dto.RuleScriptTypeId = 2;
             dto.CoderRuleScript = "Return System.Diagnostics.Process.Start(\"id\") Is Nothing";

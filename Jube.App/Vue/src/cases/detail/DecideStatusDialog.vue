@@ -48,6 +48,7 @@ const {gate} = useChecklistGate(
     open: props.detail.closedStatusId !== closedStatus.closed,
     mine: props.detail.locked && props.detail.lockedUser === props.userName,
     permitted: props.canOverrideChecklist ?? false,
+    userName: props.userName,
   }),
 )
 
@@ -106,6 +107,7 @@ function escalate(): void {
       :names="gate.names"
       :override="gate.override"
       :can-override="gate.canOverride"
+      :own="gate.own"
       testid="case-status-gate"
       @open-checklist="emit('openChecklist')"
       @override="emit('overrideChecklist')"

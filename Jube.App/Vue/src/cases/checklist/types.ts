@@ -93,6 +93,7 @@ export interface ChecklistGate {
   names: string[]
   blocked: boolean
   override: ChecklistOverride | null
+  own: boolean
   canOverride: boolean
 }
 
@@ -100,4 +101,5 @@ export interface ChecklistGateContext {
   open: boolean
   mine: boolean
   permitted: boolean
+  userName?: string
 }

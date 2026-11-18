@@ -43,10 +43,10 @@ namespace Jube.Charting.Diagrams
         }
 
         public GraphDiagramBuilder Node(string id, string? label, GraphNodeShape shape, double? size = null,
-            string? group = null, IReadOnlyList<GraphBadge>? badges = null, string? detail = null)
+            string? group = null, IReadOnlyList<GraphBadge>? badges = null, string? detail = null, string? icon = null)
         {
             nodes.Add(new GraphNode(id, label ?? id, GraphNodeRole.Other, detail)
-                { Group = group, Shape = shape, Size = size, Badges = badges });
+                { Group = group, Shape = shape, Size = size, Badges = badges, Icon = icon });
 
             return this;
         }

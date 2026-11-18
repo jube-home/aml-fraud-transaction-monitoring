@@ -28,7 +28,7 @@ const {t} = useI18n()
 </script>
 
 <template>
-  <div class="flex items-center justify-between gap-2" data-testid="pane-toggles">
+  <div class="flex flex-wrap items-center justify-between gap-2" data-testid="pane-toggles">
     <button
       v-if="leftName !== undefined"
       key="left"

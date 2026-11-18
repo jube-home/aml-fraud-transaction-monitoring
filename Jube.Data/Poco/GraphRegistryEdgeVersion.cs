@@ -54,5 +54,8 @@ namespace Jube.Data.Poco
         [Column] [Nullable] [Key(23)] public int? Version { get; set; }
         [Column] [Nullable] [Key(24)] public int? InheritedId { get; set; }
         [Column] [Nullable] [Key(25)] public int? ImportId { get; set; }
+        [Column] [Nullable] [Key(28)] public string IconName { get; set; }
+        [Column] [Nullable] [Key(29)] public string FromNodeIcon { get; set; }
+        [Column] [Nullable] [Key(30)] public string ToNodeIcon { get; set; }
     }
 }

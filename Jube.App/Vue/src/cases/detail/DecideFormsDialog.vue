@@ -99,7 +99,7 @@ function update(next: FieldValues): void {
   >
     <div v-if="rendered.isPending.value" key="drawing" class="skeleton h-40 w-full"></div>
     <div v-else-if="rendered.isError.value" key="failed" role="alert" class="alert alert-error">
-      <span>{{ rendered.error.value?.message }}</span>
+      <span>{{ t('caseDetail.forms.drawFailed') }}</span>
     </div>
     <form
       v-else

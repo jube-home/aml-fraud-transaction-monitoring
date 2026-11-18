@@ -195,7 +195,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
         {
             var names = exhaustive.NetworkVariablesInOrder.Select(v => v.Name).ToArray();
             var relevance = RecallExplainability.Explain(exhaustive.TopologyNetwork, data, names);
-            var processingTypeIds = exhaustive.NetworkVariablesInOrder.Select(v => v.ProcessingTypeId).ToList();
+            var processingTypeIds = exhaustive.NetworkVariablesInOrder
+                .Select(v => AdaptationInputExtraction.EffectiveProcessingTypeId(v.ProcessingTypeId, v.Name)).ToList();
 
             return relevance.ToAdaptation(value, exhaustive.Name, exhaustive.TopologyNetwork.Layers.Length - 1,
                 exhaustive.TopologyNetwork.Layers.Sum(l => l.Neurons.Length), exhaustive.Calibration,
@@ -212,7 +213,8 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
                 return null;
             }
 
-            var processingTypeIds = exhaustive.NetworkVariablesInOrder.Select(v => v.ProcessingTypeId).ToList();
+            var processingTypeIds = exhaustive.NetworkVariablesInOrder
+                .Select(v => AdaptationInputExtraction.EffectiveProcessingTypeId(v.ProcessingTypeId, v.Name)).ToList();
 
             return explanation.ToAdaptation(value, exhaustive.Name, processingTypeIds);
         }
@@ -244,11 +246,14 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
             var cleanName = AdaptationInputExtraction.CleanName(variable.Name);
 
+            var processingTypeId =
+                AdaptationInputExtraction.EffectiveProcessingTypeId(variable.ProcessingTypeId, variable.Name);
+
             context.TraceLog(
                 $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                $" Will look up {cleanName} for processing type id {variable.ProcessingTypeId}.");
+                $" Will look up {cleanName} for processing type id {processingTypeId}.");
 
-            if (AdaptationInputExtraction.TryGetValue(context, variable.ProcessingTypeId, cleanName, out var value))
+            if (AdaptationInputExtraction.TryGetValue(context, processingTypeId, cleanName, out var value))
             {
                 data[i] = value;
 
@@ -294,11 +299,14 @@ namespace Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions
 
             var cleanName = AdaptationInputExtraction.CleanName(variable.Name);
 
+            var processingTypeId =
+                AdaptationInputExtraction.EffectiveProcessingTypeId(variable.ProcessingTypeId, variable.Name);
+
             context.TraceLog(
                 $"evaluating Exhaustive Search Instance Id {exhaustive.Id}." +
-                $"  Will look up {cleanName} for processing type id {variable.ProcessingTypeId}.");
+                $"  Will look up {cleanName} for processing type id {processingTypeId}.");
 
-            if (AdaptationInputExtraction.TryGetValue(context, variable.ProcessingTypeId, cleanName, out var value))
+            if (AdaptationInputExtraction.TryGetValue(context, processingTypeId, cleanName, out var value))
             {
                 data[i] = variable.ZScore(value);
 

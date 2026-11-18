@@ -31,7 +31,6 @@ namespace Jube.Dto.EntityAnalysisModelRequestXPath
     [FormGroup("Identity", Order = 10)]
     [FormGroup("Extraction", Order = 20)]
     [FormGroup("Search Key", Order = 30, Collapsed = true)]
-    [FormGroup("Search Key Cache", Order = 40, Collapsed = true)]
     [FormGroup("Behaviour", Order = 50)]
     [FormGroup("Audit", Order = 90, Collapsed = true)]
     [MessagePackObject]
@@ -111,7 +110,7 @@ namespace Jube.Dto.EntityAnalysisModelRequestXPath
         public bool SearchKey { get; set; }
 
         [Description("Unit of Search Key TTL Interval Value: Seconds, Minutes, Hours or Days.")]
-        [FormField(Group = "Search Key", Order = 20, Widget = "radio")]
+        [FormField(Group = "Search Key", Order = 20, Widget = "radio", Label = "TTL Interval Type")]
         [VisibleWhen(nameof(SearchKey), true)]
         [RequiredWhen(nameof(SearchKey), true)]
         [NewDefault("h")]
@@ -121,7 +120,7 @@ namespace Jube.Dto.EntityAnalysisModelRequestXPath
 
         [Description("Offset, in Search Key TTL Interval units, before the current reference date at which the " +
                      "search key index entry is eligible for deletion.")]
-        [FormField(Group = "Search Key", Order = 30, Widget = "number")]
+        [FormField(Group = "Search Key", Order = 30, Widget = "number", Label = "TTL Interval Value")]
         [VisibleWhen(nameof(SearchKey), true)]
         [RequiredWhen(nameof(SearchKey), true)]
         [NewDefault(1)]
@@ -129,7 +128,7 @@ namespace Jube.Dto.EntityAnalysisModelRequestXPath
         public int SearchKeyTtlIntervalValue { get; set; }
 
         [Description("Maximum number of records returned from the cache for this search key per lookup.")]
-        [FormField(Group = "Search Key", Order = 40, Widget = "number")]
+        [FormField(Group = "Search Key", Order = 40, Widget = "number", Label = "Fetch Limit")]
         [VisibleWhen(nameof(SearchKey), true)]
         [RequiredWhen(nameof(SearchKey), true)]
         [NewDefault(100)]
@@ -146,7 +145,7 @@ namespace Jube.Dto.EntityAnalysisModelRequestXPath
 
         [Description("Unit of Search Key Cache Interval Value: how frequently the cached search key value is " +
                      "recalculated.")]
-        [FormField(Group = "Search Key Cache", Order = 10, Widget = "radio")]
+        [FormField(Group = "Search Key", Order = 60, Widget = "radio", Label = "Selection Interval Type")]
         [VisibleWhen(nameof(SearchKey), true)]
         [VisibleWhen(nameof(SearchKeyCache), true)]
         [RequiredWhen(nameof(SearchKey), true)]
@@ -158,7 +157,7 @@ namespace Jube.Dto.EntityAnalysisModelRequestXPath
 
         [Description("Length, in Search Key Cache Interval units, between recalculations of the cached search " +
                      "key value.")]
-        [FormField(Group = "Search Key Cache", Order = 20, Widget = "number")]
+        [FormField(Group = "Search Key", Order = 70, Widget = "number", Label = "Selection Interval Value")]
         [VisibleWhen(nameof(SearchKey), true)]
         [VisibleWhen(nameof(SearchKeyCache), true)]
         [RequiredWhen(nameof(SearchKey), true)]
@@ -169,7 +168,7 @@ namespace Jube.Dto.EntityAnalysisModelRequestXPath
 
         [Description("When true, only a representative sample of the data for each distinct search key value is " +
                      "used, reducing calculation load.")]
-        [FormField(Group = "Search Key Cache", Order = 30, Widget = "switch")]
+        [FormField(Group = "Search Key", Order = 80, Widget = "switch", Label = "Selection Sample")]
         [VisibleWhen(nameof(SearchKey), true)]
         [VisibleWhen(nameof(SearchKeyCache), true)]
         [NewDefault(false)]
@@ -178,7 +177,7 @@ namespace Jube.Dto.EntityAnalysisModelRequestXPath
 
         [Description("Maximum number of transactions returned from the cache for each distinct search key value " +
                      "when calculating the cached result.")]
-        [FormField(Group = "Search Key Cache", Order = 40, Widget = "number")]
+        [FormField(Group = "Search Key", Order = 90, Widget = "number", Label = "Selection Limit")]
         [VisibleWhen(nameof(SearchKey), true)]
         [VisibleWhen(nameof(SearchKeyCache), true)]
         [NewDefault(100000)]
@@ -187,7 +186,7 @@ namespace Jube.Dto.EntityAnalysisModelRequestXPath
 
         [Description("Unit of Search Key Cache TTL Interval Value: how long a calculated search key value lives " +
                      "before being purged from the cache.")]
-        [FormField(Group = "Search Key Cache", Order = 50, Widget = "radio")]
+        [FormField(Group = "Search Key", Order = 100, Widget = "radio", Label = "Cache TTL Interval Type")]
         [VisibleWhen(nameof(SearchKey), true)]
         [VisibleWhen(nameof(SearchKeyCache), true)]
         [RequiredWhen(nameof(SearchKey), true)]
@@ -199,7 +198,7 @@ namespace Jube.Dto.EntityAnalysisModelRequestXPath
 
         [Description("Length, in Search Key Cache TTL Interval units, that a calculated search key value lives " +
                      "before being purged from the cache.")]
-        [FormField(Group = "Search Key Cache", Order = 60, Widget = "number")]
+        [FormField(Group = "Search Key", Order = 110, Widget = "number", Label = "Cache TTL Interval Value")]
         [VisibleWhen(nameof(SearchKey), true)]
         [VisibleWhen(nameof(SearchKeyCache), true)]
         [NewDefault(1)]

@@ -78,7 +78,7 @@ namespace Jube.Dto.EntityAnalysisModelGatewayRule
         [Description("Upon a match, the largest Response Elevation that may be responded with; larger values are " +
                      "truncated to this limit. Also bounded at the Model level.")]
         [FormField(Group = "Gateway", Order = 10)]
-        [NewDefault(0)]
+        [NewDefault(10)]
         [Key(6)]
         public int MaxResponseElevation { get; set; }
 

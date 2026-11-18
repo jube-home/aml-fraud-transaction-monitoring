@@ -11,14 +11,16 @@
  * see <https://www.gnu.org/licenses/>.
  */
 
-import {onBeforeUnmount, onMounted, type Ref} from 'vue'
+import {inject, onBeforeUnmount, onMounted, type Ref} from 'vue'
 import {useI18n} from 'vue-i18n'
-import {onBeforeRouteLeave} from 'vue-router'
+import {onBeforeRouteLeave, onBeforeRouteUpdate} from 'vue-router'
 import {useConfirmStore} from '../stores/confirm'
+import {storyPathOwnerKey} from './storyPathOwnerKey'
 
 export function useDirtyGuard(dirty: Ref<boolean>, message: () => string): void {
   const confirm = useConfirmStore()
   const {t} = useI18n()
+  const ownsPath = inject(storyPathOwnerKey, undefined)
 
   const beforeUnload = (event: BeforeUnloadEvent): void => {
     if (!dirty.value) return
@@ -29,14 +31,23 @@ export function useDirtyGuard(dirty: Ref<boolean>, message: () => string): void 
   onMounted(() => window.addEventListener('beforeunload', beforeUnload))
   onBeforeUnmount(() => window.removeEventListener('beforeunload', beforeUnload))
 
-  onBeforeRouteLeave(() => {
-    if (!dirty.value) return true
-
-    return confirm.ask({
+  const ask = (): Promise<boolean> =>
+    confirm.ask({
       title: t('story.discard.title'),
       body: message(),
       confirmLabel: t('story.discard.confirm'),
       cancelLabel: t('story.discard.cancel'),
     })
+
+  onBeforeRouteLeave(() => {
+    if (!dirty.value) return true
+
+    return ask()
+  })
+
+  onBeforeRouteUpdate((to, from) => {
+    if (!dirty.value || to.query.path === from.query.path || ownsPath?.(to)) return true
+
+    return ask()
   })
 }

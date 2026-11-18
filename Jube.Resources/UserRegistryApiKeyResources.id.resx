@@ -63,4 +63,7 @@
     <data name="InsufficientPrivilege" xml:space="preserve">
     <value>Hak istimewa Anda tidak mencukupi untuk melakukan tindakan ini.</value>
   </data>
+    <data name="ApiHmacKeyNotSet" xml:space="preserve">
+    <value>Kunci API tidak dapat diterbitkan karena Variabel Lingkungan ApiHmacKey belum diatur pada instalasi ini.</value>
+  </data>
 </root>

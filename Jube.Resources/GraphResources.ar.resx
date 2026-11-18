@@ -175,4 +175,7 @@
     <data name="DetailCollapsed" xml:space="preserve">
     <value>{0} عقدة مطوية</value>
   </data>
+    <data name="SentenceCommunityNoRate" xml:space="preserve">
+    <value>المجتمع {0} من {1} عقدة: {2} مؤكدة من {3} قضية مغلقة.</value>
+  </data>
 </root>

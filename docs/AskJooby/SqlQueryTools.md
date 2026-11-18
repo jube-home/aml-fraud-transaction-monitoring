@@ -98,7 +98,7 @@ nothing to do with each other and catch different classes of problem:
    bare table name, but the query Jube actually runs when that table is referenced, pre-joined to
    `TenantRegistry`/`UserInTenant` (and, for model-scoped tables, `EntityAnalysisModelRole`) so that every row
    returned is already filtered to rows this caller's tenant, and this caller's own model-role grants, can see.
-   `{{ESCAPED_USER}}` and `{{CONVERSATION_ID}}` are substituted into the template at query time -- the caller's SQL
+   `{% raw %}{{ESCAPED_USER}}{% endraw %}` and `{% raw %}{{CONVERSATION_ID}}{% endraw %}` are substituted into the template at query time -- the caller's SQL
    never supplies or controls either value, which is exactly why the tool's description says a caller "never needs
    to, and never can, filter by tenant or user yourself." A table referenced in the caller's SQL that is not a key
    in this dictionary fails the whole query with a clear error naming the table, whether or not it exists in the

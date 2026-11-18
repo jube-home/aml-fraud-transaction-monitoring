@@ -530,6 +530,26 @@ namespace Jube.Test.Service.Repository.CaseWorkflow
                 "RiskQaSampleRateOutOfRange", "DailyGoalOutOfRange");
         }
 
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-5)]
+        [InlineData(525601)]
+        public async Task AServiceLevelTargetOutsideOneMinuteToOneYearIsRefusedAsync(int minutes)
+        {
+            await using var dbContext = fx.GetDbContext();
+            var modelId = await CreateModelAsync(dbContext, fx.Seed.UserWithPermission);
+            var service = await BuildServiceAsync(dbContext, fx.Seed.UserWithPermission);
+            var dto = ValidDto(modelId);
+            dto.FirstViewTargetMinutes = minutes;
+            dto.OwnershipTargetMinutes = minutes;
+            dto.ResolutionTargetMinutes = minutes;
+
+            var ex = await Assert.ThrowsAsync<DtoValidationException>(() => service.InsertAsync(dto));
+
+            ex.Result.Errors.Where(e => e.ErrorCode == "ServiceLevelTargetOutOfRange").Select(e => e.PropertyName).Should()
+                .BeEquivalentTo("FirstViewTargetMinutes", "OwnershipTargetMinutes", "ResolutionTargetMinutes");
+        }
+
         [Fact]
         public async Task RankingSettingsLongerThanTheirColumnAreRefusedByTheValidatorAsync()
         {

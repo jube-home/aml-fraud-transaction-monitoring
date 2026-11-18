@@ -27,6 +27,8 @@ import type {
 
 const instances = '/api/ExhaustiveSearchInstance'
 
+export const promotedActivatePermission = 14
+
 export const exhaustiveApi = {
   instance: (id: number) => useApi<ExhaustiveInstance>(`${instances}/${id}`),
   stop: (guid: string) => useApi(`${instances}/stop/${guid}`, {method: 'PUT', body: {}}),

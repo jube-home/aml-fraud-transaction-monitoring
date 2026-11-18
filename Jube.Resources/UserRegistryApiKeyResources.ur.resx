@@ -63,4 +63,7 @@
     <data name="InsufficientPrivilege" xml:space="preserve">
     <value>اس کارروائی کو انجام دینے کے لیے آپ کے پاس مناسب استحقاق نہیں ہے۔</value>
   </data>
+    <data name="ApiHmacKeyNotSet" xml:space="preserve">
+    <value>API کلیدیں جاری نہیں کی جا سکتیں کیونکہ اس تنصیب میں ماحولیاتی متغیر ApiHmacKey مقرر نہیں ہے۔</value>
+  </data>
 </root>

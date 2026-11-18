@@ -207,9 +207,9 @@ defineExpose({run: submit})
         {{ t('visualisation.empty') }}
       </p>
 
-      <div v-else-if="applied" key="tiles" class="flex flex-col gap-3">
+      <div v-else-if="applied" key="tiles" class="@container/dash flex min-w-0 flex-col gap-3">
         <div
-          class="grid grid-cols-1 gap-3 md:grid-cols-(--dash-columns) md:auto-rows-(--dash-rows)"
+          class="grid grid-flow-dense grid-cols-1 gap-3 @2xl/dash:grid-cols-(--dash-columns) @2xl/dash:auto-rows-[minmax(var(--dash-rows),auto)]"
           :style="gridStyle(registry)"
           data-testid="dashboard-tiles"
         >

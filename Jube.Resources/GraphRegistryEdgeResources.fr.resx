@@ -73,6 +73,9 @@
     <data name="KeyMaxLength" xml:space="preserve">
     <value>Une clé doit comporter au plus {0} caractères.</value>
   </data>
+    <data name="IconInvalid" xml:space="preserve">
+    <value>L'icône ne fait pas partie des icônes Lucide proposées pour le graphe.</value>
+  </data>
     <data name="AmountKeyRequired" xml:space="preserve">
     <value>Une clé de montant est requise pour un flux monétaire.</value>
   </data>

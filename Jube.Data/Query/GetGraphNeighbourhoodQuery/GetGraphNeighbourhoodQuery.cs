@@ -40,7 +40,7 @@ namespace Jube.Data.Query.GetGraphNeighbourhoodQuery
                         AND (e."ToHub" = 0 OR @hubs)
                         AND (e."Restricted" = 0 OR @restricted)
                         AND e."LastSeen" >= @from AND e."FirstSeen" <= @to
-                        AND e."AmountSum" >= @minimum
+                        AND (e."KindId" <> 2 OR e."AmountSum" >= @minimum)
                       ORDER BY e."Weight" DESC LIMIT @fanout)
                     UNION ALL
                     (SELECT e."FromNodeId", e."Id", e."Weight"
@@ -50,7 +50,7 @@ namespace Jube.Data.Query.GetGraphNeighbourhoodQuery
                         AND (e."FromHub" = 0 OR @hubs)
                         AND (e."Restricted" = 0 OR @restricted)
                         AND e."LastSeen" >= @from AND e."FirstSeen" <= @to
-                        AND e."AmountSum" >= @minimum
+                        AND (e."KindId" <> 2 OR e."AmountSum" >= @minimum)
                       ORDER BY e."Weight" DESC LIMIT @fanout)
                 ) n ON NOT n."NodeId" = ANY(f."Path")
                 WHERE f."Depth" < @depth

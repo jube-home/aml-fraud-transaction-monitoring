@@ -102,4 +102,7 @@
     <data name="EscalationTargetNotStronger" xml:space="preserve">
     <value>La cible d'escalade doit avoir une priorité plus forte que ce statut, c'est-à-dire un numéro de Priorité plus bas.</value>
   </data>
+    <data name="MaxDwellMinutesOutOfRange" xml:space="preserve">
+    <value>La durée maximale dans le statut doit être comprise entre 1 et 525600 minutes, ou laissée vide s'il n'y a pas d'objectif.</value>
+  </data>
 </root>

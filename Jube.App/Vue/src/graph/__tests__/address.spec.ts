@@ -98,13 +98,15 @@ describe('graph address', () => {
       })
 
       expect(parsed.view).toBe('hops')
-      expect(parsed.hops).toBe(2)
+      expect(parsed.hops).toBeNull()
       expect(parsed.layout).toBeNull()
       expect(parsed.cursor).toBeNull()
       expect(parsed.explode).toBe(false)
     }
 
     expect(parseGraphAddress({gh: ['3', '1']}).hops).toBe(3)
+    expect(parseGraphAddress({gh: '2'}).hops).toBe(2)
+    expect(serialiseGraphAddress({...defaultGraphAddress, hops: 2})).toEqual({gh: '2'})
     expect(parseGraphAddress({gv: 'f'}).view).toBe('flow')
     expect(parseGraphAddress({gw: '0'}).flowWindowHours).toBeNull()
     expect(parseGraphAddress({gw: '721'}).flowWindowHours).toBeNull()

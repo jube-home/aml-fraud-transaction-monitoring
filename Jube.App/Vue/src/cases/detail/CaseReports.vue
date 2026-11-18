@@ -16,17 +16,17 @@ import {computed, reactive, ref, watch} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/vue-query'
 import {FileText} from 'lucide-vue-next'
-import FieldHelp from '../../components/FieldHelp.vue'
+import DecideCard from './DecideCard.vue'
 import {meQueryOptions} from '../../auth/me'
 import {useToasts} from '../../stores/toasts'
 import {
-  canDownload,
-  canWithdraw,
   isEditable,
   isValidJsonObject,
   maximumMessage,
   maximumNote,
   maximumReference,
+  mayDownload,
+  mayWithdraw,
   reportPermission,
   reportsApi,
   reportsKey,
@@ -173,12 +173,14 @@ function withdraw(report: CaseReport): void {
 </script>
 
 <template>
-  <fieldset v-if="canView" class="fieldset" data-testid="case-reports">
-    <legend class="fieldset-legend">
-      <FileText class="size-3.5" aria-hidden="true"/>
-      {{ t('caseDetail.reports.title') }}
-      <FieldHelp :label="t('caseDetail.reports.title')" :text="t('caseDetail.reports.hint')"/>
-    </legend>
+  <DecideCard v-if="canView"
+    :title="t('caseDetail.reports.title')"
+    :help="t('caseDetail.reports.hint')"
+    testid="case-reports"
+  >
+    <template #icon>
+      <FileText class="size-5"/>
+    </template>
 
     <p v-if="reports.isError.value" role="alert" class="text-sm">
       {{ t('caseDetail.reports.failed') }}
@@ -357,7 +359,7 @@ function withdraw(report: CaseReport): void {
 
       <div class="flex flex-wrap gap-2">
         <a
-          v-if="canDownload(report)"
+          v-if="mayDownload(report, held)"
           class="btn btn-sm"
           :href="reportsApi.downloadUrl(report.guid)"
           download
@@ -374,7 +376,7 @@ function withdraw(report: CaseReport): void {
           {{ t('caseDetail.reports.newVersion') }}
         </button>
         <button
-          v-if="canWithdraw(report)"
+          v-if="mayWithdraw(report, held, me.data.value?.userName)"
           type="button"
           class="btn btn-sm btn-ghost"
           :data-testid="`case-report-withdraw-${report.guid}`"
@@ -448,5 +450,5 @@ function withdraw(report: CaseReport): void {
         </button>
       </div>
     </div>
-  </fieldset>
+  </DecideCard>
 </template>

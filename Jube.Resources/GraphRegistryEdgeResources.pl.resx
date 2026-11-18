@@ -73,6 +73,9 @@
     <data name="KeyMaxLength" xml:space="preserve">
     <value>Klucz może mieć najwyżej {0} znaków.</value>
   </data>
+    <data name="IconInvalid" xml:space="preserve">
+    <value>Ikona nie należy do zestawu ikon Lucide oferowanego dla grafu.</value>
+  </data>
     <data name="AmountKeyRequired" xml:space="preserve">
     <value>Dla przepływu środków wymagany jest klucz kwoty.</value>
   </data>

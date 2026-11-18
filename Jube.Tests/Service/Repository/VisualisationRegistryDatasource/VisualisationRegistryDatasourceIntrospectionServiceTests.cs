@@ -452,7 +452,7 @@ namespace Jube.Test.Service.Repository.VisualisationRegistryDatasource
             var update = NewDatasource(registryId, "SELECT 'b'::text AS \"Second\", 1.5::real AS \"First\"");
             update.Id = saved.Id;
             update.Name = saved.Name;
-            update.Version = saved.Version.GetValueOrDefault();
+            update.Version = saved.Version;
 
             await service.UpdateAsync(update);
 

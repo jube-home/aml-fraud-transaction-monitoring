@@ -12,38 +12,12 @@
  -->
 
 <script setup vapor lang="ts">
-import {ref, watch} from 'vue'
 import {useI18n} from 'vue-i18n'
-import {useRoute, useRouter} from 'vue-router'
 import ModelStory from '../components/ModelStory.vue'
+import {useStoryPath} from '../composables/useStoryPath'
 
 const {t} = useI18n()
-const route = useRoute()
-const router = useRouter()
-
-function queryPath(): string | undefined {
-  return typeof route.query.path === 'string' ? route.query.path : undefined
-}
-
-const start = ref(queryPath())
-const generation = ref(0)
-let written = queryPath()
-
-function remember(text: string): void {
-  written = text === '' ? undefined : text
-  void router.replace({query: {...route.query, path: written}})
-}
-
-watch(
-  () => queryPath(),
-  (now) => {
-    if (now === written) return
-
-    written = now
-    start.value = now
-    generation.value += 1
-  },
-)
+const {start, generation, remember} = useStoryPath()
 </script>
 
 <template>

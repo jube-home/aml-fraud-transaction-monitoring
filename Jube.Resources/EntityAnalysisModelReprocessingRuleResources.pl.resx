@@ -82,7 +82,7 @@
     <value>Próbka ponownego przetwarzania musi mieścić się w przedziale od 0 do 100 procent.</value>
   </data>
     <data name="ReprocessingValueRange" xml:space="preserve">
-    <value>Wartość interwału ponownego przetwarzania nie może być ujemna.</value>
+    <value>Wartość interwału ponownego przetwarzania musi wynosić zero lub więcej i mieścić się w limicie dla wybranego interwału.</value>
   </data>
     <data name="ReprocessingIntervalInvalid" xml:space="preserve">
     <value>Interwał ponownego przetwarzania musi być wyrażony w minutach, godzinach, dniach lub miesiącach.</value>

@@ -37,7 +37,7 @@ export default mergeConfig(
     test: {
       environment: 'jsdom',
       setupFiles: ['./src/test-support/wireSchema.ts'],
-      exclude: [...configDefaults.exclude, 'e2e/**'],
+      exclude: [...configDefaults.exclude, 'e2e/**', 'docs-shots/**'],
       root: fileURLToPath(new URL('./', import.meta.url)),
       server: {deps: {inline: true}},
       testTimeout: 60_000,

@@ -111,4 +111,7 @@
     <data name="RiskQaSampleRateOutOfRange" xml:space="preserve">
     <value>Le taux d'échantillonnage de la revue qualité doit être compris entre 0 et 0.5.</value>
   </data>
+    <data name="ServiceLevelTargetOutOfRange" xml:space="preserve">
+    <value>Un objectif de niveau de service doit être compris entre 1 et 525600 minutes, ou laissé vide s'il n'y a pas d'objectif.</value>
+  </data>
 </root>

@@ -27,7 +27,7 @@ export interface GraphFlow {
 
 export interface GraphAddress {
   view: GraphView
-  hops: GraphHops
+  hops: GraphHops | null
   layout: GraphLayoutId | null
   edges: string[]
   expanded: string[]
@@ -77,7 +77,7 @@ export const maximumFlowTolerance = 0.9
 
 export const defaultGraphAddress: GraphAddress = {
   view: 'hops',
-  hops: 2,
+  hops: null,
   layout: null,
   edges: [],
   expanded: [],
@@ -119,10 +119,10 @@ function list(text: string | undefined, limit: number): string[] {
   return [...seen]
 }
 
-function hopsOf(text: string | undefined, fallback: GraphHops): GraphHops {
+function hopsOf(text: string | undefined): GraphHops | null {
   const value = Number(text)
 
-  return value === 1 || value === 2 || value === 3 ? value : fallback
+  return value === 1 || value === 2 || value === 3 ? value : null
 }
 
 function layoutOf(text: string | undefined): GraphLayoutId | null {
@@ -189,7 +189,7 @@ function viewOf(text: string | undefined): GraphView {
 export function parseGraphAddress(query: Query): GraphAddress {
   return {
     view: viewOf(first(query.gv)),
-    hops: hopsOf(first(query.gh), defaultGraphAddress.hops),
+    hops: hopsOf(first(query.gh)),
     layout: layoutOf(first(query.gl)),
     edges: list(first(query.ge), maximumEdgeKinds),
     expanded: list(first(query.gx), maximumExpanded),
@@ -214,7 +214,7 @@ export function serialiseGraphAddress(address: GraphAddress): Record<string, str
 
   if (address.view === 'relevance') query.gv = 'r'
   if (address.view === 'flow') query.gv = 'f'
-  if (address.hops !== defaultGraphAddress.hops) query.gh = String(address.hops)
+  if (address.hops !== null) query.gh = String(address.hops)
   if (address.layout !== null) query.gl = String(address.layout)
   if (address.edges.length > 0) query.ge = address.edges.join(',')
   if (address.expanded.length > 0) query.gx = address.expanded.join(',')

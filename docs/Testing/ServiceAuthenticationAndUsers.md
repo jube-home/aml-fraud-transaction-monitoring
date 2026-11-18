@@ -627,8 +627,6 @@ Category: Service. Collection: Database.
 | `AUserAdministratorWithoutTheNewPermissionCannotPutAUserInARoleCarryingItAsync` | Theory | A user administrator without the new permission cannot put a user in a role carrying it. |
 | `AUserAdministratorHoldingAllThreeCanPutAUserInARoleCarryingAllThreeAsync`      | Fact   | A user administrator holding all three can put a user in a role carrying all three.      |
 
-<!-- TODO(docs): owner to confirm this catalogue entry after the first run of the new tests (they were written, not run). -->
-
 ### TotpAuthenticatorTests
 
 `Jube.Test.Mfa.TotpAuthenticatorTests` — 11 tests. Category: Unit.

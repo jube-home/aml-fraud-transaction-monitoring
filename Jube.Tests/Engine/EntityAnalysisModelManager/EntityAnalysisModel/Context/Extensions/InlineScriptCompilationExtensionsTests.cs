@@ -13,6 +13,8 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -21,6 +23,7 @@ using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions;
 using Jube.Engine.EntityAnalysisModelInvoke.Context.Extensions.ReflectionHelpers;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload;
 using Jube.Engine.EntityAnalysisModelInvoke.Models.Payload.EntityAnalysisModelInstanceEntryPayload.TasksPerformance;
+using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Context.Extensions;
 using Jube.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Models.Models.EntityAnalysisModelInlineScript;
 using Jube.Test.Infrastructure;
 using Xunit;
@@ -53,7 +56,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
                                                            SearchKeyCacheInterval = "d",
                                                            SearchKeyCacheValue = 1,
                                                            SearchKeyCacheSample = true,
-                                                           SearchKeyCacheFetchLimit = 100,
+                                                           SearchKeyCacheFetchLimit = 250,
                                                            SearchKeyCacheTtlInterval = "h",
                                                            SearchKeyCacheTtlValue = 1)]
                                                        public string UserAgent { get; set; } = string.Empty;
@@ -125,6 +128,31 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
                                                     End Function
                                                 End Class
                                                 """;
+
+        private const string BooleanScript = """
+                                             using System.Threading.Tasks;
+                                             using Jube.Engine.Attributes.Events;
+                                             using Jube.Engine.Attributes.Properties;
+                                             using Jube.Engine.EntityAnalysisModelInvoke.Context;
+                                             using Jube.Engine.Interfaces;
+
+                                             public class BooleanInlineScript : IInlineScript
+                                             {
+                                                 [ReportTable]
+                                                 public bool Flagged { get; set; }
+
+                                                 public bool? Cleared { get; set; }
+
+                                                 [PayloadEvent]
+                                                 public async Task<bool> ExecuteAsync(Context context)
+                                                 {
+                                                     Flagged = true;
+                                                     Cleared = false;
+                                                     await Task.CompletedTask;
+                                                     return true;
+                                                 }
+                                             }
+                                             """;
 
         private static Jube.Engine.EntityAnalysisModelInvoke.Context.Context NewContext(
             EntityAnalysisModelInlineScript script)
@@ -222,7 +250,7 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
             searchKey.SearchKeyCacheInterval.Should().Be("d");
             searchKey.SearchKeyCacheValue.Should().Be(1);
             searchKey.SearchKeyCacheSample.Should().BeTrue();
-            searchKey.SearchKeyCacheFetchLimit.Should().Be(100);
+            searchKey.SearchKeyCacheFetchLimit.Should().Be(250);
             searchKey.SearchKeyCacheTtlInterval.Should().Be("h");
             searchKey.SearchKeyCacheTtlValue.Should().Be(1);
         }
@@ -306,6 +334,66 @@ namespace Jube.Test.Engine.EntityAnalysisModelManager.EntityAnalysisModel.Contex
                 .Subject;
             archiveKey.Key.Should().Be("UserAgent");
             archiveKey.KeyValueString.Should().Be("MyApp/1.0");
+        }
+
+        [Fact]
+        public async Task ABooleanPropertyIsAddedToThePayloadAsABooleanAndArchivedAsABooleanKeyAsync()
+        {
+            var inlineScript = InlineScriptTestCompiler.CompileValid(16, BooleanScript);
+            var context = NewContext(inlineScript);
+
+            var result = await ReflectInlineScriptHelper.ExecuteAsync(inlineScript, context);
+
+            result.Should().BeTrue();
+
+            var flagged = context.EntityAnalysisModelInstanceEntryPayload.Payload["Flagged"];
+            flagged.Type.Should().Be(InternalValue.ValueType.Bool);
+            flagged.AsBool().Should().BeTrue();
+
+            var cleared = context.EntityAnalysisModelInstanceEntryPayload.Payload["Cleared"];
+            cleared.Type.Should().Be(InternalValue.ValueType.Bool);
+            cleared.AsBool().Should().BeFalse();
+
+            var archiveKey = context.EntityAnalysisModelInstanceEntryPayload.ArchiveKeys.Should().ContainSingle()
+                .Subject;
+            archiveKey.Key.Should().Be("Flagged");
+            archiveKey.KeyValueBoolean.Should().Be(1);
+            archiveKey.KeyValueString.Should().BeNull();
+        }
+
+        [Theory]
+        [InlineData("First.dll;Second.dll")]
+        [InlineData("First.dll,Second.dll")]
+        [InlineData(" First.dll ; Second.dll ;")]
+        public void DeclaredDependenciesAreSplitOnSemicolonOrCommaAndTrimmed(string dependencies)
+        {
+            var binaryPath = Path.Combine(Path.GetTempPath(), "jube-inline-script-binary");
+            var frameworkPath = Path.Combine(Path.GetTempPath(), "jube-inline-script-framework");
+
+            var withoutDependencies =
+                InlineScriptCompilationExtensions.BuildDependencyArray(binaryPath, frameworkPath, null);
+
+            var withDependencies =
+                InlineScriptCompilationExtensions.BuildDependencyArray(binaryPath, frameworkPath, dependencies);
+
+            withDependencies.Skip(withoutDependencies.Length).Should().Equal(
+                Path.Combine(frameworkPath, "First.dll"),
+                Path.Combine(frameworkPath, "Second.dll"));
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public void NoDeclaredDependenciesAddsNothingBeyondTheLoadedAssembliesAndCryptography(string dependencies)
+        {
+            var binaryPath = Path.Combine(Path.GetTempPath(), "jube-inline-script-binary");
+            var frameworkPath = Path.Combine(Path.GetTempPath(), "jube-inline-script-framework");
+
+            var references =
+                InlineScriptCompilationExtensions.BuildDependencyArray(binaryPath, frameworkPath, dependencies);
+
+            references[^1].Should().Be(Path.Combine(frameworkPath, "Jube.Cryptography.dll"));
         }
 
         [Fact]

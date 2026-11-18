@@ -141,15 +141,11 @@ Tests of the cache layer: Redis serialisation, callbacks, observability and cach
 
 ### CachePayloadLatestRepositoryDeleteByReferenceDateAsyncPostgresBackedTests
 
-`Jube.Test.Cache.Resp.CachePayloadLatestRepositoryDeleteByReferenceDateAsyncPostgresBackedTests` — 1 test. Category:
-|
-`DeleteByReferenceDateAsyncAppliesAPerSearchKeyOverrideAndFallsBackToTheGlobalThresholdAndPersistsTheRealReferenceDateAsync` |
-Fact | Delete by reference date async applies a per search key override and falls back to the global threshold and
-persists the real reference date. |
-Service. Collection: Database.
+`Jube.Test.Cache.Resp.CachePayloadLatestRepositoryDeleteByReferenceDateAsyncPostgresBackedTests` — 1 test. Category: Service. Collection: Database.
 
-| Test | Kind | Verifies |
-|------|------|----------|
+| Test                                                                                                                         | Kind | Verifies                                                                                                                                                                                                                                                   |
+|------------------------------------------------------------------------------------------------------------------------------|------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `DeleteByReferenceDateAsyncAppliesAPerSearchKeyOverrideAndFallsBackToTheGlobalThresholdAndPersistsTheRealReferenceDateAsync` | Fact | Pruning by reference date removes an expired entry under its search key's own retention interval, falls back to the global threshold for a search key with no override, and records the real reference date on each removal batch rather than a threshold. |
 
 ### CachePayloadLatestRepositoryIntervalTests
 
@@ -197,6 +193,14 @@ Service. Collection: Database.
 | `DeleteFromLocalCacheDoesNothingWhenLocalCacheIsDisabled`                         | Fact | Delete from local cache does nothing when local cache is disabled.                                |
 | `GetPayloadBatchAsyncPrefersLocalCacheAndFallsBackToRespOnMissAsync`              | Fact | Get payload batch async prefers local cache and falls back to redis on miss.                      |
 | `GetPayloadBatchAsyncAlwaysGoesToRespWhenLocalCacheDisabledAsync`                 | Fact | Get payload batch async always goes to redis when local cache disabled.                           |
+
+### CachePayloadRepositoryFillTests
+
+`Jube.Test.Cache.Resp.CachePayloadRepositoryFillTests` — 1 tests. Category: Service. Collection: Database.
+
+| Test | Kind | Verifies |
+|------|------|----------|
+| `TheStartupFillStoresEachPayloadUnderTheKeyThatALookupAsksForAsync` | Fact | The startup fill stores each payload under the key that a lookup asks for. |
 
 ### CachePayloadRepositoryTests
 
@@ -321,7 +325,7 @@ JubeCache.
 
 ### PayloadPruneAndAbstractionRuleFetchTests
 
-`Jube.Test.Cache.Resp.PayloadPruneAndAbstractionRuleFetchTests` — 1 test. Category: Service. Collection: Database.
+`Jube.Test.Cache.Resp.PayloadPruneAndAbstractionRuleFetchTests` — 2 tests. Category: Service. Collection: Database.
 
 | Test                                                                                             | Kind | Verifies                                                                                                   |
 |--------------------------------------------------------------------------------------------------|------|------------------------------------------------------------------------------------------------------------|

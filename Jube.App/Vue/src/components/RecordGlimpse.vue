@@ -13,16 +13,18 @@
 
 
 <script setup vapor lang="ts">
-import {computed, ref} from 'vue'
+import {computed, ref, watch} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {useQuery} from '@tanstack/vue-query'
-import {ChevronRight} from 'lucide-vue-next'
+import {ChevronRight, ListTree} from 'lucide-vue-next'
 import {queryKeys} from '../api/queryKeys'
 import {formModelApi} from '../formModel/api'
-import {iconForArea} from '../formModel/areaIcons'
 import {parentValueOf, recordName, summariseChildren} from '../formModel/hierarchy'
 import type {FormChild, RecordValues} from '../formModel/types'
 import type {StoryStep} from '../story/path'
+import {viewStateFor} from '../story/viewState'
+import ChildHubCard from './ChildHubCard.vue'
+import HubDeck from './HubDeck.vue'
 
 const props = defineProps<{
   child: FormChild
@@ -50,10 +52,7 @@ const rows = useQuery({
   retry: false,
 })
 
-const icon = computed(() => iconForArea(props.child.area))
 const summary = computed(() => summariseChildren(model.data.value, rows.data.value ?? []))
-const failed = computed(() => model.isError.value || rows.isError.value)
-const loading = computed(() => !failed.value && rows.data.value === undefined)
 const visible = computed(() => (rows.data.value ?? []).slice(0, shown))
 const grandchildren = computed(() =>
   [...(model.data.value?.children ?? [])].sort((a, b) => a.order - b.order),
@@ -61,25 +60,18 @@ const grandchildren = computed(() =>
 const canOpen = computed(() => model.data.value?.operations.includes('read') ?? false)
 const lockName = computed(() => model.data.value?.lockFields[0])
 
-const meta = computed(() => {
-  if (loading.value || failed.value) return ''
+const kept = viewStateFor('glimpses')
+const glimpseKey = `${props.child.area}:${props.parentValue ?? ''}`
+const mine = (kept.glimpses[glimpseKey] ??= {open: false, rows: []})
+const expanded = ref(mine.open)
+const opened = ref<number[]>([...mine.rows])
 
-  if (summary.value.total === 0) return t('hierarchy.none')
-
-  const parts: string[] = []
-
-  if (summary.value.active !== null)
-    parts.push(t('hierarchy.active', {count: summary.value.active}))
-
-  if (summary.value.locked !== null && summary.value.locked > 0) {
-    parts.push(t('hierarchy.locked', {count: summary.value.locked}))
-  }
-
-  return parts.join(', ')
+watch(expanded, (now) => {
+  mine.open = now
 })
-
-const expanded = ref(false)
-const opened = ref<number[]>([])
+watch(opened, (now) => {
+  mine.rows = [...now]
+})
 
 function idOf(row: RecordValues): number {
   return row[model.data.value!.keys.id] as number
@@ -119,49 +111,28 @@ function open(row: RecordValues, below: StoryStep[] = []): void {
     :class="expanded ? 'col-span-full' : ''"
     :data-testid="`glimpse-${child.area}`"
   >
-    <div
-      class="flex min-w-0 items-center gap-2.5 rounded-field border border-base-300 bg-base-100 py-2 ps-3 pe-2"
+    <ChildHubCard
+      :child="child"
+      :child-model="model.data.value"
+      :parent-value="parentValue"
+      unordered
+      @open="emit('open', [{area: child.area}])"
+      @add="emit('open', [{area: child.area, startNew: true}])"
     >
-    <component :is="icon" class="size-5 shrink-0 text-secondary" aria-hidden="true"/>
-    <div class="min-w-0 flex-1">
-      <span class="block truncate text-sm font-medium" :title="child.label">{{ child.label }}</span>
-      <span
-        class="block min-h-4 truncate text-xs text-secondary"
-        :data-testid="`glimpse-${child.area}-meta`"
-      >{{ meta }}</span
+      <button
+        type="button"
+        class="btn btn-ghost btn-xs btn-square relative z-10 shrink-0"
+        :disabled="summary.total === 0"
+        :aria-expanded="expanded"
+        :aria-label="
+          t(expanded ? 'crud.summaryHide' : 'crud.summaryShow', {label: child.label})
+        "
+        :data-testid="`glimpse-${child.area}-toggle`"
+        @click="expanded = !expanded"
       >
-    </div>
-    <span
-      v-if="loading"
-      key="loading"
-      class="skeleton h-5 w-8 shrink-0"
-      role="status"
-      :aria-label="t('crud.loading')"
-    ></span>
-    <span v-else-if="failed" key="failed" class="badge badge-sm badge-error shrink-0 font-mono">{{
-        t('hierarchy.failed')
-      }}</span>
-    <span
-      v-else
-      key="count"
-      class="badge badge-sm badge-ghost shrink-0 font-mono tabular-nums"
-      :data-testid="`glimpse-${child.area}-count`"
-    >{{ summary.total }}</span
-    >
-    <button
-      type="button"
-      class="btn btn-ghost btn-xs btn-circle"
-      :disabled="summary.total === 0"
-      :aria-expanded="expanded"
-      :aria-label="
-        t(expanded ? 'crud.summaryHide' : 'crud.summaryShow', {label: child.label})
-      "
-      :data-testid="`glimpse-${child.area}-toggle`"
-      @click="expanded = !expanded"
-    >
-      <ChevronRight aria-hidden="true" class="size-4" :class="expanded ? 'rotate-90' : 'rtl:rotate-180'"/>
-    </button>
-    </div>
+        <ListTree aria-hidden="true" class="size-4" :class="expanded ? 'text-primary' : ''"/>
+      </button>
+    </ChildHubCard>
     <ul
       v-if="expanded && summary.total > 0"
       class="list rounded-field border border-base-300 bg-base-100"
@@ -228,13 +199,15 @@ function open(row: RecordValues, below: StoryStep[] = []): void {
           class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3"
           :aria-label="nameOf(row)"
         >
-          <RecordGlimpse
-            v-for="grandchild in grandchildren"
-            :key="grandchild.area"
-            :child="grandchild"
-            :parent-value="parentOf(grandchild, row)"
-            @open="(below) => open(row, below)"
-          />
+          <HubDeck bare>
+            <RecordGlimpse
+              v-for="grandchild in grandchildren"
+              :key="grandchild.area"
+              :child="grandchild"
+              :parent-value="parentOf(grandchild, row)"
+              @open="(below) => open(row, below)"
+            />
+          </HubDeck>
         </ul>
         </div>
       </li>

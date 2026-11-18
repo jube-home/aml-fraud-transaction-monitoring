@@ -221,8 +221,7 @@ would fail even if the package manager were still there).
 This server's own HTTP contract is deliberately synchronous and stateless: one HTTP request, one script, one JSON
 response, no job IDs, no polling, no blob storage — the background daemon offload described above changes how the main
 process handles a request internally, not this contract. Job orchestration, state tracking and the analytics
-orchestrator that calls this service are handled in Jube.App, wired up separately once this branch merges — not part of
-this server.
+orchestrator that calls this service are handled in Jube.App, and are not part of this server.
 
 ## Extracting a structured result from `consoleOutput` (Jube.App convention)
 

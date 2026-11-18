@@ -82,24 +82,24 @@
     <value>Interwał TTL klucza wyszukiwania musi mieć wartość Seconds, Minutes, Hours lub Days.</value>
   </data>
     <data name="SearchKeyTtlIntervalValueRange" xml:space="preserve">
-    <value>Wartość interwału TTL klucza wyszukiwania musi być równa zero lub większa.</value>
+    <value>Wartość interwału TTL klucza wyszukiwania musi wynosić zero lub więcej i mieścić się w limicie dla wybranego interwału.</value>
   </data>
     <data name="SearchKeyFetchLimitRange" xml:space="preserve">
-    <value>Limit pobierania klucza wyszukiwania musi być równy zero lub większy.</value>
+    <value>Limit pobierania klucza wyszukiwania musi mieścić się w zakresie od 0 do 1 000 000.</value>
   </data>
     <data name="SearchKeyCacheIntervalInvalid" xml:space="preserve">
     <value>Interwał pamięci podręcznej klucza wyszukiwania musi mieć wartość Seconds, Minutes, Hours lub Days.</value>
   </data>
     <data name="SearchKeyCacheValueRange" xml:space="preserve">
-    <value>Wartość interwału pamięci podręcznej klucza wyszukiwania musi być równa zero lub większa.</value>
+    <value>Wartość interwału pamięci podręcznej klucza wyszukiwania musi wynosić zero lub więcej i mieścić się w limicie dla wybranego interwału.</value>
   </data>
     <data name="SearchKeyCacheFetchLimitRange" xml:space="preserve">
-    <value>Limit pobierania z pamięci podręcznej klucza wyszukiwania musi być równy zero lub większy.</value>
+    <value>Limit pobierania z pamięci podręcznej klucza wyszukiwania musi mieścić się w zakresie od 0 do 1 000 000.</value>
   </data>
     <data name="SearchKeyCacheTtlIntervalInvalid" xml:space="preserve">
     <value>Interwał TTL pamięci podręcznej klucza wyszukiwania musi mieć wartość Seconds, Minutes, Hours lub Days.</value>
   </data>
     <data name="SearchKeyCacheTtlValueRange" xml:space="preserve">
-    <value>Wartość interwału TTL pamięci podręcznej klucza wyszukiwania musi być równa zero lub większa.</value>
+    <value>Wartość interwału TTL pamięci podręcznej klucza wyszukiwania musi wynosić zero lub więcej i mieścić się w limicie dla wybranego interwału.</value>
   </data>
 </root>

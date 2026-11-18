@@ -73,6 +73,9 @@
     <data name="KeyMaxLength" xml:space="preserve">
     <value>يجب ألا يزيد المفتاح عن {0} حرفًا.</value>
   </data>
+    <data name="IconInvalid" xml:space="preserve">
+    <value>الأيقونة ليست من أيقونات Lucide المتاحة للرسم البياني.</value>
+  </data>
     <data name="AmountKeyRequired" xml:space="preserve">
     <value>مفتاح المبلغ مطلوب لتدفق الأموال.</value>
   </data>

@@ -589,7 +589,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
         [Description("Registers a new Abstraction Rule under a Model in the caller's tenant. Not idempotent -- " +
                      "calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelAbstractionRuleCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<AbstractionRulePoco> InsertAsync(
+        public async Task<EntityAnalysisModelAbstractionRuleDto> InsertAsync(
             [Description("The Abstraction Rule to create.")]
             EntityAnalysisModelAbstractionRuleDto? model,
             CancellationToken token = default)
@@ -636,7 +636,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
                         $"user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelAbstractionRuleMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -876,7 +876,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
         [Description("Updates an existing Abstraction Rule in the caller's tenant, identified by its Id. " +
                      "Idempotent -- repeating the same update has no further effect beyond incrementing Version.")]
         [ServiceOperation("EntityAnalysisModelAbstractionRuleUpdate", OperationKind.Write, Idempotent = true)]
-        public async Task<AbstractionRulePoco> UpdateAsync(
+        public async Task<EntityAnalysisModelAbstractionRuleDto> UpdateAsync(
             [Description("The Abstraction Rule to update. Id selects the row; identity/tenant/audit fields are " +
                          "server-owned and ignored.")]
             EntityAnalysisModelAbstractionRuleDto? model,
@@ -937,7 +937,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
                         $"EntityAnalysisModelAbstractionRule.Update: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelAbstractionRuleMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1086,7 +1086,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
                      "approval cycle without requiring an edit. Use after a rejection was explained and the " +
                      "maker still wants the same change (including a delete) approved.")]
         [ServiceOperation("EntityAnalysisModelAbstractionRuleResubmit", OperationKind.Write, Idempotent = false)]
-        public async Task<AbstractionRulePoco> ResubmitAsync(
+        public async Task<EntityAnalysisModelAbstractionRuleDto> ResubmitAsync(
             [Description("Numeric identifier of the Abstraction Rule to resubmit.")]
             int id,
             [Description("Optional note explaining why this is being resubmitted.")]
@@ -1128,7 +1128,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
                         $"EntityAnalysisModelAbstractionRule.Resubmit: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelAbstractionRuleMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -1164,7 +1164,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
                      "approval cycle. Use when the maker agrees with the rejection and wants to abandon the " +
                      "change.")]
         [ServiceOperation("EntityAnalysisModelAbstractionRuleRetract", OperationKind.Write, Idempotent = false)]
-        public async Task<AbstractionRulePoco> RetractAsync(
+        public async Task<EntityAnalysisModelAbstractionRuleDto> RetractAsync(
             [Description("Numeric identifier of the Abstraction Rule to retract.")]
             int id,
             [Description("Optional note explaining why this is being retracted.")]
@@ -1206,7 +1206,7 @@ namespace Jube.Service.EntityAnalysisModelAbstractionRule
                         $"EntityAnalysisModelAbstractionRule.Retract: Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelAbstractionRuleMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

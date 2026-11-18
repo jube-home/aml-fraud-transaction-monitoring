@@ -14,7 +14,8 @@
 <script setup vapor lang="ts">
 import {computed, ref, watch} from 'vue'
 import {useI18n} from 'vue-i18n'
-import {useMutation, useQueryClient} from '@tanstack/vue-query'
+import {useMutation, useQuery, useQueryClient} from '@tanstack/vue-query'
+import {hasPermission, meQueryOptions} from '../auth/me'
 import DataGrid from '../components/DataGrid.vue'
 import GridExportButtons from '../components/GridExportButtons.vue'
 import type {GridActionEvent, GridColumn} from '../components/dataGridTypes'
@@ -33,7 +34,7 @@ import {
 import {sortKeys} from './labels'
 import BulkCloseDialog from './BulkCloseDialog.vue'
 import BulkReassignDialog from './BulkReassignDialog.vue'
-import {bulkApi, skipSummary, type BulkResult} from './bulkApi'
+import {bulkApi, bulkReassignPermission, skipSummary, type BulkResult} from './bulkApi'
 import {useCaseSelection} from './caseSelection'
 import type {CasePage, CaseRow} from './types'
 
@@ -55,6 +56,8 @@ const toasts = useToasts()
 const client = useQueryClient()
 const selection = useCaseSelection()
 const panel = ref<'close' | 'reassign' | null>(null)
+const me = useQuery(meQueryOptions)
+const canReassign = computed(() => hasPermission(me.data.value, bulkReassignPermission))
 
 watch(
   () => props.page.rows,
@@ -260,6 +263,7 @@ function pick(event: Event): void {
         {{ t('cases.bulk.close') }}
       </button>
       <button
+        v-if="canReassign"
         type="button"
         class="btn btn-sm"
         data-testid="cases-bulk-reassign"
@@ -285,6 +289,7 @@ function pick(event: Event): void {
       @cancel="panel = null"
     />
     <BulkReassignDialog
+      v-if="canReassign"
       :open="panel === 'reassign'"
       :count="selection.count.value"
       :busy="reassignSelected.isPending.value"

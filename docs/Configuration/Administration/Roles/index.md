@@ -8,148 +8,94 @@ grand_parent: Configuration
 
 # Roles
 
-<!-- TODO(docs): the previous revision of this page described the Razor tree view (Administration >> Security >> Roles as a tree with New, Add and Back buttons) and its screenshots. Every sentence below has been rewritten from the DTO, the services and the Vue components, not from the running UI; the owner should read the page end to end against the running UI. -->
+A Role is a named set of permissions. Users are not given permissions one by one, rather a [User](../Users/index.html) is allocated to exactly one Role and receives whatever the Role grants, with permissions being allocated to the Role as described in [Permissions](../Permissions/index.html). Roles are also allocated to individual records, such as Models, Case Workflows, Visualisations and Graphs, for the purposes of deciding who may use those records, as described in Allocating Roles to records below.
 
-A Role is a named set of permissions. Users are not given permissions one by one: a User is allocated exactly one Role
-(the Role field of the [User](../Users/index.html) record) and receives whatever the Role grants. Permissions are
-allocated to the Role on the [Permissions](../Permissions/index.html) page. Roles are also allocated to individual
-records such as Models, Case Workflows, Visualisations and Graphs, to decide who may use those records (see Allocating
-Roles to Records below).
+Roles belong to a tenant, and it follows that a tenant administrator sees and changes only the Roles of their own tenant. The same Name may be used by Roles in different tenants.
 
-Roles belong to a tenant. A tenant administrator sees and changes only the Roles of their own tenant.
+## Where it lives
 
-## Where to find Roles
+Navigate through the menu to Administration, then Security, then the Roles card. The Security page is arranged as a story, in the same manner as Models, and there is no longer a tree of roles. The Roles card presents the list of Roles in the tenant, with the columns Name and Active. Creating, changing and deleting a Role follows the common manner described in [Child Objects](../../../Navigation/ChildObjects/index.html), with the exception that Roles are not subject to approval, which is to say that a change takes effect upon being saved.
 
-Roles are one card of the Security story at Administration >> Security (route `/administration/security`). The card is
-shown to a user holding permission 34 (Roles). The Users card needs permission 35 and the Permissions card permission
-36;
-the three are separate so that duties can be split.
+Upon opening a Role, two cards are presented above the Properties form: Users, which opens the list of the users holding the Role and from which a user can be created directly in that Role, and Permissions, which opens the allocation of permissions for the Role and is presented only to a holder of permission 36.
 
-<!-- TODO(screenshot): file=role-registry-security-story.png route=/administration/security state="Security story with the Roles card showing a count of roles, alongside Users, Permissions, Sign-ins and Sign-outs" -->
-![Security story with the Roles card](role-registry-security-story.png)
+{% comment %}SHOT id=administration-roles-role-record
+     route=/administration/security
+     steps=open-hub:Roles, open-row:Administrator
+     frame=page
+     state=the Security page with the Roles step collapsed and the Administrator Role opened, showing the Users and Permissions cards above the Properties form with the Identity group expanded and the Audit group collapsed
+     conveys=a Role is a small record, and its users and permissions hang from it as cards
+     alt=The Administrator Role opened on the Security page, with cards for its Users and Permissions and the Properties form showing Name, Active and Locked{% endcomment %}
 
-Opening the Roles card shows the list of Roles in the tenant, with the Name and Active columns:
+![The Administrator Role opened on the Security page, with cards for its Users and Permissions and the Properties form showing Name, Active and Locked](administration-roles-role-record.png)
 
-<!-- TODO(screenshot): file=role-registry-list.png route=/administration/security state="Roles list with three roles, one inactive" -->
-![List of Roles](role-registry-list.png)
+## Fields
 
-<!-- TODO(docs): confirm the list offers search, sort, CSV and Excel export as other lists do, and whether Version is hidden by default (the DTO hides it). -->
+| Value  | Description                                                                                                                                             | Example       |
+|--------|---------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| Name   | The name of the Role, as shown when allocating permissions, users or records to it.                                                                     | Fraud analyst |
+| Active | Whether the Role grants anything. Where it is off, every user holding the Role loses all permissions, as described below.                               | True          |
+| Locked | Whether the Role is protected from change. Where it is on, the Role cannot be edited or deleted, as described below.                                    | False         |
 
-## Role properties
+The collapsed Audit group shows the date and user of creation and of the last update, alongside the version.
 
-<!-- TODO(screenshot): file=role-registry-edit.png route=/administration/security state="An existing Role open: Identity group with Name, Active, Locked; collapsed Audit group; Users and Permissions cards beneath" -->
-![Editing a Role](role-registry-edit.png)
+## Validation
 
-| Field  | Group    | What it does                                                                                                                                      |
-|--------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
-| Name   | Identity | Display name shown when allocating Permissions or Users. Required, at most 256 characters, unique within the tenant, compared case-insensitively. |
-| Active | Identity | When off, the Role grants nothing: every User holding it loses all permissions (see Active below).                                                |
-| Locked | Identity | When on, the Role cannot be edited or deleted (see Locked below).                                                                                 |
-| Audit  | Audit    | Created and updated user and date and version. Read-only, collapsed by default.                                                                   |
+A Role is validated in the server, and is rejected where the Name is empty, is longer than 256 characters, or is already in use by another Role in the tenant without regard to case. An invalid Role is refused with a 400 response, and the message is written beneath the field.
 
-<!-- TODO(docs): the DTO also carries a Description property that is not stored and always returns null, the form does not show it. Confirm nothing in the user guide should mention it. -->
-
-The record page also offers the Users in the Role (the child list of the Role) and, to a holder of permission 36, the
-Permissions card for the Role.
-
-### Validation
-
-| Field | Refusal                                             |
-|-------|-----------------------------------------------------|
-| Name  | Required; at most 256 characters; unique in tenant. |
-
-The same Name may be used by Roles in different tenants. The server refuses an invalid Role with a 400 response and the
-field message, the page shows the message beside the
-field. <!-- TODO(docs): confirm the wording of the messages in each language against the UI. -->
+## Behaviour
 
 ### Active
 
-An inactive Role is ignored when permissions are resolved: the Users holding it have no permissions, cannot use any
-page or API that is permission gated, and are treated as inactive. Reactivating the Role restores the permissions
-immediately because permissions are read on every request, there is no cache to flush. A Role that is deleted behaves
-in the same way as an inactive one.
+An inactive Role is ignored when permissions are resolved: the users holding it have no permissions, cannot use any page or API that is subject to a permission, and are treated as inactive. Reactivating the Role restores the permissions immediately, because permissions are read on every request and there is no cache to flush. A Role that is deleted behaves in the same manner as an inactive one.
 
-The Landlord tenant is an exception. A User whose Role belongs to the landlord tenant is granted every permission in
-the catalogue whatever the Role says, and the Role's Active switch and permission grants are not consulted.
-<!-- TODO(docs): owner decision pending. This is the behaviour of PermissionValidation today (review/shell-auth.md finding 12): a landlord user whose Role is inactive still holds every permission. Reword this paragraph if the code is changed to honour Role.Active for landlords. -->
+The landlord tenant is treated differently in one respect. A user whose Role belongs to the landlord tenant is granted every permission in the catalogue, irrespective of what has been granted to the Role. The Role must nonetheless be active and not deleted, which is to say that a landlord user whose Role is inactive has no permissions, exactly as any other user.
 
 ### Locked
 
-A locked Role cannot be updated or deleted: both are refused as not found. Locking is a protection against editing, it
-does not revoke anything, the Role keeps granting its permissions. The permissions of a locked Role can still be added
-and removed on the Permissions page unless the individual grant is itself locked.
-<!-- TODO(docs): confirm with the owner whether locking a Role should also freeze its grants. The code does not (RoleRegistryPermissionRepository.ExistsRoleRegistryAsync ignores Locked). -->
+A locked Role cannot be updated or deleted, both being refused as not found. Locking is a protection against editing and does not revoke anything, hence the Role continues to grant its permissions. The permissions of a locked Role can still be added and removed in Permissions, unless the individual grant is itself locked.
 
 ### Deleting a Role
 
-Deleting is a soft delete (the row is kept, marked deleted, with who and when) and cannot be undone through the user
-interface. A Role cannot be deleted while locked. Deleting a Role that Users still hold is not blocked: those Users keep
-their record but hold no permissions until they are moved to another Role.
-<!-- TODO(docs): confirm the warning wording the UI shows before deleting a Role that has Users. -->
+Deletion is done on a logical basis (the record is kept, marked as deleted, with the user and the date) and it cannot be undone through the user interface. A Role cannot be deleted while it is locked. Deleting a Role that users still hold is not blocked: those users keep their record, yet hold no permissions until they are moved to another Role.
 
 ### Concurrent edits
 
-Each update carries the version it was loaded at. If someone else saved first, the server refuses the update with a
-conflict and the page offers to reload. A version of zero skips the check, which is what an API client that does not
-track versions sends. <!-- TODO(docs): confirm the conflict message shown by the page. -->
+Each update carries the version at which the record was loaded. If another user saved first, the server refuses the update as a conflict, and the page offers to reload the record. A version of zero skips the check, which is what an API client not tracking versions sends.
 
-## Allocating Roles to Records
+## Allocating Roles to records
 
-Besides allocating a Role to a User, a Role can be allocated to the records of several areas: Entity Analysis Models,
-Case Workflows and their Statuses, Actions, Forms, Filters, Displays, Macros and XPaths, Visualisations, Visualisation
-Datasources and Parameters, and Graphs. Those record pages show a Roles card with two lists, Available roles and
-Assigned roles, and arrows to move Roles between them (the arrows mirror in right-to-left languages). Nothing is saved
-until Save changes is pressed; Discard changes returns to the stored assignment. Only the differences are sent: one
-create per Role added and one delete per Role removed.
+Besides the allocation of a Role to a User, a Role can be allocated to the records of several areas: Models, Case Workflows and their Statuses, Actions, Forms, Filters, Displays, Macros and XPaths, Visualisations, Visualisation Datasources and Parameters, and Graphs. The record of each of these presents a Roles section with two lists, Available roles and Assigned roles, and arrows to move Roles between them, which mirror in languages reading from right to left. The actions between the lists are Assign selected, Assign all, Unassign selected and Unassign all, and a list having no Roles in it states Nothing here. Nothing is saved until Save changes is pressed, and Discard changes returns to the stored assignment, the number of changes yet to be saved being shown in the meantime. Upon saving, the section confirms Roles saved., and where the Roles cannot be read it states: The roles could not be loaded. Refresh the page to try again. Only the differences are sent, being one create for each Role added and one delete for each Role removed.
 
-<!-- TODO(screenshot): file=role-registry-allocation-transfer-list.png route=/case-workflows state="A Case Workflow Status open with the Roles card: two Roles assigned, three available, two unsaved changes" -->
-![Allocating Roles to a record](role-registry-allocation-transfer-list.png)
+Role allocation is for these records and not for Users, keeping in mind that a User holds one Role, chosen in the Role registry field of the User record.
 
-Role allocation is for these records, not for Users. A User holds one Role, chosen in the Role field of the User record.
-<!-- TODO(docs): confirm which record pages show the Roles card in the Vue UI and list them (the cards are driven by the form model of each area). -->
+The server checks every assignment: the Role must exist in the tenant of the caller, such that a Role of another tenant cannot be allocated by guessing its Guid. Each area applies its own permission to the allocation.
 
-The server checks every assignment: the Role must exist in the caller's own tenant, so a Role of another tenant cannot
-be allocated by guessing its guid. Each area applies its own permission for the allocation.
+{% comment %}SHOT id=administration-roles-allocation-to-record
+     route=/models
+     steps=open-default-model, open-hub:Cases Workflows, open-first-row, scroll-to:Roles
+     frame=record
+     state=a Case Workflow of the default model opened and scrolled to the Roles section, with one Role under Assigned roles, the remainder under Available roles, and No unsaved changes shown
+     conveys=Roles are allocated to a record by moving them between two lists on the record itself
+     alt=The Roles section of a Case Workflow, showing the Available roles and Assigned roles lists with arrows between them{% endcomment %}
 
-## Roles and Model Invocation Access
+![The Roles section of a Case Workflow, showing the Available roles and Assigned roles lists with arrows between them](administration-roles-allocation-to-record.png)
 
-Beyond user interface permissions, a Role can also be allocated to
-an [Entity Analysis Model](../../Models/Models/index.html), via the Role Manager control on the Model's own
-configuration page. This is a separate concern from the Permission allocation: it does not affect what a signed-in
-user can see or do in the user interface, it governs which users are allowed to invoke that specific model through the
-API (`api/Invoke` and related model-scoped endpoints).
+## Roles and Model invocation access
 
-A User's own Role (set on the [User](../Users/index.html) record) determines the set of models they may invoke: the
-engine continuously resolves, in the background, which Users fall under each Role allocated to a Model, and keeps that
-resolved list synchronised as Users, Roles, and Role allocations change - there is no need to restart the engine or
-explicitly resynchronise a model for a Role change to take effect. A request made with a valid identity (JWT or API Key)
-for a User outside that resolved list is rejected in the same way as an unauthenticated request, regardless of whether
-the calling User otherwise holds every relevant Permission.
+Beyond the permissions of the user interface, the allocation of a Role to a [Model](../../Models/Models/index.html), in the Roles section of the Model, serves a further purpose. It is a separate concern from the allocation of permissions: it does not affect what a signed in user can see or do in the user interface, rather it governs which users are allowed to invoke that specific Model through the API (`api/Invoke` and the related endpoints scoped to a Model).
 
-This is the mechanism that makes it practical to share a single Model Guid across multiple tenants while still routing
-each tenant's traffic only to the Models their Role is entitled to invoke -
-see [Multi Tenancy](../../../Concepts/MultiTenancy/index.html) for the broader tenancy model this supports.
-<!-- TODO(docs): retained from the previous revision, not re-verified in this review. -->
+The Role of a User determines the set of Models they may invoke. The engine continuously resolves, in the background, which Users fall under each Role allocated to a Model, and keeps that resolved list synchronised as Users, Roles and Role allocations change, henceforth there is no need to restart the engine or to explicitly synchronise a Model for a change of Role to take effect. A request made with a valid identity (JWT or API key) for a User outside the resolved list is rejected in the same manner as an unauthenticated request, irrespective of whether the calling User otherwise holds every relevant permission.
 
-## Security notes
+This is the mechanism that makes it practical to share a single Model Guid across multiple tenants while still routing the traffic of each tenant only to the Models that their Role is entitled to invoke, as described in [Multi Tenancy](../../../Concepts/MultiTenancy/index.html).
 
-| Permission | What it allows                                                                     |
-|------------|------------------------------------------------------------------------------------|
-| 34         | Create, change and delete Roles of the tenant. Cannot grant permissions to a Role. |
-| 36         | Grant and revoke permissions on Roles of the tenant. Cannot create Roles or Users. |
-| 35         | Create Users and move them between the Roles of the tenant.                        |
+## Permissions and security
 
-Listing Roles (needed by pickers) is also allowed to holders of 34, 35 and 36 and of the workflow, case, visualisation
-and model permissions that allocate Roles to records (6, 18 to 25, 31 to 33).
+| Permission | Name                                     | Description                                                                              |
+|------------|------------------------------------------|------------------------------------------------------------------------------------------|
+| 34         | Read Write Security Role                 | Create, change and delete the Roles of the tenant. It cannot grant permissions to a Role. |
+| 36         | Read Write Security Role User Permission | Grant and revoke permissions on the Roles of the tenant. It cannot create Roles or Users. |
+| 35         | Read Write Security User                 | Create Users and move them between the Roles of the tenant.                              |
 
-<!-- TODO(docs): confirm the intended reading of the list above with the owner; it is taken from the service code (RoleRegistryService.listPermissions) and from PenTestRoleRegistry.Matrix_IsEnforcedPerPermissionAsync. -->
+The three are separate such that duties can be divided. Listing Roles, as is needed wherever a Role is to be chosen, is also allowed to the holders of 34, 35 and 36, and to the holders of the model, case workflow and visualisation permissions that allocate Roles to records (6, 18 to 25, and 31 to 33).
 
-Splitting 34, 35 and 36 across people gives separation of duties, but each of them is powerful in combination: a
-holder of 36 can grant only the permissions they hold themselves, to any Role of the tenant including the Role they
-hold, and can only change or remove a grant of a permission they hold.
-No one may grant, or assign a Role carrying, a permission they do not hold themselves, and no one may reset the password
-of, or issue an API key as, a user whose permissions are not a subset of their own. A refused request is answered as an
-ordinary permission refusal (403) that does not say which permission or user was involved. Renaming, deactivating,
-locking or deleting a Role is likewise refused when the Role carries a permission the caller does not hold, so a Role
-cannot be edited to get at a more privileged user. Landlord users are
-exempt. <!-- TODO(docs): owner to confirm the wording and where the rule is best explained; see review/privilege-escalation-rule.md. --> <!-- TODO(screenshot): file=roles-insufficient-privilege.png route=/administration/security state="Role grants card, a grant of a permission the signed-in user does not hold refused" -->
+Dividing 34, 35 and 36 across people gives a separation of duties, yet each is powerful in combination, and it is for this reason that no holder may act beyond their own privilege. A holder of 36 can grant only the permissions they hold themselves, to any Role of the tenant including the Role they hold, and can change or remove only a grant of a permission they hold. No one may grant, or assign a Role carrying, a permission they do not hold themselves, and no one may reset the password of, or issue an API key as, a user whose permissions are not a subset of their own. Renaming, deactivating, locking or deleting a Role is likewise refused where the Role carries a permission the caller does not hold, such that a Role cannot be edited to get at a more privileged user. Landlord users are exempt. A refused request is answered as an ordinary permission refusal (403) that does not disclose which permission or user was involved.

@@ -284,7 +284,7 @@ namespace Jube.App.Endpoints.Repository
 
                 var result = await service.InsertAsync(model, token);
 
-                return TypedResults.Ok(UserRegistryService.ToDto(result));
+                return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
             {
@@ -422,7 +422,7 @@ namespace Jube.App.Endpoints.Repository
 
                 var result = await service.UpdateAsync(model, token);
 
-                return TypedResults.Ok(UserRegistryService.ToDto(result));
+                return TypedResults.Ok(result);
             }
             catch (NotAuthenticatedException)
             {

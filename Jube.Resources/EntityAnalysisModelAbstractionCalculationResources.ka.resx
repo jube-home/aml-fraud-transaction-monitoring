@@ -55,7 +55,7 @@
     <value>ეს სახელი უკვე არსებობს.</value>
   </data>
     <data name="FunctionScriptRequired" xml:space="preserve">
-    <value>ფუნქციის სკრიპტი საჭიროა, როცა გამოთვლის ტიპია Coder.</value>
+    <value>ფუნქციის სკრიპტი საჭიროა.</value>
   </data>
     <data name="FunctionScriptMaxLength" xml:space="preserve">
     <value>ფუნქციის სკრიპტი არ უნდა აღემატებოდეს {0} სიმბოლოს.</value>

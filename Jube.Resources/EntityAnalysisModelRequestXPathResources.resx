@@ -82,24 +82,24 @@
     <value>The search key TTL interval must be Seconds, Minutes, Hours or Days.</value>
   </data>
     <data name="SearchKeyTtlIntervalValueRange" xml:space="preserve">
-    <value>The search key TTL interval value must be zero or greater.</value>
+    <value>The search key TTL interval value must be zero or more and within the limit for the chosen interval.</value>
   </data>
     <data name="SearchKeyFetchLimitRange" xml:space="preserve">
-    <value>The search key fetch limit must be zero or greater.</value>
+    <value>The search key fetch limit must be between 0 and 1,000,000.</value>
   </data>
     <data name="SearchKeyCacheIntervalInvalid" xml:space="preserve">
     <value>The search key cache interval must be Seconds, Minutes, Hours or Days.</value>
   </data>
     <data name="SearchKeyCacheValueRange" xml:space="preserve">
-    <value>The search key cache interval value must be zero or greater.</value>
+    <value>The search key cache interval value must be zero or more and within the limit for the chosen interval.</value>
   </data>
     <data name="SearchKeyCacheFetchLimitRange" xml:space="preserve">
-    <value>The search key cache fetch limit must be zero or greater.</value>
+    <value>The search key cache fetch limit must be between 0 and 1,000,000.</value>
   </data>
     <data name="SearchKeyCacheTtlIntervalInvalid" xml:space="preserve">
     <value>The search key cache TTL interval must be Seconds, Minutes, Hours or Days.</value>
   </data>
     <data name="SearchKeyCacheTtlValueRange" xml:space="preserve">
-    <value>The search key cache TTL interval value must be zero or greater.</value>
+    <value>The search key cache TTL interval value must be zero or more and within the limit for the chosen interval.</value>
   </data>
 </root>

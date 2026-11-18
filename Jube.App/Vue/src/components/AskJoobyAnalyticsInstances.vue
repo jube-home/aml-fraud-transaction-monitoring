@@ -19,6 +19,7 @@ import {RefreshCw} from 'lucide-vue-next'
 import {queryKeys} from '../api/queryKeys'
 import {useGridExpandLabels} from '../composables/useGridExpandLabels'
 import {useFormat} from '../composables/useFormat'
+import {usePagerLabels} from '../composables/usePagerLabels'
 import {directionFor} from '../i18n'
 import {useToasts} from '../stores/toasts'
 import {analyticsApi} from '../askJoobyAnalytics/api'
@@ -44,6 +45,7 @@ const props = withDefaults(
 const emit = defineEmits<{ open: [model: TrainedModel, instance: InstanceRow] }>()
 
 const {t, locale} = useI18n()
+const pagerLabels = usePagerLabels()
 const {dateTime} = useFormat()
 const queryClient = useQueryClient()
 const toasts = useToasts()
@@ -409,6 +411,7 @@ useJoobyPageContext(() => ({pageName: 'AdvancedAnalytics', state: 'list', record
       :empty-text="t('analytics.instances.empty')"
       :label="t('analytics.instances.title')"
       :page-size="10"
+      :pager-labels="pagerLabels"
       auto-height
       :expand-labels="expandLabels"
       @input="onInput"

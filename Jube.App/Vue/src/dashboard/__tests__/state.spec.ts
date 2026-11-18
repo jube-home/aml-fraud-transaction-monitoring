@@ -141,9 +141,12 @@ describe('layout', () => {
 
     expect(tileStyle(registry, tile)).toEqual({
       '--tile-columns': '3',
+      '--tile-columns-mid': '3',
       '--tile-rows': '2',
       '--tile-height': '400px',
     })
+    expect(tileStyle({...registry, columns: 12}, {...tile, columnSpan: 4})['--tile-columns-mid']).toBe('6')
+    expect(tileStyle({...registry, columns: 12}, {...tile, columnSpan: 8})['--tile-columns-mid']).toBe('12')
     expect(tileSize(registry, tile)).toEqual({width: 1500, height: 400})
     expect(tileSize(registry, {...tile, columnSpan: 0, rowSpan: 0})).toEqual({
       width: 300,

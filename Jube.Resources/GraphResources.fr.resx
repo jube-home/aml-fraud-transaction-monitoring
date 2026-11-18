@@ -175,4 +175,7 @@
     <data name="DetailCollapsed" xml:space="preserve">
     <value>{0} nœuds réduits</value>
   </data>
+    <data name="SentenceCommunityNoRate" xml:space="preserve">
+    <value>Communauté {0} de {1} nœuds : {2} confirmés sur {3} dossiers clos.</value>
+  </data>
 </root>

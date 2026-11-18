@@ -12,9 +12,10 @@
  -->
 
 <script setup vapor lang="ts">
-import {useTemplateRef, watch, type Component} from 'vue'
+import {ref, useTemplateRef, watch, type Component} from 'vue'
 import {useI18n} from 'vue-i18n'
 import {X} from 'lucide-vue-next'
+import {useConfirmStore} from '../../stores/confirm'
 
 const props = defineProps<{
   open: boolean
@@ -28,10 +29,40 @@ const emit = defineEmits<{ close: [] }>()
 
 const {t} = useI18n()
 const dialog = useTemplateRef<HTMLDialogElement>('dialog')
+const confirm = useConfirmStore()
+const edited = ref(false)
+const typedInto = 'textarea, input:not([type=checkbox], [type=radio], [type=file], [type=range])'
+
+function onInput(event: Event): void {
+  if (event.target instanceof Element && event.target.matches(typedInto)) edited.value = true
+}
+
+function holdsText(): boolean {
+  const fields = dialog.value?.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(typedInto)
+
+  return [...(fields ?? [])].some((field) => field.value.trim() !== '')
+}
+
+async function dismiss(): Promise<void> {
+  if (edited.value && holdsText()) {
+    const leave = await confirm.ask({
+      title: t('story.discard.title'),
+      body: t('crud.leave'),
+      confirmLabel: t('story.discard.confirm'),
+      cancelLabel: t('story.discard.cancel'),
+    })
+
+    if (!leave) return
+  }
+
+  emit('close')
+}
 
 watch(
   () => props.open,
   (open) => {
+    edited.value = false
+
     if (open) dialog.value?.showModal()
     else dialog.value?.close?.()
   },
@@ -40,7 +71,7 @@ watch(
 </script>
 
 <template>
-  <dialog ref="dialog" class="modal" :data-testid="testid" @cancel.prevent="emit('close')">
+  <dialog ref="dialog" class="modal" :data-testid="testid" @cancel.prevent="dismiss()">
     <div class="modal-box flex flex-col gap-4 p-0" :class="wide ? 'w-11/12 max-w-5xl' : 'max-w-lg'">
       <header
         class="flex items-center gap-3 border-b border-base-300 border-t-2 border-t-accent px-5 py-3"
@@ -53,12 +84,17 @@ watch(
           type="button"
           class="btn btn-sm btn-ghost btn-circle"
           :aria-label="t('caseDetail.decide.cancel')"
-          @click="emit('close')"
+          @click="dismiss()"
         >
           <X class="size-4" aria-hidden="true"/>
         </button>
       </header>
-      <div v-if="open" key="body" class="flex flex-col gap-4 px-5 pb-5">
+      <div
+        v-if="open"
+        key="body"
+        class="flex flex-col gap-4 px-5 pb-5"
+        @input="onInput"
+      >
         <slot></slot>
       </div>
     </div>
@@ -67,7 +103,7 @@ watch(
         type="button"
         tabindex="-1"
         :aria-label="t('caseDetail.decide.cancel')"
-        @click="emit('close')"
+        @click="dismiss()"
       ></button>
     </div>
   </dialog>

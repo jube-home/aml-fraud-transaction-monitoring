@@ -26,27 +26,39 @@ import {
   weekMs,
 } from '../riskTimeline'
 
-const base = Date.UTC(2026, 9, 5, 0, 0)
+const base = new Date(2026, 9, 5, 0, 0).getTime()
 
 describe('plottedHistory', () => {
   const at = (trigger: number, lane: number) => ({trigger, lane})
 
   it('plots every event-driven recalculation, including the first', () => {
-    const items = [at(1, 3), at(5, 3), at(7, 2)]
+    const items = [at(7, 2), at(5, 3), at(1, 3)]
 
     expect(plottedHistory(items)).toEqual(items)
   })
 
   it('leaves out a scheduled sweep that moved nothing the analyst acts on', () => {
-    const items = [at(1, 3), at(10, 3), at(5, 3)]
+    const items = [at(5, 3), at(10, 3), at(1, 3)]
 
-    expect(plottedHistory(items)).toEqual([at(1, 3), at(5, 3)])
+    expect(plottedHistory(items)).toEqual([at(5, 3), at(1, 3)])
   })
 
   it('keeps a scheduled sweep that moved the case to another lane', () => {
-    const items = [at(1, 3), at(10, 1)]
+    const items = [at(10, 1), at(1, 3)]
 
     expect(plottedHistory(items)).toEqual(items)
+  })
+
+  it('judges a sweep against the older assessment, the history arriving newest first', () => {
+    const moved = [at(5, 2), at(10, 2), at(1, 3)]
+    const unmoved = [at(5, 2), at(10, 3), at(1, 3)]
+
+    expect(plottedHistory(moved)).toEqual(moved)
+    expect(plottedHistory(unmoved)).toEqual([at(5, 2), at(1, 3)])
+  })
+
+  it('leaves out a sweep that has no older assessment to be compared with', () => {
+    expect(plottedHistory([at(1, 3), at(10, 1)])).toEqual([at(1, 3)])
   })
 })
 
@@ -61,12 +73,12 @@ describe('unit choice', () => {
 
 describe('tick alignment', () => {
   it('floors weeks to Monday and months to the first', () => {
-    const wednesday = Date.UTC(2026, 9, 7, 15, 30)
+    const wednesday = new Date(2026, 9, 7, 15, 30).getTime()
 
-    expect(new Date(floorToUnit(wednesday, 'week')).toISOString()).toBe('2026-10-05T00:00:00.000Z')
-    expect(new Date(floorToUnit(wednesday, 'month')).toISOString()).toBe('2026-10-01T00:00:00.000Z')
-    expect(new Date(floorToUnit(wednesday, 'day')).toISOString()).toBe('2026-10-07T00:00:00.000Z')
-    expect(new Date(floorToUnit(wednesday, 'hour')).toISOString()).toBe('2026-10-07T15:00:00.000Z')
+    expect(floorToUnit(wednesday, 'week')).toBe(new Date(2026, 9, 5).getTime())
+    expect(floorToUnit(wednesday, 'month')).toBe(new Date(2026, 9, 1).getTime())
+    expect(floorToUnit(wednesday, 'day')).toBe(new Date(2026, 9, 7).getTime())
+    expect(floorToUnit(wednesday, 'hour')).toBe(new Date(2026, 9, 7, 15).getTime())
   })
 
   it('lists ticks inside the range only', () => {
@@ -76,12 +88,16 @@ describe('tick alignment', () => {
   })
 
   it('steps months by calendar', () => {
-    const ticks = tickTimes(Date.UTC(2026, 0, 15), Date.UTC(2026, 3, 2), 'month')
+    const ticks = tickTimes(
+      new Date(2026, 0, 15).getTime(),
+      new Date(2026, 3, 2).getTime(),
+      'month',
+    )
 
-    expect(ticks.map((t) => new Date(t).toISOString().slice(0, 10))).toEqual([
-      '2026-02-01',
-      '2026-03-01',
-      '2026-04-01',
+    expect(ticks).toEqual([
+      new Date(2026, 1, 1).getTime(),
+      new Date(2026, 2, 1).getTime(),
+      new Date(2026, 3, 1).getTime(),
     ])
   })
 })

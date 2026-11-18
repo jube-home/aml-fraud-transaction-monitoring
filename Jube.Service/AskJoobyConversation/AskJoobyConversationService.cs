@@ -2740,6 +2740,7 @@ namespace Jube.Service.AskJoobyConversation
             string? pageName = null;
             string? state = null;
             string? recordSummary = null;
+            string? location = null;
 
             try
             {
@@ -2765,6 +2766,12 @@ namespace Jube.Service.AskJoobyConversation
                     {
                         recordSummary = recordElement.GetRawText();
                     }
+
+                    if (root.TryGetProperty("location", out var locationElement) &&
+                        locationElement.ValueKind == JsonValueKind.Object)
+                    {
+                        location = locationElement.GetRawText();
+                    }
                 }
             }
             catch (JsonException)
@@ -2780,7 +2787,8 @@ namespace Jube.Service.AskJoobyConversation
             PagePurposeCatalogue.TryGet(pageName, out var entry);
 
             return new PageContext(pageName, state, entry?.Purpose, entry?.LikelyAsks,
-                recordSummary is { Length: > 0 and <= 2000 } ? recordSummary : null);
+                recordSummary is { Length: > 0 and <= 2000 } ? recordSummary : null,
+                location is { Length: > 0 and <= 1000 } ? location : null);
         }
 
         private static string BuildOpeningInstruction(GetAskJoobyStartupStatsQueryDto stats, bool hasPageContext)

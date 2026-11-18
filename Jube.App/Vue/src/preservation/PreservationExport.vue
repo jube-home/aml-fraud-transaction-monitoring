@@ -58,7 +58,7 @@ const flags = computed<{ key: OptionKey; label: string; hint: string }[]>(() => 
     hint: t('preservation.flag.exhaustiveHint'),
   },
   {
-    key: 'askJoobyAnalytics',
+    key: 'advancedAnalytics',
     label: t('preservation.flag.askJoobyAnalytics'),
     hint: t('preservation.flag.askJoobyAnalyticsHint'),
   },

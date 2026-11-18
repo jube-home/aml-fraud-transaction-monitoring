@@ -153,7 +153,7 @@ namespace Jube.App
             var serviceChangeStreamRegistry = AddSingletonForServiceChangeStreamRegistry(services, log);
 
             var cacheService = AddSingletonForCacheService(services, callbacks,
-                int.Parse(dynamicEnvironment.AppSettings("CallbackTimeout") ?? "10000"),
+                int.Parse(dynamicEnvironment.AppSettings("CallbackTimeout") ?? "1000"),
                 taskCoordinator, dynamicEnvironment, log, watcherStreamRegistry);
 
             AddSingletonForTokensCache(services, log, dynamicEnvironment, cacheService, taskCoordinator);
@@ -272,7 +272,12 @@ namespace Jube.App
                 app.UseWhen(
                     httpContext =>
                         !httpContext.Request.Path.StartsWithSegments("/api/invoke", StringComparison.OrdinalIgnoreCase),
-                    appBuilder => appBuilder.UseExceptionHandler("/Error")
+                    appBuilder => appBuilder.UseExceptionHandler(handler => handler.Run(context =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+                        return Task.CompletedTask;
+                    }))
                 );
 
                 app.UseWhen(

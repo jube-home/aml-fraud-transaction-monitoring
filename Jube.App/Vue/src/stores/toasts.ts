@@ -26,6 +26,27 @@ export interface Toast {
 
 const lifetime: Record<ToastKind, number> = {info: 6000, success: 6000, error: 10000}
 const visibleLimit = 4
+const longestRefusal = 300
+
+const versionConflict = 'VersionConflict'
+
+function reasonOf(body: unknown): string | undefined {
+  if (typeof body === 'string') return body
+
+  if (typeof body !== 'object' || body === null) return undefined
+
+  const {code, message} = body as { code?: unknown; message?: unknown }
+
+  return code !== versionConflict && typeof message === 'string' ? message : undefined
+}
+
+export function refusalMessage(error: ApiError): string | undefined {
+  if (error.kind !== 'conflict') return undefined
+
+  const text = reasonOf(error.body)?.trim() ?? ''
+
+  return text === '' || text.length > longestRefusal ? undefined : text
+}
 
 export const useToastStore = defineStore('toasts', () => {
   const items = ref<Toast[]>([])
@@ -62,7 +83,7 @@ export function useToasts() {
       case 'forbidden':
         return store.push('error', t('errors.forbidden'))
       case 'conflict':
-        return store.push('error', t('errors.conflict'))
+        return store.push('error', refusalMessage(error) ?? t('errors.conflict'))
       case 'network':
         return store.push('error', t('errors.network'))
       case 'notFound':

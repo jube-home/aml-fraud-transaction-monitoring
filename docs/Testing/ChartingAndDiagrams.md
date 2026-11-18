@@ -643,13 +643,12 @@ ar, ka, id, sv, ur and hi). Category: Unit.
 
 ### ChartStylesheetTests
 
-`Jube.Test.Charting.External.ChartStylesheetTests` — 13 tests.
+`Jube.Test.Charting.External.ChartStylesheetTests` — 12 tests.
 
 | Test                                                            | Kind | Verifies                                                                                                                                                    |
 |-----------------------------------------------------------------|------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `StylesheetMatchesTheApprovedGolden`                            | Fact | Stylesheet matches the approved golden.                                                                                                                     |
 | `TheCommittedAppStylesheetHasNotDriftedFromTheGenerator`        | Fact | The committed app stylesheet has not drifted from the generator.                                                                                            |
-| `TheLayoutIncludesTheStylesheetOnceWithTheVersion`              | Fact | The layout includes the stylesheet once with the version.                                                                                                   |
 | `EveryClassUsedByEveryExternalSampleIsASelectorInTheStylesheet` | Fact | Every class used by every external sample is a selector in the stylesheet.                                                                                  |
 | `EveryHostileTextChartOnlyUsesKnownClasses`                     | Fact | Every hostile text chart only uses known classes.                                                                                                           |
 | `VersionIsStableAndEightHexDigits`                              | Fact | Version is stable and eight hex digits.                                                                                                                     |

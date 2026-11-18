@@ -60,38 +60,34 @@ Database.
 
 `Jube.Test.Service.Repository.Case.CaseServiceTests` — 24 tests. Category: Service. Collection: Database.
 
-| Test                                                                          | Kind | Verifies                                                                             |
-|-------------------------------------------------------------------------------|------|--------------------------------------------------------------------------------------|
-| `CreateWithNullUserNameThrowsNotAuthenticatedAsync`                           | Fact | Create with null user name throws not authenticated.                                 |
-| `CreateWithUnknownTenantThrowsNotAuthenticatedAsync`                          | Fact | Create with unknown tenant throws not authenticated.                                 |
-| `GetWithoutPermissionThrowsForbiddenAsync`                                    | Fact | Get without permission throws forbidden.                                             |
-| `ListIsScopedToCallersTenantAsync`                                            | Fact | List is scoped to callers tenant.                                                    |
-| `InsertPersistsAndDropsIdentityFieldsAsync`                                   | Fact | Insert persists and drops identity fields.                                           |
-| `InsertWithInvalidRatingThrowsValidationFailedAsync`                          | Fact | Insert with invalid rating throws validation failed.                                 |
-| `CreateFromCaseKeyValueRaisesCaseFromArchiveAsync`                            | Fact | Create from case key value raises case from archive.                                 |
-| `CreateFromCaseKeyValueWithExistingOpenCaseThrowsConflictAsync`               | Fact | Create from case key value with existing open case throws conflict.                  |
-| `CreateFromCaseKeyValueWithUnknownWorkflowThrowsNotFoundAsync`                | Fact | Create from case key value with unknown workflow throws not found.                   |
-| `CreateFromCaseKeyValueWithNoMatchingArchiveThrowsNotFoundAsync`              | Fact | Create from case key value with no matching archive throws not found.                |
-| `UpdateWithUnknownIdThrowsNotFoundAsync`                                      | Fact | Update with unknown id throws not found.                                             |
-| `UpdateLockingAnUnlockedCaseSetsLockedDateAndUserAsync`                       | Fact | Update locking an unlocked case sets locked date and user.                           |
-| `CaseCreationDispatchesTheStatusFromItsSqlAndAuditsItAsync`                   | Fact | Case creation dispatches the status from its sql and audits it.                      |
-| `CaseCreationAuditsTheStatusCallDrawnFromThePayloadAsync`                     | Fact | Case creation audits the status call drawn from the payload.                         |
-| `AutomaticEscalationDispatchesTheTargetStatusFromItsSqlAndAuditsItAsync`      | Fact | Automatic escalation dispatches the target status from its sql and audits it.        |
-| `UpdateUnlockingALockedCaseClearsLockedDateAsync`                             | Fact | Update unlocking a locked case clears locked date.                                   |
-| `UpdateWithUnknownWorkflowStatusThrowsInvalidCaseWorkflowStatusAsync`         | Fact | Update with unknown workflow status throws invalid case workflow status.             |
-| `UpdateChangingRatingWritesCaseEventAndPublishesChangeAsync`                  | Fact | Update changing rating writes case event and publishes change.                       |
-| `UpdateDoesNotPublishChangeOnValidationFailureAsync`                          | Fact | Update does not publish change on validation failure.                                |
-| `EveryStatusChangeCloseAndReopenIsRecordedAsAStayInTheStatusAsync`            | Fact | Every status change close and reopen is recorded as a stay in the status.            |
-| `AHigherPriorityActivationEscalatesAnOpenCaseAndTheEngineRecordsTheMoveAsync` | Fact | A higher priority activation escalates an open case and the engine records the move. |
+| Test                                                                             | Kind | Verifies                                                                                                               |
+|----------------------------------------------------------------------------------|------|------------------------------------------------------------------------------------------------------------------------|
+| `CreateWithNullUserNameThrowsNotAuthenticatedAsync`                              | Fact | Create with null user name throws not authenticated.                                                                   |
+| `CreateWithUnknownTenantThrowsNotAuthenticatedAsync`                             | Fact | Create with unknown tenant throws not authenticated.                                                                   |
+| `GetWithoutPermissionThrowsForbiddenAsync`                                       | Fact | Get without permission throws forbidden.                                                                               |
+| `ListIsScopedToCallersTenantAsync`                                               | Fact | List is scoped to callers tenant.                                                                                      |
+| `InsertPersistsAndDropsIdentityFieldsAsync`                                      | Fact | Insert persists and drops identity fields.                                                                             |
+| `InsertWithInvalidRatingThrowsValidationFailedAsync`                             | Fact | Insert with invalid rating throws validation failed.                                                                   |
+| `CreateFromCaseKeyValueRaisesCaseFromArchiveAsync`                               | Fact | Create from case key value raises case from archive.                                                                   |
+| `CreateFromCaseKeyValueWithExistingOpenCaseThrowsConflictAsync`                  | Fact | Create from case key value with existing open case throws conflict.                                                    |
+| `CreateFromCaseKeyValueWithUnknownWorkflowThrowsNotFoundAsync`                   | Fact | Create from case key value with unknown workflow throws not found.                                                     |
+| `CreateFromCaseKeyValueWithNoMatchingArchiveThrowsNotFoundAsync`                 | Fact | Create from case key value with no matching archive throws not found.                                                  |
+| `UpdateWithUnknownIdThrowsNotFoundAsync`                                         | Fact | Update with unknown id throws not found.                                                                               |
+| `UpdateLockingAnUnlockedCaseSetsLockedDateAndUserAsync`                          | Fact | Update locking an unlocked case sets locked date and user.                                                             |
+| `CaseCreationDispatchesTheStatusFromItsSqlAndAuditsItAsync`                      | Fact | Case creation dispatches the status from its sql and audits it.                                                        |
+| `CaseCreationAuditsTheStatusCallDrawnFromThePayloadAsync`                        | Fact | Case creation audits the status call drawn from the payload.                                                           |
+| `AutomaticEscalationDispatchesTheTargetStatusFromItsSqlAndAuditsItAsync`         | Fact | Automatic escalation dispatches the target status from its sql and audits it.                                          |
+| `UpdateUnlockingALockedCaseClearsLockedDateAsync`                                | Fact | Update unlocking a locked case clears locked date.                                                                     |
+| `UpdateWithUnknownWorkflowStatusThrowsInvalidCaseWorkflowStatusAsync`            | Fact | Update with unknown workflow status throws invalid case workflow status.                                               |
+| `UpdateChangingRatingWritesCaseEventAndPublishesChangeAsync`                     | Fact | Update changing rating writes case event and publishes change.                                                         |
+| `UpdateDoesNotPublishChangeOnValidationFailureAsync`                             | Fact | Update does not publish change on validation failure.                                                                  |
+| `EveryStatusChangeCloseAndReopenIsRecordedAsAStayInTheStatusAsync`               | Fact | Every status change close and reopen is recorded as a stay in the status.                                              |
+| `AHigherPriorityActivationEscalatesAnOpenCaseAndTheEngineRecordsTheMoveAsync`    | Fact | A higher priority activation escalates an open case and the engine records the move.                                   |
+| `AnEditToTheDiaryAsksForAFreshRankingAndTurningItOffReturnsItsTypeToReviewAsync` | Fact | An edit to the diary asks for a fresh ranking and turning it off returns its type to review.                           |
+| `UpdateCannotHandTheLockToAnAnalystWhoCouldNotSeeTheCaseAsync`                   | Fact | Update cannot hand the lock to an analyst who could not see the case.                                                  |
+| `TheCloseReasonIsStoredOnCloseKeptWhileClosedAndClearedOnReopenAsync`            | Fact | The close reason and note are stored when the case closes, kept while it stays closed and cleared when it is reopened. |
 
 ## Case file
-
-| `AnEditToTheDiaryAsksForAFreshRankingAndTurningItOffReturnsItsTypeToReviewAsync` | Fact | An edit to the diary asks
-for a fresh ranking and turning it off returns its type to review. |
-| `UpdateCannotHandTheLockToAnAnalystWhoCouldNotSeeTheCaseAsync` | Fact | Update cannot hand the lock to an analyst who
-could not see the case. |
-| `TheCloseReasonIsStoredOnCloseKeptWhileClosedAndClearedOnReopenAsync` | Fact | The close reason and note are stored
-when the case closes, kept while it stays closed and cleared when it is reopened. |
 
 ### CaseFileTypePolicyTests
 
@@ -387,7 +383,7 @@ Category: Service. Collection: Database.
 
 ### CaseWorkflowServiceTests
 
-`Jube.Test.Service.Repository.CaseWorkflow.CaseWorkflowServiceTests` — 60 tests. Category: Service. Collection:
+`Jube.Test.Service.Repository.CaseWorkflow.CaseWorkflowServiceTests` — 61 tests. Category: Service. Collection:
 Database.
 
 | Test                                                                         | Kind   | Verifies                                                                                             |
@@ -450,13 +446,11 @@ Database.
 | `ServiceToolCatalogueRegistersCaseWorkflowOperationsWithGloballyUniqueNames` | Fact   | Service tool catalogue registers case workflow operations with globally unique names.                |
 | `ListAsyncClampsTakeAndPaginatesAsync`                                       | Fact   | List async clamps take and paginates.                                                                |
 | `UpdateCannotMoveAWorkflowToAnotherModelOfTheSameTenantAsync`                | Fact   | Update cannot move a workflow to another model of the same tenant (EntityAnalysisModelId is pinned). |
+| `RankingSettingsPersistThroughInsertAndUpdateAndTheListsAreTidiedAsync`      | Fact   | Ranking settings persist through insert and update and the lists are tidied.                         |
+| `InvalidRankingSettingsAreRefusedAndEveryProblemIsReportedAsync`             | Fact   | Invalid ranking settings are refused and every problem is reported.                                  |
+| `AServiceLevelTargetOutsideOneMinuteToOneYearIsRefusedAsync`                 | Theory | A service level target outside one minute to one year is refused. |
 
 ## Case workflow action
-
-| `RankingSettingsPersistThroughInsertAndUpdateAndTheListsAreTidiedAsync` | Fact | Ranking settings persist through
-insert and update and the lists are tidied. |
-| `InvalidRankingSettingsAreRefusedAndEveryProblemIsReportedAsync` | Fact | Invalid ranking settings are refused and
-every problem is reported. |
 
 ### CaseWorkflowActionServiceTests
 
@@ -551,7 +545,7 @@ Collection: Database.
 
 ### CaseWorkflowDisplayServiceTests
 
-`Jube.Test.Service.Repository.CaseWorkflowDisplay.CaseWorkflowDisplayServiceTests` — 34 tests. Category: Service.
+`Jube.Test.Service.Repository.CaseWorkflowDisplay.CaseWorkflowDisplayServiceTests` — 35 tests. Category: Service.
 Collection: Database.
 
 | Test                                                                          | Kind   | Verifies                                                                                        |
@@ -577,6 +571,7 @@ Collection: Database.
 | `InsertWithDuplicateNameInSameWorkflowThrowsValidationFailedAsync`            | Fact   | Insert with duplicate name in same workflow throws validation failed.                           |
 | `InsertWithNonExistentCaseWorkflowIdThrowsValidationFailedAsync`              | Fact   | Insert with non existent case workflow id throws validation failed.                             |
 | `InsertWithBlankHtmlThrowsValidationFailedAsync`                              | Fact   | Insert with blank html throws validation failed.                                                |
+| `InsertWithATemplateThatDoesNotCompileIsRefusedWithTheCompilerMessageAsync` | Fact | Insert with a template that does not compile is refused with the compiler message. |
 | `InsertIgnoresDescriptionAndHttpNotificationFieldsAsync`                      | Fact   | Insert ignores description and http notification fields.                                        |
 | `ListByWorkflowIncludesInactiveRowsAsync`                                     | Fact   | List by workflow includes inactive rows.                                                        |
 | `ListByWorkflowIdActiveOnlyRequiresBothWorkflowAndDisplayRoleGrantsAsync`     | Fact   | List by workflow id active only requires both workflow and display role grants.                 |
@@ -711,7 +706,7 @@ Collection: Database.
 
 ### CaseWorkflowFormServiceTests
 
-`Jube.Test.Service.Repository.CaseWorkflowForm.CaseWorkflowFormServiceTests` — 30 tests. Category: Service. Collection:
+`Jube.Test.Service.Repository.CaseWorkflowForm.CaseWorkflowFormServiceTests` — 31 tests. Category: Service. Collection:
 Database.
 
 | Test                                                                                | Kind   | Verifies                                                                                                                                                   |
@@ -724,6 +719,7 @@ Database.
 | `InsertWithBlankNameThrowsValidationFailedAsync`                                    | Fact   | Insert with blank name throws validation failed.                                                                                                           |
 | `InsertWithUnknownCaseWorkflowIdThrowsValidationFailedAsync`                        | Fact   | Insert with unknown case workflow id throws validation failed.                                                                                             |
 | `InsertWithBlankHtmlThrowsValidationFailedAsync`                                    | Fact   | Insert with blank html throws validation failed.                                                                                                           |
+| `InsertWithATemplateThatDoesNotCompileIsRefusedWithTheCompilerMessageAsync` | Fact | Insert with a template that does not compile is refused with the compiler message. |
 | `InsertWithDuplicateNameInSameWorkflowThrowsValidationFailedAsync`                  | Fact   | Insert with duplicate name in same workflow throws validation failed.                                                                                      |
 | `InsertIgnoresDescriptionFieldAsync`                                                | Fact   | Insert ignores description field.                                                                                                                          |
 | `InsertWithEnableHttpEndpointAndNoUrlThrowsValidationFailedAsync`                   | Fact   | Insert with enable http endpoint and no url throws validation failed.                                                                                      |
@@ -1000,68 +996,64 @@ Database.
 
 ### CaseWorkflowStatusServiceTests
 
-`Jube.Test.Service.Repository.CaseWorkflowStatus.CaseWorkflowStatusServiceTests` — 50 tests. Category: Service.
+`Jube.Test.Service.Repository.CaseWorkflowStatus.CaseWorkflowStatusServiceTests` — 51 tests. Category: Service.
 Collection: Database.
 
-| Test                                                                                | Kind   | Verifies                                                                                                                                                   |
-|-------------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `CreateWithNullOrBlankUserNameThrowsNotAuthenticatedAsync`                          | Theory | Create with null or blank user name throws not authenticated.                                                                                              |
-| `CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync`                           | Fact   | Create with user having no tenant throws not authenticated.                                                                                                |
-| `ListWithoutPermissionThrowsForbiddenAsync`                                         | Fact   | List without permission throws forbidden.                                                                                                                  |
-| `GetByIdWithoutPermissionThrowsForbiddenAsync`                                      | Fact   | Get by id without permission throws forbidden.                                                                                                             |
-| `InsertWithoutPermissionThrowsForbiddenAndWritesNoRowAsync`                         | Fact   | Insert without permission throws forbidden and writes no row.                                                                                              |
-| `UpdateWithoutPermissionThrowsForbiddenAsync`                                       | Fact   | Update without permission throws forbidden.                                                                                                                |
-| `DeleteWithoutPermissionThrowsForbiddenAsync`                                       | Fact   | Delete without permission throws forbidden.                                                                                                                |
-| `InsertPersistsAndDropsIdentityFieldsAsync`                                         | Fact   | Insert persists and drops identity fields.                                                                                                                 |
-| `UpdateIncrementsVersionPreservesCreatedFieldsAndSetsUpdatedFieldsAsync`            | Fact   | Update increments version preserves created fields and sets updated fields.                                                                                |
-| `UpdateTamperingIdentityAndAuditFieldsHasNoEffectAsync`                             | Fact   | Update tampering identity and audit fields has no effect.                                                                                                  |
-| `UpdateWithUnknownIdThrowsNotFoundAsync`                                            | Fact   | Update with unknown id throws not found.                                                                                                                   |
-| `UpdateOfLockedRowThrowsNotFoundAsync`                                              | Fact   | Update of locked row throws not found.                                                                                                                     |
-| `UpdatePreservesImportIdAsync`                                                      | Fact   | Update preserves import id.                                                                                                                                |
-| `DeleteRemovesRowAndSubsequentGetReturnsNullAsync`                                  | Fact   | Delete removes row and subsequent get returns null.                                                                                                        |
-| `DeleteOfMissingRowThrowsNotFoundAsync`                                             | Fact   | Delete of missing row throws not found.                                                                                                                    |
-| `ListIsScopedToCallersTenantAsync`                                                  | Fact   | List is scoped to callers tenant.                                                                                                                          |
-| `UpdateForRowInAnotherTenantThrowsValidationFailedOnTheReferentialCheckAsync`       | Fact   | Update for row in another tenant throws validation failed on the referential check.                                                                        |
-| `InsertWithBlankNameThrowsValidationFailedAsync`                                    | Fact   | Insert with blank name throws validation failed.                                                                                                           |
-| `InsertWithNullNameThrowsValidationFailedAndDoesNotThrowNullReferenceAsync`         | Fact   | Insert with null name throws validation failed and does not throw null reference.                                                                          |
-| `InsertWithOverLongNameThrowsValidationFailedAsync`                                 | Fact   | Insert with over long name throws validation failed.                                                                                                       |
-| `InsertWithDuplicateNameInSameWorkflowThrowsValidationFailedAsync`                  | Fact   | Insert with duplicate name in same workflow throws validation failed.                                                                                      |
-| `InsertWithNonExistentCaseWorkflowIdThrowsValidationFailedAsync`                    | Fact   | Insert with non existent case workflow id throws validation failed.                                                                                        |
-| `InsertWithInvalidPriorityThrowsValidationFailedAsync`                              | Fact   | Insert with invalid priority throws validation failed.                                                                                                     |
-| `InsertWithBlankForeColorThrowsValidationFailedAsync`                               | Fact   | Insert with blank fore color throws validation failed.                                                                                                     |
-| `InsertWithMalformedBackColorThrowsValidationFailedAsync`                           | Fact   | Insert with malformed back color throws validation failed.                                                                                                 |
-| `InsertWithEnableHttpEndpointAndNoUrlThrowsValidationFailedAsync`                   | Fact   | Insert with enable http endpoint and no url throws validation failed.                                                                                      |
-| `InsertWithEnableHttpEndpointAndInvalidTypeThrowsValidationFailedAsync`             | Fact   | Insert with enable http endpoint and invalid type throws validation failed.                                                                                |
-| `InsertWithEnableHttpEndpointAndValidDataSucceedsAsync`                             | Fact   | Insert with enable http endpoint and valid data succeeds.                                                                                                  |
-| `InsertWithEnableNotificationAndNoDestinationThrowsValidationFailedAsync`           | Fact   | Insert with enable notification and no destination throws validation failed.                                                                               |
-| `InsertWithEnableNotificationAndInvalidTypeThrowsValidationFailedAsync`             | Fact   | Insert with enable notification and invalid type throws validation failed.                                                                                 |
-| `InsertWithEnableNotificationAndValidDataSucceedsAsync`                             | Fact   | Insert with enable notification and valid data succeeds.                                                                                                   |
-| `InsertRoundTripsPriorityAndColoursAsync`                                           | Fact   | Insert round trips priority and colours.                                                                                                                   |
-| `ListByWorkflowIncludesInactiveRowsAsync`                                           | Fact   | List by workflow includes inactive rows.                                                                                                                   |
-| `ListByWorkflowGuidIncludesInactiveRowsAsync`                                       | Fact   | List by workflow guid includes inactive rows.                                                                                                              |
-| `ListByWorkflowIdActiveOnlyRequiresBothWorkflowAndStatusRoleGrantsAsync`            | Fact   | List by workflow id active only requires both workflow and status role grants.                                                                             |
-| `ListByWorkflowGuidActiveOnlyReturnsRowsOnceBothRolesGrantedAsync`                  | Fact   | List by workflow guid active only returns rows once both roles granted.                                                                                    |
-| `ListHonoursCancellationAsync`                                                      | Fact   | List honours cancellation.                                                                                                                                 |
-| `InsertPublishesCreatedChangeEventAsync`                                            | Fact   | Insert publishes created change event.                                                                                                                     |
-| `InsertDoesNotPublishChangeEventOnValidationFailureAsync`                           | Fact   | Insert does not publish change event on validation failure.                                                                                                |
-| `DeletePublishesDeletedChangeEventAsync`                                            | Fact   | Delete publishes deleted change event.                                                                                                                     |
-| `ListDoesNotPublishAChangeEventAsync`                                               | Fact   | List does not publish a change event.                                                                                                                      |
-| `InsertWarnsNotErrorsOnForbiddenAsync`                                              | Fact   | Insert warns not errors on forbidden.                                                                                                                      |
-| `InsertWritesOneAuditRecordOnSuccessAsync`                                          | Fact   | Insert writes one audit record on success.                                                                                                                 |
-| `CatalogueRegistersUniqueCaseWorkflowStatusToolNames`                               | Fact   | Catalogue registers unique case workflow status tool names.                                                                                                |
-| `UpdateCannotMoveAStatusToAnotherWorkflowOfTheSameTenantAsync`                      | Fact   | Update cannot move a status to another workflow of the same tenant (CaseWorkflowId is pinned).                                                             |
-| `InsertWithAnHttpEndpointThatIsNotAWellFormedLiteralUrlThrowsValidationFailedAsync` | Theory | An enabled HTTP endpoint that is not an absolute http or https URL with a literal authority (relative, ftp, file, token in the host, userinfo) is refused. |
+| Test                                                                                     | Kind   | Verifies                                                                                                                                                   |
+|------------------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `CreateWithNullOrBlankUserNameThrowsNotAuthenticatedAsync`                               | Theory | Create with null or blank user name throws not authenticated.                                                                                              |
+| `CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync`                                | Fact   | Create with user having no tenant throws not authenticated.                                                                                                |
+| `ListWithoutPermissionThrowsForbiddenAsync`                                              | Fact   | List without permission throws forbidden.                                                                                                                  |
+| `GetByIdWithoutPermissionThrowsForbiddenAsync`                                           | Fact   | Get by id without permission throws forbidden.                                                                                                             |
+| `InsertWithoutPermissionThrowsForbiddenAndWritesNoRowAsync`                              | Fact   | Insert without permission throws forbidden and writes no row.                                                                                              |
+| `UpdateWithoutPermissionThrowsForbiddenAsync`                                            | Fact   | Update without permission throws forbidden.                                                                                                                |
+| `DeleteWithoutPermissionThrowsForbiddenAsync`                                            | Fact   | Delete without permission throws forbidden.                                                                                                                |
+| `InsertPersistsAndDropsIdentityFieldsAsync`                                              | Fact   | Insert persists and drops identity fields.                                                                                                                 |
+| `UpdateIncrementsVersionPreservesCreatedFieldsAndSetsUpdatedFieldsAsync`                 | Fact   | Update increments version preserves created fields and sets updated fields.                                                                                |
+| `UpdateTamperingIdentityAndAuditFieldsHasNoEffectAsync`                                  | Fact   | Update tampering identity and audit fields has no effect.                                                                                                  |
+| `UpdateWithUnknownIdThrowsNotFoundAsync`                                                 | Fact   | Update with unknown id throws not found.                                                                                                                   |
+| `UpdateOfLockedRowThrowsNotFoundAsync`                                                   | Fact   | Update of locked row throws not found.                                                                                                                     |
+| `UpdatePreservesImportIdAsync`                                                           | Fact   | Update preserves import id.                                                                                                                                |
+| `DeleteRemovesRowAndSubsequentGetReturnsNullAsync`                                       | Fact   | Delete removes row and subsequent get returns null.                                                                                                        |
+| `DeleteOfMissingRowThrowsNotFoundAsync`                                                  | Fact   | Delete of missing row throws not found.                                                                                                                    |
+| `ListIsScopedToCallersTenantAsync`                                                       | Fact   | List is scoped to callers tenant.                                                                                                                          |
+| `UpdateForRowInAnotherTenantThrowsValidationFailedOnTheReferentialCheckAsync`            | Fact   | Update for row in another tenant throws validation failed on the referential check.                                                                        |
+| `InsertWithBlankNameThrowsValidationFailedAsync`                                         | Fact   | Insert with blank name throws validation failed.                                                                                                           |
+| `InsertWithNullNameThrowsValidationFailedAndDoesNotThrowNullReferenceAsync`              | Fact   | Insert with null name throws validation failed and does not throw null reference.                                                                          |
+| `InsertWithOverLongNameThrowsValidationFailedAsync`                                      | Fact   | Insert with over long name throws validation failed.                                                                                                       |
+| `InsertWithDuplicateNameInSameWorkflowThrowsValidationFailedAsync`                       | Fact   | Insert with duplicate name in same workflow throws validation failed.                                                                                      |
+| `InsertWithNonExistentCaseWorkflowIdThrowsValidationFailedAsync`                         | Fact   | Insert with non existent case workflow id throws validation failed.                                                                                        |
+| `InsertWithInvalidPriorityThrowsValidationFailedAsync`                                   | Fact   | Insert with invalid priority throws validation failed.                                                                                                     |
+| `InsertWithBlankForeColorThrowsValidationFailedAsync`                                    | Fact   | Insert with blank fore color throws validation failed.                                                                                                     |
+| `InsertWithMalformedBackColorThrowsValidationFailedAsync`                                | Fact   | Insert with malformed back color throws validation failed.                                                                                                 |
+| `InsertWithEnableHttpEndpointAndNoUrlThrowsValidationFailedAsync`                        | Fact   | Insert with enable http endpoint and no url throws validation failed.                                                                                      |
+| `InsertWithEnableHttpEndpointAndInvalidTypeThrowsValidationFailedAsync`                  | Fact   | Insert with enable http endpoint and invalid type throws validation failed.                                                                                |
+| `InsertWithEnableHttpEndpointAndValidDataSucceedsAsync`                                  | Fact   | Insert with enable http endpoint and valid data succeeds.                                                                                                  |
+| `InsertWithEnableNotificationAndNoDestinationThrowsValidationFailedAsync`                | Fact   | Insert with enable notification and no destination throws validation failed.                                                                               |
+| `InsertWithEnableNotificationAndInvalidTypeThrowsValidationFailedAsync`                  | Fact   | Insert with enable notification and invalid type throws validation failed.                                                                                 |
+| `InsertWithEnableNotificationAndValidDataSucceedsAsync`                                  | Fact   | Insert with enable notification and valid data succeeds.                                                                                                   |
+| `InsertRoundTripsPriorityAndColoursAsync`                                                | Fact   | Insert round trips priority and colours.                                                                                                                   |
+| `ListByWorkflowIncludesInactiveRowsAsync`                                                | Fact   | List by workflow includes inactive rows.                                                                                                                   |
+| `ListByWorkflowGuidIncludesInactiveRowsAsync`                                            | Fact   | List by workflow guid includes inactive rows.                                                                                                              |
+| `ListByWorkflowIdActiveOnlyRequiresBothWorkflowAndStatusRoleGrantsAsync`                 | Fact   | List by workflow id active only requires both workflow and status role grants.                                                                             |
+| `ListByWorkflowGuidActiveOnlyReturnsRowsOnceBothRolesGrantedAsync`                       | Fact   | List by workflow guid active only returns rows once both roles granted.                                                                                    |
+| `ListHonoursCancellationAsync`                                                           | Fact   | List honours cancellation.                                                                                                                                 |
+| `InsertPublishesCreatedChangeEventAsync`                                                 | Fact   | Insert publishes created change event.                                                                                                                     |
+| `InsertDoesNotPublishChangeEventOnValidationFailureAsync`                                | Fact   | Insert does not publish change event on validation failure.                                                                                                |
+| `DeletePublishesDeletedChangeEventAsync`                                                 | Fact   | Delete publishes deleted change event.                                                                                                                     |
+| `ListDoesNotPublishAChangeEventAsync`                                                    | Fact   | List does not publish a change event.                                                                                                                      |
+| `InsertWarnsNotErrorsOnForbiddenAsync`                                                   | Fact   | Insert warns not errors on forbidden.                                                                                                                      |
+| `InsertWritesOneAuditRecordOnSuccessAsync`                                               | Fact   | Insert writes one audit record on success.                                                                                                                 |
+| `CatalogueRegistersUniqueCaseWorkflowStatusToolNames`                                    | Fact   | Catalogue registers unique case workflow status tool names.                                                                                                |
+| `UpdateCannotMoveAStatusToAnotherWorkflowOfTheSameTenantAsync`                           | Fact   | Update cannot move a status to another workflow of the same tenant (CaseWorkflowId is pinned).                                                             |
+| `InsertWithAnHttpEndpointThatIsNotAWellFormedLiteralUrlThrowsValidationFailedAsync`      | Theory | An enabled HTTP endpoint that is not an absolute http or https URL with a literal authority (relative, ftp, file, token in the host, userinfo) is refused. |
+| `AnEscalationRulePersistsWithAStrongerTargetAndCanBeClearedAsync`                        | Fact   | An escalation rule persists with a stronger target and can be cleared.                                                                                     |
+| `AnEscalationTriggerWithABadThresholdOrNumberIsRefusedAsync`                             | Theory | An escalation trigger with a bad threshold or number is refused.                                                                                           |
+| `EscalationNeedsBothATriggerAndATargetAndNeverAnUnusedThresholdProblemAsync`             | Fact   | Escalation needs both a trigger and a target and never an unused threshold problem.                                                                        |
+| `TheEscalationTargetMustBeAnotherActiveStatusOfTheSameWorkflowAndAStrongerPriorityAsync` | Fact   | The escalation target must be another active status of the same workflow and a stronger priority.                                                          |
+| `AMaxDwellOutsideOneMinuteToOneYearIsRefusedAsync`                                       | Theory | A max dwell outside one minute to one year is refused. |
 
 ## Case workflow status role
-
-| `AnEscalationRulePersistsWithAStrongerTargetAndCanBeClearedAsync` | Fact | An escalation rule persists with a stronger
-target and can be cleared. |
-| `AnEscalationTriggerWithABadThresholdOrNumberIsRefusedAsync` | Theory | An escalation trigger with a bad threshold or
-number is refused. |
-| `EscalationNeedsBothATriggerAndATargetAndNeverAnUnusedThresholdProblemAsync` | Fact | Escalation needs both a trigger
-and a target and never an unused threshold problem. |
-| `TheEscalationTargetMustBeAnotherActiveStatusOfTheSameWorkflowAndAStrongerPriorityAsync` | Fact | The escalation
-target must be another active status of the same workflow and a stronger priority. |
 
 ### CaseWorkflowStatusRoleServiceTests
 
@@ -1243,8 +1235,7 @@ Service. Collection: Database.
 
 ### EntityAnalysisModelSynchronisationScheduleServiceTests
 
-`Jube.Test.Service.Repository.EntityAnalysisModelSynchronisationSchedule.EntityAnalysisModelSynchronisationScheduleServiceTests` —
-19 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Repository.EntityAnalysisModelSynchronisationSchedule.EntityAnalysisModelSynchronisationScheduleServiceTests` — 19 tests. Category: Service. Collection: Database.
 
 | Test                                                                     | Kind | Verifies                                                                     |
 |--------------------------------------------------------------------------|------|------------------------------------------------------------------------------|
@@ -1301,8 +1292,7 @@ tests. Category: Service. Collection: Database.
 
 ### ExhaustiveSearchInstancePromotedTrialInstanceServiceTests
 
-`Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInstance.ExhaustiveSearchInstancePromotedTrialInstanceServiceTests` —
-28 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Repository.ExhaustiveSearchInstancePromotedTrialInstance.ExhaustiveSearchInstancePromotedTrialInstanceServiceTests` — 28 tests. Category: Service. Collection: Database.
 
 | Test                                                                               | Kind   | Verifies                                                                             |
 |------------------------------------------------------------------------------------|--------|--------------------------------------------------------------------------------------|
@@ -1624,81 +1614,72 @@ Category: Service. Collection: Database.
 `Jube.Test.Service.Repository.TenantRegistry.TenantRegistryServiceTests` — 62 tests. Category: Service. Collection:
 Database.
 
-| Test                                                                           | Kind   | Verifies                                                                              |
-|--------------------------------------------------------------------------------|--------|---------------------------------------------------------------------------------------|
-| `CreateWithNullOrBlankUserNameThrowsNotAuthenticatedAsync`                     | Theory | Create with null or blank user name throws not authenticated.                         |
-| `CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync`                      | Fact   | Create with user having no tenant throws not authenticated.                           |
-| `CreateWithUnknownUserThrowsNotAuthenticatedAsync`                             | Fact   | Create with unknown user throws not authenticated.                                    |
-| `ListWithoutLandlordThrowsForbiddenAsync`                                      | Fact   | List without landlord throws forbidden.                                               |
-| `GetByIdWithoutLandlordThrowsForbiddenAsync`                                   | Fact   | Get by id without landlord throws forbidden.                                          |
-| `GetByFilterWithoutLandlordThrowsForbiddenAsync`                               | Fact   | Get by filter without landlord throws forbidden.                                      |
-| `ListPagedWithoutLandlordThrowsForbiddenAsync`                                 | Fact   | List paged without landlord throws forbidden.                                         |
-| `InsertWithoutLandlordThrowsForbiddenAndWritesNoRowAsync`                      | Fact   | Insert without landlord throws forbidden and writes no row.                           |
-| `UpdateWithoutLandlordThrowsForbiddenAsync`                                    | Fact   | Update without landlord throws forbidden.                                             |
-| `DeleteWithoutLandlordThrowsForbiddenAsync`                                    | Fact   | Delete without landlord throws forbidden.                                             |
-| `InsertAsLandlordPersistsAndDropsIdentityFieldsAsync`                          | Fact   | Insert as landlord persists and drops identity fields.                                |
-| `UpdateIncrementsVersionPreservesCreatedFieldsAndSetsUpdatedFieldsAsync`       | Fact   | Update increments version preserves created fields and sets updated fields.           |
-| `UpdateTamperingIdentityAndAuditFieldsHasNoEffectAsync`                        | Fact   | Update tampering identity and audit fields has no effect.                             |
-| `UpdateWithUnknownIdThrowsNotFoundAsync`                                       | Fact   | Update with unknown id throws not found.                                              |
-| `UpdateOfLockedRowThrowsNotFoundAsync`                                         | Fact   | Update of locked row throws not found.                                                |
-| `DeleteRemovesRowAndSubsequentGetReturnsNullAsync`                             | Fact   | Delete removes row and subsequent get returns null.                                   |
-| `DeleteOfMissingRowThrowsNotFoundAsync`                                        | Fact   | Delete of missing row throws not found.                                               |
-| `DeleteOfLockedRowThrowsNotFoundAsync`                                         | Fact   | Delete of locked row throws not found.                                                |
-| `ListAsLandlordSeesTenantsCreatedByAnyoneAsync`                                | Fact   | List as landlord sees tenants created by anyone.                                      |
-| `GetByFilterMatchesCaseInsensitiveSubstringAsync`                              | Fact   | Get by filter matches case insensitive substring.                                     |
-| `GetByFilterWithBlankFilterReturnsAllAsync`                                    | Fact   | Get by filter with blank filter returns all.                                          |
-| `GetByFilterWithNullFilterDoesNotThrowAsync`                                   | Fact   | Get by filter with null filter does not throw.                                        |
-| `ListAsyncClampsTakeAndPaginatesAsync`                                         | Fact   | List async clamps take and paginates.                                                 |
-| `InsertWithBlankNameThrowsValidationFailedAsync`                               | Fact   | Insert with blank name throws validation failed.                                      |
-| `InsertWithNullNameThrowsValidationFailedAndDoesNotThrowNullReferenceAsync`    | Fact   | Insert with null name throws validation failed and does not throw null reference.     |
-| `InsertWithWhitespaceNameThrowsValidationFailedAsync`                          | Fact   | Insert with whitespace name throws validation failed.                                 |
-| `InsertWithOverLongNameThrowsValidationFailedAsync`                            | Fact   | Insert with over long name throws validation failed.                                  |
-| `InsertWithNameAtMaximumLengthSucceedsAsync`                                   | Fact   | Insert with name at maximum length succeeds.                                          |
-| `InsertWithDuplicateNameThrowsValidationFailedAsync`                           | Fact   | Insert with duplicate name throws validation failed.                                  |
-| `InsertWithDuplicateNameDifferentCasingThrowsValidationFailedAsync`            | Fact   | Insert with duplicate name different casing throws validation failed.                 |
-| `UpdateWithOwnUnchangedNameDoesNotFailDuplicateCheckAsync`                     | Fact   | Update with own unchanged name does not fail duplicate check.                         |
-| `InsertRoundTripsActiveAndLockedAsync`                                         | Fact   | Insert round trips active and locked.                                                 |
-| `DescriptionIsNeverPersistedAsync`                                             | Fact   | Description is never persisted.                                                       |
-| `GetByIdForMissingIdReturnsNullAsync`                                          | Fact   | Get by id for missing id returns null.                                                |
-| `ListHonoursCancellationAsync`                                                 | Fact   | List honours cancellation.                                                            |
-| `InsertPublishesCreatedChangeEventAsync`                                       | Fact   | Insert publishes created change event.                                                |
-| `InsertDoesNotPublishChangeEventOnValidationFailureAsync`                      | Fact   | Insert does not publish change event on validation failure.                           |
-| `DeletePublishesDeletedChangeEventAsync`                                       | Fact   | Delete publishes deleted change event.                                                |
-| `ListDoesNotPublishAChangeEventAsync`                                          | Fact   | List does not publish a change event.                                                 |
-| `ForbiddenOperationDoesNotPublishAChangeEventAsync`                            | Fact   | Forbidden operation does not publish a change event.                                  |
-| `InsertWarnsNotErrorsOnForbiddenAsync`                                         | Fact   | Insert warns not errors on forbidden.                                                 |
-| `CreateWithNullUserNameWarnsNotErrorsAsync`                                    | Fact   | Create with null user name warns not errors.                                          |
-| `InsertWritesOneAuditRecordOnSuccessAsync`                                     | Fact   | Insert writes one audit record on success.                                            |
-| `ListWritesOneAuditRecordEvenThoughItIsAReadAsync`                             | Fact   | List writes one audit record even though it is a read.                                |
-| `GetForcedFailureLogsExactlyOneErrorWithExceptionAttachedAsync`                | Fact   | Get forced failure logs exactly one error with exception attached.                    |
-| `PermissionDeniedMessageIsLocalisedToFrenchAsync`                              | Fact   | Permission denied message is localised to french.                                     |
-| `UpdateWithStaleVersionThrowsVersionConflictAndLeavesRowUnchangedAsync`        | Fact   | Update with stale version throws version conflict and leaves row unchanged.           |
-| `DeleteOfALandlordTenantThrowsNotFoundAndTheRowSurvivesAsync`                  | Fact   | Delete of a landlord tenant throws not found and the row survives.                    |
-| `UpdateDeactivatingALandlordTenantFailsValidationAndKeepsItActiveAsync`        | Fact   | Update deactivating a landlord tenant fails validation and keeps it active.           |
-| `UpdateRenamingAnActiveLandlordTenantStillSucceedsAndKeepsTheFlagAsync`        | Fact   | Update renaming an active landlord tenant still succeeds and keeps the flag.          |
-| `InsertWithControlBidirectionalOrPaddedNameFailsValidationAndWritesNoRowAsync` | Theory | Insert with control, bidirectional or padded name fails validation and writes no row. |
-| `InsertWithOrdinaryInternationalNamesSucceedsAsync`                            | Theory | Insert with ordinary international names succeeds.                                    |
-| `CatalogueRegistersUniqueTenantRegistryToolNames`                              | Fact   | Catalogue registers unique tenant registry tool names.                                |
+| Test                                                                             | Kind   | Verifies                                                                                    |
+|----------------------------------------------------------------------------------|--------|---------------------------------------------------------------------------------------------|
+| `CreateWithNullOrBlankUserNameThrowsNotAuthenticatedAsync`                       | Theory | Create with null or blank user name throws not authenticated.                               |
+| `CreateWithUserHavingNoTenantThrowsNotAuthenticatedAsync`                        | Fact   | Create with user having no tenant throws not authenticated.                                 |
+| `CreateWithUnknownUserThrowsNotAuthenticatedAsync`                               | Fact   | Create with unknown user throws not authenticated.                                          |
+| `ListWithoutLandlordThrowsForbiddenAsync`                                        | Fact   | List without landlord throws forbidden.                                                     |
+| `GetByIdWithoutLandlordThrowsForbiddenAsync`                                     | Fact   | Get by id without landlord throws forbidden.                                                |
+| `GetByFilterWithoutLandlordThrowsForbiddenAsync`                                 | Fact   | Get by filter without landlord throws forbidden.                                            |
+| `ListPagedWithoutLandlordThrowsForbiddenAsync`                                   | Fact   | List paged without landlord throws forbidden.                                               |
+| `InsertWithoutLandlordThrowsForbiddenAndWritesNoRowAsync`                        | Fact   | Insert without landlord throws forbidden and writes no row.                                 |
+| `UpdateWithoutLandlordThrowsForbiddenAsync`                                      | Fact   | Update without landlord throws forbidden.                                                   |
+| `DeleteWithoutLandlordThrowsForbiddenAsync`                                      | Fact   | Delete without landlord throws forbidden.                                                   |
+| `InsertAsLandlordPersistsAndDropsIdentityFieldsAsync`                            | Fact   | Insert as landlord persists and drops identity fields.                                      |
+| `UpdateIncrementsVersionPreservesCreatedFieldsAndSetsUpdatedFieldsAsync`         | Fact   | Update increments version preserves created fields and sets updated fields.                 |
+| `UpdateTamperingIdentityAndAuditFieldsHasNoEffectAsync`                          | Fact   | Update tampering identity and audit fields has no effect.                                   |
+| `UpdateWithUnknownIdThrowsNotFoundAsync`                                         | Fact   | Update with unknown id throws not found.                                                    |
+| `UpdateOfLockedRowThrowsNotFoundAsync`                                           | Fact   | Update of locked row throws not found.                                                      |
+| `DeleteRemovesRowAndSubsequentGetReturnsNullAsync`                               | Fact   | Delete removes row and subsequent get returns null.                                         |
+| `DeleteOfMissingRowThrowsNotFoundAsync`                                          | Fact   | Delete of missing row throws not found.                                                     |
+| `DeleteOfLockedRowThrowsNotFoundAsync`                                           | Fact   | Delete of locked row throws not found.                                                      |
+| `ListAsLandlordSeesTenantsCreatedByAnyoneAsync`                                  | Fact   | List as landlord sees tenants created by anyone.                                            |
+| `GetByFilterMatchesCaseInsensitiveSubstringAsync`                                | Fact   | Get by filter matches case insensitive substring.                                           |
+| `GetByFilterWithBlankFilterReturnsAllAsync`                                      | Fact   | Get by filter with blank filter returns all.                                                |
+| `GetByFilterWithNullFilterDoesNotThrowAsync`                                     | Fact   | Get by filter with null filter does not throw.                                              |
+| `ListAsyncClampsTakeAndPaginatesAsync`                                           | Fact   | List async clamps take and paginates.                                                       |
+| `InsertWithBlankNameThrowsValidationFailedAsync`                                 | Fact   | Insert with blank name throws validation failed.                                            |
+| `InsertWithNullNameThrowsValidationFailedAndDoesNotThrowNullReferenceAsync`      | Fact   | Insert with null name throws validation failed and does not throw null reference.           |
+| `InsertWithWhitespaceNameThrowsValidationFailedAsync`                            | Fact   | Insert with whitespace name throws validation failed.                                       |
+| `InsertWithOverLongNameThrowsValidationFailedAsync`                              | Fact   | Insert with over long name throws validation failed.                                        |
+| `InsertWithNameAtMaximumLengthSucceedsAsync`                                     | Fact   | Insert with name at maximum length succeeds.                                                |
+| `InsertWithDuplicateNameThrowsValidationFailedAsync`                             | Fact   | Insert with duplicate name throws validation failed.                                        |
+| `InsertWithDuplicateNameDifferentCasingThrowsValidationFailedAsync`              | Fact   | Insert with duplicate name different casing throws validation failed.                       |
+| `UpdateWithOwnUnchangedNameDoesNotFailDuplicateCheckAsync`                       | Fact   | Update with own unchanged name does not fail duplicate check.                               |
+| `InsertRoundTripsActiveAndLockedAsync`                                           | Fact   | Insert round trips active and locked.                                                       |
+| `DescriptionIsNeverPersistedAsync`                                               | Fact   | Description is never persisted.                                                             |
+| `GetByIdForMissingIdReturnsNullAsync`                                            | Fact   | Get by id for missing id returns null.                                                      |
+| `ListHonoursCancellationAsync`                                                   | Fact   | List honours cancellation.                                                                  |
+| `InsertPublishesCreatedChangeEventAsync`                                         | Fact   | Insert publishes created change event.                                                      |
+| `InsertDoesNotPublishChangeEventOnValidationFailureAsync`                        | Fact   | Insert does not publish change event on validation failure.                                 |
+| `DeletePublishesDeletedChangeEventAsync`                                         | Fact   | Delete publishes deleted change event.                                                      |
+| `ListDoesNotPublishAChangeEventAsync`                                            | Fact   | List does not publish a change event.                                                       |
+| `ForbiddenOperationDoesNotPublishAChangeEventAsync`                              | Fact   | Forbidden operation does not publish a change event.                                        |
+| `InsertWarnsNotErrorsOnForbiddenAsync`                                           | Fact   | Insert warns not errors on forbidden.                                                       |
+| `CreateWithNullUserNameWarnsNotErrorsAsync`                                      | Fact   | Create with null user name warns not errors.                                                |
+| `InsertWritesOneAuditRecordOnSuccessAsync`                                       | Fact   | Insert writes one audit record on success.                                                  |
+| `ListWritesOneAuditRecordEvenThoughItIsAReadAsync`                               | Fact   | List writes one audit record even though it is a read.                                      |
+| `GetForcedFailureLogsExactlyOneErrorWithExceptionAttachedAsync`                  | Fact   | Get forced failure logs exactly one error with exception attached.                          |
+| `PermissionDeniedMessageIsLocalisedToFrenchAsync`                                | Fact   | Permission denied message is localised to french.                                           |
+| `UpdateWithStaleVersionThrowsVersionConflictAndLeavesRowUnchangedAsync`          | Fact   | Update with stale version throws version conflict and leaves row unchanged.                 |
+| `DeleteOfALandlordTenantThrowsNotFoundAndTheRowSurvivesAsync`                    | Fact   | Delete of a landlord tenant throws not found and the row survives.                          |
+| `UpdateDeactivatingALandlordTenantFailsValidationAndKeepsItActiveAsync`          | Fact   | Update deactivating a landlord tenant fails validation and keeps it active.                 |
+| `UpdateRenamingAnActiveLandlordTenantStillSucceedsAndKeepsTheFlagAsync`          | Fact   | Update renaming an active landlord tenant still succeeds and keeps the flag.                |
+| `InsertWithControlBidirectionalOrPaddedNameFailsValidationAndWritesNoRowAsync`   | Theory | Insert with control, bidirectional or padded name fails validation and writes no row.       |
+| `InsertWithOrdinaryInternationalNamesSucceedsAsync`                              | Theory | Insert with ordinary international names succeeds.                                          |
+| `CatalogueRegistersUniqueTenantRegistryToolNames`                                | Fact   | Catalogue registers unique tenant registry tool names.                                      |
+| `ALandlordSwitchedIntoATenantThatIsThenDisabledIsReturnedToTheirOwnTenantAsync`  | Theory | Alandlord switched into atenant that is then disabled is returned to their own tenant.      |
+| `InsertWithAnUnsafeHttpAdaptationUrlThrowsValidationFailedAndWritesNoRowAsync`   | Theory | Insert with an unsafe http adaptation url throws validation failed and writes no row.       |
+| `InsertWithAnHttpAdaptationTimeoutOutsideTheRangeThrowsValidationFailedAsync`    | Theory | Insert with an http adaptation timeout outside the range throws validation failed.          |
+| `HttpAdaptationSettingsRoundTripAndAreSnapshottedToTheVersionTableOnUpdateAsync` | Fact   | Http adaptation settings round trip and are snapshotted to the version table on update.     |
+| `ANewTenantInheritsTheGlobalHttpAdaptationSettingsAndValidatesSslAsync`          | Fact   | Anew tenant inherits the global http adaptation settings and validates ssl.                 |
+| `ANewTenantAllowsRemoteSvirfdLookupsByDefaultAsync`                              | Fact   | A new tenant stores and reads the Svirfd remote lookups switch as on.                       |
+| `ARowWithNoStoredSvirfdSwitchReadsAsEnabledAsync`                                | Fact   | A row whose switch is null (older data) reads as enabled.                                   |
+| `SvirfdRemoteLookupsSwitchRoundTripsAndIsSnapshottedToTheVersionTableAsync`      | Fact   | The switch round trips and the previous value is copied to the version table on update.     |
+| `OnlyALandlordCanChangeTheSvirfdRemoteLookupsSwitchAsync`                        | Fact   | A tenant administrator who is not a landlord is refused and the stored switch is unchanged. |
 
 ## User in tenant
-
-| `ALandlordSwitchedIntoATenantThatIsThenDisabledIsReturnedToTheirOwnTenantAsync` | Theory | Alandlord switched into
-atenant that is then disabled is returned to their own tenant. |
-| `InsertWithAnUnsafeHttpAdaptationUrlThrowsValidationFailedAndWritesNoRowAsync` | Theory | Insert with an unsafe http
-adaptation url throws validation failed and writes no row. |
-| `InsertWithAnHttpAdaptationTimeoutOutsideTheRangeThrowsValidationFailedAsync` | Theory | Insert with an http
-adaptation timeout outside the range throws validation failed. |
-| `HttpAdaptationSettingsRoundTripAndAreSnapshottedToTheVersionTableOnUpdateAsync` | Fact | Http adaptation settings
-round trip and are snapshotted to the version table on update. |
-| `ANewTenantInheritsTheGlobalHttpAdaptationSettingsAndValidatesSslAsync` | Fact | Anew tenant inherits the global http
-adaptation settings and validates ssl. |
-| `ANewTenantAllowsRemoteSvirfdLookupsByDefaultAsync` | Fact | A new tenant stores and reads the Svirfd remote lookups
-switch as on. |
-| `ARowWithNoStoredSvirfdSwitchReadsAsEnabledAsync` | Fact | A row whose switch is null (older data) reads as enabled. |
-| `SvirfdRemoteLookupsSwitchRoundTripsAndIsSnapshottedToTheVersionTableAsync` | Fact | The switch round trips and the
-previous value is copied to the version table on update. |
-| `OnlyALandlordCanChangeTheSvirfdRemoteLookupsSwitchAsync` | Fact | A tenant administrator who is not a landlord is
-refused and the stored switch is unchanged. |
 
 ### UserInTenantServiceTests
 
@@ -1801,7 +1782,7 @@ Database.
 
 ### UserRegistryApiKeyServiceTests
 
-`Jube.Test.Service.Repository.UserRegistryApiKey.UserRegistryApiKeyServiceTests` — 33 tests. Category: Service.
+`Jube.Test.Service.Repository.UserRegistryApiKey.UserRegistryApiKeyServiceTests` — 34 tests. Category: Service.
 Collection: Database.
 
 | Test                                                                            | Kind   | Verifies                                                                               |
@@ -1839,6 +1820,7 @@ Collection: Database.
 | `DeleteOfMissingIdLogsOneAuditRecordAsync`                                      | Fact   | Delete of missing id logs one audit record.                                            |
 | `CatalogueListsOnlyTheNonSensitiveUserRegistryApiKeyToolNames`                  | Fact   | Catalogue lists only the non sensitive user registry api key tool names.               |
 | `CatalogueDoesNotRegisterCreateAsAnAgentTool`                                   | Fact   | Catalogue does not register create as an agent tool.                                   |
+| `InsertWithoutAnApiHmacKeyIsRefusedWithItsReasonAndStoresNothingAsync`          | Fact   | Insert without an api hmac key is refused with its reason and stores nothing. |
 
 ## Visualisation registry
 
@@ -1965,8 +1947,7 @@ Category: Service. Collection: Database.
 
 ### VisualisationRegistryDatasourceIntrospectionServiceTests
 
-`Jube.Test.Service.Repository.VisualisationRegistryDatasource.VisualisationRegistryDatasourceIntrospectionServiceTests` —
-28 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Repository.VisualisationRegistryDatasource.VisualisationRegistryDatasourceIntrospectionServiceTests` — 28 tests. Category: Service. Collection: Database.
 
 | Test                                                                      | Kind   | Verifies                                                                       |
 |---------------------------------------------------------------------------|--------|--------------------------------------------------------------------------------|
@@ -2079,8 +2060,7 @@ tests. Category: Service. Collection: Database.
 
 ### VisualisationRegistryDatasourceLocalisationServiceTests
 
-`Jube.Test.Service.Repository.VisualisationRegistryDatasource.VisualisationRegistryDatasourceLocalisationServiceTests` —
-5 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Repository.VisualisationRegistryDatasource.VisualisationRegistryDatasourceLocalisationServiceTests` — 5 tests. Category: Service. Collection: Database.
 
 | Test                                                                             | Kind   | Verifies                                                                                 |
 |----------------------------------------------------------------------------------|--------|------------------------------------------------------------------------------------------|
@@ -2135,8 +2115,7 @@ tests. Category: Service. Collection: Database.
 
 ### VisualisationRegistryDatasourceSeriesServiceTests
 
-`Jube.Test.Service.Repository.VisualisationRegistryDatasourceSeries.VisualisationRegistryDatasourceSeriesServiceTests` —
-12 tests. Category: Service. Collection: Database.
+`Jube.Test.Service.Repository.VisualisationRegistryDatasourceSeries.VisualisationRegistryDatasourceSeriesServiceTests` — 12 tests. Category: Service. Collection: Database.
 
 | Test                                                                 | Kind   | Verifies                                                                    |
 |----------------------------------------------------------------------|--------|-----------------------------------------------------------------------------|
@@ -2411,7 +2390,7 @@ Service. Collection: Database.
 
 ### CaseWorkflowReleaseHookServiceTests
 
-`Jube.Test.Service.Repository.CaseWorkflowReleaseHook.CaseWorkflowReleaseHookServiceTests` — 18 tests. Category:
+`Jube.Test.Service.Repository.CaseWorkflowReleaseHook.CaseWorkflowReleaseHookServiceTests` — 19 tests. Category:
 Service. Collection: Database.
 
 | Test                                                                                | Kind   | Verifies                                                                                      |
@@ -2426,6 +2405,7 @@ Service. Collection: Database.
 | `TheNameMustBeUniqueWithinTheWorkflowIgnoringCaseAsync`                             | Fact   | The name must be unique within the workflow ignoring case.                                    |
 | `AReleaseUrlWhoseHostIsNotLiteralOrWithAnUnknownTokenIsRefusedAsync`                | Theory | A release url whose host is not literal or with an unknown token is refused.                  |
 | `TheRefuseUrlFollowsTheSameRulesAndMayBeLeftOutAsync`                               | Fact   | The refuse url follows the same rules and may be left out.                                    |
+| `AnUnknownTokenInTheRefuseUrlIsReportedAgainstTheRefuseUrlAsync` | Fact | An unknown token in the refuse url is reported against the refuse url. |
 | `TheHeaderAndTheCredentialVariableComeTogetherAndNeverNameAnyOtherVariableAsync`    | Theory | The header and the credential variable come together and never name any other variable.       |
 | `AValidHeaderAndCredentialVariableAreStoredAsNamesOnlyAsync`                        | Fact   | A valid header and credential variable are stored as names only.                              |
 | `TheSourceFieldAndValueComeTogetherAsync`                                           | Theory | The source field and value come together.                                                     |
@@ -2437,7 +2417,7 @@ Service. Collection: Database.
 
 ### TemplateTextTests
 
-`Jube.Test.Service.CaseDispatch.TemplateTextTests` — 7 tests. Category: Unit.
+`Jube.Test.Service.CaseDispatch.TemplateTextTests` — 8 tests. Category: Unit.
 
 | Test                                                      | Kind | Verifies                                                          |
 |-----------------------------------------------------------|------|-------------------------------------------------------------------|
@@ -2448,6 +2428,7 @@ Service. Collection: Database.
 | `TreatsAMissingRowAsEmptyRatherThanAnError`               | Fact | Treats a missing row as empty rather than an error                |
 | `AcceptsTheFormSqlDialectAndRefusesTheLegacyRootsInIt`    | Fact | Accepts the form sql dialect and refuses the legacy roots in it   |
 | `DrawsAFormFromTheRowsInTheSqlDialect`                    | Fact | Draws a form from the rows in the sql dialect                     |
+| `AnUnknownNameIsAnsweredWithTheNamesOfItsOwnDialect`      | Fact | An unknown name is answered with the names of its own dialect     |
 
 ### DispatchGuardTests
 
@@ -2575,11 +2556,12 @@ Category: Service. Collection: Database.
 
 ### CaseLinkServiceTests
 
-`Jube.Test.Service.Repository.CaseLink.CaseLinkServiceTests` — 6 tests. Category: Service.
+`Jube.Test.Service.Repository.CaseLink.CaseLinkServiceTests` — 7 tests. Category: Service.
 
 | Test                                                                   | Kind | Verifies                                                                     |
 |------------------------------------------------------------------------|------|------------------------------------------------------------------------------|
 | `ALinkIsSeenFromBothCasesWithTheOtherCasesKeyAndStatusAsync`           | Fact | A link is seen from both cases with the other cases key and status.          |
+| `LinkingAndUnlinkingWriteACaseEventOnBothCasesAsync` | Fact | Linking and unlinking write a case event on both cases. |
 | `LinkingTheSamePairAgainInEitherDirectionIsRefusedAsync`               | Fact | Linking the same pair again in either direction is refused.                  |
 | `ASelfLinkAMissingCaseAndAnOverlongReasonAreRefusedAsync`              | Fact | A self link a missing case and an overlong reason are refused.               |
 | `LinkingNeedsThePermissionAndBothCasesMustBeVisibleToTheCallerAsync`   | Fact | Linking needs the permission and both cases must be visible to the caller.   |

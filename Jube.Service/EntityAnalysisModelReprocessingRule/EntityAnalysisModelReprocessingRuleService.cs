@@ -520,7 +520,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
         [Description("Registers a new Reprocessing Rule under a Model in the caller's tenant. Not idempotent -- " +
                      "calling twice creates two rows.")]
         [ServiceOperation("EntityAnalysisModelReprocessingRuleCreate", OperationKind.Write, Idempotent = false)]
-        public async Task<ReprocessingRulePoco> InsertAsync(
+        public async Task<EntityAnalysisModelReprocessingRuleDto> InsertAsync(
             [Description("The Reprocessing Rule to create.")]
             EntityAnalysisModelReprocessingRuleDto? model,
             CancellationToken token = default)
@@ -568,7 +568,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
                         $"user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelReprocessingRuleMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {
@@ -810,7 +810,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
                      "a new Id is assigned, the old row is soft-deleted, and CreatedUser/CreatedDate are reset " +
                      "to the caller/now. See the migration report.")]
         [ServiceOperation("EntityAnalysisModelReprocessingRuleUpdate", OperationKind.Write, Idempotent = false)]
-        public async Task<ReprocessingRulePoco> UpdateAsync(
+        public async Task<EntityAnalysisModelReprocessingRuleDto> UpdateAsync(
             [Description("The Reprocessing Rule to update. Id selects the row; identity/tenant/audit fields are " +
                          "server-owned and ignored.")]
             EntityAnalysisModelReprocessingRuleDto? model,
@@ -872,7 +872,7 @@ namespace Jube.Service.EntityAnalysisModelReprocessingRule
                         $"EntityAnalysisModelReprocessingRule.Update: superseded Id={model.Id} with new Id={saved.Id} version->{saved.Version} user={userName}");
                 }
 
-                return saved;
+                return EntityAnalysisModelReprocessingRuleMapper.ToDto(saved);
             }
             catch (ForbiddenException)
             {

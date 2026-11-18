@@ -21,6 +21,7 @@ const props = defineProps<{
   names: string[]
   override: ChecklistOverride | null
   canOverride: boolean
+  own?: boolean
   testid: string
 }>()
 
@@ -41,7 +42,10 @@ const hidden = computed(() => Math.max(0, props.names.length - shown.value.lengt
     :data-testid="`${testid}-override`"
   >
     <ShieldAlert class="size-5 shrink-0" aria-hidden="true"/>
-    <span>
+    <span v-if="own" key="own" :data-testid="`${testid}-override-own`">
+      {{ t('caseDetail.checklist.gate.ownOverride', {reason: override.reason}) }}
+    </span>
+    <span v-else key="other">
       {{
         t('caseDetail.checklist.gate.inPlace', {
           user: override.grantedUser,

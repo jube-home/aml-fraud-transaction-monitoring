@@ -63,4 +63,7 @@
     <data name="InsufficientPrivilege" xml:space="preserve">
     <value>इस कार्रवाई को करने के लिए आपके पास पर्याप्त विशेषाधिकार नहीं है।</value>
   </data>
+    <data name="ApiHmacKeyNotSet" xml:space="preserve">
+    <value>API कुंजियाँ जारी नहीं की जा सकतीं क्योंकि इस इंस्टॉलेशन में एनवायरनमेंट वेरिएबल ApiHmacKey सेट नहीं है।</value>
+  </data>
 </root>

@@ -111,4 +111,7 @@
     <data name="GraphRegistryNotFound" xml:space="preserve">
     <value>گراف رجسٹری نہیں ملی۔</value>
   </data>
+    <data name="ServiceLevelTargetOutOfRange" xml:space="preserve">
+    <value>سروس لیول کا ہدف 1 اور 525600 منٹ کے درمیان ہونا چاہیے، یا ہدف نہ ہونے پر خالی چھوڑ دیں۔</value>
+  </data>
 </root>

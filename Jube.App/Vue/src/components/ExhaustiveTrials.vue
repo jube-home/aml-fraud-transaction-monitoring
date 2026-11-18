@@ -17,6 +17,7 @@ import {useI18n} from 'vue-i18n'
 import {useQuery} from '@tanstack/vue-query'
 import {queryKeys} from '../api/queryKeys'
 import {useFormat} from '../composables/useFormat'
+import {usePagerLabels} from '../composables/usePagerLabels'
 import {directionFor} from '../i18n'
 import {exhaustiveApi} from '../exhaustive/api'
 import {modelTypeLabel} from '../exhaustive/model'
@@ -30,6 +31,7 @@ import ServerChart from './ServerChart.vue'
 const props = defineProps<{ instanceId: number; version: string }>()
 
 const {t, locale} = useI18n()
+const pagerLabels = usePagerLabels()
 const {dateTime, fixed} = useFormat()
 
 const direction = computed(() => directionFor(locale.value))
@@ -112,6 +114,7 @@ const columns = computed<GridColumn[]>(() => [
       :empty-text="t('exhaustive.trials.empty')"
       :label="t('exhaustive.trials.title')"
       :page-size="25"
+      :pager-labels="pagerLabels"
       auto-height
       @action="act"
     />

@@ -121,7 +121,7 @@ export function useGraphQueries(input: GraphQueryInput) {
       registryGuid: input.registryGuid.value,
       key: address.seedKey,
       value: address.seedValue,
-      hops: address.hops,
+      hops: address.hops ?? undefined,
       from: input.window.value?.from,
       to: input.window.value?.to,
       minimumAmount: input.minimumAmount.value || undefined,

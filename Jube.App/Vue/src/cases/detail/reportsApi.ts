@@ -132,6 +132,24 @@ export function canDownload(report: CaseReport): boolean {
   return report.stateId >= reportState.approved && report.stateId !== reportState.withdrawn
 }
 
+export function mayDownload(report: CaseReport, held: readonly number[]): boolean {
+  return (
+    canDownload(report) &&
+    (held.includes(reportPermission.file) || held.includes(reportPermission.approve))
+  )
+}
+
+export function mayWithdraw(
+  report: CaseReport,
+  held: readonly number[],
+  userName: string | undefined,
+): boolean {
+  const own =
+    userName !== undefined && report.createdUser.toLowerCase() === userName.toLowerCase()
+
+  return canWithdraw(report) && (own || held.includes(reportPermission.approve))
+}
+
 export function isValidJsonObject(text: string): boolean {
   try {
     const value: unknown = JSON.parse(text)

@@ -82,7 +82,7 @@
     <value>L'échantillon de retraitement doit être compris entre 0 et 100 pour cent.</value>
   </data>
     <data name="ReprocessingValueRange" xml:space="preserve">
-    <value>La valeur de l'intervalle de retraitement ne peut pas être négative.</value>
+    <value>La valeur de l'intervalle de retraitement doit être supérieure ou égale à zéro et respecter la limite de l'intervalle choisi.</value>
   </data>
     <data name="ReprocessingIntervalInvalid" xml:space="preserve">
     <value>L'intervalle de retraitement doit être Minutes, Heures, Jours ou Mois.</value>
